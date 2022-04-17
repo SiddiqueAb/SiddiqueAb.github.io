@@ -1,0 +1,563 @@
+@import url('https://fonts.googleapis.com/css2?family=Barrio&family=Galada&family=Philosopher:wght@400;700&family=Sancreek&display=swap');
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000;
+    font: small-caption;
+}
+
+#particles-js {
+    height: 100%;
+    background: #10111b;
+    position: relative;
+}
+
+.btn-toolbar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+a {
+    position: relative;
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 20px 0;
+    color: #03e9f4;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    letter-spacing: 4px;
+    overflow: hidden;
+    /* margin-right: 50px; */
+    margin-left: 20px;
+}
+
+.content_box {
+    position: relative;
+    display: inline;
+    padding: 5px 10px;
+    margin: 200px 0;
+    color: #03e9f4;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    letter-spacing: 4px;
+    overflow: hidden;
+    margin-right: 50px;
+    margin-left: 20px;
+}
+
+a:hover {
+    background: #03e9f4;
+    color: #050801;
+    box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 200px #03e9f4;
+    -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+}
+
+.active {
+    background: #03e9f4;
+    color: #050801;
+    box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 200px #03e9f4;
+    -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+}
+
+a:nth-child(1) {
+    filter: hue-rotate(270deg);
+}
+
+a:nth-child(2) {
+    filter: hue-rotate(110deg);
+}
+
+a:nth-child(3) {
+    filter: hue-rotate(430deg);
+}
+
+a:nth-child(4) {
+    filter: hue-rotate(590deg);
+}
+
+a:nth-child(5) {
+    filter: hue-rotate(750deg);
+}
+
+a:nth-child(6) {
+    filter: hue-rotate(910deg);
+}
+
+a:nth-child(7) {
+    filter: hue-rotate(1070deg);
+}
+
+a:nth-child(8) {
+    filter: hue-rotate(1230deg);
+}
+
+a span {
+    position: absolute;
+    display: block;
+}
+
+a span:nth-child(1) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #03e9f4);
+    animation: animate1 1s linear infinite;
+}
+
+@keyframes animate1 {
+    0% {
+        left: -100%;
+    }
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+a span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #03e9f4);
+    animation: animate2 1s linear infinite;
+    animation-delay: 0.25s;
+}
+
+@keyframes animate2 {
+    0% {
+        top: -100%;
+    }
+    50%,
+    100% {
+        top: 100%;
+    }
+}
+
+a span:nth-child(3) {
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #03e9f4);
+    animation: animate3 1s linear infinite;
+    animation-delay: 0.50s;
+}
+
+@keyframes animate3 {
+    0% {
+        right: -100%;
+    }
+    50%,
+    100% {
+        right: 100%;
+    }
+}
+
+a span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #03e9f4);
+    animation: animate4 1s linear infinite;
+    animation-delay: 0.75s;
+}
+
+@keyframes animate4 {
+    0% {
+        bottom: -100%;
+    }
+    50%,
+    100% {
+        bottom: 100%;
+    }
+}
+
+
+/* body {
+	margin: 0;
+	padding: 0;
+	
+} */
+
+.block {
+    position: relative;
+    margin: 100px auto 0;
+    max-width: 652px;
+    /* max-height: 279px; */
+    background: linear-gradient(0deg, #000, #7d2a2a);
+}
+
+.block:before,
+.block:after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    background: linear-gradient(45deg, #fb0094, #0000ff, #00ff00, #ffff00, #ff0000, #fb0094, #0000ff, #00ff00, #ffff00, #ff0000);
+    background-size: 400%;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    z-index: -1;
+    animation: steam 20s linear infinite;
+}
+
+@keyframes steam {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.block:after {
+    filter: blur(50px);
+}
+
+.table-dark {
+    color: #fff;
+    background-color: #21292500;
+}
+
+
+/* about page design  */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+/* html, body {
+    height: 100%;
+  }
+  
+  body {
+    margin: 0;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+    color: #f4f7f7;
+    background-color: #586875;
+    font: 1rem/1 'Cabin', sans-serif;
+    overflow-x: hidden;
+  } */
+
+
+/* hide radio buttons, but still expose them to screen readers */
+
+input {
+    position: absolute;
+    width: 1px;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.selector {
+    display: grid;
+    grid-template-areas: 'happy lovers' 'pick  pick';
+}
+
+
+/* the cards and toggle buttons are actually fat labels that can be clicked to set radio buttons */
+
+label {
+    display: block;
+    cursor: pointer;
+}
+
+.happy-card,
+.lovers-card {
+    position: relative;
+    width: 250px;
+    padding: 20px;
+    color: #fff;
+    background-color: #f4f7f700;
+    box-shadow: 0 10px 20px #0006;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.happy-card {
+    grid-area: happy;
+    margin-right: -10px;
+    /* nudge closer to lover's card */
+    /* these values are used to animate via translateX */
+    --swing: -25px;
+    --overlap: 25px;
+}
+
+.lovers-card {
+    grid-area: lovers;
+    margin-left: -10px;
+    /* nudge closer to happy card */
+    /* these values are used to animate via translateX */
+    --swing: 25px;
+    --overlap: -25px;
+}
+
+
+/* when a radio button is set, swing the corresponding card fowards */
+
+#happy-radio:checked~.selector .happy-card,
+#lovers-radio:checked~.selector .lovers-card {
+    animation-name: swing-forwards;
+}
+
+@keyframes swing-forwards {
+    0% {
+        z-index: 1;
+        /* start behind other card */
+        transform: scale(0.9);
+    }
+    50% {
+        transform: translateX(var(--swing));
+    }
+    100% {
+        z-index: 2;
+        /* end in front of other card */
+        transform: translateX(var(--overlap)) scale(1.1);
+    }
+}
+
+
+/* when a radio button is set, swing the opposite card backwards */
+
+#happy-radio:checked~.selector .lovers-card,
+#lovers-radio:checked~.selector .happy-card {
+    animation-name: swing-backwards;
+}
+
+@keyframes swing-backwards {
+    0% {
+        z-index: 2;
+        /* start in front of other card */
+        transform: translateX(var(--overlap)) scale(1.1);
+    }
+    50% {
+        transform: translateX(var(--swing));
+    }
+    100% {
+        z-index: 1;
+        /* end behind other card */
+        transform: scale(0.9);
+    }
+}
+
+h1 {
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #bdd6d2;
+    font-size: 1.5rem;
+}
+
+ul {
+    margin: 15px 0;
+    padding-left: 30px;
+    line-height: 1.5rem;
+    list-style-type: square;
+}
+
+p {
+    margin: 0 -20px -20px;
+    padding: 15px;
+    background-color: #bdd6d2;
+    font-weight: bold;
+    text-align: center;
+}
+
+.happy-pick,
+.lovers-pick {
+    grid-area: pick;
+    margin: 40px auto 0;
+    padding: 9px;
+    border: 1px solid #16171700;
+    /* border-radius: 9999px; */
+    background-color: #b46d7361;
+    font-size: 1.25rem;
+    -webkit-user-select: none;
+    user-select: none;
+    color: #fff;
+}
+
+.happy-pick::before,
+.lovers-pick::after {
+    display: inline-block;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: bold;
+}
+
+.happy-pick::before {
+    margin-right: 10px;
+    content: '<';
+    /* fa-arrow-circle-left */
+}
+
+.lovers-pick::after {
+    margin-left: 10px;
+    content: '>';
+    /* fa-arrow-circle-right */
+}
+
+
+/* hide happy toggle button if happy is currently selected */
+
+#happy-radio:checked~.selector .happy-pick {
+    display: none;
+}
+
+
+/* hide lover's toggle button if lover's is currently selected */
+
+#lovers-radio:checked~.selector .lovers-pick {
+    display: none;
+}
+
+
+/* increase overlap and swing distance on smaller screens */
+
+@media (max-width: 560px) {
+    .happy-card {
+        margin-right: -85px;
+        --swing: -100px;
+    }
+    .lovers-card {
+        margin-left: -85px;
+        --swing: 100px;
+    }
+}
+
+
+/* photo gallery  */
+
+
+/* HTML, BODY {
+    height: 100%;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Trebuchet MS, Helvetica, Arial, sans-serif;
+  }
+  
+  BODY {
+    overflow: hidden;
+    background-color: #222;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.025) 10%, transparent 0), linear-gradient(#222, #000);
+    background-size: 0.75em 100%, 100% 100%;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+  } */
+
+.wrapper {
+    position: relative;
+    flex-grow: 1;
+    margin: auto;
+    max-width: 1200px;
+    max-height: 1200px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-gap: 2vmin;
+    justify-items: center;
+    align-items: center;
+}
+
+IMG {
+    z-index: 1;
+    grid-column: span 2;
+    max-width: 100%;
+    margin-bottom: -52%;
+    -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    transform: scale(1);
+    transition: all 0.25s;
+}
+
+IMG:nth-child(7n+1) {
+    grid-column: 2/span 2;
+}
+
+IMG:hover {
+    z-index: 2;
+    transform: scale(2);
+}
+
+.paper {
+    position: relative;
+    /* width: 90%; */
+    max-width: 800px;
+    min-width: 400px;
+    height: 480px;
+    margin: 0 auto;
+    background: #fafafa;
+    /* border-radius: 10px; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    overflow: hidden;
+}
+
+.paper:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    background: radial-gradient(#575450 6px, transparent 7px) repeat-y;
+    background-size: 30px 30px;
+    border-right: 3px solid #D44147;
+    box-sizing: border-box;
+}
+
+.paper-content {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    bottom: 30px;
+    left: 60px;
+    background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+    background-size: 30px 30px;
+}
+
+.paper-content textarea {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    line-height: 30px;
+    padding: 0 10px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: mediumblue;
+    font-family: 'Handlee', cursive;
+    font-weight: bold;
+    font-size: 18px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(0, 0, 0, .6);
+}
+
+footer a {
+    color: rgba(255, 255, 255, .8);
+}
