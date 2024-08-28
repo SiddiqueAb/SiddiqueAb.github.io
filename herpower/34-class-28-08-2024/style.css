@@ -1,0 +1,95 @@
+body{
+  background-color: #E5E5E5;
+}
+
+/* .learn_transition{
+  height: 100px;
+  width: 100px;
+  background-image: linear-gradient(red, rgb(68, 255, 0));
+  border-radius: 50%;
+  transition: 5s;
+
+  
+  transition-delay: 2s;
+}
+.learn_transition:hover{
+  height: 300px;
+  width: 300px;
+background-image: linear-gradient(rgb(225, 17, 90), rgb(68, 255, 0));;
+  transform: rotate(720deg);
+}
+
+img{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  transition: 3s;
+}
+img:hover{
+  transform: rotate(180deg);
+} */
+
+/* .animation{
+  height: 200px;
+  width: 200px;
+  background-color: red;
+  animation-name: test_animation;
+  animation-duration: 5s;
+  animation-delay: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes test_animation {
+  from{
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;    
+    transform: rotate(360deg);
+  }
+
+  to{
+    background-color: green;
+    height: 300px;
+    width: 300px;
+  }
+} */
+
+.animation{
+  height: 200px;
+  width: 200px;
+  background-color: red;
+  position: relative;
+  animation-name: test_animation;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes test_animation {
+  0% {
+    background-color: red;
+    left: 0;
+    top: 0;
+  }
+  25% {
+    background-color: blue;
+    left: 300px;
+    top: 0;
+    border-radius: 50%;
+  }
+  50% {
+    background-color: green;
+    left: 300px;
+    top: 300px;
+  }
+  75% {
+    background-color: yellow;
+    left: 0;
+    top: 300px;
+  }
+  100% {
+    background-color: blueviolet;
+    left: 0;
+    top: 0;
+  }
+}

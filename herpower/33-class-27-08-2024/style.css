@@ -1,0 +1,87 @@
+body{
+  background-color: #E5E5E5;
+}
+.block_area{
+  width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.block_box{
+  width: 250px;
+  background-color: #FFFFFF;
+  padding: 20px;
+  padding-top: 40px;
+  
+  border-radius: 0 0 15px 15px;
+  color: #777;
+  float: left;
+  margin: 10px;
+  box-shadow: 10px 10px 5px -8px #c8c8c8;
+}
+
+.icon{
+ 
+  padding: 5px;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex; /* Ensure the icon is centered */
+  align-items: center;
+  justify-content: center;
+  font-size: 24px; /* Adjust the size as needed */
+  width: 40px; /* Adjust to ensure it's a circle */
+  height: 40px; /* Same as width */
+}
+.color-pink{
+  border-top: 15px solid #E649A5;
+}
+.color-sky-blue{
+  border-top: 15px solid #19f6fa;
+}
+.color-blue{
+  border-top: 15px solid #3e09ed;
+}
+.color-pink .icon{
+  background-color: #E649A5 ;
+}
+.color-sky-blue .icon{
+  background-color: #19f6fa ;
+}
+.color-blue .icon{
+  background-color: #3e09ed ;
+}
+
+.learn-gradient{
+  height: 130px;
+  width: 100%;
+  border-radius: 30px;
+  /* background-image: linear-gradient(to bottom right, red , yellow); */
+  /* background-image: linear-gradient(to right red, yellow,); */
+  background-image: radial-gradient(red 25%, yellow 15%, green 60%);
+}
+
+
+.learn_transform{
+  margin: 0 auto;
+  margin-top: 200px;
+  height: 80px;
+  width: 200px;
+  text-align: center;
+  background-color: green;
+  /* transform: translate(100px, 200px); */
+  /* transform: scale(2, 3); */
+  /* transform: scaleX(2); */
+  /* transform: scaleY(2); */
+  /* transform: skewX(70deg); */
+  /* transform: rotate(180deg); */
+  transform: rotateX(180deg);
+}
+/* .learn_transform:hover{
+  
+
+} */
+
+img{
+  /* height: 200px; */
+  width: 200px;
+  transform: rotateX(180deg);
+}

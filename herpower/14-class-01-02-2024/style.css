@@ -1,0 +1,30 @@
+/* .redColor {
+    color: red;
+    background-color: green;
+} */
+
+body{
+    background-color: lightblue;
+    /* opacity: 1; */
+   
+}
+*{
+    /* color: red; */
+    /* color: rgb(255, 0, 0); */
+    color: #ec1f08;
+}
+
+.greenColor{
+    color: green;
+}
+.blueColor{
+    color: blue;
+}
+/* #jekono, h2, p{
+    color: red;
+} */
+
+
+.halka{
+    opacity: .5;
+}

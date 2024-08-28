@@ -1,0 +1,112 @@
+body {
+    background-color: rgb(4, 77, 77);
+    /* font-family: "Dancing Script", cursive; */
+}
+
+.text-border {
+    border: 15px solid rgb(209, 1, 91);
+    padding: 15px;
+    margin: 20px;
+    background-color: rgb(224, 220, 220);
+}
+
+p {
+    color: purple;
+    text-align: justify;
+    text-indent: 50px;
+    /* letter-spacing: 15px; */
+    line-height: 1;
+    word-spacing: 5px;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: normal;
+
+}
+
+.project_title,
+.tester {
+    text-align: center;
+    font-size: 70px;
+    color: rgb(0, 0, 0);
+    text-shadow: 3px 3px 5px rgb(244, 51, 51);
+
+}
+
+.project_title {
+    font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+}
+
+h2 {
+    /* font-variant: small-caps; */
+   
+text-align: right;
+}
+.custom_design{
+    font-size: 60px;
+    color: blue;
+}
+
+a{
+    text-decoration: none;
+}
+a:visited{
+    color: black;
+    font-size: 40px;
+}
+
+a:hover{
+    color: red;
+    text-decoration: none;
+    background-color: blueviolet;
+    
+}
+
+a:active{
+    color: yellow;
+}
+
+
+
+
+ul{
+    list-style: lower-alpha;
+    /* border: 1px solid black; */
+    /* color: red; */
+    /* list-style-type: upper-alpha; */
+    /* list-style-image: url('images.png'); */
+    /* padding: 10px; */
+    background-color: blue;
+    list-style-position: outside;
+    padding: 15px;
+}
+
+
+
+ul li{
+    background-color: rgb(24, 236, 87); 
+    margin: 3px;
+}
+
+
+table{
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+table, th, td {
+    border: 1px solid;
+    border-collapse: collapse;
+  }
+
+  th, td{
+    /* text-align: center; */
+    /* vertical-align: center; */
+
+    /* height: 50px; */
+    padding: 5px;
+    /* border-bottom: 1px solid #c60f0f; */
+  }
+  tr:hover{
+    background-color: lime;
+  }

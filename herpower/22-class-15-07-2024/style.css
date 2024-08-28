@@ -1,0 +1,18 @@
+body {
+    background-color: rgb(4, 77, 77);
+
+}
+
+.text-border {
+    border: 5px solid rgb(9, 182, 230);
+    padding: 15px;
+    background-color: rgb(224, 220, 220);
+}
+
+p {
+    color: purple;
+    text-align: justify;
+    text-indent: 50px;
+    letter-spacing: 2px;
+    font-size: 30px;
+}

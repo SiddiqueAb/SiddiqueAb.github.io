@@ -1,0 +1,30 @@
+.header_area{
+    background-color: blue;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    padding: 10px 0;
+}
+.form_area, .table_area{
+    margin: 50px;
+}
+input,select{
+    margin-left: 20px;
+    padding: 10px;
+}
+table{
+    width: 100%;
+}
+.table_button{
+    background-color: green;
+    color: white;
+    border-radius: 7px;
+    padding: 5px;
+}
+table tr td{
+    padding: 20px;
+}
+/* .text_designer{
+    text-align: justify;
+    margin: 20px;
+} */

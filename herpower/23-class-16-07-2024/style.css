@@ -1,0 +1,47 @@
+body {
+    background-color: rgb(4, 77, 77);
+    /* font-family: "Dancing Script", cursive; */
+}
+
+.text-border {
+    border: 15px solid rgb(209, 1, 91);
+    padding: 15px;
+    margin: 20px;
+    background-color: rgb(224, 220, 220);
+}
+
+p {
+    color: purple;
+    text-align: justify;
+    text-indent: 50px;
+    /* letter-spacing: 15px; */
+    line-height: 1;
+    word-spacing: 5px;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: normal;
+
+}
+
+.project_title,
+.tester {
+    text-align: center;
+    font-size: 70px;
+    color: rgb(0, 0, 0);
+    text-shadow: 3px 3px 5px rgb(244, 51, 51);
+
+}
+
+.project_title {
+    font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+}
+
+h2 {
+    /* font-variant: small-caps; */
+   
+text-align: right;
+}
+.custom_design{
+    font-size: 60px;
+    color: blue;
+}
