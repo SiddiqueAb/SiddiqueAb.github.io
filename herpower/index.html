@@ -95,6 +95,18 @@
             <a href="https://github.com/SiddiqueAb/SiddiqueAb.github.io/tree/main/herpower" target="_blank"><i class="fas fa-book"></i> Her-Power Class Resource</a>
         </div>
     </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }, function(error) {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>
