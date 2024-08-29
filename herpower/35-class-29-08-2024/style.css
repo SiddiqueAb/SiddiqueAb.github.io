@@ -1,0 +1,26 @@
+body{
+  background-color: #E5E5E5;
+}
+
+.flex-container {
+  display: flex;
+  background-color: DodgerBlue;
+  /* flex-direction: row;
+  flex-wrap: wrap; */
+  /* flex-flow: row wrap; */
+  /* justify-content: center; */
+  /* justify-content: flex-end; */
+  /* justify-content: space-between; */
+  height: 500px;
+  /* align-items: center; */
+  align-items: flex-end;
+}
+
+.area{
+  width: 100px;
+  /* height: 100px; */
+  padding: 20px;  
+  font-size: 30px;
+  background-color: blueviolet;
+  margin: 10px;
+}
