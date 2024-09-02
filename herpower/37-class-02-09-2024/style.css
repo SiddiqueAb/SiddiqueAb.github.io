@@ -1,0 +1,36 @@
+body {
+  background-color: #E5E5E5;
+}
+
+.flex-container {
+  /* width: 50%; */
+  display: flex;
+  background-color: DodgerBlue;
+  /* height: 500px; */
+  /* flex-wrap: wrap; */
+  /* justify-content: center;
+  align-items: center; */
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+
+.area {
+  width: 100px;
+  padding: 15px;
+  font-size: 30px;
+  background-color: rgb(226, 221, 230);
+  margin: 10px;
+  text-align: center;
+}
+
+/* .flex-container > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+} */
+
+
