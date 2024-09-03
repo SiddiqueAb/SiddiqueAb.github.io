@@ -1,0 +1,27 @@
+body {
+  background-color: #E5E5E5;
+}
+.header, .nav_menu, .footer{
+  background-color: rgb(211, 211, 217);
+  text-align: center;
+  padding: 20px 0;
+  color: black;
+  font-size: 24px;
+  margin: 10px;
+}
+.content_section{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+.content_section div{
+  background-color: rgb(211, 211, 217);
+  text-align: center;
+  padding: 200px 0;
+  color: black;
+  font-size: 24px;
+  margin-top: 10px;
+  margin: 10px;
+}
+
+
