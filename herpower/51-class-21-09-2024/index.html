@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Herpower project</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+
+    </style>
+</head>
+
+<body class="bg-success bg-opacity-25">
+
+
+
+
+    <div class="container my-5">
+
+
+        <!-- <div class="offcanvas offcanvas-start" id="demo">
+            <div class="offcanvas-header">
+                <h1 class="offcanvas-title">Heading</h1>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <p>Some text lorem ipsum.</p>
+                <p>Some text lorem ipsum.</p>
+                <button class="btn btn-secondary" type="button">A Button</button>
+            </div>
+        </div> -->
+
+        <div class="offcanvas offcanvas-start w-50 h-50" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                Content for the offcanvas goes here. You can place just about any Bootstrap component or custom elements
+                here.
+            </div>
+        </div>
+
+
+
+        <nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#scrollspyHeading1">First</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#scrollspyHeading2">Second</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-expanded="false">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#scrollspyHeading3">Third</a></li>
+                        <li><a class="dropdown-item" href="#scrollspyHeading4">Fourth</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#vasha_id">Vasha</a>
+                </li>
+            </ul>
+
+        </nav>
+
+
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
+            Open Offcanvas Sidebar
+        </button>
+
+
+        <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
+            data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-5 rounded-2" tabindex="0">
+            <h4 id="scrollspyHeading1">First heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+            <h4 id="scrollspyHeading2">Second heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+            <h4 id="scrollspyHeading3">Third heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+            <h4 id="scrollspyHeading4">Fourth heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+            <h4 id="scrollspyHeading5">Fifth heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+
+
+            <h4 id="vasha_id">Fifth heading</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur incidunt aut ratione ad voluptates
+                ducimus blanditiis veritatis quidem fuga, accusantium est cum molestiae iure sequi modi voluptatum
+                aliquid fugit, quia natus! Iusto veniam impedit eveniet fuga nisi hic in minus quaerat consequatur.
+                Placeat quo deleniti reprehenderit ducimus mollitia accusamus. Optio quo molestiae praesentium et, ipsam
+                nesciunt? Fugit laborum vitae quidem est, esse, molestiae laboriosam, architecto quas dolor suscipit ab
+                officiis reiciendis neque fuga tempora odit autem quos voluptates consequatur fugiat perspiciatis
+                voluptas sunt aspernatur illo! Voluptas qui hic quia voluptatem modi corporis, enim pariatur, expedita
+                provident laudantium similique, blanditiis placeat.</p>
+        </div>
+
+
+
+
+        <div class="bg-light my-3 p-4">
+            <p class="user-select-all">This paragraph will be entirely selected when clicked by the user.</p>
+            <p class="user-select-auto">This paragraph has default select behavior.</p>
+            <p class="user-select-none">This paragraph will not be selectable when clicked by the user.</p>
+
+            <a href="#" class="pe-none">Hello Click me!</a>
+        </div>
+
+        <!-- <div class="bg-light my-3 p-4">
+            <div class="hstack gap-1">
+                <div class="bg-light p-2">First item</div>
+                <div class="bg-light p-2 ms-auto">Second item</div>
+                <div class="vr"></div>
+
+                <div class="bg-light p-2  ms-auto">Third item</div>
+            </div>
+        </div> -->
+
+        <div class="bg-light my-3 p-4">
+
+            <div class="hstack gap-3">
+                <div class="p-2 bg-secondary">First item</div>
+                <div class="p-2 bg-secondary  ms-auto">Second item</div>
+                <div class="vr"></div>
+                <div class="p-2 bg-secondary">Third item</div>
+                <div class="vr"></div>
+                <div class="p-2 bg-secondary ">Fourth item</div>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+</body>
+
+</html>
