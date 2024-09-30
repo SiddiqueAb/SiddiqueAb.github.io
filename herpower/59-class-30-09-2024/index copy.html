@@ -51,20 +51,31 @@
 
 
         // document.getElementById("table_data").innerHTML = table_tr;
-        var name = [];
+        let name = [];
 
-        function addToList(name) {
+        function addToList() {
 
             var nameInput = document.getElementById("name").value;
             // alert(nameInput)
             name.push(nameInput);
             console.log(name);
 
+            var table_tr = `<tr>
+                    <th scope="row">1</th>
+                    <td>Tonu</td>
+                    <td>Web Development</td>
+                </tr>`
+
 
             for (let i in name) {
                 // document.write(name[i] + "<br>");
-                document.getElementById("table_data").innerHTML = name[i];
+                table_tr += `<tr>
+                    <th scope="row">1</th>
+                    <td>Tonu</td>
+                    <td>Web Development</td>
+                </tr>`
             }
+            document.getElementById("table_data").innerHTML = table_tr;
         }
 
 
