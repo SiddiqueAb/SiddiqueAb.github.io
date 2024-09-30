@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>javascript</title>
+</head>
+
+<body>
+
+    <!-- <h1>Calculate sum of 2 number</h1> -->
+
+    <input type="text" id="num1" placeholder="Input first number">
+    <button>+</button>
+    <input type="text" id="num2" placeholder="Input Second Number">
+    <button id="sum_button" onclick="calculator()">Click to sum</button>
+
+    <h2 id="show_name"></h2>
+
+    <script>
+        function calculator() {
+            let num1 = document.getElementById('num1').value;
+
+            let num2 = document.getElementById('num2').value;
+            let sum = Number(num1) + Number(num2);
+            document.getElementById('show_name').innerHTML = "the summation of " + num1 + " and " + 
+            num2 + " Is: " + sum;
+          
+          
+            document.getElementById('num1').value = "";
+            document.getElementById('num2').value = "";
+        
+        
+        }
+
+
+        // let age = prompt('Enter your age');
+
+
+        // if (age <= 5) {
+        //     var text = "Child";
+        // } else if (age <= 18) {
+        //     var text = "Teenager";
+        // } else if (age <= 40) {
+        //     var text = "Young";
+        // } else {
+        //     var text = "Adult";
+        // }
+
+        // let num1 = prompt('Enter your First Number');
+        // let num2 = prompt('Enter your Second Number');
+        // let sum = Number(num1) + Number(num2);
+        // document.getElementById('show_name').innerHTML = sum.toPrecision(2);
+    </script>
+</body>
+
+</html>
