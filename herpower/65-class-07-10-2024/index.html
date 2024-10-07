@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>javascript</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <!-- <div id="grand_parent" class="bg-info p-5 w-50">
+            <div id="parent_div" class="bg-danger p-5 w-50">
+                <button id="button" class="btn btn-primary btn-small">Click Me</button>
+            </div>
+        </div>
+
+
+
+        <ul id="list">
+            <li>Laptop</li>
+            <li>Mobile</li>
+            <li>Tablet</li>
+            <li>Computer</li>
+            <li>Ram</li>
+        </ul> -->
+
+
+        <!-- <h1 id="id01">My First Page</h1>
+        <p id="id02"></p>] -->
+        <!-- <button onclick="newPara()">add G</button>
+        <div id="div1">
+            <p id="p1">This is a paragraph.</p>
+            <p id="p2">This is another paragraph.</p>
+        </div> -->
+        <button onclick="history.back()">Go Back</button>
+        <button onclick="history.forward()">Go Forward</button>
+
+        <br> <br> <br> <br> <br> <br> <br> <br>
+
+        <div id="show_result"></div>
+        <!-- <button onclick=newWindowOpen()>Open Calculator</button> -->
+        <input type="button" value="Load new document" onclick="newDoc()">
+    </div>
+
+    <script>
+        function newDoc() {
+            window.location.assign("https://www.w3schools.com")
+        }
+        // document.getElementById("show_result").innerHTML = "Location :" + window.location.href;
+        // document.getElementById("show_result").innerHTML = "Location :" + window.location.port;
+        // document.getElementById("show_result").innerHTML = "Location :" + navigator.appVersion;
+        // document.getElementById("show_result").innerHTML = "Location :" + navigator.userAgent;
+        // document.getElementById("show_result").innerHTML = "Location :" + navigator.onLine;
+        document.getElementById("show_result").innerHTML = "Location :" + navigator.javaEnabled();
+
+        exit();
+
+
+
+
+
+
+        function newWindowOpen() {
+            window.open("calculator.html", "", "width=300,height=450");
+        }
+
+
+
+
+
+
+
+
+
+        windowSizeShow()
+
+        window.addEventListener("resize", function () {
+            windowSizeShow()
+        })
+
+        function windowSizeShow() {
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            document.getElementById("show_result").innerHTML = "width:" + screen.availHeight + "height:" + h;
+
+        }
+
+
+        function newPara() {
+
+            // const para = document.createElement("p");
+            // const node = document.createTextNode("Jerin Islam");
+            // para.appendChild(node);
+            // const element = document.getElementById("div1");
+
+            // const child = document.getElementById("p1");
+            // element.insertBefore(para, child);
+            // element.appendChild(para);
+            // document.getElementById("p1").remove();
+            // document.getElementById("div1").removeChild(child);
+            // document.getElementById("div1").replaceChild(child);
+
+            // const parent = document.getElementById("div1");
+            // const child = document.getElementById("p1");
+            // const para = document.createElement("p");
+            // const node = document.createTextNode("This is new.");
+            // para.appendChild(node);
+            // parent.replaceChild(para, child);
+        }
+    </script>
+
+
+</body>
+
+</html>
