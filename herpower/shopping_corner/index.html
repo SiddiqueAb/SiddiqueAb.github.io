@@ -2,7 +2,6 @@
 <html lang="en" data-bs-theme="auto">
 
 <head>
-    <script src="../assets/js/color-modes.js"></script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,8 +10,11 @@
     <meta name="generator" content="Hugo 0.122.0">
     <title>Shopping Corner</title>
 
+    <link rel="icon" href="images/logo/logo.png">
+
     <link href="plugins/bootstrap-5.3.3-dist/css/carousel.css" rel="stylesheet">
     <link href="plugins/bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fontawesome-free-6.6.0-web/css/all.min.css">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -87,7 +89,7 @@
 
 
     <header data-bs-theme="light">
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-info">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-secondary">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.html">
                     <img src="images/logo/logo.png" width="100px" alt="">
@@ -102,15 +104,17 @@
                             <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link" href="#">Contact</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                        </li>
+
                     </ul>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -185,8 +189,8 @@
 
         <div class="container marketing">
 
-            <!-- Three columns of text below the carousel -->
-            <div class="row">
+
+            <!-- <div class="row">
                 <div class="col-lg-4">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
@@ -198,7 +202,7 @@
                     <p>Some representative placeholder content for the three columns of text below the carousel. This is
                         the first column.</p>
                     <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-                </div><!-- /.col-lg-4 -->
+                </div>
                 <div class="col-lg-4">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
@@ -210,7 +214,7 @@
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
                         second column.</p>
                     <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-                </div><!-- /.col-lg-4 -->
+                </div>
                 <div class="col-lg-4">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
@@ -221,94 +225,185 @@
                     <h2 class="fw-normal">Heading</h2>
                     <p>And lastly this, the third column of representative placeholder content.</p>
                     <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-                </div><!-- /.col-lg-4 -->
-            </div><!-- /.row -->
+                </div>
+                
+            </div> -->
+            <!-- /.row -->
 
 
             <!-- START THE FEATURETTES -->
 
-            <hr class="featurette-divider">
+            <hr class="featurette-divider mb-5">
 
+            <h2 class=" text-left fw-bold text-center mb-5">Feature Product</h2>
             <div class="row">
-                <div class="col-2">
-                    <div class="card" style="">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/product_1.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6  col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p3.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6  col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p2.png" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6  col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/product_1.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6  col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p3.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6  col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p2.png" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
                         </div>
                     </div>
                 </div>
 
 
-                <div class="col-2">
-                    <div class="card">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="card">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="card">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="card">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="card">
-                        <img src="images/product_1.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some Price.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <hr class="featurette-divider">
 
-          
+            <h2 class=" text-left fw-bold text-center mb-5">Top Sell Product</h2>
+            <div class="row">
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/product_1.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p3.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p2.png" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/product_1.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p3.jpg" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 col-lg-2">
+                    <div class="card border-1 border-info bg-light mb-3" style="">
+                        <img src="images/p2.png" class="card-img-top w-75 mx-auto bg-info" alt="...">
+                        <div class="card-body">
+                            <p class="card-title">Plastic Bag</p>
+                            <p class="card-text">200/-.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">add cart</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
             <hr class="featurette-divider">
-
-
         </div>
+
 
 
         <!-- FOOTER -->
         <footer class="container">
-            <p class="float-end"><a href="#">Back to top</a></p>
+            <p class="float-end"><a href="#" class="btn btn-danger text-light"><i
+                        class="fa-solid fa-circle-arrow-up"></i></a></p>
             <p>&copy; 2017–2024 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
         </footer>
     </main>
+
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+        id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <p>Try scrolling the rest of the page to see this option in action.</p>
+        </div>
+    </div>
     <script src="plugins/bootstrap-5.3.3-dist/js/bootstrap.bundle.js"></script>
 
 </body>
