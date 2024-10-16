@@ -220,7 +220,7 @@
                     </a>
                 </li> -->
                 <li>
-                    <a href="index.html" class="nav-link active">
+                    <a href="index.html" class="nav-link link-body-emphasis">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#speedometer2" /></svg>
                         Dashboard
@@ -241,7 +241,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="customers.html" class="nav-link link-body-emphasis">
+                    <a href="customers.html" class="nav-link active">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#people-circle" /></svg>
                         Customers
@@ -271,74 +271,116 @@
 
         <!-- ALl Content goes here  -->
         <div class="content container mt-4">
-
-            <h2>Dashboard</h2>
+            <h2>Customer Management</h2>
             <hr>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-head">
-                            <h5>Bar chart</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="myChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-head">
-                            <h5>Pie chart</h5> 
-                        </div>
-                        <div class="card-body">
-                            <canvas id="myChart_pie"></canvas>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="text-end my-4">
+                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">
+                    <span class="text-dark"><i class="fa-solid fa-square-plus"></i></span> Add Product
+                </button>
             </div>
+
+
+            <table class="table table-sm table-light table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Sl.</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Product description</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-success">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                        <td>@mdo</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-success">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
     </main>
     <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control form-control-sm" placeholder="Product Name">
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control form-control-sm" placeholder="Product Price">
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" placeholder="Product Description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control form-control-sm" type="file" id="formFile">
+                            <!-- <label for="formFile">Select Product Image</label> -->
+                        </div>
+
+                        <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script src="plugins/bootstrap-5.3.3-dist/js/bootstrap.bundle.js"></script>
     <script src="js/sidebars.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-        const yValues = [55, 49, 44, 24, 15];
-        const barColors = ["red", "green", "blue", "orange", "brown"];
-
-        new Chart("myChart", {
-            type: "bar",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues
-                }]
-            },
-            options: {
-                
-            }
-        });
-
-        new Chart("myChart_pie", {
-            type: "pie",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues
-                }]
-            },
-            options: {
-                
-            }
-        });
-    </script>
 </body>
 
 </html>
