@@ -8,6 +8,6 @@
 
 $file = fopen('myInfo.txt', "a") or die("Can't open file");
 
-echo fread($file,filesize("myInfo.txt"));
+echo fread($file, filesize("myInfo.txt"));
 
 // echo $file;
