@@ -55,9 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
 <body>
     <form action="" method="POST" enctype="multipart/form-data">
-        <!-- choose your file to upload       -->
         <input type="file" name="user_image"> <br><br>
-
         <input type="submit" value="submit your image">
     </form>
 </body>
