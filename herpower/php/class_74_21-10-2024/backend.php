@@ -25,12 +25,12 @@ $subject = $_POST['subject'];
     <?php if ($fname && $lname && $subject) { ?>
 
 
-        <div style="padding: 40px; background-color: pink;">
-            Full Name: <?php echo $fname . " " . $lname ?> <br>
-            <!-- Country: <?php //echo $country 
+    <div style="padding: 40px; background-color: pink;">
+        Full Name: <?php echo $fname . " " . $lname ?> <br>
+        <!-- Country: <?php //echo $country 
                             ?> <br> -->
-            Subject: <?php echo $subject ?> <br>
-        </div>
+        Subject: <?php echo $subject ?> <br>
+    </div>
 
     <?php } ?>
 </body>
