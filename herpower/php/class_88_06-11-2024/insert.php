@@ -1,25 +1,37 @@
-<?php
-include ('database.php');
-// echo "Connect successfully";
-
-
+// Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $inputUsername = trim($_POST['username']);
+    $inputPassword = trim($_POST['password']);
 
-    $name = $_POST['name'];
-    $mobile = $_POST['mobile'];
-    $password = md5($_POST['password']);
-    $email = $_POST['email'];
-    if ($name && $mobile && $password && $email) {
-        $sql = "insert into users (name, password, mobile, email) 
-                values ('$name', '$password', '$mobile', '$email')";
-
-        if (mysqli_query($conn, $sql)) {
-            // echo "data successfully inserted into users";
-            header("Location: index.php");
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
+    // Validate input
+    if (empty($inputUsername) || empty($inputPassword)) {
+        echo "Please fill in both fields.";
     } else {
-        echo "All fields are required";
+        // Prepare SQL query to check the username
+        $query = "SELECT * FROM users WHERE username = '$inputUsername' LIMIT 1";
+        $result = mysqli_query($conn, $query);
+
+        // Check if the user exists
+        if (mysqli_num_rows($result) == 1) {
+            // Fetch user data
+            $user = mysqli_fetch_assoc($result);
+
+            // Verify password
+            if (password_verify($inputPassword, $user['password'])) {
+                // Password is correct, start session and redirect to dashboard
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                header("Location: dashboard.php"); // Redirect to dashboard page
+                exit();
+            } else {
+                echo "Invalid username or password.";
+            }
+        } else {
+            echo "Invalid username or password.";
+        }
     }
 }
+
+// Close the database connection
+mysqli_close($conn);
+?>
