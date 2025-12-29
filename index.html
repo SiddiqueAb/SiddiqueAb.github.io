@@ -887,5 +887,26 @@
             </div>
         </div>
     </div>
+
+     <!-- Redirect Script -->
+    <script>
+        (function() {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
+            
+            // GitHub Pages subfolder check
+            const base = '/'; // যদি subfolder হয় তাহলে '/folder-name/'
+            
+            // . html extension বা অন্য কোনো page থাকলে homepage এ redirect
+            if (path !== base && path !== base + 'index.html') {
+                window.location.replace(base);
+            }
+            
+            // . html extension hide
+            if (path.endsWith('. html')) {
+                window.location.replace(base);
+            }
+        })();
+    </script>
 </body>
 </html>
