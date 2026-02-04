@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Abubakar Siddique - CV</title>
+    
+    <style>
+        @page {
+            size: A4;
+            margin: 0.4in 0.5in;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            line-height: 1.3;
+            color: #000;
+            background: #f5f5f5;
+            font-size: 10.5pt;
+        }
+
+        .cv-container {
+            max-width: 8.27in;
+            margin: 20px auto;
+            background: white;
+            padding: 0.5in;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Header Section */
+        .cv-header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .cv-header h1 {
+            font-size: 20pt;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .cv-header .title {
+            font-size: 12pt;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .contact-line {
+            font-size: 9pt;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .contact-line a {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        /* Section Styling */
+        .cv-section {
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 11.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: uppercase;
+            border-bottom: 1.5px solid #2c3e50;
+            padding-bottom: 2px;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Professional Summary */
+        .summary-text {
+            text-align: justify;
+            font-size: 9.5pt;
+            line-height: 1.4;
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+            font-size: 9.5pt;
+        }
+
+        .skill-item {
+            padding: 2px 0;
+        }
+
+        .skill-item strong {
+            color: #2c3e50;
+        }
+
+        /* Experience Items */
+        .experience-item {
+            margin-bottom: 8px;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .job-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .job-date {
+            font-size: 9pt;
+            color: #555;
+            font-style: italic;
+        }
+
+        .company-name {
+            font-size: 9.5pt;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .experience-item ul {
+            margin-left: 18px;
+            margin-top: 2px;
+        }
+
+        .experience-item li {
+            font-size: 9pt;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        /* Projects */
+        .project-item {
+            margin-bottom: 6px;
+        }
+
+        .project-title {
+            font-size: 9.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1px;
+        }
+
+        .project-desc {
+            font-size: 9pt;
+            line-height: 1.3;
+        }
+
+        /* Education */
+        .education-item {
+            margin-bottom: 6px;
+        }
+
+        .degree {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .institution {
+            font-size: 9pt;
+            color: #333;
+        }
+
+        .edu-date {
+            font-size: 9pt;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* Certifications */
+        .cert-item {
+            margin-bottom: 5px;
+        }
+
+        .cert-title {
+            font-size: 9.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .cert-provider {
+            font-size: 8.5pt;
+            color: #555;
+            font-style: italic;
+        }
+
+        .cert-desc {
+            font-size: 9pt;
+            line-height: 1.2;
+        }
+
+        /* References */
+        .reference-item {
+            margin-bottom: 6px;
+            font-size: 9pt;
+        }
+
+        .reference-item h4 {
+            font-size: 9.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1px;
+        }
+
+        .reference-item p {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Compact styling */
+        .compact-list {
+            margin-bottom: 4px;
+        }
+
+        .compact-text {
+            font-size: 9pt;
+            line-height: 1.3;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .cv-container {
+                padding: 0;
+                max-width: 100%;
+                box-shadow: none;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        /* Download Button */
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .download-btn:hover {
+            background: #34495e;
+        }
+
+        @media screen and (max-width: 768px) {
+            .cv-container {
+                margin: 10px;
+                padding: 0.3in;
+            }
+            
+            .download-btn {
+                position: static;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="download-btn no-print" onclick="window.print()"> Download PDF</button>
+
+    <div class="cv-container">
+        <!-- Header -->
+        <div class="cv-header">
+            <h1>MD ABUBAKAR SIDDIQUE</h1>
+            <div class="title">Full Stack Web Developer</div>
+            <div class="contact-line">
+                <a href="mailto:absiddiquehc@gmail.com">absiddiquehc@gmail.com</a> • 
+                +880 1780-805503 • 
+                Rampura, Dhaka, Bangladesh<br>
+                <a href="https://linkedin.com/in/ab-siddique">linkedin.com/in/ab-siddique</a> • 
+                <a href="https://github.com/SiddiqueAb">github.com/SiddiqueAb</a> • 
+                <a href="https://siddiqueab.github.io">siddiqueab.github.io</a>
+            </div>
+        </div>
+
+        <!-- Professional Summary -->
+        <div class="cv-section">
+            <h2 class="section-title">Professional Summary</h2>
+            <p class="summary-text">
+                Results-driven Full Stack Web Developer with 7+ years of professional experience designing, developing, 
+                and deploying scalable web applications. Expert in PHP, Laravel, CodeIgniter, Vue.js, and MySQL with 
+                proven expertise in REST API development, database optimization, and third-party integrations. 
+                Successfully delivered solutions for healthcare, education, and e-commerce sectors serving 100,000+ users. 
+                Winner of Digital Bangladesh Award 2023. Strong analytical and problem-solving skills with commitment to 
+                delivering high-quality software solutions. Open to international opportunities and relocation.
+            </p>
+        </div>
+
+        <!-- Technical Skills -->
+        <div class="cv-section">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item"><strong>Languages:</strong> PHP, JavaScript, SQL</div>
+                <div class="skill-item"><strong>Frameworks:</strong> Laravel, CodeIgniter, Vue.js</div>
+                <div class="skill-item"><strong>Databases:</strong> MySQL, PostgreSQL</div>
+                <div class="skill-item"><strong>Front-end:</strong> HTML5, CSS3, jQuery, Bootstrap</div>
+                <div class="skill-item"><strong>APIs:</strong> REST API Development & Integration</div>
+                <div class="skill-item"><strong>Tools:</strong> Git, Postman, VS Code, WordPress</div>
+            </div>
+        </div>
+
+        <!-- Professional Experience -->
+        <div class="cv-section">
+            <h2 class="section-title">Professional Experience</h2>
+            
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">Programmer</div>
+                    <div class="job-date">Sep 2025 - Present</div>
+                </div>
+                <div class="company-name">Bdstall.com Limited</div>
+                <ul>
+                    <li>Develop and implement new features for enterprise e-commerce platform</li>
+                    <li>Maintain and optimize existing codebase for improved performance</li>
+                    <li>Collaborate with cross-functional teams to deliver scalable solutions</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">WordPress Plugin Developer</div>
+                    <div class="job-date">2024 - 2025</div>
+                </div>
+                <div class="company-name">Ordershield</div>
+                <ul>
+                    <li>Developed custom WordPress plugins for e-commerce security solutions</li>
+                    <li>Implemented security features and order protection mechanisms</li>
+                    <li>Integrated third-party APIs and payment gateways (Stripe, PayPal)</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">Full Stack Developer (Freelance)</div>
+                    <div class="job-date">2023 - 2024</div>
+                </div>
+                <div class="company-name">Upwork - International Clients</div>
+                <ul>
+                    <li>Developed custom web applications for international clients with 100% satisfaction rating</li>
+                    <li>Integrated payment gateways and third-party APIs for various business applications</li>
+                    <li>Provided ongoing maintenance and feature enhancements with timely delivery</li>
+                </ul>
+            </div>
+
+            
+
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">Software Developer</div>
+                    <div class="job-date">2020 - 2022</div>
+                </div>
+                <div class="company-name">Applica System</div>
+                <ul>
+                    <li>Developed enterprise web applications using PHP and Laravel framework</li>
+                    <li>Designed and implemented RESTful APIs for mobile and web applications</li>
+                    <li>Performed code reviews and maintained coding standards across development team</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">Web Application Developer</div>
+                    <div class="job-date">Apr 2019 - May 2024</div>
+                </div>
+                <div class="company-name">Wake Up ICT</div>
+                <ul>
+                    <li>Designed and developed multiple web applications using PHP, Laravel, and CodeIgniter</li>
+                    <li>Built and maintained REST APIs for mobile and web applications</li>
+                    <li>Optimized database queries resulting in 40% performance improvement</li>
+                    <li>Developed Heartcop healthcare management system serving multiple premier hospitals</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">Web Development Trainer</div>
+                    <div class="job-date">Jun 2024 - Dec 2024</div>
+                </div>
+                <div class="company-name">Herpower Project</div>
+                <ul>
+                    <li>Trained 50+ students in web development fundamentals and freelancing best practices</li>
+                    <li>Taught HTML, CSS, JavaScript, PHP, WordPress, and client management strategies</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Key Projects -->
+        <div class="cv-section">
+            <h2 class="section-title">Key Projects</h2>
+            
+            <div class="project-item">
+                <div class="project-title">Heartcop - Healthcare Management System (Digital Bangladesh Award Winner 2023)</div>
+                <p class="project-desc">Comprehensive hospital management platform serving United Hospital, Ibrahim Cardiac, and Evercare Hospital. Handles patient management, appointments, and billing for 100,000+ users.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">BDStall - Enterprise E-commerce Platform</div>
+                <p class="project-desc">Multi-vendor e-commerce system with advanced inventory management, payment gateway integration, and order tracking for high-volume transactions.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Bus Finder - Smart Transportation Solution</div>
+                <p class="project-desc">Real-time bus route finder for Dhaka city providing route intelligence, fare information, and navigation assistance for daily commuters.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Northking - Photography & Event Management</div>
+                <p class="project-desc">Event booking and invoice management system with custom CRM features and automated workflow for booking, delivery, and payments.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Education Management Systems</div>
+                <p class="project-desc">Developed platforms for Cumilla Board and BD.Education including student information systems and learning management solutions.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Additional Projects</div>
+                <p class="project-desc">Perfex CRM Modules (Inventory, MLM SMS, API Integration), VMS (Vehicle Management System), POS & E-commerce SaaS, Tender & Notices System, Bmart.com, Qourtob Marketplace, and various backend modifications.</p>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div class="cv-section">
+            <h2 class="section-title">Education</h2>
+            
+            <div class="education-item">
+                <div class="degree">M.Sc. in Chemistry</div>
+                <div class="institution">Government Rajendra College | 2021 - 2022</div>
+            </div>
+
+            <div class="education-item">
+                <div class="degree">B.Sc. Honours in Chemistry</div>
+                <div class="institution">Rajbari Government College | 2015 - 2019</div>
+            </div>
+        </div>
+
+        <!-- Professional Training & Certifications -->
+        <div class="cv-section">
+            <h2 class="section-title">Professional Training & Certifications</h2>
+            
+            <div class="cert-item">
+                <div class="cert-title">Level 3 Certification in Web Design and Development with Freelancing (2026)</div>
+                <p class="cert-desc">Advanced certification covering professional web design, full-stack development, and freelancing business strategies including client management and international marketplace best practices.</p>
+            </div>
+
+            <div class="cert-item">
+                <div class="cert-title">Advanced Web Development Training - Wake Up ICT Academy (2-Year Program)</div>
+                <p class="cert-desc">Comprehensive training in PHP, Laravel, CodeIgniter, MySQL, JavaScript, and modern web development practices.</p>
+            </div>
+
+            <div class="cert-item">
+                <div class="cert-title">Full Stack Web Development Bootcamp - Learning and Earning Project (52 Days)</div>
+                <p class="cert-desc">Intensive training on front-end, back-end development, RESTful APIs, and deployment strategies.</p>
+            </div>
+        </div>
+
+        <!-- Awards & Professional Competencies -->
+        <div class="cv-section">
+            <h2 class="section-title">Awards & Professional Competencies</h2>
+            <p class="compact-text">
+                <strong>Award:</strong> Digital Bangladesh Award 2023 - Recognized by Government of Bangladesh for Heartcop Healthcare Management System<br>
+                <strong>Languages:</strong> Bengali (Native), English (Professional Working Proficiency - CEFR B2), Hindi (Conversational)<br>
+                <strong>Technical Expertise:</strong> Full Stack Development, REST API Architecture, Database Design & Optimization, Payment Gateway Integration, Cloud Deployment, Git, Agile/Scrum Methodologies<br>
+                <strong>Soft Skills:</strong> Problem-Solving, Team Collaboration, Client Communication, Technical Documentation, Code Review & Mentoring, Project Management<br>
+                <strong>Work Authorization:</strong> Open to relocation for international opportunities | Valid passport holder
+            </p>
+        </div>
+
+        <!-- References -->
+        <div class="cv-section">
+            <h2 class="section-title">References</h2>
+            
+            <div class="reference-item">
+                <h4>Md Riasath Arif Prodhan - Senior Software Engineer, Savoy Ice Cream Factory Limited</h4>
+                <p>Email: riasath@outlook.com | Phone: +880 1737-499550</p>
+            </div>
+
+            <div class="reference-item">
+                <h4>Masud Ahmed - Area Coordinator, Transparency International Bangladesh (TIB)</h4>
+                <p>Email: masud6631@gmail.com | Phone: +880 1712-445053</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
