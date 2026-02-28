@@ -547,12 +547,18 @@
       border-radius: 50%;
       pointer-events: none;
     }
-    .proj-slider-wrap { position:relative; overflow:hidden; max-width:1200px; margin:0 auto; }
-    .proj-track { display:flex; gap:24px; transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); padding:20px 4px 40px; }
+    .proj-slider-wrap { position:relative; max-width:1200px; margin:0 auto; overflow:hidden; }
+    .proj-track {
+      display:flex;
+      gap:0;
+      padding:20px 0 40px;
+      transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
     .proj-card {
-      flex-shrink:0; border-radius:var(--radius); overflow:hidden;
+      border-radius:var(--radius); overflow:hidden;
       background:rgba(22,27,34,0.95); border:1px solid rgba(48,54,61,0.9);
       transition:transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+      flex-shrink:0;
     }
     .proj-card:hover { transform:translateY(-8px); border-color:rgba(88,166,255,0.4); box-shadow:0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(88,166,255,0.08); }
     .proj-img { height:200px; overflow:hidden; position:relative; }
@@ -577,7 +583,7 @@
     }
     .proj-link:hover { gap:10px; color:var(--accent1); }
     .proj-nav {
-      display:flex; gap:12px; align-items:center; justify-content:center; margin-top:10px;
+      display:flex; align-items:center; justify-content:center; gap:16px; padding:8px 0 16px;
     }
     .pnav-btn {
       width:40px; height:40px; border-radius:6px; border:1px solid rgba(48,54,61,0.9);
@@ -1824,10 +1830,10 @@
     const wrapWidth = document.querySelector('.proj-slider-wrap').offsetWidth;
     const vis = cardsVisible();
     const cardW = Math.floor((wrapWidth - GAP * (vis - 1)) / vis);
-    // Apply exact width to every card
-    document.querySelectorAll('.proj-card').forEach(c => {
+    document.querySelectorAll('.proj-card').forEach((c, i) => {
       c.style.width = cardW + 'px';
       c.style.minWidth = cardW + 'px';
+      c.style.marginRight = i < totalCards - 1 ? GAP + 'px' : '0';
     });
     const step = cardW + GAP;
     projTrack.style.transform = `translateX(-${projIdx * step}px)`;
@@ -1846,10 +1852,8 @@
     projIdx = Math.min(projIdx, maxIdx());
     updateProjSlider();
   });
-  // Initial sizing after DOM ready
   window.addEventListener('load', updateProjSlider);
   updateProjSlider();
-
   // Auto-advance projects
   setInterval(() => {
     projIdx = projIdx >= maxIdx() ? 0 : projIdx + 1;
@@ -2263,18 +2267,19 @@
     sendChat();
   }
 
-  // Speaks the menu section name on nav click
+  // Speaks the menu section name on nav click — female voice only
   function speakMenu(text) {
     if (!window.speechSynthesis || window.__voiceMuted) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
     const all = window.speechSynthesis.getVoices();
-    const v = all.find(v => !v.localService && /en-US/i.test(v.lang))
-           || all.find(v => !v.localService && /^en/i.test(v.lang))
+    // --- Female voice priority ---
+    const v = all.find(v => /zira|samantha|victoria|karen|female|woman/i.test(v.name) && /en/i.test(v.lang))
+           || all.find(v => /Google UK English Female|Microsoft Zira/i.test(v.name))
            || all.find(v => /^en/i.test(v.lang));
     if (v) utt.voice = v;
     utt.lang   = 'en-US';
-    utt.pitch  = 1.0;
+    utt.pitch  = 1.05;
     utt.rate   = 1.0;
     utt.volume = 1.0;
     window.speechSynthesis.speak(utt);
@@ -2289,29 +2294,46 @@ const voiceEngine = (() => {
   
   const sectionLines = {}; // Section narration disabled — welcome only
 
-  // --- THE "SMART MAN" VOICE PICKER ---
+  // --- FEMALE VOICE PICKER (male options commented out) ---
   function pickBestVoice() {
     const allVoices = window.speechSynthesis.getVoices();
-    
-    // 1. Seek "Neural" or "Cloud" Male voices first (The most human-sounding)
-    const neuralMale = allVoices.find(v => 
-      (v.name.includes('Neural') || v.name.includes('Google')) && 
-      v.lang.includes('en-US') && 
+
+    // 1. Neural / Cloud Female — most human-sounding
+    const neuralFemale = allVoices.find(v =>
+      (v.name.includes('Neural') || v.name.includes('Google')) &&
+      v.lang.includes('en') &&
+      /female|zira|samantha|karen|victoria|aria|jenny|sonia/i.test(v.name)
+    );
+    if (neuralFemale) return neuralFemale;
+
+    // 2. Premium named female voices (Windows / macOS / Android)
+    const premiumFemale = allVoices.find(v =>
+      /Microsoft Zira|Microsoft Aria|Microsoft Jenny|Microsoft Sonia|Samantha|Karen|Victoria|Google UK English Female/i.test(v.name)
+    );
+    if (premiumFemale) return premiumFemale;
+
+    // 3. Any English voice with "female" / known-female name in it
+    const anyFemale = allVoices.find(v =>
+      /en/i.test(v.lang) && /female|zira|samantha|karen|victoria|aria/i.test(v.name)
+    );
+    if (anyFemale) return anyFemale;
+
+    // 4. Fallback — first available English voice
+    return allVoices.find(v => /en/i.test(v.lang));
+
+    /* --- Male voices (commented out — not used) ---
+    const neuralMale = allVoices.find(v =>
+      (v.name.includes('Neural') || v.name.includes('Google')) &&
+      v.lang.includes('en-US') &&
       (v.name.includes('Male') || v.name.includes('Guy') || v.name.includes('David'))
     );
-    if (neuralMale) return neuralMale;
-
-    // 2. Seek Premium Desktop voices (Windows/Mac)
-    const premiumMale = allVoices.find(v => 
+    const premiumMale = allVoices.find(v =>
       /Microsoft David|Google US English/i.test(v.name)
     );
-    if (premiumMale) return premiumMale;
-
-    // 3. Fallback to any English Male voice
-    const anyMale = allVoices.find(v => 
+    const anyMale = allVoices.find(v =>
       /en-/i.test(v.lang) && /male|guy/i.test(v.name.toLowerCase())
     );
-    return anyMale || allVoices.find(v => v.lang.includes('en'));
+    --- end male voices */
   }
 
   function updateUI(isSpeaking) {
