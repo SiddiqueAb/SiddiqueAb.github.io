@@ -2267,19 +2267,14 @@
     sendChat();
   }
 
-  // Speaks the menu section name on nav click — female voice only
+  // Speaks the menu section name — always uses same cached male voice
   function speakMenu(text) {
     if (!window.speechSynthesis || window.__voiceMuted) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
-    const all = window.speechSynthesis.getVoices();
-    // --- Female voice priority ---
-    const v = all.find(v => /zira|samantha|victoria|karen|female|woman/i.test(v.name) && /en/i.test(v.lang))
-           || all.find(v => /Google UK English Female|Microsoft Zira/i.test(v.name))
-           || all.find(v => /^en/i.test(v.lang));
-    if (v) utt.voice = v;
+    if (window.__selectedMaleVoice) utt.voice = window.__selectedMaleVoice;
     utt.lang   = 'en-US';
-    utt.pitch  = 1.05;
+    utt.pitch  = 0.95;
     utt.rate   = 1.0;
     utt.volume = 1.0;
     window.speechSynthesis.speak(utt);
@@ -2294,46 +2289,44 @@ const voiceEngine = (() => {
   
   const sectionLines = {}; // Section narration disabled — welcome only
 
-  // --- FEMALE VOICE PICKER (male options commented out) ---
+  // --- MALE VOICE PICKER — cached so same voice is always used ---
   function pickBestVoice() {
+    // Return cached voice if already selected
+    if (window.__selectedMaleVoice) return window.__selectedMaleVoice;
+
     const allVoices = window.speechSynthesis.getVoices();
 
-    // 1. Neural / Cloud Female — most human-sounding
-    const neuralFemale = allVoices.find(v =>
-      (v.name.includes('Neural') || v.name.includes('Google')) &&
-      v.lang.includes('en') &&
-      /female|zira|samantha|karen|victoria|aria|jenny|sonia/i.test(v.name)
-    );
-    if (neuralFemale) return neuralFemale;
-
-    // 2. Premium named female voices (Windows / macOS / Android)
-    const premiumFemale = allVoices.find(v =>
-      /Microsoft Zira|Microsoft Aria|Microsoft Jenny|Microsoft Sonia|Samantha|Karen|Victoria|Google UK English Female/i.test(v.name)
-    );
-    if (premiumFemale) return premiumFemale;
-
-    // 3. Any English voice with "female" / known-female name in it
-    const anyFemale = allVoices.find(v =>
-      /en/i.test(v.lang) && /female|zira|samantha|karen|victoria|aria/i.test(v.name)
-    );
-    if (anyFemale) return anyFemale;
-
-    // 4. Fallback — first available English voice
-    return allVoices.find(v => /en/i.test(v.lang));
-
-    /* --- Male voices (commented out — not used) ---
+    // 1. Neural / Cloud Male — most human-sounding
     const neuralMale = allVoices.find(v =>
       (v.name.includes('Neural') || v.name.includes('Google')) &&
-      v.lang.includes('en-US') &&
-      (v.name.includes('Male') || v.name.includes('Guy') || v.name.includes('David'))
+      /^en/i.test(v.lang) &&
+      /male|guy|david|james|mark|richard/i.test(v.name)
     );
+    if (neuralMale) { window.__selectedMaleVoice = neuralMale; return neuralMale; }
+
+    // 2. Premium named male voices (Windows / macOS / Android)
     const premiumMale = allVoices.find(v =>
-      /Microsoft David|Google US English/i.test(v.name)
+      /Microsoft David|Microsoft Mark|Microsoft Richard|Microsoft James|Google US English/i.test(v.name)
     );
+    if (premiumMale) { window.__selectedMaleVoice = premiumMale; return premiumMale; }
+
+    // 3. Any English voice with known-male name
     const anyMale = allVoices.find(v =>
-      /en-/i.test(v.lang) && /male|guy/i.test(v.name.toLowerCase())
+      /^en/i.test(v.lang) && /\bmale\b|\bguy\b|david|james|mark|richard|fred|alex/i.test(v.name)
     );
-    --- end male voices */
+    if (anyMale) { window.__selectedMaleVoice = anyMale; return anyMale; }
+
+    // 4. Last resort — exclude known female names, take first English voice
+    const nonFemale = allVoices.find(v =>
+      /^en/i.test(v.lang) &&
+      !/zira|samantha|karen|victoria|aria|jenny|sonia|female|woman|fiona|tessa|moira|veena/i.test(v.name)
+    );
+    if (nonFemale) { window.__selectedMaleVoice = nonFemale; return nonFemale; }
+
+    // Absolute fallback
+    const fallback = allVoices.find(v => /^en/i.test(v.lang));
+    window.__selectedMaleVoice = fallback;
+    return fallback;
   }
 
   function updateUI(isSpeaking) {
@@ -2467,29 +2460,8 @@ const voiceEngine = (() => {
   `;
   document.head.appendChild(noSelect);
 
-  // 4. DevTools detection — blur page when open
-  const devOverlay = document.createElement('div');
-  devOverlay.id = 'dev-block';
-  devOverlay.innerHTML = `<div style="text-align:center"><div style="font-size:3rem">🔒</div><h2 style="color:#58a6ff;margin:16px 0 8px">Access Restricted</h2><p style="color:#8b949e">Developer tools are not allowed on this page.</p></div>`;
-  Object.assign(devOverlay.style, {
-    display: 'none', position: 'fixed', inset: '0',
-    background: 'rgba(13,17,23,0.97)', zIndex: '999999',
-    alignItems: 'center', justifyContent: 'center',
-    fontFamily: 'Outfit,sans-serif', color: '#fff'
-  });
-  document.body.appendChild(devOverlay);
-
-  let devOpen = false;
-  setInterval(() => {
-    const threshold = 160;
-    const widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
-    const heightDiff = window.outerHeight - window.innerHeight > threshold;
-    const isOpen = widthDiff || heightDiff;
-    if (isOpen !== devOpen) {
-      devOpen = isOpen;
-      devOverlay.style.display = isOpen ? 'flex' : 'none';
-    }
-  }, 500);
+  // 4. DevTools detection removed — window size method causes false positives in Chrome
+  //    (triggers on sidebar panels, bookmarks bar, extensions, etc.)
 })();
 </script>
 </body>
