@@ -92,6 +92,9 @@
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior: smooth; }
+    html {
+      overflow-x: hidden; /* must be on html too — fixes position:fixed on iOS/Android */
+    }
     body {
       font-family: 'Outfit', sans-serif;
       background-color: #0d1117;
@@ -189,6 +192,7 @@
     #hero {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
       padding: 120px 5% 80px; position: relative; z-index: 1;
+      overflow: hidden;
     }
     .hero-inner {
       display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; width: 100%;
@@ -995,13 +999,16 @@
       #hero { padding:100px 5% 60px; text-align:center; }
       .hero-text p,.hero-btns,.hero-stats { margin-left:auto; margin-right:auto; justify-content:center; }
       .hero-avatar-ring { width:260px; height:260px; }
-      .floating-badge.b1,.floating-badge.b3 { right:-5px; }
-      .floating-badge.b2 { left:0; }
+      .floating-badge { display:none; } /* hide on mobile — prevents horizontal overflow */
       .about-grid { gap:36px; }
       .timeline::before { left:24px; }
       .tl-icon { min-width:48px; height:48px; }
       .form-row { grid-template-columns:1fr; }
       section { padding:60px 5%; }
+      /* keep fixed buttons inside viewport on mobile */
+      #btt { bottom:20px; right:20px; }
+      #cb-fab { bottom:20px; right:72px; }
+      #voice-stop-btn { bottom:72px; right:20px; }
     }
     @media(max-width:480px){
       .hero-text h1 { font-size:2.2rem; }
