@@ -695,6 +695,61 @@
       box-shadow:0 8px 24px rgba(63,185,80,0.35);
     }
 
+    /* ============ VOICE STOP BUTTON ============ */
+    #voice-stop-btn {
+      position: fixed;
+      bottom: 80px;
+      right: 28px;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(88,166,255,0.4);
+      background: rgba(22,27,34,0.97);
+      color: var(--accent2);
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(88,166,255,0.12);
+      transition: all 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #voice-stop-btn.speaking {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #voice-stop-btn.muted {
+      opacity: 1;
+      pointer-events: auto;
+      border-color: rgba(139,148,158,0.35);
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+    #voice-stop-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(88,166,255,0.08);
+      box-shadow: 0 6px 20px rgba(88,166,255,0.22);
+    }
+    #voice-stop-btn.muted:hover {
+      border-color: rgba(63,185,80,0.4);
+      color: var(--accent1);
+      background: rgba(63,185,80,0.06);
+      box-shadow: 0 6px 20px rgba(63,185,80,0.15);
+    }
+    /* speaking wave animation on icon */
+    #voice-stop-btn.speaking #voice-icon {
+      animation: voicePulse 1.2s ease-in-out infinite;
+    }
+    @keyframes voicePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.2); }
+    }
+
     /* ============ CHATBOT ============ */
     #cb-fab {
       position:fixed; bottom:28px; right:82px; z-index:1100;
@@ -911,13 +966,13 @@
 <nav id="navbar">
   <div class="nav-logo"><span class="logo-br">&lt;</span><span class="logo-name">ABS</span><span class="logo-br"> /&gt;</span></div>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#awards">Awards</a></li>
-    <li><a href="#education">Education</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#about" onclick="speakMenu('About')">About</a></li>
+    <li><a href="#skills" onclick="speakMenu('Skills')">Skills</a></li>
+    <li><a href="#experience" onclick="speakMenu('Experience')">Experience</a></li>
+    <li><a href="#projects" onclick="speakMenu('Projects')">Projects</a></li>
+    <li><a href="#awards" onclick="speakMenu('Awards')">Awards</a></li>
+    <li><a href="#education" onclick="speakMenu('Education')">Education</a></li>
+    <li><a href="#contact" onclick="speakMenu('Contact')">Contact</a></li>
   </ul>
   <div class="hamburger" id="ham" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -926,13 +981,13 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="toggleMenu()">About</a>
-  <a href="#skills" onclick="toggleMenu()">Skills</a>
-  <a href="#experience" onclick="toggleMenu()">Experience</a>
-  <a href="#projects" onclick="toggleMenu()">Projects</a>
-  <a href="#awards" onclick="toggleMenu()">Awards</a>
-  <a href="#education" onclick="toggleMenu()">Education</a>
-  <a href="#contact" onclick="toggleMenu()">Contact</a>
+  <a href="#about" onclick="toggleMenu();speakMenu('About')">About</a>
+  <a href="#skills" onclick="toggleMenu();speakMenu('Skills')">Skills</a>
+  <a href="#experience" onclick="toggleMenu();speakMenu('Experience')">Experience</a>
+  <a href="#projects" onclick="toggleMenu();speakMenu('Projects')">Projects</a>
+  <a href="#awards" onclick="toggleMenu();speakMenu('Awards')">Awards</a>
+  <a href="#education" onclick="toggleMenu();speakMenu('Education')">Education</a>
+  <a href="#contact" onclick="toggleMenu();speakMenu('Contact')">Contact</a>
 </div>
 
 <!-- ====== HERO ====== -->
@@ -1545,6 +1600,12 @@
 <!-- Back to Top -->
 <button id="btt" onclick="scrollToTop()"><i class="fas fa-chevron-up"></i></button>
 
+<!-- Stop Voice Button -->
+<button id="voice-stop-btn" onclick="stopVoice()" title="Stop Voice">
+  <i class="fas fa-volume-xmark" id="voice-icon"></i>
+  <span id="voice-label">Stop</span>
+</button>
+
 <!-- ============ SCRIPTS ============ -->
 <script>
   /* --- MOBILE MENU --- */
@@ -2043,6 +2104,157 @@
     document.getElementById('cb-input').value = q;
     sendChat();
   }
+
+  // Speaks the menu section name on nav click
+  function speakMenu(text) {
+    if (!window.speechSynthesis || window.__voiceMuted) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    const all = window.speechSynthesis.getVoices();
+    const v = all.find(v => !v.localService && /en-US/i.test(v.lang))
+           || all.find(v => !v.localService && /^en/i.test(v.lang))
+           || all.find(v => /^en/i.test(v.lang));
+    if (v) utt.voice = v;
+    utt.lang   = 'en-US';
+    utt.pitch  = 1.0;
+    utt.rate   = 1.0;
+    utt.volume = 1.0;
+    window.speechSynthesis.speak(utt);
+  }
+/* ============================================================
+   🎙️ SMART HUMAN VOICE ENGINE (Neural Optimized)
+============================================================ */
+const voiceEngine = (() => {
+  let voices = [];
+  window.__voiceMuted = false; // Voice enabled by default
+  let spokenSections = new Set();
+  
+  const sectionLines = {}; // Section narration disabled — welcome only
+
+  // --- THE "SMART MAN" VOICE PICKER ---
+  function pickBestVoice() {
+    const allVoices = window.speechSynthesis.getVoices();
+    
+    // 1. Seek "Neural" or "Cloud" Male voices first (The most human-sounding)
+    const neuralMale = allVoices.find(v => 
+      (v.name.includes('Neural') || v.name.includes('Google')) && 
+      v.lang.includes('en-US') && 
+      (v.name.includes('Male') || v.name.includes('Guy') || v.name.includes('David'))
+    );
+    if (neuralMale) return neuralMale;
+
+    // 2. Seek Premium Desktop voices (Windows/Mac)
+    const premiumMale = allVoices.find(v => 
+      /Microsoft David|Google US English/i.test(v.name)
+    );
+    if (premiumMale) return premiumMale;
+
+    // 3. Fallback to any English Male voice
+    const anyMale = allVoices.find(v => 
+      /en-/i.test(v.lang) && /male|guy/i.test(v.name.toLowerCase())
+    );
+    return anyMale || allVoices.find(v => v.lang.includes('en'));
+  }
+
+  function updateUI(isSpeaking) {
+    const btn = document.getElementById('voice-stop-btn');
+    const icon = document.getElementById('voice-icon');
+    const label = document.getElementById('voice-label');
+    if (!btn) return;
+
+    if (window.__voiceMuted) {
+      btn.className = 'muted';
+      icon.className = 'fas fa-volume-xmark';
+      label.textContent = 'Unmute';
+    } else if (isSpeaking) {
+      btn.className = 'speaking';
+      icon.className = 'fas fa-volume-high';
+      label.textContent = 'Stop';
+    } else {
+      btn.className = '';
+      icon.className = 'fas fa-volume-low';
+      label.textContent = 'Voice On';
+    }
+  }
+
+  function speak(text) {
+    if (!window.speechSynthesis || window.__voiceMuted) return;
+    
+    // Stop any current speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.voice = pickBestVoice();
+    
+    // Fine-tuning for a "Smart/Professional" tone
+    utterance.rate = 0.95;  // Slightly slower = more authoritative
+    utterance.pitch = 1.0;  // Natural pitch
+    utterance.volume = 1.0;
+
+    utterance.onstart = () => updateUI(true);
+    utterance.onend = () => updateUI(false);
+    utterance.onerror = () => updateUI(false);
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // --- INITIALIZATION ---
+  function init() {
+    voices = window.speechSynthesis.getVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        voices = window.speechSynthesis.getVoices();
+        // Speak welcome once voices are ready
+        if (!window.__voiceWelcomePlayed && !window.__voiceMuted) {
+          window.__voiceWelcomePlayed = true;
+          setTimeout(() => speak('Welcome to my portfolio.'), 900);
+        }
+      };
+    }
+    // Also try immediately if voices already loaded
+    if (voices.length && !window.__voiceWelcomePlayed && !window.__voiceMuted) {
+      window.__voiceWelcomePlayed = true;
+      setTimeout(() => speak('Welcome to my portfolio.'), 900);
+    }
+    // observeSections() disabled — only welcome plays
+  }
+
+  function observeSections() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.id;
+        if (entry.isIntersecting && !spokenSections.has(id) && sectionLines[id] && !window.__voiceMuted) {
+          spokenSections.add(id);
+          speak(sectionLines[id]);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    Object.keys(sectionLines).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  }
+
+  // Global toggle function
+  window.toggleVoice = () => {
+    window.__voiceMuted = !window.__voiceMuted;
+    if (window.__voiceMuted) {
+      window.speechSynthesis.cancel();
+    } else {
+      // Small feedback sound or intro when unmuting
+      speak("Voice narration activated.");
+    }
+    updateUI(false);
+  };
+
+  // Start on first interaction to bypass browser blocks
+  ['click', 'scroll', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, init, { once: true });
+  });
+
+  return { speak };
+})();
 </script>
 </body>
 </html>
