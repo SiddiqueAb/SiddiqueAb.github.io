@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"?>
-<!--
-  =====================================================
-  Sitemap — MD Abubakar Siddique | siddiqueab.github.io
-  Generated : 2026-02-28
-  Standard  : https://www.sitemaps.org/protocol.html
-  =====================================================
--->
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  xsi:schemaLocation="
-    http://www.sitemaps.org/schemas/sitemap/0.9
-    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- ═══════════════════════════════════════════════
-       PRIMARY — Resume / CV Index (Main landing page)
-       Canonical entry point for Google
-       ═══════════════════════════════════════════════ -->
   <url>
     <loc>https://siddiqueab.github.io/</loc>
     <lastmod>2026-02-28</lastmod>
@@ -26,10 +8,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- ═══════════════════════════════════════════════
-       SECONDARY — Visual / Interactive Portfolio
-       Full-featured portfolio with projects & chatbot
-       ═══════════════════════════════════════════════ -->
   <url>
     <loc>https://siddiqueab.github.io/pro/</loc>
     <lastmod>2026-02-28</lastmod>
@@ -37,15 +15,11 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- ═══════════════════════════════════════════════
-       TERTIARY — Printable CV (ATS Format)
-       Set noindex in HTML; lower priority here too
-       ═══════════════════════════════════════════════ -->
   <url>
     <loc>https://siddiqueab.github.io/cv.html</loc>
     <lastmod>2026-02-28</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
