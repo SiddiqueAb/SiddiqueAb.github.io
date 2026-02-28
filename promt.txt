@@ -1,1 +1,0 @@
-color combination of whole project is not eye freindly. makae more lighten color and desktop responsive make properly.

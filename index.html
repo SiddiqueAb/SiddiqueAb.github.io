@@ -1,4 +1,22 @@
 <!DOCTYPE html>
+<!--
+
+  ██████╗ ██████╗  ██╗    ███████╗██╗██████╗ ██████╗ ██╗ ██████╗ ██╗   ██╗███████╗
+ ██╔══██╗██╔══██╗ ██║    ██╔════╝██║██╔══██╗██╔══██╗██║██╔═══██╗██║   ██║██╔════╝
+ ███████║██████╔╝ ██║    ███████╗██║██║  ██║██║  ██║██║██║   ██║██║   ██║█████╗
+ ██╔══██║██╔══██╗ ╚═╝    ╚════██║██║██║  ██║██║  ██║██║██║▄▄ ██║██║   ██║██╔══╝
+ ██║  ██║██████╔╝  ██╗   ███████║██║██████╔╝██████╔╝██║╚██████╔╝╚██████╔╝███████╗
+ ╚═╝  ╚═╝╚═════╝   ╚═╝   ╚══════╝╚═╝╚═════╝ ╚═════╝ ╚═╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝
+
+  Hey, curious developer! 👋
+  Nice to see you digging into the source.
+  This portfolio was hand-crafted with ❤️ by AB Siddique.
+  If you are interested to hire or collaborate:
+  📧  absiddiquehc@gmail.com
+  🔗  https://linkedin.com/in/ab-siddique
+  🐙  https://github.com/SiddiqueAb
+
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,6 +28,7 @@
     <link rel="canonical" href="https://siddiqueab.github.io/">
     <meta name="google-site-verification" content="p36KnQMmCiO2svFvBW81tUX1_zbkDpiCIo4P6QnjgVM" />
     <title>MD Abubakar Siddique - Full Stack Web Developer</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230d1117'/><text x='50' y='68' font-family='sans-serif' font-weight='bold' font-size='40' text-anchor='middle' fill='%233fb950'>AB</text></svg>">
     
     <style>
         * {
@@ -197,7 +216,7 @@
         }
 
         .section ul {
-            margin-left: 20px;
+            /* margin-left: 20px; */
             line-height: 1.8;
         }
 
@@ -244,11 +263,47 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ── Portal Buttons (Top Bar) ── */
+        .portal-bar {
+            text-align: right;
+            padding: 8px 12px;
+            white-space: nowrap;
+            display: inline;
+            float: right;
+        }
+        .portal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-family: 'Arial', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .portal-btn:hover { opacity: 0.85; }
+        .portal-btn-cv  { background: #2c3e50; color: #d6eaf8; border: 1px solid #3498db; margin-left: 8px; }
+        .portal-btn-pro { background: #1e4d2b; color: #d5f5e3; border: 1px solid #3fb950; }
+        @media (max-width: 480px) {
+            .portal-btn { font-size: 0.72rem; padding: 5px 10px; gap: 3px; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- ── Portal Navigation ── -->
+  
+
     <div class="container">
         <header class="header">
+              <div class="portal-bar">
+        <a href="cv.html" class="portal-btn portal-btn-cv">Résumé / CV</a>
+        <a href="pro/index.html" class="portal-btn portal-btn-pro">Visual View</a>
+    </div>
             <h1>MD Abubakar Siddique</h1>
             <p class="title">Full Stack Web Developer</p>
             <div class="contact-info">
