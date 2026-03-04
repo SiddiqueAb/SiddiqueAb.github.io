@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Design Patterns — বাংলা ক্র্যাশ কোর্স</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#4f46e5;--primary-dark:#3730a3;
+  --creational:#7c3aed;--structural:#0891b2;--behavioral:#059669;
+  --bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b;
+  --code-bg:#0f172a;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:270px;height:100vh;background:#1e1b4b;color:#c7d2fe;overflow-y:auto;z-index:100;transition:.3s}
+#sidebar::-webkit-scrollbar{width:4px}#sidebar::-webkit-scrollbar-thumb{background:#4f46e5;border-radius:4px}
+.sidebar-header{background:#12104a;padding:20px 18px;border-bottom:1px solid #312e81}
+.sidebar-header h2{font-size:16px;color:#fff;margin-bottom:4px}
+.sidebar-header p{font-size:11px;opacity:.6}
+.cat-group{padding:8px 0}
+.cat-label{padding:10px 18px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.5;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 18px;cursor:pointer;border-left:3px solid transparent;transition:.15s;font-size:13px}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(99,102,241,.25);border-left-color:#818cf8;color:#c7d2fe;font-weight:600}
+.nav-badge{margin-left:auto;background:rgba(255,255,255,.1);border-radius:10px;padding:1px 7px;font-size:10px}
+/* MAIN */
+#main{margin-left:270px;padding:32px;min-height:100vh}
+/* HERO */
+.hero{background:linear-gradient(135deg,#1e1b4b,#312e81,#1e40af);color:#fff;border-radius:20px;padding:44px 40px;margin-bottom:32px;position:relative;overflow:hidden}
+.hero::before{content:'{}';position:absolute;right:40px;top:20px;font-size:120px;opacity:.05;font-weight:900}
+.hero h1{font-size:36px;font-weight:900;margin-bottom:8px}
+.hero p{opacity:.8;max-width:560px;line-height:1.8;font-size:15px}
+.hero-badges{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,.15);border-radius:20px;padding:5px 16px;font-size:13px}
+/* SECTION */
+.section{display:none}.section.active{display:block}
+/* OVERVIEW CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin:20px 0}
+.card{background:var(--card);border-radius:14px;padding:24px;box-shadow:0 1px 8px rgba(0,0,0,.07);transition:.2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(0,0,0,.1)}
+/* PATTERN DETAIL */
+.pattern-detail{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);margin-bottom:24px}
+.pattern-header{padding:28px 32px;color:#fff}
+.pattern-body{padding:32px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:24px}
+.section-label:first-child{margin-top:0}
+.analogy-box{background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:18px;line-height:1.9;color:#713f12;font-size:14px}
+.why-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px;line-height:1.9;color:#1e3a8a;font-size:14px}
+.when-box{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:18px;line-height:1.9;color:#166534;font-size:14px}
+.warning-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:18px;line-height:1.9;color:#9a3412;font-size:14px}
+/* TABS */
+.code-tabs{margin-top:4px}
+.tab-btns{display:flex;gap:0;border-bottom:1px solid #e2e8f0;margin-bottom:0}
+.tab-btn{padding:8px 18px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+pre{background:var(--code-bg);color:#e2e8f0;border-radius:0 0 12px 12px;padding:20px;font-size:12.5px;line-height:1.9;overflow-x:auto;font-family:'Fira Code','Courier New',monospace}
+pre .cm{color:#6b7280}pre .kw{color:#c084fc}pre .fn{color:#60a5fa}pre .st{color:#34d399}pre .nm{color:#fbbf24}pre .tp{color:#f472b6}
+/* HEADING */
+.page-title{font-size:26px;font-weight:800;margin-bottom:6px}
+.page-sub{color:var(--muted);margin-bottom:28px;font-size:14px}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+th{background:#f8fafc;padding:12px 16px;text-align:left;font-weight:700;color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+td{padding:12px 16px;border-top:1px solid #f1f5f9;vertical-align:top;line-height:1.7}
+tr:hover td{background:#fafafa}
+.badge{display:inline-block;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700}
+/* SOLID */
+.solid-card{background:#fff;border-radius:14px;padding:22px 26px;box-shadow:0 1px 8px rgba(0,0,0,.07);display:flex;gap:18px;align-items:flex-start;margin-bottom:14px}
+.solid-letter{background:var(--primary);color:#fff;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:24px;font-weight:900;flex-shrink:0}
+/* HAMBURGER */
+#toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:#4f46e5;border:none;border-radius:8px;color:#fff;padding:8px 12px;font-size:18px;cursor:pointer}
+@media(max-width:768px){
+  #sidebar{left:-270px}#sidebar.open{left:0}
+  #main{margin-left:0;padding:16px;padding-top:60px}
+  #toggle{display:block}
+}
+.tip{display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;margin:2px}
+hr.divider{border:none;border-top:1px solid #e2e8f0;margin:28px 0}
+.intro-text{background:#fff;border-radius:14px;padding:24px 28px;line-height:2;color:#475569;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.06);margin-bottom:20px}
+.intro-text strong{color:#1e293b}
+</style>
+</head>
+<body>
+
+<button id="toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h2>🧩 Design Patterns</h2>
+    <p>বাংলা ক্র্যাশ কোর্স — PHP/Laravel</p>
+  </div>
+
+  <div class="cat-group">
+    <div class="nav-item active" onclick="showSection('overview',this)">🏠 ওভারভিউ</div>
+    <div class="nav-item" onclick="showSection('cheatsheet',this)">📋 চিটশিট</div>
+    <div class="nav-item" onclick="showSection('solid',this)">⚡ SOLID নীতি</div>
+  </div>
+
+  <div class="cat-group">
+    <div class="cat-label" style="color:#a78bfa">🏗️ Creational — সৃজনমূলক</div>
+    <div class="nav-item" onclick="showSection('singleton',this)">Singleton <span class="nav-badge">C1</span></div>
+    <div class="nav-item" onclick="showSection('factory',this)">Factory Method <span class="nav-badge">C2</span></div>
+    <div class="nav-item" onclick="showSection('abstractfactory',this)">Abstract Factory <span class="nav-badge">C3</span></div>
+    <div class="nav-item" onclick="showSection('builder',this)">Builder <span class="nav-badge">C4</span></div>
+    <div class="nav-item" onclick="showSection('prototype',this)">Prototype <span class="nav-badge">C5</span></div>
+  </div>
+
+  <div class="cat-group">
+    <div class="cat-label" style="color:#67e8f9">🔩 Structural — কাঠামোগত</div>
+    <div class="nav-item" onclick="showSection('adapter',this)">Adapter <span class="nav-badge">S1</span></div>
+    <div class="nav-item" onclick="showSection('decorator',this)">Decorator <span class="nav-badge">S2</span></div>
+    <div class="nav-item" onclick="showSection('facade',this)">Facade <span class="nav-badge">S3</span></div>
+    <div class="nav-item" onclick="showSection('proxy',this)">Proxy <span class="nav-badge">S4</span></div>
+    <div class="nav-item" onclick="showSection('composite',this)">Composite <span class="nav-badge">S5</span></div>
+    <div class="nav-item" onclick="showSection('bridge',this)">Bridge <span class="nav-badge">S6</span></div>
+    <div class="nav-item" onclick="showSection('flyweight',this)">Flyweight <span class="nav-badge">S7</span></div>
+  </div>
+
+  <div class="cat-group">
+    <div class="cat-label" style="color:#6ee7b7">🔄 Behavioral — আচরণগত</div>
+    <div class="nav-item" onclick="showSection('observer',this)">Observer <span class="nav-badge">B1</span></div>
+    <div class="nav-item" onclick="showSection('strategy',this)">Strategy <span class="nav-badge">B2</span></div>
+    <div class="nav-item" onclick="showSection('command',this)">Command <span class="nav-badge">B3</span></div>
+    <div class="nav-item" onclick="showSection('iterator',this)">Iterator <span class="nav-badge">B4</span></div>
+    <div class="nav-item" onclick="showSection('template',this)">Template Method <span class="nav-badge">B5</span></div>
+    <div class="nav-item" onclick="showSection('chain',this)">Chain of Responsibility <span class="nav-badge">B6</span></div>
+    <div class="nav-item" onclick="showSection('mediator',this)">Mediator <span class="nav-badge">B7</span></div>
+    <div class="nav-item" onclick="showSection('state',this)">State <span class="nav-badge">B8</span></div>
+    <div class="nav-item" onclick="showSection('memento',this)">Memento <span class="nav-badge">B9</span></div>
+    <div class="nav-item" onclick="showSection('visitor',this)">Visitor <span class="nav-badge">B10</span></div>
+    <div class="nav-item" onclick="showSection('interpreter',this)">Interpreter <span class="nav-badge">B11</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- OVERVIEW -->
+<div id="sec-overview" class="section active">
+  <div class="hero">
+    <h1>ডিজাইন প্যাটার্ন ক্র্যাশ কোর্স</h1>
+    <p>GoF-এর ২৩টি প্যাটার্ন সহজ বাংলায় — উপমা, বিস্তারিত ব্যাখ্যা, PHP ও Laravel কোড সহ।</p>
+    <div class="hero-badges">
+      <span class="hero-badge">🏗️ 5 Creational</span>
+      <span class="hero-badge">🔩 7 Structural</span>
+      <span class="hero-badge">🔄 11 Behavioral</span>
+      <span class="hero-badge">💻 PHP + Laravel</span>
+    </div>
+  </div>
+
+  <div class="intro-text">
+    <strong>ডিজাইন প্যাটার্ন কী?</strong><br/>
+    ১৯৯৪ সালে "Gang of Four" (GoF) নামে পরিচিত চারজন বিখ্যাত Software Architect — Erich Gamma, Richard Helm, Ralph Johnson ও John Vlissides — তাদের বিখ্যাত বই <em>"Design Patterns: Elements of Reusable Object-Oriented Software"</em>-এ ২৩টি প্যাটার্ন প্রকাশ করেন। এগুলো হলো সফটওয়্যার ডেভেলপমেন্টে বারবার আসা সমস্যার <strong>পরীক্ষিত, পুনর্ব্যবহারযোগ্য সমাধানের ছাঁচ</strong>।<br/><br/>
+    এগুলো কোনো লাইব্রেরি বা ফ্রেমওয়ার্ক নয়। এগুলো হলো একটি <strong>চিন্তার পদ্ধতি</strong> — যা আপনি PHP, Laravel, JavaScript, Java যেকোনো ভাষায় প্রয়োগ করতে পারবেন।
+  </div>
+
+  <div class="card-grid">
+    <div class="card" style="border-top:4px solid #7c3aed">
+      <div style="font-size:28px;margin-bottom:10px">🏗️</div>
+      <div style="font-weight:800;color:#7c3aed;font-size:17px">Creational</div>
+      <div style="font-weight:600;margin-bottom:10px">সৃজনমূলক প্যাটার্ন</div>
+      <p style="color:#64748b;font-size:13px;line-height:1.8"><strong>Object কীভাবে তৈরি হবে</strong> তা নিয়ন্ত্রণ করে। সরাসরি <code>new</code> keyword ব্যবহারের বদলে স্মার্টভাবে object তৈরির পদ্ধতি।</p>
+      <div style="margin-top:12px;font-size:12px;color:#7c3aed">Singleton · Factory · Builder · Prototype · Abstract Factory</div>
+    </div>
+    <div class="card" style="border-top:4px solid #0891b2">
+      <div style="font-size:28px;margin-bottom:10px">🔩</div>
+      <div style="font-weight:800;color:#0891b2;font-size:17px">Structural</div>
+      <div style="font-weight:600;margin-bottom:10px">কাঠামোগত প্যাটার্ন</div>
+      <p style="color:#64748b;font-size:13px;line-height:1.8"><strong>Class ও Object কীভাবে সংযুক্ত হবে</strong> তা নির্ধারণ করে। বড় সিস্টেমকে সহজ, নমনীয় কাঠামোতে সাজানোর পদ্ধতি।</p>
+      <div style="margin-top:12px;font-size:12px;color:#0891b2">Adapter · Decorator · Facade · Proxy · Composite · Bridge · Flyweight</div>
+    </div>
+    <div class="card" style="border-top:4px solid #059669">
+      <div style="font-size:28px;margin-bottom:10px">🔄</div>
+      <div style="font-weight:800;color:#059669;font-size:17px">Behavioral</div>
+      <div style="font-weight:600;margin-bottom:10px">আচরণগত প্যাটার্ন</div>
+      <p style="color:#64748b;font-size:13px;line-height:1.8"><strong>Object-দের মধ্যে যোগাযোগ ও দায়িত্ব বণ্টন</strong> কীভাবে হবে তা নির্ধারণ করে।</p>
+      <div style="margin-top:12px;font-size:12px;color:#059669">Observer · Strategy · Command · Iterator · State · Visitor · আরও ৫টি</div>
+    </div>
+  </div>
+
+  <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 1px 8px rgba(0,0,0,.06);margin-top:20px">
+    <h3 style="margin-bottom:16px">✅ কেন শিখবেন?</h3>
+    <div class="card-grid" style="margin:0">
+      <div><strong>🔁 কোড পুনর্ব্যবহার:</strong><br/><span style="color:#64748b;font-size:13px">একই সমাধান বারবার লিখতে হবে না।</span></div>
+      <div><strong>🗣️ টিম কমিউনিকেশন:</strong><br/><span style="color:#64748b;font-size:13px">"এখানে Facade ব্যবহার করো" — এক কথায় বোঝানো যায়।</span></div>
+      <div><strong>🔧 Refactoring সহজ:</strong><br/><span style="color:#64748b;font-size:13px">কাঠামো পরিচিত থাকায় কোড বোঝা ও পরিবর্তন সহজ।</span></div>
+      <div><strong>🎯 Interview:</strong><br/><span style="color:#64748b;font-size:13px">Senior dev ইন্টারভিউয়ে এই প্রশ্ন প্রায় অবধারিত।</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHEATSHEET -->
+<div id="sec-cheatsheet" class="section">
+  <div class="page-title">📋 চিটশিট — কোন প্যাটার্ন কখন?</div>
+  <div class="page-sub">দ্রুত রেফারেন্সের জন্য সব প্যাটার্নের সারসংক্ষেপ</div>
+  <table>
+    <tr><th>প্যাটার্ন</th><th>ধরন</th><th>এক লাইনে</th><th>Laravel উদাহরণ</th></tr>
+    <tr><td><strong>Singleton</strong></td><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Creational</span></td><td>একটিই instance</td><td>DB::connection()</td></tr>
+    <tr><td><strong>Factory Method</strong></td><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Creational</span></td><td>Subclass object তৈরি করে</td><td>Notification::send()</td></tr>
+    <tr><td><strong>Abstract Factory</strong></td><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Creational</span></td><td>পরিবার-ভিত্তিক object</td><td>Theme/UI Factory</td></tr>
+    <tr><td><strong>Builder</strong></td><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Creational</span></td><td>ধাপে ধাপে object তৈরি</td><td>Query Builder</td></tr>
+    <tr><td><strong>Prototype</strong></td><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Creational</span></td><td>Clone করে নতুন object</td><td>Model::replicate()</td></tr>
+    <tr><td><strong>Adapter</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>পুরনো-নতুন সংযোগ</td><td>Filesystem Adapter</td></tr>
+    <tr><td><strong>Decorator</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>গতিশীলভাবে ফিচার যোগ</td><td>Cache Decorator</td></tr>
+    <tr><td><strong>Facade</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>জটিলকে সহজ interface</td><td>Laravel Facade নিজেই</td></tr>
+    <tr><td><strong>Proxy</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>Access control / lazy load</td><td>Eloquent Lazy Loading</td></tr>
+    <tr><td><strong>Composite</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>Tree structure</td><td>Menu / Category tree</td></tr>
+    <tr><td><strong>Bridge</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>Abstraction থেকে impl আলাদা</td><td>Multi-driver notification</td></tr>
+    <tr><td><strong>Flyweight</strong></td><td><span class="badge" style="background:#e0f2fe;color:#075985">Structural</span></td><td>Shared object, কম মেমরি</td><td>Font/Icon cache</td></tr>
+    <tr><td><strong>Observer</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Event subscribe/notify</td><td>Eloquent Events</td></tr>
+    <tr><td><strong>Strategy</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Algorithm swap করা যায়</td><td>Payment gateway switch</td></tr>
+    <tr><td><strong>Command</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Action object-এ মোড়ানো</td><td>Artisan Command / Queue</td></tr>
+    <tr><td><strong>Iterator</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Collection traverse</td><td>Laravel Collection</td></tr>
+    <tr><td><strong>Template Method</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>কাঠামো fix, detail বদলায়</td><td>Mail::build()</td></tr>
+    <tr><td><strong>Chain of Resp.</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Handler chain</td><td>Middleware Pipeline</td></tr>
+    <tr><td><strong>Mediator</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Central hub communication</td><td>Event Bus / MediatR</td></tr>
+    <tr><td><strong>State</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>State অনুযায়ী আচরণ</td><td>Order status machine</td></tr>
+    <tr><td><strong>Memento</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Save & restore state</td><td>Undo / Draft save</td></tr>
+    <tr><td><strong>Visitor</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>Operation class আলাদা</td><td>Report exporter</td></tr>
+    <tr><td><strong>Interpreter</strong></td><td><span class="badge" style="background:#dcfce7;color:#166534">Behavioral</span></td><td>ভাষা/নিয়ম parse করা</td><td>Query DSL / Rule engine</td></tr>
+  </table>
+</div>
+
+<!-- SOLID -->
+<div id="sec-solid" class="section">
+  <div class="page-title">⚡ SOLID নীতি ও ডিজাইন প্যাটার্ন</div>
+  <div class="page-sub">ভালো Object-Oriented কোডের ৫টি মূলনীতি</div>
+  <div class="intro-text">
+    SOLID হলো Robert C. Martin (Uncle Bob) প্রবর্তিত ৫টি নীতির সমষ্টি। ডিজাইন প্যাটার্নগুলো এই নীতিগুলো মেনে চলার <strong>বাস্তব পদ্ধতি</strong>।
+  </div>
+  <div class="solid-card"><div class="solid-letter">S</div><div><strong style="font-size:16px">Single Responsibility Principle</strong><br/><span style="color:#64748b">একটি class-এর একটিই কারণে পরিবর্তন হওয়া উচিত।</span><br/><br/><strong>বাস্তব উদাহরণ:</strong> UserController শুধু HTTP handle করবে — email পাঠানো, DB সংরক্ষণ আলাদা class-এ।<br/><span class="tip">Facade</span><span class="tip">Command</span><span class="tip">Strategy</span></div></div>
+  <div class="solid-card"><div class="solid-letter">O</div><div><strong style="font-size:16px">Open/Closed Principle</strong><br/><span style="color:#64748b">Software entity বিস্তারের জন্য খোলা, পরিবর্তনের জন্য বন্ধ।</span><br/><br/><strong>বাস্তব উদাহরণ:</strong> নতুন payment method যোগ করতে বিদ্যমান code পরিবর্তন নয়, নতুন class যোগ।<br/><span class="tip">Strategy</span><span class="tip">Decorator</span><span class="tip">Factory Method</span></div></div>
+  <div class="solid-card"><div class="solid-letter">L</div><div><strong style="font-size:16px">Liskov Substitution Principle</strong><br/><span style="color:#64748b">Subclass সবসময় parent-কে replace করতে পারবে।</span><br/><br/><strong>বাস্তব উদাহরণ:</strong> EmailNotification ও SMSNotification উভয়ই Notification-এর জায়গায় ব্যবহার করা যাবে।<br/><span class="tip">Template Method</span><span class="tip">Factory Method</span></div></div>
+  <div class="solid-card"><div class="solid-letter">I</div><div><strong style="font-size:16px">Interface Segregation Principle</strong><br/><span style="color:#64748b">Client-কে অপ্রয়োজনীয় method implement করতে বাধ্য করা উচিত নয়।</span><br/><br/><strong>বাস্তব উদাহরণ:</strong> একটি বড় interface-এর বদলে ছোট ছোট interface — Readable, Writable আলাদা।<br/><span class="tip">Adapter</span><span class="tip">Proxy</span></div></div>
+  <div class="solid-card"><div class="solid-letter">D</div><div><strong style="font-size:16px">Dependency Inversion Principle</strong><br/><span style="color:#64748b">High-level module, low-level module-এর উপর নির্ভর করবে না। উভয়ই abstraction-এর উপর নির্ভর করবে।</span><br/><br/><strong>Laravel বাস্তব উদাহরণ:</strong> <code>app()->bind(PaymentInterface::class, StripePayment::class)</code> — Service Container.<br/><span class="tip">Abstract Factory</span><span class="tip">Observer</span><span class="tip">Bridge</span></div></div>
+</div>
+
+<!-- =================== PATTERNS =================== -->
+
+<!-- SINGLETON -->
+<div id="sec-singleton" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">CREATIONAL · C1</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Singleton</h1>
+    <div style="opacity:.85;font-size:18px">একক সত্তা প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box">
+      <strong>বিয়ের কাজী উপমা:</strong> সারা গ্রামে মাত্র একজন কাজী আছেন। যতই বিয়ে হোক না কেন, সেই একজন কাজীকেই ডাকা হয়। নতুন কাজী তৈরি হয় না — সবসময় সেই <em>একই</em> কাজী।<br/><br/>
+      একইভাবে Singleton নিশ্চিত করে যে একটি class-এর <strong>সারা application জুড়ে মাত্র একটিই instance</strong> থাকবে।
+    </div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">
+      মনে করুন আপনি প্রতিবার Database connection দরকার হলে নতুন connection তৈরি করছেন। ১০০ request এলে ১০০টি connection! এটি সার্ভারকে slow করবে, resource নষ্ট হবে। Singleton দিয়ে <strong>একটিই connection</strong> বারবার ব্যবহার করা যায়।
+    </div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">
+      ✔ Database Connection Pool<br/>
+      ✔ Application Config (একবার load হয়ে সবখানে ব্যবহার)<br/>
+      ✔ Logger (সব জায়গা থেকে একই log file-এ লেখা)<br/>
+      ✔ Cache Manager<br/>
+      ✔ Session Manager
+    </div>
+
+    <div class="section-label">⚠️ কখন ব্যবহার করবেন না</div>
+    <div class="warning-box">
+      ✘ যদি প্রতিটি user-এর জন্য আলাদা state দরকার হয়<br/>
+      ✘ Unit testing কঠিন হয়ে যায় (global state)<br/>
+      ✘ Multithreaded environment-এ সতর্কতা দরকার
+    </div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'singleton-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'singleton-laravel')">Laravel</button>
+      </div>
+      <div id="singleton-php" class="tab-pane active"><pre><span class="cm">// Pure PHP Singleton</span>
+<span class="kw">class</span> <span class="tp">DatabaseConnection</span>
+{
+    <span class="kw">private static</span> ?<span class="tp">DatabaseConnection</span> <span class="nm">$instance</span> = <span class="kw">null</span>;
+    <span class="kw">private</span> \PDO <span class="nm">$pdo</span>;
+
+    <span class="cm">// constructor private — বাইরে থেকে new করা যাবে না</span>
+    <span class="kw">private function</span> <span class="fn">__construct</span>()
+    {
+        <span class="nm">$this</span>->pdo = <span class="kw">new</span> \<span class="tp">PDO</span>(<span class="st">'mysql:host=localhost;dbname=mydb'</span>, <span class="st">'root'</span>, <span class="st">''</span>);
+    }
+
+    <span class="cm">// clone ও unserialize বন্ধ</span>
+    <span class="kw">private function</span> <span class="fn">__clone</span>() {}
+    <span class="kw">public function</span> <span class="fn">__wakeup</span>() { <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">"Cannot unserialize"</span>); }
+
+    <span class="kw">public static function</span> <span class="fn">getInstance</span>(): <span class="tp">DatabaseConnection</span>
+    {
+        <span class="kw">if</span> (<span class="kw">static</span>::<span class="nm">$instance</span> === <span class="kw">null</span>) {
+            <span class="kw">static</span>::<span class="nm">$instance</span> = <span class="kw">new static</span>();
+        }
+        <span class="kw">return static</span>::<span class="nm">$instance</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">query</span>(<span class="tp">string</span> <span class="nm">$sql</span>): array
+    {
+        <span class="kw">return</span> <span class="nm">$this</span>->pdo-><span class="fn">query</span>(<span class="nm">$sql</span>)-><span class="fn">fetchAll</span>();
+    }
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="nm">$db1</span> = <span class="tp">DatabaseConnection</span>::<span class="fn">getInstance</span>();
+<span class="nm">$db2</span> = <span class="tp">DatabaseConnection</span>::<span class="fn">getInstance</span>();
+
+<span class="fn">var_dump</span>(<span class="nm">$db1</span> === <span class="nm">$db2</span>); <span class="cm">// bool(true) — একই object!</span></pre></div>
+      <div id="singleton-laravel" class="tab-pane"><pre><span class="cm">// Laravel-এ Service Container দিয়ে Singleton</span>
+<span class="cm">// AppServiceProvider.php</span>
+<span class="kw">public function</span> <span class="fn">register</span>(): <span class="tp">void</span>
+{
+    <span class="nm">$this</span>->app-><span class="fn">singleton</span>(<span class="tp">DatabaseManager</span>::<span class="kw">class</span>, <span class="kw">function</span> (<span class="nm">$app</span>) {
+        <span class="kw">return new</span> <span class="tp">DatabaseManager</span>(<span class="nm">$app</span>[<span class="st">'config'</span>][<span class="st">'database'</span>]);
+    });
+}
+
+<span class="cm">// যেকোনো জায়গা থেকে একই instance পাবেন</span>
+<span class="nm">$db1</span> = <span class="fn">app</span>(<span class="tp">DatabaseManager</span>::<span class="kw">class</span>);
+<span class="nm">$db2</span> = <span class="fn">app</span>(<span class="tp">DatabaseManager</span>::<span class="kw">class</span>);
+<span class="cm">// $db1 === $db2 (true)</span>
+
+<span class="cm">// Laravel নিজেই Singleton ব্যবহার করে:</span>
+<span class="cm">// DB::connection() — একই connection বারবার</span>
+<span class="cm">// Cache::store() — একই cache instance</span>
+<span class="cm">// Log::channel() — একই logger</span></pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FACTORY -->
+<div id="sec-factory" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#6d28d9,#7c3aed)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">CREATIONAL · C2</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Factory Method</h1>
+    <div style="opacity:.85;font-size:18px">কারখানা পদ্ধতি</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>মোবাইল ফ্যাক্টরি:</strong> আপনি বলুন "iPhone চাই" বা "Samsung চাই" — ফ্যাক্টরি নিজেই জানে কীভাবে বানাতে হয়। আপনাকে internals জানতে হবে না। Factory Method-এ parent class বলে "object তৈরি হবে", কিন্তু <em>কোন</em> object তৈরি হবে তা decide করে subclass।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">আপনার কাছে Email, SMS, Push notification আছে। প্রতিটির জন্য আলাদাভাবে <code>new EmailNotification()</code> লিখলে — পরে Whatsapp যোগ করতে সব জায়গায় code পরিবর্তন করতে হবে। Factory দিলে শুধু একটি নতুন class যোগ করলেই হয়।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Notification system (Email/SMS/Push)<br/>✔ Payment gateway (Stripe/bKash/Nagad)<br/>✔ File parser (CSV/JSON/XML)<br/>✔ Database driver (MySQL/PostgreSQL/SQLite)<br/>✔ যেকোনো জায়গায় object type runtime-এ বদলায়</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'factory-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'factory-laravel')">Laravel</button>
+      </div>
+      <div id="factory-php" class="tab-pane active"><pre><span class="cm">// Interface — সকল Notification-এর চুক্তি</span>
+<span class="kw">interface</span> <span class="tp">NotificationInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$message</span>): <span class="tp">bool</span>;
+}
+
+<span class="cm">// Concrete Products</span>
+<span class="kw">class</span> <span class="tp">EmailNotification</span> <span class="kw">implements</span> <span class="tp">NotificationInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">bool</span>
+    {
+        <span class="fn">mail</span>(<span class="nm">$to</span>, <span class="st">'Notification'</span>, <span class="nm">$msg</span>);
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="tp">SMSNotification</span> <span class="kw">implements</span> <span class="tp">NotificationInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">bool</span>
+    {
+        <span class="cm">// SMS API call</span>
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="cm">// Factory</span>
+<span class="kw">class</span> <span class="tp">NotificationFactory</span>
+{
+    <span class="kw">public static function</span> <span class="fn">create</span>(<span class="tp">string</span> <span class="nm">$type</span>): <span class="tp">NotificationInterface</span>
+    {
+        <span class="kw">return match</span>(<span class="nm">$type</span>) {
+            <span class="st">'email'</span> => <span class="kw">new</span> <span class="tp">EmailNotification</span>(),
+            <span class="st">'sms'</span>   => <span class="kw">new</span> <span class="tp">SMSNotification</span>(),
+            <span class="kw">default</span> => <span class="kw">throw new</span> \<span class="tp">InvalidArgumentException</span>(<span class="st">"Unknown: {$type}"</span>),
+        };
+    }
+}
+
+<span class="cm">// ব্যবহার — type পরিবর্তনেই কাজ হয়!</span>
+<span class="nm">$notif</span> = <span class="tp">NotificationFactory</span>::<span class="fn">create</span>(<span class="st">'email'</span>);
+<span class="nm">$notif</span>-><span class="fn">send</span>(<span class="st">'user@example.com'</span>, <span class="st">'অর্ডার নিশ্চিত হয়েছে'</span>);</pre></div>
+      <div id="factory-laravel" class="tab-pane"><pre><span class="cm">// Laravel Notification System — Factory Pattern-এর বাস্তব উদাহরণ</span>
+
+<span class="cm">// 1. Notification Class তৈরি</span>
+<span class="kw">class</span> <span class="tp">OrderShipped</span> <span class="kw">extends</span> <span class="tp">Notification</span>
+{
+    <span class="kw">public function</span> <span class="fn">via</span>(<span class="nm">$notifiable</span>): array
+    {
+        <span class="kw">return</span> [<span class="st">'mail'</span>, <span class="st">'sms'</span>]; <span class="cm">// Factory decide করে channel</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">toMail</span>(<span class="nm">$notifiable</span>): <span class="tp">MailMessage</span>
+    {
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="tp">MailMessage</span>())
+            -><span class="fn">subject</span>(<span class="st">'অর্ডার পাঠানো হয়েছে'</span>)
+            -><span class="fn">line</span>(<span class="st">'আপনার অর্ডার পাঠানো হয়েছে।'</span>);
+    }
+}
+
+<span class="cm">// 2. ব্যবহার</span>
+<span class="nm">$user</span>-><span class="fn">notify</span>(<span class="kw">new</span> <span class="tp">OrderShipped</span>(<span class="nm">$order</span>));
+
+<span class="cm">// Laravel-এ Payment Gateway Factory (Custom)</span>
+<span class="kw">class</span> <span class="tp">PaymentGatewayFactory</span>
+{
+    <span class="kw">public function</span> <span class="fn">make</span>(<span class="tp">string</span> <span class="nm">$gateway</span>): <span class="tp">PaymentGateway</span>
+    {
+        <span class="kw">return match</span>(<span class="nm">$gateway</span>) {
+            <span class="st">'stripe'</span> => <span class="kw">new</span> <span class="tp">StripeGateway</span>(<span class="fn">config</span>(<span class="st">'services.stripe'</span>)),
+            <span class="st">'bkash'</span>  => <span class="kw">new</span> <span class="tp">BkashGateway</span>(<span class="fn">config</span>(<span class="st">'services.bkash'</span>)),
+            <span class="st">'nagad'</span>  => <span class="kw">new</span> <span class="tp">NagadGateway</span>(<span class="fn">config</span>(<span class="st">'services.nagad'</span>)),
+            <span class="kw">default</span> => <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">"Gateway not supported"</span>),
+        };
+    }
+}
+
+<span class="cm">// Controller-এ ব্যবহার</span>
+<span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">Request</span> <span class="nm">$request</span>)
+{
+    <span class="nm">$gateway</span> = (<span class="kw">new</span> <span class="tp">PaymentGatewayFactory</span>())-><span class="fn">make</span>(<span class="nm">$request</span>->gateway);
+    <span class="nm">$gateway</span>-><span class="fn">charge</span>(<span class="nm">$request</span>->amount);
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- BUILDER -->
+<div id="sec-builder" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#5b21b6,#6d28d9)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">CREATIONAL · C4</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Builder</h1>
+    <div style="opacity:.85;font-size:18px">নির্মাতা প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>বার্গার তৈরি:</strong> বার্গারের প্যাটি রাখো, তারপর পনির, তারপর সস, তারপর লেটুস — প্রতিটি ধাপ আলাদা। শেষে <code>build()</code> করলে পুরো বার্গার রেডি। Constructor-এ ২০টি parameter না দিয়ে method chaining-এ ধাপে ধাপে তৈরি করা।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">যদি একটি class-এর ১০টি optional field থাকে, তাহলে constructor-এ সব দেওয়া বিভ্রান্তিকর। <code>new User(null, null, 'Dhaka', null, true, null...)</code> — কোনটা কী বোঝা কঠিন। Builder দিয়ে শুধু দরকারি field set করা যায়।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Laravel Query Builder: <code>User::where()->orderBy()->limit()->get()</code><br/>✔ Mail Builder: Subject, body, attachment আলাদাভাবে<br/>✔ PDF Report generation<br/>✔ HTTP Request builder<br/>✔ Complex configuration object</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'builder-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'builder-laravel')">Laravel</button>
+      </div>
+      <div id="builder-php" class="tab-pane active"><pre><span class="kw">class</span> <span class="tp">QueryBuilder</span>
+{
+    <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$table</span> = <span class="st">''</span>;
+    <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$fields</span> = <span class="st">'*'</span>;
+    <span class="kw">private</span> array <span class="nm">$conditions</span> = [];
+    <span class="kw">private</span> ?<span class="tp">int</span> <span class="nm">$limit</span> = <span class="kw">null</span>;
+    <span class="kw">private</span> ?<span class="tp">string</span> <span class="nm">$orderBy</span> = <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">table</span>(<span class="tp">string</span> <span class="nm">$t</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->table = <span class="nm">$t</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">select</span>(<span class="tp">string</span> <span class="nm">$f</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->fields = <span class="nm">$f</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">where</span>(<span class="tp">string</span> <span class="nm">$cond</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->conditions[] = <span class="nm">$cond</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">limit</span>(<span class="tp">int</span> <span class="nm">$n</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->limit = <span class="nm">$n</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">orderBy</span>(<span class="tp">string</span> <span class="nm">$col</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->orderBy = <span class="nm">$col</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">build</span>(): <span class="tp">string</span>
+    {
+        <span class="nm">$sql</span> = <span class="st">"SELECT {$this->fields} FROM {$this->table}"</span>;
+        <span class="kw">if</span> (<span class="nm">$this</span>->conditions)
+            <span class="nm">$sql</span> .= <span class="st">' WHERE '</span> . <span class="fn">implode</span>(<span class="st">' AND '</span>, <span class="nm">$this</span>->conditions);
+        <span class="kw">if</span> (<span class="nm">$this</span>->orderBy)
+            <span class="nm">$sql</span> .= <span class="st">" ORDER BY {$this->orderBy}"</span>;
+        <span class="kw">if</span> (<span class="nm">$this</span>->limit)
+            <span class="nm">$sql</span> .= <span class="st">" LIMIT {$this->limit}"</span>;
+        <span class="kw">return</span> <span class="nm">$sql</span>;
+    }
+}
+
+<span class="cm">// ব্যবহার — Method Chaining</span>
+<span class="nm">$query</span> = (<span class="kw">new</span> <span class="tp">QueryBuilder</span>())
+    -><span class="fn">table</span>(<span class="st">'users'</span>)
+    -><span class="fn">select</span>(<span class="st">'id, name, email'</span>)
+    -><span class="fn">where</span>(<span class="st">'active = 1'</span>)
+    -><span class="fn">where</span>(<span class="st">'age > 18'</span>)
+    -><span class="fn">orderBy</span>(<span class="st">'name'</span>)
+    -><span class="fn">limit</span>(<span class="nm">10</span>)
+    -><span class="fn">build</span>();
+
+<span class="cm">// SELECT id, name, email FROM users WHERE active = 1 AND age > 18 ORDER BY name LIMIT 10</span></pre></div>
+      <div id="builder-laravel" class="tab-pane"><pre><span class="cm">// Laravel Query Builder — Builder Pattern-এর সেরা উদাহরণ</span>
+<span class="nm">$users</span> = <span class="tp">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)
+    -><span class="fn">select</span>(<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'email'</span>)
+    -><span class="fn">where</span>(<span class="st">'active'</span>, <span class="nm">1</span>)
+    -><span class="fn">where</span>(<span class="st">'age'</span>, <span class="st">'>'</span>, <span class="nm">18</span>)
+    -><span class="fn">orderBy</span>(<span class="st">'name'</span>)
+    -><span class="fn">limit</span>(<span class="nm">10</span>)
+    -><span class="fn">get</span>();
+
+<span class="cm">// Mail Builder — Laravel</span>
+<span class="kw">class</span> <span class="tp">WelcomeMail</span> <span class="kw">extends</span> <span class="tp">Mailable</span>
+{
+    <span class="kw">public function</span> <span class="fn">build</span>(): <span class="kw">static</span>
+    {
+        <span class="kw">return</span> <span class="nm">$this</span>
+            -><span class="fn">subject</span>(<span class="st">'স্বাগতম!'</span>)
+            -><span class="fn">from</span>(<span class="st">'hello@app.com'</span>, <span class="st">'MyApp'</span>)
+            -><span class="fn">view</span>(<span class="st">'emails.welcome'</span>)
+            -><span class="fn">attach</span>(<span class="st">'path/to/guide.pdf'</span>);
+    }
+}
+
+<span class="cm">// Custom Report Builder</span>
+<span class="kw">class</span> <span class="tp">ReportBuilder</span>
+{
+    <span class="kw">private</span> array <span class="nm">$filters</span> = [];
+    <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$format</span> = <span class="st">'pdf'</span>;
+
+    <span class="kw">public function</span> <span class="fn">forUser</span>(<span class="tp">User</span> <span class="nm">$user</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->filters[<span class="st">'user_id'</span>] = <span class="nm">$user</span>->id; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">between</span>(<span class="tp">Carbon</span> <span class="nm">$from</span>, <span class="tp">Carbon</span> <span class="nm">$to</span>): <span class="kw">static</span>
+    { <span class="nm">$this</span>->filters[<span class="st">'date'</span>] = [<span class="nm">$from</span>, <span class="nm">$to</span>]; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">asExcel</span>(): <span class="kw">static</span>
+    { <span class="nm">$this</span>->format = <span class="st">'xlsx'</span>; <span class="kw">return</span> <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">generate</span>(): <span class="tp">string</span>
+    { <span class="cm">/* generate report */</span> <span class="kw">return</span> <span class="st">'report_path'</span>; }
+}
+
+<span class="cm">// Controller-এ</span>
+<span class="nm">$path</span> = (<span class="kw">new</span> <span class="tp">ReportBuilder</span>())
+    -><span class="fn">forUser</span>(<span class="nm">$user</span>)
+    -><span class="fn">between</span>(<span class="tp">Carbon</span>::<span class="fn">now</span>()-><span class="fn">startOfMonth</span>(), <span class="tp">Carbon</span>::<span class="fn">now</span>())
+    -><span class="fn">asExcel</span>()
+    -><span class="fn">generate</span>();</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- OBSERVER -->
+<div id="sec-observer" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#065f46,#059669)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B1</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Observer</h1>
+    <div style="opacity:.85;font-size:18px">পর্যবেক্ষক প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>YouTube Subscription:</strong> কোনো চ্যানেলে subscribe করলে নতুন ভিডিও আসলে আপনি notification পান। চ্যানেল (Subject) subscriber-দের (Observer) জানায়। Unsubscribe করলে আর notification আসে না।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">User register করলে — welcome email পাঠাও, activity log করো, admin-কে জানাও। এই তিনটি কাজ এক জায়গায় লিখলে UserService বিশাল হয়ে যাবে। Observer দিয়ে প্রতিটি কাজ আলাদা Listener-এ রাখা যায় — UserRegistered event fire করলে সবাই নিজের কাজ করে।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Order placed → email, SMS, inventory update<br/>✔ User registered → welcome mail, logging<br/>✔ Payment success → invoice, receipt, notification<br/>✔ Real-time dashboard update<br/>✔ Cache invalidation</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'observer-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'observer-laravel')">Laravel</button>
+      </div>
+      <div id="observer-php" class="tab-pane active"><pre><span class="cm">// SplObserver & SplSubject — PHP built-in interface</span>
+<span class="kw">class</span> <span class="tp">OrderService</span> <span class="kw">implements</span> \<span class="tp">SplSubject</span>
+{
+    <span class="kw">private</span> \<span class="tp">SplObjectStorage</span> <span class="nm">$observers</span>;
+    <span class="kw">private</span> ?array <span class="nm">$lastOrder</span> = <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    { <span class="nm">$this</span>->observers = <span class="kw">new</span> \<span class="tp">SplObjectStorage</span>(); }
+
+    <span class="kw">public function</span> <span class="fn">attach</span>(\<span class="tp">SplObserver</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->observers-><span class="fn">attach</span>(<span class="nm">$o</span>); }
+
+    <span class="kw">public function</span> <span class="fn">detach</span>(\<span class="tp">SplObserver</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->observers-><span class="fn">detach</span>(<span class="nm">$o</span>); }
+
+    <span class="kw">public function</span> <span class="fn">notify</span>(): <span class="tp">void</span>
+    { <span class="kw">foreach</span> (<span class="nm">$this</span>->observers <span class="kw">as</span> <span class="nm">$o</span>) <span class="nm">$o</span>-><span class="fn">update</span>(<span class="nm">$this</span>); }
+
+    <span class="kw">public function</span> <span class="fn">placeOrder</span>(array <span class="nm">$order</span>): <span class="tp">void</span>
+    {
+        <span class="nm">$this</span>->lastOrder = <span class="nm">$order</span>;
+        <span class="nm">$this</span>-><span class="fn">notify</span>(); <span class="cm">// সকল observer-কে জানাও</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">getLastOrder</span>(): ?array { <span class="kw">return</span> <span class="nm">$this</span>->lastOrder; }
+}
+
+<span class="kw">class</span> <span class="tp">EmailObserver</span> <span class="kw">implements</span> \<span class="tp">SplObserver</span>
+{
+    <span class="kw">public function</span> <span class="fn">update</span>(\<span class="tp">SplSubject</span> <span class="nm">$subject</span>): <span class="tp">void</span>
+    { <span class="fn">echo</span> <span class="st">"Email পাঠানো হলো: "</span> . <span class="nm">$subject</span>-><span class="fn">getLastOrder</span>()[<span class="st">'id'</span>]; }
+}
+
+<span class="kw">class</span> <span class="tp">InventoryObserver</span> <span class="kw">implements</span> \<span class="tp">SplObserver</span>
+{
+    <span class="kw">public function</span> <span class="fn">update</span>(\<span class="tp">SplSubject</span> <span class="nm">$subject</span>): <span class="tp">void</span>
+    { <span class="fn">echo</span> <span class="st">"স্টক আপডেট হলো"</span>; }
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="nm">$service</span> = <span class="kw">new</span> <span class="tp">OrderService</span>();
+<span class="nm">$service</span>-><span class="fn">attach</span>(<span class="kw">new</span> <span class="tp">EmailObserver</span>());
+<span class="nm">$service</span>-><span class="fn">attach</span>(<span class="kw">new</span> <span class="tp">InventoryObserver</span>());
+<span class="nm">$service</span>-><span class="fn">placeOrder</span>([<span class="st">'id'</span> => <span class="nm">42</span>, <span class="st">'total'</span> => <span class="nm">1500</span>]);
+<span class="cm">// Email পাঠানো হলো: 42</span>
+<span class="cm">// স্টক আপডেট হলো</span></pre></div>
+      <div id="observer-laravel" class="tab-pane"><pre><span class="cm">// Laravel Events & Listeners — Observer Pattern-এর সেরা বাস্তবায়ন</span>
+
+<span class="cm">// 1. Event তৈরি করুন: php artisan make:event OrderPlaced</span>
+<span class="kw">class</span> <span class="tp">OrderPlaced</span>
+{
+    <span class="kw">use</span> <span class="tp">Dispatchable</span>, <span class="tp">SerializesModels</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">public</span> <span class="kw">readonly</span> <span class="tp">Order</span> <span class="nm">$order</span>) {}
+}
+
+<span class="cm">// 2. Listener: php artisan make:listener SendOrderEmail</span>
+<span class="kw">class</span> <span class="tp">SendOrderEmail</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">OrderPlaced</span> <span class="nm">$event</span>): <span class="tp">void</span>
+    {
+        <span class="tp">Mail</span>::<span class="fn">to</span>(<span class="nm">$event</span>->order->user)-><span class="fn">send</span>(<span class="kw">new</span> <span class="tp">OrderConfirmation</span>(<span class="nm">$event</span>->order));
+    }
+}
+
+<span class="kw">class</span> <span class="tp">UpdateInventory</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">OrderPlaced</span> <span class="nm">$event</span>): <span class="tp">void</span>
+    {
+        <span class="kw">foreach</span> (<span class="nm">$event</span>->order->items <span class="kw">as</span> <span class="nm">$item</span>) {
+            <span class="nm">$item</span>->product-><span class="fn">decrement</span>(<span class="st">'stock'</span>, <span class="nm">$item</span>->qty);
+        }
+    }
+}
+
+<span class="cm">// 3. EventServiceProvider-এ register করুন</span>
+<span class="kw">protected</span> <span class="nm">$listen</span> = [
+    <span class="tp">OrderPlaced</span>::<span class="kw">class</span> => [
+        <span class="tp">SendOrderEmail</span>::<span class="kw">class</span>,
+        <span class="tp">UpdateInventory</span>::<span class="kw">class</span>,
+        <span class="tp">NotifyAdmin</span>::<span class="kw">class</span>,
+    ],
+];
+
+<span class="cm">// 4. Controller-এ fire করুন — শুধু এটুকু!</span>
+<span class="kw">public function</span> <span class="fn">store</span>(<span class="tp">Request</span> <span class="nm">$request</span>)
+{
+    <span class="nm">$order</span> = <span class="tp">Order</span>::<span class="fn">create</span>(<span class="nm">$request</span>-><span class="fn">validated</span>());
+    <span class="tp">OrderPlaced</span>::<span class="fn">dispatch</span>(<span class="nm">$order</span>); <span class="cm">// সবাই নিজের কাজ করবে!</span>
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'success'</span> => <span class="kw">true</span>]);
+}
+
+<span class="cm">// Eloquent Observer: php artisan make:observer UserObserver --model=User</span>
+<span class="kw">class</span> <span class="tp">UserObserver</span>
+{
+    <span class="kw">public function</span> <span class="fn">created</span>(<span class="tp">User</span> <span class="nm">$user</span>): <span class="tp">void</span>
+    { <span class="tp">Log</span>::<span class="fn">info</span>(<span class="st">"নতুন user তৈরি: {$user->email}"</span>); }
+
+    <span class="kw">public function</span> <span class="fn">deleted</span>(<span class="tp">User</span> <span class="nm">$user</span>): <span class="tp">void</span>
+    { <span class="tp">Cache</span>::<span class="fn">forget</span>(<span class="st">"user_{$user->id}"</span>); }
+}
+<span class="cm">// AppServiceProvider: User::observe(UserObserver::class);</span></pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- STRATEGY -->
+<div id="sec-strategy" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#047857,#059669)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B2</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Strategy</h1>
+    <div style="opacity:.85;font-size:18px">কৌশল প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>Google Maps Navigation:</strong> গন্তব্য একই — ঢাকা থেকে চট্টগ্রাম। কিন্তু রাস্তা বেছে নিন: হাঁটা, বাস, ট্রেন বা গাড়ি। প্রতিটি আলাদা Strategy। App বদলায় না, শুধু strategy বদলায়।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">বড় <code>if-else</code> বা <code>switch</code> block এড়াতে। Payment-এ Stripe, bKash, Nagad — প্রতিটির জন্য if-else লিখলে code messy হয়। নতুন gateway যোগে সব কোড পড়তে হবে। Strategy দিলে প্রতিটি আলাদা class, swap করা যায়।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Payment gateway (Stripe/bKash/Nagad)<br/>✔ Discount calculation (percentage/flat/coupon)<br/>✔ Sorting algorithm<br/>✔ File export (PDF/Excel/CSV)<br/>✔ Authentication (JWT/Session/OAuth)</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'strategy-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'strategy-laravel')">Laravel</button>
+      </div>
+      <div id="strategy-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">PaymentStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>;
+}
+
+<span class="kw">class</span> <span class="tp">StripeStrategy</span> <span class="kw">implements</span> <span class="tp">PaymentStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"Stripe: {$amount} টাকা পেমেন্ট হয়েছে"</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">BkashStrategy</span> <span class="kw">implements</span> <span class="tp">PaymentStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"bKash: {$amount} টাকা পেমেন্ট হয়েছে"</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">NagadStrategy</span> <span class="kw">implements</span> <span class="tp">PaymentStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"Nagad: {$amount} টাকা পেমেন্ট হয়েছে"</span>; }
+}
+
+<span class="cm">// Context — Strategy ধারণ করে</span>
+<span class="kw">class</span> <span class="tp">PaymentProcessor</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">PaymentStrategy</span> <span class="nm">$strategy</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">setStrategy</span>(<span class="tp">PaymentStrategy</span> <span class="nm">$s</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->strategy = <span class="nm">$s</span>; }
+
+    <span class="kw">public function</span> <span class="fn">processPayment</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>->strategy-><span class="fn">pay</span>(<span class="nm">$amount</span>); }
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="nm">$processor</span> = <span class="kw">new</span> <span class="tp">PaymentProcessor</span>(<span class="kw">new</span> <span class="tp">BkashStrategy</span>());
+<span class="fn">echo</span> <span class="nm">$processor</span>-><span class="fn">processPayment</span>(<span class="nm">500</span>); <span class="cm">// bKash: 500 টাকা পেমেন্ট হয়েছে</span>
+
+<span class="nm">$processor</span>-><span class="fn">setStrategy</span>(<span class="kw">new</span> <span class="tp">NagadStrategy</span>());
+<span class="fn">echo</span> <span class="nm">$processor</span>-><span class="fn">processPayment</span>(<span class="nm">500</span>); <span class="cm">// Nagad: 500 টাকা পেমেন্ট হয়েছে</span></pre></div>
+      <div id="strategy-laravel" class="tab-pane"><pre><span class="cm">// Laravel Service Container দিয়ে Strategy bind করা</span>
+
+<span class="cm">// Interface</span>
+<span class="kw">interface</span> <span class="tp">DiscountStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">calculate</span>(<span class="tp">int</span> <span class="nm">$price</span>): <span class="tp">int</span>;
+}
+
+<span class="kw">class</span> <span class="tp">PercentageDiscount</span> <span class="kw">implements</span> <span class="tp">DiscountStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">float</span> <span class="nm">$percent</span>) {}
+    <span class="kw">public function</span> <span class="fn">calculate</span>(<span class="tp">int</span> <span class="nm">$price</span>): <span class="tp">int</span>
+    { <span class="kw">return</span> (<span class="tp">int</span>)(<span class="nm">$price</span> * (1 - <span class="nm">$this</span>->percent / 100)); }
+}
+
+<span class="kw">class</span> <span class="tp">FlatDiscount</span> <span class="kw">implements</span> <span class="tp">DiscountStrategy</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">int</span> <span class="nm">$amount</span>) {}
+    <span class="kw">public function</span> <span class="fn">calculate</span>(<span class="tp">int</span> <span class="nm">$price</span>): <span class="tp">int</span>
+    { <span class="kw">return</span> <span class="fn">max</span>(0, <span class="nm">$price</span> - <span class="nm">$this</span>->amount); }
+}
+
+<span class="cm">// Service</span>
+<span class="kw">class</span> <span class="tp">OrderService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">DiscountStrategy</span> <span class="nm">$discount</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">finalPrice</span>(<span class="tp">int</span> <span class="nm">$price</span>): <span class="tp">int</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>->discount-><span class="fn">calculate</span>(<span class="nm">$price</span>); }
+}
+
+<span class="cm">// AppServiceProvider — কোন strategy inject হবে config দেখে</span>
+<span class="nm">$this</span>->app-><span class="fn">bind</span>(<span class="tp">DiscountStrategy</span>::<span class="kw">class</span>, <span class="kw">function</span> () {
+    <span class="kw">return match</span> (<span class="fn">config</span>(<span class="st">'app.discount_type'</span>)) {
+        <span class="st">'percentage'</span> => <span class="kw">new</span> <span class="tp">PercentageDiscount</span>(10),
+        <span class="st">'flat'</span>       => <span class="kw">new</span> <span class="tp">FlatDiscount</span>(100),
+        <span class="kw">default</span>      => <span class="kw">new</span> <span class="tp">FlatDiscount</span>(0),
+    };
+});
+
+<span class="cm">// Controller — DI দিয়ে পায়</span>
+<span class="kw">public function</span> <span class="fn">checkout</span>(<span class="tp">OrderService</span> <span class="nm">$service</span>)
+{
+    <span class="kw">return</span> <span class="nm">$service</span>-><span class="fn">finalPrice</span>(<span class="nm">1000</span>); <span class="cm">// 900 বা 900</span>
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FACADE -->
+<div id="sec-facade" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#0e7490,#0891b2)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S3</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Facade</h1>
+    <div style="opacity:.85;font-size:18px">আবরণ / সরলীকরণ প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>হোটেলের কনসিয়ার্জ:</strong> আপনি বলুন "বিমানবন্দরে যেতে চাই" — সে নিজেই ট্যাক্সি ডাকবে, লাগেজ নিয়ে যাবে, চেকআউট করাবে। আপনাকে প্রতিটি পদক্ষেপ জানতে হবে না। <strong>Laravel Facade নিজেই এই প্যাটার্নের সেরা উদাহরণ।</strong></div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">Payment করতে গেলে: CardValidator, FraudDetection, CurrencyConverter, PaymentProcessor, ReceiptGenerator, EmailService — ৬টি class। Controller-এ সব ব্যবহার করলে controller বিশাল হবে। Facade দিলে একটিই class ডাকতে হবে।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Payment processing (একটি call-এ সব)<br/>✔ File upload (validate, resize, store, CDN)<br/>✔ User registration (create, email, log, welcome)<br/>✔ Laravel নিজেই: Cache::, Log::, DB:: সব Facade</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'facade-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'facade-laravel')">Laravel</button>
+      </div>
+      <div id="facade-php" class="tab-pane active"><pre><span class="cm">// Complex subsystems</span>
+<span class="kw">class</span> <span class="tp">CardValidator</span> {
+    <span class="kw">public function</span> <span class="fn">validate</span>(array <span class="nm">$card</span>): <span class="tp">bool</span> { <span class="kw">return true</span>; }
+}
+<span class="kw">class</span> <span class="tp">FraudDetector</span> {
+    <span class="kw">public function</span> <span class="fn">check</span>(array <span class="nm">$card</span>): <span class="tp">bool</span> { <span class="kw">return true</span>; }
+}
+<span class="kw">class</span> <span class="tp">PaymentGateway</span> {
+    <span class="kw">public function</span> <span class="fn">charge</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span> { <span class="kw">return</span> <span class="st">'txn_123'</span>; }
+}
+<span class="kw">class</span> <span class="tp">ReceiptService</span> {
+    <span class="kw">public function</span> <span class="fn">generate</span>(<span class="tp">string</span> <span class="nm">$txn</span>): array { <span class="kw">return</span> [<span class="st">'txn'</span> => <span class="nm">$txn</span>]; }
+}
+
+<span class="cm">// Facade — সব জটিলতা লুকায়</span>
+<span class="kw">class</span> <span class="tp">PaymentFacade</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="tp">CardValidator</span>  <span class="nm">$validator</span>,
+        <span class="kw">private</span> <span class="tp">FraudDetector</span>  <span class="nm">$fraud</span>,
+        <span class="kw">private</span> <span class="tp">PaymentGateway</span> <span class="nm">$gateway</span>,
+        <span class="kw">private</span> <span class="tp">ReceiptService</span> <span class="nm">$receipt</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amount</span>, array <span class="nm">$card</span>): array
+    {
+        <span class="kw">if</span> (!<span class="nm">$this</span>->validator-><span class="fn">validate</span>(<span class="nm">$card</span>))
+            <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">'Invalid card'</span>);
+        <span class="kw">if</span> (!<span class="nm">$this</span>->fraud-><span class="fn">check</span>(<span class="nm">$card</span>))
+            <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">'Fraud detected'</span>);
+
+        <span class="nm">$txn</span> = <span class="nm">$this</span>->gateway-><span class="fn">charge</span>(<span class="nm">$amount</span>);
+        <span class="kw">return</span> <span class="nm">$this</span>->receipt-><span class="fn">generate</span>(<span class="nm">$txn</span>);
+    }
+}
+
+<span class="cm">// Controller-এ শুধু এটুকু!</span>
+<span class="nm">$facade</span> = <span class="kw">new</span> <span class="tp">PaymentFacade</span>(...);
+<span class="nm">$receipt</span> = <span class="nm">$facade</span>-><span class="fn">pay</span>(<span class="nm">500</span>, <span class="nm">$cardData</span>);</pre></div>
+      <div id="facade-laravel" class="tab-pane"><pre><span class="cm">// Laravel Custom Facade তৈরি</span>
+
+<span class="cm">// 1. Service Class</span>
+<span class="kw">class</span> <span class="tp">SMSService</span>
+{
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">string</span> <span class="nm">$number</span>, <span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">bool</span>
+    {
+        <span class="cm">// SMS API call</span>
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="cm">// 2. Facade Class</span>
+<span class="kw">class</span> <span class="tp">SMS</span> <span class="kw">extends</span> \<span class="tp">Illuminate\Support\Facades\Facade</span>
+{
+    <span class="kw">protected static function</span> <span class="fn">getFacadeAccessor</span>(): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">'sms'</span>; }
+}
+
+<span class="cm">// 3. ServiceProvider-এ bind করুন</span>
+<span class="nm">$this</span>->app-><span class="fn">bind</span>(<span class="st">'sms'</span>, <span class="tp">SMSService</span>::<span class="kw">class</span>);
+
+<span class="cm">// 4. config/app.php-তে alias যোগ করুন</span>
+<span class="st">'SMS'</span> => <span class="tp">App\Facades\SMS</span>::<span class="kw">class</span>,
+
+<span class="cm">// 5. এখন যেকোনো জায়গায়</span>
+<span class="tp">SMS</span>::<span class="fn">send</span>(<span class="st">'01700000000'</span>, <span class="st">'আপনার OTP: 1234'</span>);
+
+<span class="cm">// Laravel-এর built-in Facade-গুলো:</span>
+<span class="tp">Cache</span>::<span class="fn">put</span>(<span class="st">'key'</span>, <span class="st">'value'</span>, 3600);
+<span class="tp">Log</span>::<span class="fn">info</span>(<span class="st">'User logged in'</span>);
+<span class="tp">DB</span>::<span class="fn">table</span>(<span class="st">'users'</span>)-><span class="fn">get</span>();
+<span class="tp">Storage</span>::<span class="fn">put</span>(<span class="st">'file.txt'</span>, <span class="st">'content'</span>);
+<span class="tp">Queue</span>::<span class="fn">push</span>(<span class="kw">new</span> <span class="tp">SendEmailJob</span>(<span class="nm">$user</span>));</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- DECORATOR -->
+<div id="sec-decorator" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#155e75,#0891b2)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S2</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Decorator</h1>
+    <div style="opacity:.85;font-size:18px">সাজসজ্জাকারী প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>কফির কাপ:</strong> সাধারণ ব্ল্যাক কফিতে দুধ যোগ করলে Latte হয়, তাতে ক্যারামেল সিরাপ যোগ করলে Caramel Latte। মূল কফির class পরিবর্তন না করেই নতুন বৈশিষ্ট্য যোগ হয়।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">Subclass তৈরি না করেই runtime-এ object-এ নতুন behavior যোগ করতে। Inheritance দিয়ে করলে class explosion হয় — LoggingCache, EncryptingCache, CompressingCache, LoggingEncryptingCache... Decorator দিয়ে সহজে wrap করা যায়।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Cache layer (Redis cache → File cache fallback)<br/>✔ Logging decorator<br/>✔ Encryption/Compression wrapper<br/>✔ HTTP Request/Response middleware<br/>✔ API rate limiting wrapper</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'dec-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'dec-laravel')">Laravel</button>
+      </div>
+      <div id="dec-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">Logger</span>
+{ <span class="kw">public function</span> <span class="fn">log</span>(<span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>; }
+
+<span class="cm">// Base Component</span>
+<span class="kw">class</span> <span class="tp">FileLogger</span> <span class="kw">implements</span> <span class="tp">Logger</span>
+{
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>
+    { <span class="fn">file_put_contents</span>(<span class="st">'app.log'</span>, <span class="nm">$msg</span> . <span class="st">"\n"</span>, <span class="nm">FILE_APPEND</span>); }
+}
+
+<span class="cm">// Base Decorator</span>
+<span class="kw">abstract class</span> <span class="tp">LoggerDecorator</span> <span class="kw">implements</span> <span class="tp">Logger</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">protected</span> <span class="tp">Logger</span> <span class="nm">$logger</span>) {}
+}
+
+<span class="cm">// Timestamp Decorator</span>
+<span class="kw">class</span> <span class="tp">TimestampLogger</span> <span class="kw">extends</span> <span class="tp">LoggerDecorator</span>
+{
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->logger-><span class="fn">log</span>(<span class="st">'['</span> . <span class="fn">date</span>(<span class="st">'Y-m-d H:i:s'</span>) . <span class="st">'] '</span> . <span class="nm">$msg</span>); }
+}
+
+<span class="cm">// Prefix Decorator</span>
+<span class="kw">class</span> <span class="tp">PrefixLogger</span> <span class="kw">extends</span> <span class="tp">LoggerDecorator</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">protected</span> <span class="tp">Logger</span> <span class="nm">$logger</span>, <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$prefix</span>) {}
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->logger-><span class="fn">log</span>(<span class="st">"[{$this->prefix}] {$msg}"</span>); }
+}
+
+<span class="cm">// ব্যবহার — layer by layer wrap</span>
+<span class="nm">$logger</span> = <span class="kw">new</span> <span class="tp">TimestampLogger</span>(
+    <span class="kw">new</span> <span class="tp">PrefixLogger</span>(
+        <span class="kw">new</span> <span class="tp">FileLogger</span>(), <span class="st">'ERROR'</span>
+    )
+);
+<span class="nm">$logger</span>-><span class="fn">log</span>(<span class="st">'Database connection failed'</span>);
+<span class="cm">// [2024-01-15 10:30:00] [ERROR] Database connection failed</span></pre></div>
+      <div id="dec-laravel" class="tab-pane"><pre><span class="cm">// Laravel Middleware = Decorator Pattern!</span>
+<span class="cm">// php artisan make:middleware CacheDecorator</span>
+
+<span class="kw">class</span> <span class="tp">CacheMiddleware</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">Request</span> <span class="nm">$request</span>, <span class="tp">Closure</span> <span class="nm">$next</span>): <span class="tp">Response</span>
+    {
+        <span class="nm">$key</span> = <span class="st">'response_'</span> . <span class="fn">md5</span>(<span class="nm">$request</span>-><span class="fn">fullUrl</span>());
+
+        <span class="kw">if</span> (<span class="tp">Cache</span>::<span class="fn">has</span>(<span class="nm">$key</span>)) {
+            <span class="kw">return</span> <span class="fn">response</span>(<span class="tp">Cache</span>::<span class="fn">get</span>(<span class="nm">$key</span>)); <span class="cm">// Cache থেকে দাও</span>
+        }
+
+        <span class="nm">$response</span> = <span class="nm">$next</span>(<span class="nm">$request</span>); <span class="cm">// মূল controller চালাও</span>
+        <span class="tp">Cache</span>::<span class="fn">put</span>(<span class="nm">$key</span>, <span class="nm">$response</span>-><span class="fn">getContent</span>(), 3600);
+
+        <span class="kw">return</span> <span class="nm">$response</span>;
+    }
+}
+
+<span class="cm">// Service Decorator with DI</span>
+<span class="kw">interface</span> <span class="tp">UserRepository</span>
+{ <span class="kw">public function</span> <span class="fn">find</span>(<span class="tp">int</span> <span class="nm">$id</span>): ?<span class="tp">User</span>; }
+
+<span class="kw">class</span> <span class="tp">EloquentUserRepository</span> <span class="kw">implements</span> <span class="tp">UserRepository</span>
+{
+    <span class="kw">public function</span> <span class="fn">find</span>(<span class="tp">int</span> <span class="nm">$id</span>): ?<span class="tp">User</span>
+    { <span class="kw">return</span> <span class="tp">User</span>::<span class="fn">find</span>(<span class="nm">$id</span>); }
+}
+
+<span class="cm">// Cache Decorator</span>
+<span class="kw">class</span> <span class="tp">CachedUserRepository</span> <span class="kw">implements</span> <span class="tp">UserRepository</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">UserRepository</span> <span class="nm">$repo</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">find</span>(<span class="tp">int</span> <span class="nm">$id</span>): ?<span class="tp">User</span>
+    {
+        <span class="kw">return</span> <span class="tp">Cache</span>::<span class="fn">remember</span>(<span class="st">"user_{$id}"</span>, 3600,
+            <span class="kw">fn</span>() => <span class="nm">$this</span>->repo-><span class="fn">find</span>(<span class="nm">$id</span>)
+        );
+    }
+}
+
+<span class="cm">// AppServiceProvider</span>
+<span class="nm">$this</span>->app-><span class="fn">bind</span>(<span class="tp">UserRepository</span>::<span class="kw">class</span>, <span class="kw">function</span> () {
+    <span class="kw">return new</span> <span class="tp">CachedUserRepository</span>(<span class="kw">new</span> <span class="tp">EloquentUserRepository</span>());
+});</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CHAIN -->
+<div id="sec-chain" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#065f46,#059669)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B6</div>
+    <h1 style="font-size:32px;margin:6px 0 2px">Chain of Responsibility</h1>
+    <div style="opacity:.85;font-size:18px">দায়িত্বের শৃঙ্খল প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 সহজ উপমা</div>
+    <div class="analogy-box"><strong>Customer Support:</strong> আপনি complaint করলেন → প্রথমে AI Bot চেষ্টা করে → না পারলে Junior Agent → না পারলে Senior Agent → না পারলে Manager। প্রতিটি handler পারলে solve করে, না পারলে পরবর্তীকে পাস করে।</div>
+
+    <div class="section-label">🤔 কেন দরকার?</div>
+    <div class="why-box">Laravel Middleware Pipeline-ই এই প্যাটার্নের সেরা উদাহরণ। HTTP request আসে → Auth check → Rate limit → CSRF → Throttle → Controller। প্রতিটি middleware হলো একটি handler।</div>
+
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Laravel Middleware Pipeline (সেরা উদাহরণ)<br/>✔ Form validation chain<br/>✔ Approval workflow (Manager → Director → CEO)<br/>✔ Log level filtering<br/>✔ Discount rule চেইন</div>
+
+    <div class="section-label">💻 কোড উদাহরণ</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'chain-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'chain-laravel')">Laravel</button>
+      </div>
+      <div id="chain-php" class="tab-pane active"><pre><span class="kw">abstract class</span> <span class="tp">ApprovalHandler</span>
+{
+    <span class="kw">private</span> ?<span class="tp">ApprovalHandler</span> <span class="nm">$next</span> = <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">setNext</span>(<span class="tp">ApprovalHandler</span> <span class="nm">$h</span>): <span class="tp">ApprovalHandler</span>
+    { <span class="nm">$this</span>->next = <span class="nm">$h</span>; <span class="kw">return</span> <span class="nm">$h</span>; }
+
+    <span class="kw">protected function</span> <span class="fn">passToNext</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>->next ? <span class="nm">$this</span>->next-><span class="fn">approve</span>(<span class="nm">$amount</span>) : <span class="st">'অনুমোদন দেওয়া যাচ্ছে না'</span>; }
+
+    <span class="kw">abstract public function</span> <span class="fn">approve</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>;
+}
+
+<span class="kw">class</span> <span class="tp">TeamLeadHandler</span> <span class="kw">extends</span> <span class="tp">ApprovalHandler</span>
+{
+    <span class="kw">public function</span> <span class="fn">approve</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="nm">$amount</span> <= 5000 ? <span class="st">"Team Lead অনুমোদন দিয়েছেন"</span> : <span class="nm">$this</span>-><span class="fn">passToNext</span>(<span class="nm">$amount</span>); }
+}
+
+<span class="kw">class</span> <span class="tp">ManagerHandler</span> <span class="kw">extends</span> <span class="tp">ApprovalHandler</span>
+{
+    <span class="kw">public function</span> <span class="fn">approve</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="nm">$amount</span> <= 25000 ? <span class="st">"Manager অনুমোদন দিয়েছেন"</span> : <span class="nm">$this</span>-><span class="fn">passToNext</span>(<span class="nm">$amount</span>); }
+}
+
+<span class="kw">class</span> <span class="tp">DirectorHandler</span> <span class="kw">extends</span> <span class="tp">ApprovalHandler</span>
+{
+    <span class="kw">public function</span> <span class="fn">approve</span>(<span class="tp">int</span> <span class="nm">$amount</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"Director অনুমোদন দিয়েছেন"</span>; }
+}
+
+<span class="cm">// চেইন তৈরি</span>
+<span class="nm">$lead</span> = <span class="kw">new</span> <span class="tp">TeamLeadHandler</span>();
+<span class="nm">$lead</span>-><span class="fn">setNext</span>(<span class="kw">new</span> <span class="tp">ManagerHandler</span>())-><span class="fn">setNext</span>(<span class="kw">new</span> <span class="tp">DirectorHandler</span>());
+
+<span class="fn">echo</span> <span class="nm">$lead</span>-><span class="fn">approve</span>(<span class="nm">3000</span>);  <span class="cm">// Team Lead অনুমোদন</span>
+<span class="fn">echo</span> <span class="nm">$lead</span>-><span class="fn">approve</span>(<span class="nm">15000</span>); <span class="cm">// Manager অনুমোদন</span>
+<span class="fn">echo</span> <span class="nm">$lead</span>-><span class="fn">approve</span>(<span class="nm">50000</span>); <span class="cm">// Director অনুমোদন</span></pre></div>
+      <div id="chain-laravel" class="tab-pane"><pre><span class="cm">// Laravel Middleware — Chain of Responsibility-এর বাস্তব উদাহরণ</span>
+
+<span class="cm">// 1. Auth Middleware</span>
+<span class="kw">class</span> <span class="tp">AuthMiddleware</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">Request</span> <span class="nm">$req</span>, <span class="tp">Closure</span> <span class="nm">$next</span>): <span class="tp">Response</span>
+    {
+        <span class="kw">if</span> (!<span class="fn">auth</span>()-><span class="fn">check</span>())
+            <span class="kw">return</span> <span class="fn">redirect</span>(<span class="st">'/login'</span>); <span class="cm">// চেইন থামে</span>
+        <span class="kw">return</span> <span class="nm">$next</span>(<span class="nm">$req</span>); <span class="cm">// পরবর্তী middleware-এ যাও</span>
+    }
+}
+
+<span class="cm">// 2. Role Middleware</span>
+<span class="kw">class</span> <span class="tp">RoleMiddleware</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">Request</span> <span class="nm">$req</span>, <span class="tp">Closure</span> <span class="nm">$next</span>, <span class="tp">string</span> <span class="nm">$role</span>): <span class="tp">Response</span>
+    {
+        <span class="kw">if</span> (!<span class="fn">auth</span>()-><span class="fn">user</span>()-><span class="fn">hasRole</span>(<span class="nm">$role</span>))
+            <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'error'</span> => <span class="st">'Forbidden'</span>], 403);
+        <span class="kw">return</span> <span class="nm">$next</span>(<span class="nm">$req</span>);
+    }
+}
+
+<span class="cm">// 3. Route-এ চেইন করুন</span>
+<span class="tp">Route</span>::<span class="fn">middleware</span>([<span class="st">'auth'</span>, <span class="st">'role:admin'</span>, <span class="st">'throttle:60,1'</span>])
+    -><span class="fn">group</span>(<span class="kw">function</span> () {
+        <span class="tp">Route</span>::<span class="fn">get</span>(<span class="st">'/admin/users'</span>, [<span class="tp">AdminController</span>::<span class="kw">class</span>, <span class="st">'index'</span>]);
+    });
+
+<span class="cm">// Pipeline হলে আরও নমনীয়</span>
+<span class="kw">use</span> <span class="tp">Illuminate\Pipeline\Pipeline</span>;
+
+<span class="nm">$result</span> = <span class="fn">app</span>(<span class="tp">Pipeline</span>::<span class="kw">class</span>)
+    -><span class="fn">send</span>(<span class="nm">$order</span>)
+    -><span class="fn">through</span>([
+        <span class="tp">ValidateStock</span>::<span class="kw">class</span>,
+        <span class="tp">ApplyDiscount</span>::<span class="kw">class</span>,
+        <span class="tp">CalculateTax</span>::<span class="kw">class</span>,
+        <span class="tp">ChargePayment</span>::<span class="kw">class</span>,
+    ])
+    -><span class="fn">thenReturn</span>();</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- REMAINING PATTERNS — Compact version -->
+<div id="sec-abstractfactory" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">CREATIONAL · C3</div>
+    <h1 style="font-size:30px;margin:6px 0 2px">Abstract Factory</h1>
+    <div style="opacity:.85;font-size:17px">বিমূর্ত কারখানা</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 উপমা</div>
+    <div class="analogy-box"><strong>ফার্নিচার শোরুম:</strong> "মডার্ন স্টাইল" বললে সব আসবাব একসাথে মডার্ন হয়। "ভিক্টোরিয়ান" বললে সব ভিক্টোরিয়ান। একটি factory পুরো পরিবার তৈরি করে।</div>
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Cross-platform UI component (Web/Mobile)<br/>✔ Theme system (Light/Dark পুরো UI)<br/>✔ Database driver family (MySQL/PostgreSQL সব class)<br/>✔ Test double factory (mock vs real)</div>
+    <div class="section-label">💻 কোড</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'af-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'af-laravel')">Laravel</button>
+      </div>
+      <div id="af-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">UIFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createButton</span>(): <span class="tp">Button</span>;
+    <span class="kw">public function</span> <span class="fn">createInput</span>(): <span class="tp">Input</span>;
+}
+
+<span class="kw">class</span> <span class="tp">LightThemeFactory</span> <span class="kw">implements</span> <span class="tp">UIFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createButton</span>(): <span class="tp">Button</span> { <span class="kw">return new</span> <span class="tp">LightButton</span>(); }
+    <span class="kw">public function</span> <span class="fn">createInput</span>(): <span class="tp">Input</span>  { <span class="kw">return new</span> <span class="tp">LightInput</span>();  }
+}
+
+<span class="kw">class</span> <span class="tp">DarkThemeFactory</span> <span class="kw">implements</span> <span class="tp">UIFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createButton</span>(): <span class="tp">Button</span> { <span class="kw">return new</span> <span class="tp">DarkButton</span>(); }
+    <span class="kw">public function</span> <span class="fn">createInput</span>(): <span class="tp">Input</span>  { <span class="kw">return new</span> <span class="tp">DarkInput</span>();  }
+}
+
+<span class="kw">function</span> <span class="fn">buildPage</span>(<span class="tp">UIFactory</span> <span class="nm">$factory</span>): <span class="tp">void</span> {
+    <span class="nm">$btn</span> = <span class="nm">$factory</span>-><span class="fn">createButton</span>();
+    <span class="nm">$inp</span> = <span class="nm">$factory</span>-><span class="fn">createInput</span>();
+    <span class="nm">$btn</span>-><span class="fn">render</span>(); <span class="nm">$inp</span>-><span class="fn">render</span>();
+}
+
+<span class="cm">// Theme config দেখে factory সিলেক্ট</span>
+<span class="nm">$factory</span> = <span class="nm">$theme</span> === <span class="st">'dark'</span> ? <span class="kw">new</span> <span class="tp">DarkThemeFactory</span>() : <span class="kw">new</span> <span class="tp">LightThemeFactory</span>();
+<span class="fn">buildPage</span>(<span class="nm">$factory</span>);</pre></div>
+      <div id="af-laravel" class="tab-pane"><pre><span class="cm">// Laravel Service Container — Abstract Factory স্টাইলে</span>
+
+<span class="cm">// Notification Family (Email + SMS + Push একসাথে)</span>
+<span class="kw">interface</span> <span class="tp">NotificationFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createEmail</span>(): <span class="tp">EmailChannel</span>;
+    <span class="kw">public function</span> <span class="fn">createSMS</span>(): <span class="tp">SMSChannel</span>;
+}
+
+<span class="kw">class</span> <span class="tp">ProductionNotificationFactory</span> <span class="kw">implements</span> <span class="tp">NotificationFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createEmail</span>() { <span class="kw">return new</span> <span class="tp">SESEmailChannel</span>(); }
+    <span class="kw">public function</span> <span class="fn">createSMS</span>()   { <span class="kw">return new</span> <span class="tp">TwilioSMSChannel</span>(); }
+}
+
+<span class="kw">class</span> <span class="tp">TestingNotificationFactory</span> <span class="kw">implements</span> <span class="tp">NotificationFactory</span> {
+    <span class="kw">public function</span> <span class="fn">createEmail</span>() { <span class="kw">return new</span> <span class="tp">FakeEmailChannel</span>(); }
+    <span class="kw">public function</span> <span class="fn">createSMS</span>()   { <span class="kw">return new</span> <span class="tp">FakeSMSChannel</span>(); }
+}
+
+<span class="cm">// ServiceProvider</span>
+<span class="nm">$this</span>->app-><span class="fn">bind</span>(<span class="tp">NotificationFactory</span>::<span class="kw">class</span>, <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="fn">app</span>()-><span class="fn">environment</span>(<span class="st">'testing'</span>)
+        ? <span class="kw">new</span> <span class="tp">TestingNotificationFactory</span>()
+        : <span class="kw">new</span> <span class="tp">ProductionNotificationFactory</span>();
+});</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PROTOTYPE, ADAPTER, PROXY, COMPOSITE, BRIDGE, FLYWEIGHT, COMMAND, ITERATOR, TEMPLATE, MEDIATOR, STATE, MEMENTO, VISITOR, INTERPRETER -->
+<!-- Each as a compact section -->
+
+<div id="sec-prototype" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#3730a3,#4f46e5)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">CREATIONAL · C5</div>
+    <h1 style="font-size:30px;margin:6px 0 2px">Prototype</h1>
+    <div style="opacity:.85;font-size:17px">নকলনামা প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 উপমা</div>
+    <div class="analogy-box"><strong>ফটোকপি মেশিন:</strong> মূল ডকুমেন্ট একটা, কিন্তু কপি করে নতুন পাওয়া যায়। Database থেকে ভারী object বারবার লোড না করে clone করুন।</div>
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Object তৈরি expensive (DB query, API call)<br/>✔ Template থেকে অনেক similar object<br/>✔ Laravel: <code>$newPost = $post->replicate()</code></div>
+    <div class="section-label">💻 কোড</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'proto-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'proto-laravel')">Laravel</button>
+      </div>
+      <div id="proto-php" class="tab-pane active"><pre><span class="kw">class</span> <span class="tp">PageTemplate</span>
+{
+    <span class="kw">public</span> array <span class="nm">$sections</span> = [];
+    <span class="kw">public</span> <span class="tp">string</span> <span class="nm">$layout</span> = <span class="st">'default'</span>;
+
+    <span class="kw">public function</span> <span class="fn">__clone</span>(): <span class="tp">void</span>
+    {
+        <span class="cm">// Deep clone — nested objects-ও clone হবে</span>
+        <span class="nm">$this</span>->sections = <span class="fn">array_map</span>(
+            <span class="kw">fn</span>(<span class="nm">$s</span>) => <span class="kw">clone</span> <span class="nm">$s</span>, <span class="nm">$this</span>->sections
+        );
+    }
+}
+
+<span class="cm">// মূল template তৈরি</span>
+<span class="nm">$blogTemplate</span> = <span class="kw">new</span> <span class="tp">PageTemplate</span>();
+<span class="nm">$blogTemplate</span>->layout = <span class="st">'blog'</span>;
+<span class="nm">$blogTemplate</span>->sections = [<span class="st">'header'</span>, <span class="st">'content'</span>, <span class="st">'footer'</span>];
+
+<span class="cm">// Clone করুন — নতুন post</span>
+<span class="nm">$newPage</span> = <span class="kw">clone</span> <span class="nm">$blogTemplate</span>;
+<span class="nm">$newPage</span>->sections[] = <span class="st">'comments'</span>; <span class="cm">// মূল template অপরিবর্তিত</span></pre></div>
+      <div id="proto-laravel" class="tab-pane"><pre><span class="cm">// Laravel Eloquent replicate() — Prototype Pattern!</span>
+
+<span class="nm">$originalPost</span> = <span class="tp">Post</span>::<span class="fn">with</span>(<span class="st">'tags'</span>)-><span class="fn">find</span>(1);
+
+<span class="cm">// replicate = clone + reset primary key</span>
+<span class="nm">$draftPost</span> = <span class="nm">$originalPost</span>-><span class="fn">replicate</span>();
+<span class="nm">$draftPost</span>->title = <span class="st">'Copy of: '</span> . <span class="nm">$originalPost</span>->title;
+<span class="nm">$draftPost</span>->status = <span class="st">'draft'</span>;
+<span class="nm">$draftPost</span>->published_at = <span class="kw">null</span>;
+<span class="nm">$draftPost</span>-><span class="fn">save</span>();
+
+<span class="cm">// Tags সহ copy</span>
+<span class="nm">$draftPost</span>->tags()-><span class="fn">sync</span>(<span class="nm">$originalPost</span>->tags-><span class="fn">pluck</span>(<span class="st">'id'</span>));
+
+<span class="cm">// Custom clone method in Model</span>
+<span class="kw">class</span> <span class="tp">Product</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">public function</span> <span class="fn">duplicate</span>(): <span class="kw">static</span>
+    {
+        <span class="nm">$copy</span> = <span class="nm">$this</span>-><span class="fn">replicate</span>([<span class="st">'sku'</span>, <span class="st">'slug'</span>]);
+        <span class="nm">$copy</span>->sku  = <span class="st">'COPY-'</span> . <span class="fn">strtoupper</span>(<span class="fn">str_random</span>(6));
+        <span class="nm">$copy</span>->slug = <span class="nm">$this</span>->slug . <span class="st">'-copy'</span>;
+        <span class="nm">$copy</span>-><span class="fn">save</span>();
+        <span class="kw">return</span> <span class="nm">$copy</span>;
+    }
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ADAPTER -->
+<div id="sec-adapter" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#0e7490,#06b6d4)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S1</div>
+    <h1 style="font-size:30px;margin:6px 0 2px">Adapter</h1>
+    <div style="opacity:.85;font-size:17px">রূপান্তরক প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 উপমা</div>
+    <div class="analogy-box"><strong>ট্রাভেল অ্যাডাপ্টার:</strong> বাংলাদেশের সকেটে UK প্লাগ লাগাতে অ্যাডাপ্টার দরকার। পুরনো XML service-কে নতুন JSON-expecting সিস্টেমের সাথে মেলাতে Adapter।</div>
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Legacy API → Modern interface<br/>✔ Third-party library incompatible interface<br/>✔ Old XML service → JSON response convert<br/>✔ Laravel Filesystem — S3/Local একই interface</div>
+    <div class="section-label">💻 কোড</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'adp-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'adp-laravel')">Laravel</button>
+      </div>
+      <div id="adp-php" class="tab-pane active"><pre><span class="cm">// পুরনো Payment Service</span>
+<span class="kw">class</span> <span class="tp">OldSSLPayment</span>
+{
+    <span class="kw">public function</span> <span class="fn">makePayment</span>(<span class="tp">string</span> <span class="nm">$amount</span>, <span class="tp">string</span> <span class="nm">$currency</span>): array
+    { <span class="kw">return</span> [<span class="st">'status'</span> => <span class="st">'SUCCESS'</span>, <span class="st">'ref'</span> => <span class="st">'SSL_123'</span>]; }
+}
+
+<span class="cm">// নতুন interface</span>
+<span class="kw">interface</span> <span class="tp">ModernPayment</span>
+{
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$amountInPoisha</span>): <span class="tp">bool</span>;
+}
+
+<span class="cm">// Adapter — bridge করে</span>
+<span class="kw">class</span> <span class="tp">SSLPaymentAdapter</span> <span class="kw">implements</span> <span class="tp">ModernPayment</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">OldSSLPayment</span> <span class="nm">$legacy</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">pay</span>(<span class="tp">int</span> <span class="nm">$poisha</span>): <span class="tp">bool</span>
+    {
+        <span class="nm">$taka</span>  = <span class="nm">$poisha</span> / 100;
+        <span class="nm">$result</span> = <span class="nm">$this</span>->legacy-><span class="fn">makePayment</span>((string)<span class="nm">$taka</span>, <span class="st">'BDT'</span>);
+        <span class="kw">return</span> <span class="nm">$result</span>[<span class="st">'status'</span>] === <span class="st">'SUCCESS'</span>;
+    }
+}
+
+<span class="nm">$adapter</span> = <span class="kw">new</span> <span class="tp">SSLPaymentAdapter</span>(<span class="kw">new</span> <span class="tp">OldSSLPayment</span>());
+<span class="nm">$adapter</span>-><span class="fn">pay</span>(50000); <span class="cm">// 500 টাকা</span></pre></div>
+      <div id="adp-laravel" class="tab-pane"><pre><span class="cm">// Laravel Filesystem — Adapter Pattern!</span>
+<span class="cm">// Local, S3, FTP একই interface-এ কাজ করে</span>
+
+<span class="tp">Storage</span>::<span class="fn">put</span>(<span class="st">'photo.jpg'</span>, <span class="nm">$content</span>);       <span class="cm">// Local</span>
+<span class="tp">Storage</span>::<span class="fn">disk</span>(<span class="st">'s3'</span>)-><span class="fn">put</span>(<span class="st">'photo.jpg'</span>, <span class="nm">$content</span>); <span class="cm">// S3</span>
+<span class="cm">// একই code, আলাদা driver!</span>
+
+<span class="cm">// Custom Adapter তৈরি</span>
+<span class="kw">class</span> <span class="tp">LegacyUserAdapter</span> <span class="kw">implements</span> <span class="tp">UserRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">OldUserService</span> <span class="nm">$legacy</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="tp">int</span> <span class="nm">$id</span>): ?<span class="tp">UserDTO</span>
+    {
+        <span class="nm">$raw</span> = <span class="nm">$this</span>->legacy-><span class="fn">getUserData</span>(<span class="nm">$id</span>); <span class="cm">// পুরনো method</span>
+        <span class="kw">if</span> (!<span class="nm">$raw</span>) <span class="kw">return null</span>;
+
+        <span class="kw">return new</span> <span class="tp">UserDTO</span>(
+            id: <span class="nm">$raw</span>[<span class="st">'usr_id'</span>],
+            name: <span class="nm">$raw</span>[<span class="st">'full_name'</span>],
+            email: <span class="nm">$raw</span>[<span class="st">'email_address'</span>],
+        );
+    }
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- STATE -->
+<div id="sec-state" class="section">
+<div class="pattern-detail">
+  <div class="pattern-header" style="background:linear-gradient(135deg,#065f46,#10b981)">
+    <div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B8</div>
+    <h1 style="font-size:30px;margin:6px 0 2px">State</h1>
+    <div style="opacity:.85;font-size:17px">অবস্থা প্যাটার্ন</div>
+  </div>
+  <div class="pattern-body">
+    <div class="section-label">💡 উপমা</div>
+    <div class="analogy-box"><strong>অর্ডারের স্ট্যাটাস:</strong> Pending → Processing → Shipped → Delivered → Cancelled। প্রতিটি অবস্থায় আলাদা আচরণ। "Cancel" করা যায় Pending-এ, Delivered-এ নয়।</div>
+    <div class="section-label">✅ কখন ব্যবহার করবেন</div>
+    <div class="when-box">✔ Order/Payment status workflow<br/>✔ Document approval (Draft→Review→Published)<br/>✔ Traffic light, ATM machine<br/>✔ User account (active/suspended/banned)</div>
+    <div class="section-label">💻 কোড</div>
+    <div class="code-tabs">
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab(this,'state-php')">PHP</button>
+        <button class="tab-btn" onclick="switchTab(this,'state-laravel')">Laravel</button>
+      </div>
+      <div id="state-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">OrderState</span>
+{
+    <span class="kw">public function</span> <span class="fn">confirm</span>(<span class="tp">Order</span> <span class="nm">$order</span>): <span class="tp">void</span>;
+    <span class="kw">public function</span> <span class="fn">cancel</span>(<span class="tp">Order</span> <span class="nm">$order</span>): <span class="tp">void</span>;
+    <span class="kw">public function</span> <span class="fn">ship</span>(<span class="tp">Order</span> <span class="nm">$order</span>): <span class="tp">void</span>;
+}
+
+<span class="kw">class</span> <span class="tp">PendingState</span> <span class="kw">implements</span> <span class="tp">OrderState</span>
+{
+    <span class="kw">public function</span> <span class="fn">confirm</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$o</span>-><span class="fn">setState</span>(<span class="kw">new</span> <span class="tp">ProcessingState</span>()); }
+
+    <span class="kw">public function</span> <span class="fn">cancel</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$o</span>-><span class="fn">setState</span>(<span class="kw">new</span> <span class="tp">CancelledState</span>()); }
+
+    <span class="kw">public function</span> <span class="fn">ship</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">'Pending order ship করা যাবে না!'</span>); }
+}
+
+<span class="kw">class</span> <span class="tp">ProcessingState</span> <span class="kw">implements</span> <span class="tp">OrderState</span>
+{
+    <span class="kw">public function</span> <span class="fn">confirm</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">'ইতিমধ্যে confirmed'</span>); }
+
+    <span class="kw">public function</span> <span class="fn">cancel</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$o</span>-><span class="fn">setState</span>(<span class="kw">new</span> <span class="tp">CancelledState</span>()); }
+
+    <span class="kw">public function</span> <span class="fn">ship</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">void</span>
+    { <span class="nm">$o</span>-><span class="fn">setState</span>(<span class="kw">new</span> <span class="tp">ShippedState</span>()); }
+}
+
+<span class="kw">class</span> <span class="tp">Order</span>
+{
+    <span class="kw">private</span> <span class="tp">OrderState</span> <span class="nm">$state</span>;
+    <span class="kw">public function</span> <span class="fn">__construct</span>() { <span class="nm">$this</span>->state = <span class="kw">new</span> <span class="tp">PendingState</span>(); }
+    <span class="kw">public function</span> <span class="fn">setState</span>(<span class="tp">OrderState</span> <span class="nm">$s</span>) { <span class="nm">$this</span>->state = <span class="nm">$s</span>; }
+    <span class="kw">public function</span> <span class="fn">confirm</span>() { <span class="nm">$this</span>->state-><span class="fn">confirm</span>(<span class="nm">$this</span>); }
+    <span class="kw">public function</span> <span class="fn">ship</span>()    { <span class="nm">$this</span>->state-><span class="fn">ship</span>(<span class="nm">$this</span>); }
+}</pre></div>
+      <div id="state-laravel" class="tab-pane"><pre><span class="cm">// Laravel State Machine with Enums (PHP 8.1+)</span>
+<span class="kw">enum</span> <span class="tp">OrderStatus</span>: <span class="tp">string</span>
+{
+    <span class="kw">case</span> <span class="nm">PENDING</span>    = <span class="st">'pending'</span>;
+    <span class="kw">case</span> <span class="nm">PROCESSING</span> = <span class="st">'processing'</span>;
+    <span class="kw">case</span> <span class="nm">SHIPPED</span>    = <span class="st">'shipped'</span>;
+    <span class="kw">case</span> <span class="nm">DELIVERED</span>  = <span class="st">'delivered'</span>;
+    <span class="kw">case</span> <span class="nm">CANCELLED</span>  = <span class="st">'cancelled'</span>;
+
+    <span class="kw">public function</span> <span class="fn">canTransitionTo</span>(<span class="kw">self</span> <span class="nm">$new</span>): <span class="tp">bool</span>
+    {
+        <span class="kw">return match</span>(<span class="nm">$this</span>) {
+            <span class="kw">self</span>::<span class="nm">PENDING</span>    => <span class="kw">in_array</span>(<span class="nm">$new</span>, [<span class="kw">self</span>::<span class="nm">PROCESSING</span>, <span class="kw">self</span>::<span class="nm">CANCELLED</span>]),
+            <span class="kw">self</span>::<span class="nm">PROCESSING</span> => <span class="kw">in_array</span>(<span class="nm">$new</span>, [<span class="kw">self</span>::<span class="nm">SHIPPED</span>,    <span class="kw">self</span>::<span class="nm">CANCELLED</span>]),
+            <span class="kw">self</span>::<span class="nm">SHIPPED</span>    => <span class="nm">$new</span> === <span class="kw">self</span>::<span class="nm">DELIVERED</span>,
+            <span class="kw">default</span>         => <span class="kw">false</span>,
+        };
+    }
+}
+
+<span class="cm">// Model-এ</span>
+<span class="kw">class</span> <span class="tp">Order</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">protected</span> <span class="nm">$casts</span> = [<span class="st">'status'</span> => <span class="tp">OrderStatus</span>::<span class="kw">class</span>];
+
+    <span class="kw">public function</span> <span class="fn">transitionTo</span>(<span class="tp">OrderStatus</span> <span class="nm">$new</span>): <span class="tp">void</span>
+    {
+        <span class="kw">if</span> (!<span class="nm">$this</span>->status-><span class="fn">canTransitionTo</span>(<span class="nm">$new</span>))
+            <span class="kw">throw new</span> <span class="tp">InvalidStatusTransitionException</span>();
+
+        <span class="nm">$this</span>-><span class="fn">update</span>([<span class="st">'status'</span> => <span class="nm">$new</span>]);
+        <span class="tp">OrderStatusChanged</span>::<span class="fn">dispatch</span>(<span class="nm">$this</span>, <span class="nm">$new</span>);
+    }
+}
+
+<span class="cm">// Controller</span>
+<span class="nm">$order</span>-><span class="fn">transitionTo</span>(<span class="tp">OrderStatus</span>::<span class="nm">SHIPPED</span>);</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Remaining patterns compact -->
+<div id="sec-proxy" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#0c4a6e,#0891b2)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S4</div><h1 style="font-size:30px;margin:6px 0 2px">Proxy</h1><div style="opacity:.85;font-size:17px">প্রতিনিধি প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>ব্যাংক গেটকিপার:</strong> ভল্টে সরাসরি ঢোকা যায় না। গার্ড পরিচয় যাচাই করে, লগ রাখে, তারপর যেতে দেয়।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Lazy loading (প্রয়োজনে তৈরি)<br/>✔ Access control (permission check)<br/>✔ Caching proxy (result cache)<br/>✔ Logging proxy (সব call লগ)</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'proxy-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'proxy-laravel')">Laravel</button></div><div id="proxy-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">ImageLoader</span> { <span class="kw">public function</span> <span class="fn">display</span>(): <span class="tp">void</span>; }
+
+<span class="kw">class</span> <span class="tp">RealImage</span> <span class="kw">implements</span> <span class="tp">ImageLoader</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">string</span> <span class="nm">$file</span>)
+    { <span class="fn">echo</span> <span class="st">"Disk থেকে লোড হচ্ছে: {$file}\n"</span>; }
+
+    <span class="kw">public function</span> <span class="fn">display</span>(): <span class="tp">void</span> { <span class="fn">echo</span> <span class="st">"দেখাচ্ছে: {$this->file}\n"</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">ImageProxy</span> <span class="kw">implements</span> <span class="tp">ImageLoader</span>
+{
+    <span class="kw">private</span> ?<span class="tp">RealImage</span> <span class="nm">$img</span> = <span class="kw">null</span>;
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">string</span> <span class="nm">$file</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">display</span>(): <span class="tp">void</span>
+    {
+        <span class="nm">$this</span>->img ??= <span class="kw">new</span> <span class="tp">RealImage</span>(<span class="nm">$this</span>->file); <span class="cm">// প্রথমবারই লোড</span>
+        <span class="nm">$this</span>->img-><span class="fn">display</span>();
+    }
+}
+
+<span class="nm">$img</span> = <span class="kw">new</span> <span class="tp">ImageProxy</span>(<span class="st">'large-photo.jpg'</span>);
+<span class="cm">// এখনও লোড হয়নি</span>
+<span class="nm">$img</span>-><span class="fn">display</span>(); <span class="cm">// এখন লোড হলো</span>
+<span class="nm">$img</span>-><span class="fn">display</span>(); <span class="cm">// cache থেকে</span></pre></div><div id="proxy-laravel" class="tab-pane"><pre><span class="cm">// Laravel Lazy Loading — Proxy Pattern!</span>
+<span class="nm">$user</span> = <span class="tp">User</span>::<span class="fn">find</span>(1); <span class="cm">// posts লোড হয়নি</span>
+<span class="nm">$user</span>->posts; <span class="cm">// এখন লোড হলো (lazy)</span>
+
+<span class="cm">// Custom Caching Proxy</span>
+<span class="kw">class</span> <span class="tp">CachedProductRepository</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="tp">ProductRepository</span> <span class="nm">$repo</span>,
+        <span class="kw">private</span> <span class="tp">Cache</span> <span class="nm">$cache</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">find</span>(<span class="tp">int</span> <span class="nm">$id</span>): ?<span class="tp">Product</span>
+    {
+        <span class="kw">return</span> <span class="nm">$this</span>->cache-><span class="fn">remember</span>(
+            <span class="st">"product_{$id}"</span>, 3600,
+            <span class="kw">fn</span>() => <span class="nm">$this</span>->repo-><span class="fn">find</span>(<span class="nm">$id</span>)
+        );
+    }
+}</pre></div></div></div></div></div>
+
+<div id="sec-composite" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S5</div><h1 style="font-size:30px;margin:6px 0 2px">Composite</h1><div style="opacity:.85;font-size:17px">যৌগিক প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>ফাইল সিস্টেম:</strong> ফোল্ডারে ফাইল থাকে, আবার ফোল্ডারও থাকে। সব কিছুতে একই operation — size(), delete()।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Category tree (Category → Subcategory → Product)<br/>✔ Menu system (Menu → Submenu → MenuItem)<br/>✔ Org chart<br/>✔ File/Folder structure</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'comp-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'comp-laravel')">Laravel</button></div><div id="comp-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">MenuComponent</span>
+{ <span class="kw">public function</span> <span class="fn">render</span>(<span class="tp">int</span> <span class="nm">$depth</span> = 0): <span class="tp">void</span>; }
+
+<span class="kw">class</span> <span class="tp">MenuItem</span> <span class="kw">implements</span> <span class="tp">MenuComponent</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">string</span> <span class="nm">$name</span>, <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$url</span>) {}
+    <span class="kw">public function</span> <span class="fn">render</span>(<span class="tp">int</span> <span class="nm">$d</span> = 0): <span class="tp">void</span>
+    { <span class="fn">echo</span> <span class="fn">str_repeat</span>(<span class="st">'  '</span>, <span class="nm">$d</span>) . <span class="st">"- {$this->name} ({$this->url})\n"</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">MenuGroup</span> <span class="kw">implements</span> <span class="tp">MenuComponent</span>
+{
+    <span class="kw">private</span> array <span class="nm">$items</span> = [];
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">string</span> <span class="nm">$name</span>) {}
+    <span class="kw">public function</span> <span class="fn">add</span>(<span class="tp">MenuComponent</span> <span class="nm">$c</span>): <span class="tp">void</span> { <span class="nm">$this</span>->items[] = <span class="nm">$c</span>; }
+    <span class="kw">public function</span> <span class="fn">render</span>(<span class="tp">int</span> <span class="nm">$d</span> = 0): <span class="tp">void</span>
+    {
+        <span class="fn">echo</span> <span class="fn">str_repeat</span>(<span class="st">'  '</span>, <span class="nm">$d</span>) . <span class="st">"[{$this->name}]\n"</span>;
+        <span class="kw">foreach</span> (<span class="nm">$this</span>->items <span class="kw">as</span> <span class="nm">$i</span>) <span class="nm">$i</span>-><span class="fn">render</span>(<span class="nm">$d</span> + 1);
+    }
+}
+
+<span class="nm">$nav</span> = <span class="kw">new</span> <span class="tp">MenuGroup</span>(<span class="st">'প্রধান মেনু'</span>);
+<span class="nm">$nav</span>-><span class="fn">add</span>(<span class="kw">new</span> <span class="tp">MenuItem</span>(<span class="st">'হোম'</span>, <span class="st">'/'</span>));
+<span class="nm">$admin</span> = <span class="kw">new</span> <span class="tp">MenuGroup</span>(<span class="st">'Admin'</span>);
+<span class="nm">$admin</span>-><span class="fn">add</span>(<span class="kw">new</span> <span class="tp">MenuItem</span>(<span class="st">'Users'</span>, <span class="st">'/users'</span>));
+<span class="nm">$nav</span>-><span class="fn">add</span>(<span class="nm">$admin</span>);
+<span class="nm">$nav</span>-><span class="fn">render</span>();</pre></div><div id="comp-laravel" class="tab-pane"><pre><span class="cm">// Laravel Nested Category Tree</span>
+<span class="kw">class</span> <span class="tp">Category</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">public function</span> <span class="fn">children</span>(): <span class="tp">HasMany</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>-><span class="fn">hasMany</span>(<span class="tp">Category</span>::<span class="kw">class</span>, <span class="st">'parent_id'</span>); }
+
+    <span class="kw">public function</span> <span class="fn">parent</span>(): <span class="tp">BelongsTo</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>-><span class="fn">belongsTo</span>(<span class="tp">Category</span>::<span class="kw">class</span>, <span class="st">'parent_id'</span>); }
+
+    <span class="cm">// Composite: recursive tree</span>
+    <span class="kw">public function</span> <span class="fn">allDescendants</span>(): \<span class="tp">Illuminate\Support\Collection</span>
+    {
+        <span class="kw">return</span> <span class="nm">$this</span>->children
+            -><span class="fn">flatMap</span>(<span class="kw">fn</span>(<span class="nm">$c</span>) => <span class="nm">$c</span>->allDescendants()-><span class="fn">prepend</span>(<span class="nm">$c</span>));
+    }
+}
+
+<span class="cm">// Blade-এ recursive component</span>
+<span class="cm">// @each('components.category-node', $category->children, 'category')</span></pre></div></div></div></div></div>
+
+<div id="sec-bridge" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#0f4c75,#1b6ca8)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S6</div><h1 style="font-size:30px;margin:6px 0 2px">Bridge</h1><div style="opacity:.85;font-size:17px">সেতু প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>রিমোট ও TV:</strong> Samsung রিমোট Sony TV-তে কাজ করে কারণ উভয়ই IR signal বোঝে। Abstraction (রিমোট) ও Implementation (TV) আলাদা।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Notification × Channel (Email via SMTP/SES, SMS via Twilio/Nexmo)<br/>✔ Report × Format (PDF/Excel)<br/>✔ Shape × Renderer (SVG/Canvas)</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'bridge-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'bridge-laravel')">Laravel</button></div><div id="bridge-php" class="tab-pane active"><pre><span class="cm">// Implementation</span>
+<span class="kw">interface</span> <span class="tp">MessageSender</span>
+{ <span class="kw">public function</span> <span class="fn">sendMessage</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$body</span>): <span class="tp">bool</span>; }
+
+<span class="kw">class</span> <span class="tp">SmtpSender</span>    <span class="kw">implements</span> <span class="tp">MessageSender</span> {
+    <span class="kw">public function</span> <span class="fn">sendMessage</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$b</span>): <span class="tp">bool</span>
+    { <span class="fn">echo</span> <span class="st">"SMTP → {$to}: {$b}\n"</span>; <span class="kw">return true</span>; }
+}
+<span class="kw">class</span> <span class="tp">SESMailSender</span>  <span class="kw">implements</span> <span class="tp">MessageSender</span> {
+    <span class="kw">public function</span> <span class="fn">sendMessage</span>(<span class="tp">string</span> <span class="nm">$to</span>, <span class="tp">string</span> <span class="nm">$b</span>): <span class="tp">bool</span>
+    { <span class="fn">echo</span> <span class="st">"SES → {$to}: {$b}\n"</span>; <span class="kw">return true</span>; }
+}
+
+<span class="cm">// Abstraction</span>
+<span class="kw">abstract class</span> <span class="tp">Notification</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">protected</span> <span class="tp">MessageSender</span> <span class="nm">$sender</span>) {}
+    <span class="kw">abstract public function</span> <span class="fn">notify</span>(<span class="tp">string</span> <span class="nm">$to</span>): <span class="tp">void</span>;
+}
+
+<span class="kw">class</span> <span class="tp">OrderNotification</span> <span class="kw">extends</span> <span class="tp">Notification</span>
+{
+    <span class="kw">public function</span> <span class="fn">notify</span>(<span class="tp">string</span> <span class="nm">$to</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->sender-><span class="fn">sendMessage</span>(<span class="nm">$to</span>, <span class="st">'অর্ডার confirmed!'</span>); }
+}
+
+<span class="cm">// SMTP বা SES — যেকোনো সাথে কাজ করে</span>
+<span class="kw">new</span> <span class="tp">OrderNotification</span>(<span class="kw">new</span> <span class="tp">SmtpSender</span>())-><span class="fn">notify</span>(<span class="st">'r@example.com'</span>);
+<span class="kw">new</span> <span class="tp">OrderNotification</span>(<span class="kw">new</span> <span class="tp">SESMailSender</span>())-><span class="fn">notify</span>(<span class="st">'r@example.com'</span>);</pre></div><div id="bridge-laravel" class="tab-pane"><pre><span class="cm">// Laravel Mail — Bridge Pattern!</span>
+<span class="cm">// Mailable (abstraction) × Mailer/Transport (implementation)</span>
+
+<span class="cm">// config/mail.php</span>
+<span class="st">'mailers'</span> => [
+    <span class="st">'smtp'</span>     => [<span class="st">'transport'</span> => <span class="st">'smtp'</span>],
+    <span class="st">'ses'</span>      => [<span class="st">'transport'</span> => <span class="st">'ses'</span>],
+    <span class="st">'mailgun'</span>  => [<span class="st">'transport'</span> => <span class="st">'mailgun'</span>],
+],
+
+<span class="cm">// Same Mailable, different mailer</span>
+<span class="tp">Mail</span>::<span class="fn">mailer</span>(<span class="st">'smtp'</span>)-><span class="fn">to</span>(<span class="nm">$user</span>)-><span class="fn">send</span>(<span class="kw">new</span> <span class="tp">WelcomeMail</span>());
+<span class="tp">Mail</span>::<span class="fn">mailer</span>(<span class="st">'ses'</span>)-><span class="fn">to</span>(<span class="nm">$user</span>)-><span class="fn">send</span>(<span class="kw">new</span> <span class="tp">WelcomeMail</span>());</pre></div></div></div></div></div>
+
+<div id="sec-flyweight" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#134e4a,#0d9488)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">STRUCTURAL · S7</div><h1 style="font-size:30px;margin:6px 0 2px">Flyweight</h1><div style="opacity:.85;font-size:17px">হালকাওজন প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>বনের গাছ:</strong> হাজারো গাছ আছে কিন্তু color, texture মাত্র ৩ ধরনের — share করা হয়। শুধু position আলাদা। Memory ৯৯% কমে যায়।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Game-এ হাজারো particle/bullet/enemy<br/>✔ Text editor-এ character rendering<br/>✔ Map-এ হাজারো marker<br/>✔ Icon library cache</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'fw-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'fw-laravel')">Laravel</button></div><div id="fw-php" class="tab-pane active"><pre><span class="cm">// Flyweight — shared state</span>
+<span class="kw">class</span> <span class="tp">TreeType</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly</span> <span class="tp">string</span> <span class="nm">$name</span>,
+        <span class="kw">public readonly</span> <span class="tp">string</span> <span class="nm">$color</span>,
+        <span class="kw">public readonly</span> <span class="tp">string</span> <span class="nm">$texture</span>,
+    ) {}
+}
+
+<span class="cm">// Factory with cache</span>
+<span class="kw">class</span> <span class="tp">TreeTypeFactory</span>
+{
+    <span class="kw">private static</span> array <span class="nm">$types</span> = [];
+
+    <span class="kw">public static function</span> <span class="fn">get</span>(<span class="tp">string</span> <span class="nm">$n</span>, <span class="tp">string</span> <span class="nm">$c</span>, <span class="tp">string</span> <span class="nm">$t</span>): <span class="tp">TreeType</span>
+    {
+        <span class="nm">$key</span> = <span class="st">"{$n}_{$c}"</span>;
+        <span class="kw">return</span> <span class="kw">static</span>::<span class="nm">$types</span>[<span class="nm">$key</span>] ??= <span class="kw">new</span> <span class="tp">TreeType</span>(<span class="nm">$n</span>, <span class="nm">$c</span>, <span class="nm">$t</span>);
+    }
+}
+
+<span class="cm">// Tree — extrinsic state (x, y)</span>
+<span class="kw">class</span> <span class="tp">Tree</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public</span> <span class="tp">int</span> <span class="nm">$x</span>, <span class="kw">public</span> <span class="tp">int</span> <span class="nm">$y</span>,
+        <span class="kw">public</span> <span class="tp">TreeType</span> <span class="nm">$type</span>
+    ) {}
+}
+
+<span class="cm">// ১০,০০০ গাছ, কিন্তু TreeType মাত্র ৩টি!</span>
+<span class="nm">$forest</span> = [];
+<span class="kw">for</span> (<span class="nm">$i</span> = 0; <span class="nm">$i</span> < 10000; <span class="nm">$i</span>++) {
+    <span class="nm">$forest</span>[] = <span class="kw">new</span> <span class="tp">Tree</span>(
+        <span class="fn">rand</span>(0,1000), <span class="fn">rand</span>(0,1000),
+        <span class="tp">TreeTypeFactory</span>::<span class="fn">get</span>(<span class="st">'oak'</span>, <span class="st">'green'</span>, <span class="st">'oak.png'</span>)
+    );
+}</pre></div><div id="fw-laravel" class="tab-pane"><pre><span class="cm">// Laravel Config — Flyweight Pattern!</span>
+<span class="cm">// config() helper caches loaded config arrays</span>
+
+<span class="cm">// View Composer — shared data</span>
+<span class="tp">View</span>::<span class="fn">composer</span>(<span class="st">'*'</span>, <span class="kw">function</span>(<span class="nm">$view</span>) {
+    <span class="cm">// Categories একবার লোড, সব view-এ share</span>
+    <span class="nm">$view</span>-><span class="fn">with</span>(<span class="st">'categories'</span>, <span class="tp">Cache</span>::<span class="fn">remember</span>(
+        <span class="st">'nav_categories'</span>, 3600,
+        <span class="kw">fn</span>() => <span class="tp">Category</span>::<span class="fn">active</span>()-><span class="fn">get</span>()
+    ));
+});
+
+<span class="cm">// Country/Currency — shared flyweight</span>
+<span class="kw">class</span> <span class="tp">CurrencyService</span>
+{
+    <span class="kw">private</span> array <span class="nm">$cache</span> = [];
+    <span class="kw">public function</span> <span class="fn">getRate</span>(<span class="tp">string</span> <span class="nm">$from</span>, <span class="tp">string</span> <span class="nm">$to</span>): <span class="tp">float</span>
+    {
+        <span class="nm">$key</span> = <span class="st">"{$from}_{$to}"</span>;
+        <span class="kw">return</span> <span class="nm">$this</span>->cache[<span class="nm">$key</span>] ??= <span class="nm">$this</span>-><span class="fn">fetchFromAPI</span>(<span class="nm">$from</span>, <span class="nm">$to</span>);
+    }
+}</pre></div></div></div></div></div>
+
+<!-- COMMAND -->
+<div id="sec-command" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#14532d,#16a34a)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B3</div><h1 style="font-size:30px;margin:6px 0 2px">Command</h1><div style="opacity:.85;font-size:17px">আদেশ প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>রেস্তোরাঁর অর্ডার স্লিপ:</strong> ওয়েটার অর্ডার নেয় → স্লিপ লেখে → রান্নাঘরে পাঠায়। Undo মানে স্লিপ বাতিল। Queue মানে স্লিপ জমা থাকে।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Undo/Redo system<br/>✔ Queue-based job execution<br/>✔ Macro recording<br/>✔ Transaction management<br/>✔ Laravel Artisan Command, Queue Job</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'cmd-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'cmd-laravel')">Laravel</button></div><div id="cmd-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">Command</span>
+{ <span class="kw">public function</span> <span class="fn">execute</span>(): <span class="tp">void</span>; <span class="kw">public function</span> <span class="fn">undo</span>(): <span class="tp">void</span>; }
+
+<span class="kw">class</span> <span class="tp">AddTextCommand</span> <span class="kw">implements</span> <span class="tp">Command</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="tp">TextDocument</span> <span class="nm">$doc</span>,
+        <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$text</span>
+    ) {}
+    <span class="kw">public function</span> <span class="fn">execute</span>(): <span class="tp">void</span> { <span class="nm">$this</span>->doc-><span class="fn">addText</span>(<span class="nm">$this</span>->text); }
+    <span class="kw">public function</span> <span class="fn">undo</span>(): <span class="tp">void</span>   { <span class="nm">$this</span>->doc-><span class="fn">removeText</span>(<span class="fn">strlen</span>(<span class="nm">$this</span>->text)); }
+}
+
+<span class="kw">class</span> <span class="tp">CommandHistory</span>
+{
+    <span class="kw">private</span> array <span class="nm">$history</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">execute</span>(<span class="tp">Command</span> <span class="nm">$cmd</span>): <span class="tp">void</span>
+    { <span class="nm">$cmd</span>-><span class="fn">execute</span>(); <span class="nm">$this</span>->history[] = <span class="nm">$cmd</span>; }
+
+    <span class="kw">public function</span> <span class="fn">undo</span>(): <span class="tp">void</span>
+    { (<span class="fn">array_pop</span>(<span class="nm">$this</span>->history))?-><span class="fn">undo</span>(); }
+}
+
+<span class="nm">$history</span> = <span class="kw">new</span> <span class="tp">CommandHistory</span>();
+<span class="nm">$history</span>-><span class="fn">execute</span>(<span class="kw">new</span> <span class="tp">AddTextCommand</span>(<span class="nm">$doc</span>, <span class="st">'হ্যালো বাংলাদেশ'</span>));
+<span class="nm">$history</span>-><span class="fn">undo</span>(); <span class="cm">// undo হলো</span></pre></div><div id="cmd-laravel" class="tab-pane"><pre><span class="cm">// Laravel Queue Job — Command Pattern!</span>
+
+<span class="cm">// php artisan make:job ProcessPayment</span>
+<span class="kw">class</span> <span class="tp">ProcessPayment</span> <span class="kw">implements</span> <span class="tp">ShouldQueue</span>
+{
+    <span class="kw">use</span> <span class="tp">Dispatchable</span>, <span class="tp">Queueable</span>, <span class="tp">SerializesModels</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">public readonly</span> <span class="tp">Order</span> <span class="nm">$order</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(): <span class="tp">void</span>
+    {
+        <span class="tp">PaymentGateway</span>::<span class="fn">charge</span>(<span class="nm">$this</span>->order-><span class="fn">total</span>());
+        <span class="nm">$this</span>->order-><span class="fn">update</span>([<span class="st">'status'</span> => <span class="st">'paid'</span>]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">failed</span>(\<span class="tp">Throwable</span> <span class="nm">$e</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->order-><span class="fn">update</span>([<span class="st">'status'</span> => <span class="st">'failed'</span>]); }
+}
+
+<span class="cm">// Dispatch (queue-তে রাখুন)</span>
+<span class="tp">ProcessPayment</span>::<span class="fn">dispatch</span>(<span class="nm">$order</span>);
+<span class="tp">ProcessPayment</span>::<span class="fn">dispatch</span>(<span class="nm">$order</span>)-><span class="fn">delay</span>(<span class="fn">now</span>()-><span class="fn">addMinutes</span>(5));
+
+<span class="cm">// Artisan Command — Command Pattern</span>
+<span class="cm">// php artisan make:command SendWeeklyReport</span>
+<span class="kw">class</span> <span class="tp">SendWeeklyReport</span> <span class="kw">extends</span> <span class="tp">Command</span>
+{
+    <span class="kw">protected</span> <span class="nm">$signature</span> = <span class="st">'report:weekly {--email=}'</span>;
+    <span class="kw">public function</span> <span class="fn">handle</span>(): <span class="tp">void</span>
+    { <span class="nm">$this</span>-><span class="fn">info</span>(<span class="st">'রিপোর্ট পাঠানো হচ্ছে...'</span>); }
+}</pre></div></div></div></div></div>
+
+<!-- ITERATOR, TEMPLATE, MEDIATOR, MEMENTO, VISITOR, INTERPRETER — compact -->
+<div id="sec-iterator" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#166534,#22c55e)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B4</div><h1 style="font-size:30px;margin:6px 0 2px">Iterator</h1><div style="opacity:.85;font-size:17px">পুনরাবৃত্তিকারী প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>বইয়ের পাতা:</strong> বই কীভাবে বাঁধাই হয়েছে না জেনেও পাতার পর পাতা পড়া যায়। Iterator জানে next() কোথায় যাবে।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Custom collection traverse<br/>✔ Pagination (পাতার পর পাতা)<br/>✔ Tree/Graph traversal<br/>✔ Laravel Collection নিজেই Iterator!</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'iter-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'iter-laravel')">Laravel</button></div><div id="iter-php" class="tab-pane active"><pre><span class="kw">class</span> <span class="tp">NumberRange</span> <span class="kw">implements</span> \<span class="tp">Iterator</span>
+{
+    <span class="kw">private</span> <span class="tp">int</span> <span class="nm">$current</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="tp">int</span> <span class="nm">$start</span>,
+        <span class="kw">private</span> <span class="tp">int</span> <span class="nm">$end</span>,
+        <span class="kw">private</span> <span class="tp">int</span> <span class="nm">$step</span> = 1
+    ) { <span class="nm">$this</span>->current = <span class="nm">$start</span>; }
+
+    <span class="kw">public function</span> <span class="fn">current</span>(): <span class="tp">int</span>  { <span class="kw">return</span> <span class="nm">$this</span>->current; }
+    <span class="kw">public function</span> <span class="fn">key</span>(): <span class="tp">int</span>     { <span class="kw">return</span> (<span class="nm">$this</span>->current - <span class="nm">$this</span>->start) / <span class="nm">$this</span>->step; }
+    <span class="kw">public function</span> <span class="fn">next</span>(): <span class="tp">void</span>   { <span class="nm">$this</span>->current += <span class="nm">$this</span>->step; }
+    <span class="kw">public function</span> <span class="fn">rewind</span>(): <span class="tp">void</span> { <span class="nm">$this</span>->current = <span class="nm">$this</span>->start; }
+    <span class="kw">public function</span> <span class="fn">valid</span>(): <span class="tp">bool</span>  { <span class="kw">return</span> <span class="nm">$this</span>->current <= <span class="nm">$this</span>->end; }
+}
+
+<span class="kw">foreach</span> (<span class="kw">new</span> <span class="tp">NumberRange</span>(2, 20, 2) <span class="kw">as</span> <span class="nm">$n</span>) {
+    <span class="fn">echo</span> <span class="nm">$n</span> . <span class="st">' '</span>; <span class="cm">// 2 4 6 8 10 12 14 16 18 20</span>
+}</pre></div><div id="iter-laravel" class="tab-pane"><pre><span class="cm">// Laravel Collection — Iterator!</span>
+<span class="nm">$users</span> = <span class="tp">User</span>::<span class="fn">all</span>(); <span class="cm">// Collection implements Iterator</span>
+
+<span class="kw">foreach</span> (<span class="nm">$users</span> <span class="kw">as</span> <span class="nm">$user</span>) { <span class="cm">/* ... */</span> }
+
+<span class="cm">// Cursor — Memory-efficient iterator</span>
+<span class="kw">foreach</span> (<span class="tp">User</span>::<span class="fn">cursor</span>() <span class="kw">as</span> <span class="nm">$user</span>) {
+    <span class="cm">// ১ লাখ user, কিন্তু একটি একটি করে আসে</span>
+}
+
+<span class="cm">// LazyCollection</span>
+<span class="tp">User</span>::<span class="fn">lazy</span>()-><span class="fn">each</span>(<span class="kw">function</span> (<span class="nm">$user</span>) {
+    <span class="tp">Cache</span>::<span class="fn">forget</span>(<span class="st">"user_{$user->id}"</span>);
+});</pre></div></div></div></div></div>
+
+<div id="sec-template" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#1a4731,#15803d)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B5</div><h1 style="font-size:30px;margin:6px 0 2px">Template Method</h1><div style="opacity:.85;font-size:17px">ছাঁচ পদ্ধতি প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>রান্নার রেসিপি:</strong> কাঠামো একই — (১) উপকরণ প্রস্তুত, (২) রান্না করো, (৩) পরিবেশন। উপকরণ বদলায়, পদ্ধতি বদলায়, কিন্তু তিনটি ধাপ সবসময়।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Data import pipeline (CSV/JSON/XML)<br/>✔ Report generation<br/>✔ Laravel Mailable build() method<br/>✔ Test setup teardown</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'tmpl-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'tmpl-laravel')">Laravel</button></div><div id="tmpl-php" class="tab-pane active"><pre><span class="kw">abstract class</span> <span class="tp">ReportGenerator</span>
+{
+    <span class="cm">// Template method — কাঠামো fix</span>
+    <span class="kw">final public function</span> <span class="fn">generate</span>(): <span class="tp">string</span>
+    {
+        <span class="nm">$data</span>    = <span class="nm">$this</span>-><span class="fn">fetchData</span>();
+        <span class="nm">$filtered</span> = <span class="nm">$this</span>-><span class="fn">filterData</span>(<span class="nm">$data</span>);
+        <span class="nm">$formatted</span> = <span class="nm">$this</span>-><span class="fn">formatData</span>(<span class="nm">$filtered</span>);
+        <span class="kw">return</span> <span class="nm">$this</span>-><span class="fn">renderReport</span>(<span class="nm">$formatted</span>);
+    }
+
+    <span class="kw">abstract protected function</span> <span class="fn">fetchData</span>(): array;
+    <span class="kw">abstract protected function</span> <span class="fn">formatData</span>(array <span class="nm">$d</span>): string;
+
+    <span class="cm">// Hook — override করা যায়, optional</span>
+    <span class="kw">protected function</span> <span class="fn">filterData</span>(array <span class="nm">$d</span>): array { <span class="kw">return</span> <span class="nm">$d</span>; }
+    <span class="kw">protected function</span> <span class="fn">renderReport</span>(<span class="tp">string</span> <span class="nm">$c</span>): <span class="tp">string</span> { <span class="kw">return</span> <span class="nm">$c</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">SalesReport</span> <span class="kw">extends</span> <span class="tp">ReportGenerator</span>
+{
+    <span class="kw">protected function</span> <span class="fn">fetchData</span>(): array
+    { <span class="kw">return</span> <span class="tp">Order</span>::<span class="fn">thisMonth</span>()-><span class="fn">get</span>()-><span class="fn">toArray</span>(); }
+
+    <span class="kw">protected function</span> <span class="fn">formatData</span>(array <span class="nm">$d</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="fn">json_encode</span>(<span class="nm">$d</span>); }
+}</pre></div><div id="tmpl-laravel" class="tab-pane active"><pre><span class="cm">// Laravel Mailable — Template Method!</span>
+<span class="kw">class</span> <span class="tp">InvoiceMail</span> <span class="kw">extends</span> <span class="tp">Mailable</span>
+{
+    <span class="cm">// build() = template method</span>
+    <span class="kw">public function</span> <span class="fn">build</span>(): <span class="kw">static</span>
+    {
+        <span class="kw">return</span> <span class="nm">$this</span>
+            -><span class="fn">subject</span>(<span class="st">'Invoice #'</span> . <span class="nm">$this</span>->invoice->id)
+            -><span class="fn">view</span>(<span class="st">'emails.invoice'</span>)
+            -><span class="fn">attachData</span>(<span class="nm">$this</span>->invoice-><span class="fn">toPDF</span>(), <span class="st">'invoice.pdf'</span>);
+    }
+}
+
+<span class="cm">// Custom pipeline template</span>
+<span class="kw">abstract class</span> <span class="tp">DataImporter</span>
+{
+    <span class="kw">final public function</span> <span class="fn">import</span>(<span class="tp">string</span> <span class="nm">$path</span>): <span class="tp">int</span>
+    {
+        <span class="nm">$raw</span>  = <span class="nm">$this</span>-><span class="fn">read</span>(<span class="nm">$path</span>);
+        <span class="nm">$data</span> = <span class="nm">$this</span>-><span class="fn">transform</span>(<span class="nm">$raw</span>);
+        <span class="nm">$this</span>-><span class="fn">validate</span>(<span class="nm">$data</span>);
+        <span class="kw">return</span> <span class="nm">$this</span>-><span class="fn">save</span>(<span class="nm">$data</span>);
+    }
+
+    <span class="kw">abstract protected function</span> <span class="fn">read</span>(<span class="tp">string</span> <span class="nm">$path</span>): array;
+    <span class="kw">abstract protected function</span> <span class="fn">transform</span>(array <span class="nm">$d</span>): array;
+    <span class="kw">protected function</span> <span class="fn">validate</span>(array <span class="nm">$d</span>): <span class="tp">void</span> {}
+    <span class="kw">protected function</span> <span class="fn">save</span>(array <span class="nm">$d</span>): <span class="tp">int</span> { <span class="kw">return</span> <span class="tp">DB</span>::<span class="fn">table</span>(<span class="st">'imports'</span>)-><span class="fn">insert</span>(<span class="nm">$d</span>); }
+}</pre></div></div></div></div></div>
+
+<div id="sec-mediator" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#064e3b,#047857)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B7</div><h1 style="font-size:30px;margin:6px 0 2px">Mediator</h1><div style="opacity:.85;font-size:17px">মধ্যস্থতাকারী প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>Air Traffic Control:</strong> বিমানগুলো সরাসরি কথা বলে না — সব কমিউনিকেশন টাওয়ারের মাধ্যমে। অনেক component এর মধ্যে একটি central mediator।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Chat room<br/>✔ Event Bus / MediatR pattern<br/>✔ UI form — একটি field অন্যটিকে প্রভাবিত করে<br/>✔ Microservice communication</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'med-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'med-laravel')">Laravel</button></div><div id="med-php" class="tab-pane active"><pre><span class="kw">class</span> <span class="tp">ChatRoom</span>
+{
+    <span class="kw">private</span> array <span class="nm">$users</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">join</span>(<span class="tp">User</span> <span class="nm">$u</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->users[<span class="nm">$u</span>->name] = <span class="nm">$u</span>; <span class="nm">$u</span>->room = <span class="nm">$this</span>; }
+
+    <span class="kw">public function</span> <span class="fn">broadcast</span>(<span class="tp">string</span> <span class="nm">$msg</span>, <span class="tp">User</span> <span class="nm">$from</span>): <span class="tp">void</span>
+    {
+        <span class="kw">foreach</span> (<span class="nm">$this</span>->users <span class="kw">as</span> <span class="nm">$u</span>)
+            <span class="kw">if</span> (<span class="nm">$u</span> !== <span class="nm">$from</span>) <span class="nm">$u</span>-><span class="fn">receive</span>(<span class="nm">$from</span>->name, <span class="nm">$msg</span>);
+    }
+}
+
+<span class="kw">class</span> <span class="tp">User</span>
+{
+    <span class="kw">public</span> ?<span class="tp">ChatRoom</span> <span class="nm">$room</span> = <span class="kw">null</span>;
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">public</span> <span class="tp">string</span> <span class="nm">$name</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->room-><span class="fn">broadcast</span>(<span class="nm">$msg</span>, <span class="nm">$this</span>); }
+
+    <span class="kw">public function</span> <span class="fn">receive</span>(<span class="tp">string</span> <span class="nm">$from</span>, <span class="tp">string</span> <span class="nm">$msg</span>): <span class="tp">void</span>
+    { <span class="fn">echo</span> <span class="st">"[{$this->name}] {$from}: {$msg}\n"</span>; }
+}
+
+<span class="nm">$room</span> = <span class="kw">new</span> <span class="tp">ChatRoom</span>();
+<span class="nm">$rahim</span> = <span class="kw">new</span> <span class="tp">User</span>(<span class="st">'রহিম'</span>); <span class="nm">$karim</span> = <span class="kw">new</span> <span class="tp">User</span>(<span class="st">'করিম'</span>);
+<span class="nm">$room</span>-><span class="fn">join</span>(<span class="nm">$rahim</span>); <span class="nm">$room</span>-><span class="fn">join</span>(<span class="nm">$karim</span>);
+<span class="nm">$rahim</span>-><span class="fn">send</span>(<span class="st">'সালাম!'</span>); <span class="cm">// [করিম] রহিম: সালাম!</span></pre></div><div id="med-laravel" class="tab-pane"><pre><span class="cm">// Laravel Event System = Mediator!</span>
+<span class="cm">// Components directly communicate through Event Bus</span>
+
+<span class="cm">// UserController doesn't know about EmailService</span>
+<span class="kw">class</span> <span class="tp">UserController</span>
+{
+    <span class="kw">public function</span> <span class="fn">register</span>(<span class="tp">Request</span> <span class="nm">$request</span>)
+    {
+        <span class="nm">$user</span> = <span class="tp">User</span>::<span class="fn">create</span>(<span class="nm">$request</span>-><span class="fn">validated</span>());
+        <span class="tp">UserRegistered</span>::<span class="fn">dispatch</span>(<span class="nm">$user</span>); <span class="cm">// Mediator-কে বলুন</span>
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>(<span class="nm">$user</span>, 201);
+    }
+}
+
+<span class="cm">// Mediator (Event Bus) — listeners coordinate করে</span>
+<span class="nm">$listen</span>[<span class="tp">UserRegistered</span>::<span class="kw">class</span>] = [
+    <span class="tp">SendWelcomeEmail</span>::<span class="kw">class</span>,     <span class="cm">// EmailService</span>
+    <span class="tp">CreateUserProfile</span>::<span class="kw">class</span>,   <span class="cm">// ProfileService</span>
+    <span class="tp">AssignDefaultRole</span>::<span class="kw">class</span>,    <span class="cm">// RoleService</span>
+    <span class="tp">NotifyAdmins</span>::<span class="kw">class</span>,         <span class="cm">// NotificationService</span>
+];</pre></div></div></div></div></div>
+
+<div id="sec-memento" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#365314,#65a30d)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B9</div><h1 style="font-size:30px;margin:6px 0 2px">Memento</h1><div style="opacity:.85;font-size:17px">স্মৃতিচিহ্ন প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>গেমের Save Point:</strong> যেকোনো সময় সেভ করুন, যেকোনো সময় সেই পয়েন্টে ফিরে যান। Object-এর ভেতরের state না জেনেও সংরক্ষণ ও পুনরুদ্ধার।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Undo/Redo (text editor, drawing app)<br/>✔ Draft saving<br/>✔ Transaction rollback<br/>✔ Form wizard (আগের ধাপে ফিরে যাওয়া)</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'mem-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'mem-laravel')">Laravel</button></div><div id="mem-php" class="tab-pane active"><pre><span class="kw">class</span> <span class="tp">EditorMemento</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private readonly</span> <span class="tp">string</span> <span class="nm">$content</span>) {}
+    <span class="kw">public function</span> <span class="fn">getContent</span>(): <span class="tp">string</span> { <span class="kw">return</span> <span class="nm">$this</span>->content; }
+}
+
+<span class="kw">class</span> <span class="tp">TextEditor</span>
+{
+    <span class="kw">private</span> <span class="tp">string</span> <span class="nm">$content</span> = <span class="st">''</span>;
+    <span class="kw">public function</span> <span class="fn">type</span>(<span class="tp">string</span> <span class="nm">$t</span>): <span class="tp">void</span>  { <span class="nm">$this</span>->content .= <span class="nm">$t</span>; }
+    <span class="kw">public function</span> <span class="fn">save</span>(): <span class="tp">EditorMemento</span> { <span class="kw">return new</span> <span class="tp">EditorMemento</span>(<span class="nm">$this</span>->content); }
+    <span class="kw">public function</span> <span class="fn">restore</span>(<span class="tp">EditorMemento</span> <span class="nm">$m</span>): <span class="tp">void</span>
+    { <span class="nm">$this</span>->content = <span class="nm">$m</span>-><span class="fn">getContent</span>(); }
+    <span class="kw">public function</span> <span class="fn">getContent</span>(): <span class="tp">string</span> { <span class="kw">return</span> <span class="nm">$this</span>->content; }
+}
+
+<span class="nm">$editor</span> = <span class="kw">new</span> <span class="tp">TextEditor</span>();
+<span class="nm">$editor</span>-><span class="fn">type</span>(<span class="st">'হ্যালো '</span>);
+<span class="nm">$snap1</span> = <span class="nm">$editor</span>-><span class="fn">save</span>(); <span class="cm">// সেভ</span>
+<span class="nm">$editor</span>-><span class="fn">type</span>(<span class="st">'বিশ্ব'</span>);
+<span class="fn">echo</span> <span class="nm">$editor</span>-><span class="fn">getContent</span>(); <span class="cm">// হ্যালো বিশ্ব</span>
+<span class="nm">$editor</span>-><span class="fn">restore</span>(<span class="nm">$snap1</span>);
+<span class="fn">echo</span> <span class="nm">$editor</span>-><span class="fn">getContent</span>(); <span class="cm">// হ্যালো</span></pre></div><div id="mem-laravel" class="tab-pane"><pre><span class="cm">// Laravel Draft System — Memento Pattern</span>
+
+<span class="cm">// Migration</span>
+<span class="cm">// $table->json('snapshots')->nullable();</span>
+
+<span class="kw">class</span> <span class="tp">Post</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">protected</span> <span class="nm">$casts</span> = [<span class="st">'snapshots'</span> => <span class="st">'array'</span>];
+
+    <span class="kw">public function</span> <span class="fn">saveSnapshot</span>(): <span class="tp">void</span>
+    {
+        <span class="nm">$snaps</span> = <span class="nm">$this</span>->snapshots ?? [];
+        <span class="nm">$snaps</span>[] = [
+            <span class="st">'content'</span>    => <span class="nm">$this</span>->content,
+            <span class="st">'title'</span>      => <span class="nm">$this</span>->title,
+            <span class="st">'saved_at'</span>   => <span class="fn">now</span>()-><span class="fn">toDateTimeString</span>(),
+        ];
+        <span class="nm">$this</span>-><span class="fn">update</span>([<span class="st">'snapshots'</span> => <span class="fn">array_slice</span>(<span class="nm">$snaps</span>, -10)]); <span class="cm">// শেষ ১০</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">restoreSnapshot</span>(<span class="tp">int</span> <span class="nm">$index</span> = -1): <span class="tp">void</span>
+    {
+        <span class="nm">$snap</span> = <span class="nm">$this</span>->snapshots[<span class="nm">$index</span> < 0
+            ? <span class="fn">count</span>(<span class="nm">$this</span>->snapshots) + <span class="nm">$index</span>
+            : <span class="nm">$index</span>] ?? <span class="kw">null</span>;
+
+        <span class="kw">if</span> (<span class="nm">$snap</span>) <span class="nm">$this</span>-><span class="fn">update</span>(<span class="fn">array_except</span>(<span class="nm">$snap</span>, <span class="st">'saved_at'</span>));
+    }
+}</pre></div></div></div></div></div>
+
+<div id="sec-visitor" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#292524,#57534e)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B10</div><h1 style="font-size:30px;margin:6px 0 2px">Visitor</h1><div style="opacity:.85;font-size:17px">দর্শনার্থী প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>ট্যাক্স অফিসার:</strong> একই অফিসার বাড়ি, গাড়ি, ব্যবসা পরিদর্শন করেন। প্রতিটির জন্য আলাদা ট্যাক্স নিয়ম। Object না বদলে নতুন operation যোগ।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Report export (PDF/CSV/Excel)<br/>✔ AST processing (compiler/linter)<br/>✔ Tax/discount calculation on different types<br/>✔ Serialization</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'vis-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'vis-laravel')">Laravel</button></div><div id="vis-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">ExportVisitor</span>
+{
+    <span class="kw">public function</span> <span class="fn">visitProduct</span>(<span class="tp">Product</span> <span class="nm">$p</span>): <span class="tp">string</span>;
+    <span class="kw">public function</span> <span class="fn">visitOrder</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">string</span>;
+}
+
+<span class="kw">class</span> <span class="tp">CSVExporter</span> <span class="kw">implements</span> <span class="tp">ExportVisitor</span>
+{
+    <span class="kw">public function</span> <span class="fn">visitProduct</span>(<span class="tp">Product</span> <span class="nm">$p</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"{$p->id},{$p->name},{$p->price}\n"</span>; }
+
+    <span class="kw">public function</span> <span class="fn">visitOrder</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="st">"{$o->id},{$o->total},{$o->status}\n"</span>; }
+}
+
+<span class="kw">class</span> <span class="tp">JSONExporter</span> <span class="kw">implements</span> <span class="tp">ExportVisitor</span>
+{
+    <span class="kw">public function</span> <span class="fn">visitProduct</span>(<span class="tp">Product</span> <span class="nm">$p</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="fn">json_encode</span>([<span class="st">'id'</span>=><span class="nm">$p</span>->id,<span class="st">'name'</span>=><span class="nm">$p</span>->name]); }
+
+    <span class="kw">public function</span> <span class="fn">visitOrder</span>(<span class="tp">Order</span> <span class="nm">$o</span>): <span class="tp">string</span>
+    { <span class="kw">return</span> <span class="fn">json_encode</span>([<span class="st">'id'</span>=><span class="nm">$o</span>->id,<span class="st">'total'</span>=><span class="nm">$o</span>->total]); }
+}
+
+<span class="cm">// Exportable interface</span>
+<span class="kw">interface</span> <span class="tp">Exportable</span> { <span class="kw">public function</span> <span class="fn">accept</span>(<span class="tp">ExportVisitor</span> <span class="nm">$v</span>): <span class="tp">string</span>; }
+<span class="kw">class</span> <span class="tp">Product</span> <span class="kw">implements</span> <span class="tp">Exportable</span> {
+    <span class="kw">public function</span> <span class="fn">accept</span>(<span class="tp">ExportVisitor</span> <span class="nm">$v</span>): <span class="tp">string</span> { <span class="kw">return</span> <span class="nm">$v</span>-><span class="fn">visitProduct</span>(<span class="nm">$this</span>); }
+}</pre></div><div id="vis-laravel" class="tab-pane"><pre><span class="cm">// Laravel Export — Visitor Pattern (Maatwebsite/Excel)</span>
+
+<span class="kw">class</span> <span class="tp">OrdersExport</span> <span class="kw">implements</span> <span class="tp">FromCollection</span>, <span class="tp">WithHeadings</span>
+{
+    <span class="kw">public function</span> <span class="fn">collection</span>(): \<span class="tp">Illuminate\Support\Collection</span>
+    { <span class="kw">return</span> <span class="tp">Order</span>::<span class="fn">with</span>(<span class="st">'user'</span>)-><span class="fn">get</span>(); }
+
+    <span class="kw">public function</span> <span class="fn">headings</span>(): array
+    { <span class="kw">return</span> [<span class="st">'ID'</span>, <span class="st">'User'</span>, <span class="st">'Total'</span>, <span class="st">'Status'</span>]; }
+}
+
+<span class="cm">// CSV or XLSX — Visitor decides format</span>
+<span class="kw">return</span> \<span class="tp">Excel</span>::<span class="fn">download</span>(<span class="kw">new</span> <span class="tp">OrdersExport</span>, <span class="st">'orders.xlsx'</span>);
+<span class="kw">return</span> \<span class="tp">Excel</span>::<span class="fn">download</span>(<span class="kw">new</span> <span class="tp">OrdersExport</span>, <span class="st">'orders.csv'</span>);</pre></div></div></div></div></div>
+
+<div id="sec-interpreter" class="section"><div class="pattern-detail"><div class="pattern-header" style="background:linear-gradient(135deg,#1c1917,#44403c)"><div style="font-size:11px;opacity:.7;letter-spacing:2px">BEHAVIORAL · B11</div><h1 style="font-size:30px;margin:6px 0 2px">Interpreter</h1><div style="opacity:.85;font-size:17px">ব্যাখ্যাকারী প্যাটার্ন</div></div><div class="pattern-body"><div class="section-label">💡 উপমা</div><div class="analogy-box"><strong>ভাষা অনুবাদক:</strong> SQL লিখলে ডেটাবেজ বোঝে, Blade template লিখলে PHP বোঝে। নিজস্ব ভাষা/নিয়ম তৈরি ও parse করতে।</div><div class="section-label">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Search query DSL ("price > 100 AND category:phones")<br/>✔ Rule engine (discount/promo rules)<br/>✔ Math expression evaluator<br/>✔ Template engine</div><div class="section-label">💻 কোড</div><div class="code-tabs"><div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'int-php')">PHP</button><button class="tab-btn" onclick="switchTab(this,'int-laravel')">Laravel</button></div><div id="int-php" class="tab-pane active"><pre><span class="kw">interface</span> <span class="tp">Expression</span>
+{ <span class="kw">public function</span> <span class="fn">interpret</span>(array <span class="nm">$ctx</span>): <span class="kw">mixed</span>; }
+
+<span class="kw">class</span> <span class="tp">NumberExpr</span> <span class="kw">implements</span> <span class="tp">Expression</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">float</span> <span class="nm">$val</span>) {}
+    <span class="kw">public function</span> <span class="fn">interpret</span>(array <span class="nm">$ctx</span>): <span class="kw">float</span> { <span class="kw">return</span> <span class="nm">$this</span>->val; }
+}
+
+<span class="kw">class</span> <span class="tp">VariableExpr</span> <span class="kw">implements</span> <span class="tp">Expression</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="tp">string</span> <span class="nm">$name</span>) {}
+    <span class="kw">public function</span> <span class="fn">interpret</span>(array <span class="nm">$ctx</span>): <span class="kw">float</span>
+    { <span class="kw">return</span> <span class="nm">$ctx</span>[<span class="nm">$this</span>->name] ?? 0; }
+}
+
+<span class="kw">class</span> <span class="tp">AddExpr</span> <span class="kw">implements</span> <span class="tp">Expression</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="tp">Expression</span> <span class="nm">$l</span>, <span class="kw">private</span> <span class="tp">Expression</span> <span class="nm">$r</span>) {}
+    <span class="kw">public function</span> <span class="fn">interpret</span>(array <span class="nm">$ctx</span>): <span class="kw">float</span>
+    { <span class="kw">return</span> <span class="nm">$this</span>->l-><span class="fn">interpret</span>(<span class="nm">$ctx</span>) + <span class="nm">$this</span>->r-><span class="fn">interpret</span>(<span class="nm">$ctx</span>); }
+}
+
+<span class="cm">// "price + tax"</span>
+<span class="nm">$expr</span> = <span class="kw">new</span> <span class="tp">AddExpr</span>(
+    <span class="kw">new</span> <span class="tp">VariableExpr</span>(<span class="st">'price'</span>),
+    <span class="kw">new</span> <span class="tp">VariableExpr</span>(<span class="st">'tax'</span>)
+);
+<span class="fn">echo</span> <span class="nm">$expr</span>-><span class="fn">interpret</span>([<span class="st">'price'</span> => 1000, <span class="st">'tax'</span> => 150]); <span class="cm">// 1150</span></pre></div><div id="int-laravel" class="tab-pane"><pre><span class="cm">// Laravel Scout / Eloquent Filter — Interpreter Pattern</span>
+
+<span class="cm">// Custom Query Language Parser</span>
+<span class="kw">class</span> <span class="tp">SearchQueryInterpreter</span>
+{
+    <span class="kw">public function</span> <span class="fn">interpret</span>(<span class="tp">string</span> <span class="nm">$query</span>): <span class="tp">Builder</span>
+    {
+        <span class="nm">$builder</span> = <span class="tp">Product</span>::<span class="fn">query</span>();
+        <span class="nm">$tokens</span>  = <span class="fn">explode</span>(<span class="st">' '</span>, <span class="nm">$query</span>);
+
+        <span class="kw">foreach</span> (<span class="nm">$tokens</span> <span class="kw">as</span> <span class="nm">$token</span>) {
+            <span class="kw">if</span> (<span class="fn">str_starts_with</span>(<span class="nm">$token</span>, <span class="st">'category:'</span>)) {
+                <span class="nm">$builder</span>-><span class="fn">where</span>(<span class="st">'category'</span>, <span class="fn">substr</span>(<span class="nm">$token</span>, 9));
+            } <span class="kw">elseif</span> (<span class="fn">str_starts_with</span>(<span class="nm">$token</span>, <span class="st">'price>'</span>)) {
+                <span class="nm">$builder</span>-><span class="fn">where</span>(<span class="st">'price'</span>, <span class="st">'>'</span>, (int)<span class="fn">substr</span>(<span class="nm">$token</span>, 6));
+            } <span class="kw">else</span> {
+                <span class="nm">$builder</span>-><span class="fn">where</span>(<span class="st">'name'</span>, <span class="st">'LIKE'</span>, <span class="st">"%{$token}%"</span>);
+            }
+        }
+
+        <span class="kw">return</span> <span class="nm">$builder</span>;
+    }
+}
+
+<span class="cm">// ব্যবহার: "Samsung category:phone price>5000"</span>
+<span class="nm">$products</span> = (<span class="kw">new</span> <span class="tp">SearchQueryInterpreter</span>())
+    -><span class="fn">interpret</span>(<span class="nm">$request</span>->q)
+    -><span class="fn">get</span>();</pre></div></div></div></div></div>
+
+</main>
+
+<script>
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('main').scrollTo({top: 0, behavior: 'smooth'});
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+}
+
+function switchTab(btn, paneId) {
+  const tabs = btn.closest('.code-tabs');
+  tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  tabs.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(paneId).classList.add('active');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+</script>
+</body>
+</html>
