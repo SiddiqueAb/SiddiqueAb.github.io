@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0d1117" />
 
   <!-- ═══ Primary SEO ═══ -->
   <title>MD Abubakar Siddique — Full Stack Web Developer | PHP Laravel Bangladesh</title>
@@ -56,9 +58,14 @@
   </script>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230d1117'/><text x='50' y='68' font-family='sans-serif' font-weight='bold' font-size='40' text-anchor='middle' fill='%233fb950'>AB</text></svg>" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=600&fit=crop&crop=center" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
   <style>
     /* ============ VARIABLES & RESET ============ */
     :root {
@@ -1015,6 +1022,13 @@
       .hero-avatar-ring { width:220px; height:220px; }
       .sec-title { font-size:1.8rem; }
     }
+
+    /* ============ ACCESSIBILITY: REDUCED MOTION ============ */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      html { scroll-behavior: auto; }
+      #cb-fab .cb-ping { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -1077,7 +1091,7 @@
     <div class="hero-image-wrap">
       <div class="hero-avatar-ring">
         <div class="hero-avatar-ring-inner">
-          <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=600&fit=crop&crop=center" alt="MD Abubakar Siddique - Full Stack Developer" crossorigin="anonymous" />
+          <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=600&fit=crop&crop=center" alt="MD Abubakar Siddique - Full Stack Developer" crossorigin="anonymous" width="600" height="600" fetchpriority="high" />
         </div>
       </div>
       <div class="floating-badge b1"><i class="fab fa-php"></i> PHP / Laravel</div>
@@ -1094,29 +1108,29 @@
       <div class="slider-wrap">
         <div class="slider-track" id="aboutSlider">
           <div class="slide">
-            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop" alt="Web Development" crossorigin="anonymous" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop" alt="Web Development" crossorigin="anonymous" loading="lazy" width="800" height="500" />
             <div class="slide-caption"><h2>Full Stack Development</h2><p>Building scalable, high-performance apps</p></div>
           </div>
           <div class="slide">
-            <img src="https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&h=500&fit=crop" alt="Laravel Development" crossorigin="anonymous" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&h=500&fit=crop" alt="Laravel Development" crossorigin="anonymous" loading="lazy" width="800" height="500" />
             <div class="slide-caption"><h2>Laravel & PHP Expertise</h2><p>Enterprise-grade backend solutions</p></div>
           </div>
           <div class="slide">
-            <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&h=500&fit=crop" alt="API Development" crossorigin="anonymous" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&h=500&fit=crop" alt="API Development" crossorigin="anonymous" loading="lazy" width="800" height="500" />
             <div class="slide-caption"><h2>REST API Architecture</h2><p>Powering mobile & web applications</p></div>
           </div>
           <div class="slide">
-            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop" alt="Healthcare Tech" crossorigin="anonymous" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop" alt="Healthcare Tech" crossorigin="anonymous" loading="lazy" width="800" height="500" />
             <div class="slide-caption"><h2>Healthcare & Education Tech</h2><p>Digital Bangladesh Award Winner</p></div>
           </div>
           <div class="slide">
-            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=500&fit=crop" alt="Teaching & Training" crossorigin="anonymous" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=500&fit=crop" alt="Teaching & Training" crossorigin="anonymous" loading="lazy" width="800" height="500" />
             <div class="slide-caption"><h2>Mentoring & Training</h2><p>50+ students in web development</p></div>
           </div>
         </div>
         <div class="slider-controls">
-          <button class="slider-btn" onclick="slidePrev('aboutSlider','aboutDots')"><i class="fas fa-chevron-left"></i></button>
-          <button class="slider-btn" onclick="slideNext('aboutSlider','aboutDots',5)"><i class="fas fa-chevron-right"></i></button>
+          <button class="slider-btn" onclick="slidePrev('aboutSlider','aboutDots')" aria-label="Previous slide"><i class="fas fa-chevron-left"></i></button>
+          <button class="slider-btn" onclick="slideNext('aboutSlider','aboutDots',5)" aria-label="Next slide"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="slider-dots" id="aboutDots">
           <div class="dot active" onclick="slideTo('aboutSlider','aboutDots',0,5)"></div>
@@ -1341,7 +1355,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=300&fit=crop&crop=center" alt="Healthcare Management System" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=300&fit=crop&crop=center" alt="Healthcare Management System" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd1)">🏆 Award</div>
         </div>
         <div class="proj-body">
@@ -1358,7 +1372,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&h=300&fit=crop&crop=top" alt="Communicator — Real-time Chat & Video Call App" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&h=300&fit=crop&crop=top" alt="Communicator — Real-time Chat & Video Call App" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:linear-gradient(135deg,#56d4f5,#bc8cff)">💬 Live</div>
         </div>
         <div class="proj-body">
@@ -1376,7 +1390,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=300&fit=crop" alt="E-commerce Platform" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=300&fit=crop" alt="E-commerce Platform" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd2)">🛒 Live</div>
         </div>
         <div class="proj-body">
@@ -1393,7 +1407,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=300&fit=crop" alt="Bus Transport App" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=300&fit=crop" alt="Bus Transport App" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd3)">🚌 Live</div>
         </div>
         <div class="proj-body">
@@ -1411,7 +1425,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=300&fit=crop" alt="Education Management" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=300&fit=crop" alt="Education Management" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd5)">🎓 Live</div>
         </div>
         <div class="proj-body">
@@ -1428,7 +1442,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=300&fit=crop" alt="Photography Event Management" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=300&fit=crop" alt="Photography Event Management" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd4)">📸 Live</div>
         </div>
         <div class="proj-body">
@@ -1445,7 +1459,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop" alt="POS SaaS Platform" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop" alt="POS SaaS Platform" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd6)">💼 SaaS</div>
         </div>
         <div class="proj-body">
@@ -1462,7 +1476,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=300&fit=crop" alt="Vehicle Fleet Management" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=300&fit=crop" alt="Vehicle Fleet Management" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd2)">🚛 Live</div>
         </div>
         <div class="proj-body">
@@ -1479,7 +1493,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=300&fit=crop" alt="Tender Management" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=300&fit=crop" alt="Tender Management" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd1)">📋 Live</div>
         </div>
         <div class="proj-body">
@@ -1495,7 +1509,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=300&fit=crop" alt="Perfex CRM Modules" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=300&fit=crop" alt="Perfex CRM Modules" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd5)">🧩 Plugin</div>
         </div>
         <div class="proj-body">
@@ -1513,7 +1527,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&h=300&fit=crop" alt="Bmart E-commerce" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&h=300&fit=crop" alt="Bmart E-commerce" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd2)">🛍️ Live</div>
         </div>
         <div class="proj-body">
@@ -1530,7 +1544,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=300&fit=crop" alt="Cumilla Board" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=300&fit=crop" alt="Cumilla Board" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd3)">🏛️ Gov</div>
         </div>
         <div class="proj-body">
@@ -1547,7 +1561,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=300&fit=crop" alt="Qourtob Freelancing Marketplace" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=300&fit=crop" alt="Qourtob Freelancing Marketplace" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd4)">🌍 Intl</div>
         </div>
         <div class="proj-body">
@@ -1564,7 +1578,7 @@
 
       <div class="proj-card">
         <div class="proj-img">
-          <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=600&h=300&fit=crop" alt="Ordershield WordPress Plugin" crossorigin="anonymous" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=600&h=300&fit=crop" alt="Ordershield WordPress Plugin" crossorigin="anonymous" loading="lazy" width="600" height="300" />
           <div class="proj-badge" style="background:var(--grd5)">🔒 Plugin</div>
         </div>
         <div class="proj-body">
@@ -1582,7 +1596,7 @@
     </div><!-- /proj-track -->
 
     <div class="proj-nav">
-      <button class="pnav-btn" id="projPrev" onclick="projSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+      <button class="pnav-btn" id="projPrev" onclick="projSlide(-1)" aria-label="Previous project"><i class="fas fa-chevron-left"></i></button>
       <div class="proj-dots" id="projDots">
         <div class="pdot active"></div>
         <div class="pdot"></div>
@@ -1598,7 +1612,7 @@
         <div class="pdot"></div>
         <div class="pdot"></div>
       </div>
-      <button class="pnav-btn" id="projNext" onclick="projSlide(1)"><i class="fas fa-chevron-right"></i></button>
+      <button class="pnav-btn" id="projNext" onclick="projSlide(1)" aria-label="Next project"><i class="fas fa-chevron-right"></i></button>
     </div>
   </div>
 </section>
@@ -1710,21 +1724,21 @@
     <form class="contact-form reveal" onsubmit="return sendMsg(event)">
       <div class="form-row">
         <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="John Doe" required />
+          <label for="contact-name">Your Name</label>
+          <input type="text" id="contact-name" placeholder="John Doe" required />
         </div>
         <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" placeholder="john@example.com" required />
+          <label for="contact-email">Email Address</label>
+          <input type="email" id="contact-email" placeholder="john@example.com" required />
         </div>
       </div>
       <div class="form-group">
-        <label>Subject</label>
-        <input type="text" placeholder="Project Inquiry / Hiring..." required />
+        <label for="contact-subject">Subject</label>
+        <input type="text" id="contact-subject" placeholder="Project Inquiry / Hiring..." required />
       </div>
       <div class="form-group">
-        <label>Message</label>
-        <textarea rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+        <label for="contact-message">Message</label>
+        <textarea id="contact-message" rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
       </div>
       <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
         <i class="fas fa-paper-plane"></i> Send Message
@@ -1734,15 +1748,15 @@
 </section>
 
 <!-- ====== CHATBOT ====== -->
-<button id="cb-fab" onclick="toggleChat()" title="Ask My Brain!">
+<button id="cb-fab" onclick="toggleChat()" title="Ask My Brain!" aria-label="Open chatbot">
   <div class="cb-ping"></div>
   🧠
   <span class="cb-label">ASK ME</span>
 </button>
 
-<div id="cb-panel">
+<div id="cb-panel" role="dialog" aria-label="Chat assistant">
   <div class="cb-head">
-    <div class="cb-avatar">🧠</div>
+    <div class="cb-avatar" aria-label="Chatbot avatar">🧠</div>
     <div class="cb-head-info">
       <h3><span>Abubakar's Brain</span></h3>
       <p><i class="fas fa-circle" style="font-size:0.5rem"></i> Always thinking... ask me anything!</p>
