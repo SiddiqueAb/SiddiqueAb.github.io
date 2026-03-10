@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel + Inertia + Vue Documentation (Bangla)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Noto Sans Bengali',sans-serif;background:#0f172a;color:#e2e8f0}
+a{color:#38bdf8;text-decoration:none}
+.layout{display:flex}
+.sidebar{width:260px;background:#020617;height:100vh;overflow:auto;padding:25px;border-right:1px solid #1e293b;position:fixed}
+.logo{font-size:20px;font-weight:700;margin-bottom:25px}
+.nav a{display:block;padding:10px 12px;border-radius:8px;margin-bottom:6px}
+.nav a:hover{background:#1e293b}
+.content{margin-left:260px;padding:40px;max-width:1000px}
+h1{font-size:36px;margin-top:0}
+h2{color:#38bdf8;margin-top:40px}
+h3{margin-top:25px}
+.card{background:#020617;border:1px solid #1e293b;border-radius:12px;padding:25px;margin-top:20px}
+code{display:block;background:#020617;border:1px solid #1e293b;padding:15px;border-radius:10px;overflow:auto;margin-top:10px}
+pre{margin:0}
+.tag{display:inline-block;background:#1e293b;padding:4px 10px;border-radius:20px;font-size:12px;margin-bottom:10px}
+.footer{margin-top:60px;padding-top:30px;border-top:1px solid #1e293b;color:#94a3b8}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+<div class="logo">Laravel Inertia Vue</div>
+<div class="nav">
+<a href="#intro">Introduction</a>
+<a href="#stack">Tech Stack</a>
+<a href="#requirements">Requirements</a>
+<a href="#install">Laravel Install</a>
+<a href="#inertia">Install Inertia</a>
+<a href="#vue">Install Vue</a>
+<a href="#vite">Vite Setup</a>
+<a href="#routing">Routing</a>
+<a href="#pages">Vue Pages</a>
+<a href="#layout">Layout System</a>
+<a href="#components">Components</a>
+<a href="#database">Database</a>
+<a href="#crud">CRUD</a>
+<a href="#forms">Form Submit</a>
+<a href="#auth">Authentication</a>
+<a href="#deploy">Deployment</a>
+</div>
+</div>
+
+<div class="content">
+
+<h1>Laravel + Inertia + Vue Documentation</h1>
+<p>বাংলা Professional Developer Guide</p>
+
+<div id="intro" class="card">
+<span class="tag">Introduction</span>
+<h2>এই Stack কি?</h2>
+<p>
+Laravel + Inertia + Vue ব্যবহার করে আমরা একটি Modern Fullstack Application তৈরি করতে পারি।
+এটি traditional API architecture ব্যবহার না করে backend এবং frontend কে একই project এ যুক্ত করে।
+</p>
+
+<ul>
+<li><b>Laravel</b> → Backend framework</li>
+<li><b>Inertia</b> → Backend এবং Frontend bridge</li>
+<li><b>Vue</b> → UI rendering library</li>
+</ul>
+</div>
+
+<div id="stack" class="card">
+<span class="tag">Stack</span>
+<h2>Technology Stack</h2>
+<ul>
+<li>Laravel</li>
+<li>Inertia.js</li>
+<li>Vue 3</li>
+<li>Vite</li>
+<li>MySQL</li>
+<li>TailwindCSS</li>
+</ul>
+</div>
+
+<div id="requirements" class="card">
+<span class="tag">Requirements</span>
+<h2>প্রয়োজনীয় Software</h2>
+<ul>
+<li>PHP 8+</li>
+<li>Composer</li>
+<li>Node.js</li>
+<li>NPM</li>
+<li>MySQL</li>
+<li>Git</li>
+</ul>
+</div>
+
+<div id="install" class="card">
+<span class="tag">Installation</span>
+<h2>Laravel Install</h2>
+
+<code><pre>composer create-project laravel/laravel project-name
+cd project-name
+php artisan serve</pre></code>
+
+<p>এই command একটি নতুন Laravel project তৈরি করবে।</p>
+</div>
+
+<div id="inertia" class="card">
+<span class="tag">Setup</span>
+<h2>Inertia Install</h2>
+
+<code><pre>composer require inertiajs/inertia-laravel
+php artisan inertia:middleware</pre></code>
+
+<p>Inertia backend এবং frontend এর মধ্যে communication সহজ করে।</p>
+</div>
+
+<div id="vue" class="card">
+<span class="tag">Frontend</span>
+<h2>Vue Install</h2>
+
+<code><pre>npm install vue@3
+npm install @inertiajs/vue3
+npm install</pre></code>
+</div>
+
+<div id="vite" class="card">
+<span class="tag">Build Tool</span>
+<h2>Vite Setup</h2>
+
+<code><pre>import { createApp, h } from 'vue'
+import { createInertiaApp } from '@inertiajs/vue3'
+
+createInertiaApp({
+ resolve: name => require(`./Pages/${name}.vue`),
+ setup({ el, App, props, plugin }) {
+  createApp({ render: () => h(App, props) })
+   .use(plugin)
+   .mount(el)
+ }
+})</pre></code>
+</div>
+
+<div id="routing" class="card">
+<span class="tag">Backend</span>
+<h2>Routing</h2>
+
+<code><pre>use Inertia\Inertia;
+
+Route::get('/', function () {
+ return Inertia::render('Home');
+});</pre></code>
+</div>
+
+<div id="pages" class="card">
+<span class="tag">Vue</span>
+<h2>Vue Page Create</h2>
+
+<code><pre>&lt;template&gt;
+ &lt;h1&gt;Hello Inertia Vue&lt;/h1&gt;
+&lt;/template&gt;</pre></code>
+
+<p>Folder location:</p>
+
+<code><pre>resources/js/Pages/Home.vue</pre></code>
+</div>
+
+<div id="layout" class="card">
+<span class="tag">Architecture</span>
+<h2>Layout System</h2>
+
+<code><pre>&lt;template&gt;
+ &lt;div&gt;
+  &lt;header&gt;Navbar&lt;/header&gt;
+  &lt;main&gt;
+   &lt;slot /&gt;
+  &lt;/main&gt;
+ &lt;/div&gt;
+&lt;/template&gt;</pre></code>
+</div>
+
+<div id="components" class="card">
+<span class="tag">Reusable</span>
+<h2>Components</h2>
+
+<p>Reusable UI components তৈরি করুন:</p>
+
+<code><pre>resources/js/Components/
+Button.vue
+Navbar.vue
+Card.vue</pre></code>
+</div>
+
+<div id="database" class="card">
+<span class="tag">Database</span>
+<h2>Database Setup</h2>
+
+<code><pre>DB_DATABASE=myapp
+DB_USERNAME=root
+DB_PASSWORD=</pre></code>
+
+<p>Migration run:</p>
+
+<code><pre>php artisan migrate</pre></code>
+</div>
+
+<div id="crud" class="card">
+<span class="tag">Backend Logic</span>
+<h2>CRUD Controller</h2>
+
+<code><pre>php artisan make:model Post -mcr</pre></code>
+
+<code><pre>public function store(Request $request){
+Post::create($request->all());
+return redirect()->route('posts.index');
+}</pre></code>
+</div>
+
+<div id="forms" class="card">
+<span class="tag">Vue Forms</span>
+<h2>Form Submit</h2>
+
+<code><pre>import { useForm } from '@inertiajs/vue3'
+
+const form = useForm({
+title:'',
+body:''
+})
+
+form.post('/posts')</pre></code>
+</div>
+
+<div id="auth" class="card">
+<span class="tag">Security</span>
+<h2>Authentication</h2>
+
+<code><pre>composer require laravel/breeze
+php artisan breeze:install vue
+npm install
+npm run dev
+php artisan migrate</pre></code>
+</div>
+
+<div id="deploy" class="card">
+<span class="tag">Production</span>
+<h2>Deployment</h2>
+
+<code><pre>npm run build
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache</pre></code>
+
+<p>Server requirements:</p>
+<ul>
+<li>Nginx</li>
+<li>PHP-FPM</li>
+<li>MySQL</li>
+</ul>
+</div>
+
+<div class="footer">
+<p>Professional Bangla Documentation — Laravel + Inertia + Vue</p>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
