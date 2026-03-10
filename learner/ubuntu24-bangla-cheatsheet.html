@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ubuntu 24 — সম্পূর্ণ বাংলা চিটশিট</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ub:    #E95420;
+  --ub2:   #772953;
+  --ub3:   #77216F;
+  --amber: #F5A623;
+  --green: #38C76A;
+  --blue:  #2EA8E0;
+  --red:   #E05252;
+  --cyan:  #00C8D4;
+  --bg:    #0C0C0C;
+  --s1:    #111111;
+  --s2:    #1A1A1A;
+  --s3:    #222222;
+  --bdr:   #2A2A2A;
+  --bdr2:  #333333;
+  --t:     #D4D4D4;
+  --tdim:  #808080;
+  --tbri:  #FFFFFF;
+  --r:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Serif Bengali','Barlow Condensed',sans-serif;
+  background:var(--bg);
+  color:var(--t);
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ===== SCANLINES EFFECT ===== */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events:none;
+  z-index:9999;
+  opacity:.4;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:52px;
+  background:rgba(12,12,12,0.97);
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;
+  padding:0 1.5rem;gap:1.2rem;
+  backdrop-filter:blur(12px);
+}
+.brand{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:1.15rem;
+  letter-spacing:.05em;color:var(--tbri);
+  text-decoration:none;white-space:nowrap;
+}
+.brand-icon{
+  width:26px;height:26px;
+  background:var(--ub);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:white;font-weight:900;
+  flex-shrink:0;
+}
+.brand span{color:var(--ub);}
+.topnav{
+  display:flex;gap:.2rem;overflow-x:auto;
+  scrollbar-width:none;flex:1;
+}
+.topnav::-webkit-scrollbar{display:none}
+.tnl{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.72rem;font-weight:600;
+  color:var(--tdim);text-decoration:none;
+  padding:.28rem .6rem;border-radius:4px;
+  white-space:nowrap;transition:all .15s;
+  border:1px solid transparent;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.tnl:hover{color:var(--ub);border-color:rgba(233,84,32,.3);background:rgba(233,84,32,.07)}
+.ver-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;padding:.2rem .6rem;
+  border-radius:100px;
+  background:rgba(233,84,32,.12);
+  color:var(--ub);border:1px solid rgba(233,84,32,.3);
+  white-space:nowrap;
+}
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;padding-top:52px;min-height:100vh}
+
+/* ===== SIDEBAR ===== */
+aside{
+  width:220px;flex-shrink:0;
+  position:sticky;top:52px;
+  height:calc(100vh - 52px);
+  overflow-y:auto;
+  background:var(--s1);
+  border-right:1px solid var(--bdr);
+  padding:1rem .7rem;
+  scrollbar-width:thin;
+  scrollbar-color:var(--bdr) transparent;
+}
+.sg{margin-bottom:1.1rem}
+.sg-lbl{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.6rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ub);padding:0 .4rem;
+  margin-bottom:.35rem;
+  display:flex;align-items:center;gap:.3rem;
+}
+.sl{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.33rem .4rem;border-radius:5px;
+  color:var(--tdim);text-decoration:none;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.8rem;font-weight:500;
+  letter-spacing:.02em;
+  transition:all .12s;border:1px solid transparent;
+  margin-bottom:1px;white-space:nowrap;
+}
+.sl:hover,.sl.active{
+  color:var(--tbri);
+  background:rgba(233,84,32,.07);
+  border-color:rgba(233,84,32,.2);
+}
+.sl .sn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;color:var(--ub);opacity:.7;
+  min-width:20px;
+}
+
+/* ===== HERO ===== */
+.hero{
+  background:var(--s1);
+  border-bottom:1px solid var(--bdr);
+  padding:4rem 3rem 3rem;
+  position:relative;overflow:hidden;
+  text-align:center;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(233,84,32,.12) 0,transparent 55%),
+    radial-gradient(ellipse at 80% 20%,rgba(119,41,83,.1) 0,transparent 50%),
+    repeating-linear-gradient(
+      90deg,transparent,transparent 39px,
+      rgba(233,84,32,.025) 39px,rgba(233,84,32,.025) 40px
+    ),
+    repeating-linear-gradient(
+      0deg,transparent,transparent 39px,
+      rgba(233,84,32,.025) 39px,rgba(233,84,32,.025) 40px
+    );
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--ub);
+  background:rgba(233,84,32,.1);
+  border:1px solid rgba(233,84,32,.3);
+  padding:.3rem .9rem;border-radius:100px;
+  margin-bottom:1.4rem;
+  animation:fin .5s ease both;
+}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero h1{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(3rem,7vw,5.5rem);
+  font-weight:900;line-height:.95;
+  letter-spacing:.02em;
+  color:var(--tbri);
+  animation:fin .5s .1s ease both;
+  text-transform:uppercase;
+}
+.hero h1 .ub{
+  color:var(--ub);
+  text-shadow:0 0 40px rgba(233,84,32,.4);
+}
+.hero-sub{
+  font-size:1rem;color:var(--tdim);
+  margin:1rem 0 1.8rem;
+  animation:fin .5s .2s ease both;
+}
+.hero-chips{
+  display:flex;justify-content:center;
+  gap:.5rem;flex-wrap:wrap;
+  animation:fin .5s .3s ease both;
+}
+.chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;padding:.28rem .75rem;
+  border-radius:100px;border:1px solid var(--bdr2);
+  color:var(--tdim);background:rgba(255,255,255,.03);
+}
+.chip.hot{
+  border-color:rgba(233,84,32,.4);
+  color:var(--ub);background:rgba(233,84,32,.08);
+}
+
+/* ===== CONTENT ===== */
+.content{flex:1;min-width:0;padding:2.5rem 2.8rem;max-width:1000px}
+
+/* ===== SECTION ===== */
+.sec{margin-bottom:4rem;scroll-margin-top:68px}
+.sec-hd{
+  display:flex;align-items:center;gap:.8rem;
+  margin-bottom:1.6rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--bdr);
+  position:relative;
+}
+.sec-hd::after{
+  content:'';position:absolute;bottom:-1px;left:0;
+  width:50px;height:2px;
+  background:var(--ub);border-radius:1px;
+}
+.sec-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;font-weight:700;
+  color:var(--ub);
+  background:rgba(233,84,32,.1);
+  border:1px solid rgba(233,84,32,.25);
+  padding:.25rem .55rem;border-radius:5px;
+  white-space:nowrap;
+}
+.sec-ttl{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.55rem;font-weight:800;
+  color:var(--tbri);letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.sec-badge{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.22rem .6rem;border-radius:100px;
+  margin-left:auto;
+}
+.b-basic{background:rgba(56,199,106,.1);color:var(--green);border:1px solid rgba(56,199,106,.25)}
+.b-mid  {background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.25)}
+.b-adv  {background:rgba(233,84,32,.1);color:var(--ub);border:1px solid rgba(233,84,32,.25)}
+.b-sys  {background:rgba(46,168,224,.1);color:var(--blue);border:1px solid rgba(46,168,224,.25)}
+
+/* ===== CMD GRID ===== */
+.cmd-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+  gap:.8rem;
+  margin-bottom:1.2rem;
+}
+.cmd-card{
+  background:var(--s2);
+  border:1px solid var(--bdr);
+  border-radius:var(--r);
+  overflow:hidden;
+  transition:border-color .15s,box-shadow .15s;
+}
+.cmd-card:hover{
+  border-color:rgba(233,84,32,.35);
+  box-shadow:0 0 16px rgba(233,84,32,.07);
+}
+.cmd-bar{
+  background:var(--s3);
+  padding:.45rem .8rem;
+  display:flex;align-items:center;gap:.5rem;
+  border-bottom:1px solid var(--bdr);
+}
+.cmd-prompt{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--green);
+  font-weight:700;
+}
+.cmd-text{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;color:var(--amber);
+  font-weight:600;flex:1;
+  word-break:break-all;
+}
+.cmd-desc{
+  padding:.6rem .85rem;
+  font-size:.85rem;color:var(--tdim);
+  line-height:1.6;
+}
+.cmd-desc strong{color:var(--t);}
+.cmd-desc code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75em;color:var(--cyan);
+  background:rgba(0,200,212,.08);
+  padding:.05rem .3rem;border-radius:3px;
+}
+
+/* ===== DENSE TABLE ===== */
+.dtbl{
+  width:100%;border-collapse:collapse;
+  font-size:.83rem;margin:1rem 0;
+}
+.dtbl th{
+  background:var(--s3);
+  color:var(--tbri);
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:.75rem;
+  letter-spacing:.07em;text-transform:uppercase;
+  padding:.6rem .8rem;text-align:left;
+  border-bottom:2px solid var(--ub);
+  border-top:1px solid var(--bdr);
+}
+.dtbl td{
+  padding:.5rem .8rem;
+  border-bottom:1px solid var(--bdr);
+  vertical-align:top;color:var(--tdim);
+}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl tr:hover td{background:rgba(255,255,255,.02)}
+.dtbl td:first-child{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:var(--amber);
+  white-space:nowrap;font-weight:600;
+}
+.dtbl td:nth-child(2){color:var(--green);white-space:nowrap}
+
+/* ===== BOX ===== */
+.box{
+  display:flex;gap:.8rem;padding:1rem 1.2rem;
+  border-radius:8px;margin:1rem 0;
+  font-size:.88rem;line-height:1.65;
+}
+.box-i{font-size:1.1rem;flex-shrink:0;margin-top:.05rem}
+.box p{margin:0}
+.box.tip   {background:rgba(56,199,106,.07);border:1px solid rgba(56,199,106,.2)}
+.box.warn  {background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2)}
+.box.info  {background:rgba(46,168,224,.07);border:1px solid rgba(46,168,224,.2)}
+.box.danger{background:rgba(224,82,82,.07);border:1px solid rgba(224,82,82,.2)}
+
+/* ===== CODE BLOCK ===== */
+.cb{
+  margin:1rem 0;border-radius:var(--r);
+  overflow:hidden;border:1px solid var(--bdr);
+}
+.cb-bar{
+  background:var(--s3);
+  padding:.5rem .9rem;
+  display:flex;align-items:center;gap:.6rem;
+  border-bottom:1px solid var(--bdr);
+}
+.cb-dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#FF5F57}.dy{background:#FEBC2E}.dg{background:#28C840}
+.cb-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem;color:var(--tdim);flex:1
+}
+.cb-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;color:var(--ub);
+  background:rgba(233,84,32,.1);
+  padding:.1rem .4rem;border-radius:3px;
+}
+pre{
+  background:var(--bg);
+  padding:1.2rem 1.4rem;
+  overflow-x:auto;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;line-height:1.7;
+  color:#ABB2BF;
+}
+.g{color:#98C379}  /* green - output/string */
+.y{color:#E5C07B}  /* yellow - var/flag */
+.b{color:#61AFEF}  /* blue - command */
+.r{color:#E06C75}  /* red - danger/file */
+.c{color:#56B6C2}  /* cyan - path */
+.m{color:#C678DD}  /* magenta - keyword */
+.cm{color:#5C6370;font-style:italic} /* comment */
+.hl{
+  display:block;
+  background:rgba(233,84,32,.08);
+  margin:0 -1.4rem;padding:0 1.4rem;
+  border-left:3px solid var(--ub);
+}
+
+/* ===== TWO COL ===== */
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+
+/* ===== MINI CARD ===== */
+.mc{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:.9rem;
+  transition:all .15s;
+}
+.mc:hover{border-color:rgba(233,84,32,.3)}
+.mc-icon{font-size:1.5rem;margin-bottom:.4rem}
+.mc-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:.88rem;
+  color:var(--tbri);margin-bottom:.2rem;
+  letter-spacing:.03em;text-transform:uppercase;
+}
+.mc-desc{font-size:.78rem;color:var(--tdim)}
+
+/* ===== GRID 3 ===== */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:1rem 0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1rem 0}
+
+/* ===== KEY TAG ===== */
+.ktag{
+  display:inline-flex;align-items:center;
+  gap:.3rem;flex-wrap:wrap;margin:.5rem 0;
+}
+.key{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;padding:.18rem .45rem;
+  background:var(--s3);border:1px solid var(--bdr2);
+  border-radius:4px;color:var(--t);
+}
+.plus{color:var(--tdim);font-size:.7rem}
+
+/* ===== DIVIDER ===== */
+.div{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--bdr),transparent);
+  margin:3.5rem 0;
+}
+
+/* ===== H3 ===== */
+h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:1rem;
+  color:var(--tbri);margin:1.5rem 0 .7rem;
+  letter-spacing:.04em;text-transform:uppercase;
+  display:flex;align-items:center;gap:.5rem;
+}
+h3::before{
+  content:'';display:inline-block;
+  width:3px;height:1em;
+  background:var(--ub);border-radius:2px;
+}
+p{font-size:.9rem;margin-bottom:.8rem;color:var(--tdim)}
+strong{color:var(--t)}
+code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8em;color:var(--cyan);
+  background:rgba(0,200,212,.08);
+  padding:.08rem .35rem;border-radius:3px;
+  border:1px solid rgba(0,200,212,.15);
+}
+
+/* ===== PERMISSION GRID ===== */
+.perm-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.6rem;margin:1rem 0;
+}
+.perm-box{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:.8rem;text-align:center;
+}
+.perm-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.8rem;font-weight:700;
+  color:var(--amber);line-height:1;
+  margin-bottom:.3rem;
+}
+.perm-sym{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;color:var(--green);
+  margin-bottom:.3rem;
+}
+.perm-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.8rem;font-weight:700;
+  color:var(--tbri);text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+/* ===== PROCESS STATES ===== */
+.proc-states{
+  display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0;
+}
+.ps{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;padding:.28rem .65rem;
+  border-radius:4px;font-weight:600;
+}
+.ps-r{background:rgba(56,199,106,.12);color:var(--green);border:1px solid rgba(56,199,106,.25)}
+.ps-s{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.25)}
+.ps-z{background:rgba(224,82,82,.12);color:var(--red);border:1px solid rgba(224,82,82,.25)}
+.ps-t{background:rgba(46,168,224,.12);color:var(--blue);border:1px solid rgba(46,168,224,.25)}
+.ps-d{background:rgba(199,125,255,.12);color:#C77DFF;border:1px solid rgba(199,125,255,.25)}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--s1);border-top:1px solid var(--bdr);
+  padding:2.5rem;text-align:center;
+}
+footer h2{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2rem;font-weight:900;
+  color:var(--ub);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:.4rem;
+}
+footer p{color:var(--tdim);font-size:.82rem}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--ub)}
+
+/* ===== MOBILE ===== */
+@media(max-width:860px){
+  aside{display:none}
+  .content{padding:1.8rem 1.2rem}
+  .cmd-grid{grid-template-columns:1fr}
+  .tc,.g3,.g4{grid-template-columns:1fr}
+  .topnav{display:none}
+  .perm-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .hero{padding:3rem 1.2rem 2rem}
+  .hero h1{font-size:2.5rem}
+  .perm-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="#" class="brand">
+    <div class="brand-icon">U</div>
+    <span>Ubuntu</span> 24 চিটশিট
+  </a>
+  <nav class="topnav">
+    <a href="#basics"    class="tnl">মূল কমান্ড</a>
+    <a href="#files"     class="tnl">ফাইল</a>
+    <a href="#perm"      class="tnl">Permission</a>
+    <a href="#pkg"       class="tnl">Package</a>
+    <a href="#proc"      class="tnl">Process</a>
+    <a href="#net"       class="tnl">নেটওয়ার্ক</a>
+    <a href="#disk"      class="tnl">Disk</a>
+    <a href="#users"     class="tnl">ব্যবহারকারী</a>
+    <a href="#service"   class="tnl">Service</a>
+    <a href="#shell"     class="tnl">Shell</a>
+    <a href="#ssh"       class="tnl">SSH</a>
+    <a href="#vim"       class="tnl">Vim</a>
+    <a href="#firewall"  class="tnl">Firewall</a>
+    <a href="#cron"      class="tnl">Cron</a>
+    <a href="#archive"   class="tnl">Archive</a>
+    <a href="#tips"      class="tnl">Pro Tips</a>
+  </nav>
+  <div class="ver-badge">Ubuntu 24.04 LTS</div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sg">
+    <div class="sg-lbl">🚀 শুরু</div>
+    <a href="#basics"  class="sl"><span class="sn">01</span>মূল কমান্ড</a>
+    <a href="#navigate" class="sl"><span class="sn">02</span>Navigation</a>
+    <a href="#help"    class="sl"><span class="sn">03</span>সাহায্য</a>
+  </div>
+  <div class="sg">
+    <div class="sg-lbl">📁 ফাইল সিস্টেম</div>
+    <a href="#files"   class="sl"><span class="sn">04</span>ফাইল অপারেশন</a>
+    <a href="#search"  class="sl"><span class="sn">05</span>খোঁজা</a>
+    <a href="#perm"    class="sl"><span class="sn">06</span>Permission</a>
+    <a href="#links"   class="sl"><span class="sn">07</span>Links</a>
+  </div>
+  <div class="sg">
+    <div class="sg-lbl">⚙️ সিস্টেম</div>
+    <a href="#pkg"     class="sl"><span class="sn">08</span>Package (APT)</a>
+    <a href="#proc"    class="sl"><span class="sn">09</span>Process</a>
+    <a href="#disk"    class="sl"><span class="sn">10</span>Disk ও Storage</a>
+    <a href="#mem"     class="sl"><span class="sn">11</span>Memory ও CPU</a>
+    <a href="#users"   class="sl"><span class="sn">12</span>User Management</a>
+    <a href="#service" class="sl"><span class="sn">13</span>Systemd Service</a>
+  </div>
+  <div class="sg">
+    <div class="sg-lbl">🌐 নেটওয়ার্ক</div>
+    <a href="#net"     class="sl"><span class="sn">14</span>Network</a>
+    <a href="#ssh"     class="sl"><span class="sn">15</span>SSH</a>
+    <a href="#firewall" class="sl"><span class="sn">16</span>UFW Firewall</a>
+  </div>
+  <div class="sg">
+    <div class="sg-lbl">🛠️ টুলস</div>
+    <a href="#shell"   class="sl"><span class="sn">17</span>Shell & Bash</a>
+    <a href="#vim"     class="sl"><span class="sn">18</span>Vim Editor</a>
+    <a href="#cron"    class="sl"><span class="sn">19</span>Cron Jobs</a>
+    <a href="#archive" class="sl"><span class="sn">20</span>Archive</a>
+    <a href="#tips"    class="sl"><span class="sn">21</span>Pro Tips</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">$ ubuntu 24.04 LTS Noble Numbat · সম্পূর্ণ বাংলা গাইড</div>
+    <h1><span class="ub">UBUNTU</span><br>CHEATSHEET</h1>
+    <p class="hero-sub">শূন্য থেকে অ্যাডমিন পর্যন্ত — সব কমান্ড বাংলায়, Terminal-এ হাত পাকান</p>
+    <div class="hero-chips">
+      <span class="chip hot">Terminal</span>
+      <span class="chip hot">Bash</span>
+      <span class="chip">APT</span>
+      <span class="chip">Systemd</span>
+      <span class="chip">SSH</span>
+      <span class="chip">UFW</span>
+      <span class="chip">Vim</span>
+      <span class="chip">Cron</span>
+      <span class="chip">File System</span>
+      <span class="chip">Networking</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ===== SECTION 1: BASICS ===== -->
+<div class="sec" id="basics">
+  <div class="sec-hd">
+    <span class="sec-num">§01</span>
+    <h2 class="sec-ttl">Terminal ও মূল কমান্ড</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+
+  <div class="box info">
+    <span class="box-i">💡</span>
+    <p><strong>Terminal খোলার শর্টকাট:</strong> <code>Ctrl + Alt + T</code> চাপুন। অথবা Applications মেনু থেকে Terminal খুঁজুন। Ubuntu 24-এ ডিফল্ট shell হলো <strong>Bash</strong>।</p>
+  </div>
+
+  <h3>সিস্টেম তথ্য</h3>
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">uname -a</span></div>
+      <div class="cmd-desc"><strong>সিস্টেমের সম্পূর্ণ তথ্য</strong> — kernel version, hostname, architecture সব একসাথে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">lsb_release -a</span></div>
+      <div class="cmd-desc"><strong>Ubuntu version দেখুন</strong> — কোন Ubuntu ইনস্টল আছে জানতে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">hostname</span></div>
+      <div class="cmd-desc"><strong>কম্পিউটারের নাম</strong> দেখুন। <code>hostname -I</code> দিলে IP address দেখাবে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">whoami</span></div>
+      <div class="cmd-desc">বর্তমানে <strong>কোন user</strong> হিসেবে কাজ করছেন তা দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">uptime</span></div>
+      <div class="cmd-desc">সিস্টেম <strong>কতক্ষণ চলছে</strong>, load average সহ</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">date</span></div>
+      <div class="cmd-desc">বর্তমান <strong>তারিখ ও সময়</strong>। <code>date +"%Y-%m-%d"</code> দিলে শুধু তারিখ</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">cal</span></div>
+      <div class="cmd-desc">Terminal-এ <strong>ক্যালেন্ডার</strong> দেখান। <code>cal 2025</code> পুরো বছর দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">history</span></div>
+      <div class="cmd-desc">আগে দেওয়া <strong>সব কমান্ডের তালিকা</strong>। <code>history 20</code> শেষ ২০টি দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">clear</span></div>
+      <div class="cmd-desc">Terminal <strong>পরিষ্কার</strong> করুন। শর্টকাট: <code>Ctrl + L</code></div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">exit</span></div>
+      <div class="cmd-desc">Terminal <strong>বন্ধ</strong> করুন। শর্টকাট: <code>Ctrl + D</code></div>
+    </div>
+  </div>
+
+  <h3>⌨️ গুরুত্বপূর্ণ Keyboard Shortcuts</h3>
+  <div class="g4">
+    <div class="mc">
+      <div class="mc-icon">⛔</div>
+      <div class="mc-name">Ctrl + C</div>
+      <div class="mc-desc">চলমান কমান্ড জোর করে বন্ধ করুন</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">⏸️</div>
+      <div class="mc-name">Ctrl + Z</div>
+      <div class="mc-desc">কমান্ড Pause করুন (background-এ)</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">🔍</div>
+      <div class="mc-name">Ctrl + R</div>
+      <div class="mc-desc">History থেকে কমান্ড খুঁজুন</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">📋</div>
+      <div class="mc-name">Tab</div>
+      <div class="mc-desc">Auto-complete — দুইবার চাপুন সব option দেখতে</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">⬆️</div>
+      <div class="mc-name">↑ / ↓ Arrow</div>
+      <div class="mc-desc">আগের/পরের কমান্ড দেখুন</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">🏠</div>
+      <div class="mc-name">Ctrl + A/E</div>
+      <div class="mc-desc">লাইনের শুরু/শেষে যান</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">✂️</div>
+      <div class="mc-name">Ctrl + U/K</div>
+      <div class="mc-desc">Cursor-এর আগে/পরে সব মুছুন</div>
+    </div>
+    <div class="mc">
+      <div class="mc-icon">📑</div>
+      <div class="mc-name">Ctrl + Shift+T</div>
+      <div class="mc-desc">নতুন Terminal Tab খুলুন</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 2: NAVIGATE ===== -->
+<div class="sec" id="navigate">
+  <div class="sec-hd">
+    <span class="sec-num">§02</span>
+    <h2 class="sec-ttl">Directory Navigation</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+      <span class="cb-title">Directory ঘুরে বেড়ানো</span>
+      <span class="cb-tag">bash</span>
+    </div>
+    <pre><span class="b">pwd</span>                    <span class="cm"># বর্তমান কোথায় আছেন দেখুন (Print Working Directory)</span>
+<span class="b">ls</span>                     <span class="cm"># ফাইল ও ফোল্ডার তালিকা</span>
+<span class="b">ls</span> <span class="y">-la</span>                 <span class="cm"># লুকানো ফাইলসহ বিস্তারিত তালিকা</span>
+<span class="b">ls</span> <span class="y">-lh</span>                 <span class="cm"># ফাইল size মানুষের পড়ার মতো (KB, MB)</span>
+<span class="b">ls</span> <span class="y">-lt</span>                 <span class="cm"># সময় অনুযায়ী sort করা তালিকা</span>
+<span class="b">ls</span> <span class="y">--color</span>             <span class="cm"># রঙিন তালিকা (ডিফল্টেই থাকে)</span>
+
+<span class="b">cd</span> <span class="c">/home/user/Documents</span> <span class="cm"># নির্দিষ্ট পথে যান</span>
+<span class="b">cd</span> <span class="c">~</span>                    <span class="cm"># Home directory-তে যান (cd লিখলেও হয়)</span>
+<span class="b">cd</span> <span class="c">..</span>                   <span class="cm"># এক ধাপ উপরে যান</span>
+<span class="b">cd</span> <span class="c">../..</span>               <span class="cm"># দুই ধাপ উপরে যান</span>
+<span class="b">cd</span> <span class="c">-</span>                    <span class="cm"># আগের directory-তে ফিরে যান</span>
+<span class="b">cd</span> <span class="c">Documents/Projects</span>  <span class="cm"># Relative path দিয়ে যান</span></pre>
+  </div>
+
+  <h3>Ubuntu-র গুরুত্বপূর্ণ ফোল্ডার</h3>
+  <div class="dtbl-wrap" style="overflow-x:auto">
+  <table class="dtbl">
+    <tr><th>Path</th><th>বাংলা নাম</th><th>কী আছে</th></tr>
+    <tr><td>/</td><td>Root</td><td>সব কিছুর শুরু। সর্বোচ্চ ফোল্ডার</td></tr>
+    <tr><td>/home/user</td><td>হোম</td><td>আপনার ব্যক্তিগত ফাইল, ডকুমেন্ট সব এখানে</td></tr>
+    <tr><td>/etc</td><td>কনফিগ</td><td>সিস্টেমের সব সেটিং ফাইল এখানে</td></tr>
+    <tr><td>/var/log</td><td>লগ</td><td>সব এরর ও activity লগ ফাইল</td></tr>
+    <tr><td>/tmp</td><td>অস্থায়ী</td><td>Reboot-এ মুছে যায়</td></tr>
+    <tr><td>/usr/bin</td><td>প্রোগ্রাম</td><td>ইনস্টল করা software-এর বাইনারি</td></tr>
+    <tr><td>/boot</td><td>বুট</td><td>Linux kernel ও bootloader এখানে</td></tr>
+    <tr><td>/dev</td><td>ডিভাইস</td><td>Hardware device ফাইল (disk, USB)</td></tr>
+    <tr><td>/proc</td><td>প্রসেস</td><td>চলমান process তথ্য (virtual)</td></tr>
+    <tr><td>/mnt, /media</td><td>মাউন্ট</td><td>USB, external drive এখানে মাউন্ট হয়</td></tr>
+    <tr><td>/opt</td><td>অপশনাল</td><td>তৃতীয় পক্ষের বড় software</td></tr>
+    <tr><td>/root</td><td>Root হোম</td><td>root ব্যবহারকারীর home directory</td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 3: HELP ===== -->
+<div class="sec" id="help">
+  <div class="sec-hd">
+    <span class="sec-num">§03</span>
+    <h2 class="sec-ttl">সাহায্য ও ডকুমেন্টেশন</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">man ls</span></div>
+      <div class="cmd-desc"><strong>Manual পেজ</strong> — যেকোনো কমান্ডের বিস্তারিত ডকুমেন্ট। <code>q</code> চাপুন বের হতে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">ls --help</span></div>
+      <div class="cmd-desc"><strong>Quick help</strong> — সংক্ষিপ্ত সাহায্য বার্তা দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">tldr ls</span></div>
+      <div class="cmd-desc"><strong>সহজ উদাহরণ</strong> — man-এর চেয়ে সহজ। <code>sudo apt install tldr</code> দিয়ে ইনস্টল করুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">which python3</span></div>
+      <div class="cmd-desc">কমান্ডটি <strong>কোথায় ইনস্টল</strong> আছে তার পাথ দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">type ls</span></div>
+      <div class="cmd-desc">কমান্ডটি <strong>কী ধরনের</strong> (builtin, alias, function) তা জানায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">apropos copy</span></div>
+      <div class="cmd-desc">কীওয়ার্ড দিয়ে <strong>সংশ্লিষ্ট কমান্ড</strong> খুঁজুন</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 4: FILES ===== -->
+<div class="sec" id="files">
+  <div class="sec-hd">
+    <span class="sec-num">§04</span>
+    <h2 class="sec-ttl">ফাইল ও ফোল্ডার অপারেশন</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+
+  <h3>তৈরি করুন</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Create — ফাইল ও ফোল্ডার তৈরি</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">touch</span> <span class="r">file.txt</span>              <span class="cm"># খালি ফাইল তৈরি / timestamp update</span>
+<span class="b">touch</span> <span class="r">a.txt b.txt c.txt</span>    <span class="cm"># একসাথে তিনটি ফাইল তৈরি</span>
+<span class="b">mkdir</span> <span class="c">projects</span>             <span class="cm"># নতুন ফোল্ডার তৈরি</span>
+<span class="b">mkdir</span> <span class="y">-p</span> <span class="c">a/b/c/d</span>           <span class="cm"># nested ফোল্ডার একসাথে তৈরি (-p = parents)</span>
+<span class="b">mkdir</span> <span class="y">-m 755</span> <span class="c">mydir</span>         <span class="cm"># নির্দিষ্ট permission দিয়ে ফোল্ডার তৈরি</span>
+<span class="b">echo</span> <span class="g">"হ্যালো বাংলাদেশ"</span> <span class="y">></span> <span class="r">file.txt</span>   <span class="cm"># ফাইলে লেখা (overwrite)</span>
+<span class="b">echo</span> <span class="g">"আরো লেখা"</span> <span class="y">>></span> <span class="r">file.txt</span>        <span class="cm"># ফাইলে যোগ করুন (append)</span></pre>
+  </div>
+
+  <h3>দেখুন ও পড়ুন</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Read — ফাইল দেখা</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">cat</span> <span class="r">file.txt</span>               <span class="cm"># পুরো ফাইল একবারে দেখুন</span>
+<span class="b">cat</span> <span class="y">-n</span> <span class="r">file.txt</span>            <span class="cm"># line number সহ দেখুন</span>
+<span class="b">less</span> <span class="r">file.txt</span>              <span class="cm"># বড় ফাইল scroll করে দেখুন (q = বের হন)</span>
+<span class="b">more</span> <span class="r">file.txt</span>              <span class="cm"># পেজে পেজে দেখুন (space = পরের পেজ)</span>
+<span class="b">head</span> <span class="r">file.txt</span>              <span class="cm"># প্রথম ১০ লাইন দেখুন</span>
+<span class="b">head</span> <span class="y">-n 20</span> <span class="r">file.txt</span>        <span class="cm"># প্রথম ২০ লাইন দেখুন</span>
+<span class="b">tail</span> <span class="r">file.txt</span>              <span class="cm"># শেষ ১০ লাইন দেখুন</span>
+<span class="b">tail</span> <span class="y">-n 50</span> <span class="r">file.txt</span>        <span class="cm"># শেষ ৫০ লাইন দেখুন</span>
+<span class="b">tail</span> <span class="y">-f</span> <span class="r">/var/log/syslog</span>    <span class="cm"># Real-time log দেখুন (Ctrl+C বন্ধ করুন)</span>
+<span class="b">wc</span> <span class="y">-l</span> <span class="r">file.txt</span>             <span class="cm"># কত লাইন আছে গণনা করুন</span>
+<span class="b">wc</span> <span class="y">-w</span> <span class="r">file.txt</span>             <span class="cm"># কত শব্দ আছে গণনা করুন</span></pre>
+  </div>
+
+  <h3>কপি, সরান ও মুছুন</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Copy · Move · Delete</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">cp</span> <span class="r">file.txt</span> <span class="c">/backup/</span>       <span class="cm"># ফাইল কপি করুন</span>
+<span class="b">cp</span> <span class="y">-r</span> <span class="c">folder/</span> <span class="c">/backup/</span>    <span class="cm"># পুরো ফোল্ডার কপি (-r = recursive)</span>
+<span class="b">cp</span> <span class="y">-v</span> <span class="r">*.txt</span> <span class="c">/backup/</span>       <span class="cm"># কপি করার সময় দেখান কী হচ্ছে (-v = verbose)</span>
+<span class="b">cp</span> <span class="y">-u</span> <span class="r">file.txt</span> <span class="c">/backup/</span>   <span class="cm"># শুধু নতুন/পরিবর্তিত হলে কপি করুন</span>
+
+<span class="b">mv</span> <span class="r">file.txt</span> <span class="c">/documents/</span>   <span class="cm"># ফাইল সরান (cut+paste)</span>
+<span class="b">mv</span> <span class="r">old.txt</span> <span class="r">new.txt</span>         <span class="cm"># ফাইলের নাম বদলান</span>
+<span class="b">mv</span> <span class="c">dir1/</span> <span class="c">dir2/</span>             <span class="cm"># ফোল্ডার সরান</span>
+
+<span class="b">rm</span> <span class="r">file.txt</span>                <span class="cm"># ফাইল মুছুন (Recycle Bin-এ যায় না!)</span>
+<span class="b">rm</span> <span class="y">-i</span> <span class="r">file.txt</span>             <span class="cm"># মুছার আগে confirm চাইবে</span>
+<span class="b">rm</span> <span class="y">-r</span> <span class="c">myfolder/</span>           <span class="cm"># পুরো ফোল্ডার মুছুন</span>
+<span class="b">rm</span> <span class="y">-rf</span> <span class="c">myfolder/</span>          <span class="cm"># জোর করে মুছুন (সাবধান!)</span>
+<span class="b">rmdir</span> <span class="c">empty_folder/</span>       <span class="cm"># খালি ফোল্ডার মুছুন</span></pre>
+  </div>
+
+  <div class="box danger">
+    <span class="box-i">⚠️</span>
+    <p><strong>সাবধান!</strong> <code>rm -rf</code> ব্যবহারে সতর্ক থাকুন। মুছলে ফিরে পাওয়া কঠিন। <code>rm -rf /</code> কখনো দেবেন না — এটি পুরো সিস্টেম মুছে দেবে!</p>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 5: SEARCH ===== -->
+<div class="sec" id="search">
+  <div class="sec-hd">
+    <span class="sec-num">§05</span>
+    <h2 class="sec-ttl">খোঁজা — Find, Grep, Locate</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">find — ফাইল খুঁজুন</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">find</span> <span class="c">/home</span> <span class="y">-name</span> <span class="g">"*.txt"</span>          <span class="cm"># .txt ফাইল খুঁজুন</span>
+<span class="b">find</span> <span class="c">.</span> <span class="y">-name</span> <span class="g">"config.php"</span>          <span class="cm"># বর্তমান ফোল্ডারে খুঁজুন</span>
+<span class="b">find</span> <span class="c">/</span> <span class="y">-type f -name</span> <span class="g">"*.log"</span>      <span class="cm"># শুধু ফাইল খুঁজুন</span>
+<span class="b">find</span> <span class="c">/</span> <span class="y">-type d -name</span> <span class="g">"backup"</span>     <span class="cm"># শুধু ফোল্ডার খুঁজুন</span>
+<span class="b">find</span> <span class="c">/home</span> <span class="y">-size +100M</span>             <span class="cm"># ১০০MB-এর বড় ফাইল</span>
+<span class="b">find</span> <span class="c">.</span> <span class="y">-mtime -7</span>                    <span class="cm"># শেষ ৭ দিনে পরিবর্তিত</span>
+<span class="b">find</span> <span class="c">.</span> <span class="y">-perm 777</span>                    <span class="cm"># নির্দিষ্ট permission দিয়ে</span>
+<span class="b">find</span> <span class="c">.</span> <span class="y">-name</span> <span class="g">"*.py"</span> <span class="y">-delete</span>        <span class="cm"># খুঁজে মুছুন (সাবধান!)</span>
+<span class="b">find</span> <span class="c">.</span> <span class="y">-name</span> <span class="g">"*.txt"</span> <span class="y">-exec</span> <span class="b">ls</span> <span class="y">-lh</span> {} \;  <span class="cm"># খুঁজে কমান্ড চালান</span></pre>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">grep — ফাইলের ভেতরে খুঁজুন</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">grep</span> <span class="g">"error"</span> <span class="r">logfile.txt</span>          <span class="cm"># "error" শব্দ খুঁজুন</span>
+<span class="b">grep</span> <span class="y">-i</span> <span class="g">"ERROR"</span> <span class="r">logfile.txt</span>       <span class="cm"># Case-insensitive খোঁজ</span>
+<span class="b">grep</span> <span class="y">-n</span> <span class="g">"error"</span> <span class="r">logfile.txt</span>       <span class="cm"># Line number সহ</span>
+<span class="b">grep</span> <span class="y">-r</span> <span class="g">"TODO"</span> <span class="c">./src/</span>             <span class="cm"># ফোল্ডারের সব ফাইলে খুঁজুন</span>
+<span class="b">grep</span> <span class="y">-v</span> <span class="g">"debug"</span> <span class="r">log.txt</span>           <span class="cm"># যে লাইনে নেই সেগুলো দেখান</span>
+<span class="b">grep</span> <span class="y">-c</span> <span class="g">"error"</span> <span class="r">log.txt</span>           <span class="cm"># কতবার আছে গণনা করুন</span>
+<span class="b">grep</span> <span class="y">-l</span> <span class="g">"config"</span> <span class="c">*.php</span>            <span class="cm"># কোন ফাইলে আছে শুধু নাম দেখান</span>
+<span class="b">grep</span> <span class="y">-A 3</span> <span class="g">"error"</span> <span class="r">log.txt</span>         <span class="cm"># Match-এর পরের ৩ লাইন দেখান</span>
+<span class="b">grep</span> <span class="y">-E</span> <span class="g">"error|warning"</span> <span class="r">log.txt</span>  <span class="cm"># Regex দিয়ে খোঁজ</span>
+<span class="b">ps aux</span> | <span class="b">grep</span> <span class="g">"nginx"</span>            <span class="cm"># Pipe দিয়ে ফিল্টার করুন</span></pre>
+  </div>
+
+  <div class="tc">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">locate filename</span></div>
+      <div class="cmd-desc"><strong>দ্রুত খোঁজ</strong> — database থেকে। প্রথমে <code>sudo updatedb</code> চালান</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">whereis python3</span></div>
+      <div class="cmd-desc">প্রোগ্রামের <strong>binary, source, man page</strong> কোথায় আছে দেখান</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 6: PERMISSIONS ===== -->
+<div class="sec" id="perm">
+  <div class="sec-hd">
+    <span class="sec-num">§06</span>
+    <h2 class="sec-ttl">File Permission ও Owner</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="box info">
+    <span class="box-i">🔐</span>
+    <p>Permission বোঝার চাবিকাঠি: <code>-rwxrwxrwx</code> — প্রথম অক্ষর ফাইল type, তারপর ৩টি করে তিন গ্রুপ: <strong>Owner | Group | Others</strong> এবং প্রতিটি গ্রুপে <strong>r (read=4), w (write=2), x (execute=1)</strong></p>
+  </div>
+
+  <div class="perm-grid">
+    <div class="perm-box"><div class="perm-num">7</div><div class="perm-sym">rwx</div><div class="perm-name">সব অধিকার</div></div>
+    <div class="perm-box"><div class="perm-num">6</div><div class="perm-sym">rw-</div><div class="perm-name">পড়া + লেখা</div></div>
+    <div class="perm-box"><div class="perm-num">5</div><div class="perm-sym">r-x</div><div class="perm-name">পড়া + চালানো</div></div>
+    <div class="perm-box"><div class="perm-num">4</div><div class="perm-sym">r--</div><div class="perm-name">শুধু পড়া</div></div>
+    <div class="perm-box"><div class="perm-num">2</div><div class="perm-sym">-w-</div><div class="perm-name">শুধু লেখা</div></div>
+    <div class="perm-box"><div class="perm-num">0</div><div class="perm-sym">---</div><div class="perm-name">কোনো অধিকার নেই</div></div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">chmod · chown · chgrp</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># chmod — Permission পরিবর্তন</span>
+<span class="b">chmod</span> <span class="y">755</span> <span class="r">script.sh</span>          <span class="cm"># owner:rwx, group:r-x, others:r-x</span>
+<span class="b">chmod</span> <span class="y">644</span> <span class="r">file.txt</span>           <span class="cm"># owner:rw-, group:r--, others:r--</span>
+<span class="b">chmod</span> <span class="y">777</span> <span class="r">public.html</span>        <span class="cm"># সবাইকে সব অধিকার (বিপজ্জনক!)</span>
+<span class="b">chmod</span> <span class="y">600</span> <span class="r">private.key</span>        <span class="cm"># শুধু owner পড়তে ও লিখতে পারবে</span>
+<span class="b">chmod</span> <span class="y">+x</span> <span class="r">script.sh</span>          <span class="cm"># Execute permission যোগ করুন</span>
+<span class="b">chmod</span> <span class="y">-w</span> <span class="r">file.txt</span>           <span class="cm"># Write permission সরান</span>
+<span class="b">chmod</span> <span class="y">-R 755</span> <span class="c">myfolder/</span>      <span class="cm"># ফোল্ডারসহ সব কিছুতে apply (-R)</span>
+<span class="b">chmod</span> <span class="y">u=rwx,g=rx,o=r</span> <span class="r">f.sh</span>  <span class="cm"># Symbolic পদ্ধতি</span>
+
+<span class="cm"># chown — মালিকানা পরিবর্তন</span>
+<span class="b">chown</span> <span class="y">raju</span> <span class="r">file.txt</span>         <span class="cm"># file-এর owner = raju</span>
+<span class="b">chown</span> <span class="y">raju:developers</span> <span class="r">f.txt</span> <span class="cm"># owner=raju, group=developers</span>
+<span class="b">chown</span> <span class="y">-R www-data:www-data</span> <span class="c">/var/www/</span>  <span class="cm"># ওয়েব ফোল্ডার</span>
+
+<span class="cm"># ls দিয়ে Permission দেখুন</span>
+<span class="b">ls</span> <span class="y">-l</span> <span class="r">file.txt</span>
+<span class="g">-rw-r--r-- 1 raju developers 2048 Jan 15 file.txt</span>
+<span class="cm">#  ↑ type+perm  ↑links ↑owner ↑group  ↑size ↑date  ↑name</span></pre>
+  </div>
+
+  <div class="tc">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">sudo chmod 400 ~/.ssh/id_rsa</span></div>
+      <div class="cmd-desc">SSH key-এর <strong>সঠিক permission</strong> — শুধু owner পড়তে পারবে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">umask 022</span></div>
+      <div class="cmd-desc">নতুন ফাইলের <strong>default permission</strong> সেট করুন</div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 7: LINKS ===== -->
+<div class="sec" id="links">
+  <div class="sec-hd">
+    <span class="sec-num">§07</span>
+    <h2 class="sec-ttl">Symbolic ও Hard Links</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+  <div class="tc">
+    <div>
+      <div class="cb">
+        <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Links তৈরি</span><span class="cb-tag">bash</span></div>
+        <pre><span class="cm"># Symbolic link (Shortcut-এর মতো)</span>
+<span class="b">ln</span> <span class="y">-s</span> <span class="c">/var/www/html</span> <span class="c">~/webroot</span>
+<span class="b">ln</span> <span class="y">-s</span> <span class="r">original.txt</span> <span class="r">link.txt</span>
+
+<span class="cm"># Hard link</span>
+<span class="b">ln</span> <span class="r">original.txt</span> <span class="r">hardlink.txt</span>
+
+<span class="cm"># Link দেখুন</span>
+<span class="b">ls</span> <span class="y">-la</span>  <span class="cm"># l = symlink দেখাবে</span>
+<span class="b">readlink</span> <span class="y">-f</span> <span class="r">link.txt</span> <span class="cm"># মূল পাথ দেখুন</span></pre>
+      </div>
+    </div>
+    <div>
+      <div class="box tip" style="margin-top:0">
+        <span class="box-i">🔗</span>
+        <p><strong>Symbolic Link:</strong> Windows-এর Shortcut-এর মতো। মূল ফাইল মুছলে link কাজ করে না।</p>
+      </div>
+      <div class="box info">
+        <span class="box-i">⛓️</span>
+        <p><strong>Hard Link:</strong> একই ফাইলের দুটি নাম। মূল মুছলেও link কাজ করে।</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 8: PACKAGES ===== -->
+<div class="sec" id="pkg">
+  <div class="sec-hd">
+    <span class="sec-num">§08</span>
+    <h2 class="sec-ttl">APT Package Manager</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+
+  <div class="box tip">
+    <span class="box-i">📦</span>
+    <p><strong>APT (Advanced Package Tool)</strong> হলো Ubuntu-র software ইনস্টল করার প্রধান পদ্ধতি। <code>sudo</code> ছাড়া বেশিরভাগ apt কমান্ড কাজ করবে না।</p>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">APT সম্পূর্ণ গাইড</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== সিস্টেম আপডেট =====</span>
+<span class="b">sudo apt update</span>                 <span class="cm"># Package list refresh করুন (সবসময় আগে করুন)</span>
+<span class="b">sudo apt upgrade</span>                <span class="cm"># সব আপডেট ইনস্টল করুন</span>
+<span class="b">sudo apt full-upgrade</span>           <span class="cm"># Dependencies সহ সম্পূর্ণ upgrade</span>
+<span class="b">sudo apt dist-upgrade</span>           <span class="cm"># Distribution upgrade</span>
+<span class="b">sudo apt update && sudo apt upgrade -y</span>  <span class="cm"># দুটি একসাথে</span>
+
+<span class="cm"># ===== ইনস্টল করুন =====</span>
+<span class="b">sudo apt install</span> <span class="y">nginx</span>          <span class="cm"># একটি software ইনস্টল করুন</span>
+<span class="b">sudo apt install</span> <span class="y">nginx php mysql-server</span>  <span class="cm"># একসাথে অনেক ইনস্টল</span>
+<span class="b">sudo apt install</span> <span class="y">-y</span> <span class="y">curl</span>       <span class="cm"># -y = confirm ছাড়াই install</span>
+<span class="b">sudo apt install</span> <span class="y">--reinstall</span> <span class="y">nginx</span>  <span class="cm"># পুনরায় ইনস্টল করুন</span>
+
+<span class="cm"># ===== সরান =====</span>
+<span class="b">sudo apt remove</span> <span class="y">nginx</span>           <span class="cm"># software সরান (config রাখুন)</span>
+<span class="b">sudo apt purge</span> <span class="y">nginx</span>            <span class="cm"># config সহ সম্পূর্ণ সরান</span>
+<span class="b">sudo apt autoremove</span>             <span class="cm"># অপ্রয়োজনীয় package মুছুন</span>
+<span class="b">sudo apt autoclean</span>              <span class="cm"># পুরানো .deb cache মুছুন</span>
+<span class="b">sudo apt clean</span>                  <span class="cm"># সব .deb cache মুছুন</span>
+
+<span class="cm"># ===== খোঁজুন =====</span>
+<span class="b">apt search</span> <span class="y">nginx</span>               <span class="cm"># Package খুঁজুন</span>
+<span class="b">apt show</span> <span class="y">nginx</span>                 <span class="cm"># Package বিস্তারিত তথ্য</span>
+<span class="b">apt list --installed</span>           <span class="cm"># ইনস্টল করা সব package</span>
+<span class="b">apt list --upgradable</span>          <span class="cm"># আপডেট দেওয়া যাবে এমন package</span>
+<span class="b">dpkg -l | grep</span> <span class="g">nginx</span>          <span class="cm"># নির্দিষ্ট package ইনস্টল আছে কিনা</span>
+<span class="b">dpkg -L</span> <span class="y">nginx</span>                  <span class="cm"># Package কোথায় কোথায় ফাইল রেখেছে</span>
+
+<span class="cm"># ===== .deb ফাইল ইনস্টল =====</span>
+<span class="b">sudo dpkg -i</span> <span class="r">package.deb</span>       <span class="cm"># .deb ফাইল ইনস্টল</span>
+<span class="b">sudo dpkg -r</span> <span class="y">package-name</span>     <span class="cm"># .deb দিয়ে ইনস্টল করা সরান</span>
+<span class="b">sudo apt install -f</span>            <span class="cm"># Broken dependency ঠিক করুন</span>
+
+<span class="cm"># ===== Snap Package =====</span>
+<span class="b">snap install</span> <span class="y">vscode --classic</span>  <span class="cm"># Snap package ইনস্টল</span>
+<span class="b">snap list</span>                       <span class="cm"># ইনস্টল করা snap দেখুন</span>
+<span class="b">snap remove</span> <span class="y">vscode</span>             <span class="cm"># Snap সরান</span>
+<span class="b">snap refresh</span>                    <span class="cm"># সব snap আপডেট করুন</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 9: PROCESS ===== -->
+<div class="sec" id="proc">
+  <div class="sec-hd">
+    <span class="sec-num">§09</span>
+    <h2 class="sec-ttl">Process Management</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <p>Process হলো চলমান প্রোগ্রাম। প্রতিটির একটি unique <strong>PID (Process ID)</strong> থাকে।</p>
+
+  <div class="proc-states">
+    <span class="ps ps-r">R — Running (চলছে)</span>
+    <span class="ps ps-s">S — Sleeping (ঘুমাচ্ছে)</span>
+    <span class="ps ps-t">T — Stopped (থেমে আছে)</span>
+    <span class="ps ps-z">Z — Zombie (মৃত কিন্তু আছে)</span>
+    <span class="ps ps-d">D — Uninterruptible (I/O অপেক্ষা)</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Process দেখা ও নিয়ন্ত্রণ</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== Process দেখুন =====</span>
+<span class="b">ps</span>                             <span class="cm"># বর্তমান shell-এর process</span>
+<span class="b">ps aux</span>                         <span class="cm"># সব user-এর সব process</span>
+<span class="b">ps aux | grep</span> <span class="g">nginx</span>           <span class="cm"># নির্দিষ্ট process খুঁজুন</span>
+<span class="b">ps -ef</span>                         <span class="cm"># Full-format process list</span>
+<span class="b">pstree</span>                         <span class="cm"># Process tree দেখুন</span>
+
+<span class="cm"># ===== Real-time monitoring =====</span>
+<span class="b">top</span>                            <span class="cm"># Real-time process (q = বের হন)</span>
+<span class="b">htop</span>                           <span class="cm"># সুন্দর UI (sudo apt install htop)</span>
+<span class="b">btop</span>                           <span class="cm"># আরো সুন্দর (sudo apt install btop)</span>
+
+<span class="cm"># ===== Process বন্ধ করুন =====</span>
+<span class="b">kill</span> <span class="y">1234</span>                      <span class="cm"># PID দিয়ে বন্ধ করুন (সৌজন্যে)</span>
+<span class="b">kill</span> <span class="y">-9 1234</span>                   <span class="cm"># জোর করে বন্ধ করুন (SIGKILL)</span>
+<span class="b">kill</span> <span class="y">-15 1234</span>                  <span class="cm"># সৌজন্যে বন্ধ করুন (SIGTERM)</span>
+<span class="b">killall</span> <span class="y">firefox</span>                <span class="cm"># নাম দিয়ে সব process বন্ধ</span>
+<span class="b">pkill</span> <span class="y">-f</span> <span class="g">"python script"</span>       <span class="cm"># Pattern দিয়ে বন্ধ</span>
+<span class="b">xkill</span>                          <span class="cm"># GUI window click করে বন্ধ</span>
+
+<span class="cm"># ===== Background ও Foreground =====</span>
+<span class="b">command &</span>                       <span class="cm"># Background-এ চালান</span>
+<span class="b">jobs</span>                           <span class="cm"># Background jobs দেখুন</span>
+<span class="b">fg %1</span>                          <span class="cm"># Job 1 Foreground-এ আনুন</span>
+<span class="b">bg %1</span>                          <span class="cm"># Job 1 Background-এ পাঠান</span>
+<span class="b">nohup command &</span>                 <span class="cm"># Terminal বন্ধ হলেও চলবে</span>
+<span class="b">disown %1</span>                      <span class="cm"># Shell থেকে আলাদা করুন</span>
+
+<span class="cm"># ===== PID খুঁজুন =====</span>
+<span class="b">pgrep</span> <span class="y">nginx</span>                    <span class="cm"># নাম দিয়ে PID খুঁজুন</span>
+<span class="b">pidof</span> <span class="y">nginx</span>                    <span class="cm"># নির্দিষ্ট PID দেখুন</span>
+
+<span class="cm"># ===== Priority =====</span>
+<span class="b">nice</span> <span class="y">-n 10</span> <span class="b">command</span>            <span class="cm"># কম priority দিয়ে চালান (10=কম,-20=বেশি)</span>
+<span class="b">renice</span> <span class="y">-n 5 -p</span> <span class="y">1234</span>          <span class="cm"># চলমান process-এর priority বদলান</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 10: DISK ===== -->
+<div class="sec" id="disk">
+  <div class="sec-hd">
+    <span class="sec-num">§10</span>
+    <h2 class="sec-ttl">Disk ও Storage</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Disk Usage ও Management</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== ফাঁকা জায়গা দেখুন =====</span>
+<span class="b">df</span> <span class="y">-h</span>                           <span class="cm"># সব partition-এর disk use (human-readable)</span>
+<span class="b">df</span> <span class="y">-h /home</span>                     <span class="cm"># নির্দিষ্ট partition</span>
+<span class="b">df</span> <span class="y">-i</span>                           <span class="cm"># Inode usage দেখুন</span>
+
+<span class="cm"># ===== ফোল্ডার কত জায়গা নিচ্ছে =====</span>
+<span class="b">du</span> <span class="y">-sh</span> <span class="c">/var/log</span>               <span class="cm"># একটি ফোল্ডারের মোট size</span>
+<span class="b">du</span> <span class="y">-sh</span> <span class="c">*</span>                       <span class="cm"># বর্তমান ফোল্ডারের সব কিছু</span>
+<span class="b">du</span> <span class="y">-h --max-depth=1</span> <span class="c">/</span>         <span class="cm"># এক স্তর গভীরে দেখুন</span>
+<span class="b">du</span> <span class="y">-ah</span> <span class="c">/home</span> | <span class="b">sort -rh</span> | <span class="b">head -20</span>  <span class="cm"># বড় থেকে ছোট sort</span>
+<span class="b">ncdu</span> <span class="c">/</span>                         <span class="cm"># Interactive disk usage (sudo apt install ncdu)</span>
+
+<span class="cm"># ===== Partition দেখুন =====</span>
+<span class="b">lsblk</span>                          <span class="cm"># Block device তালিকা (disk, partition)</span>
+<span class="b">lsblk</span> <span class="y">-f</span>                       <span class="cm"># Filesystem তথ্য সহ</span>
+<span class="b">sudo fdisk -l</span>                  <span class="cm"># বিস্তারিত partition তালিকা</span>
+<span class="b">sudo blkid</span>                     <span class="cm"># UUID ও filesystem type</span>
+<span class="b">cat /proc/partitions</span>           <span class="cm"># Kernel-এ registered partition</span>
+
+<span class="cm"># ===== Mount ও Unmount =====</span>
+<span class="b">sudo mount</span> <span class="c">/dev/sdb1</span> <span class="c">/mnt/usb</span>  <span class="cm"># USB mount করুন</span>
+<span class="b">sudo umount</span> <span class="c">/mnt/usb</span>           <span class="cm"># Unmount করুন</span>
+<span class="b">mount | grep</span> <span class="c">/dev/sd</span>          <span class="cm"># Mount করা device দেখুন</span>
+<span class="b">cat /etc/fstab</span>                 <span class="cm"># Auto-mount কনফিগ দেখুন</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 11: MEMORY ===== -->
+<div class="sec" id="mem">
+  <div class="sec-hd">
+    <span class="sec-num">§11</span>
+    <h2 class="sec-ttl">Memory ও CPU Monitoring</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">free -h</span></div>
+      <div class="cmd-desc"><strong>RAM ও Swap</strong> ব্যবহার দেখুন। <code>-m</code> MB-তে, <code>-g</code> GB-তে দেখায়</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">vmstat 1 5</span></div>
+      <div class="cmd-desc">প্রতি ১ সেকেন্ডে ৫ বার <strong>memory ও CPU</strong> status দেখুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">cat /proc/cpuinfo</span></div>
+      <div class="cmd-desc"><strong>CPU-র বিস্তারিত তথ্য</strong> — cores, speed, model</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">nproc</span></div>
+      <div class="cmd-desc">CPU-তে <strong>কতটি core</strong> আছে তা দেখুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">lscpu</span></div>
+      <div class="cmd-desc"><strong>CPU আর্কিটেকচার</strong> সম্পূর্ণ তথ্য</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">iostat</span></div>
+      <div class="cmd-desc"><strong>Disk I/O statistics</strong> — পড়া ও লেখার গতি</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">sar -u 1 10</span></div>
+      <div class="cmd-desc">প্রতি সেকেন্ডে <strong>CPU usage</strong> দেখুন (sysstat package)</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">cat /proc/meminfo</span></div>
+      <div class="cmd-desc"><strong>Memory-র বিস্তারিত তথ্য</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 12: USERS ===== -->
+<div class="sec" id="users">
+  <div class="sec-hd">
+    <span class="sec-num">§12</span>
+    <h2 class="sec-ttl">User ও Group Management</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">User ও Group পরিচালনা</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== User তৈরি করুন =====</span>
+<span class="b">sudo adduser</span> <span class="y">raju</span>              <span class="cm"># Interactive ভাবে user তৈরি (সহজ)</span>
+<span class="b">sudo useradd</span> <span class="y">-m -s /bin/bash raju</span>  <span class="cm"># ম্যানুয়ালি user তৈরি</span>
+<span class="b">sudo useradd</span> <span class="y">-m -G sudo raju</span>  <span class="cm"># sudo গ্রুপে যোগ করে তৈরি</span>
+
+<span class="cm"># ===== Password =====</span>
+<span class="b">sudo passwd</span> <span class="y">raju</span>              <span class="cm"># password সেট করুন</span>
+<span class="b">passwd</span>                         <span class="cm"># নিজের password বদলান</span>
+<span class="b">sudo passwd -l</span> <span class="y">raju</span>           <span class="cm"># Account lock করুন</span>
+<span class="b">sudo passwd -u</span> <span class="y">raju</span>           <span class="cm"># Account unlock করুন</span>
+
+<span class="cm"># ===== User সরান =====</span>
+<span class="b">sudo userdel</span> <span class="y">raju</span>             <span class="cm"># User মুছুন (home রাখুন)</span>
+<span class="b">sudo userdel -r</span> <span class="y">raju</span>          <span class="cm"># User ও home directory মুছুন</span>
+
+<span class="cm"># ===== User তথ্য =====</span>
+<span class="b">id</span>                             <span class="cm"># নিজের UID, GID দেখুন</span>
+<span class="b">id</span> <span class="y">raju</span>                       <span class="cm"># অন্য user-এর তথ্য</span>
+<span class="b">whoami</span>                         <span class="cm"># বর্তমান user</span>
+<span class="b">w</span>                              <span class="cm"># কে login আছে এখন</span>
+<span class="b">last</span>                           <span class="cm"># Login history</span>
+<span class="b">cat /etc/passwd</span>                <span class="cm"># সব user দেখুন</span>
+<span class="b">getent passwd</span>                  <span class="cm"># সব user list</span>
+
+<span class="cm"># ===== Group Management =====</span>
+<span class="b">sudo groupadd</span> <span class="y">developers</span>      <span class="cm"># নতুন group তৈরি</span>
+<span class="b">sudo groupdel</span> <span class="y">developers</span>      <span class="cm"># group মুছুন</span>
+<span class="b">sudo usermod -aG</span> <span class="y">sudo raju</span>   <span class="cm"># user-কে group-এ যোগ করুন</span>
+<span class="b">sudo usermod -aG</span> <span class="y">www-data raju</span>  <span class="cm"># web server group-এ যোগ</span>
+<span class="b">groups</span> <span class="y">raju</span>                   <span class="cm"># user কোন কোন group-এ আছে</span>
+<span class="b">cat /etc/group</span>                 <span class="cm"># সব group দেখুন</span>
+
+<span class="cm"># ===== sudo =====</span>
+<span class="b">sudo command</span>                   <span class="cm"># root হিসেবে একটি কমান্ড চালান</span>
+<span class="b">sudo -i</span>                        <span class="cm"># root shell-এ প্রবেশ</span>
+<span class="b">sudo su - raju</span>                 <span class="cm"># অন্য user হিসেবে login</span>
+<span class="b">sudo visudo</span>                    <span class="cm"># sudoers file সম্পাদনা করুন</span>
+<span class="b">sudo -l</span>                        <span class="cm"># আপনি কী কী sudo করতে পারেন</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 13: SERVICES ===== -->
+<div class="sec" id="service">
+  <div class="sec-hd">
+    <span class="sec-num">§13</span>
+    <h2 class="sec-ttl">Systemd Service Management</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="box info">
+    <span class="box-i">⚙️</span>
+    <p><strong>Systemd</strong> হলো Ubuntu 24-এর init system। সব service (nginx, mysql, ssh ইত্যাদি) Systemd দিয়ে নিয়ন্ত্রণ করা হয়।</p>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">systemctl — Service Control</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== Service চালু/বন্ধ করুন =====</span>
+<span class="b">sudo systemctl start</span> <span class="y">nginx</span>    <span class="cm"># Service চালু করুন</span>
+<span class="b">sudo systemctl stop</span> <span class="y">nginx</span>     <span class="cm"># Service বন্ধ করুন</span>
+<span class="b">sudo systemctl restart</span> <span class="y">nginx</span>  <span class="cm"># Restart করুন</span>
+<span class="b">sudo systemctl reload</span> <span class="y">nginx</span>   <span class="cm"># Config reload (বন্ধ না করে)</span>
+<span class="b">sudo systemctl status</span> <span class="y">nginx</span>   <span class="cm"># Service-এর অবস্থা দেখুন</span>
+
+<span class="cm"># ===== Auto-start সেটআপ =====</span>
+<span class="b">sudo systemctl enable</span> <span class="y">nginx</span>   <span class="cm"># Boot-এ auto-start চালু</span>
+<span class="b">sudo systemctl disable</span> <span class="y">nginx</span>  <span class="cm"># Boot-এ auto-start বন্ধ</span>
+<span class="b">sudo systemctl enable --now</span> <span class="y">nginx</span>  <span class="cm"># Enable + এখনই চালু</span>
+<span class="b">sudo systemctl is-enabled</span> <span class="y">nginx</span>   <span class="cm"># Enable আছে কিনা চেক</span>
+<span class="b">sudo systemctl is-active</span> <span class="y">nginx</span>    <span class="cm"># চলছে কিনা চেক</span>
+
+<span class="cm"># ===== সব Service দেখুন =====</span>
+<span class="b">sudo systemctl list-units --type=service</span>       <span class="cm"># সব active service</span>
+<span class="b">sudo systemctl list-units --type=service --all</span> <span class="cm"># inactive সহ সব</span>
+<span class="b">sudo systemctl list-unit-files</span>                  <span class="cm"># সব unit file</span>
+
+<span class="cm"># ===== System পরিচালনা =====</span>
+<span class="b">sudo systemctl reboot</span>          <span class="cm"># সিস্টেম restart করুন</span>
+<span class="b">sudo systemctl poweroff</span>        <span class="cm"># সিস্টেম বন্ধ করুন</span>
+<span class="b">sudo systemctl halt</span>            <span class="cm"># হার্ডওয়্যার হ্যান্ডেল করুন</span>
+<span class="b">sudo systemctl suspend</span>         <span class="cm"># Suspend করুন</span>
+
+<span class="cm"># ===== Log দেখুন (journald) =====</span>
+<span class="b">sudo journalctl -u nginx</span>       <span class="cm"># Nginx-এর log</span>
+<span class="b">sudo journalctl -u nginx -f</span>    <span class="cm"># Real-time log</span>
+<span class="b">sudo journalctl -u nginx -n 50</span> <span class="cm"># শেষ ৫০ লাইন</span>
+<span class="b">sudo journalctl -b</span>             <span class="cm"># এই boot-এর সব log</span>
+<span class="b">sudo journalctl --since</span> <span class="g">"1 hour ago"</span>  <span class="cm"># শেষ ১ ঘণ্টার log</span>
+<span class="b">sudo journalctl -p err</span>         <span class="cm"># শুধু error log</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 14: NETWORK ===== -->
+<div class="sec" id="net">
+  <div class="sec-hd">
+    <span class="sec-num">§14</span>
+    <h2 class="sec-ttl">Network Commands</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Network — সম্পূর্ণ গাইড</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== IP ও Interface দেখুন =====</span>
+<span class="b">ip addr show</span>                   <span class="cm"># সব network interface ও IP</span>
+<span class="b">ip addr show eth0</span>              <span class="cm"># নির্দিষ্ট interface-এর IP</span>
+<span class="b">ip -4 addr</span>                     <span class="cm"># শুধু IPv4 দেখুন</span>
+<span class="b">ip route show</span>                  <span class="cm"># Routing table দেখুন</span>
+<span class="b">ip link show</span>                   <span class="cm"># Network interface তালিকা</span>
+<span class="b">hostname -I</span>                    <span class="cm"># সব IP address দেখুন</span>
+<span class="b">curl ifconfig.me</span>               <span class="cm"># Public (বাইরের) IP দেখুন</span>
+<span class="b">curl icanhazip.com</span>             <span class="cm"># Public IP (আরেকটি উপায়)</span>
+
+<span class="cm"># ===== Connection Test =====</span>
+<span class="b">ping</span> <span class="y">8.8.8.8</span>                   <span class="cm"># Google DNS-এ ping (Ctrl+C বন্ধ)</span>
+<span class="b">ping</span> <span class="y">-c 4</span> <span class="y">google.com</span>          <span class="cm"># ৪ বার ping করুন</span>
+<span class="b">traceroute google.com</span>          <span class="cm"># রাস্তা দেখুন (কোন router দিয়ে যাচ্ছে)</span>
+<span class="b">mtr google.com</span>                 <span class="cm"># Real-time traceroute</span>
+
+<span class="cm"># ===== DNS =====</span>
+<span class="b">nslookup google.com</span>            <span class="cm"># DNS query</span>
+<span class="b">dig google.com</span>                 <span class="cm"># বিস্তারিত DNS তথ্য</span>
+<span class="b">dig google.com +short</span>          <span class="cm"># শুধু IP দেখুন</span>
+<span class="b">dig -x 8.8.8.8</span>                 <span class="cm"># Reverse DNS lookup</span>
+<span class="b">cat /etc/resolv.conf</span>           <span class="cm"># DNS server কনফিগ</span>
+<span class="b">cat /etc/hosts</span>                 <span class="cm"># Local hostname mapping</span>
+
+<span class="cm"># ===== Port ও Connection =====</span>
+<span class="b">ss -tulpn</span>                      <span class="cm"># সব open port দেখুন (নতুন)</span>
+<span class="b">netstat -tulpn</span>                 <span class="cm"># Open port (পুরানো পদ্ধতি)</span>
+<span class="b">ss -s</span>                          <span class="cm"># Connection statistics</span>
+<span class="b">lsof -i :80</span>                    <span class="cm"># port 80 কে ব্যবহার করছে</span>
+<span class="b">lsof -i :443</span>                   <span class="cm"># HTTPS port কে ব্যবহার করছে</span>
+
+<span class="cm"># ===== Download ও Transfer =====</span>
+<span class="b">wget</span> <span class="g">https://example.com/file.zip</span>   <span class="cm"># ফাইল download করুন</span>
+<span class="b">wget</span> <span class="y">-O</span> <span class="r">output.zip</span> <span class="g">https://...</span>    <span class="cm"># নাম দিয়ে save করুন</span>
+<span class="b">wget</span> <span class="y">-c</span> <span class="g">https://...</span>               <span class="cm"># Resume করুন (মাঝে বন্ধ হলে)</span>
+<span class="b">curl</span> <span class="y">-O</span> <span class="g">https://example.com/f.zip</span>  <span class="cm"># curl দিয়ে download</span>
+<span class="b">curl</span> <span class="y">-L -o</span> <span class="r">out.zip</span> <span class="g">https://...</span>    <span class="cm"># Redirect follow করে</span>
+<span class="b">curl</span> <span class="y">-X POST -H</span> <span class="g">"Content-Type: application/json"</span> <span class="y">-d</span> <span class="g">'{"key":"val"}'</span> <span class="g">https://api.example.com</span>
+
+<span class="cm"># ===== Network Config (Ubuntu 24) =====</span>
+<span class="b">sudo nmcli device status</span>       <span class="cm"># Network Manager status</span>
+<span class="b">sudo nmcli connection show</span>     <span class="cm"># সব connection দেখুন</span>
+<span class="b">sudo nmcli connection up</span> <span class="y">eth0</span>  <span class="cm"># Connection চালু করুন</span>
+<span class="b">cat /etc/netplan/*.yaml</span>        <span class="cm"># Netplan কনফিগ দেখুন</span>
+<span class="b">sudo netplan apply</span>             <span class="cm"># Network কনফিগ apply করুন</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 15: SSH ===== -->
+<div class="sec" id="ssh">
+  <div class="sec-hd">
+    <span class="sec-num">§15</span>
+    <h2 class="sec-ttl">SSH — দূরে সংযোগ</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">SSH — সম্পূর্ণ গাইড</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== SSH সংযোগ =====</span>
+<span class="b">ssh</span> <span class="y">user@192.168.1.100</span>         <span class="cm"># IP দিয়ে সংযোগ করুন</span>
+<span class="b">ssh</span> <span class="y">user@server.com</span>           <span class="cm"># domain দিয়ে সংযোগ</span>
+<span class="b">ssh</span> <span class="y">-p 2222 user@server.com</span>   <span class="cm"># কাস্টম port ব্যবহার</span>
+<span class="b">ssh</span> <span class="y">-i ~/.ssh/mykey.pem</span> <span class="y">user@server</span>  <span class="cm"># Key file দিয়ে login</span>
+<span class="b">exit</span>                           <span class="cm"># SSH session বন্ধ করুন</span>
+
+<span class="cm"># ===== SSH Key তৈরি =====</span>
+<span class="b">ssh-keygen</span> <span class="y">-t ed25519 -C</span> <span class="g">"email@example.com"</span>  <span class="cm"># নতুন key (সবচেয়ে ভালো)</span>
+<span class="b">ssh-keygen</span> <span class="y">-t rsa -b 4096</span>    <span class="cm"># RSA key (পুরানো পদ্ধতি)</span>
+<span class="b">ls ~/.ssh/</span>                     <span class="cm"># Key দেখুন (id_ed25519, id_ed25519.pub)</span>
+<span class="b">cat ~/.ssh/id_ed25519.pub</span>      <span class="cm"># Public key দেখুন</span>
+
+<span class="cm"># ===== Server-এ Key copy করুন =====</span>
+<span class="b">ssh-copy-id</span> <span class="y">user@server.com</span>   <span class="cm"># Public key server-এ পাঠান</span>
+<span class="b">ssh-copy-id</span> <span class="y">-i ~/.ssh/id_ed25519.pub user@server</span>  <span class="cm"># নির্দিষ্ট key</span>
+
+<span class="cm"># ===== ফাইল Transfer =====</span>
+<span class="b">scp</span> <span class="r">file.txt</span> <span class="y">user@server:/home/user/</span>   <span class="cm"># Local → Server</span>
+<span class="b">scp</span> <span class="y">user@server:/home/user/f.txt</span> <span class="r">.</span>    <span class="cm"># Server → Local</span>
+<span class="b">scp</span> <span class="y">-r</span> <span class="c">myfolder/</span> <span class="y">user@server:~/</span>      <span class="cm"># ফোল্ডার copy</span>
+<span class="b">rsync</span> <span class="y">-avz</span> <span class="c">source/</span> <span class="y">user@server:dest/</span> <span class="cm"># Smart sync (বড় ফোল্ডারের জন্য)</span>
+
+<span class="cm"># ===== SSH Config =====</span>
+<span class="b">cat ~/.ssh/config</span>              <span class="cm"># SSH config দেখুন</span>
+<span class="b">sudo systemctl status ssh</span>     <span class="cm"># SSH server status</span>
+<span class="b">sudo nano /etc/ssh/sshd_config</span>  <span class="cm"># SSH server কনফিগ</span>
+<span class="b">sudo systemctl restart ssh</span>    <span class="cm"># Config change করলে restart</span>
+
+<span class="cm"># ===== SSH Tunnel =====</span>
+<span class="b">ssh</span> <span class="y">-L 8080:localhost:80 user@server</span>  <span class="cm"># Port forwarding</span>
+<span class="b">ssh</span> <span class="y">-N -f -L 3306:localhost:3306 user@server</span>  <span class="cm"># MySQL tunnel</span></pre>
+  </div>
+
+  <div class="box tip">
+    <span class="box-i">🔒</span>
+    <p><strong>SSH নিরাপত্তা:</strong> <code>/etc/ssh/sshd_config</code>-এ <code>PermitRootLogin no</code> এবং <code>PasswordAuthentication no</code> সেট করুন। শুধু key দিয়ে login করার অনুমতি দিন।</p>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 16: FIREWALL ===== -->
+<div class="sec" id="firewall">
+  <div class="sec-hd">
+    <span class="sec-num">§16</span>
+    <h2 class="sec-ttl">UFW Firewall</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">UFW — Uncomplicated Firewall</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== UFW চালু/বন্ধ =====</span>
+<span class="b">sudo ufw status</span>                <span class="cm"># Firewall status দেখুন</span>
+<span class="b">sudo ufw status verbose</span>        <span class="cm"># বিস্তারিত status</span>
+<span class="b">sudo ufw enable</span>                <span class="cm"># Firewall চালু করুন</span>
+<span class="b">sudo ufw disable</span>               <span class="cm"># Firewall বন্ধ করুন</span>
+<span class="b">sudo ufw reset</span>                 <span class="cm"># সব rule মুছুন (সাবধান!)</span>
+
+<span class="cm"># ===== Rule যোগ করুন =====</span>
+<span class="b">sudo ufw allow 22</span>              <span class="cm"># SSH port খুলুন</span>
+<span class="b">sudo ufw allow 80</span>              <span class="cm"># HTTP খুলুন</span>
+<span class="b">sudo ufw allow 443</span>             <span class="cm"># HTTPS খুলুন</span>
+<span class="b">sudo ufw allow 3306</span>            <span class="cm"># MySQL port</span>
+<span class="b">sudo ufw allow ssh</span>             <span class="cm"># নাম দিয়ে SSH খুলুন</span>
+<span class="b">sudo ufw allow http</span>            <span class="cm"># নাম দিয়ে HTTP</span>
+<span class="b">sudo ufw allow 8000:8080/tcp</span>  <span class="cm"># Port range খুলুন</span>
+<span class="b">sudo ufw allow from</span> <span class="y">192.168.1.0/24</span>  <span class="cm"># Subnet থেকে সব allow</span>
+<span class="b">sudo ufw allow from</span> <span class="y">10.0.0.5 to any port 22</span>  <span class="cm"># নির্দিষ্ট IP থেকে SSH</span>
+
+<span class="cm"># ===== Rule বন্ধ করুন =====</span>
+<span class="b">sudo ufw deny 3306</span>             <span class="cm"># MySQL বন্ধ করুন</span>
+<span class="b">sudo ufw delete allow 80</span>      <span class="cm"># HTTP rule মুছুন</span>
+<span class="b">sudo ufw delete 3</span>              <span class="cm"># নম্বর দিয়ে rule মুছুন</span>
+
+<span class="cm"># ===== App Profile =====</span>
+<span class="b">sudo ufw app list</span>             <span class="cm"># উপলব্ধ app profile দেখুন</span>
+<span class="b">sudo ufw allow</span> <span class="g">'Nginx Full'</span>  <span class="cm"># Nginx HTTP+HTTPS একসাথে</span>
+<span class="b">sudo ufw allow</span> <span class="g">'OpenSSH'</span>     <span class="cm"># OpenSSH profile</span>
+
+<span class="cm"># ✅ প্রথমবার সেটআপ</span>
+<span class="b">sudo ufw default deny incoming</span>   <span class="cm"># সব incoming বন্ধ</span>
+<span class="b">sudo ufw default allow outgoing</span>  <span class="cm"># সব outgoing চালু</span>
+<span class="b">sudo ufw allow ssh</span>               <span class="cm"># SSH অবশ্যই চালু রাখুন!</span>
+<span class="b">sudo ufw enable</span>                  <span class="cm"># এখন enable করুন</span></pre>
+  </div>
+
+  <div class="box danger">
+    <span class="box-i">🚨</span>
+    <p><strong>সতর্কতা!</strong> Firewall enable করার আগে SSH (port 22) allow করুন, নাহলে remote server থেকে lock-out হয়ে যাবেন!</p>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 17: SHELL ===== -->
+<div class="sec" id="shell">
+  <div class="sec-hd">
+    <span class="sec-num">§17</span>
+    <h2 class="sec-ttl">Shell ও Bash Scripting</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Bash Script — মৌলিক টেমপ্লেট</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm">#!/bin/bash</span>
+<span class="cm"># =============================================</span>
+<span class="cm"># আমার প্রথম Bash Script</span>
+<span class="cm"># =============================================</span>
+
+<span class="cm"># ===== Variable =====</span>
+<span class="y">NAME</span>=<span class="g">"রাহুল"</span>
+<span class="y">AGE</span>=<span class="y">25</span>
+<span class="y">TODAY</span>=$(<span class="b">date +%Y-%m-%d</span>)         <span class="cm"># Command output variable-এ রাখুন</span>
+<span class="y">FILES</span>=$(<span class="b">ls /home</span>)
+<span class="b">echo</span> <span class="g">"নাম: $NAME, বয়স: $AGE"</span>
+<span class="b">echo</span> <span class="g">"আজকের তারিখ: $TODAY"</span>
+
+<span class="cm"># ===== User Input =====</span>
+<span class="b">read</span> <span class="y">-p</span> <span class="g">"আপনার নাম লিখুন: "</span> <span class="y">username</span>
+<span class="b">echo</span> <span class="g">"হ্যালো, $username!"</span>
+
+<span class="cm"># ===== If-Else =====</span>
+<span class="kw">if</span> [ $AGE <span class="y">-ge</span> 18 ]; <span class="kw">then</span>
+    <span class="b">echo</span> <span class="g">"প্রাপ্তবয়স্ক"</span>
+<span class="kw">elif</span> [ $AGE <span class="y">-ge</span> 13 ]; <span class="kw">then</span>
+    <span class="b">echo</span> <span class="g">"কিশোর"</span>
+<span class="kw">else</span>
+    <span class="b">echo</span> <span class="g">"শিশু"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ===== String Comparison =====</span>
+<span class="kw">if</span> [ <span class="g">"$NAME"</span> == <span class="g">"রাহুল"</span> ]; <span class="kw">then</span>
+    <span class="b">echo</span> <span class="g">"স্বাগতম রাহুল!"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ===== File Check =====</span>
+<span class="kw">if</span> [ <span class="y">-f</span> <span class="g">"/etc/nginx/nginx.conf"</span> ]; <span class="kw">then</span>
+    <span class="b">echo</span> <span class="g">"Nginx config পাওয়া গেছে"</span>
+<span class="kw">fi</span>
+<span class="kw">if</span> [ <span class="y">-d</span> <span class="g">"/var/www"</span> ]; <span class="kw">then</span>     <span class="cm"># -d = directory আছে কিনা</span>
+    <span class="b">echo</span> <span class="g">"web directory আছে"</span>
+<span class="kw">fi</span>
+<span class="kw">if</span> [ <span class="y">-r</span> <span class="g">"/etc/passwd"</span> ]; <span class="kw">then</span>   <span class="cm"># -r = readable, -w = writable, -x = executable</span>
+    <span class="b">echo</span> <span class="g">"ফাইল পড়া যাচ্ছে"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ===== For Loop =====</span>
+<span class="kw">for</span> <span class="y">i</span> <span class="kw">in</span> 1 2 3 4 5; <span class="kw">do</span>
+    <span class="b">echo</span> <span class="g">"গণনা: $i"</span>
+<span class="kw">done</span>
+
+<span class="kw">for</span> <span class="y">file</span> <span class="kw">in</span> /home/*.txt; <span class="kw">do</span>
+    <span class="b">echo</span> <span class="g">"ফাইল: $file"</span>
+<span class="kw">done</span>
+
+<span class="cm"># ===== While Loop =====</span>
+<span class="y">COUNT</span>=1
+<span class="kw">while</span> [ $COUNT <span class="y">-le</span> 5 ]; <span class="kw">do</span>
+    <span class="b">echo</span> <span class="g">"$COUNT"</span>
+    <span class="y">COUNT</span>=$(( COUNT + 1 ))
+<span class="kw">done</span>
+
+<span class="cm"># ===== Function =====</span>
+<span class="b">greet</span>() {
+    <span class="b">echo</span> <span class="g">"হ্যালো, $1!"</span>       <span class="cm"># $1 = প্রথম argument</span>
+    <span class="b">echo</span> <span class="g">"আপনি $2 বছর বয়সী"</span> <span class="cm"># $2 = দ্বিতীয় argument</span>
+}
+<span class="b">greet</span> <span class="g">"রাহুল"</span> <span class="y">25</span>             <span class="cm"># Function call করুন</span>
+
+<span class="cm"># ===== Exit Code =====</span>
+<span class="b">ls /nonexistent</span>
+<span class="b">echo</span> <span class="g">"Exit code: $?"</span>          <span class="cm"># 0=success, non-zero=error</span></pre>
+  </div>
+
+  <h3>Pipe ও Redirection</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Pipe · Redirect · অন্যান্য</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== Redirect (>) =====</span>
+<span class="b">ls</span> <span class="y">></span> <span class="r">filelist.txt</span>             <span class="cm"># Output ফাইলে সংরক্ষণ (overwrite)</span>
+<span class="b">ls</span> <span class="y">>></span> <span class="r">filelist.txt</span>            <span class="cm"># Output যোগ করুন (append)</span>
+<span class="b">command 2></span> <span class="r">error.txt</span>         <span class="cm"># Error ফাইলে সংরক্ষণ</span>
+<span class="b">command</span> <span class="y">></span> <span class="r">out.txt</span> <span class="y">2>&1</span>       <span class="cm"># Output ও Error একই ফাইলে</span>
+<span class="b">command</span> <span class="y">>/dev/null 2>&1</span>      <span class="cm"># সব কিছু ফেলে দিন</span>
+
+<span class="cm"># ===== Pipe (|) =====</span>
+<span class="b">ls -la</span> | <span class="b">grep</span> <span class="g">".txt"</span>          <span class="cm"># ls-এর output grep-এ পাঠান</span>
+<span class="b">cat file.txt</span> | <span class="b">sort</span>           <span class="cm"># Sort করুন</span>
+<span class="b">cat file.txt</span> | <span class="b">sort | uniq</span>  <span class="cm"># Sort + Duplicate সরান</span>
+<span class="b">ps aux</span> | <span class="b">grep nginx</span> | <span class="b">awk '{print $2}'</span>  <span class="cm"># PID বের করুন</span>
+<span class="b">cat /etc/passwd</span> | <span class="b">cut -d:</span> <span class="y">-f1</span>  <span class="cm"># শুধু username</span>
+<span class="b">ls</span> | <span class="b">wc -l</span>                    <span class="cm"># ফাইল সংখ্যা গণনা</span>
+
+<span class="cm"># ===== Command চেইন =====</span>
+<span class="b">cmd1 && cmd2</span>                   <span class="cm"># cmd1 সফল হলে cmd2 চালান</span>
+<span class="b">cmd1 || cmd2</span>                   <span class="cm"># cmd1 ব্যর্থ হলে cmd2 চালান</span>
+<span class="b">cmd1 ; cmd2</span>                    <span class="cm"># একে একে দুটোই চালান</span>
+
+<span class="cm"># ===== xargs =====</span>
+<span class="b">find . -name "*.log"</span> | <span class="b">xargs rm</span>   <span class="cm"># খোঁজা ফাইল মুছুন</span>
+<span class="b">cat urls.txt</span> | <span class="b">xargs wget</span>        <span class="cm"># সব URL download করুন</span>
+
+<span class="cm"># ===== awk — text processing =====</span>
+<span class="b">awk '{print $1}'</span> <span class="r">file.txt</span>     <span class="cm"># প্রথম column দেখান</span>
+<span class="b">awk -F: '{print $1,$3}'</span> <span class="r">/etc/passwd</span>  <span class="cm"># User ও UID</span>
+<span class="b">df -h</span> | <span class="b">awk 'NR>1 {print $5,$6}'</span>   <span class="cm"># Disk usage</span>
+
+<span class="cm"># ===== sed — text substitution =====</span>
+<span class="b">sed 's/old/new/g'</span> <span class="r">file.txt</span>    <span class="cm"># Replace করুন</span>
+<span class="b">sed -i 's/old/new/g'</span> <span class="r">file.txt</span> <span class="cm"># ফাইলে সরাসরি বদলান</span>
+<span class="b">sed -n '5,10p'</span> <span class="r">file.txt</span>       <span class="cm"># ৫-১০ লাইন দেখান</span>
+<span class="b">sed '/^#/d'</span> <span class="r">file.txt</span>          <span class="cm"># Comment লাইন সরান</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 18: VIM ===== -->
+<div class="sec" id="vim">
+  <div class="sec-hd">
+    <span class="sec-num">§18</span>
+    <h2 class="sec-ttl">Vim Editor</h2>
+    <span class="sec-badge b-mid">Intermediate</span>
+  </div>
+
+  <div class="box warn">
+    <span class="box-i">🎯</span>
+    <p>Vim-এর ৩টি mode আছে: <strong>Normal</strong> (navigate), <strong>Insert</strong> (লেখা), <strong>Command</strong> (সংরক্ষণ/বের হওয়া)। শুরুতে Normal mode-এ থাকে।</p>
+  </div>
+
+  <div class="tc">
+    <div>
+      <h3>খোলা ও বন্ধ করা</h3>
+      <table class="dtbl">
+        <tr><th>কমান্ড</th><th>কাজ</th></tr>
+        <tr><td>vim file.txt</td><td>ফাইল খুলুন</td></tr>
+        <tr><td>:w</td><td>সংরক্ষণ করুন</td></tr>
+        <tr><td>:q</td><td>বের হন</td></tr>
+        <tr><td>:wq</td><td>সংরক্ষণ করে বের হন</td></tr>
+        <tr><td>:q!</td><td>না সংরক্ষণ করে বের হন</td></tr>
+        <tr><td>:wq!</td><td>জোর করে সংরক্ষণ</td></tr>
+        <tr><td>:x</td><td>পরিবর্তন হলে save করে বের</td></tr>
+        <tr><td>ZZ</td><td>:wq-এর shortcut</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Mode পরিবর্তন</h3>
+      <table class="dtbl">
+        <tr><th>Key</th><th>কাজ</th></tr>
+        <tr><td>i</td><td>Insert mode (cursor আগে)</td></tr>
+        <tr><td>a</td><td>Insert mode (cursor পরে)</td></tr>
+        <tr><td>o</td><td>নিচে নতুন লাইনে insert</td></tr>
+        <tr><td>O</td><td>উপরে নতুন লাইনে insert</td></tr>
+        <tr><td>A</td><td>লাইনের শেষে insert</td></tr>
+        <tr><td>Esc</td><td>Normal mode-এ ফিরুন</td></tr>
+        <tr><td>v</td><td>Visual mode (select)</td></tr>
+        <tr><td>V</td><td>Line visual mode</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div>
+      <h3>Navigate করুন</h3>
+      <table class="dtbl">
+        <tr><th>Key</th><th>কাজ</th></tr>
+        <tr><td>h j k l</td><td>← ↓ ↑ → (arrow key)</td></tr>
+        <tr><td>w / b</td><td>পরের/আগের শব্দ</td></tr>
+        <tr><td>0 / $</td><td>লাইনের শুরু/শেষ</td></tr>
+        <tr><td>gg / G</td><td>ফাইলের শুরু/শেষ</td></tr>
+        <tr><td>:50</td><td>৫০ নম্বর লাইনে যান</td></tr>
+        <tr><td>Ctrl+f/b</td><td>পরের/আগের পেজ</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Edit করুন</h3>
+      <table class="dtbl">
+        <tr><th>Key</th><th>কাজ</th></tr>
+        <tr><td>dd</td><td>লাইন কাটুন (cut)</td></tr>
+        <tr><td>yy</td><td>লাইন copy করুন</td></tr>
+        <tr><td>p / P</td><td>নিচে/উপরে paste</td></tr>
+        <tr><td>u</td><td>Undo করুন</td></tr>
+        <tr><td>Ctrl+r</td><td>Redo করুন</td></tr>
+        <tr><td>dw</td><td>শব্দ মুছুন</td></tr>
+        <tr><td>x</td><td>একটি অক্ষর মুছুন</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Vim — অনুসন্ধান ও Replace</span><span class="cb-tag">vim</span></div>
+    <pre><span class="m">/word</span>         <span class="cm"># "word" খুঁজুন (n = পরের, N = আগের)</span>
+<span class="m">?word</span>         <span class="cm"># পেছন দিকে খুঁজুন</span>
+<span class="m">:%s/old/new/g</span> <span class="cm"># পুরো ফাইলে replace করুন</span>
+<span class="m">:5,20s/a/b/g</span> <span class="cm"># ৫-২০ লাইনে replace</span>
+<span class="m">:set number</span>   <span class="cm"># Line number চালু</span>
+<span class="m">:set nonumber</span> <span class="cm"># Line number বন্ধ</span>
+<span class="m">:syntax on</span>   <span class="cm"># Syntax highlighting চালু</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 19: CRON ===== -->
+<div class="sec" id="cron">
+  <div class="sec-hd">
+    <span class="sec-num">§19</span>
+    <h2 class="sec-ttl">Cron Jobs — স্বয়ংক্রিয় কাজ</h2>
+    <span class="sec-badge b-adv">Advanced</span>
+  </div>
+
+  <div class="box info">
+    <span class="box-i">⏰</span>
+    <p><strong>Cron</strong> দিয়ে নির্দিষ্ট সময়ে স্বয়ংক্রিয়ভাবে কমান্ড চালানো যায়। যেমন: প্রতিদিন রাতে backup নেওয়া।</p>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Crontab Format ও উদাহরণ</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># Crontab format:  মিনিট  ঘণ্টা  দিন  মাস  সপ্তাহবার  কমান্ড</span>
+<span class="cm">#                   0-59  0-23  1-31 1-12    0-7</span>
+<span class="cm">#                   * = যেকোনো, */5 = প্রতি ৫, 1,3 = ১ বা ৩</span>
+
+<span class="cm"># ===== সম্পাদনা =====</span>
+<span class="b">crontab -e</span>                    <span class="cm"># নিজের crontab edit করুন</span>
+<span class="b">crontab -l</span>                    <span class="cm"># বর্তমান crontab দেখুন</span>
+<span class="b">crontab -r</span>                    <span class="cm"># সব cron job মুছুন</span>
+<span class="b">sudo crontab -u raju -e</span>      <span class="cm"># অন্য user-এর crontab</span>
+
+<span class="cm"># ===== উদাহরণ =====</span>
+<span class="m">*  *  *  *  *</span> <span class="b">/script.sh</span>   <span class="cm"># প্রতি মিনিটে</span>
+<span class="m">0  * *  *  *</span> <span class="b">/script.sh</span>    <span class="cm"># প্রতি ঘণ্টায় (XX:00 তে)</span>
+<span class="m">0  0  *  *  *</span> <span class="b">/backup.sh</span>  <span class="cm"># প্রতিদিন মধ্যরাতে</span>
+<span class="m">0  9  *  *  1</span> <span class="b">/report.sh</span>  <span class="cm"># প্রতি সোমবার সকাল ৯টায়</span>
+<span class="m">0  0  1  *  *</span> <span class="b">/monthly.sh</span> <span class="cm"># প্রতি মাসের ১ তারিখে</span>
+<span class="m">*/5 *  *  *  *</span> <span class="b">/check.sh</span> <span class="cm"># প্রতি ৫ মিনিটে</span>
+<span class="m">30 23 * * 1-5</span> <span class="b">/backup.sh</span>  <span class="cm"># সোম-শুক্র রাত ১১:৩০</span>
+
+<span class="cm"># ===== Special Keywords =====</span>
+<span class="m">@reboot</span> <span class="b">/start.sh</span>            <span class="cm"># Boot-এ একবার</span>
+<span class="m">@daily</span>  <span class="b">/daily.sh</span>            <span class="cm"># প্রতিদিন (= 0 0 * * *)</span>
+<span class="m">@weekly</span> <span class="b">/weekly.sh</span>           <span class="cm"># প্রতি সপ্তাহে</span>
+<span class="m">@monthly</span> <span class="b">/monthly.sh</span>         <span class="cm"># প্রতি মাসে</span>
+<span class="m">@hourly</span> <span class="b">/hourly.sh</span>           <span class="cm"># প্রতি ঘণ্টায়</span>
+
+<span class="cm"># ===== Log সহ =====</span>
+<span class="m">0 2 * * *</span> <span class="b">/backup.sh >> /var/log/backup.log 2>&1</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 20: ARCHIVE ===== -->
+<div class="sec" id="archive">
+  <div class="sec-hd">
+    <span class="sec-num">§20</span>
+    <h2 class="sec-ttl">Archive ও Compression</h2>
+    <span class="sec-badge b-basic">Basic</span>
+  </div>
+
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">tar · gzip · zip · unzip</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== TAR (Linux-এর প্রধান archive tool) =====</span>
+<span class="cm"># c=create, x=extract, v=verbose, f=file, z=gzip, j=bzip2</span>
+<span class="b">tar</span> <span class="y">-czf</span> <span class="r">backup.tar.gz</span> <span class="c">myfolder/</span>   <span class="cm"># ফোল্ডার compress করুন</span>
+<span class="b">tar</span> <span class="y">-czf</span> <span class="r">backup.tar.gz</span> <span class="r">*.txt</span>       <span class="cm"># সব .txt compress করুন</span>
+<span class="b">tar</span> <span class="y">-xzf</span> <span class="r">backup.tar.gz</span>              <span class="cm"># বর্তমান ফোল্ডারে extract</span>
+<span class="b">tar</span> <span class="y">-xzf</span> <span class="r">backup.tar.gz</span> <span class="y">-C</span> <span class="c">/tmp/</span>  <span class="cm"># নির্দিষ্ট জায়গায় extract</span>
+<span class="b">tar</span> <span class="y">-tzf</span> <span class="r">backup.tar.gz</span>              <span class="cm"># ভেতরে কী আছে দেখুন (extract ছাড়া)</span>
+<span class="b">tar</span> <span class="y">-cjf</span> <span class="r">backup.tar.bz2</span> <span class="c">folder/</span>   <span class="cm"># bzip2 (বেশি compress)</span>
+<span class="b">tar</span> <span class="y">-cJf</span> <span class="r">backup.tar.xz</span> <span class="c">folder/</span>    <span class="cm"># xz (সবচেয়ে বেশি compress)</span>
+
+<span class="cm"># ===== GZIP =====</span>
+<span class="b">gzip</span> <span class="r">file.txt</span>                      <span class="cm"># → file.txt.gz (মূল মুছে)</span>
+<span class="b">gzip</span> <span class="y">-k</span> <span class="r">file.txt</span>                   <span class="cm"># → মূল ফাইল রাখে (-k = keep)</span>
+<span class="b">gunzip</span> <span class="r">file.txt.gz</span>                 <span class="cm"># Extract করুন</span>
+<span class="b">zcat</span> <span class="r">file.txt.gz</span>                   <span class="cm"># Extract ছাড়াই পড়ুন</span>
+
+<span class="cm"># ===== ZIP (Windows compatible) =====</span>
+<span class="b">zip</span> <span class="r">archive.zip</span> <span class="r">file1.txt file2.txt</span>   <span class="cm"># ZIP তৈরি</span>
+<span class="b">zip</span> <span class="y">-r</span> <span class="r">archive.zip</span> <span class="c">myfolder/</span>          <span class="cm"># ফোল্ডার ZIP করুন</span>
+<span class="b">zip</span> <span class="y">-e</span> <span class="r">secure.zip</span> <span class="r">file.txt</span>            <span class="cm"># Password দিয়ে ZIP</span>
+<span class="b">unzip</span> <span class="r">archive.zip</span>                      <span class="cm"># Extract করুন</span>
+<span class="b">unzip</span> <span class="y">-d</span> <span class="c">/destination/</span> <span class="r">archive.zip</span>    <span class="cm"># নির্দিষ্ট জায়গায়</span>
+<span class="b">unzip</span> <span class="y">-l</span> <span class="r">archive.zip</span>                  <span class="cm"># ভেতরে কী আছে দেখুন</span></pre>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<!-- ===== SECTION 21: PRO TIPS ===== -->
+<div class="sec" id="tips">
+  <div class="sec-hd">
+    <span class="sec-num">§21</span>
+    <h2 class="sec-ttl">Pro Tips ও দরকারি কমান্ড</h2>
+    <span class="sec-badge b-adv">Pro</span>
+  </div>
+
+  <h3>🚀 সময় বাঁচানো Aliases</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">~/.bashrc এ যোগ করুন</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ~/.bashrc ফাইলে এই aliases যোগ করুন</span>
+<span class="cm"># তারপর: source ~/.bashrc</span>
+
+<span class="b">alias</span> <span class="y">ll</span>=<span class="g">'ls -alh --color=auto'</span>
+<span class="b">alias</span> <span class="y">la</span>=<span class="g">'ls -A'</span>
+<span class="b">alias</span> <span class="y">update</span>=<span class="g">'sudo apt update && sudo apt upgrade -y'</span>
+<span class="b">alias</span> <span class="y">cls</span>=<span class="g">'clear'</span>
+<span class="b">alias</span> <span class="y">h</span>=<span class="g">'history'</span>
+<span class="b">alias</span> <span class="y">..</span>=<span class="g">'cd ..'</span>
+<span class="b">alias</span> <span class="y">...</span>=<span class="g">'cd ../..'</span>
+<span class="b">alias</span> <span class="y">myip</span>=<span class="g">'curl ifconfig.me'</span>
+<span class="b">alias</span> <span class="y">ports</span>=<span class="g">'ss -tulpn'</span>
+<span class="b">alias</span> <span class="y">df</span>=<span class="g">'df -h'</span>
+<span class="b">alias</span> <span class="y">du</span>=<span class="g">'du -h'</span>
+<span class="b">alias</span> <span class="y">free</span>=<span class="g">'free -h'</span>
+<span class="b">alias</span> <span class="y">reload</span>=<span class="g">'source ~/.bashrc'</span>
+<span class="b">alias</span> <span class="y">nginx-restart</span>=<span class="g">'sudo systemctl restart nginx'</span>
+<span class="b">alias</span> <span class="y">apache-restart</span>=<span class="g">'sudo systemctl restart apache2'</span>
+
+<span class="cm"># Function — folder তৈরি করে ভেতরে যান</span>
+<span class="b">mkcd</span>() { <span class="b">mkdir</span> <span class="y">-p</span> <span class="g">"$1"</span> && <span class="b">cd</span> <span class="g">"$1"</span> ; }
+
+<span class="cm"># চালু করুন</span>
+<span class="b">source ~/.bashrc</span></pre>
+  </div>
+
+  <h3>🔧 দরকারি One-liner কমান্ড</h3>
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">sudo !! </span></div>
+      <div class="cmd-desc">আগের কমান্ডটি <strong>sudo দিয়ে চালান</strong> — "Permission denied" হলে ব্যবহার করুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">!nginx</span></div>
+      <div class="cmd-desc">History থেকে সর্বশেষ <strong>"nginx" দিয়ে শুরু</strong> কমান্ড চালান</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">watch -n 2 'df -h'</span></div>
+      <div class="cmd-desc">প্রতি ২ সেকেন্ডে <strong>কমান্ড চালান</strong> — Real-time monitoring</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">yes | command</span></div>
+      <div class="cmd-desc">সব confirm prompt-এ স্বয়ংক্রিয়ভাবে <strong>"yes" দেওয়া</strong></div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">time command</span></div>
+      <div class="cmd-desc">একটি কমান্ড চালাতে <strong>কতক্ষণ লাগলো</strong> পরিমাপ করুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">tee file.txt</span></div>
+      <div class="cmd-desc">Output <strong>স্ক্রিনে দেখান ও ফাইলে সংরক্ষণ</strong> করুন একসাথে</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">column -t -s, file.csv</span></div>
+      <div class="cmd-desc">CSV ফাইল সুন্দর <strong>table format</strong>-এ দেখুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">tr -d '\r' < win.txt > unix.txt</span></div>
+      <div class="cmd-desc">Windows line ending থেকে <strong>Unix-এ convert</strong> করুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">diff file1.txt file2.txt</span></div>
+      <div class="cmd-desc">দুটি ফাইলের মধ্যে <strong>পার্থক্য</strong> দেখুন</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">stat file.txt</span></div>
+      <div class="cmd-desc">ফাইলের <strong>বিস্তারিত তথ্য</strong> — size, permission, timestamps</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">screen</span></div>
+      <div class="cmd-desc">Terminal <strong>Multiplexer</strong> — এক Terminal-এ একাধিক session</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-bar"><span class="cmd-prompt">$</span><span class="cmd-text">tmux</span></div>
+      <div class="cmd-desc">আধুনিক <strong>Terminal Multiplexer</strong> — screen-এর বিকল্প</div>
+    </div>
+  </div>
+
+  <h3>🛡️ System Security Checks</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">নিরাপত্তা পরীক্ষা</span><span class="cb-tag">bash</span></div>
+    <pre><span class="b">sudo last</span>                           <span class="cm"># শেষ কারা login করেছে</span>
+<span class="b">sudo lastb</span>                          <span class="cm"># ব্যর্থ login প্রচেষ্টা</span>
+<span class="b">sudo cat /var/log/auth.log</span> | <span class="b">grep Failed</span>  <span class="cm"># Failed login</span>
+<span class="b">sudo netstat -tulpn</span>                 <span class="cm"># কোন port খোলা</span>
+<span class="b">sudo find / -perm -4000 -type f</span>    <span class="cm"># SUID ফাইল (বিপজ্জনক হতে পারে)</span>
+<span class="b">sudo lynis audit system</span>            <span class="cm"># Security audit (sudo apt install lynis)</span>
+<span class="b">sudo fail2ban-client status</span>        <span class="cm"># Fail2ban status</span>
+<span class="b">sudo ufw status numbered</span>           <span class="cm"># Firewall rules</span></pre>
+  </div>
+
+  <h3>⚡ System Tuning</h3>
+  <div class="cb">
+    <div class="cb-bar"><div class="cb-dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div><span class="cb-title">Performance ও Maintenance</span><span class="cb-tag">bash</span></div>
+    <pre><span class="cm"># ===== Boot সমস্যা =====</span>
+<span class="b">sudo systemd-analyze</span>               <span class="cm"># Boot সময় দেখুন</span>
+<span class="b">sudo systemd-analyze blame</span>         <span class="cm"># কোন service বেশি সময় নেয়</span>
+<span class="b">sudo systemd-analyze critical-chain</span>  <span class="cm"># Boot critical path</span>
+
+<span class="cm"># ===== Log পরিষ্কার করুন =====</span>
+<span class="b">sudo journalctl --vacuum-time=7d</span>   <span class="cm"># ৭ দিনের পুরানো log মুছুন</span>
+<span class="b">sudo journalctl --vacuum-size=100M</span>  <span class="cm"># ১০০MB-এর বেশি log মুছুন</span>
+
+<span class="cm"># ===== জায়গা খালি করুন =====</span>
+<span class="b">sudo apt autoremove --purge</span>        <span class="cm"># অব্যবহৃত package মুছুন</span>
+<span class="b">sudo apt clean</span>                     <span class="cm"># Package cache মুছুন</span>
+<span class="b">sudo rm -rf /tmp/*</span>                 <span class="cm"># Temp file মুছুন</span>
+<span class="b">sudo truncate -s 0 /var/log/*.log</span>  <span class="cm"># Log ফাইল খালি করুন</span>
+<span class="b">docker system prune -af</span>            <span class="cm"># Docker সব অব্যবহৃত মুছুন</span>
+
+<span class="cm"># ===== Environment Variables =====</span>
+<span class="b">env</span>                                <span class="cm"># সব environment variable</span>
+<span class="b">echo $PATH</span>                         <span class="cm"># PATH দেখুন</span>
+<span class="b">export</span> <span class="y">MY_VAR</span>=<span class="g">"value"</span>              <span class="cm"># Variable সেট করুন</span>
+<span class="b">printenv HOME</span>                      <span class="cm"># নির্দিষ্ট variable দেখুন</span>
+
+<span class="cm"># ===== অন্যান্য দরকারি =====</span>
+<span class="b">sudo dmesg | tail -20</span>              <span class="cm"># Kernel log / hardware সমস্যা</span>
+<span class="b">sudo lshw -short</span>                   <span class="cm"># Hardware তালিকা</span>
+<span class="b">lspci</span>                              <span class="cm"># PCI device (গ্রাফিক্স, নেটওয়ার্ক কার্ড)</span>
+<span class="b">lsusb</span>                              <span class="cm"># USB device তালিকা</span>
+<span class="b">sudo hdparm -i /dev/sda</span>            <span class="cm"># হার্ড ডিস্ক তথ্য</span>
+<span class="b">inxi -Fxz</span>                          <span class="cm"># সম্পূর্ণ সিস্টেম তথ্য (sudo apt install inxi)</span></pre>
+  </div>
+
+  <div class="box tip">
+    <span class="box-i">🎓</span>
+    <p><strong>প্রতিদিন অনুশীলন করুন!</strong> Terminal-এ দক্ষ হতে প্রতিদিন কমপক্ষে ১৫ মিনিট ব্যবহার করুন। GUI দিয়ে যা করছেন তা Terminal দিয়ে করার চেষ্টা করুন। সমস্যায় পড়লে <code>man command</code> বা <code>command --help</code> পড়ুন।</p>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+  <h2>Ubuntu 24 · বাংলা চিটশিট</h2>
+  <p>Ubuntu 24.04 LTS Noble Numbat — সম্পূর্ণ Terminal গাইড বাংলায়</p>
+  <p style="margin-top:.4rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.35">$ sudo apt install knowledge — version 24.04</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+// Active sidebar
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.sl').forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + e.target.id)
+          l.classList.add('active');
+      });
+    }
+  });
+}, { rootMargin: '-15% 0% -75% 0%' });
+
+document.querySelectorAll('.sec').forEach(s => observer.observe(s));
+
+// Topnav smooth scroll
+document.querySelectorAll('.tnl').forEach(link => {
+  link.addEventListener('click', e => {
+    const h = link.getAttribute('href');
+    if (h && h.startsWith('#')) {
+      e.preventDefault();
+      const el = document.querySelector(h);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>

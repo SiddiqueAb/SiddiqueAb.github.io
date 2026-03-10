@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডকার ও পিএইচপি প্রকল্প স্থাপন · বাংলা গল্প</title>
+    <!-- ফন্ট ও আইকন -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(145deg, #e8f0f9 0%, #f0f4fa 100%);
+            color: #1e3a5f;
+            padding: 2rem 1.5rem;
+            line-height: 1.7;
+        }
+
+        .গল্প-ধারা {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 48px;
+            box-shadow: 0 30px 60px -15px rgba(0, 30, 50, 0.4);
+            padding: 2.8rem 2.2rem;
+            border: 1px solid rgba(255, 245, 240, 0.9);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #073b4c;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-bottom: 5px dashed #66b0ff;
+            padding-bottom: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        h1 i {
+            color: #f97316;
+            font-size: 3rem;
+            background: #ffffffd9;
+            padding: 12px;
+            border-radius: 60px;
+            box-shadow: 0 8px 15px #aad0ff;
+        }
+
+        .অধ্যায় {
+            background: #fffffff2;
+            border-radius: 40px;
+            padding: 2rem 2.2rem 2rem 2.2rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 15px 25px #c9d9f0;
+            border-left: 15px solid #ff884d;
+            transition: all 0.25s;
+        }
+
+        .অধ্যায়:hover {
+            transform: translateY(-6px);
+            border-left-color: #2b6c9e;
+        }
+
+        .অধ্যায়-শিরোনাম {
+            font-size: 2.3rem;
+            font-weight: 650;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            color: #035c8f;
+        }
+
+        .অধ্যায়-শিরোনাম i {
+            font-size: 2.4rem;
+            color: #f15a29;
+            background: #fff0e6;
+            padding: 12px;
+            border-radius: 50%;
+        }
+
+        .গল্প-টেক্সট {
+            font-size: 1.35rem;
+            margin-bottom: 1.3rem;
+            padding: 0 0.7rem;
+            color: #183b56;
+            font-weight: 450;
+        }
+
+        .গল্প-টেক্সট strong {
+            color: #c4450c;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffebe0, transparent);
+            padding: 0 8px;
+        }
+
+        .কোড-ব্লক {
+            background: #0b202f;
+            color: #e3f0fd;
+            padding: 1.4rem 2rem;
+            border-radius: 32px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 1.2rem;
+            margin: 1.8rem 0 1.3rem 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: inset 0 0 0 2px #38658f, 0 12px 22px #00000040;
+            border: 1px solid #ffb185;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .কোড-ব্লক i {
+            color: #ffb85c;
+            font-style: normal;
+            background: #1e415e;
+            padding: 3px 8px;
+            border-radius: 14px;
+        }
+
+        .টীকা-বক্স {
+            background: #fef0dd;
+            border-radius: 35px;
+            padding: 1.4rem 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 1rem 0;
+            border: 3px solid #fea86b;
+        }
+
+        .টীকা-বক্স i {
+            font-size: 3rem;
+            color: #e25822;
+        }
+
+        .ইমোজি-ব্যাজ {
+            display: inline-block;
+            background: #e6f0ff;
+            padding: 0.3rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin: 0.4rem 0.3rem;
+            box-shadow: 0 3px 8px #adc6ff;
+        }
+
+        .ডকার-মজা {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.8rem;
+            margin: 2.5rem 0;
+        }
+
+        .কার্ড {
+            background: #ffffff;
+            border-radius: 35px;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 20px 35px -8px #9eb4d0;
+            border: 2px solid #fafafa;
+        }
+
+        .কার্ড i {
+            font-size: 3.5rem;
+            background: #ffd6b0;
+            padding: 20px;
+            border-radius: 50%;
+            color: #b0410c;
+        }
+
+        .কার্ড h3 {
+            margin: 1.2rem 0 0.6rem;
+            font-weight: 700;
+            font-size: 1.9rem;
+        }
+
+        hr {
+            border: none;
+            height: 4px;
+            background: linear-gradient(to right, #fcd7b6, #ff9f6e, #fcd7b6);
+            margin: 2.5rem 0;
+        }
+
+        ফুটার {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #234e6b;
+            background: #ddecff;
+            padding: 2rem;
+            border-radius: 60px;
+            margin-top: 2.2rem;
+            font-weight: 500;
+        }
+
+        /* মোবাইল adjusted */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.4rem; }
+            .গল্প-ধারা { padding: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="গল্প-ধারা">
+        <h1>
+            <i class="fas fa-whale"></i> 
+            🐘 ডকার ও পিএইচপি: এক স্থানীয় স্থাপন অ্যাডভেঞ্চার
+            <i class="fab fa-github"></i>
+        </h1>
+        <p class="গল্প-টেক্সট" style="font-size:1.6rem; background: #fafbff; padding:1.2rem 2.2rem; border-radius:60px;">
+            📘 <strong>একদা এক দেশে</strong> — উবুন্টু রাজ্যে, এক ডেভেলপার গিটহাব থেকে একটি পিএইচপি প্রকল্প নিয়ে এলো। কিন্তু তার উবুন্টু মেশিনে সরাসরি পিএইচপি আর অ্যাপাচি ইনস্টল না করেই কীভাবে সেটা চালানো যায়? তখনই <strong>ডকার</strong> (Docker) এসে বাঁচালো সবাইকে!
+        </p>
+
+        <!-- অধ্যায় ১: গল্পের শুরু, সমস্যা -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-dragon"></i> ⓵ বিশৃঙ্খল লোকাল পরিবেশ
+            </div>
+            <div class="গল্প-টেক্সট">
+                👩‍💻 আমাদের গল্পের নায়িকা <strong>তৃষা</strong>। তিনি এইমাত্র গিটহাব থেকে <i class="fab fa-github"></i> “ব্লগওয়েল” নামে একটি চমৎকার পিএইচপি প্রজেক্ট ক্লোন করলেন। প্রকল্পটির দরকার <strong>PHP 8.2, MySQL এবং কিছু এক্সটেনশন</strong>। কিন্তু তৃষার উবুন্টুতে আরেকটি পুরোনো প্রকল্পের জন্য PHP 7.4 বসানো আছে — <span class="ইমোজি-ব্যাজ">😖 ডিপেন্ডেন্সি জঞ্জাল</span>। “আমার ল্যাপটপের সব গোলমাল হয়ে যাবে!” তৃষা চিন্তিত। তখন ডকার নামক এক বন্ধু হাজির, বিশাল তিমির মত।
+            </div>
+            <div class="টীকা-বক্স">
+                <i class="fas fa-lightbulb"></i>
+                <span><strong>গল্পের মন্তব্য:</strong> ডকার কন্টেইনার হচ্ছে আলাদা আলাদা টিফিন বক্সের মতো — প্রতিটি প্রোজেক্ট তার নিজস্ব নির্দিষ্ট জিনিসপত্র (PHP, Apache, extension) পায়, কারো সাথে কারো ঝগড়া নেই।</span>
+            </div>
+        </div>
+
+        <!-- অধ্যায় ২: ডকার বেসিক (সহজ ভাষায়) -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-cubes"></i> ⓶ ডকারের জাদুকরি বাক্সগুলো
+            </div>
+            <div class="ডকার-মজা">
+                <div class="কার্ড">
+                    <i class="fas fa-box-open"></i>
+                    <h3>ইমেজ (Image)</h3>
+                    <p>একটা রেসিপি / ব্লুপ্রিন্ট। যেমন: <code>php:8.2-apache</code> মানে তাতে PHP আর Apache আগে থেকে তৈরি আছে।</p>
+                </div>
+                <div class="কার্ড">
+                    <i class="fas fa-container-storage"></i>
+                    <h3>কন্টেইনার (Container)</h3>
+                    <p>ইমেজ থেকে তৈরি করা একটা চলমান টিফিন বক্স। এটা থামানো/আবার চালু করা যায়।</p>
+                </div>
+                <div class="কার্ড">
+                    <i class="fas fa-file-code"></i>
+                    <h3>Dockerfile</h3>
+                    <p>নিজস্ব ইমেজ বানানোর রেসিপি লিখে রাখা ফাইল (যাতে বলে দিই কোন ফাইল কপি করতে হবে, কোন এক্সটেনশন লাগবে)।</p>
+                </div>
+                <div class="কার্ড">
+                    <i class="fas fa-ship"></i>
+                    <h3>docker-compose</h3>
+                    <p>যখন একাধিক কন্টেইনার একসাথে চালানো দরকার (PHP + MySQL + phpMyAdmin), তখন তাদের অর্কেস্ট্রা করার জন্য।</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৩: গিটহাব ক্লোন এবং প্রথম ধাপ -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fab fa-github"></i> ⓷ তৃষা গিটহাব থেকে প্রোজেক্ট নামালো
+            </div>
+            <div class="গল্প-টেক্সট">
+                🧪 প্রোজেক্টের নাম <strong>"তিমিব্লগ" (WhaleBlog)</strong> – একটা সাদাসিধে পিএইচপি ব্লগ। তৃষা উবুন্টু টার্মিনাল খুলে লিখলেন:
+            </div>
+            <div class="কোড-ব্লক">
+                <i class="fas fa-dollar-sign"></i> cd ~/projects<br>
+                <i class="fas fa-dollar-sign"></i> git clone https://github.com/bangla/whaleblog.git<br>
+                <i class="fas fa-dollar-sign"></i> cd whaleblog
+            </div>
+            <div class="গল্প-টেক্সট">
+                ফোল্ডারের ভেতরে <strong>index.php</strong>, একটি <code>Dockerfile</code> এবং <code>docker-compose.yml</code> (আসল নায়ক) আছে। চলুন উঁকি দিই।
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৪: ডকারফাইল ব্যাখ্যা, গল্পের ছলে -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-scroll"></i> ⓸ Dockerfile — পিএইচপি বক্স বানানোর রেসিপি
+            </div>
+            <div class="গল্প-টেক্সট">
+                তৃষা <strong>Dockerfile</strong> ওপেন করে দেখল। এটা নির্দেশনা সমষ্টি, যেন একটি রান্নার বই।
+            </div>
+            <div class="কোড-ব্লক">
+                <span style="color:#b3ffc6;"># অফিসিয়াল PHP আর অ্যাপাচি ইমেজ থেকে শুরু করছি</span><br>
+                FROM php:8.2-apache<br><br>
+                <span style="color:#b3ffc6;"># mysqli এক্সটেনশন ইনস্টল (ডাটাবেজের জন্য)</span><br>
+                RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli<br><br>
+                <span style="color:#b3ffc6;"># বর্তমান ফোল্ডারের সব PHP ফাইল কন্টেইনারের ওয়েব ডিরেক্টরিতে কপি</span><br>
+                COPY . /var/www/html/<br><br>
+                <span style="color:#b3ffc6;"># ওয়ার্কিং ডিরেক্টরি সেট</span><br>
+                WORKDIR /var/www/html<br><br>
+                <span style="color:#b3ffc6;"># পোর্ট ৮০ খুলে দিচ্ছি (Apache শুনবে)</span><br>
+                EXPOSE 80
+            </div>
+            <div class="গল্প-টেক্সট">
+                <i class="fas fa-comment"></i> <strong>তৃষা ভাবে:</strong> "ঠিক যেমন রান্না শুরু করি বেস হিসেবে — তারপর তরকারি (extension), তারপর আমার ফাইলগুলো বসাই।"
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৫: ডকার কম্পোজ গল্প -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-compose"></i> ⓹ docker-compose: PHP আর MySQL একসঙ্গে
+            </div>
+            <div class="গল্প-টেক্সট">
+                তিমিব্লগ চালাতে ডাটাবেজও দরকার। Docker Compose দিয়ে আমরা দুটো কন্টেইনার এক কমান্ডেই চালাতে পারি। <code>docker-compose.yml</code> ফাইলের ভেতর:
+            </div>
+            <div class="কোড-ব্লক">
+                version: '3.8'<br>
+                services:<br>
+                &nbsp;&nbsp;web:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;build: .                     <span style="color:#b0e0a0;"># Dockerfile থেকে বিল্ড করো</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "8080:80"          <span style="color:#b0e0a0;"># হোস্টের 8080 → কন্টেইনারের 80</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;volumes:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- .:/var/www/html   <span style="color:#b0e0a0;"># ফাইল লাইভ সিঙ্ক (কোড বদলালে সাথে সাথে)</span><br>
+                &nbsp;&nbsp;db:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;image: mysql:8.0<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;environment:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_ROOT_PASSWORD: rootpass<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_DATABASE: whaleblog<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "3306:3306"
+            </div>
+            <div class="গল্প-টেক্সট">
+                <i class="fas fa-smile-wink"></i> এই ফাইল দুই কন্টেইনারের কথা বলে: <strong>web</strong> (PHP) আর <strong>db</strong> (MySQL)। তারা সার্ভিসের নাম ধরে একে অপরকে চিনতে পারে।
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৬: বিল্ড এবং রান (জাদুর মুহূর্ত) -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-play-circle"></i> ⓺ উবুন্টুতে স্থানীয়ভাবে প্রজেক্ট চালু করা
+            </div>
+            <div class="গল্প-টেক্সট">
+                তৃষা টার্মিনালে পবিত্র মন্ত্রটি টাইপ করে (whaleblog ফোল্ডারের ভেতর):
+            </div>
+            <div class="কোড-ব্লক">
+                <i class="fas fa-dollar-sign"></i> docker-compose up -d
+            </div>
+            <div class="গল্প-টেক্সট">
+                <i class="fas fa-magic"></i> ডকার কম্পোজ ফাইল পড়ে → PHP ইমেজ বানায় (যদি আগে না থাকে) → MySQL ইমেজ ডাউনলোড করে → দুই কন্টেইনার চালু করে।
+                কয়েক সেকেন্ড পর:
+            </div>
+            <div class="কোড-ব্লক" style="background: #1c4630; color:#b8ffb5;">
+                ✔ whaleblog-web-1  চালু<br>
+                ✔ whaleblog-db-1   চালু
+            </div>
+            <div class="গল্প-টেক্সট">
+                তৃষা ব্রাউজার খুলে <strong>http://localhost:8080</strong> এ গেল — তিমিব্লগ-এর হোমপেজ দেখা যাচ্ছে! 
+                <span style="background: #c6f0b0; padding: 0 12px; border-radius: 25px;">🚀 কাজ করছে!</span>
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৭: উবুন্টু-গিটহাব-লোকাল ডিপ্লয়মেন্ট বোঝা -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-ubuntu"></i> ⓻ উবুন্টু + গিটহাব + লোকাল = ❤️
+            </div>
+            <div class="গল্প-টেক্সট">
+                শুরু থেকে অ্যাপ চালানো পর্যন্ত পুরো যাত্রাটা আবার দেখি:
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:1.5rem; margin:1.8rem 0;">
+                <span class="ইমোজি-ব্যাজ"><i class="fab fa-github"></i> ১. গিটহাব ক্লোন</span>
+                <span class="ইমোজি-ব্যাজ"><i class="fas fa-ubuntu"></i> ২. উবুন্টু টার্মিনাল</span>
+                <span class="ইমোজি-ব্যাজ"><i class="fas fa-file-alt"></i> ৩. Dockerfile + কম্পোজ</span>
+                <span class="ইমোজি-ব্যাজ"><i class="fas fa-whale"></i> ৪. docker-compose up</span>
+                <span class="ইমোজি-ব্যাজ"><i class="fas fa-globe"></i> ৫. localhost:8080</span>
+            </div>
+            <div class="টীকা-বক্স">
+                <i class="fas fa-check-circle" style="color:#058c42;"></i>
+                <span><strong>ডকার উবুন্টুতে খুব মসৃণে চলে</strong>। আর পিএইচপি-মাইএসকিউএল সরাসরি ইনস্টলের ঝামেলা নেই — সব কন্টেইনারের ভেতর। তৃষার উবুন্টু একদম পরিষ্কার থাকে, আর গিটহাব থেকে আনা প্রোজেক্ট একদম ঠিক মতো চলে।</span>
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৮: দরকারি কমান্ড (গল্পের চরিত্রের হাতেকলমে) -->
+        <div class="অধ্যায়">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-terminal"></i> ⓼ তৃষার দৈনন্দিন ডকার মন্ত্র
+            </div>
+            <div class="ডকার-মজা" style="grid-template-columns:repeat(2,1fr);">
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-play"></i>
+                    <h3>কন্টেইনার চালু</h3>
+                    <code>docker-compose up -d</code>
+                </div>
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-stop"></i>
+                    <h3>কন্টেইনার বন্ধ</h3>
+                    <code>docker-compose down</code>
+                </div>
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-list"></i>
+                    <h3>চলমান কন্টেইনার দেখা</h3>
+                    <code>docker ps</code>
+                </div>
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-file"></i>
+                    <h3>PHP লগ দেখা</h3>
+                    <code>docker logs whaleblog-web-1</code>
+                </div>
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-code-branch"></i>
+                    <h3>পুনঃনির্মাণ (rebuild)</h3>
+                    <code>docker-compose build</code>
+                </div>
+                <div class="কার্ড" style="background:#faf9fe;">
+                    <i class="fas fa-trash"></i>
+                    <h3>অব্যবহৃত জিনিস মুছুন</h3>
+                    <code>docker system prune</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- অধ্যায় ৯: সুখী সমাপ্তি ও শিক্ষা -->
+        <div class="অধ্যায়" style="border-left-color: #2a9d8f;">
+            <div class="অধ্যায়-শিরোনাম">
+                <i class="fas fa-medal"></i> ⓽ শিক্ষা: ব্যথাহীন, বহনযোগ্য পিএইচপি স্থাপন
+            </div>
+            <div class="গল্প-টেক্সট">
+                🌟 তৃষা এখন যেকোনো পিএইচপি প্রকল্প <strong>স্থানীয়ভাবে চালাতে পারে</strong> মাত্র দুটি কমান্ডে: <code>git clone</code> তারপর <code>docker-compose up</code>। একই পদ্ধতি অন্য যেকোনো মেশিনে (সহকর্মীর ম্যাক, প্রোডাকশন সার্ভার) কাজ করে। "আমার মেশিনে তো কাজ করে!" — এই যুক্তি এখন অতীত।
+            </div>
+            <hr>
+            <div class="গল্প-টেক্সট">
+                <i class="fas fa-quote-left" style="color: #f2622e;"></i> 
+                ডকারের কল্যাণে তৃষা ডিপেন্ডেন্সির জটিলতাকে আলাদা আলাদা নিয়ন্ত্রিত বাক্সে বন্দী করল — যেমন প্রতিটি পদ আলাদা তাজা কড়াইতে রান্না করা। গিটহাবের প্রোজেক্ট উবুন্টুতে খুশি মনে চলে, আর লোকাল ডিপ্লয়মেন্ট মানে শুধু <strong>docker-compose up</strong> টাইপ করা।
+            </div>
+        </div>
+
+        <!-- সম্পূর্ণ উদাহরণ সারসংক্ষেপ (এক নজরে) -->
+        <div style="background: #d0e6ff; border-radius: 45px; padding: 2.2rem; margin-top: 2.5rem; border: 4px solid white;">
+            <div style="display: flex; gap: 1.8rem; align-items: center; flex-wrap: wrap;">
+                <i class="fas fa-rocket" style="font-size: 5rem; color:#1f4e8a;"></i>
+                <div>
+                    <h2 style="font-size: 2.4rem;">🐳 একটি গল্পেই সব বিষয়</h2>
+                    <p class="গল্প-টেক্সট" style="margin-bottom:0;">📌 উবুন্টু টার্মিনাল থেকে শুরু → গিটহাব ক্লোন → <code>Dockerfile</code> + <code>compose</code> → <code>docker-compose up</code> → অ্যাপ চালু <strong>localhost:8080</strong>-এ। sudo apt install php/mysql ছাড়াই। এই হলো ডকারের গল্প।</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- টপিক রিক্যাপ (ছোট ছোট ব্যাজ) -->
+        <div style="display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; margin: 3rem 0 1rem;">
+            <span class="ইমোজি-ব্যাজ" style="background:#f0d9ff;">🐳 ডকার ইমেজ ও কন্টেইনার</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#fff0d4;">🐘 গিটহাব থেকে পিএইচপি প্রোজেক্ট</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#d3f0cb;">🧑‍💻 উবুন্টু লোকাল ডিপ্লয়মেন্ট</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#ffe1cf;">⚙️ Dockerfile উদাহরণ</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#dbd0ff;">📦 docker-compose ও MySQL</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#fce6b0;">🌐 localhost:8080</span>
+            <span class="ইমোজি-ব্যাজ" style="background:#e1c4ff;">📋 গিট ক্লোন গল্প</span>
+        </div>
+
+        <ফুটার>
+            <i class="fas fa-heart" style="color:#d4310b;"></i> 
+            সমাপ্তি — প্রতিটি পিএইচপি প্রোজেক্টেরই একটা শান্তিময় ডকার গল্প প্রাপ্য। <strong>তিমির গল্প সবাইকে বলুন!</strong>
+            <i class="fab fa-docker" style="margin-left: 12px; color:#2596d0;"></i>
+        </ফুটার>
+    </div>
+    <!-- পুরো পৃষ্ঠাটি বাংলায় তৈরি, গল্পের ছলে ডকার + পিএইচপি ডিপ্লয়মেন্ট -->
+</body>
+</html>
