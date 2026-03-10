@@ -1,0 +1,2486 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vue.js ক্র্যাশ কোর্স — সম্পূর্ণ বাংলা টিউটোরিয়াল</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Bebas+Neue&family=Lexend:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vue: #42b883;
+  --vue-dark: #35495e;
+  --vue-light: #a8e6cf;
+  --hot: #ff6b35;
+  --yellow: #ffd93d;
+  --pink: #ff6b9d;
+  --blue: #4ecdc4;
+  --purple: #c77dff;
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #21262d;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --text-dim: #8b949e;
+  --text-bright: #f0f6fc;
+  --code-bg: #0d1117;
+  --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Serif Bengali', 'Lexend', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* TOPBAR */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 56px;
+  background: rgba(13,17,23,0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 1.5rem;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: var(--vue);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.vue-logo {
+  width: 28px;
+  height: 28px;
+}
+
+.topbar-nav {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.topbar-nav::-webkit-scrollbar { display: none; }
+
+.topbar-link {
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.topbar-link:hover {
+  color: var(--vue);
+  background: rgba(66,184,131,0.08);
+  border-color: rgba(66,184,131,0.2);
+}
+
+.topbar-badge {
+  margin-left: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  background: rgba(66,184,131,0.12);
+  color: var(--vue);
+  border: 1px solid rgba(66,184,131,0.3);
+  white-space: nowrap;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 56px;
+}
+
+/* SIDEBAR */
+aside {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.2rem 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.sb-group { margin-bottom: 1.2rem; }
+
+.sb-label {
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vue);
+  padding: 0 0.5rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sb-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.38rem 0.5rem;
+  border-radius: 7px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  margin-bottom: 1px;
+}
+
+.sb-link:hover, .sb-link.active {
+  color: var(--text-bright);
+  background: rgba(66,184,131,0.07);
+  border-color: rgba(66,184,131,0.18);
+}
+
+.sb-link .lnum {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.6rem;
+  color: var(--vue);
+  opacity: 0.7;
+  min-width: 22px;
+}
+
+/* MAIN */
+main {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+
+/* HERO */
+.hero {
+  min-height: 480px;
+  background: linear-gradient(135deg, #0d1117 0%, #0f2019 40%, #0d1117 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 3rem 4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Animated grid */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(66,184,131,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(66,184,131,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridpan 20s linear infinite;
+}
+
+@keyframes gridpan {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+/* Big glowing orbs */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+  animation: orbpulse 6s ease-in-out infinite alternate;
+}
+
+.orb1 { width: 400px; height: 400px; background: var(--vue); top: -100px; left: -100px; }
+.orb2 { width: 300px; height: 300px; background: var(--blue); bottom: -80px; right: -80px; animation-delay: 2s; }
+.orb3 { width: 200px; height: 200px; background: var(--yellow); top: 50%; right: 20%; animation-delay: 4s; opacity: 0.15; }
+
+@keyframes orbpulse {
+  from { transform: scale(1); opacity: 0.2; }
+  to   { transform: scale(1.2); opacity: 0.32; }
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.78rem;
+  color: var(--vue);
+  background: rgba(66,184,131,0.1);
+  border: 1px solid rgba(66,184,131,0.35);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+  animation: fadein 0.6s ease both;
+}
+
+.hero-tag::before { content: '▶'; font-size: 0.6rem; }
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: var(--text-bright);
+  animation: fadein 0.7s 0.1s ease both;
+}
+
+.hero h1 .v { color: var(--vue); }
+.hero h1 .u { color: var(--yellow); }
+.hero h1 .e { color: var(--blue); }
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  animation: fadein 0.7s 0.2s ease both;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-pills {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  animation: fadein 0.7s 0.3s ease both;
+}
+
+.pill {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.72rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.2s;
+}
+
+.pill:hover { border-color: var(--vue); color: var(--vue); }
+
+.pill.hot {
+  border-color: rgba(66,184,131,0.4);
+  color: var(--vue);
+  background: rgba(66,184,131,0.08);
+}
+
+/* CONTENT AREA */
+.content {
+  padding: 3rem 3.5rem;
+  max-width: 900px;
+}
+
+/* CHAPTER */
+.chapter {
+  margin-bottom: 5rem;
+  scroll-margin-top: 72px;
+}
+
+.ch-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.ch-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--vue);
+  border-radius: 1px;
+}
+
+.ch-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: rgba(66,184,131,0.2);
+  letter-spacing: 0.05em;
+  min-width: 60px;
+}
+
+.ch-title-wrap { flex: 1; }
+
+.ch-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  color: var(--vue);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.ch-title {
+  font-family: 'Lexend', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+
+.ch-badge {
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.badge-beginner { background: rgba(66,184,131,0.15); color: var(--vue); border: 1px solid rgba(66,184,131,0.3); }
+.badge-mid { background: rgba(255,217,61,0.12); color: var(--yellow); border: 1px solid rgba(255,217,61,0.3); }
+.badge-advanced { background: rgba(199,125,255,0.12); color: var(--purple); border: 1px solid rgba(199,125,255,0.3); }
+.badge-project { background: rgba(255,107,53,0.12); color: var(--hot); border: 1px solid rgba(255,107,53,0.3); }
+
+/* CONCEPT CARD */
+.concept {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.concept:hover { border-color: rgba(66,184,131,0.35); }
+
+.concept-stripe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+}
+
+.stripe-vue    { background: linear-gradient(90deg, var(--vue), var(--blue)); }
+.stripe-hot    { background: linear-gradient(90deg, var(--hot), var(--yellow)); }
+.stripe-purple { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+.stripe-blue   { background: linear-gradient(90deg, var(--blue), var(--vue)); }
+
+.concept-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.concept-name {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-bright);
+  margin-bottom: 0.4rem;
+}
+.concept p { font-size: 0.9rem; color: var(--text-dim); margin: 0; }
+
+/* CODE BLOCK */
+.codeblock {
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.cb-bar {
+  background: var(--surface2);
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.cb-dots { display: flex; gap: 5px; }
+.cd { width: 11px; height: 11px; border-radius: 50%; }
+.cd-r { background: #ff5f57; }
+.cd-y { background: #febc2e; }
+.cd-g { background: #28c840; }
+
+.cb-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  flex: 1;
+}
+
+.cb-lang {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.62rem;
+  color: var(--vue);
+  background: rgba(66,184,131,0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  padding: 1.4rem 1.6rem;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  color: #abb2bf;
+}
+
+/* Syntax colors */
+.kw  { color: #c678dd; }
+.fn  { color: #61afef; }
+.str { color: #98c379; }
+.com { color: #5c6370; font-style: italic; }
+.num { color: #d19a66; }
+.var { color: #e06c75; }
+.cls { color: #e5c07b; }
+.at  { color: #56b6c2; }
+.tg  { color: #e06c75; }
+.at2 { color: #d19a66; }
+.hl  { background: rgba(66,184,131,0.08); display: block; margin: 0 -1.6rem; padding: 0 1.6rem; border-left: 3px solid var(--vue); }
+.dim { color: #5c6370; }
+
+/* INFO BOX */
+.box {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1.1rem 1.3rem;
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.box-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+.box p { margin: 0; }
+
+.box.tip  { background: rgba(66,184,131,0.07); border: 1px solid rgba(66,184,131,0.22); }
+.box.warn { background: rgba(255,217,61,0.07); border: 1px solid rgba(255,217,61,0.22); }
+.box.info { background: rgba(78,205,196,0.07); border: 1px solid rgba(78,205,196,0.22); }
+.box.danger { background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.22); }
+.box.fun  { background: rgba(199,125,255,0.07); border: 1px solid rgba(199,125,255,0.22); }
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th {
+  background: var(--surface2);
+  color: var(--text-bright);
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--vue);
+}
+td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+td code, th code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.78rem;
+  color: var(--vue);
+  background: rgba(66,184,131,0.08);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* STEPS */
+.steps { counter-reset: step-counter; }
+
+.step-item {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1.8rem;
+  counter-increment: step-counter;
+}
+
+.step-num {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--vue), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: white;
+  margin-top: 0.15rem;
+}
+
+.step-num::before { content: counter(step-counter); }
+
+.step-body h4 {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  color: var(--text-bright);
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+.step-body p { font-size: 0.87rem; color: var(--text-dim); margin: 0; }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+
+/* COMPARE */
+.compare-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px 5px 0 0;
+  font-weight: 600;
+}
+
+.label-good { background: rgba(66,184,131,0.15); color: var(--vue); }
+.label-bad  { background: rgba(255,107,53,0.15); color: var(--hot); }
+
+/* TAG GRID */
+.tag-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+.tag {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.73rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: var(--surface2);
+  transition: all 0.15s;
+}
+
+.tag:hover { border-color: var(--vue); color: var(--vue); }
+
+/* LIFECYCLE DIAGRAM */
+.lifecycle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 2rem auto;
+  max-width: 360px;
+}
+
+.lc-box {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  position: relative;
+}
+
+.lc-arrow {
+  width: 2px;
+  height: 20px;
+  background: var(--border);
+  position: relative;
+}
+
+.lc-arrow::after {
+  content: '▼';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5rem;
+  color: var(--text-dim);
+}
+
+.lc-setup    { background: rgba(66,184,131,0.12); border: 1px solid rgba(66,184,131,0.3); color: var(--vue); }
+.lc-mounted  { background: rgba(78,205,196,0.12); border: 1px solid rgba(78,205,196,0.3); color: var(--blue); }
+.lc-updated  { background: rgba(255,217,61,0.12); border: 1px solid rgba(255,217,61,0.3); color: var(--yellow); }
+.lc-unmount  { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.3); color: var(--hot); }
+.lc-create   { background: rgba(199,125,255,0.12); border: 1px solid rgba(199,125,255,0.3); color: var(--purple); }
+.lc-label { font-size: 0.65rem; opacity: 0.7; margin-top: 0.2rem; font-family: 'Lexend', sans-serif; }
+
+/* CARD GRID */
+.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+
+.mini-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem;
+  transition: all 0.2s;
+}
+
+.mini-card:hover {
+  border-color: var(--vue);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66,184,131,0.1);
+}
+
+.mc-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.mc-name {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-bright);
+  margin-bottom: 0.25rem;
+}
+.mc-desc { font-size: 0.75rem; color: var(--text-dim); }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 4rem 0;
+}
+
+/* HIGHLIGHT INLINE */
+code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82em;
+  color: var(--vue);
+  background: rgba(66,184,131,0.08);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid rgba(66,184,131,0.15);
+}
+
+strong { color: var(--text-bright); font-weight: 700; }
+p { font-size: 0.93rem; margin-bottom: 1rem; }
+
+h3 {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-bright);
+  margin: 2rem 0 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h3::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--vue);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+h4 {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-bright);
+  margin: 1.2rem 0 0.5rem;
+}
+
+/* OUTPUT PREVIEW */
+.preview {
+  background: #1a1e2e;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--vue);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 1.2rem 1.4rem;
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.9rem;
+}
+
+.preview-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  color: var(--vue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.8rem;
+  opacity: 0.8;
+}
+
+/* PROGRESS */
+.progress-track { margin: 0.5rem 0 1rem; }
+.progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+.progress-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--vue), var(--blue)); }
+
+/* SECTION INTRO */
+.section-intro {
+  font-size: 1rem;
+  color: var(--text-dim);
+  border-left: 3px solid var(--vue);
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* FOOTER */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 3rem;
+  text-align: center;
+  position: relative;
+}
+
+footer h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--vue);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+footer p { color: var(--text-dim); font-size: 0.85rem; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--vue); }
+
+/* MOBILE */
+@media (max-width: 880px) {
+  aside { display: none; }
+  .content { padding: 2rem 1.5rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .topbar-nav { display: none; }
+}
+
+@media (max-width: 520px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .hero { padding: 4rem 1.5rem 3rem; }
+  .hero h1 { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="#" class="topbar-brand">
+    <svg class="vue-logo" viewBox="0 0 261.76 226.69" xmlns="http://www.w3.org/2000/svg">
+      <path d="M161.096.001l-30.225 52.351L100.647.001H-.005l130.877 226.688L261.749.001z" fill="#41b883"/>
+      <path d="M161.096.001l-30.225 52.351L100.647.001H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
+    </svg>
+    Vue.js ক্র্যাশ কোর্স
+  </a>
+  <nav class="topbar-nav">
+    <a href="#intro" class="topbar-link">পরিচিতি</a>
+    <a href="#setup" class="topbar-link">সেটআপ</a>
+    <a href="#reactivity" class="topbar-link">Reactivity</a>
+    <a href="#directives" class="topbar-link">Directives</a>
+    <a href="#components" class="topbar-link">Components</a>
+    <a href="#composables" class="topbar-link">Composables</a>
+    <a href="#router" class="topbar-link">Router</a>
+    <a href="#pinia" class="topbar-link">Pinia</a>
+    <a href="#lifecycle" class="topbar-link">Lifecycle</a>
+    <a href="#project" class="topbar-link">প্রজেক্ট</a>
+  </nav>
+  <div class="topbar-badge">Vue 3 · Composition API</div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sb-group">
+    <div class="sb-label">📖 শুরু</div>
+    <a href="#intro" class="sb-link"><span class="lnum">01</span> Vue.js কী?</a>
+    <a href="#setup" class="sb-link"><span class="lnum">02</span> পরিবেশ সেটআপ</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">🔥 মূল বিষয়</div>
+    <a href="#reactivity" class="sb-link"><span class="lnum">03</span> Reactivity</a>
+    <a href="#directives" class="sb-link"><span class="lnum">04</span> Directives</a>
+    <a href="#computed" class="sb-link"><span class="lnum">05</span> Computed & Watch</a>
+    <a href="#events" class="sb-link"><span class="lnum">06</span> Events</a>
+    <a href="#forms" class="sb-link"><span class="lnum">07</span> Forms & v-model</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">🧩 উন্নত</div>
+    <a href="#components" class="sb-link"><span class="lnum">08</span> Components</a>
+    <a href="#props" class="sb-link"><span class="lnum">09</span> Props & Emits</a>
+    <a href="#slots" class="sb-link"><span class="lnum">10</span> Slots</a>
+    <a href="#lifecycle" class="sb-link"><span class="lnum">11</span> Lifecycle Hooks</a>
+    <a href="#composables" class="sb-link"><span class="lnum">12</span> Composables</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">🌐 ইকোসিস্টেম</div>
+    <a href="#router" class="sb-link"><span class="lnum">13</span> Vue Router</a>
+    <a href="#pinia" class="sb-link"><span class="lnum">14</span> Pinia Store</a>
+    <a href="#async" class="sb-link"><span class="lnum">15</span> Async & API</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">🚀 প্রজেক্ট</div>
+    <a href="#project" class="sb-link"><span class="lnum">16</span> Todo App</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+  <div class="hero-content">
+    <div class="hero-tag">সম্পূর্ণ বাংলা ক্র্যাশ কোর্স · Vue 3 Composition API</div>
+    <h1>
+      <span class="v">V</span><span class="u">U</span><span class="e">E</span>.JS<br>
+      টিউটোরিয়াল
+    </h1>
+    <p class="hero-sub">শূন্য থেকে শুরু করে প্রজেক্ট তৈরি পর্যন্ত — সব বাংলায়, উদাহরণ কোড সহ</p>
+    <div class="hero-pills">
+      <span class="pill hot">Vue 3</span>
+      <span class="pill hot">Composition API</span>
+      <span class="pill">Vite</span>
+      <span class="pill">Pinia</span>
+      <span class="pill">Vue Router</span>
+      <span class="pill">&lt;script setup&gt;</span>
+      <span class="pill">TypeScript</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- CHAPTER 1: INTRO -->
+<div class="chapter" id="intro">
+  <div class="ch-header">
+    <div class="ch-num">01</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">পরিচিতি</div>
+      <div class="ch-title">Vue.js কী এবং কেন?</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <p class="section-intro">Vue.js হলো একটি progressive JavaScript framework যা ব্যবহারকারী ইন্টারফেস (UI) তৈরির জন্য ব্যবহৃত হয়। এটি শেখা সহজ, কিন্তু জটিল অ্যাপ্লিকেশনও বানানো যায়।</p>
+
+  <div class="card-grid">
+    <div class="mini-card">
+      <div class="mc-icon">🎯</div>
+      <div class="mc-name">Progressive</div>
+      <div class="mc-desc">একটু একটু করে শেখা যায়। ছোট অংশে বা পুরো SPA হিসেবে ব্যবহার করা যায়।</div>
+    </div>
+    <div class="mini-card">
+      <div class="mc-icon">⚡</div>
+      <div class="mc-name">Reactive</div>
+      <div class="mc-desc">Data পরিবর্তন হলে UI স্বয়ংক্রিয়ভাবে আপডেট হয়। DOM নিজে ম্যানেজ করতে হয় না।</div>
+    </div>
+    <div class="mini-card">
+      <div class="mc-icon">🧩</div>
+      <div class="mc-name">Component-based</div>
+      <div class="mc-desc">পুরো UI ছোট ছোট কম্পোনেন্টে ভাগ করা যায়। Reusable ও maintainable।</div>
+    </div>
+  </div>
+
+  <div class="box tip">
+    <span class="box-icon">💡</span>
+    <p><strong>Vue vs React vs Angular:</strong> React শুধু UI library, Angular পুরো framework (জটিল), Vue মাঝামাঝি — শেখা সহজ কিন্তু পুরো framework-এর সুবিধা আছে।</p>
+  </div>
+
+  <h3>Vue 3 কেন শিখবেন?</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>বৈশিষ্ট্য</th><th>Vue 2</th><th>Vue 3 ✅</th></tr>
+      <tr><td>API Style</td><td>Options API</td><td>Composition API (শক্তিশালী)</td></tr>
+      <tr><td>TypeScript</td><td>সীমিত</td><td>সম্পূর্ণ সাপোর্ট</td></tr>
+      <tr><td>Performance</td><td>ভালো</td><td>আরো দ্রুত (55% faster)</td></tr>
+      <tr><td>Bundle Size</td><td>বড়</td><td>Tree-shaking (ছোট)</td></tr>
+      <tr><td><code>&lt;script setup&gt;</code></td><td>নেই</td><td>আছে (সবচেয়ে সহজ)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 2: SETUP -->
+<div class="chapter" id="setup">
+  <div class="ch-header">
+    <div class="ch-num">02</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">পরিবেশ</div>
+      <div class="ch-title">সেটআপ ও প্রথম অ্যাপ</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num"></div>
+      <div class="step-body">
+        <h4>Node.js ইনস্টল করুন</h4>
+        <p>nodejs.org থেকে LTS ভার্সন ডাউনলোড করুন (v18+)। Terminal-এ <code>node --version</code> দিয়ে চেক করুন।</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num"></div>
+      <div class="step-body">
+        <h4>Vite দিয়ে প্রজেক্ট তৈরি</h4>
+        <p>Vite হলো আধুনিক build tool — অনেক দ্রুত। npm create দিয়ে Vue প্রজেক্ট শুরু করুন।</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num"></div>
+      <div class="step-body">
+        <h4>Dependencies ইনস্টল করুন</h4>
+        <p><code>npm install</code> চালান। তারপর <code>npm run dev</code> দিয়ে Development server চালু করুন।</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Terminal — প্রজেক্ট তৈরি</span>
+      <span class="cb-lang">bash</span>
+    </div>
+    <pre><span class="com"># Vite দিয়ে Vue 3 প্রজেক্ট তৈরি</span>
+npm create vite@latest my-vue-app <span class="str">-- --template vue</span>
+
+<span class="com"># প্রজেক্টে যান</span>
+cd my-vue-app
+
+<span class="com"># Dependencies ইনস্টল</span>
+npm install
+
+<span class="com"># Dev server চালু</span>
+npm run dev
+<span class="com"># → http://localhost:5173</span></pre>
+  </div>
+
+  <h3>প্রজেক্ট কাঠামো</h3>
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">ফোল্ডার কাঠামো</span>
+      <span class="cb-lang">tree</span>
+    </div>
+    <pre>my-vue-app/
+├── public/          <span class="com"># Static files</span>
+├── src/
+│   ├── assets/      <span class="com"># CSS, images</span>
+│   ├── components/  <span class="com"># ✅ আপনার components এখানে</span>
+│   ├── views/       <span class="com"># Page components</span>
+│   ├── App.vue      <span class="com"># ✅ Root component</span>
+│   └── main.js      <span class="com"># Entry point</span>
+├── index.html
+└── vite.config.js</pre>
+  </div>
+
+  <h3>প্রথম .vue ফাইল</h3>
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">src/App.vue — Single File Component (SFC)</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="com">&lt;!-- ৩টি অংশ: script, template, style --&gt;</span>
+
+<span class="tg">&lt;script setup&gt;</span>
+<span class="com">// ✅ এটাই সবচেয়ে আধুনিক পদ্ধতি</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">name</span> = ref(<span class="str">'বাংলাদেশ'</span>)
+<span class="kw">const</span> <span class="var">count</span> = ref(<span class="num">0</span>)
+
+<span class="kw">function</span> <span class="fn">increment</span>() {
+  count.value++
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"app"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;h1&gt;</span>হ্যালো, {{ name }}! 👋<span class="tg">&lt;/h1&gt;</span>
+    <span class="tg">&lt;p&gt;</span>গণনা: {{ count }}<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"increment"</span><span class="tg">&gt;</span>+১ যোগ করুন<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span>
+
+<span class="tg">&lt;style scoped&gt;</span>
+<span class="com">/* scoped = শুধু এই component-এ কাজ করবে */</span>
+.app { text-align: center; padding: 2rem; }
+button { background: <span class="str">#42b883</span>; color: white; padding: .5rem 1rem; border: none; border-radius: 6px; cursor: pointer; }
+<span class="tg">&lt;/style&gt;</span></pre>
+  </div>
+
+  <div class="preview">
+    <div class="preview-label">▶ Output</div>
+    <div style="text-align:center;font-family:Lexend,sans-serif">
+      <h2 style="color:#f0f6fc;margin-bottom:0.5rem">হ্যালো, বাংলাদেশ! 👋</h2>
+      <p style="color:#8b949e;margin-bottom:1rem">গণনা: 0</p>
+      <button style="background:#42b883;color:white;padding:.5rem 1.2rem;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem">+১ যোগ করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 3: REACTIVITY -->
+<div class="chapter" id="reactivity">
+  <div class="ch-header">
+    <div class="ch-num">03</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Core</div>
+      <div class="ch-title">Reactivity — ref() ও reactive()</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <p class="section-intro">Vue-এর সবচেয়ে শক্তিশালী বৈশিষ্ট্য হলো <strong>Reactivity</strong>। Data পরিবর্তন হলে DOM স্বয়ংক্রিয়ভাবে আপডেট হয়। এর জন্য দুটি পদ্ধতি আছে: <code>ref()</code> এবং <code>reactive()</code>।</p>
+
+  <div class="two-col">
+    <div class="concept">
+      <div class="concept-stripe stripe-vue"></div>
+      <div class="concept-icon">🔵</div>
+      <div class="concept-name">ref()</div>
+      <p>যেকোনো ধরনের value (string, number, boolean, array, object) reactive করে। Template-এ সরাসরি ব্যবহার, JS-এ <code>.value</code> লাগে।</p>
+    </div>
+    <div class="concept">
+      <div class="concept-stripe stripe-blue"></div>
+      <div class="concept-icon">🟢</div>
+      <div class="concept-name">reactive()</div>
+      <p>শুধু Object ও Array-এর জন্য। <code>.value</code> লাগে না। Destructure করলে reactivity হারিয়ে যায় — সাবধান!</p>
+    </div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">ref() — সব ধরনের data</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">// Primitive values</span>
+<span class="kw">const</span> <span class="var">name</span>    = ref(<span class="str">'রাহুল'</span>)      <span class="com">// string</span>
+<span class="kw">const</span> <span class="var">age</span>     = ref(<span class="num">25</span>)           <span class="com">// number</span>
+<span class="kw">const</span> <span class="var">isAdmin</span> = ref(<span class="kw">false</span>)        <span class="com">// boolean</span>
+
+<span class="com">// Array ও Object</span>
+<span class="kw">const</span> <span class="var">fruits</span>  = ref([<span class="str">'আম'</span>, <span class="str">'কাঁঠাল'</span>, <span class="str">'লিচু'</span>])
+<span class="kw">const</span> <span class="var">user</span>    = ref({ name: <span class="str">'করিম'</span>, email: <span class="str">'karim@example.com'</span> })
+
+<span class="com">// JavaScript-এ পরিবর্তন করতে .value ব্যবহার করতে হয়</span>
+<span class="kw">function</span> <span class="fn">updateName</span>() {
+  name.value = <span class="str">'সুমাইয়া'</span>         <span class="com">// ✅ .value লাগবে</span>
+}
+
+<span class="kw">function</span> <span class="fn">addFruit</span>() {
+  fruits.value.push(<span class="str">'জাম'</span>)        <span class="com">// ✅ Array method ব্যবহার</span>
+}
+
+<span class="kw">function</span> <span class="fn">updateUser</span>() {
+  user.value.name = <span class="str">'নাফিসা'</span>      <span class="com">// ✅ Nested property</span>
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- Template-এ .value লাগে না! Vue স্বয়ংক্রিয়ভাবে unwrap করে --&gt;</span>
+  <span class="tg">&lt;p&gt;</span>নাম: {{ name }}<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;p&gt;</span>বয়স: {{ age }}<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;p&gt;</span>Admin: {{ isAdmin ? 'হ্যাঁ' : 'না' }}<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;ul&gt;</span>
+    <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"fruit in fruits"</span><span class="tg">&gt;</span>{{ fruit }}<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;/ul&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">reactive() — Object এর জন্য</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { reactive } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">// reactive() শুধু Object/Array নেয়</span>
+<span class="kw">const</span> <span class="var">form</span> = reactive({
+  name: <span class="str">''</span>,
+  email: <span class="str">''</span>,
+  phone: <span class="str">''</span>,
+  errors: {}
+})
+
+<span class="com">// .value ছাড়াই access করা যায়</span>
+<span class="kw">function</span> <span class="fn">submitForm</span>() {
+  <span class="kw">if</span> (!form.name) {
+    form.errors.name = <span class="str">'নাম আবশ্যক'</span>
+    <span class="kw">return</span>
+  }
+  console.<span class="fn">log</span>(form.name, form.email)  <span class="com">// সরাসরি</span>
+}
+
+<span class="com">// ⚠️ Destructure করবেন না — reactivity হারাবে!</span>
+<span class="com">// const { name } = form  ← ভুল! name আর reactive থাকবে না</span>
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">v-model</span>=<span class="str">"form.name"</span> <span class="at">placeholder</span>=<span class="str">"আপনার নাম"</span> <span class="tg">/&gt;</span>
+  <span class="tg">&lt;span</span> <span class="at">v-if</span>=<span class="str">"form.errors.name"</span><span class="tg">&gt;</span>{{ form.errors.name }}<span class="tg">&lt;/span&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="box warn">
+    <span class="box-icon">⚠️</span>
+    <p><strong>পরামর্শ:</strong> বেশিরভাগ ক্ষেত্রে <code>ref()</code> ব্যবহার করুন। এটি সব কিছুতে কাজ করে এবং পরে বিভ্রান্তি কম। <code>reactive()</code> শুধু বড় object-এর জন্য ব্যবহার করুন।</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 4: DIRECTIVES -->
+<div class="chapter" id="directives">
+  <div class="ch-header">
+    <div class="ch-num">04</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Template</div>
+      <div class="ch-title">Vue Directives — Template-এর যাদু</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <p class="section-intro">Directives হলো HTML attributes যেগুলো <code>v-</code> দিয়ে শুরু হয়। এগুলো DOM-কে reactive data দিয়ে নিয়ন্ত্রণ করে।</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Directive</th><th>কী করে</th><th>উদাহরণ</th></tr>
+      <tr><td><code>v-if</code></td><td>Conditional rendering (DOM থেকে সরায়)</td><td><code>v-if="isLoggedIn"</code></td></tr>
+      <tr><td><code>v-else-if</code></td><td>v-if-এর else if</td><td><code>v-else-if="isGuest"</code></td></tr>
+      <tr><td><code>v-else</code></td><td>v-if false হলে দেখায়</td><td><code>v-else</code></td></tr>
+      <tr><td><code>v-show</code></td><td>CSS display toggle করে</td><td><code>v-show="isVisible"</code></td></tr>
+      <tr><td><code>v-for</code></td><td>List render করে</td><td><code>v-for="item in items"</code></td></tr>
+      <tr><td><code>v-model</code></td><td>Two-way data binding</td><td><code>v-model="email"</code></td></tr>
+      <tr><td><code>v-bind</code> / <code>:</code></td><td>Attribute binding</td><td><code>:href="url"</code></td></tr>
+      <tr><td><code>v-on</code> / <code>@</code></td><td>Event listener</td><td><code>@click="save"</code></td></tr>
+      <tr><td><code>v-text</code></td><td>Text content সেট করে</td><td><code>v-text="msg"</code></td></tr>
+      <tr><td><code>v-html</code></td><td>HTML render করে (XSS সাবধান)</td><td><code>v-html="htmlContent"</code></td></tr>
+    </table>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">সব Directives একসাথে</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">isLoggedIn</span> = ref(<span class="kw">true</span>)
+<span class="kw">const</span> <span class="var">role</span>       = ref(<span class="str">'admin'</span>)  <span class="com">// 'admin' | 'user' | 'guest'</span>
+<span class="kw">const</span> <span class="var">showBanner</span> = ref(<span class="kw">true</span>)
+<span class="kw">const</span> <span class="var">students</span>   = ref([
+  { id: <span class="num">1</span>, name: <span class="str">'আরিফ'</span>,    score: <span class="num">85</span> },
+  { id: <span class="num">2</span>, name: <span class="str">'সুমাইয়া'</span>, score: <span class="num">92</span> },
+  { id: <span class="num">3</span>, name: <span class="str">'করিম'</span>,    score: <span class="num">78</span> },
+])
+<span class="kw">const</span> <span class="var">imageUrl</span> = ref(<span class="str">'https://picsum.photos/200'</span>)
+<span class="kw">const</span> <span class="var">linkUrl</span>  = ref(<span class="str">'https://vuejs.org'</span>)
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- ✅ v-if / v-else-if / v-else --&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-if</span>=<span class="str">"!isLoggedIn"</span><span class="tg">&gt;</span>অনুগ্রহ করে লগইন করুন<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-else-if</span>=<span class="str">"role === 'admin'"</span><span class="tg">&gt;</span>স্বাগতম, অ্যাডমিন! 👑<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-else</span><span class="tg">&gt;</span>স্বাগতম, ব্যবহারকারী!<span class="tg">&lt;/div&gt;</span>
+
+  <span class="com">&lt;!-- ✅ v-show (CSS display toggle) --&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-show</span>=<span class="str">"showBanner"</span> <span class="at">class</span>=<span class="str">"banner"</span><span class="tg">&gt;</span>
+    এটা সবসময় DOM-এ থাকে, শুধু লুকানো হয়
+  <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"showBanner = !showBanner"</span><span class="tg">&gt;</span>Toggle Banner<span class="tg">&lt;/button&gt;</span>
+
+  <span class="com">&lt;!-- ✅ v-for — key দেওয়া অবশ্যক! --&gt;</span>
+  <span class="tg">&lt;ul&gt;</span>
+    <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"student in students"</span> <span class="at">:key</span>=<span class="str">"student.id"</span><span class="tg">&gt;</span>
+      {{ student.name }} — স্কোর: {{ student.score }}
+    <span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;/ul&gt;</span>
+
+  <span class="com">&lt;!-- ✅ v-for index সহ --&gt;</span>
+  <span class="tg">&lt;ol&gt;</span>
+    <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"(student, index) in students"</span> <span class="at">:key</span>=<span class="str">"student.id"</span><span class="tg">&gt;</span>
+      {{ index + 1 }}. {{ student.name }}
+    <span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;/ul&gt;</span>
+
+  <span class="com">&lt;!-- ✅ v-bind shorthand → : --&gt;</span>
+  <span class="tg">&lt;img</span> <span class="at">:src</span>=<span class="str">"imageUrl"</span> <span class="at">:alt</span>=<span class="str">"'ছবি'"</span> <span class="tg">/&gt;</span>
+  <span class="tg">&lt;a</span> <span class="at">:href</span>=<span class="str">"linkUrl"</span> <span class="at">target</span>=<span class="str">"_blank"</span><span class="tg">&gt;</span>Vue.js ওয়েবসাইট<span class="tg">&lt;/a&gt;</span>
+
+  <span class="com">&lt;!-- ✅ Dynamic class & style --&gt;</span>
+  <span class="tg">&lt;p</span> <span class="at">:class</span>=<span class="str">"{ 'text-red': score &lt; 80, 'text-green': score >= 80 }"</span><span class="tg">&gt;</span>
+    ফলাফল
+  <span class="tg">&lt;/p&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="box info">
+    <span class="box-icon">🔑</span>
+    <p><strong>v-if vs v-show:</strong> <code>v-if</code> element-টি DOM থেকে সম্পূর্ণ সরিয়ে দেয়। <code>v-show</code> শুধু <code>display: none</code> করে। যদি ঘন ঘন toggle হয়, <code>v-show</code> বেশি দক্ষ। প্রথমবার render costly হলে <code>v-if</code> ব্যবহার করুন।</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 5: COMPUTED & WATCH -->
+<div class="chapter" id="computed">
+  <div class="ch-header">
+    <div class="ch-num">05</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Reactivity</div>
+      <div class="ch-title">Computed & Watch</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <div class="two-col">
+    <div class="concept">
+      <div class="concept-stripe stripe-vue"></div>
+      <div class="concept-icon">🧮</div>
+      <div class="concept-name">computed()</div>
+      <p>অন্য reactive data থেকে গণনা করা মান। <strong>Cache করা হয়</strong> — dependency পরিবর্তন না হলে পুনরায় গণনা হয় না।</p>
+    </div>
+    <div class="concept">
+      <div class="concept-stripe stripe-hot"></div>
+      <div class="concept-icon">👁️</div>
+      <div class="concept-name">watch()</div>
+      <p>Reactive data পরিবর্তনে side effect চালায়। API call, localStorage save ইত্যাদির জন্য ব্যবহার করুন।</p>
+    </div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">computed() — গণনা করা মান</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, computed } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">products</span> = ref([
+  { name: <span class="str">'ল্যাপটপ'</span>, price: <span class="num">50000</span>, inStock: <span class="kw">true</span> },
+  { name: <span class="str">'মোবাইল'</span>, price: <span class="num">25000</span>, inStock: <span class="kw">false</span> },
+  { name: <span class="str">'হেডফোন'</span>, price: <span class="num">3000</span>,  inStock: <span class="kw">true</span> },
+])
+
+<span class="kw">const</span> <span class="var">searchQuery</span> = ref(<span class="str">''</span>)
+<span class="kw">const</span> <span class="var">showOnlyInStock</span> = ref(<span class="kw">false</span>)
+
+<span class="com">// ✅ computed — products ও filter পরিবর্তনে auto-update</span>
+<span class="kw">const</span> <span class="var">filteredProducts</span> = computed(() => {
+  <span class="kw">return</span> products.value
+    .<span class="fn">filter</span>(p => !showOnlyInStock.value || p.inStock)
+    .<span class="fn">filter</span>(p => p.name.<span class="fn">includes</span>(searchQuery.value))
+})
+
+<span class="com">// ✅ computed দিয়ে মোট দাম</span>
+<span class="kw">const</span> <span class="var">totalPrice</span> = computed(() =>
+  filteredProducts.value.<span class="fn">reduce</span>((sum, p) => sum + p.price, <span class="num">0</span>)
+)
+
+<span class="com">// ✅ Writable computed (get + set)</span>
+<span class="kw">const</span> <span class="var">fullName</span> = computed({
+  <span class="fn">get</span>: () => `${firstName.value} ${lastName.value}`,
+  <span class="fn">set</span>: (val) => {
+    [firstName.value, lastName.value] = val.<span class="fn">split</span>(<span class="str">' '</span>)
+  }
+})
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">v-model</span>=<span class="str">"searchQuery"</span> <span class="at">placeholder</span>=<span class="str">"খুঁজুন..."</span> <span class="tg">/&gt;</span>
+  <span class="tg">&lt;label&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"showOnlyInStock"</span> <span class="tg">/&gt;</span>
+    শুধু স্টকে আছে
+  <span class="tg">&lt;/label&gt;</span>
+
+  <span class="tg">&lt;p&gt;</span>মোট: {{ filteredProducts.length }}টি পণ্য — টাকা: {{ totalPrice.toLocaleString() }}<span class="tg">&lt;/p&gt;</span>
+
+  <span class="tg">&lt;div</span> <span class="at">v-for</span>=<span class="str">"p in filteredProducts"</span> <span class="at">:key</span>=<span class="str">"p.name"</span><span class="tg">&gt;</span>
+    {{ p.name }} — ৳{{ p.price.toLocaleString() }}
+    <span class="tg">&lt;span</span> <span class="at">v-if</span>=<span class="str">"!p.inStock"</span><span class="tg">&gt;</span> (স্টক নেই)<span class="tg">&lt;/span&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">watch() ও watchEffect()</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, watch, watchEffect } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">userId</span>  = ref(<span class="num">1</span>)
+<span class="kw">const</span> <span class="var">userData</span> = ref(<span class="kw">null</span>)
+<span class="kw">const</span> <span class="var">search</span>  = ref(<span class="str">''</span>)
+
+<span class="com">// ✅ watch — নির্দিষ্ট data watch করে</span>
+watch(userId, <span class="kw">async</span> (newId, oldId) => {
+  console.<span class="fn">log</span>(`ID পরিবর্তন: ${oldId} → ${newId}`)
+  userData.value = <span class="kw">await</span> <span class="fn">fetchUser</span>(newId)
+})
+
+<span class="com">// ✅ Multiple values watch</span>
+watch([userId, search], ([newId, newSearch]) => {
+  console.<span class="fn">log</span>(<span class="str">'পরিবর্তন হয়েছে:'</span>, newId, newSearch)
+})
+
+<span class="com">// ✅ Deep watch (nested object)</span>
+<span class="kw">const</span> <span class="var">settings</span> = ref({ theme: <span class="str">'dark'</span>, lang: <span class="str">'bn'</span> })
+watch(settings, (newSettings) => {
+  localStorage.<span class="fn">setItem</span>(<span class="str">'settings'</span>, JSON.<span class="fn">stringify</span>(newSettings))
+}, { deep: <span class="kw">true</span> })
+
+<span class="com">// ✅ Immediate — প্রথমবার সাথে সাথে চালায়</span>
+watch(userId, <span class="kw">async</span> (id) => {
+  userData.value = <span class="kw">await</span> <span class="fn">fetchUser</span>(id)
+}, { immediate: <span class="kw">true</span> })
+
+<span class="com">// ✅ watchEffect — dependencies স্বয়ংক্রিয় detect</span>
+watchEffect(<span class="kw">async</span> () => {
+  <span class="com">// userId.value access করে, তাই userId watch করে</span>
+  <span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetch</span>(`/api/users/${userId.value}`)
+  userData.value = <span class="kw">await</span> data.<span class="fn">json</span>()
+})
+<span class="tg">&lt;/script&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 6: EVENTS -->
+<div class="chapter" id="events">
+  <div class="ch-header">
+    <div class="ch-num">06</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Interaction</div>
+      <div class="ch-title">Event Handling</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Events ও Modifiers</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- Basic events --&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"save"</span><span class="tg">&gt;</span>সংরক্ষণ<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@dblclick</span>=<span class="str">"edit"</span><span class="tg">&gt;</span>ডবল ক্লিক<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">@keyup.enter</span>=<span class="str">"submit"</span> <span class="tg">/&gt;</span>    <span class="com">&lt;!-- Enter চাপলে --&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">@keyup.esc</span>=<span class="str">"cancel"</span> <span class="tg">/&gt;</span>     <span class="com">&lt;!-- Escape চাপলে --&gt;</span>
+
+  <span class="com">&lt;!-- Event Modifiers --&gt;</span>
+  <span class="tg">&lt;form</span> <span class="at">@submit.prevent</span>=<span class="str">"handleSubmit"</span><span class="tg">&gt;</span>  <span class="com">&lt;!-- preventDefault() --&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">type</span>=<span class="str">"submit"</span><span class="tg">&gt;</span>Submit<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/form&gt;</span>
+
+  <span class="tg">&lt;div</span> <span class="at">@click.stop</span>=<span class="str">"handler"</span><span class="tg">&gt;</span>    <span class="com">&lt;!-- stopPropagation() --&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click.stop</span>=<span class="str">"btn"</span><span class="tg">&gt;</span>Inner<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+
+  <span class="com">&lt;!-- Mouse modifiers --&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click.right.prevent</span>=<span class="str">"ctxMenu"</span><span class="tg">&gt;</span>Right Click<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click.ctrl</span>=<span class="str">"multiSelect"</span><span class="tg">&gt;</span>Ctrl+Click<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click.once</span>=<span class="str">"oneTime"</span><span class="tg">&gt;</span>শুধু একবার<span class="tg">&lt;/button&gt;</span>
+
+  <span class="com">&lt;!-- Event object পাওয়া --&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"handleClick($event)"</span><span class="tg">&gt;</span>Event Object<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"handleClick2('hello', $event)"</span><span class="tg">&gt;</span>Args + Event<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 7: FORMS -->
+<div class="chapter" id="forms">
+  <div class="ch-header">
+    <div class="ch-num">07</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Input</div>
+      <div class="ch-title">Forms ও v-model</div>
+    </div>
+    <span class="ch-badge badge-beginner">Beginner</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">সব ধরনের Form Input</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, reactive } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">form</span> = reactive({
+  name:        <span class="str">''</span>,
+  email:       <span class="str">''</span>,
+  password:    <span class="str">''</span>,
+  age:         <span class="kw">null</span>,
+  message:     <span class="str">''</span>,
+  gender:      <span class="str">'male'</span>,
+  agree:       <span class="kw">false</span>,
+  skills:      [],          <span class="com">// Multiple checkboxes</span>
+  priority:    <span class="str">'medium'</span>,   <span class="com">// Select</span>
+  birthDate:   <span class="str">''</span>,
+})
+
+<span class="com">// v-model modifiers:</span>
+<span class="com">// .lazy  → change event-এ update (input-এ নয়)</span>
+<span class="com">// .number → string → number convert</span>
+<span class="com">// .trim  → whitespace কাটে</span>
+
+<span class="kw">function</span> <span class="fn">handleSubmit</span>() {
+  console.<span class="fn">log</span>(<span class="str">'ফর্ম ডেটা:'</span>, form)
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;form</span> <span class="at">@submit.prevent</span>=<span class="str">"handleSubmit"</span><span class="tg">&gt;</span>
+
+    <span class="com">&lt;!-- Text input --&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">v-model.trim</span>=<span class="str">"form.name"</span> <span class="at">placeholder</span>=<span class="str">"নাম"</span> <span class="tg">/&gt;</span>
+
+    <span class="com">&lt;!-- Email --&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="str">"email"</span> <span class="at">v-model</span>=<span class="str">"form.email"</span> <span class="at">placeholder</span>=<span class="str">"ইমেইল"</span> <span class="tg">/&gt;</span>
+
+    <span class="com">&lt;!-- Number --&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="str">"number"</span> <span class="at">v-model.number</span>=<span class="str">"form.age"</span> <span class="at">placeholder</span>=<span class="str">"বয়স"</span> <span class="tg">/&gt;</span>
+
+    <span class="com">&lt;!-- Textarea --&gt;</span>
+    <span class="tg">&lt;textarea</span> <span class="at">v-model</span>=<span class="str">"form.message"</span> <span class="at">placeholder</span>=<span class="str">"বার্তা"</span><span class="tg">&gt;&lt;/textarea&gt;</span>
+
+    <span class="com">&lt;!-- Radio buttons --&gt;</span>
+    <span class="tg">&lt;label&gt;&lt;input</span> <span class="at">type</span>=<span class="str">"radio"</span> <span class="at">v-model</span>=<span class="str">"form.gender"</span> <span class="at">value</span>=<span class="str">"male"</span> <span class="tg">/&gt;</span> পুরুষ<span class="tg">&lt;/label&gt;</span>
+    <span class="tg">&lt;label&gt;&lt;input</span> <span class="at">type</span>=<span class="str">"radio"</span> <span class="at">v-model</span>=<span class="str">"form.gender"</span> <span class="at">value</span>=<span class="str">"female"</span> <span class="tg">/&gt;</span> মহিলা<span class="tg">&lt;/label&gt;</span>
+
+    <span class="com">&lt;!-- Single checkbox --&gt;</span>
+    <span class="tg">&lt;label&gt;&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"form.agree"</span> <span class="tg">/&gt;</span> শর্ত মেনে নিচ্ছি<span class="tg">&lt;/label&gt;</span>
+
+    <span class="com">&lt;!-- Multiple checkboxes → array --&gt;</span>
+    <span class="tg">&lt;label&gt;&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"form.skills"</span> <span class="at">value</span>=<span class="str">"vue"</span> <span class="tg">/&gt;</span> Vue<span class="tg">&lt;/label&gt;</span>
+    <span class="tg">&lt;label&gt;&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"form.skills"</span> <span class="at">value</span>=<span class="str">"react"</span> <span class="tg">/&gt;</span> React<span class="tg">&lt;/label&gt;</span>
+    <span class="tg">&lt;p&gt;</span>নির্বাচিত: {{ form.skills.join(', ') }}<span class="tg">&lt;/p&gt;</span>
+
+    <span class="com">&lt;!-- Select dropdown --&gt;</span>
+    <span class="tg">&lt;select</span> <span class="at">v-model</span>=<span class="str">"form.priority"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="str">"low"</span><span class="tg">&gt;</span>কম<span class="tg">&lt;/option&gt;</span>
+      <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="str">"medium"</span><span class="tg">&gt;</span>মাঝামাঝি<span class="tg">&lt;/option&gt;</span>
+      <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="str">"high"</span><span class="tg">&gt;</span>বেশি<span class="tg">&lt;/option&gt;</span>
+    <span class="tg">&lt;/select&gt;</span>
+
+    <span class="tg">&lt;button</span> <span class="at">type</span>=<span class="str">"submit"</span><span class="tg">&gt;</span>জমা দিন<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/form&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 8: COMPONENTS -->
+<div class="chapter" id="components">
+  <div class="ch-header">
+    <div class="ch-num">08</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Architecture</div>
+      <div class="ch-title">Components — Vue-এর হৃদয়</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <p class="section-intro">Component হলো Vue-এর মূল building block। প্রতিটি <code>.vue</code> ফাইল একটি component। এগুলো একে অপরের ভেতরে ব্যবহার করা যায় এবং Props দিয়ে data pass করা যায়।</p>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">AlertCard.vue — Child Component</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="com">&lt;!-- src/components/AlertCard.vue --&gt;</span>
+<span class="tg">&lt;script setup&gt;</span>
+<span class="com">// Props সংজ্ঞায়িত করা</span>
+<span class="kw">const</span> <span class="var">props</span> = <span class="fn">defineProps</span>({
+  title: {
+    type: String,
+    required: <span class="kw">true</span>,
+  },
+  message: {
+    type: String,
+    default: <span class="str">'কোনো বার্তা নেই'</span>,
+  },
+  type: {
+    type: String,
+    default: <span class="str">'info'</span>,
+    validator: (val) => [<span class="str">'success'</span>, <span class="str">'warning'</span>, <span class="str">'error'</span>, <span class="str">'info'</span>].<span class="fn">includes</span>(val)
+  },
+  count: {
+    type: Number,
+    default: <span class="num">0</span>
+  }
+})
+
+<span class="com">// Events সংজ্ঞায়িত করা</span>
+<span class="kw">const</span> <span class="var">emit</span> = <span class="fn">defineEmits</span>([<span class="str">'close'</span>, <span class="str">'action'</span>])
+
+<span class="kw">function</span> <span class="fn">closeAlert</span>() {
+  <span class="fn">emit</span>(<span class="str">'close'</span>)  <span class="com">// Parent-কে জানানো</span>
+}
+
+<span class="kw">function</span> <span class="fn">handleAction</span>() {
+  <span class="fn">emit</span>(<span class="str">'action'</span>, props.type)  <span class="com">// Data সহ emit</span>
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">:class</span>=<span class="str">`alert alert-${type}`</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;strong&gt;</span>{{ title }}<span class="tg">&lt;/strong&gt;</span>
+    <span class="tg">&lt;p&gt;</span>{{ message }}<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;span</span> <span class="at">v-if</span>=<span class="str">"count > 0"</span><span class="tg">&gt;</span>{{ count }}টি আইটেম<span class="tg">&lt;/span&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"handleAction"</span><span class="tg">&gt;</span>ঠিক আছে<span class="tg">&lt;/button&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"closeAlert"</span><span class="tg">&gt;</span>✕<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">App.vue — Parent Component (Component ব্যবহার)</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> <span class="cls">AlertCard</span> <span class="kw">from</span> <span class="str">'./components/AlertCard.vue'</span>
+
+<span class="kw">const</span> <span class="var">alerts</span> = ref([
+  { id: <span class="num">1</span>, title: <span class="str">'সাফল্য!'</span>,   message: <span class="str">'ডেটা সংরক্ষিত হয়েছে'</span>, type: <span class="str">'success'</span> },
+  { id: <span class="num">2</span>, title: <span class="str">'সতর্কতা!'</span>, message: <span class="str">'ফর্ম অসম্পূর্ণ'</span>,       type: <span class="str">'warning'</span> },
+  { id: <span class="num">3</span>, title: <span class="str">'ত্রুটি!'</span>,    message: <span class="str">'সংযোগ বিচ্ছিন্ন'</span>,       type: <span class="str">'error'</span>   },
+])
+
+<span class="kw">function</span> <span class="fn">removeAlert</span>(id) {
+  alerts.value = alerts.value.<span class="fn">filter</span>(a => a.id !== id)
+}
+
+<span class="kw">function</span> <span class="fn">handleAction</span>(id, type) {
+  console.<span class="fn">log</span>(`Action: alert ${id}, type: ${type}`)
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- ✅ Component ব্যবহার + Props pass + Events শোনা --&gt;</span>
+  <span class="tg">&lt;AlertCard</span>
+    <span class="at">v-for</span>=<span class="str">"alert in alerts"</span>
+    <span class="at">:key</span>=<span class="str">"alert.id"</span>
+    <span class="at">:title</span>=<span class="str">"alert.title"</span>
+    <span class="at">:message</span>=<span class="str">"alert.message"</span>
+    <span class="at">:type</span>=<span class="str">"alert.type"</span>
+    <span class="at">@close</span>=<span class="str">"removeAlert(alert.id)"</span>
+    <span class="at">@action</span>=<span class="str">"handleAction(alert.id, $event)"</span>
+  <span class="tg">/&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 9: SLOTS -->
+<div class="chapter" id="slots">
+  <div class="ch-header">
+    <div class="ch-num">09-10</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Components</div>
+      <div class="ch-title">Slots — Flexible Components</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Card.vue — Named Slots</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="com">&lt;!-- Card.vue --&gt;</span>
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"card"</span><span class="tg">&gt;</span>
+    <span class="com">&lt;!-- Named slot: header --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"card-header"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;slot</span> <span class="at">name</span>=<span class="str">"header"</span><span class="tg">&gt;</span>Default Header<span class="tg">&lt;/slot&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Default slot --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"card-body"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;slot&gt;</span>কোনো content নেই<span class="tg">&lt;/slot&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Named slot: footer --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"card-footer"</span> <span class="at">v-if</span>=<span class="str">"$slots.footer"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;slot</span> <span class="at">name</span>=<span class="str">"footer"</span><span class="tg">&gt;&lt;/slot&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span>
+
+<span class="com">&lt;!-- ব্যবহার --&gt;</span>
+<span class="tg">&lt;Card&gt;</span>
+  <span class="tg">&lt;template</span> <span class="at">#header</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;h2&gt;</span>কার্ডের শিরোনাম<span class="tg">&lt;/h2&gt;</span>
+  <span class="tg">&lt;/template&gt;</span>
+
+  <span class="tg">&lt;p&gt;</span>এটা default slot-এ যাবে<span class="tg">&lt;/p&gt;</span>
+
+  <span class="tg">&lt;template</span> <span class="at">#footer</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;button&gt;</span>বন্ধ করুন<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/template&gt;</span>
+<span class="tg">&lt;/Card&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 11: LIFECYCLE -->
+<div class="chapter" id="lifecycle">
+  <div class="ch-header">
+    <div class="ch-num">11</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Core</div>
+      <div class="ch-title">Lifecycle Hooks</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <p>Component-এর জন্ম থেকে মৃত্যু পর্যন্ত বিভিন্ন মুহূর্তে কোড চালানোর সুযোগ দেয় Lifecycle Hooks।</p>
+
+  <div class="lifecycle">
+    <div class="lc-box lc-create">setup() / onBeforeMount()<div class="lc-label">Component তৈরির আগে</div></div>
+    <div class="lc-arrow"></div>
+    <div class="lc-box lc-mounted">onMounted()<div class="lc-label">DOM তৈরি হয়েছে ✅ API call করুন</div></div>
+    <div class="lc-arrow"></div>
+    <div class="lc-box lc-updated">onUpdated()<div class="lc-label">Data পরিবর্তনের পর DOM update</div></div>
+    <div class="lc-arrow"></div>
+    <div class="lc-box lc-unmount">onUnmounted()<div class="lc-label">Component সরানো হচ্ছে → Cleanup করুন</div></div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Lifecycle Hooks — সব উদাহরণ</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> {
+  ref, onMounted, onUnmounted,
+  onBeforeMount, onUpdated, onBeforeUpdate,
+  onBeforeUnmount, onErrorCaptured
+} <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="var">users</span>   = ref([])
+<span class="kw">const</span> <span class="var">timer</span>   = ref(<span class="kw">null</span>)
+<span class="kw">const</span> <span class="var">seconds</span> = ref(<span class="num">0</span>)
+
+<span class="com">// ✅ onMounted — সবচেয়ে বেশি ব্যবহৃত</span>
+<span class="com">// DOM ready, API call করার সঠিক জায়গা</span>
+onMounted(<span class="kw">async</span> () => {
+  console.<span class="fn">log</span>(<span class="str">'Component mount হয়েছে'</span>)
+
+  <span class="com">// API call</span>
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/users'</span>)
+  users.value = <span class="kw">await</span> res.<span class="fn">json</span>()
+
+  <span class="com">// Timer শুরু</span>
+  timer.value = setInterval(() => seconds.value++, <span class="num">1000</span>)
+
+  <span class="com">// DOM element access</span>
+  document.<span class="fn">title</span> = <span class="str">'ব্যবহারকারীর তালিকা'</span>
+})
+
+<span class="com">// ✅ onUnmounted — Cleanup করুন</span>
+<span class="com">// Memory leak এড়াতে timer, event listener পরিষ্কার করুন</span>
+onUnmounted(() => {
+  <span class="fn">clearInterval</span>(timer.value)  <span class="com">// ✅ Timer বন্ধ</span>
+  console.<span class="fn">log</span>(<span class="str">'Component unmount হয়েছে, cleanup সম্পন্ন'</span>)
+})
+
+<span class="com">// ✅ onUpdated — Data পরিবর্তনের পর</span>
+onUpdated(() => {
+  console.<span class="fn">log</span>(<span class="str">'DOM update হয়েছে'</span>)
+})
+
+<span class="com">// ✅ Error handling</span>
+onErrorCaptured((err, instance, info) => {
+  console.<span class="fn">error</span>(<span class="str">'Child error:'</span>, err)
+  <span class="kw">return false</span>  <span class="com">// Error propagation থামানো</span>
+})
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;p&gt;</span>চলমান সময়: {{ seconds }} সেকেন্ড<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;ul&gt;</span>
+    <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"user in users"</span> <span class="at">:key</span>=<span class="str">"user.id"</span><span class="tg">&gt;</span>{{ user.name }}<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;/ul&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 12: COMPOSABLES -->
+<div class="chapter" id="composables">
+  <div class="ch-header">
+    <div class="ch-num">12</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Reusability</div>
+      <div class="ch-title">Composables — Logic পুনর্ব্যবহার</div>
+    </div>
+    <span class="ch-badge badge-advanced">Advanced</span>
+  </div>
+
+  <div class="box fun">
+    <span class="box-icon">🧩</span>
+    <p><strong>Composable কী?</strong> এটি একটি সাধারণ function যা Vue-এর Composition API ব্যবহার করে। যেকোনো component থেকে call করা যায়। এটি Vue 3-এর সবচেয়ে শক্তিশালী feature।</p>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">src/composables/useFetch.js — API Call Composable</span>
+      <span class="cb-lang">js</span>
+    </div>
+    <pre><span class="kw">import</span> { ref, watchEffect } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">/**
+ * ✅ useFetch — যেকোনো API থেকে data আনে
+ * Loading, error সব handle করে
+ */</span>
+<span class="kw">export function</span> <span class="fn">useFetch</span>(url) {
+  <span class="kw">const</span> <span class="var">data</span>    = ref(<span class="kw">null</span>)
+  <span class="kw">const</span> <span class="var">error</span>   = ref(<span class="kw">null</span>)
+  <span class="kw">const</span> <span class="var">loading</span> = ref(<span class="kw">false</span>)
+
+  <span class="kw">async function</span> <span class="fn">fetchData</span>() {
+    loading.value = <span class="kw">true</span>
+    error.value   = <span class="kw">null</span>
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(url)
+      <span class="kw">if</span> (!response.ok) <span class="kw">throw new</span> Error(<span class="str">`HTTP ${response.status}`</span>)
+      data.value = <span class="kw">await</span> response.<span class="fn">json</span>()
+    } <span class="kw">catch</span> (err) {
+      error.value = err.message
+    } <span class="kw">finally</span> {
+      loading.value = <span class="kw">false</span>
+    }
+  }
+
+  <span class="fn">fetchData</span>()  <span class="com">// Immediately fetch</span>
+
+  <span class="kw">return</span> { data, error, loading, refetch: fetchData }
+}
+
+<span class="com">// ✅ useLocalStorage — Local Storage helper</span>
+<span class="kw">export function</span> <span class="fn">useLocalStorage</span>(key, defaultValue) {
+  <span class="kw">const</span> stored = localStorage.<span class="fn">getItem</span>(key)
+  <span class="kw">const</span> <span class="var">value</span> = ref(stored ? JSON.<span class="fn">parse</span>(stored) : defaultValue)
+
+  watchEffect(() => {
+    localStorage.<span class="fn">setItem</span>(key, JSON.<span class="fn">stringify</span>(value.value))
+  })
+
+  <span class="kw">return</span> value
+}
+
+<span class="com">// ✅ useDebounce — Input delay</span>
+<span class="kw">export function</span> <span class="fn">useDebounce</span>(value, delay = <span class="num">300</span>) {
+  <span class="kw">const</span> <span class="var">debouncedValue</span> = ref(value.value)
+  <span class="kw">let</span> timer
+
+  watchEffect(() => {
+    <span class="fn">clearTimeout</span>(timer)
+    timer = setTimeout(() => {
+      debouncedValue.value = value.value
+    }, delay)
+  })
+
+  <span class="kw">return</span> debouncedValue
+}</pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Component-এ Composable ব্যবহার</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> { useFetch, useLocalStorage, useDebounce } <span class="kw">from</span> <span class="str">'@/composables/useFetch'</span>
+
+<span class="com">// ✅ API data fetch — মাত্র একলাইনে!</span>
+<span class="kw">const</span> { data: users, loading, error, refetch } = <span class="fn">useFetch</span>(<span class="str">'/api/users'</span>)
+
+<span class="com">// ✅ LocalStorage সংরক্ষণ</span>
+<span class="kw">const</span> <span class="var">theme</span> = <span class="fn">useLocalStorage</span>(<span class="str">'theme'</span>, <span class="str">'dark'</span>)
+
+<span class="com">// ✅ Debounced search</span>
+<span class="kw">const</span> <span class="var">searchInput</span> = ref(<span class="str">''</span>)
+<span class="kw">const</span> <span class="var">debouncedSearch</span> = <span class="fn">useDebounce</span>(searchInput, <span class="num">500</span>)
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-if</span>=<span class="str">"loading"</span><span class="tg">&gt;</span>⏳ লোড হচ্ছে...<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-else-if</span>=<span class="str">"error"</span><span class="tg">&gt;</span>❌ সমস্যা: {{ error }}<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-else</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">v-model</span>=<span class="str">"searchInput"</span> <span class="at">placeholder</span>=<span class="str">"খুঁজুন (500ms delay)"</span> <span class="tg">/&gt;</span>
+    <span class="tg">&lt;p&gt;</span>অনুসন্ধান: {{ debouncedSearch }}<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;ul&gt;</span>
+      <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"user in users"</span> <span class="at">:key</span>=<span class="str">"user.id"</span><span class="tg">&gt;</span>{{ user.name }}<span class="tg">&lt;/li&gt;</span>
+    <span class="tg">&lt;/ul&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"refetch"</span><span class="tg">&gt;</span>পুনরায় লোড<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 13: ROUTER -->
+<div class="chapter" id="router">
+  <div class="ch-header">
+    <div class="ch-num">13</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Navigation</div>
+      <div class="ch-title">Vue Router — পেজ নেভিগেশন</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Vue Router সম্পূর্ণ সেটআপ</span>
+      <span class="cb-lang">js</span>
+    </div>
+    <pre><span class="com">// npm install vue-router</span>
+<span class="com">// src/router/index.js</span>
+
+<span class="kw">import</span> { createRouter, createWebHistory } <span class="kw">from</span> <span class="str">'vue-router'</span>
+<span class="kw">import</span> { <span class="fn">useAuthStore</span> } <span class="kw">from</span> <span class="str">'@/stores/auth'</span>
+
+<span class="com">// Lazy loading — performance উন্নত করে</span>
+<span class="kw">const</span> <span class="cls">HomePage</span>    = () => <span class="kw">import</span>(<span class="str">'@/views/HomePage.vue'</span>)
+<span class="kw">const</span> <span class="cls">UserList</span>    = () => <span class="kw">import</span>(<span class="str">'@/views/UserList.vue'</span>)
+<span class="kw">const</span> <span class="cls">UserDetail</span>  = () => <span class="kw">import</span>(<span class="str">'@/views/UserDetail.vue'</span>)
+<span class="kw">const</span> <span class="cls">LoginPage</span>   = () => <span class="kw">import</span>(<span class="str">'@/views/LoginPage.vue'</span>)
+<span class="kw">const</span> <span class="cls">NotFound</span>    = () => <span class="kw">import</span>(<span class="str">'@/views/NotFound.vue'</span>)
+
+<span class="kw">const</span> <span class="var">routes</span> = [
+  {
+    path: <span class="str">'/'</span>,
+    name: <span class="str">'home'</span>,
+    component: <span class="cls">HomePage</span>,
+  },
+  {
+    path: <span class="str">'/users'</span>,
+    name: <span class="str">'users'</span>,
+    component: <span class="cls">UserList</span>,
+    meta: { requiresAuth: <span class="kw">true</span> }  <span class="com">// Auth guard</span>
+  },
+  {
+    path: <span class="str">'/users/:id'</span>,           <span class="com">// Dynamic route</span>
+    name: <span class="str">'user-detail'</span>,
+    component: <span class="cls">UserDetail</span>,
+    props: <span class="kw">true</span>,                  <span class="com">// id → prop হিসেবে pass</span>
+  },
+  {
+    path: <span class="str">'/login'</span>,
+    name: <span class="str">'login'</span>,
+    component: <span class="cls">LoginPage</span>,
+  },
+  {
+    path: <span class="str">'/:pathMatch(.*)*'</span>,     <span class="com">// 404</span>
+    name: <span class="str">'not-found'</span>,
+    component: <span class="cls">NotFound</span>,
+  },
+]
+
+<span class="kw">const</span> <span class="var">router</span> = <span class="fn">createRouter</span>({
+  history: <span class="fn">createWebHistory</span>(),
+  routes,
+  scrollBehavior: () => ({ top: <span class="num">0</span> }),  <span class="com">// পেজ পরিবর্তনে উপরে যায়</span>
+})
+
+<span class="com">// ✅ Navigation Guard — Auth চেক</span>
+router.<span class="fn">beforeEach</span>((to, from, next) => {
+  <span class="kw">const</span> auth = <span class="fn">useAuthStore</span>()
+
+  <span class="kw">if</span> (to.meta.requiresAuth && !auth.isLoggedIn) {
+    next({ name: <span class="str">'login'</span>, query: { redirect: to.fullPath } })
+  } <span class="kw">else</span> {
+    next()
+  }
+})
+
+<span class="kw">export default</span> router</pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Router Component-এ ব্যবহার</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { useRouter, useRoute } <span class="kw">from</span> <span class="str">'vue-router'</span>
+
+<span class="kw">const</span> <span class="var">router</span> = <span class="fn">useRouter</span>()  <span class="com">// Navigation করতে</span>
+<span class="kw">const</span> <span class="var">route</span>  = <span class="fn">useRoute</span>()   <span class="com">// Current route info</span>
+
+<span class="com">// Current route info</span>
+console.<span class="fn">log</span>(route.path)          <span class="com">// '/users/42'</span>
+console.<span class="fn">log</span>(route.params.id)     <span class="com">// '42'</span>
+console.<span class="fn">log</span>(route.query.search)  <span class="com">// '?search=hello'</span>
+console.<span class="fn">log</span>(route.name)          <span class="com">// 'user-detail'</span>
+
+<span class="com">// Programmatic navigation</span>
+<span class="kw">function</span> <span class="fn">goHome</span>()        { router.<span class="fn">push</span>(<span class="str">'/'</span>) }
+<span class="kw">function</span> <span class="fn">goToUser</span>(id)    { router.<span class="fn">push</span>({ name: <span class="str">'user-detail'</span>, params: { id } }) }
+<span class="kw">function</span> <span class="fn">searchUsers</span>(q)  { router.<span class="fn">push</span>({ path: <span class="str">'/users'</span>, query: { search: q } }) }
+<span class="kw">function</span> <span class="fn">goBack</span>()        { router.<span class="fn">back</span>() }
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- Navigation links --&gt;</span>
+  <span class="tg">&lt;RouterLink</span> <span class="at">to</span>=<span class="str">"/"</span><span class="tg">&gt;</span>হোম<span class="tg">&lt;/RouterLink&gt;</span>
+  <span class="tg">&lt;RouterLink</span> <span class="at">:to</span>=<span class="str">"{ name: 'users' }"</span><span class="tg">&gt;</span>ব্যবহারকারী<span class="tg">&lt;/RouterLink&gt;</span>
+  <span class="tg">&lt;RouterLink</span> <span class="at">:to</span>=<span class="str">"{ name: 'user-detail', params: { id: 5 } }"</span><span class="tg">&gt;</span>
+    ব্যবহারকারী #5
+  <span class="tg">&lt;/RouterLink&gt;</span>
+
+  <span class="com">&lt;!-- Page render হওয়ার জায়গা --&gt;</span>
+  <span class="tg">&lt;RouterView /&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 14: PINIA -->
+<div class="chapter" id="pinia">
+  <div class="ch-header">
+    <div class="ch-num">14</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">State Management</div>
+      <div class="ch-title">Pinia — Global State</div>
+    </div>
+    <span class="ch-badge badge-advanced">Advanced</span>
+  </div>
+
+  <div class="box tip">
+    <span class="box-icon">🍍</span>
+    <p><strong>Pinia কী?</strong> Vue 3-এর official state management library। Vuex-এর পরিবর্তে এটি ব্যবহার করুন। অনেক সহজ, TypeScript-friendly।</p>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">src/stores/authStore.js — Pinia Store</span>
+      <span class="cb-lang">js</span>
+    </div>
+    <pre><span class="com">// npm install pinia</span>
+<span class="kw">import</span> { defineStore } <span class="kw">from</span> <span class="str">'pinia'</span>
+<span class="kw">import</span> { ref, computed } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">// ✅ Composition API-style store (সবচেয়ে আধুনিক)</span>
+<span class="kw">export const</span> <span class="fn">useAuthStore</span> = <span class="fn">defineStore</span>(<span class="str">'auth'</span>, () => {
+  <span class="com">// === STATE ===</span>
+  <span class="kw">const</span> <span class="var">user</span>  = ref(<span class="kw">null</span>)
+  <span class="kw">const</span> <span class="var">token</span> = ref(localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>) || <span class="str">''</span>)
+
+  <span class="com">// === GETTERS (computed) ===</span>
+  <span class="kw">const</span> <span class="var">isLoggedIn</span>  = computed(() => !!token.value)
+  <span class="kw">const</span> <span class="var">displayName</span> = computed(() => user.value?.name || <span class="str">'অতিথি'</span>)
+  <span class="kw">const</span> <span class="var">isAdmin</span>     = computed(() => user.value?.role === <span class="str">'admin'</span>)
+
+  <span class="com">// === ACTIONS ===</span>
+  <span class="kw">async function</span> <span class="fn">login</span>(email, password) {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/auth/login'</span>, {
+        method: <span class="str">'POST'</span>,
+        headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+        body: JSON.<span class="fn">stringify</span>({ email, password })
+      })
+
+      <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> Error(<span class="str">'লগইন ব্যর্থ'</span>)
+
+      <span class="kw">const</span> { user: userData, token: newToken } = <span class="kw">await</span> res.<span class="fn">json</span>()
+
+      user.value  = userData
+      token.value = newToken
+      localStorage.<span class="fn">setItem</span>(<span class="str">'token'</span>, newToken)
+
+      <span class="kw">return</span> { success: <span class="kw">true</span> }
+    } <span class="kw">catch</span> (error) {
+      <span class="kw">return</span> { success: <span class="kw">false</span>, error: error.message }
+    }
+  }
+
+  <span class="kw">function</span> <span class="fn">logout</span>() {
+    user.value  = <span class="kw">null</span>
+    token.value = <span class="str">''</span>
+    localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>)
+  }
+
+  <span class="kw">async function</span> <span class="fn">fetchProfile</span>() {
+    <span class="kw">if</span> (!token.value) <span class="kw">return</span>
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/profile'</span>, {
+      headers: { Authorization: `Bearer ${token.value}` }
+    })
+    user.value = <span class="kw">await</span> res.<span class="fn">json</span>()
+  }
+
+  <span class="kw">return</span> { user, token, isLoggedIn, displayName, isAdmin, login, logout, fetchProfile }
+})</pre>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Component-এ Pinia ব্যবহার</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { useAuthStore } <span class="kw">from</span> <span class="str">'@/stores/authStore'</span>
+<span class="kw">import</span> { storeToRefs } <span class="kw">from</span> <span class="str">'pinia'</span>
+
+<span class="kw">const</span> <span class="var">authStore</span> = <span class="fn">useAuthStore</span>()
+
+<span class="com">// ✅ storeToRefs — reactive properties destructure</span>
+<span class="com">// সরাসরি destructure করলে reactivity হারায়!</span>
+<span class="kw">const</span> { isLoggedIn, displayName, isAdmin } = <span class="fn">storeToRefs</span>(authStore)
+
+<span class="com">// Actions সরাসরি destructure করা যায়</span>
+<span class="kw">const</span> { login, logout, fetchProfile } = authStore
+
+<span class="kw">async function</span> <span class="fn">handleLogin</span>() {
+  <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">login</span>(email.value, password.value)
+  <span class="kw">if</span> (result.success) {
+    router.<span class="fn">push</span>(<span class="str">'/'</span>)
+  }
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-if</span>=<span class="str">"isLoggedIn"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;p&gt;</span>স্বাগতম, {{ displayName }}!<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;span</span> <span class="at">v-if</span>=<span class="str">"isAdmin"</span><span class="tg">&gt;</span>👑 অ্যাডমিন<span class="tg">&lt;/span&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"logout"</span><span class="tg">&gt;</span>লগআউট<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-else</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"handleLogin"</span><span class="tg">&gt;</span>লগইন করুন<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 15: ASYNC -->
+<div class="chapter" id="async">
+  <div class="ch-header">
+    <div class="ch-num">15</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">Data</div>
+      <div class="ch-title">Async & API Calls</div>
+    </div>
+    <span class="ch-badge badge-mid">Intermediate</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">Suspense ও Async Components</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, onMounted } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">// Pattern 1: onMounted-এ API call</span>
+<span class="kw">const</span> <span class="var">posts</span>   = ref([])
+<span class="kw">const</span> <span class="var">loading</span> = ref(<span class="kw">false</span>)
+<span class="kw">const</span> <span class="var">error</span>   = ref(<span class="kw">null</span>)
+
+onMounted(<span class="kw">async</span> () => {
+  loading.value = <span class="kw">true</span>
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://jsonplaceholder.typicode.com/posts'</span>)
+    posts.value = <span class="kw">await</span> res.<span class="fn">json</span>()
+  } <span class="kw">catch</span>(e) {
+    error.value = e.message
+  } <span class="kw">finally</span> {
+    loading.value = <span class="kw">false</span>
+  }
+})
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="com">&lt;!-- ✅ Loading state --&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">v-if</span>=<span class="str">"loading"</span> <span class="at">class</span>=<span class="str">"skeleton"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">v-for</span>=<span class="str">"i in 5"</span> <span class="at">:key</span>=<span class="str">"i"</span> <span class="at">class</span>=<span class="str">"skeleton-row"</span><span class="tg">&gt;&lt;/div&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+
+  <span class="tg">&lt;div</span> <span class="at">v-else-if</span>=<span class="str">"error"</span><span class="tg">&gt;</span>
+    ❌ ত্রুটি: {{ error }}
+    <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"fetchData"</span><span class="tg">&gt;</span>আবার চেষ্টা<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+
+  <span class="tg">&lt;ul</span> <span class="at">v-else</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;li</span> <span class="at">v-for</span>=<span class="str">"post in posts"</span> <span class="at">:key</span>=<span class="str">"post.id"</span><span class="tg">&gt;</span>
+      {{ post.title }}
+    <span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;/ul&gt;</span>
+<span class="tg">&lt;/template&gt;</span></pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHAPTER 16: PROJECT -->
+<div class="chapter" id="project">
+  <div class="ch-header">
+    <div class="ch-num">16</div>
+    <div class="ch-title-wrap">
+      <div class="ch-label">হাতে-কলমে</div>
+      <div class="ch-title">সম্পূর্ণ Todo App</div>
+    </div>
+    <span class="ch-badge badge-project">🚀 Project</span>
+  </div>
+
+  <div class="box tip">
+    <span class="box-icon">🎯</span>
+    <p>এই প্রজেক্টে শেখা সব কিছু একসাথে ব্যবহার করা হবে: <code>ref</code>, <code>computed</code>, <code>watch</code>, <code>v-for</code>, <code>v-model</code>, <code>@click</code>, <code>@keyup.enter</code>, localStorage, filtering — সব!</p>
+  </div>
+
+  <div class="codeblock">
+    <div class="cb-bar">
+      <div class="cb-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <span class="cb-title">TodoApp.vue — সম্পূর্ণ কোড</span>
+      <span class="cb-lang">vue</span>
+    </div>
+    <pre><span class="tg">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, computed, watch } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="com">// ===== STATE =====</span>
+<span class="kw">const</span> <span class="var">todos</span> = ref(
+  JSON.<span class="fn">parse</span>(localStorage.<span class="fn">getItem</span>(<span class="str">'todos'</span>) || <span class="str">'[]'</span>)
+)
+<span class="kw">const</span> <span class="var">newTodo</span>      = ref(<span class="str">''</span>)
+<span class="kw">const</span> <span class="var">filter</span>       = ref(<span class="str">'all'</span>)     <span class="com">// 'all' | 'active' | 'done'</span>
+<span class="kw">const</span> <span class="var">editingId</span>    = ref(<span class="kw">null</span>)
+<span class="kw">const</span> <span class="var">editingText</span>  = ref(<span class="str">''</span>)
+<span class="kw">let</span> nextId = todos.value.<span class="fn">reduce</span>((max, t) => Math.<span class="fn">max</span>(max, t.id), <span class="num">0</span>) + <span class="num">1</span>
+
+<span class="com">// ===== COMPUTED =====</span>
+<span class="kw">const</span> <span class="var">filteredTodos</span> = computed(() => {
+  <span class="kw">switch</span> (filter.value) {
+    <span class="kw">case</span> <span class="str">'active'</span>: <span class="kw">return</span> todos.value.<span class="fn">filter</span>(t => !t.done)
+    <span class="kw">case</span> <span class="str">'done'</span>:   <span class="kw">return</span> todos.value.<span class="fn">filter</span>(t => t.done)
+    <span class="kw">default</span>:       <span class="kw">return</span> todos.value
+  }
+})
+
+<span class="kw">const</span> <span class="var">activeCount</span> = computed(() => todos.value.<span class="fn">filter</span>(t => !t.done).length)
+<span class="kw">const</span> <span class="var">doneCount</span>   = computed(() => todos.value.<span class="fn">filter</span>(t =>  t.done).length)
+<span class="kw">const</span> <span class="var">allDone</span>     = computed({
+  <span class="fn">get</span>: () => todos.value.<span class="fn">every</span>(t => t.done),
+  <span class="fn">set</span>: (val) => todos.value.<span class="fn">forEach</span>(t => t.done = val)
+})
+
+<span class="com">// ===== WATCH — localStorage এ save =====</span>
+watch(todos, (val) => {
+  localStorage.<span class="fn">setItem</span>(<span class="str">'todos'</span>, JSON.<span class="fn">stringify</span>(val))
+}, { deep: <span class="kw">true</span> })
+
+<span class="com">// ===== ACTIONS =====</span>
+<span class="kw">function</span> <span class="fn">addTodo</span>() {
+  <span class="kw">if</span> (!newTodo.value.trim()) <span class="kw">return</span>
+  todos.value.<span class="fn">push</span>({
+    id:   nextId++,
+    text: newTodo.value.trim(),
+    done: <span class="kw">false</span>,
+    createdAt: <span class="kw">new</span> Date().<span class="fn">toISOString</span>()
+  })
+  newTodo.value = <span class="str">''</span>
+}
+
+<span class="kw">function</span> <span class="fn">removeTodo</span>(id) {
+  todos.value = todos.value.<span class="fn">filter</span>(t => t.id !== id)
+}
+
+<span class="kw">function</span> <span class="fn">startEdit</span>(todo) {
+  editingId.value   = todo.id
+  editingText.value = todo.text
+}
+
+<span class="kw">function</span> <span class="fn">saveEdit</span>(id) {
+  <span class="kw">const</span> todo = todos.value.<span class="fn">find</span>(t => t.id === id)
+  <span class="kw">if</span> (todo && editingText.value.trim()) {
+    todo.text = editingText.value.trim()
+  }
+  editingId.value = <span class="kw">null</span>
+}
+
+<span class="kw">function</span> <span class="fn">clearDone</span>() {
+  todos.value = todos.value.<span class="fn">filter</span>(t => !t.done)
+}
+<span class="tg">&lt;/script&gt;</span>
+
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"todo-app"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;h1&gt;</span>📝 কাজের তালিকা<span class="tg">&lt;/h1&gt;</span>
+
+    <span class="com">&lt;!-- Input Area --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"input-area"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;input</span>
+        <span class="at">v-model.trim</span>=<span class="str">"newTodo"</span>
+        <span class="at">@keyup.enter</span>=<span class="str">"addTodo"</span>
+        <span class="at">placeholder</span>=<span class="str">"নতুন কাজ লিখুন... Enter চাপুন"</span>
+        <span class="at">autofocus</span>
+      <span class="tg">/&gt;</span>
+      <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"addTodo"</span> <span class="at">:disabled</span>=<span class="str">"!newTodo.trim()"</span><span class="tg">&gt;</span>যোগ করুন<span class="tg">&lt;/button&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Stats --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"stats"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;span&gt;</span>মোট: {{ todos.length }}<span class="tg">&lt;/span&gt;</span>
+      <span class="tg">&lt;span&gt;</span>বাকি: {{ activeCount }}<span class="tg">&lt;/span&gt;</span>
+      <span class="tg">&lt;span&gt;</span>শেষ: {{ doneCount }}<span class="tg">&lt;/span&gt;</span>
+
+      <span class="com">&lt;!-- Toggle All --&gt;</span>
+      <span class="tg">&lt;label&gt;</span>
+        <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"allDone"</span> <span class="tg">/&gt;</span>
+        সব {{ allDone ? 'বাতিল' : 'সম্পন্ন' }}
+      <span class="tg">&lt;/label&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Filters --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="str">"filters"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;button</span>
+        <span class="at">v-for</span>=<span class="str">"f in ['all', 'active', 'done']"</span>
+        <span class="at">:key</span>=<span class="str">"f"</span>
+        <span class="at">:class</span>=<span class="str">"{ active: filter === f }"</span>
+        <span class="at">@click</span>=<span class="str">"filter = f"</span>
+      <span class="tg">&gt;</span>
+        {{ f === 'all' ? 'সব' : f === 'active' ? 'বাকি' : 'শেষ' }}
+      <span class="tg">&lt;/button&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Todo List --&gt;</span>
+    <span class="tg">&lt;TransitionGroup</span> <span class="at">name</span>=<span class="str">"list"</span> <span class="at">tag</span>=<span class="str">"ul"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;li</span>
+        <span class="at">v-for</span>=<span class="str">"todo in filteredTodos"</span>
+        <span class="at">:key</span>=<span class="str">"todo.id"</span>
+        <span class="at">:class</span>=<span class="str">"{ done: todo.done }"</span>
+      <span class="tg">&gt;</span>
+        <span class="com">&lt;!-- Checkbox --&gt;</span>
+        <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="str">"checkbox"</span> <span class="at">v-model</span>=<span class="str">"todo.done"</span> <span class="tg">/&gt;</span>
+
+        <span class="com">&lt;!-- Inline Edit --&gt;</span>
+        <span class="tg">&lt;input</span>
+          <span class="at">v-if</span>=<span class="str">"editingId === todo.id"</span>
+          <span class="at">v-model</span>=<span class="str">"editingText"</span>
+          <span class="at">@keyup.enter</span>=<span class="str">"saveEdit(todo.id)"</span>
+          <span class="at">@keyup.esc</span>=<span class="str">"editingId = null"</span>
+          <span class="at">@blur</span>=<span class="str">"saveEdit(todo.id)"</span>
+          <span class="at">class</span>=<span class="str">"edit-input"</span>
+          <span class="at">autofocus</span>
+        <span class="tg">/&gt;</span>
+        <span class="tg">&lt;span</span> <span class="at">v-else</span> <span class="at">@dblclick</span>=<span class="str">"startEdit(todo)"</span><span class="tg">&gt;</span>
+          {{ todo.text }}
+        <span class="tg">&lt;/span&gt;</span>
+
+        <span class="tg">&lt;button</span> <span class="at">@click</span>=<span class="str">"removeTodo(todo.id)"</span> <span class="at">class</span>=<span class="str">"del-btn"</span><span class="tg">&gt;</span>🗑️<span class="tg">&lt;/button&gt;</span>
+      <span class="tg">&lt;/li&gt;</span>
+    <span class="tg">&lt;/TransitionGroup&gt;</span>
+
+    <span class="com">&lt;!-- Empty state --&gt;</span>
+    <span class="tg">&lt;div</span> <span class="at">v-if</span>=<span class="str">"filteredTodos.length === 0"</span> <span class="at">class</span>=<span class="str">"empty"</span><span class="tg">&gt;</span>
+      {{ filter === 'done' ? '✅ কোনো সম্পন্ন কাজ নেই' : '🎉 কোনো কাজ নেই!' }}
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="com">&lt;!-- Clear Done --&gt;</span>
+    <span class="tg">&lt;button</span>
+      <span class="at">v-if</span>=<span class="str">"doneCount > 0"</span>
+      <span class="at">@click</span>=<span class="str">"clearDone"</span>
+      <span class="at">class</span>=<span class="str">"clear-btn"</span>
+    <span class="tg">&gt;</span>
+      সম্পন্ন ({{ doneCount }}টি) মুছুন
+    <span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span>
+
+<span class="tg">&lt;style scoped&gt;</span>
+.todo-app { max-width: 560px; margin: 2rem auto; padding: 2rem; }
+h1 { text-align: center; margin-bottom: 1.5rem; }
+.input-area { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.input-area input { flex: 1; padding: .6rem 1rem; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; }
+button { padding: .6rem 1rem; border-radius: 8px; border: none; background: #42b883; color: white; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.stats { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.8rem; font-size: 0.85rem; color: #8b949e; }
+.filters { display: flex; gap: 0.4rem; margin-bottom: 1rem; }
+.filters button { background: #21262d; color: #8b949e; }
+.filters button.active { background: #42b883; color: white; }
+ul { list-style: none; }
+li { display: flex; align-items: center; gap: 0.7rem; padding: .7rem; border-bottom: 1px solid #21262d; transition: background 0.15s; }
+li:hover { background: rgba(66,184,131,0.04); }
+li.done span { text-decoration: line-through; opacity: 0.5; }
+li span { flex: 1; cursor: text; }
+.del-btn { background: transparent; color: #8b949e; font-size: 0.9rem; padding: 0.2rem 0.5rem; }
+.del-btn:hover { background: rgba(255,107,53,0.15); color: #ff6b35; }
+.edit-input { flex: 1; background: transparent; border: 1px solid #42b883; border-radius: 4px; padding: .2rem .5rem; color: #f0f6fc; outline: none; }
+.empty { text-align: center; padding: 2rem; color: #5c6370; }
+.clear-btn { background: transparent; border: 1px solid #30363d; color: #8b949e; margin-top: 1rem; width: 100%; }
+.clear-btn:hover { border-color: #ff6b35; color: #ff6b35; }
+.list-enter-active, .list-leave-active { transition: all 0.3s ease; }
+.list-enter-from, .list-leave-to { opacity: 0; transform: translateX(-20px); }
+<span class="tg">&lt;/style&gt;</span></pre>
+  </div>
+
+  <div class="box tip">
+    <span class="box-icon">🎉</span>
+    <p><strong>অভিনন্দন!</strong> এই Todo App-এ আপনি ব্যবহার করেছেন: <code>ref()</code>, <code>computed()</code>, <code>watch()</code>, <code>v-for</code>, <code>v-model</code>, <code>v-if/v-else</code>, <code>@click</code>, <code>@keyup.enter</code>, <code>TransitionGroup</code>, এবং <code>localStorage</code>। এগুলো দিয়ে যেকোনো Vue অ্যাপ তৈরি করা সম্ভব!</p>
+  </div>
+
+  <h3>পরবর্তী পদক্ষেপ</h3>
+  <div class="tag-grid">
+    <span class="tag">Nuxt.js (SSR)</span>
+    <span class="tag">Vite PWA</span>
+    <span class="tag">Vue Test Utils</span>
+    <span class="tag">Vitest</span>
+    <span class="tag">Vuetify / PrimeVue</span>
+    <span class="tag">Quasar Framework</span>
+    <span class="tag">Vueuse Library</span>
+    <span class="tag">TypeScript</span>
+    <span class="tag">GraphQL</span>
+    <span class="tag">Socket.io</span>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<footer>
+  <h2>Vue.js Bangla</h2>
+  <p>সম্পূর্ণ Vue 3 Composition API ক্র্যাশ কোর্স</p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;opacity:0.4;font-family:'Fira Code',monospace">vue@3 · vite · pinia · vue-router · composition-api</p>
+</footer>
+
+</main>
+</div><!-- /layout -->
+
+<script>
+// Active sidebar tracking
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.sb-link').forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + entry.target.id) {
+          l.classList.add('active');
+        }
+      });
+    }
+  });
+}, { rootMargin: '-20% 0% -72% 0%', threshold: 0 });
+
+document.querySelectorAll('.chapter').forEach(ch => observer.observe(ch));
+
+// Smooth scroll for topbar
+document.querySelectorAll('.topbar-link').forEach(link => {
+  link.addEventListener('click', e => {
+    const href = link.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
