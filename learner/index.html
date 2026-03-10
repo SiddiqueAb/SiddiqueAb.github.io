@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learner — Course Index</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      max-width: 860px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .5rem;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: .95rem;
+    }
+
+    #course-list {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: #1e2130;
+      border: 1px solid #2d3148;
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .card:hover {
+      border-color: #6366f1;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, .2);
+    }
+
+    .card-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.35;
+    }
+
+    .card-sub {
+      font-size: .78rem;
+      color: #64748b;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* skeleton loader */
+    .skeleton {
+      background: #1e2130;
+      border: 1px solid #2d3148;
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      height: 110px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .4; }
+    }
+
+    #error-msg {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #2a1a1a;
+      border: 1px solid #7f1d1d;
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      color: #fca5a5;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>&#128218; Learner Hub</h1>
+    <p>All courses &amp; guides — auto-indexed from this folder</p>
+  </header>
+
+  <div id="error-msg"></div>
+  <div id="course-list">
+    <!-- skeleton placeholders while loading -->
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+
+  <script>
+    const REPO   = 'SiddiqueAb/SiddiqueAb.github.io';
+    const FOLDER = 'learner';
+    const API    = `https://api.github.com/repos/${REPO}/contents/${FOLDER}`;
+
+    // Map of keyword fragments → emoji icons
+    const ICONS = [
+      [/design.pattern/i,  '🧩'],
+      [/laravel/i,         '🔴'],
+      [/inertia/i,         '⚡'],
+      [/vue/i,             '💚'],
+      [/react/i,           '⚛️'],
+      [/system.design/i,   '🏗️'],
+      [/tutorial/i,        '📖'],
+      [/course/i,          '🎓'],
+      [/html/i,            '🌐'],
+      [/css/i,             '🎨'],
+      [/js|javascript/i,   '📜'],
+      [/typescript/i,      '🔷'],
+      [/node/i,            '🟢'],
+      [/python/i,          '🐍'],
+      [/docker/i,          '🐳'],
+      [/git/i,             '🔀'],
+    ];
+
+    function pickIcon(slug) {
+      for (const [re, icon] of ICONS) {
+        if (re.test(slug)) return icon;
+      }
+      return '📄';
+    }
+
+    function toTitle(filename) {
+      // remove extension, replace separators with spaces, title-case
+      return filename
+        .replace(/\.html?$/i, '')
+        .replace(/[-_]+/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    async function loadCourses() {
+      const listEl  = document.getElementById('course-list');
+      const errorEl = document.getElementById('error-msg');
+
+      try {
+        const res  = await fetch(API);
+        if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
+        const items = await res.json();
+
+        const pages = items.filter(
+          f => f.type === 'file' &&
+               /\.html?$/i.test(f.name) &&
+               f.name.toLowerCase() !== 'index.html'
+        );
+
+        listEl.innerHTML = '';
+
+        if (pages.length === 0) {
+          listEl.innerHTML = '<p style="color:#64748b;grid-column:1/-1;text-align:center">No pages found yet.</p>';
+          return;
+        }
+
+        for (const file of pages) {
+          const title = toTitle(file.name);
+          const icon  = pickIcon(file.name);
+
+          const a = document.createElement('a');
+          a.className = 'card';
+          a.href      = file.name;
+          a.innerHTML = `
+            <span class="card-icon">${icon}</span>
+            <span class="card-title">${title}</span>
+            <span class="card-sub">${file.name}</span>
+          `;
+          listEl.appendChild(a);
+        }
+      } catch (err) {
+        // fallback: try fetching directory listing via relative path trick
+        listEl.innerHTML = '';
+        errorEl.style.display = 'block';
+        errorEl.textContent   = `Could not load file list automatically: ${err.message}. ` +
+          'Make sure the repository is public and you are online.';
+      }
+    }
+
+    loadCourses();
+  </script>
+
+</body>
+</html>
