@@ -1,0 +1,2565 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP PSR সম্পূর্ণ গাইড - বাংলা ডকুমেন্টেশন</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e3a5f;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-bright: #f8fafc;
+    --code-bg: #0d1b2a;
+    --glow: rgba(0,212,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Tiro Bangla', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Animated Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(0,212,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(124,58,237,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo span { color: var(--text-bright); }
+
+  nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  nav a {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  nav a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* SIDEBAR */
+  .layout {
+    display: flex;
+    padding-top: 64px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  aside {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-link:hover, .sidebar-link.active {
+    color: var(--text-bright);
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.2);
+  }
+
+  .sidebar-link .badge {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: rgba(0,212,255,0.15);
+    color: var(--accent);
+  }
+
+  /* MAIN CONTENT */
+  main {
+    flex: 1;
+    padding: 3rem 4rem;
+    max-width: 960px;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem 3rem;
+    position: relative;
+    margin-bottom: 3rem;
+  }
+
+  .hero::before {
+    content: 'PSR';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 12rem;
+    font-weight: 800;
+    color: rgba(0,212,255,0.03);
+    z-index: 0;
+    white-space: nowrap;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-bright);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2rem;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    min-width: 120px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin: 2rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before {
+    content: '';
+    width: 3px;
+    height: 1.2em;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  p { margin-bottom: 1rem; color: var(--text); font-size: 0.95rem; }
+
+  /* PSR CARD */
+  .psr-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .psr-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px rgba(0,212,255,0.08);
+  }
+
+  .psr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  }
+
+  .psr-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .psr-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .psr-status {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+  }
+
+  .status-accepted { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .status-deprecated { background: rgba(239,68,68,0.15); color: var(--accent5); border: 1px solid rgba(239,68,68,0.3); }
+  .status-draft { background: rgba(245,158,11,0.15); color: var(--accent4); border: 1px solid rgba(245,158,11,0.3); }
+
+  .psr-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+  }
+
+  .psr-desc { font-size: 0.9rem; color: var(--text-dim); margin: 0; }
+
+  /* CODE BLOCKS */
+  .code-wrap {
+    position: relative;
+    margin: 1.5rem 0;
+  }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 0.4rem 1rem;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .code-dots { display: flex; gap: 5px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #cdd6f4;
+  }
+
+  .kw { color: #cba6f7; }
+  .fn { color: #89b4fa; }
+  .str { color: #a6e3a1; }
+  .com { color: #6c7086; font-style: italic; }
+  .num { color: #fab387; }
+  .var { color: #f38ba8; }
+  .cls { color: #f9e2af; }
+  .int { color: #94e2d5; }
+  .op { color: #89dceb; }
+
+  /* INFO BOX */
+  .info-box {
+    display: flex;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .info-box.tip { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); }
+  .info-box.warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); }
+  .info-box.note { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); }
+  .info-box.danger { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+
+  .info-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  /* COMPARISON TABLE */
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    background: var(--surface2);
+    color: var(--text-bright);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+  }
+
+  /* FRAMEWORK SECTION */
+  .framework-arch {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .arch-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arch-box:hover {
+    border-color: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124,58,237,0.15);
+  }
+
+  .arch-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-bright);
+    margin-bottom: 0.3rem;
+  }
+  .arch-desc { font-size: 0.75rem; color: var(--text-dim); }
+
+  /* STEPS */
+  .steps { counter-reset: step; }
+
+  .step {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    counter-increment: step;
+    position: relative;
+  }
+
+  .step::before {
+    content: counter(step);
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: white;
+    margin-top: 0.2rem;
+  }
+
+  .step-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+  }
+
+  .step-content p { margin: 0; font-size: 0.88rem; }
+
+  /* TAG CLOUD */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  /* PROGRESS */
+  .progress-item { margin-bottom: 1rem; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+    color: var(--text-dim);
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    transition: width 1s ease;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .toc-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-bright);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.3rem;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: all 0.15s;
+  }
+
+  .toc-item:hover {
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    opacity: 0.7;
+    min-width: 32px;
+  }
+
+  /* GRID LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 3rem 0;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer strong { color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    aside { display: none; }
+    main { padding: 2rem 1.5rem; }
+    .hero h1 { font-size: 2.2rem; }
+    .framework-arch { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .toc-grid { grid-template-columns: 1fr; }
+    nav { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .framework-arch { grid-template-columns: 1fr; }
+    .stats-row { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⟨PHP⟩ <span>PSR ডকুমেন্টেশন</span></div>
+  <nav>
+    <a href="#intro">পরিচিতি</a>
+    <a href="#psr-list">PSR তালিকা</a>
+    <a href="#psr-1">PSR-1</a>
+    <a href="#psr-2">PSR-12</a>
+    <a href="#psr-4">PSR-4</a>
+    <a href="#psr-7">PSR-7</a>
+    <a href="#framework">Framework</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">শুরু করুন</div>
+      <a href="#intro" class="sidebar-link">📖 পরিচিতি</a>
+      <a href="#psr-list" class="sidebar-link">📋 সম্পূর্ণ তালিকা</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">স্বীকৃত PSR</div>
+      <a href="#psr-1" class="sidebar-link">PSR-1 <span class="badge">Code</span></a>
+      <a href="#psr-3" class="sidebar-link">PSR-3 <span class="badge">Log</span></a>
+      <a href="#psr-4" class="sidebar-link">PSR-4 <span class="badge">Auto</span></a>
+      <a href="#psr-6" class="sidebar-link">PSR-6 <span class="badge">Cache</span></a>
+      <a href="#psr-7" class="sidebar-link">PSR-7 <span class="badge">HTTP</span></a>
+      <a href="#psr-11" class="sidebar-link">PSR-11 <span class="badge">DI</span></a>
+      <a href="#psr-12" class="sidebar-link">PSR-12 <span class="badge">Style</span></a>
+      <a href="#psr-13" class="sidebar-link">PSR-13 <span class="badge">Link</span></a>
+      <a href="#psr-14" class="sidebar-link">PSR-14 <span class="badge">Event</span></a>
+      <a href="#psr-15" class="sidebar-link">PSR-15 <span class="badge">Mid</span></a>
+      <a href="#psr-16" class="sidebar-link">PSR-16 <span class="badge">Cache</span></a>
+      <a href="#psr-17" class="sidebar-link">PSR-17 <span class="badge">HTTP</span></a>
+      <a href="#psr-18" class="sidebar-link">PSR-18 <span class="badge">Client</span></a>
+      <a href="#psr-20" class="sidebar-link">PSR-20 <span class="badge">Clock</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">কাস্টম ফ্রেমওয়ার্ক</div>
+      <a href="#framework" class="sidebar-link">🏗️ আর্কিটেকচার</a>
+      <a href="#framework-code" class="sidebar-link">💻 সম্পূর্ণ কোড</a>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- HERO -->
+    <div class="hero" id="intro">
+      <div class="hero-badge">✦ PHP-FIG · PHP Standards Recommendations</div>
+      <h1>PHP <span class="gradient">PSR</span><br>সম্পূর্ণ গাইড</h1>
+      <p class="hero-sub">বাংলায় বিস্তারিত ডকুমেন্টেশন — উদাহরণ কোড সহ</p>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num">14</div><div class="stat-label">স্বীকৃত PSR</div></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-label">Deprecated</div></div>
+        <div class="stat"><div class="stat-num">1</div><div class="stat-label">Draft</div></div>
+        <div class="stat"><div class="stat-num">2009</div><div class="stat-label">প্রতিষ্ঠা সাল</div></div>
+      </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">📚 বিষয়বস্তু</div>
+      <div class="toc-grid">
+        <a href="#intro" class="toc-item"><span class="toc-num">01</span> PSR কী এবং কেন?</a>
+        <a href="#psr-1" class="toc-item"><span class="toc-num">02</span> PSR-1: বেসিক কোডিং স্ট্যান্ডার্ড</a>
+        <a href="#psr-3" class="toc-item"><span class="toc-num">03</span> PSR-3: Logger Interface</a>
+        <a href="#psr-4" class="toc-item"><span class="toc-num">04</span> PSR-4: Autoloading</a>
+        <a href="#psr-6" class="toc-item"><span class="toc-num">05</span> PSR-6: Caching Interface</a>
+        <a href="#psr-7" class="toc-item"><span class="toc-num">06</span> PSR-7: HTTP Message</a>
+        <a href="#psr-11" class="toc-item"><span class="toc-num">07</span> PSR-11: Container Interface</a>
+        <a href="#psr-12" class="toc-item"><span class="toc-num">08</span> PSR-12: Coding Style</a>
+        <a href="#psr-14" class="toc-item"><span class="toc-num">09</span> PSR-14: Event Dispatcher</a>
+        <a href="#psr-15" class="toc-item"><span class="toc-num">10</span> PSR-15: HTTP Handlers</a>
+        <a href="#psr-16" class="toc-item"><span class="toc-num">11</span> PSR-16: Simple Cache</a>
+        <a href="#psr-17" class="toc-item"><span class="toc-num">12</span> PSR-17: HTTP Factories</a>
+        <a href="#psr-18" class="toc-item"><span class="toc-num">13</span> PSR-18: HTTP Client</a>
+        <a href="#psr-20" class="toc-item"><span class="toc-num">14</span> PSR-20: Clock</a>
+        <a href="#framework" class="toc-item"><span class="toc-num">15</span> কাস্টম PHP Framework</a>
+        <a href="#framework-code" class="toc-item"><span class="toc-num">16</span> Framework সম্পূর্ণ কোড</a>
+      </div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="section" id="intro-detail">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">PSR কী এবং কেন প্রয়োজন?</h2>
+      </div>
+
+      <p><strong>PSR (PHP Standards Recommendations)</strong> হলো PHP-FIG (PHP Framework Interop Group) কর্তৃক প্রণীত কোডিং মানদণ্ড। এগুলো নিয়ম এবং ইন্টারফেস যা বিভিন্ন PHP প্রজেক্ট ও লাইব্রেরিকে একে অপরের সাথে সামঞ্জস্যপূর্ণ করে তোলে।</p>
+
+      <div class="info-box note">
+        <span class="info-icon">💡</span>
+        <div>PHP-FIG প্রতিষ্ঠিত হয়েছিল ২০০৯ সালে। এর সদস্যরা হলেন Laravel, Symfony, Zend, Drupal সহ বড় বড় PHP প্রজেক্টের ডেভেলপাররা। তারা মিলে এই মানদণ্ডগুলো তৈরি করেন যাতে সবাই একটি কমন ভাষায় কথা বলতে পারে।</div>
+      </div>
+
+      <h3>PSR ব্যবহার না করলে কী সমস্যা?</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-content">
+            <h4>কোড অসামঞ্জস্যতা</h4>
+            <p>বিভিন্ন লাইব্রেরি ভিন্ন নামকরণ পদ্ধতি অনুসরণ করলে একসাথে ব্যবহার করা কঠিন হয়।</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <h4>Autoloading জটিলতা</h4>
+            <p>PSR-4 ছাড়া ফাইল লোড করা ম্যানুয়ালি করতে হয়, যা ভুলপ্রবণ এবং সময়সাপেক্ষ।</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <h4>HTTP লাইব্রেরি বদলানো কঠিন</h4>
+            <p>PSR-7 ছাড়া একটি HTTP লাইব্রেরি থেকে আরেকটিতে যেতে পুরো কোড পরিবর্তন করতে হয়।</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <h4>দলগত কাজে বিভ্রান্তি</h4>
+            <p>একই দলের বিভিন্ন ডেভেলপার বিভিন্ন স্টাইলে কোড লিখলে রিভিউ ও মেইনটেইন কঠিন হয়।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSR LIST -->
+    <div class="section" id="psr-list">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">সম্পূর্ণ PSR তালিকা</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>PSR</th>
+              <th>নাম</th>
+              <th>ধরন</th>
+              <th>অবস্থা</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>PSR-1</code></td><td>Basic Coding Standard</td><td>Coding Style</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-2</code></td><td>Coding Style Guide</td><td>Coding Style</td><td><span class="psr-status status-deprecated">✗ Deprecated</span></td></tr>
+            <tr><td><code>PSR-3</code></td><td>Logger Interface</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-4</code></td><td>Autoloading Standard</td><td>Autoloading</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-5</code></td><td>PHPDoc Standard</td><td>Documentation</td><td><span class="psr-status status-draft">⋯ Draft</span></td></tr>
+            <tr><td><code>PSR-6</code></td><td>Caching Interface</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-7</code></td><td>HTTP Message Interface</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-8</code></td><td>Huggable Interface</td><td>Interface</td><td><span class="psr-status status-deprecated">✗ Abandoned</span></td></tr>
+            <tr><td><code>PSR-9</code></td><td>Security Disclosures</td><td>Process</td><td><span class="psr-status status-deprecated">✗ Abandoned</span></td></tr>
+            <tr><td><code>PSR-10</code></td><td>Security Advisories</td><td>Process</td><td><span class="psr-status status-deprecated">✗ Abandoned</span></td></tr>
+            <tr><td><code>PSR-11</code></td><td>Container Interface</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-12</code></td><td>Extended Coding Style</td><td>Coding Style</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-13</code></td><td>Hypermedia Links</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-14</code></td><td>Event Dispatcher</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-15</code></td><td>HTTP Server Request Handlers</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-16</code></td><td>Simple Cache</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-17</code></td><td>HTTP Factories</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-18</code></td><td>HTTP Client</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+            <tr><td><code>PSR-19</code></td><td>PHPDoc Tags</td><td>Documentation</td><td><span class="psr-status status-draft">⋯ Draft</span></td></tr>
+            <tr><td><code>PSR-20</code></td><td>Clock Interface</td><td>Interface</td><td><span class="psr-status status-accepted">✓ Accepted</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- PSR-1 -->
+    <div class="section" id="psr-1">
+      <div class="section-header">
+        <span class="section-num">PSR-1</span>
+        <h2 class="section-title">Basic Coding Standard</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">মৌলিক কোডিং মানদণ্ড</div>
+            <p class="psr-desc">PHP কোড লেখার সবচেয়ে মৌলিক নিয়মগুলো। প্রতিটি PHP ডেভেলপারকে এগুলো অবশ্যই মেনে চলতে হবে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <h3>মূল নিয়মসমূহ</h3>
+
+      <div class="info-box tip">
+        <span class="info-icon">✅</span>
+        <div>ফাইলে শুধু <code>&lt;?php</code> অথবা <code>&lt;?=</code> ট্যাগ ব্যবহার করতে হবে। <code>&lt;?</code> শর্ট ট্যাগ ব্যবহার নিষিদ্ধ।</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>বিষয়</th><th>নিয়ম</th><th>উদাহরণ</th></tr>
+          <tr><td>PHP ট্যাগ</td><td>শুধু <code>&lt;?php</code> বা <code>&lt;?=</code></td><td><code>&lt;?php echo $name; ?&gt;</code></td></tr>
+          <tr><td>এনকোডিং</td><td>UTF-8 (BOM ছাড়া)</td><td>—</td></tr>
+          <tr><td>Class নাম</td><td>StudlyCaps / PascalCase</td><td><code>UserController</code></td></tr>
+          <tr><td>Constant</td><td>সব বড় হাতে, আন্ডারস্কোর দিয়ে</td><td><code>MAX_SIZE</code></td></tr>
+          <tr><td>Method নাম</td><td>camelCase</td><td><code>getUserName()</code></td></tr>
+          <tr><td>Namespace</td><td>PSR-4 অনুসারে</td><td><code>App\Controllers</code></td></tr>
+        </table>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-1: সঠিক উদাহরণ — UserController.php
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="com">// ✅ সঠিক: PSR-1 মেনে চলা</span>
+
+<span class="kw">namespace</span> <span class="cls">App\Controllers</span>;         <span class="com">// Namespace — StudlyCaps</span>
+
+<span class="kw">use</span> <span class="cls">App\Models\User</span>;
+<span class="kw">use</span> <span class="cls">App\Services\AuthService</span>;
+
+<span class="com">// ✅ Class নাম: StudlyCaps (PascalCase)</span>
+<span class="kw">class</span> <span class="cls">UserController</span>
+{
+    <span class="com">// ✅ Constant: সব বড় হাতে + আন্ডারস্কোর</span>
+    <span class="kw">const</span> <span class="var">MAX_LOGIN_ATTEMPTS</span> = <span class="num">5</span>;
+    <span class="kw">const</span> <span class="var">DEFAULT_ROLE</span> = <span class="str">'user'</span>;
+
+    <span class="com">// ✅ Property: camelCase</span>
+    <span class="kw">private</span> <span class="cls">AuthService</span> <span class="var">$authService</span>;
+
+    <span class="com">// ✅ Method নাম: camelCase</span>
+    <span class="kw">public function</span> <span class="fn">getUserById</span>(<span class="int">int</span> <span class="var">$userId</span>): <span class="cls">User</span>
+    {
+        <span class="kw">return</span> <span class="cls">User</span>::<span class="fn">find</span>(<span class="var">$userId</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">createUser</span>(<span class="int">array</span> <span class="var">$data</span>): <span class="cls">User</span>
+    {
+        <span class="var">$user</span> = <span class="kw">new</span> <span class="cls">User</span>();
+        <span class="var">$user</span>-><span class="fn">fill</span>(<span class="var">$data</span>);
+        <span class="var">$user</span>-><span class="fn">save</span>();
+        <span class="kw">return</span> <span class="var">$user</span>;
+    }
+}</pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-1: ভুল উদাহরণ (এভাবে করবেন না)
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="com">// ❌ ভুল উদাহরণ</span>
+
+<span class="kw">class</span> <span class="cls">user_controller</span>    <span class="com">// ❌ class নাম snake_case — ভুল</span>
+{
+    <span class="kw">const</span> maxAttempts = <span class="num">5</span>;  <span class="com">// ❌ constant camelCase — ভুল</span>
+
+    <span class="kw">public function</span> <span class="fn">GetUser</span>() { }   <span class="com">// ❌ method PascalCase — ভুল</span>
+    <span class="kw">public function</span> <span class="fn">get_name</span>() { }  <span class="com">// ❌ method snake_case — ভুল</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- PSR-3 -->
+    <div class="section" id="psr-3">
+      <div class="section-header">
+        <span class="section-num">PSR-3</span>
+        <h2 class="section-title">Logger Interface</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">লগার ইন্টারফেস</div>
+            <p class="psr-desc">লগিং লাইব্রেরিগুলোর জন্য একটি কমন ইন্টারফেস। Monolog সহ অনেক লাইব্রেরি এটি ইমপ্লিমেন্ট করে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <p>PSR-3 আটটি লগ লেভেল সংজ্ঞায়িত করে, যা RFC 5424 অনুসারে:</p>
+
+      <div class="tag-list">
+        <span class="tag">🔴 emergency</span>
+        <span class="tag">🟠 alert</span>
+        <span class="tag">🔴 critical</span>
+        <span class="tag">🟡 error</span>
+        <span class="tag">🟡 warning</span>
+        <span class="tag">🔵 notice</span>
+        <span class="tag">🟢 info</span>
+        <span class="tag">⚫ debug</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-3: LoggerInterface ও বাস্তব বাস্তবায়ন
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">namespace</span> <span class="cls">Psr\Log</span>;
+
+<span class="com">// PSR-3 এর মূল ইন্টারফেস</span>
+<span class="kw">interface</span> <span class="cls">LoggerInterface</span>
+{
+    <span class="com">// সিস্টেম ব্যবহারের অযোগ্য হলে</span>
+    <span class="kw">public function</span> <span class="fn">emergency</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// তাৎক্ষণিক ব্যবস্থা নিতে হবে</span>
+    <span class="kw">public function</span> <span class="fn">alert</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// গুরুতর সমস্যা</span>
+    <span class="kw">public function</span> <span class="fn">critical</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// Runtime error</span>
+    <span class="kw">public function</span> <span class="fn">error</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// সতর্কতা</span>
+    <span class="kw">public function</span> <span class="fn">warning</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// স্বাভাবিক কিন্তু গুরুত্বপূর্ণ ঘটনা</span>
+    <span class="kw">public function</span> <span class="fn">notice</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// সাধারণ তথ্য</span>
+    <span class="kw">public function</span> <span class="fn">info</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// ডিবাগ তথ্য</span>
+    <span class="kw">public function</span> <span class="fn">debug</span>(<span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+
+    <span class="com">// যেকোনো লেভেলে লগ করা</span>
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="var">$level</span>, <span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>;
+}
+
+<span class="com">// ✅ নিজের Logger তৈরি করা</span>
+<span class="kw">class</span> <span class="cls">FileLogger</span> <span class="kw">extends</span> <span class="cls">AbstractLogger</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="int">string</span> <span class="var">$logFile</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="var">$level</span>, <span class="int">string</span>|<span class="cls">Stringable</span> <span class="var">$message</span>, <span class="int">array</span> <span class="var">$context</span> = []): <span class="int">void</span>
+    {
+        <span class="com">// {placeholder} কে context দিয়ে replace করা</span>
+        <span class="var">$message</span> = <span class="fn">strtr</span>((string)<span class="var">$message</span>, <span class="fn">array_map</span>(
+            <span class="kw">fn</span>(<span class="var">$v</span>) => (string)<span class="var">$v</span>,
+            <span class="fn">array_combine</span>(
+                <span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="var">$k</span>) => <span class="str">'{'</span> . <span class="var">$k</span> . <span class="str">'}'</span>, <span class="fn">array_keys</span>(<span class="var">$context</span>)),
+                <span class="var">$context</span>
+            )
+        ));
+
+        <span class="var">$entry</span> = <span class="fn">sprintf</span>(
+            <span class="str">"[%s] [%s] %s\n"</span>,
+            <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>),
+            <span class="fn">strtoupper</span>(<span class="var">$level</span>),
+            <span class="var">$message</span>
+        );
+
+        <span class="fn">file_put_contents</span>(<span class="var">$this</span>-><span class="var">logFile</span>, <span class="var">$entry</span>, FILE_APPEND);
+    }
+}
+
+<span class="com">// ব্যবহার</span>
+<span class="var">$logger</span> = <span class="kw">new</span> <span class="cls">FileLogger</span>(<span class="str">'/logs/app.log'</span>);
+<span class="var">$logger</span>-><span class="fn">info</span>(<span class="str">'ব্যবহারকারী লগইন করেছে: {username}'</span>, [<span class="str">'username'</span> => <span class="str">'রাহুল'</span>]);
+<span class="var">$logger</span>-><span class="fn">error</span>(<span class="str">'ডাটাবেজ সংযোগ ব্যর্থ: {error}'</span>, [<span class="str">'error'</span> => <span class="var">$e</span>-><span class="fn">getMessage</span>()]);</pre>
+      </div>
+    </div>
+
+    <!-- PSR-4 -->
+    <div class="section" id="psr-4">
+      <div class="section-header">
+        <span class="section-num">PSR-4</span>
+        <h2 class="section-title">Autoloading Standard</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">অটোলোডিং মানদণ্ড</div>
+            <p class="psr-desc">PHP ক্লাস ফাইলগুলো স্বয়ংক্রিয়ভাবে লোড করার নিয়ম। এটি সবচেয়ে গুরুত্বপূর্ণ PSR। Composer এটি ব্যবহার করে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="info-icon">🔑</span>
+        <div><strong>মূল নিয়ম:</strong> Fully Qualified Class Name (FQCN) → ফাইল পাথের সাথে মিলতে হবে। <br>
+        যেমন: <code>App\Http\Controllers\UserController</code> → <code>src/Http/Controllers/UserController.php</code></div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-4: composer.json কনফিগারেশন
+        </div>
+        <pre>{
+    <span class="str">"autoload"</span>: {
+        <span class="str">"psr-4"</span>: {
+            <span class="str">"App\\"</span>: <span class="str">"src/"</span>,
+            <span class="str">"Tests\\"</span>: <span class="str">"tests/"</span>
+        }
+    }
+}
+
+<span class="com">// ফাইল কাঠামো:</span>
+<span class="com">// src/Http/Controllers/UserController.php</span>
+<span class="com">// → namespace App\Http\Controllers;</span>
+<span class="com">//</span>
+<span class="com">// src/Models/User.php</span>
+<span class="com">// → namespace App\Models;</span>
+<span class="com">//</span>
+<span class="com">// src/Services/UserService.php</span>
+<span class="com">// → namespace App\Services;</span></pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-4: নিজের Autoloader তৈরি (Composer ছাড়া)
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="com">// নিজস্ব PSR-4 Autoloader</span>
+
+<span class="kw">class</span> <span class="cls">Psr4Autoloader</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$prefixes</span> = [];
+
+    <span class="com">/**
+     * Namespace prefix এবং base directory নিবন্ধন করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">addNamespace</span>(<span class="int">string</span> <span class="var">$prefix</span>, <span class="int">string</span> <span class="var">$baseDir</span>): <span class="int">void</span>
+    {
+        <span class="com">// prefix-এর শেষে namespace separator নিশ্চিত করা</span>
+        <span class="var">$prefix</span> = <span class="fn">trim</span>(<span class="var">$prefix</span>, <span class="str">'\\'</span>) . <span class="str">'\\'</span>;
+
+        <span class="com">// base directory-র শেষে slash নিশ্চিত করা</span>
+        <span class="var">$baseDir</span> = <span class="fn">rtrim</span>(<span class="var">$baseDir</span>, <span class="cls">DIRECTORY_SEPARATOR</span>) . <span class="str">'/'</span>;
+
+        <span class="var">$this</span>-><span class="var">prefixes</span>[<span class="var">$prefix</span>][] = <span class="var">$baseDir</span>;
+    }
+
+    <span class="com">/**
+     * ক্লাস নাম থেকে ফাইল খোঁজা ও লোড করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">loadClass</span>(<span class="int">string</span> <span class="var">$class</span>): <span class="int">bool</span>
+    {
+        <span class="com">// namespace prefix খোঁজা</span>
+        <span class="var">$prefix</span> = <span class="var">$class</span>;
+
+        <span class="kw">while</span> ((<span class="var">$pos</span> = <span class="fn">strrpos</span>(<span class="var">$prefix</span>, <span class="str">'\\'</span>)) !== <span class="kw">false</span>) {
+            <span class="var">$prefix</span>        = <span class="fn">substr</span>(<span class="var">$class</span>, <span class="num">0</span>, <span class="var">$pos</span> + <span class="num">1</span>);
+            <span class="var">$relativeClass</span> = <span class="fn">substr</span>(<span class="var">$class</span>, <span class="var">$pos</span> + <span class="num">1</span>);
+
+            <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">prefixes</span>[<span class="var">$prefix</span>])) {
+                <span class="kw">foreach</span> (<span class="var">$this</span>-><span class="var">prefixes</span>[<span class="var">$prefix</span>] <span class="kw">as</span> <span class="var">$baseDir</span>) {
+                    <span class="com">// ফাইল পাথ তৈরি: namespace separator → directory separator</span>
+                    <span class="var">$file</span> = <span class="var">$baseDir</span> . <span class="fn">str_replace</span>(<span class="str">'\\'</span>, <span class="str">'/'</span>, <span class="var">$relativeClass</span>) . <span class="str">'.php'</span>;
+
+                    <span class="kw">if</span> (<span class="fn">file_exists</span>(<span class="var">$file</span>)) {
+                        <span class="kw">require</span> <span class="var">$file</span>;
+                        <span class="kw">return true</span>;
+                    }
+                }
+            }
+
+            <span class="var">$prefix</span> = <span class="fn">rtrim</span>(<span class="var">$prefix</span>, <span class="str">'\\'</span>);
+        }
+
+        <span class="kw">return false</span>;
+    }
+
+    <span class="com">/**
+     * SPL autoloader হিসেবে রেজিস্টার করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">register</span>(): <span class="int">void</span>
+    {
+        <span class="fn">spl_autoload_register</span>([$this, <span class="str">'loadClass'</span>]);
+    }
+}
+
+<span class="com">// ব্যবহার:</span>
+<span class="var">$loader</span> = <span class="kw">new</span> <span class="cls">Psr4Autoloader</span>();
+<span class="var">$loader</span>-><span class="fn">addNamespace</span>(<span class="str">'App'</span>, <span class="fn">__DIR__</span> . <span class="str">'/src'</span>);
+<span class="var">$loader</span>-><span class="fn">addNamespace</span>(<span class="str">'Tests'</span>, <span class="fn">__DIR__</span> . <span class="str">'/tests'</span>);
+<span class="var">$loader</span>-><span class="fn">register</span>();
+
+<span class="com">// এখন স্বয়ংক্রিয়ভাবে লোড হবে:</span>
+<span class="var">$user</span> = <span class="kw">new</span> <span class="cls">App\Models\User</span>();            <span class="com">// → src/Models/User.php</span>
+<span class="var">$ctrl</span> = <span class="kw">new</span> <span class="cls">App\Http\Controllers\Home</span>(); <span class="com">// → src/Http/Controllers/Home.php</span></pre>
+      </div>
+    </div>
+
+    <!-- PSR-6 -->
+    <div class="section" id="psr-6">
+      <div class="section-header">
+        <span class="section-num">PSR-6</span>
+        <h2 class="section-title">Caching Interface</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">ক্যাশিং ইন্টারফেস (পূর্ণাঙ্গ)</div>
+            <p class="psr-desc">CacheItemInterface ও CacheItemPoolInterface। PSR-16 এর তুলনায় বেশি বৈশিষ্ট্যসম্পন্ন কিন্তু জটিল।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-6: Cache Implementation
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\Cache\CacheItemInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\Cache\CacheItemPoolInterface</span>;
+
+<span class="com">// CacheItem বাস্তবায়ন</span>
+<span class="kw">class</span> <span class="cls">CacheItem</span> <span class="kw">implements</span> <span class="cls">CacheItemInterface</span>
+{
+    <span class="kw">private</span> <span class="kw">bool</span> <span class="var">$isHit</span> = <span class="kw">false</span>;
+    <span class="kw">private</span> <span class="var">$value</span>;
+    <span class="kw">private</span> ?<span class="cls">\DateTimeInterface</span> <span class="var">$expiresAt</span> = <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="int">string</span> <span class="var">$key</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">getKey</span>(): <span class="int">string</span>       { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">key</span>; }
+    <span class="kw">public function</span> <span class="fn">get</span>(): <span class="kw">mixed</span>           { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">value</span>; }
+    <span class="kw">public function</span> <span class="fn">isHit</span>(): <span class="int">bool</span>          { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">isHit</span>; }
+
+    <span class="kw">public function</span> <span class="fn">set</span>(<span class="kw">mixed</span> <span class="var">$value</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">value</span> = <span class="var">$value</span>;
+        <span class="var">$this</span>-><span class="var">isHit</span> = <span class="kw">true</span>;
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">expiresAt</span>(?\<span class="cls">DateTimeInterface</span> <span class="var">$expiration</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">expiresAt</span> = <span class="var">$expiration</span>;
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">expiresAfter</span>(<span class="int">int</span>|\<span class="cls">DateInterval</span>|<span class="kw">null</span> <span class="var">$time</span>): <span class="kw">static</span>
+    {
+        <span class="kw">if</span> (<span class="fn">is_int</span>(<span class="var">$time</span>)) {
+            <span class="var">$this</span>-><span class="var">expiresAt</span> = <span class="kw">new</span> \<span class="cls">DateTime</span>(<span class="str">'+'</span> . <span class="var">$time</span> . <span class="str">' seconds'</span>);
+        }
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+}
+
+<span class="com">// ব্যবহার:</span>
+<span class="var">$pool</span> = <span class="kw">new</span> <span class="cls">FileCachePool</span>(<span class="str">'/tmp/cache'</span>);
+<span class="var">$item</span> = <span class="var">$pool</span>-><span class="fn">getItem</span>(<span class="str">'user_profile_42'</span>);
+
+<span class="kw">if</span> (!<span class="var">$item</span>-><span class="fn">isHit</span>()) {
+    <span class="var">$userData</span> = <span class="var">$db</span>-><span class="fn">fetchUser</span>(<span class="num">42</span>);
+    <span class="var">$item</span>-><span class="fn">set</span>(<span class="var">$userData</span>)-><span class="fn">expiresAfter</span>(<span class="num">3600</span>); <span class="com">// ১ ঘণ্টা</span>
+    <span class="var">$pool</span>-><span class="fn">save</span>(<span class="var">$item</span>);
+}
+
+<span class="var">$user</span> = <span class="var">$item</span>-><span class="fn">get</span>(); <span class="com">// cache থেকে বা DB থেকে</span></pre>
+      </div>
+    </div>
+
+    <!-- PSR-7 -->
+    <div class="section" id="psr-7">
+      <div class="section-header">
+        <span class="section-num">PSR-7</span>
+        <h2 class="section-title">HTTP Message Interface</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">HTTP বার্তা ইন্টারফেস</div>
+            <p class="psr-desc">HTTP Request এবং Response এর জন্য কমন ইন্টারফেস। Immutable অবজেক্ট প্যাটার্ন ব্যবহার করে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="info-box warn">
+        <span class="info-icon">⚠️</span>
+        <div><strong>গুরুত্বপূর্ণ:</strong> PSR-7 অবজেক্টগুলো <strong>immutable (অপরিবর্তনীয়)</strong>। কোনো পরিবর্তন করলে নতুন অবজেক্ট তৈরি হয়, পুরোনোটি অপরিবর্তিত থাকে।</div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-7: HTTP Request & Response বাস্তবায়ন
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\RequestInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\ResponseInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\StreamInterface</span>;
+
+<span class="com">// ✅ সঠিক: Immutable পরিবর্তন</span>
+<span class="var">$request</span> = <span class="kw">new</span> <span class="cls">ServerRequest</span>(<span class="str">'GET'</span>, <span class="str">'https://api.example.com/users'</span>);
+
+<span class="com">// withHeader → নতুন অবজেক্ট দেয়, পুরোনোটি অপরিবর্তিত</span>
+<span class="var">$newRequest</span> = <span class="var">$request</span>-><span class="fn">withHeader</span>(<span class="str">'Authorization'</span>, <span class="str">'Bearer token123'</span>)
+                         -><span class="fn">withHeader</span>(<span class="str">'Accept'</span>, <span class="str">'application/json'</span>);
+
+<span class="com">// Request বাস্তবায়ন</span>
+<span class="kw">class</span> <span class="cls">Request</span> <span class="kw">implements</span> <span class="cls">RequestInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$headers</span> = [];
+    <span class="kw">private</span> <span class="int">string</span> <span class="var">$method</span>;
+    <span class="kw">private</span> <span class="cls">\Psr\Http\Message\UriInterface</span> <span class="var">$uri</span>;
+
+    <span class="kw">public function</span> <span class="fn">getMethod</span>(): <span class="int">string</span>
+    {
+        <span class="kw">return</span> <span class="fn">strtoupper</span>(<span class="var">$this</span>-><span class="var">method</span>);
+    }
+
+    <span class="com">// Immutable: নতুন instance ফেরত দেয়</span>
+    <span class="kw">public function</span> <span class="fn">withMethod</span>(<span class="int">string</span> <span class="var">$method</span>): <span class="kw">static</span>
+    {
+        <span class="var">$clone</span> = <span class="kw">clone</span> <span class="var">$this</span>;
+        <span class="var">$clone</span>-><span class="var">method</span> = <span class="fn">strtoupper</span>(<span class="var">$method</span>);
+        <span class="kw">return</span> <span class="var">$clone</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">withHeader</span>(<span class="int">string</span> <span class="var">$name</span>, <span class="var">$value</span>): <span class="kw">static</span>
+    {
+        <span class="var">$clone</span> = <span class="kw">clone</span> <span class="var">$this</span>;
+        <span class="var">$clone</span>-><span class="var">headers</span>[<span class="fn">strtolower</span>(<span class="var">$name</span>)] = [<span class="var">$value</span>];
+        <span class="kw">return</span> <span class="var">$clone</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">getHeader</span>(<span class="int">string</span> <span class="var">$name</span>): <span class="int">array</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">headers</span>[<span class="fn">strtolower</span>(<span class="var">$name</span>)] ?? [];
+    }
+}
+
+<span class="com">// Response তৈরি</span>
+<span class="kw">class</span> <span class="cls">Response</span> <span class="kw">implements</span> <span class="cls">ResponseInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="int">int</span> <span class="var">$statusCode</span> = <span class="num">200</span>,
+        <span class="kw">private</span> <span class="int">array</span> <span class="var">$headers</span> = [],
+        <span class="kw">private</span> ?<span class="cls">StreamInterface</span> <span class="var">$body</span> = <span class="kw">null</span>,
+        <span class="kw">private</span> <span class="int">string</span> <span class="var">$reasonPhrase</span> = <span class="str">'OK'</span>,
+        <span class="kw">private</span> <span class="int">string</span> <span class="var">$protocol</span> = <span class="str">'1.1'</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">getStatusCode</span>(): <span class="int">int</span>      { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">statusCode</span>; }
+    <span class="kw">public function</span> <span class="fn">getReasonPhrase</span>(): <span class="int">string</span>  { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">reasonPhrase</span>; }
+
+    <span class="kw">public function</span> <span class="fn">withStatus</span>(<span class="int">int</span> <span class="var">$code</span>, <span class="int">string</span> <span class="var">$phrase</span> = <span class="str">''</span>): <span class="kw">static</span>
+    {
+        <span class="var">$clone</span> = <span class="kw">clone</span> <span class="var">$this</span>;
+        <span class="var">$clone</span>-><span class="var">statusCode</span> = <span class="var">$code</span>;
+        <span class="var">$clone</span>-><span class="var">reasonPhrase</span> = <span class="var">$phrase</span> ?: <span class="fn">$this</span>-><span class="fn">getDefaultPhrase</span>(<span class="var">$code</span>);
+        <span class="kw">return</span> <span class="var">$clone</span>;
+    }
+
+    <span class="kw">private function</span> <span class="fn">getDefaultPhrase</span>(<span class="int">int</span> <span class="var">$code</span>): <span class="int">string</span>
+    {
+        <span class="kw">return</span> <span class="kw">match</span>(<span class="var">$code</span>) {
+            <span class="num">200</span> => <span class="str">'OK'</span>, <span class="num">201</span> => <span class="str">'Created'</span>, <span class="num">400</span> => <span class="str">'Bad Request'</span>,
+            <span class="num">401</span> => <span class="str">'Unauthorized'</span>, <span class="num">403</span> => <span class="str">'Forbidden'</span>,
+            <span class="num">404</span> => <span class="str">'Not Found'</span>, <span class="num">500</span> => <span class="str">'Internal Server Error'</span>,
+            <span class="kw">default</span> => <span class="str">''</span>
+        };
+    }
+}</pre>
+      </div>
+    </div>
+
+    <!-- PSR-11 -->
+    <div class="section" id="psr-11">
+      <div class="section-header">
+        <span class="section-num">PSR-11</span>
+        <h2 class="section-title">Container Interface</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">Dependency Injection Container</div>
+            <p class="psr-desc">Dependency Injection Container-এর জন্য কমন ইন্টারফেস। Laravel-এর IoC Container, Symfony-র DI Container এটি মেনে চলে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-11: DI Container সম্পূর্ণ বাস্তবায়ন
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\Container\ContainerInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\Container\NotFoundExceptionInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\Container\ContainerExceptionInterface</span>;
+
+<span class="com">// ✅ সম্পূর্ণ DI Container</span>
+<span class="kw">class</span> <span class="cls">Container</span> <span class="kw">implements</span> <span class="cls">ContainerInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$bindings</span>  = [];  <span class="com">// binding definitions</span>
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$instances</span> = [];  <span class="com">// singleton instances</span>
+
+    <span class="com">/**
+     * সার্ভিস বাঁধা (bind)
+     */</span>
+    <span class="kw">public function</span> <span class="fn">bind</span>(<span class="int">string</span> <span class="var">$abstract</span>, <span class="cls">\Closure</span>|<span class="int">string</span>|<span class="kw">null</span> <span class="var">$concrete</span> = <span class="kw">null</span>): <span class="int">void</span>
+    {
+        <span class="var">$this</span>-><span class="var">bindings</span>[<span class="var">$abstract</span>] = <span class="var">$concrete</span> ?? <span class="var">$abstract</span>;
+    }
+
+    <span class="com">/**
+     * Singleton হিসেবে বাঁধা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">singleton</span>(<span class="int">string</span> <span class="var">$abstract</span>, <span class="cls">\Closure</span>|<span class="int">string</span>|<span class="kw">null</span> <span class="var">$concrete</span> = <span class="kw">null</span>): <span class="int">void</span>
+    {
+        <span class="var">$this</span>-><span class="fn">bind</span>(<span class="var">$abstract</span>, <span class="kw">function</span>(<span class="var">$c</span>) <span class="kw">use</span> (<span class="var">$abstract</span>, <span class="var">$concrete</span>) {
+            <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">instances</span>[<span class="var">$abstract</span>])) {
+                <span class="var">$this</span>-><span class="var">instances</span>[<span class="var">$abstract</span>] = (<span class="var">$concrete</span> ?? <span class="kw">fn</span>() => <span class="kw">new</span> <span class="var">$abstract</span>)(<span class="var">$c</span>);
+            }
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="var">instances</span>[<span class="var">$abstract</span>];
+        });
+    }
+
+    <span class="com">/**
+     * সার্ভিস resolve করা (PSR-11)
+     */</span>
+    <span class="kw">public function</span> <span class="fn">get</span>(<span class="int">string</span> <span class="var">$id</span>): <span class="kw">mixed</span>
+    {
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">bindings</span>[<span class="var">$id</span>])) {
+            <span class="var">$concrete</span> = <span class="var">$this</span>-><span class="var">bindings</span>[<span class="var">$id</span>];
+            <span class="kw">return</span> <span class="var">$concrete</span> <span class="kw">instanceof</span> <span class="cls">\Closure</span>
+                ? <span class="var">$concrete</span>(<span class="var">$this</span>)
+                : <span class="var">$this</span>-><span class="fn">resolve</span>(<span class="var">$concrete</span>);
+        }
+
+        <span class="kw">if</span> (<span class="fn">class_exists</span>(<span class="var">$id</span>)) {
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">resolve</span>(<span class="var">$id</span>);
+        }
+
+        <span class="kw">throw new</span> <span class="cls">NotFoundException</span>(<span class="str">"সার্ভিস পাওয়া যায়নি: {$id}"</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">has</span>(<span class="int">string</span> <span class="var">$id</span>): <span class="int">bool</span>
+    {
+        <span class="kw">return</span> <span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">bindings</span>[<span class="var">$id</span>]) || <span class="fn">class_exists</span>(<span class="var">$id</span>);
+    }
+
+    <span class="com">/**
+     * Reflection দিয়ে স্বয়ংক্রিয় Dependency Injection
+     */</span>
+    <span class="kw">private function</span> <span class="fn">resolve</span>(<span class="int">string</span> <span class="var">$class</span>): <span class="kw">mixed</span>
+    {
+        <span class="var">$reflector</span> = <span class="kw">new</span> \<span class="cls">ReflectionClass</span>(<span class="var">$class</span>);
+
+        <span class="kw">if</span> (!<span class="var">$reflector</span>-><span class="fn">isInstantiable</span>()) {
+            <span class="kw">throw new</span> <span class="cls">ContainerException</span>(<span class="str">"{$class} instantiable নয়"</span>);
+        }
+
+        <span class="var">$constructor</span> = <span class="var">$reflector</span>-><span class="fn">getConstructor</span>();
+
+        <span class="kw">if</span> (!<span class="var">$constructor</span>) {
+            <span class="kw">return</span> <span class="kw">new</span> <span class="var">$class</span>();
+        }
+
+        <span class="com">// Constructor-এর প্রতিটি parameter স্বয়ংক্রিয়ভাবে resolve করা</span>
+        <span class="var">$dependencies</span> = <span class="fn">array_map</span>(
+            <span class="kw">fn</span>(<span class="var">$param</span>) => <span class="var">$this</span>-><span class="fn">resolveDependency</span>(<span class="var">$param</span>),
+            <span class="var">$constructor</span>-><span class="fn">getParameters</span>()
+        );
+
+        <span class="kw">return</span> <span class="var">$reflector</span>-><span class="fn">newInstanceArgs</span>(<span class="var">$dependencies</span>);
+    }
+
+    <span class="kw">private function</span> <span class="fn">resolveDependency</span>(\<span class="cls">ReflectionParameter</span> <span class="var">$param</span>): <span class="kw">mixed</span>
+    {
+        <span class="var">$type</span> = <span class="var">$param</span>-><span class="fn">getType</span>();
+
+        <span class="kw">if</span> (<span class="var">$type</span> && !<span class="var">$type</span>-><span class="fn">isBuiltin</span>()) {
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">get</span>(<span class="var">$type</span>-><span class="fn">getName</span>());
+        }
+
+        <span class="kw">if</span> (<span class="var">$param</span>-><span class="fn">isDefaultValueAvailable</span>()) {
+            <span class="kw">return</span> <span class="var">$param</span>-><span class="fn">getDefaultValue</span>();
+        }
+
+        <span class="kw">throw new</span> <span class="cls">ContainerException</span>(<span class="str">"Dependency resolve করা যাচ্ছে না: {$param->getName()}"</span>);
+    }
+}
+
+<span class="com">// ব্যবহার:</span>
+<span class="var">$container</span> = <span class="kw">new</span> <span class="cls">Container</span>();
+
+<span class="com">// Interface → Implementation বাঁধা</span>
+<span class="var">$container</span>-><span class="fn">bind</span>(<span class="cls">LoggerInterface</span>::<span class="kw">class</span>, <span class="cls">FileLogger</span>::<span class="kw">class</span>);
+
+<span class="com">// Singleton</span>
+<span class="var">$container</span>-><span class="fn">singleton</span>(<span class="str">'db'</span>, <span class="kw">fn</span>() => <span class="kw">new</span> <span class="cls">Database</span>(<span class="fn">getenv</span>(<span class="str">'DB_DSN'</span>)));
+
+<span class="com">// স্বয়ংক্রিয় DI সহ UserController তৈরি</span>
+<span class="var">$controller</span> = <span class="var">$container</span>-><span class="fn">get</span>(<span class="cls">UserController</span>::<span class="kw">class</span>); <span class="com">// নির্ভরতা স্বয়ংক্রিয়!</span></pre>
+      </div>
+    </div>
+
+    <!-- PSR-12 -->
+    <div class="section" id="psr-12">
+      <div class="section-header">
+        <span class="section-num">PSR-12</span>
+        <h2 class="section-title">Extended Coding Style Guide</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">বিস্তারিত কোডিং স্টাইল গাইড</div>
+            <p class="psr-desc">PSR-2 এর আপডেট। PHP 7+ এর নতুন বৈশিষ্ট্য যেমন typed properties, return types, union types অন্তর্ভুক্ত।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3>✅ সঠিক স্টাইল</h3>
+          <div class="code-wrap">
+            <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>সঠিক</div>
+            <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">namespace</span> <span class="cls">App\Http</span>;
+
+<span class="kw">use</span> <span class="cls">App\Models\User</span>;
+<span class="kw">use</span> <span class="cls">App\Services\{
+    UserService,
+    AuthService,
+}</span>;
+
+<span class="kw">class</span> <span class="cls">UserController</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="cls">UserService</span> <span class="var">$userService</span>,
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="cls">AuthService</span> <span class="var">$authService</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">index</span>(
+        <span class="int">int</span> <span class="var">$page</span> = <span class="num">1</span>,
+        <span class="int">int</span> <span class="var">$limit</span> = <span class="num">20</span>,
+    ): <span class="int">array</span> {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">userService</span>
+            -><span class="fn">paginate</span>(<span class="var">$page</span>, <span class="var">$limit</span>);
+    }
+}</pre>
+          </div>
+        </div>
+        <div>
+          <h3>❌ ভুল স্টাইল</h3>
+          <div class="code-wrap">
+            <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>ভুল</div>
+            <pre><span class="com">&lt;?php</span>
+<span class="kw">namespace</span> <span class="cls">App\Http</span>;  <span class="com">// blank line নেই</span>
+<span class="kw">use</span> <span class="cls">App\Models\User</span>;
+<span class="kw">class</span> <span class="cls">UserController</span> {  <span class="com">// { একই লাইনে — ভুল</span>
+  <span class="kw">private</span> <span class="var">$userService</span>;  <span class="com">// ২ স্পেস — ভুল (৪ হওয়া উচিত)</span>
+  <span class="kw">function</span> <span class="fn">Index</span>() {   <span class="com">// PascalCase method — ভুল</span>
+    <span class="kw">return</span> <span class="kw">null</span>; }   <span class="com">// একই লাইনে বন্ধ — ভুল</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3>PSR-12 মূল নিয়মাবলী</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>বিষয়</th><th>নিয়ম</th></tr>
+          <tr><td>Indentation</td><td>৪ স্পেস (ট্যাব নয়)</td></tr>
+          <tr><td>Line Length</td><td>সর্বোচ্চ ১২০ অক্ষর (soft limit), ৮০ পছন্দনীয়</td></tr>
+          <tr><td>PHP ফাইলের শেষ</td><td>একটি blank line দিয়ে শেষ করতে হবে</td></tr>
+          <tr><td>Opening brace</td><td>Class ও method-এ পরের লাইনে</td></tr>
+          <tr><td>Closing brace</td><td>সবসময় আলাদা লাইনে</td></tr>
+          <tr><td>declare(strict_types)</td><td>ফাইলের শুরুতে (প্রস্তাবিত)</td></tr>
+          <tr><td>use statements</td><td>namespace-এর পরে blank line দিয়ে</td></tr>
+          <tr><td>Trailing comma</td><td>Multi-line parameter-এ শেষে comma রাখতে হবে</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PSR-14 -->
+    <div class="section" id="psr-14">
+      <div class="section-header">
+        <span class="section-num">PSR-14</span>
+        <h2 class="section-title">Event Dispatcher</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">ইভেন্ট ডিসপ্যাচার ইন্টারফেস</div>
+            <p class="psr-desc">Observer Pattern-এর একটি standardized রূপ। ঘটনা (event) ছাড়া এবং শোনা (listen) করার জন্য কমন ইন্টারফেস।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-14: Event Dispatcher সম্পূর্ণ উদাহরণ
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\EventDispatcher\EventDispatcherInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\EventDispatcher\ListenerProviderInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\EventDispatcher\StoppableEventInterface</span>;
+
+<span class="com">// ✅ ইভেন্ট ক্লাস</span>
+<span class="kw">class</span> <span class="cls">UserRegisteredEvent</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly</span> <span class="int">int</span> <span class="var">$userId</span>,
+        <span class="kw">public readonly</span> <span class="int">string</span> <span class="var">$email</span>,
+        <span class="kw">public readonly</span> \<span class="cls">DateTimeImmutable</span> <span class="var">$registeredAt</span>,
+    ) {}
+}
+
+<span class="com">// Stoppable Event (প্রপাগেশন থামানো যায়)</span>
+<span class="kw">class</span> <span class="cls">UserLoginEvent</span> <span class="kw">implements</span> <span class="cls">StoppableEventInterface</span>
+{
+    <span class="kw">private</span> <span class="kw">bool</span> <span class="var">$stopped</span> = <span class="kw">false</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">public readonly</span> <span class="int">string</span> <span class="var">$username</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">isPropagationStopped</span>(): <span class="int">bool</span> { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">stopped</span>; }
+    <span class="kw">public function</span> <span class="fn">stopPropagation</span>(): <span class="int">void</span>    { <span class="var">$this</span>-><span class="var">stopped</span> = <span class="kw">true</span>; }
+}
+
+<span class="com">// ✅ ListenerProvider</span>
+<span class="kw">class</span> <span class="cls">ListenerProvider</span> <span class="kw">implements</span> <span class="cls">ListenerProviderInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$listeners</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">on</span>(<span class="int">string</span> <span class="var">$eventClass</span>, <span class="kw">callable</span> <span class="var">$listener</span>): <span class="int">void</span>
+    {
+        <span class="var">$this</span>-><span class="var">listeners</span>[<span class="var">$eventClass</span>][] = <span class="var">$listener</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">getListenersForEvent</span>(<span class="kw">object</span> <span class="var">$event</span>): <span class="kw">iterable</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">listeners</span>[<span class="var">$event</span>::<span class="kw">class</span>] ?? [];
+    }
+}
+
+<span class="com">// ✅ EventDispatcher</span>
+<span class="kw">class</span> <span class="cls">EventDispatcher</span> <span class="kw">implements</span> <span class="cls">EventDispatcherInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="cls">ListenerProviderInterface</span> <span class="var">$provider</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">dispatch</span>(<span class="kw">object</span> <span class="var">$event</span>): <span class="kw">object</span>
+    {
+        <span class="kw">foreach</span> (<span class="var">$this</span>-><span class="var">provider</span>-><span class="fn">getListenersForEvent</span>(<span class="var">$event</span>) <span class="kw">as</span> <span class="var">$listener</span>) {
+            <span class="kw">if</span> (<span class="var">$event</span> <span class="kw">instanceof</span> <span class="cls">StoppableEventInterface</span> && <span class="var">$event</span>-><span class="fn">isPropagationStopped</span>()) {
+                <span class="kw">break</span>;
+            }
+            <span class="var">$listener</span>(<span class="var">$event</span>);
+        }
+        <span class="kw">return</span> <span class="var">$event</span>;
+    }
+}
+
+<span class="com">// ব্যবহার:</span>
+<span class="var">$provider</span>   = <span class="kw">new</span> <span class="cls">ListenerProvider</span>();
+<span class="var">$dispatcher</span> = <span class="kw">new</span> <span class="cls">EventDispatcher</span>(<span class="var">$provider</span>);
+
+<span class="com">// Listener নিবন্ধন</span>
+<span class="var">$provider</span>-><span class="fn">on</span>(<span class="cls">UserRegisteredEvent</span>::<span class="kw">class</span>, <span class="kw">function</span>(<span class="cls">UserRegisteredEvent</span> <span class="var">$event</span>) {
+    <span class="fn">sendWelcomeEmail</span>(<span class="var">$event</span>-><span class="var">email</span>);
+    <span class="fn">echo</span> <span class="str">"স্বাগত ইমেইল পাঠানো হয়েছে: {$event->email}\n"</span>;
+});
+
+<span class="var">$provider</span>-><span class="fn">on</span>(<span class="cls">UserRegisteredEvent</span>::<span class="kw">class</span>, <span class="kw">function</span>(<span class="cls">UserRegisteredEvent</span> <span class="var">$event</span>) {
+    <span class="fn">createUserProfile</span>(<span class="var">$event</span>-><span class="var">userId</span>);
+    <span class="fn">echo</span> <span class="str">"প্রোফাইল তৈরি হয়েছে\n"</span>;
+});
+
+<span class="com">// Event dispatch করা</span>
+<span class="var">$dispatcher</span>-><span class="fn">dispatch</span>(<span class="kw">new</span> <span class="cls">UserRegisteredEvent</span>(
+    <span class="var">userId</span>: <span class="num">1</span>,
+    <span class="var">email</span>: <span class="str">'user@example.com'</span>,
+    <span class="var">registeredAt</span>: <span class="kw">new</span> \<span class="cls">DateTimeImmutable</span>(),
+));</pre>
+      </div>
+    </div>
+
+    <!-- PSR-15 -->
+    <div class="section" id="psr-15">
+      <div class="section-header">
+        <span class="section-num">PSR-15</span>
+        <h2 class="section-title">HTTP Server Request Handlers</h2>
+      </div>
+
+      <div class="psr-card">
+        <div class="psr-card-header">
+          <div>
+            <div class="psr-title">HTTP Middleware ও Handler</div>
+            <p class="psr-desc">HTTP request handling এবং middleware pipeline-এর জন্য ইন্টারফেস। Laravel, Slim, Slim 4 এটি ব্যবহার করে।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">
+          <div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>
+          PSR-15: Middleware Pipeline
+        </div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\{ResponseInterface, ServerRequestInterface}</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface}</span>;
+
+<span class="com">// ✅ Authentication Middleware</span>
+<span class="kw">class</span> <span class="cls">AuthMiddleware</span> <span class="kw">implements</span> <span class="cls">MiddlewareInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">process</span>(
+        <span class="cls">ServerRequestInterface</span> <span class="var">$request</span>,
+        <span class="cls">RequestHandlerInterface</span> <span class="var">$handler</span>
+    ): <span class="cls">ResponseInterface</span> {
+        <span class="var">$token</span> = <span class="var">$request</span>-><span class="fn">getHeaderLine</span>(<span class="str">'Authorization'</span>);
+
+        <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$token</span>) || !<span class="var">$this</span>-><span class="fn">isValidToken</span>(<span class="var">$token</span>)) {
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'error'</span> => <span class="str">'Unauthorized'</span>], <span class="num">401</span>);
+        }
+
+        <span class="com">// token valid → পরের handler-এ যাও</span>
+        <span class="kw">return</span> <span class="var">$handler</span>-><span class="fn">handle</span>(<span class="var">$request</span>);
+    }
+
+    <span class="kw">private function</span> <span class="fn">isValidToken</span>(<span class="int">string</span> <span class="var">$token</span>): <span class="int">bool</span>
+    {
+        <span class="kw">return</span> <span class="fn">str_starts_with</span>(<span class="var">$token</span>, <span class="str">'Bearer '</span>) && <span class="fn">strlen</span>(<span class="var">$token</span>) > <span class="num">10</span>;
+    }
+}
+
+<span class="com">// ✅ Logging Middleware</span>
+<span class="kw">class</span> <span class="cls">LoggingMiddleware</span> <span class="kw">implements</span> <span class="cls">MiddlewareInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">process</span>(
+        <span class="cls">ServerRequestInterface</span> <span class="var">$request</span>,
+        <span class="cls">RequestHandlerInterface</span> <span class="var">$handler</span>
+    ): <span class="cls">ResponseInterface</span> {
+        <span class="var">$start</span> = <span class="fn">microtime</span>(<span class="kw">true</span>);
+
+        <span class="var">$response</span> = <span class="var">$handler</span>-><span class="fn">handle</span>(<span class="var">$request</span>); <span class="com">// পরবর্তী middleware চালাও</span>
+
+        <span class="var">$time</span> = <span class="fn">round</span>((<span class="fn">microtime</span>(<span class="kw">true</span>) - <span class="var">$start</span>) * <span class="num">1000</span>, <span class="num">2</span>);
+
+        <span class="fn">error_log</span>(<span class="fn">sprintf</span>(
+            <span class="str">"%s %s → %d [%sms]"</span>,
+            <span class="var">$request</span>-><span class="fn">getMethod</span>(),
+            <span class="var">$request</span>-><span class="fn">getUri</span>()-><span class="fn">getPath</span>(),
+            <span class="var">$response</span>-><span class="fn">getStatusCode</span>(),
+            <span class="var">$time</span>
+        ));
+
+        <span class="kw">return</span> <span class="var">$response</span>;
+    }
+}
+
+<span class="com">// ✅ Middleware Pipeline (Queue)</span>
+<span class="kw">class</span> <span class="cls">MiddlewarePipeline</span> <span class="kw">implements</span> <span class="cls">RequestHandlerInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$middleware</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">pipe</span>(<span class="cls">MiddlewareInterface</span> <span class="var">$middleware</span>): <span class="kw">static</span>
+    {
+        <span class="var">$clone</span> = <span class="kw">clone</span> <span class="var">$this</span>;
+        <span class="var">$clone</span>-><span class="var">middleware</span>[] = <span class="var">$middleware</span>;
+        <span class="kw">return</span> <span class="var">$clone</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="var">$handler</span> = <span class="fn">array_reduce</span>(
+            <span class="fn">array_reverse</span>(<span class="var">$this</span>-><span class="var">middleware</span>),
+            <span class="kw">fn</span>(<span class="var">$carry</span>, <span class="var">$mw</span>) => <span class="kw">new class</span>(<span class="var">$mw</span>, <span class="var">$carry</span>) <span class="kw">implements</span> <span class="cls">RequestHandlerInterface</span> {
+                <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="var">$mw</span>, <span class="kw">private</span> <span class="var">$next</span>) {}
+                <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$req</span>): <span class="cls">ResponseInterface</span> {
+                    <span class="kw">return</span> <span class="var">$this</span>-><span class="var">mw</span>-><span class="fn">process</span>(<span class="var">$req</span>, <span class="var">$this</span>-><span class="var">next</span>);
+                }
+            },
+            <span class="var">$this</span>-><span class="var">finalHandler</span>
+        );
+        <span class="kw">return</span> <span class="var">$handler</span>-><span class="fn">handle</span>(<span class="var">$request</span>);
+    }
+}
+
+<span class="com">// Pipeline তৈরি ও ব্যবহার:</span>
+<span class="var">$pipeline</span> = (<span class="kw">new</span> <span class="cls">MiddlewarePipeline</span>(<span class="var">$finalHandler</span>))
+    -><span class="fn">pipe</span>(<span class="kw">new</span> <span class="cls">LoggingMiddleware</span>())
+    -><span class="fn">pipe</span>(<span class="kw">new</span> <span class="cls">AuthMiddleware</span>())
+    -><span class="fn">pipe</span>(<span class="kw">new</span> <span class="cls">CorsMiddleware</span>());
+
+<span class="var">$response</span> = <span class="var">$pipeline</span>-><span class="fn">handle</span>(<span class="var">$serverRequest</span>);</pre>
+      </div>
+    </div>
+
+    <!-- PSR-16, 17, 18, 20 SHORT -->
+    <div class="section" id="psr-16">
+      <div class="section-header">
+        <span class="section-num">PSR-16, 17, 18, 20</span>
+        <h2 class="section-title">অতিরিক্ত ইন্টারফেস</h2>
+      </div>
+
+      <div class="psr-card" id="psr-16-card">
+        <div class="psr-card-header">
+          <div>
+            <span class="psr-tag">PSR-16</span>
+            <div class="psr-title" style="margin-top:0.5rem">Simple Cache Interface</div>
+            <p class="psr-desc">PSR-6 এর সরল সংস্করণ। get/set/delete/clear/has — মাত্র ৫টি মেথড।</p>
+          </div>
+          <span class="psr-status status-accepted">✓ Accepted</span>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>PSR-16: Simple Cache</div>
+        <pre><span class="com">&lt;?php</span>
+<span class="kw">use</span> <span class="cls">Psr\SimpleCache\CacheInterface</span>;
+
+<span class="kw">class</span> <span class="cls">ArrayCache</span> <span class="kw">implements</span> <span class="cls">CacheInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$store</span> = [];
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$expiry</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">get</span>(<span class="int">string</span> <span class="var">$key</span>, <span class="kw">mixed</span> <span class="var">$default</span> = <span class="kw">null</span>): <span class="kw">mixed</span>
+    {
+        <span class="kw">if</span> (!<span class="var">$this</span>-><span class="fn">has</span>(<span class="var">$key</span>)) <span class="kw">return</span> <span class="var">$default</span>;
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">store</span>[<span class="var">$key</span>];
+    }
+
+    <span class="kw">public function</span> <span class="fn">set</span>(<span class="int">string</span> <span class="var">$key</span>, <span class="kw">mixed</span> <span class="var">$value</span>, <span class="int">int</span>|<span class="kw">null</span> <span class="var">$ttl</span> = <span class="kw">null</span>): <span class="int">bool</span>
+    {
+        <span class="var">$this</span>-><span class="var">store</span>[<span class="var">$key</span>] = <span class="var">$value</span>;
+        <span class="kw">if</span> (<span class="var">$ttl</span>) <span class="var">$this</span>-><span class="var">expiry</span>[<span class="var">$key</span>] = <span class="fn">time</span>() + <span class="var">$ttl</span>;
+        <span class="kw">return</span> <span class="kw">true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">has</span>(<span class="int">string</span> <span class="var">$key</span>): <span class="int">bool</span>
+    {
+        <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">store</span>[<span class="var">$key</span>])) <span class="kw">return false</span>;
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$this</span>-><span class="var">expiry</span>[<span class="var">$key</span>]) && <span class="var">$this</span>-><span class="var">expiry</span>[<span class="var">$key</span>] < <span class="fn">time</span>()) {
+            <span class="kw">unset</span>(<span class="var">$this</span>-><span class="var">store</span>[<span class="var">$key</span>], <span class="var">$this</span>-><span class="var">expiry</span>[<span class="var">$key</span>]);
+            <span class="kw">return false</span>;
+        }
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="int">string</span> <span class="var">$key</span>): <span class="int">bool</span>
+    {
+        <span class="kw">unset</span>(<span class="var">$this</span>-><span class="var">store</span>[<span class="var">$key</span>], <span class="var">$this</span>-><span class="var">expiry</span>[<span class="var">$key</span>]);
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">clear</span>(): <span class="int">bool</span>
+    {
+        <span class="var">$this</span>-><span class="var">store</span> = <span class="var">$this</span>-><span class="var">expiry</span> = [];
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">getMultiple</span>(<span class="kw">iterable</span> <span class="var">$keys</span>, <span class="kw">mixed</span> <span class="var">$default</span> = <span class="kw">null</span>): <span class="kw">iterable</span>
+    {
+        <span class="kw">foreach</span> (<span class="var">$keys</span> <span class="kw">as</span> <span class="var">$key</span>) <span class="kw">yield</span> <span class="var">$key</span> => <span class="var">$this</span>-><span class="fn">get</span>(<span class="var">$key</span>, <span class="var">$default</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">setMultiple</span>(<span class="kw">iterable</span> <span class="var">$values</span>, <span class="int">int</span>|<span class="kw">null</span> <span class="var">$ttl</span> = <span class="kw">null</span>): <span class="int">bool</span>
+    {
+        <span class="kw">foreach</span> (<span class="var">$values</span> <span class="kw">as</span> <span class="var">$k</span> => <span class="var">$v</span>) <span class="var">$this</span>-><span class="fn">set</span>(<span class="var">$k</span>, <span class="var">$v</span>, <span class="var">$ttl</span>);
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">deleteMultiple</span>(<span class="kw">iterable</span> <span class="var">$keys</span>): <span class="int">bool</span>
+    {
+        <span class="kw">foreach</span> (<span class="var">$keys</span> <span class="kw">as</span> <span class="var">$key</span>) <span class="var">$this</span>-><span class="fn">delete</span>(<span class="var">$key</span>);
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="com">// PSR-20: Clock Interface (সবচেয়ে সরল PSR)</span>
+<span class="kw">interface</span> <span class="cls">ClockInterface</span> {
+    <span class="kw">public function</span> <span class="fn">now</span>(): \<span class="cls">DateTimeImmutable</span>;
+}
+
+<span class="kw">class</span> <span class="cls">SystemClock</span> <span class="kw">implements</span> <span class="cls">ClockInterface</span> {
+    <span class="kw">public function</span> <span class="fn">now</span>(): \<span class="cls">DateTimeImmutable</span> {
+        <span class="kw">return</span> <span class="kw">new</span> \<span class="cls">DateTimeImmutable</span>();
+    }
+}
+
+<span class="com">// Test-এ ব্যবহারযোগ্য FrozenClock</span>
+<span class="kw">class</span> <span class="cls">FrozenClock</span> <span class="kw">implements</span> <span class="cls">ClockInterface</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> \<span class="cls">DateTimeImmutable</span> <span class="var">$frozenAt</span>) {}
+    <span class="kw">public function</span> <span class="fn">now</span>(): \<span class="cls">DateTimeImmutable</span> { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">frozenAt</span>; }
+}</pre>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CUSTOM FRAMEWORK -->
+    <div class="section" id="framework">
+      <div class="section-header">
+        <span class="section-num">Framework</span>
+        <h2 class="section-title">কাস্টম PHP ফ্রেমওয়ার্ক</h2>
+      </div>
+
+      <div class="info-box note">
+        <span class="info-icon">🏗️</span>
+        <div>এই ফ্রেমওয়ার্কটি সমস্ত গুরুত্বপূর্ণ PSR মেনে তৈরি: PSR-1, PSR-3, PSR-4, PSR-7, PSR-11, PSR-12, PSR-14, PSR-15, PSR-16। এটি একটি শিক্ষামূলক কিন্তু সম্পূর্ণ কার্যকরী framework।</div>
+      </div>
+
+      <div class="framework-arch">
+        <div class="arch-box">
+          <div class="arch-icon">🛣️</div>
+          <div class="arch-name">Router</div>
+          <div class="arch-desc">Route নিবন্ধন ও match করা</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-icon">📦</div>
+          <div class="arch-name">Container</div>
+          <div class="arch-desc">PSR-11 DI Container</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-icon">🔗</div>
+          <div class="arch-name">Pipeline</div>
+          <div class="arch-desc">PSR-15 Middleware</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-icon">📨</div>
+          <div class="arch-name">HTTP</div>
+          <div class="arch-desc">PSR-7 Request/Response</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-icon">📝</div>
+          <div class="arch-name">Logger</div>
+          <div class="arch-desc">PSR-3 LoggerInterface</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-icon">💾</div>
+          <div class="arch-name">Cache</div>
+          <div class="arch-desc">PSR-16 Simple Cache</div>
+        </div>
+      </div>
+
+      <h3>ফ্রেমওয়ার্কের ফাইল কাঠামো</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>Directory Structure</div>
+        <pre>my-framework/
+├── composer.json
+├── public/
+│   └── index.php              <span class="com"># Entry point</span>
+├── src/
+│   ├── Application.php        <span class="com"># মূল Application class</span>
+│   ├── Container/
+│   │   └── Container.php      <span class="com"># PSR-11</span>
+│   ├── Http/
+│   │   ├── Request.php        <span class="com"># PSR-7</span>
+│   │   ├── Response.php       <span class="com"># PSR-7</span>
+│   │   ├── JsonResponse.php
+│   │   └── Stream.php
+│   ├── Routing/
+│   │   ├── Router.php
+│   │   └── Route.php
+│   ├── Middleware/
+│   │   ├── Pipeline.php       <span class="com"># PSR-15</span>
+│   │   ├── AuthMiddleware.php
+│   │   └── CorsMiddleware.php
+│   ├── Log/
+│   │   └── FileLogger.php     <span class="com"># PSR-3</span>
+│   ├── Cache/
+│   │   └── FileCache.php      <span class="com"># PSR-16</span>
+│   └── Events/
+│       ├── EventDispatcher.php <span class="com"># PSR-14</span>
+│       └── ListenerProvider.php
+└── app/
+    ├── Controllers/
+    │   ├── HomeController.php
+    │   └── UserController.php
+    └── routes.php</pre>
+      </div>
+    </div>
+
+    <!-- FRAMEWORK CODE -->
+    <div class="section" id="framework-code">
+      <div class="section-header">
+        <span class="section-num">Framework</span>
+        <h2 class="section-title">সম্পূর্ণ Framework কোড</h2>
+      </div>
+
+      <h3>১. Application.php — হৃদয়</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>src/Application.php</div>
+        <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">namespace</span> <span class="cls">Framework</span>;
+
+<span class="kw">use</span> <span class="cls">Framework\Container\Container</span>;
+<span class="kw">use</span> <span class="cls">Framework\Http\{Request, Response}</span>;
+<span class="kw">use</span> <span class="cls">Framework\Routing\Router</span>;
+<span class="kw">use</span> <span class="cls">Framework\Middleware\Pipeline</span>;
+<span class="kw">use</span> <span class="cls">Framework\Log\FileLogger</span>;
+<span class="kw">use</span> <span class="cls">Framework\Cache\FileCache</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\{ResponseInterface, ServerRequestInterface}</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Server\MiddlewareInterface</span>;
+
+<span class="kw">class</span> <span class="cls">Application</span>
+{
+    <span class="kw">private</span> <span class="cls">Container</span> <span class="var">$container</span>;
+    <span class="kw">private</span> <span class="cls">Router</span> <span class="var">$router</span>;
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$middlewares</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="int">string</span> <span class="var">$basePath</span> = '')
+    {
+        <span class="var">$this</span>-><span class="var">container</span> = <span class="kw">new</span> <span class="cls">Container</span>();
+        <span class="var">$this</span>-><span class="var">router</span>    = <span class="kw">new</span> <span class="cls">Router</span>();
+        <span class="var">$this</span>-><span class="fn">registerCoreServices</span>();
+    }
+
+    <span class="kw">private function</span> <span class="fn">registerCoreServices</span>(): <span class="int">void</span>
+    {
+        <span class="com">// Logger (PSR-3)</span>
+        <span class="var">$this</span>-><span class="var">container</span>-><span class="fn">singleton</span>(
+            \<span class="cls">Psr\Log\LoggerInterface</span>::<span class="kw">class</span>,
+            <span class="kw">fn</span>() => <span class="kw">new</span> <span class="cls">FileLogger</span>(<span class="var">$this</span>-><span class="var">basePath</span> . <span class="str">'/storage/logs/app.log'</span>)
+        );
+
+        <span class="com">// Cache (PSR-16)</span>
+        <span class="var">$this</span>-><span class="var">container</span>-><span class="fn">singleton</span>(
+            \<span class="cls">Psr\SimpleCache\CacheInterface</span>::<span class="kw">class</span>,
+            <span class="kw">fn</span>() => <span class="kw">new</span> <span class="cls">FileCache</span>(<span class="var">$this</span>-><span class="var">basePath</span> . <span class="str">'/storage/cache'</span>)
+        );
+
+        <span class="com">// Router নিজেকে বাঁধা</span>
+        <span class="var">$this</span>-><span class="var">container</span>-><span class="fn">singleton</span>(<span class="cls">Router</span>::<span class="kw">class</span>, <span class="kw">fn</span>() => <span class="var">$this</span>-><span class="var">router</span>);
+    }
+
+    <span class="com">// ===== Route নিবন্ধন =====</span>
+    <span class="kw">public function</span> <span class="fn">get</span>(<span class="int">string</span> <span class="var">$path</span>, <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">router</span>-><span class="fn">add</span>(<span class="str">'GET'</span>, <span class="var">$path</span>, <span class="var">$handler</span>);
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">post</span>(<span class="int">string</span> <span class="var">$path</span>, <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">router</span>-><span class="fn">add</span>(<span class="str">'POST'</span>, <span class="var">$path</span>, <span class="var">$handler</span>);
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">put</span>(<span class="int">string</span> <span class="var">$path</span>, <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">router</span>-><span class="fn">add</span>(<span class="str">'PUT'</span>, <span class="var">$path</span>, <span class="var">$handler</span>);
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="int">string</span> <span class="var">$path</span>, <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">router</span>-><span class="fn">add</span>(<span class="str">'DELETE'</span>, <span class="var">$path</span>, <span class="var">$handler</span>);
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="com">// Middleware যোগ করা (PSR-15)</span>
+    <span class="kw">public function</span> <span class="fn">use</span>(<span class="cls">MiddlewareInterface</span> <span class="var">$middleware</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">middlewares</span>[] = <span class="var">$middleware</span>;
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="com">// Container থেকে সার্ভিস পাওয়া</span>
+    <span class="kw">public function</span> <span class="fn">make</span>(<span class="int">string</span> <span class="var">$abstract</span>): <span class="kw">mixed</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">container</span>-><span class="fn">get</span>(<span class="var">$abstract</span>);
+    }
+
+    <span class="com">// Application চালু করা</span>
+    <span class="kw">public function</span> <span class="fn">run</span>(): <span class="int">void</span>
+    {
+        <span class="kw">try</span> {
+            <span class="com">// PSR-7 Request তৈরি</span>
+            <span class="var">$request</span> = <span class="cls">Request</span>::<span class="fn">fromGlobals</span>();
+
+            <span class="com">// Pipeline দিয়ে handle করা</span>
+            <span class="var">$pipeline</span> = <span class="kw">new</span> <span class="cls">Pipeline</span>(<span class="var">$this</span>-><span class="var">container</span>, <span class="var">$this</span>-><span class="var">router</span>);
+
+            <span class="kw">foreach</span> (<span class="var">$this</span>-><span class="var">middlewares</span> <span class="kw">as</span> <span class="var">$middleware</span>) {
+                <span class="var">$pipeline</span>-><span class="fn">pipe</span>(<span class="var">$middleware</span>);
+            }
+
+            <span class="var">$response</span> = <span class="var">$pipeline</span>-><span class="fn">handle</span>(<span class="var">$request</span>);
+            <span class="var">$this</span>-><span class="fn">send</span>(<span class="var">$response</span>);
+
+        } <span class="kw">catch</span> (\<span class="cls">Throwable</span> <span class="var">$e</span>) {
+            <span class="var">$this</span>-><span class="fn">handleException</span>(<span class="var">$e</span>);
+        }
+    }
+
+    <span class="kw">private function</span> <span class="fn">send</span>(<span class="cls">ResponseInterface</span> <span class="var">$response</span>): <span class="int">void</span>
+    {
+        <span class="fn">http_response_code</span>(<span class="var">$response</span>-><span class="fn">getStatusCode</span>());
+
+        <span class="kw">foreach</span> (<span class="var">$response</span>-><span class="fn">getHeaders</span>() <span class="kw">as</span> <span class="var">$name</span> => <span class="var">$values</span>) {
+            <span class="kw">foreach</span> (<span class="var">$values</span> <span class="kw">as</span> <span class="var">$value</span>) {
+                <span class="fn">header</span>(<span class="str">"{$name}: {$value}"</span>, <span class="kw">false</span>);
+            }
+        }
+
+        <span class="kw">echo</span> (string)<span class="var">$response</span>-><span class="fn">getBody</span>();
+    }
+
+    <span class="kw">private function</span> <span class="fn">handleException</span>(\<span class="cls">Throwable</span> <span class="var">$e</span>): <span class="int">void</span>
+    {
+        <span class="kw">try</span> {
+            <span class="var">$this</span>-><span class="fn">make</span>(\<span class="cls">Psr\Log\LoggerInterface</span>::<span class="kw">class</span>)-><span class="fn">critical</span>(
+                <span class="str">'Unhandled exception: {message}'</span>,
+                [<span class="str">'message'</span> => <span class="var">$e</span>-><span class="fn">getMessage</span>(), <span class="str">'trace'</span> => <span class="var">$e</span>-><span class="fn">getTraceAsString</span>()]
+            );
+        } <span class="kw">catch</span> (\<span class="cls">Throwable</span>) {}
+
+        <span class="fn">http_response_code</span>(<span class="num">500</span>);
+        <span class="fn">header</span>(<span class="str">'Content-Type: application/json'</span>);
+        <span class="kw">echo</span> <span class="fn">json_encode</span>([<span class="str">'error'</span> => <span class="str">'Internal Server Error'</span>, <span class="str">'message'</span> => <span class="var">$e</span>-><span class="fn">getMessage</span>()]);
+    }
+}</pre>
+      </div>
+
+      <h3>২. Router.php — রাউটিং</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>src/Routing/Router.php</div>
+        <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">namespace</span> <span class="cls">Framework\Routing</span>;
+
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\ServerRequestInterface</span>;
+
+<span class="kw">class</span> <span class="cls">Router</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$routes</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">add</span>(<span class="int">string</span> <span class="var">$method</span>, <span class="int">string</span> <span class="var">$path</span>, <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>): <span class="int">void</span>
+    {
+        <span class="var">$this</span>-><span class="var">routes</span>[] = <span class="kw">new</span> <span class="cls">Route</span>(<span class="fn">strtoupper</span>(<span class="var">$method</span>), <span class="var">$path</span>, <span class="var">$handler</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">match</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): ?<span class="cls">RouteMatch</span>
+    {
+        <span class="var">$method</span> = <span class="var">$request</span>-><span class="fn">getMethod</span>();
+        <span class="var">$path</span>   = <span class="var">$request</span>-><span class="fn">getUri</span>()-><span class="fn">getPath</span>();
+
+        <span class="kw">foreach</span> (<span class="var">$this</span>-><span class="var">routes</span> <span class="kw">as</span> <span class="var">$route</span>) {
+            <span class="kw">if</span> (<span class="var">$route</span>-><span class="fn">getMethod</span>() !== <span class="var">$method</span>) <span class="kw">continue</span>;
+
+            <span class="var">$params</span> = <span class="var">$route</span>-><span class="fn">match</span>(<span class="var">$path</span>);
+
+            <span class="kw">if</span> (<span class="var">$params</span> !== <span class="kw">null</span>) {
+                <span class="kw">return</span> <span class="kw">new</span> <span class="cls">RouteMatch</span>(<span class="var">$route</span>-><span class="fn">getHandler</span>(), <span class="var">$params</span>);
+            }
+        }
+
+        <span class="kw">return null</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="cls">Route</span>
+{
+    <span class="kw">private</span> <span class="int">string</span> <span class="var">$pattern</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="int">string</span> <span class="var">$method</span>,
+        <span class="kw">private</span> <span class="int">string</span> <span class="var">$path</span>,
+        <span class="kw">private</span> <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>,
+    ) {
+        <span class="com">// /users/{id} → /users/(?P&lt;id&gt;[^/]+)</span>
+        <span class="var">$this</span>-><span class="var">pattern</span> = <span class="str">'#^'</span> . <span class="fn">preg_replace</span>(
+            <span class="str">'/\{(\w+)\}/'</span>,
+            <span class="str">'(?P&lt;$1&gt;[^/]+)'</span>,
+            <span class="var">$path</span>
+        ) . <span class="str">'$#'</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">getMethod</span>(): <span class="int">string</span>           { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">method</span>; }
+    <span class="kw">public function</span> <span class="fn">getHandler</span>(): <span class="int">array</span>|<span class="kw">callable</span>  { <span class="kw">return</span> <span class="var">$this</span>-><span class="var">handler</span>; }
+
+    <span class="kw">public function</span> <span class="fn">match</span>(<span class="int">string</span> <span class="var">$path</span>): ?<span class="int">array</span>
+    {
+        <span class="kw">if</span> (<span class="fn">preg_match</span>(<span class="var">$this</span>-><span class="var">pattern</span>, <span class="var">$path</span>, <span class="var">$matches</span>)) {
+            <span class="kw">return</span> <span class="fn">array_filter</span>(<span class="var">$matches</span>, <span class="str">'is_string'</span>, ARRAY_FILTER_USE_KEY);
+        }
+        <span class="kw">return null</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="cls">RouteMatch</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly</span> <span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>,
+        <span class="kw">public readonly</span> <span class="int">array</span> <span class="var">$params</span>,
+    ) {}
+}</pre>
+      </div>
+
+      <h3>৩. Pipeline.php — Middleware</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>src/Middleware/Pipeline.php</div>
+        <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">namespace</span> <span class="cls">Framework\Middleware</span>;
+
+<span class="kw">use</span> <span class="cls">Framework\Container\Container</span>;
+<span class="kw">use</span> <span class="cls">Framework\Http\{JsonResponse, Response}</span>;
+<span class="kw">use</span> <span class="cls">Framework\Routing\Router</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\{ResponseInterface, ServerRequestInterface}</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface}</span>;
+
+<span class="kw">class</span> <span class="cls">Pipeline</span> <span class="kw">implements</span> <span class="cls">RequestHandlerInterface</span>
+{
+    <span class="kw">private</span> <span class="int">array</span> <span class="var">$middlewares</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">Container</span> <span class="var">$container</span>,
+        <span class="kw">private</span> <span class="cls">Router</span> <span class="var">$router</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">pipe</span>(<span class="cls">MiddlewareInterface</span> <span class="var">$middleware</span>): <span class="kw">static</span>
+    {
+        <span class="var">$this</span>-><span class="var">middlewares</span>[] = <span class="var">$middleware</span>;
+        <span class="kw">return</span> <span class="var">$this</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="com">// Final handler: Router দিয়ে dispatch</span>
+        <span class="var">$finalHandler</span> = <span class="kw">new class</span>(<span class="var">$this</span>-><span class="var">container</span>, <span class="var">$this</span>-><span class="var">router</span>) <span class="kw">implements</span> <span class="cls">RequestHandlerInterface</span>
+        {
+            <span class="kw">public function</span> <span class="fn">__construct</span>(
+                <span class="kw">private</span> <span class="cls">Container</span> <span class="var">$container</span>,
+                <span class="kw">private</span> <span class="cls">Router</span> <span class="var">$router</span>,
+            ) {}
+
+            <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+            {
+                <span class="var">$match</span> = <span class="var">$this</span>-><span class="var">router</span>-><span class="fn">match</span>(<span class="var">$request</span>);
+
+                <span class="kw">if</span> (!<span class="var">$match</span>) {
+                    <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>(
+                        [<span class="str">'error'</span> => <span class="str">'Route পাওয়া যায়নি'</span>],
+                        <span class="num">404</span>
+                    );
+                }
+
+                <span class="com">// Route params request-এ যোগ করা</span>
+                <span class="kw">foreach</span> (<span class="var">$match</span>-><span class="var">params</span> <span class="kw">as</span> <span class="var">$key</span> => <span class="var">$value</span>) {
+                    <span class="var">$request</span> = <span class="var">$request</span>-><span class="fn">withAttribute</span>(<span class="var">$key</span>, <span class="var">$value</span>);
+                }
+
+                <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">callHandler</span>(<span class="var">$match</span>-><span class="var">handler</span>, <span class="var">$request</span>);
+            }
+
+            <span class="kw">private function</span> <span class="fn">callHandler</span>(<span class="int">array</span>|<span class="kw">callable</span> <span class="var">$handler</span>, <span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+            {
+                <span class="kw">if</span> (<span class="fn">is_callable</span>(<span class="var">$handler</span>)) {
+                    <span class="kw">return</span> <span class="var">$handler</span>(<span class="var">$request</span>);
+                }
+
+                <span class="com">// [ControllerClass, method] → Container দিয়ে তৈরি</span>
+                [$class, <span class="var">$method</span>] = <span class="var">$handler</span>;
+                <span class="var">$controller</span> = <span class="var">$this</span>-><span class="var">container</span>-><span class="fn">get</span>(<span class="var">$class</span>);
+                <span class="kw">return</span> <span class="var">$controller</span>-><span class="var">$method</span>(<span class="var">$request</span>);
+            }
+        };
+
+        <span class="com">// Middleware stack তৈরি (শেষ থেকে শুরু)</span>
+        <span class="var">$handler</span> = <span class="fn">array_reduce</span>(
+            <span class="fn">array_reverse</span>(<span class="var">$this</span>-><span class="var">middlewares</span>),
+            <span class="kw">static function</span> (<span class="cls">RequestHandlerInterface</span> <span class="var">$carry</span>, <span class="cls">MiddlewareInterface</span> <span class="var">$middleware</span>): <span class="cls">RequestHandlerInterface</span> {
+                <span class="kw">return new class</span>(<span class="var">$middleware</span>, <span class="var">$carry</span>) <span class="kw">implements</span> <span class="cls">RequestHandlerInterface</span> {
+                    <span class="kw">public function</span> <span class="fn">__construct</span>(
+                        <span class="kw">private</span> <span class="cls">MiddlewareInterface</span> <span class="var">$middleware</span>,
+                        <span class="kw">private</span> <span class="cls">RequestHandlerInterface</span> <span class="var">$next</span>,
+                    ) {}
+
+                    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+                    {
+                        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">middleware</span>-><span class="fn">process</span>(<span class="var">$request</span>, <span class="var">$this</span>-><span class="var">next</span>);
+                    }
+                };
+            },
+            <span class="var">$finalHandler</span>
+        );
+
+        <span class="kw">return</span> <span class="var">$handler</span>-><span class="fn">handle</span>(<span class="var">$request</span>);
+    }
+}</pre>
+      </div>
+
+      <h3>৪. public/index.php — Entry Point</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>public/index.php</div>
+        <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">require_once</span> <span class="fn">dirname</span>(<span class="fn">__DIR__</span>) . <span class="str">'/vendor/autoload.php'</span>;
+
+<span class="kw">use</span> <span class="cls">Framework\Application</span>;
+<span class="kw">use</span> <span class="cls">Framework\Http\{JsonResponse, Response}</span>;
+<span class="kw">use</span> <span class="cls">Framework\Middleware\{LoggingMiddleware, CorsMiddleware, AuthMiddleware}</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\ServerRequestInterface</span>;
+<span class="kw">use</span> <span class="cls">App\Controllers\{UserController, HomeController}</span>;
+
+<span class="com">// Application তৈরি</span>
+<span class="var">$app</span> = <span class="kw">new</span> <span class="cls">Application</span>(<span class="fn">dirname</span>(<span class="fn">__DIR__</span>));
+
+<span class="com">// Global Middleware যোগ করা</span>
+<span class="var">$app</span>-><span class="fn">use</span>(<span class="kw">new</span> <span class="cls">LoggingMiddleware</span>())
+    -><span class="fn">use</span>(<span class="kw">new</span> <span class="cls">CorsMiddleware</span>(origins: [<span class="str">'https://myapp.com'</span>]));
+
+<span class="com">// ===== Routes =====</span>
+
+<span class="com">// Home</span>
+<span class="var">$app</span>-><span class="fn">get</span>(<span class="str">'/'</span>, [<span class="cls">HomeController</span>::<span class="kw">class</span>, <span class="str">'index'</span>]);
+
+<span class="com">// Closure Route</span>
+<span class="var">$app</span>-><span class="fn">get</span>(<span class="str">'/health'</span>, <span class="kw">fn</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$req</span>) =>
+    <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'status'</span> => <span class="str">'ok'</span>, <span class="str">'time'</span> => <span class="fn">date</span>(<span class="cls">DATE_ATOM</span>)])
+);
+
+<span class="com">// Users CRUD</span>
+<span class="var">$app</span>-><span class="fn">get</span>(<span class="str">'/users'</span>,          [<span class="cls">UserController</span>::<span class="kw">class</span>, <span class="str">'index'</span>]);
+<span class="var">$app</span>-><span class="fn">get</span>(<span class="str">'/users/{id}'</span>,    [<span class="cls">UserController</span>::<span class="kw">class</span>, <span class="str">'show'</span>]);
+<span class="var">$app</span>-><span class="fn">post</span>(<span class="str">'/users'</span>,       [<span class="cls">UserController</span>::<span class="kw">class</span>, <span class="str">'store'</span>]);
+<span class="var">$app</span>-><span class="fn">put</span>(<span class="str">'/users/{id}'</span>,  [<span class="cls">UserController</span>::<span class="kw">class</span>, <span class="str">'update'</span>]);
+<span class="var">$app</span>-><span class="fn">delete</span>(<span class="str">'/users/{id}'</span>, [<span class="cls">UserController</span>::<span class="kw">class</span>, <span class="str">'destroy'</span>]);
+
+<span class="com">// Application চালু!</span>
+<span class="var">$app</span>-><span class="fn">run</span>();</pre>
+      </div>
+
+      <h3>৫. UserController.php — Controller উদাহরণ</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>app/Controllers/UserController.php</div>
+        <pre><span class="com">&lt;?php</span>
+
+<span class="kw">declare</span>(strict_types=<span class="num">1</span>);
+
+<span class="kw">namespace</span> <span class="cls">App\Controllers</span>;
+
+<span class="kw">use</span> <span class="cls">Framework\Http\JsonResponse</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\{ResponseInterface, ServerRequestInterface}</span>;
+<span class="kw">use</span> <span class="cls">Psr\Log\LoggerInterface</span>;
+<span class="kw">use</span> <span class="cls">Psr\SimpleCache\CacheInterface</span>;
+<span class="kw">use</span> <span class="cls">App\Services\UserService</span>;
+
+<span class="kw">class</span> <span class="cls">UserController</span>
+{
+    <span class="com">// ✅ Constructor Injection — PSR-11 Container স্বয়ংক্রিয়ভাবে inject করবে</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="cls">UserService</span> <span class="var">$userService</span>,
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="cls">LoggerInterface</span> <span class="var">$logger</span>,
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="cls">CacheInterface</span> <span class="var">$cache</span>,
+    ) {}
+
+    <span class="com">/**
+     * GET /users — সব users
+     */</span>
+    <span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="var">$page</span>  = (int) (<span class="var">$request</span>-><span class="fn">getQueryParams</span>()[<span class="str">'page'</span>] ?? <span class="num">1</span>);
+        <span class="var">$limit</span> = (int) (<span class="var">$request</span>-><span class="fn">getQueryParams</span>()[<span class="str">'limit'</span>] ?? <span class="num">20</span>);
+
+        <span class="var">$cacheKey</span> = <span class="str">"users_page_{$page}_limit_{$limit}"</span>;
+
+        <span class="com">// PSR-16 Cache চেক করা</span>
+        <span class="kw">if</span> (<span class="var">$this</span>-><span class="var">cache</span>-><span class="fn">has</span>(<span class="var">$cacheKey</span>)) {
+            <span class="var">$this</span>-><span class="var">logger</span>-><span class="fn">debug</span>(<span class="str">'Cache hit: {key}'</span>, [<span class="str">'key'</span> => <span class="var">$cacheKey</span>]);
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>(<span class="var">$this</span>-><span class="var">cache</span>-><span class="fn">get</span>(<span class="var">$cacheKey</span>));
+        }
+
+        <span class="var">$users</span> = <span class="var">$this</span>-><span class="var">userService</span>-><span class="fn">paginate</span>(<span class="var">$page</span>, <span class="var">$limit</span>);
+
+        <span class="com">// Cache-এ সংরক্ষণ (৫ মিনিট)</span>
+        <span class="var">$this</span>-><span class="var">cache</span>-><span class="fn">set</span>(<span class="var">$cacheKey</span>, <span class="var">$users</span>, <span class="num">300</span>);
+
+        <span class="var">$this</span>-><span class="var">logger</span>-><span class="fn">info</span>(<span class="str">'Users listed: page {page}'</span>, [<span class="str">'page'</span> => <span class="var">$page</span>]);
+        <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>(<span class="var">$users</span>);
+    }
+
+    <span class="com">/**
+     * GET /users/{id} — একটি user
+     */</span>
+    <span class="kw">public function</span> <span class="fn">show</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="var">$id</span>   = (int) <span class="var">$request</span>-><span class="fn">getAttribute</span>(<span class="str">'id'</span>);
+        <span class="var">$user</span> = <span class="var">$this</span>-><span class="var">userService</span>-><span class="fn">findById</span>(<span class="var">$id</span>);
+
+        <span class="kw">if</span> (!<span class="var">$user</span>) {
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'error'</span> => <span class="str">'User পাওয়া যায়নি'</span>], <span class="num">404</span>);
+        }
+
+        <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>(<span class="var">$user</span>);
+    }
+
+    <span class="com">/**
+     * POST /users — নতুন user তৈরি
+     */</span>
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="var">$data</span> = <span class="var">$request</span>-><span class="fn">getParsedBody</span>();
+
+        <span class="kw">if</span> (empty(<span class="var">$data</span>[<span class="str">'name'</span>]) || empty(<span class="var">$data</span>[<span class="str">'email'</span>])) {
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'error'</span> => <span class="str">'name এবং email আবশ্যক'</span>], <span class="num">422</span>);
+        }
+
+        <span class="kw">try</span> {
+            <span class="var">$user</span> = <span class="var">$this</span>-><span class="var">userService</span>-><span class="fn">create</span>(<span class="var">$data</span>);
+            <span class="var">$this</span>-><span class="var">logger</span>-><span class="fn">info</span>(<span class="str">'User তৈরি হয়েছে: {email}'</span>, [<span class="str">'email'</span> => <span class="var">$data</span>[<span class="str">'email'</span>]]);
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>(<span class="var">$user</span>, <span class="num">201</span>);
+        } <span class="kw">catch</span> (\<span class="cls">Exception</span> <span class="var">$e</span>) {
+            <span class="var">$this</span>-><span class="var">logger</span>-><span class="fn">error</span>(<span class="str">'User তৈরিতে সমস্যা: {error}'</span>, [<span class="str">'error'</span> => <span class="var">$e</span>-><span class="fn">getMessage</span>()]);
+            <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'error'</span> => <span class="var">$e</span>-><span class="fn">getMessage</span>()], <span class="num">400</span>);
+        }
+    }
+
+    <span class="com">/**
+     * DELETE /users/{id} — user মুছে ফেলা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">destroy</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>): <span class="cls">ResponseInterface</span>
+    {
+        <span class="var">$id</span> = (int) <span class="var">$request</span>-><span class="fn">getAttribute</span>(<span class="str">'id'</span>);
+        <span class="var">$this</span>-><span class="var">userService</span>-><span class="fn">delete</span>(<span class="var">$id</span>);
+        <span class="var">$this</span>-><span class="var">logger</span>-><span class="fn">warning</span>(<span class="str">'User মুছে ফেলা হয়েছে: {id}'</span>, [<span class="str">'id'</span> => <span class="var">$id</span>]);
+        <span class="kw">return</span> <span class="kw">new</span> <span class="cls">JsonResponse</span>([<span class="str">'success'</span> => <span class="kw">true</span>]);
+    }
+}</pre>
+      </div>
+
+      <h3>৬. composer.json</h3>
+      <div class="code-wrap">
+        <div class="code-label"><div class="code-dots"><span class="code-dot dot-r"></span><span class="code-dot dot-y"></span><span class="code-dot dot-g"></span></div>composer.json</div>
+        <pre>{
+    <span class="str">"name"</span>: <span class="str">"my/framework"</span>,
+    <span class="str">"description"</span>: <span class="str">"PSR-compliant PHP Framework"</span>,
+    <span class="str">"require"</span>: {
+        <span class="str">"php"</span>: <span class="str">"^8.2"</span>,
+        <span class="str">"psr/http-message"</span>: <span class="str">"^2.0"</span>,
+        <span class="str">"psr/http-server-middleware"</span>: <span class="str">"^1.0"</span>,
+        <span class="str">"psr/http-server-handler"</span>: <span class="str">"^1.0"</span>,
+        <span class="str">"psr/container"</span>: <span class="str">"^2.0"</span>,
+        <span class="str">"psr/log"</span>: <span class="str">"^3.0"</span>,
+        <span class="str">"psr/simple-cache"</span>: <span class="str">"^3.0"</span>,
+        <span class="str">"psr/event-dispatcher"</span>: <span class="str">"^1.0"</span>,
+        <span class="str">"psr/clock"</span>: <span class="str">"^1.0"</span>
+    },
+    <span class="str">"require-dev"</span>: {
+        <span class="str">"phpunit/phpunit"</span>: <span class="str">"^11.0"</span>
+    },
+    <span class="str">"autoload"</span>: {
+        <span class="str">"psr-4"</span>: {
+            <span class="str">"Framework\\"</span>: <span class="str">"src/"</span>,
+            <span class="str">"App\\"</span>: <span class="str">"app/"</span>
+        }
+    },
+    <span class="str">"autoload-dev"</span>: {
+        <span class="str">"psr-4"</span>: {
+            <span class="str">"Tests\\"</span>: <span class="str">"tests/"</span>
+        }
+    }
+}</pre>
+      </div>
+
+      <div class="info-box tip">
+        <span class="info-icon">🚀</span>
+        <div>
+          <strong>Framework চালু করতে:</strong><br>
+          <code>composer install</code><br>
+          <code>php -S localhost:8000 -t public/</code><br>
+          তারপর ব্রাউজারে: <code>http://localhost:8000/users</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">সারসংক্ষেপ</span>
+        <h2 class="section-title">PSR ব্যবহারের গুরুত্ব</h2>
+      </div>
+
+      <div class="progress-item">
+        <div class="progress-label"><span>Interoperability (আন্তঃকার্যক্ষমতা)</span><span>100%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label"><span>Code Readability (পঠনযোগ্যতা)</span><span>95%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label"><span>Testability (পরীক্ষাযোগ্যতা)</span><span>90%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label"><span>Maintainability (রক্ষণাবেক্ষণযোগ্যতা)</span><span>92%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+      </div>
+
+      <div class="info-box tip" style="margin-top:2rem">
+        <span class="info-icon">🎯</span>
+        <div>
+          <strong>মনে রাখুন:</strong> PSR শুধু নিয়ম নয় — এগুলো PHP সম্প্রদায়ের সম্মিলিত প্রজ্ঞা। এগুলো মেনে চললে আপনার কোড যেকোনো বড় PHP প্রজেক্টে সহজেই মিশে যেতে পারবে।
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <strong>PHP PSR বাংলা ডকুমেন্টেশন</strong> · সমস্ত স্বীকৃত PSR কভার করা হয়েছে<br>
+  <span style="font-size:0.75rem;opacity:0.5;margin-top:0.5rem;display:block">PHP-FIG · PHP Standards Recommendations · 2025</span>
+</footer>
+
+<script>
+  // Active sidebar links
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0% -70% 0%' });
+
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+  // Animate progress bars on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => bar.style.width = w, 300);
+    });
+  });
+</script>
+
+</body>
+</html>
