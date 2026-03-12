@@ -2159,65 +2159,6 @@ upstream laravel_backend {
 </div>
 
 <!-- CHEATSHEET -->
-<div id="sec-cheatsheet" class="sec">
-  <div class="pg-title">📋 System Design চিটশিট</div>
-  <div class="pg-sub">Interview-এ দ্রুত reference-এর জন্য</div>
-
-  <table style="margin-bottom:20px">
-    <tr><th>পরিস্থিতি</th><th>সমাধান</th><th>Laravel</th></tr>
-    <tr><td>Traffic বাড়ছে</td><td>Horizontal scaling + LB</td><td>Redis session/cache, Queue</td></tr>
-    <tr><td>DB slow</td><td>Index, Cache, Read replica</td><td>Eager loading, Cache::remember</td></tr>
-    <tr><td>API overloaded</td><td>Rate limiting</td><td>throttle middleware</td></tr>
-    <tr><td>Slow responses</td><td>Caching + CDN</td><td>Cache::remember, Cloudflare</td></tr>
-    <tr><td>Background tasks</td><td>Message Queue</td><td>Laravel Queue + Horizon</td></tr>
-    <tr><td>Service crash</td><td>Circuit Breaker</td><td>try/catch + fallback</td></tr>
-    <tr><td>Data consistency</td><td>Transactions + ACID</td><td>DB::transaction()</td></tr>
-    <tr><td>Search feature</td><td>Elasticsearch / Full-text</td><td>Scout + Meilisearch</td></tr>
-    <tr><td>File storage</td><td>Object Storage (S3)</td><td>Storage::disk('s3')</td></tr>
-    <tr><td>Real-time</td><td>WebSocket / SSE</td><td>Laravel Reverb / Echo</td></tr>
-    <tr><td>Large data</td><td>Pagination + Cursor</td><td>cursorPaginate()</td></tr>
-    <tr><td>Complex queries</td><td>CQRS + Read model</td><td>Separate query service</td></tr>
-    <tr><td>Audit trail</td><td>Event Sourcing</td><td>spatie/laravel-event-sourcing</td></tr>
-    <tr><td>Permission</td><td>RBAC / ABAC</td><td>Gates & Policies / Spatie</td></tr>
-    <tr><td>Microservices</td><td>API Gateway + Discovery</td><td>Guzzle + Service Container</td></tr>
-  </table>
-
-  <div class="highlight">
-    <strong>🎯 Interview Tips:</strong><br/>
-    <span style="opacity:.85;font-size:13px">
-    ① Always start with requirements clarification<br/>
-    ② Estimate scale: users, QPS, storage<br/>
-    ③ Start simple (monolith), then scale<br/>
-    ④ Talk about trade-offs explicitly<br/>
-    ⑤ Draw the architecture diagram<br/>
-    ⑥ Mention bottlenecks and how to solve them
-    </span>
-  </div>
-
-  <div class="lbl">⚡ Number নামতা — সবসময় মনে রাখুন</div>
-  <table>
-    <tr><th>Unit</th><th>Value</th><th>উদাহরণ</th></tr>
-    <tr><td>1KB</td><td>১,০০০ bytes</td><td>একটি tweet</td></tr>
-    <tr><td>1MB</td><td>১০ লাখ bytes</td><td>একটি ছবি</td></tr>
-    <tr><td>1GB</td><td>১০০ কোটি bytes</td><td>একটি movie</td></tr>
-    <tr><td>1TB</td><td>১ লাখ কোটি bytes</td><td>১০০০ movies</td></tr>
-    <tr><td>1ms latency</td><td>L1 cache ~1ns, RAM ~100ns, SSD ~100µs, HDD ~10ms, Network ~150ms</td><td>সবচেয়ে দ্রুত = L1 cache</td></tr>
-    <tr><td>Availability</td><td>99% = ৮৭.৬h/yr, 99.9% = ৮.৭h/yr, 99.99% = ৫২m/yr</td><td>৪ nine = enterprise grade</td></tr>
-  </table>
-
-  <!-- remaining sections placeholder -->
-  <div style="margin-top:20px;background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,.06)">
-    <strong>📌 বাকি Topics:</strong> সাইডবার থেকে সব section দেখুন।
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <span class="tag">CDN</span><span class="tag">WebSocket</span><span class="tag">Circuit Breaker</span>
-      <span class="tag">SQL vs NoSQL</span><span class="tag">Transactions</span><span class="tag">DDD</span>
-      <span class="tag">E-Commerce Case</span><span class="tag">Notification System</span>
-      <span class="tag">Monolith vs Microservices</span>
-    </div>
-  </div>
-</div>
-
-<!-- remaining stubs -->
 <div id="sec-cdn" class="sec"><div class="topic"><div class="topic-hd" style="background:linear-gradient(135deg,#0c4a6e,#0891b2)"><div style="font-size:10px;opacity:.6;letter-spacing:2px">SCALABILITY · S4</div><h1 style="font-size:28px;margin:6px 0 2px">CDN — Content Delivery Network</h1></div><div class="topic-bd"><div class="lbl">💡 উপমা</div><div class="box box-yellow"><strong>ডিস্ট্রিবিউটেড গুদামঘর:</strong> ঢাকায় warehouse থেকে চট্টগ্রামে পাঠাতে সময় লাগে। কিন্তু চট্টগ্রামে local warehouse থাকলে দ্রুত। CDN বিশ্বজুড়ে এমন PoP (Point of Presence) রাখে।</div><div class="lbl">✅ কখন ব্যবহার করবেন</div><div class="when-box">✔ Static assets (JS/CSS/Images/Fonts)<br/>✔ Video streaming<br/>✔ DDoS protection (Cloudflare)<br/>✔ Global users-এর জন্য low latency</div><div class="lbl">💻 Laravel CDN Configuration</div><pre><span class="cm">// config/filesystems.php</span>
 <span class="st">'s3'</span> => [
     <span class="st">'driver'</span>   => <span class="st">'s3'</span>,
@@ -2431,9 +2372,601 @@ MONOLITH                          MICROSERVICES
 [Email]  [Inventory]   [Analytics]
 [Worker] [Worker]      [Worker]
 </pre></div>
-<pre><span class="cm">// Inventory Lock — Race condition বন্ধ</span>
+<div class="ctabs"><div class="tbns">
+  <button class="tbn active" onclick="tab(this,'ec1')">Inventory Lock</button>
+  <button class="tbn" onclick="tab(this,'ec2')">Order State Machine</button>
+  <button class="tbn" onclick="tab(this,'ec3')">Product Search</button>
+  <button class="tbn" onclick="tab(this,'ec4')">Flash Sale Design</button>
+</div>
+<div id="ec1" class="tpn active"><pre><span class="cm">// Inventory Lock — Race condition বন্ধ (Pessimistic Locking)</span>
 <span class="kw">class</span> <span class="tp">InventoryService</span>
 {
     <span class="kw">public function</span> <span class="fn">reserve</span>(<span class="tp">int</span> <span class="nm">$productId</span>, <span class="tp">int</span> <span class="nm">$qty</span>): <span class="tp">bool</span>
     {
-        <span class="kw">return</span> <span class="tp">DB</span>::<span class="
+        <span class="kw">return</span> <span class="tp">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span>() <span class="kw">use</span> (<span class="nm">$productId</span>, <span class="nm">$qty</span>) {
+            <span class="nm">$product</span> = <span class="tp">Product</span>::<span class="fn">lockForUpdate</span>()-><span class="fn">findOrFail</span>(<span class="nm">$productId</span>);
+
+            <span class="kw">if</span> (<span class="nm">$product</span>->stock < <span class="nm">$qty</span>) {
+                <span class="kw">throw new</span> \<span class="tp">Exception</span>(<span class="st">'স্টক নেই'</span>);
+            }
+
+            <span class="nm">$product</span>-><span class="fn">decrement</span>(<span class="st">'stock'</span>, <span class="nm">$qty</span>);
+            <span class="kw">return</span> <span class="kw">true</span>;
+        });
+    }
+
+    <span class="cm">// Redis দিয়ে Optimistic Lock (High traffic-এর জন্য)</span>
+    <span class="kw">public function</span> <span class="fn">reserveWithRedis</span>(<span class="tp">int</span> <span class="nm">$productId</span>, <span class="tp">int</span> <span class="nm">$qty</span>): <span class="tp">bool</span>
+    {
+        <span class="nm">$key</span> = <span class="st">"stock:{$productId}"</span>;
+        <span class="cm">// Lua script — atomic operation</span>
+        <span class="nm">$script</span> = <span class="st">'
+            local stock = tonumber(redis.call("GET", KEYS[1]))
+            if stock and stock >= tonumber(ARGV[1]) then
+                redis.call("DECRBY", KEYS[1], ARGV[1])
+                return 1
+            end
+            return 0
+        '</span>;
+        <span class="nm">$result</span> = <span class="tp">Redis</span>::<span class="fn">eval</span>(<span class="nm">$script</span>, <span class="nm">1</span>, <span class="nm">$key</span>, <span class="nm">$qty</span>);
+
+        <span class="kw">if</span> (<span class="nm">$result</span>) {
+            <span class="cm">// Async DB sync via Queue</span>
+            <span class="tp">SyncStockJob</span>::<span class="fn">dispatch</span>(<span class="nm">$productId</span>, <span class="nm">$qty</span>);
+        }
+        <span class="kw">return</span> (<span class="tp">bool</span>) <span class="nm">$result</span>;
+    }
+}</pre></div>
+<div id="ec2" class="tpn"><pre><span class="cm">// Order State Machine — অবৈধ transition রোধ করুন</span>
+<span class="kw">enum</span> <span class="tp">OrderStatus</span>: <span class="tp">string</span>
+{
+    <span class="kw">case</span> <span class="nm">PENDING</span>   = <span class="st">'pending'</span>;
+    <span class="kw">case</span> <span class="nm">CONFIRMED</span> = <span class="st">'confirmed'</span>;
+    <span class="kw">case</span> <span class="nm">SHIPPED</span>   = <span class="st">'shipped'</span>;
+    <span class="kw">case</span> <span class="nm">DELIVERED</span> = <span class="st">'delivered'</span>;
+    <span class="kw">case</span> <span class="nm">CANCELLED</span> = <span class="st">'cancelled'</span>;
+
+    <span class="kw">public function</span> <span class="fn">canTransitionTo</span>(<span class="kw">self</span> <span class="nm">$next</span>): <span class="tp">bool</span>
+    {
+        <span class="kw">return match</span>(<span class="nm">$this</span>) {
+            <span class="kw">self</span>::<span class="nm">PENDING</span>   => <span class="fn">in_array</span>(<span class="nm">$next</span>, [<span class="kw">self</span>::<span class="nm">CONFIRMED</span>, <span class="kw">self</span>::<span class="nm">CANCELLED</span>]),
+            <span class="kw">self</span>::<span class="nm">CONFIRMED</span> => <span class="nm">$next</span> === <span class="kw">self</span>::<span class="nm">SHIPPED</span>,
+            <span class="kw">self</span>::<span class="nm">SHIPPED</span>   => <span class="nm">$next</span> === <span class="kw">self</span>::<span class="nm">DELIVERED</span>,
+            <span class="kw">default</span>         => <span class="kw">false</span>, <span class="cm">// DELIVERED/CANCELLED terminal state</span>
+        };
+    }
+}
+
+<span class="kw">class</span> <span class="tp">Order</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">public function</span> <span class="fn">transitionTo</span>(<span class="tp">OrderStatus</span> <span class="nm">$newStatus</span>): <span class="tp">void</span>
+    {
+        <span class="nm">$current</span> = <span class="tp">OrderStatus</span>::<span class="fn">from</span>(<span class="nm">$this</span>->status);
+
+        <span class="kw">if</span> (!<span class="nm">$current</span>-><span class="fn">canTransitionTo</span>(<span class="nm">$newStatus</span>)) {
+            <span class="kw">throw new</span> \<span class="tp">DomainException</span>(
+                <span class="st">"{$current->value} থেকে {$newStatus->value}-এ যাওয়া যাবে না"</span>
+            );
+        }
+        <span class="nm">$this</span>-><span class="fn">update</span>([<span class="st">'status'</span> => <span class="nm">$newStatus</span>]);
+        <span class="tp">OrderStatusChanged</span>::<span class="fn">dispatch</span>(<span class="nm">$this</span>, <span class="nm">$current</span>, <span class="nm">$newStatus</span>);
+    }
+}</pre></div>
+<div id="ec3" class="tpn"><pre><span class="cm">// Elasticsearch Product Search — Laravel Scout</span>
+<span class="cm">// composer require laravel/scout && php artisan scout:import "App\Models\Product"</span>
+
+<span class="kw">class</span> <span class="tp">Product</span> <span class="kw">extends</span> <span class="tp">Model</span>
+{
+    <span class="kw">use</span> <span class="tp">Searchable</span>;
+
+    <span class="kw">public function</span> <span class="fn">toSearchableArray</span>(): array
+    {
+        <span class="kw">return</span> [
+            <span class="st">'id'</span>          => <span class="nm">$this</span>->id,
+            <span class="st">'name'</span>        => <span class="nm">$this</span>->name,
+            <span class="st">'description'</span> => <span class="nm">$this</span>->description,
+            <span class="st">'category'</span>    => <span class="nm">$this</span>->category->name,
+            <span class="st">'price'</span>       => <span class="nm">$this</span>->price,
+            <span class="st">'in_stock'</span>    => <span class="nm">$this</span>->stock > <span class="nm">0</span>,
+            <span class="st">'tags'</span>        => <span class="nm">$this</span>->tags-><span class="fn">pluck</span>(<span class="st">'name'</span>),
+        ];
+    }
+}
+
+<span class="cm">// Controller — Fuzzy + Filtered search</span>
+<span class="kw">class</span> <span class="tp">SearchController</span>
+{
+    <span class="kw">public function</span> <span class="fn">__invoke</span>(<span class="tp">Request</span> <span class="nm">$request</span>): <span class="tp">JsonResponse</span>
+    {
+        <span class="nm">$results</span> = <span class="tp">Product</span>::<span class="fn">search</span>(<span class="nm">$request</span>->q)
+            -><span class="fn">where</span>(<span class="st">'in_stock'</span>, <span class="kw">true</span>)
+            -><span class="fn">when</span>(<span class="nm">$request</span>->category, <span class="kw">fn</span>(<span class="nm">$s</span>) =>
+                <span class="nm">$s</span>-><span class="fn">where</span>(<span class="st">'category'</span>, <span class="nm">$request</span>->category)
+            )
+            -><span class="fn">paginate</span>(<span class="nm">20</span>);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>(<span class="nm">$results</span>);
+    }
+}</pre></div>
+<div id="ec4" class="tpn"><pre><span class="cm">// Flash Sale — ১০ লাখ request ৫ মিনিটে handle করা</span>
+
+<span class="cm">// Strategy: Redis Queue + Token Bucket</span>
+<span class="kw">class</span> <span class="tp">FlashSaleController</span>
+{
+    <span class="kw">public function</span> <span class="fn">buy</span>(<span class="tp">Request</span> <span class="nm">$request</span>): <span class="tp">JsonResponse</span>
+    {
+        <span class="nm">$userId</span>    = <span class="nm">$request</span>->user()->id;
+        <span class="nm">$productId</span> = <span class="nm">$request</span>->product_id;
+
+        <span class="cm">// ① একজন user একবারই কিনতে পারবে</span>
+        <span class="nm">$bought</span> = <span class="tp">Redis</span>::<span class="fn">sIsMember</span>(<span class="st">"flash:buyers:{$productId}"</span>, <span class="nm">$userId</span>);
+        <span class="kw">if</span> (<span class="nm">$bought</span>) {
+            <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'error'</span> => <span class="st">'আপনি ইতোমধ্যে কিনেছেন'</span>], <span class="nm">409</span>);
+        }
+
+        <span class="cm">// ② Redis atomic stock check + decrement</span>
+        <span class="nm">$script</span> = <span class="st">'
+            local stock = tonumber(redis.call("GET", KEYS[1]))
+            if stock and stock > 0 then
+                redis.call("DECR", KEYS[1])
+                redis.call("SADD", KEYS[2], ARGV[1])
+                return 1
+            end
+            return 0
+        '</span>;
+
+        <span class="nm">$ok</span> = <span class="tp">Redis</span>::<span class="fn">eval</span>(<span class="nm">$script</span>, <span class="nm">2</span>,
+            <span class="st">"flash:stock:{$productId}"</span>,
+            <span class="st">"flash:buyers:{$productId}"</span>,
+            <span class="nm">$userId</span>
+        );
+
+        <span class="kw">if</span> (!<span class="nm">$ok</span>) {
+            <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'error'</span> => <span class="st">'স্টক শেষ!'</span>], <span class="nm">410</span>);
+        }
+
+        <span class="cm">// ③ Queue-এ দিয়ে দিন — DB write async</span>
+        <span class="tp">ProcessFlashSaleOrder</span>::<span class="fn">dispatch</span>(<span class="nm">$userId</span>, <span class="nm">$productId</span>);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'message'</span> => <span class="st">'অর্ডার প্রক্রিয়াধীন!'</span>]);
+    }
+}</pre></div>
+</div>
+
+<div class="lbl" style="margin-top:20px">📊 E-Commerce Capacity Estimation</div>
+<table>
+  <tr><th>Metric</th><th>Assumption</th><th>Calculation</th><th>Result</th></tr>
+  <tr><td>DAU</td><td>১ লাখ ব্যবহারকারী</td><td>—</td><td>100,000</td></tr>
+  <tr><td>Orders/day</td><td>DAU এর ৫%</td><td>100,000 × 5%</td><td>5,000</td></tr>
+  <tr><td>Peak QPS</td><td>৮ ঘণ্টায় পিক ট্র্যাফিক</td><td>5,000 / (8×3600)</td><td>~0.17 QPS → 5× = ~1 QPS</td></tr>
+  <tr><td>DB Storage/yr</td><td>Order avg 1KB</td><td>5,000 × 365 × 1KB</td><td>~1.8 GB/year</td></tr>
+  <tr><td>Cache hit rate</td><td>Product page</td><td>80% from cache</td><td>DB load 5x কম</td></tr>
+</table>
+
+</div></div></div>
+
+<!-- ======== NOTIFICATION SYSTEM ======== -->
+<div id="sec-notification" class="sec">
+<div class="topic">
+  <div class="topic-hd" style="background:linear-gradient(135deg,#0c4a6e,#0284c7)">
+    <div style="font-size:10px;opacity:.6;letter-spacing:2px">CASE STUDY · P3</div>
+    <h1 style="font-size:28px;margin:6px 0 2px">Notification System Design</h1>
+    <div style="opacity:.8">Email, SMS, Push, In-App — ১ কোটি+ user-কে notify করুন</div>
+  </div>
+  <div class="topic-bd">
+    <div class="lbl">📋 High-Level Architecture</div>
+    <div class="diagram"><pre>
+  Producer Services
+  (Order, Payment, Delivery)
+        │
+        ▼
+  [Notification Service API]
+        │
+        ▼
+  [Message Queue — Laravel Horizon]
+  ┌──────┬────────────┬────────────┐
+  ▼      ▼            ▼            ▼
+[Email] [SMS]    [Push FCM]  [In-App]
+[Queue] [Queue]  [Queue]     [Queue]
+  │      │            │            │
+  ▼      ▼            ▼            ▼
+[SES] [Twilio]   [Firebase]  [DB + WS]
+                              [Redis]
+
+  ✅ User preference check → channel select
+  ✅ Rate limiting per user (max 10 notif/hour)
+  ✅ Retry with exponential backoff
+  ✅ Delivery tracking & read receipts</pre></div>
+
+    <div class="lbl">💻 Implementation</div>
+    <div class="ctabs">
+      <div class="tbns">
+        <button class="tbn active" onclick="tab(this,'nf1')">Notification Service</button>
+        <button class="tbn" onclick="tab(this,'nf2')">Multi-Channel Jobs</button>
+        <button class="tbn" onclick="tab(this,'nf3')">User Preferences</button>
+        <button class="tbn" onclick="tab(this,'nf4')">In-App + WebSocket</button>
+      </div>
+      <div id="nf1" class="tpn active"><pre><span class="cm">// app/Services/NotificationService.php</span>
+<span class="kw">class</span> <span class="tp">NotificationService</span>
+{
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="tp">User</span> <span class="nm">$user</span>, <span class="tp">NotificationData</span> <span class="nm">$data</span>): <span class="tp">void</span>
+    {
+        <span class="cm">// ① Rate limit check — ঘণ্টায় সর্বোচ্চ ১০টি</span>
+        <span class="nm">$key</span> = <span class="st">"notif:rate:{$user->id}"</span>;
+        <span class="nm">$count</span> = <span class="tp">Redis</span>::<span class="fn">incr</span>(<span class="nm">$key</span>);
+        <span class="kw">if</span> (<span class="nm">$count</span> === <span class="nm">1</span>) <span class="tp">Redis</span>::<span class="fn">expire</span>(<span class="nm">$key</span>, <span class="nm">3600</span>);
+        <span class="kw">if</span> (<span class="nm">$count</span> > <span class="nm">10</span>) {
+            <span class="tp">Log</span>::<span class="fn">info</span>(<span class="st">"Rate limited: user {$user->id}"</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="cm">// ② User preference অনুযায়ী channel বাছাই</span>
+        <span class="nm">$prefs</span> = <span class="nm">$user</span>->notificationPreferences;
+
+        <span class="kw">if</span> (<span class="nm">$prefs</span>->email_enabled) {
+            <span class="tp">SendEmailNotification</span>::<span class="fn">dispatch</span>(<span class="nm">$user</span>, <span class="nm">$data</span>)
+                -><span class="fn">onQueue</span>(<span class="st">'notifications-email'</span>);
+        }
+        <span class="kw">if</span> (<span class="nm">$prefs</span>->sms_enabled && <span class="nm">$data</span>->is_critical) {
+            <span class="tp">SendSmsNotification</span>::<span class="fn">dispatch</span>(<span class="nm">$user</span>, <span class="nm">$data</span>)
+                -><span class="fn">onQueue</span>(<span class="st">'notifications-sms'</span>);
+        }
+        <span class="kw">if</span> (<span class="nm">$prefs</span>->push_enabled && <span class="nm">$user</span>->device_token) {
+            <span class="tp">SendPushNotification</span>::<span class="fn">dispatch</span>(<span class="nm">$user</span>, <span class="nm">$data</span>)
+                -><span class="fn">onQueue</span>(<span class="st">'notifications-push'</span>);
+        }
+
+        <span class="cm">// ③ In-app সবসময় সেভ করুন</span>
+        <span class="tp">Notification</span>::<span class="fn">create</span>([
+            <span class="st">'user_id'</span> => <span class="nm">$user</span>->id,
+            <span class="st">'type'</span>    => <span class="nm">$data</span>->type,
+            <span class="st">'title'</span>   => <span class="nm">$data</span>->title,
+            <span class="st">'body'</span>    => <span class="nm">$data</span>->body,
+            <span class="st">'data'</span>    => <span class="nm">$data</span>->payload,
+        ]);
+
+        <span class="cm">// ④ Real-time push via WebSocket</span>
+        <span class="tp">broadcast</span>(<span class="kw">new</span> <span class="tp">NewNotification</span>(<span class="nm">$user</span>->id, <span class="nm">$data</span>));
+    }
+}</pre></div>
+      <div id="nf2" class="tpn"><pre><span class="cm">// Email Job — Retry with exponential backoff</span>
+<span class="kw">class</span> <span class="tp">SendEmailNotification</span> <span class="kw">implements</span> <span class="tp">ShouldQueue</span>
+{
+    <span class="kw">use</span> <span class="tp">Dispatchable</span>, <span class="tp">Queueable</span>, <span class="tp">SerializesModels</span>;
+
+    <span class="kw">public</span> <span class="tp">int</span> <span class="nm">$tries</span>   = <span class="nm">3</span>;
+    <span class="kw">public</span> <span class="tp">int</span> <span class="nm">$timeout</span> = <span class="nm">30</span>;
+
+    <span class="kw">public function</span> <span class="fn">backoff</span>(): array
+    {
+        <span class="kw">return</span> [<span class="nm">30</span>, <span class="nm">120</span>, <span class="nm">600</span>]; <span class="cm">// 30s, 2min, 10min</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(): <span class="tp">void</span>
+    {
+        <span class="tp">Mail</span>::<span class="fn">to</span>(<span class="nm">$this</span>->user)-><span class="fn">send</span>(<span class="kw">new</span> <span class="tp">NotificationMail</span>(<span class="nm">$this</span>->data));
+        <span class="nm">$this</span>-><span class="fn">markDelivered</span>(<span class="st">'email'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">failed</span>(\<span class="tp">Throwable</span> <span class="nm">$e</span>): <span class="tp">void</span>
+    {
+        <span class="nm">$this</span>-><span class="fn">markFailed</span>(<span class="st">'email'</span>, <span class="nm">$e</span>-><span class="fn">getMessage</span>());
+    }
+}
+
+<span class="cm">// SMS Job (Twilio)</span>
+<span class="kw">class</span> <span class="tp">SendSmsNotification</span> <span class="kw">implements</span> <span class="tp">ShouldQueue</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">TwilioService</span> <span class="nm">$twilio</span>): <span class="tp">void</span>
+    {
+        <span class="nm">$twilio</span>-><span class="fn">send</span>(
+            <span class="st">'+880'</span> . <span class="nm">$this</span>->user->phone,
+            <span class="nm">$this</span>->data->body
+        );
+    }
+}
+
+<span class="cm">// Push Notification Job (Firebase FCM)</span>
+<span class="kw">class</span> <span class="tp">SendPushNotification</span> <span class="kw">implements</span> <span class="tp">ShouldQueue</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="tp">FirebaseService</span> <span class="nm">$fcm</span>): <span class="tp">void</span>
+    {
+        <span class="nm">$fcm</span>-><span class="fn">sendToDevice</span>(
+            <span class="nm">$this</span>->user->device_token,
+            [<span class="st">'title'</span> => <span class="nm">$this</span>->data->title, <span class="st">'body'</span> => <span class="nm">$this</span>->data->body],
+            <span class="nm">$this</span>->data->payload
+        );
+    }
+}</pre></div>
+      <div id="nf3" class="tpn"><pre><span class="cm">// Migration — User notification preferences</span>
+<span class="tp">Schema</span>::<span class="fn">create</span>(<span class="st">'notification_preferences'</span>, <span class="kw">function</span> (<span class="tp">Blueprint</span> <span class="nm">$table</span>) {
+    <span class="nm">$table</span>-><span class="fn">id</span>();
+    <span class="nm">$table</span>-><span class="fn">foreignId</span>(<span class="st">'user_id'</span>)-><span class="fn">constrained</span>()-><span class="fn">cascadeOnDelete</span>();
+    <span class="nm">$table</span>-><span class="fn">boolean</span>(<span class="st">'email_enabled'</span>)-><span class="fn">default</span>(<span class="kw">true</span>);
+    <span class="nm">$table</span>-><span class="fn">boolean</span>(<span class="st">'sms_enabled'</span>)-><span class="fn">default</span>(<span class="kw">false</span>);
+    <span class="nm">$table</span>-><span class="fn">boolean</span>(<span class="st">'push_enabled'</span>)-><span class="fn">default</span>(<span class="kw">true</span>);
+    <span class="nm">$table</span>-><span class="fn">json</span>(<span class="st">'quiet_hours'</span>)-><span class="fn">nullable</span>(); <span class="cm">// {"start":"22:00","end":"08:00"}</span>
+    <span class="nm">$table</span>-><span class="fn">json</span>(<span class="st">'disabled_types'</span>)-><span class="fn">default</span>(<span class="st">'[]'</span>); <span class="cm">// ["marketing","newsletter"]</span>
+    <span class="nm">$table</span>-><span class="fn">timestamps</span>();
+});
+
+<span class="cm">// Quiet Hours Check</span>
+<span class="kw">public function</span> <span class="fn">isInQuietHours</span>(<span class="tp">User</span> <span class="nm">$user</span>): <span class="tp">bool</span>
+{
+    <span class="nm">$quiet</span> = <span class="nm">$user</span>->notificationPreferences->quiet_hours;
+    <span class="kw">if</span> (!<span class="nm">$quiet</span>) <span class="kw">return</span> <span class="kw">false</span>;
+
+    <span class="nm">$now</span>   = <span class="fn">now</span>()-><span class="fn">setTimezone</span>(<span class="nm">$user</span>->timezone ?? <span class="st">'Asia/Dhaka'</span>);
+    <span class="nm">$start</span> = <span class="tp">Carbon</span>::<span class="fn">parse</span>(<span class="nm">$quiet</span>[<span class="st">'start'</span>])-><span class="fn">setDate</span>(<span class="nm">$now</span>->year, <span class="nm">$now</span>->month, <span class="nm">$now</span>->day);
+    <span class="nm">$end</span>   = <span class="tp">Carbon</span>::<span class="fn">parse</span>(<span class="nm">$quiet</span>[<span class="st">'end'</span>])-><span class="fn">setDate</span>(<span class="nm">$now</span>->year, <span class="nm">$now</span>->month, <span class="nm">$now</span>->day);
+
+    <span class="kw">return</span> <span class="nm">$now</span>-><span class="fn">between</span>(<span class="nm">$start</span>, <span class="nm">$end</span>);
+}</pre></div>
+      <div id="nf4" class="tpn"><pre><span class="cm">// In-App Notification — Unread count via Redis</span>
+<span class="kw">class</span> <span class="tp">NotificationController</span>
+{
+    <span class="cm">// Unread count (Redis থেকে, DB hit নয়)</span>
+    <span class="kw">public function</span> <span class="fn">unreadCount</span>(<span class="tp">Request</span> <span class="nm">$request</span>): <span class="tp">JsonResponse</span>
+    {
+        <span class="nm">$count</span> = <span class="tp">Redis</span>::<span class="fn">get</span>(<span class="st">"notif:unread:{$request->user()->id}"</span>) ?? <span class="nm">0</span>;
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'count'</span> => (int) <span class="nm">$count</span>]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">markAllRead</span>(<span class="tp">Request</span> <span class="nm">$request</span>): <span class="tp">JsonResponse</span>
+    {
+        <span class="nm">$userId</span> = <span class="nm">$request</span>->user()->id;
+        <span class="tp">Notification</span>::<span class="fn">where</span>(<span class="st">'user_id'</span>, <span class="nm">$userId</span>)
+            -><span class="fn">whereNull</span>(<span class="st">'read_at'</span>)
+            -><span class="fn">update</span>([<span class="st">'read_at'</span> => <span class="fn">now</span>()]);
+        <span class="tp">Redis</span>::<span class="fn">set</span>(<span class="st">"notif:unread:{$userId}"</span>, <span class="nm">0</span>);
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([<span class="st">'ok'</span> => <span class="kw">true</span>]);
+    }
+}
+
+<span class="cm">// Broadcast Event (Reverb/Pusher)</span>
+<span class="kw">class</span> <span class="tp">NewNotification</span> <span class="kw">implements</span> <span class="tp">ShouldBroadcast</span>
+{
+    <span class="kw">public function</span> <span class="fn">broadcastOn</span>(): <span class="tp">PrivateChannel</span>
+    {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">PrivateChannel</span>(<span class="st">"user.{$this->userId}"</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">broadcastWith</span>(): array
+    {
+        <span class="kw">return</span> [
+            <span class="st">'title'</span> => <span class="nm">$this</span>->data->title,
+            <span class="st">'body'</span>  => <span class="nm">$this</span>->data->body,
+            <span class="st">'type'</span>  => <span class="nm">$this</span>->data->type,
+        ];
+    }
+}</pre></div>
+    </div>
+
+    <div class="lbl" style="margin-top:20px">📊 Notification System Capacity</div>
+    <table>
+      <tr><th>Channel</th><th>Volume</th><th>Provider</th><th>Cost Estimate</th></tr>
+      <tr><td>Email</td><td>৫ লাখ/দিন</td><td>AWS SES</td><td>~$50/মাস</td></tr>
+      <tr><td>SMS</td><td>৫০ হাজার/দিন</td><td>Twilio</td><td>~$400/মাস</td></tr>
+      <tr><td>Push (FCM)</td><td>২০ লাখ/দিন</td><td>Firebase</td><td>বিনামূল্যে</td></tr>
+      <tr><td>In-App</td><td>সীমাহীন</td><td>Redis + DB</td><td>সার্ভার খরচ</td></tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ======== CHEATSHEET (fill missing content) ======== -->
+<div id="sec-cheatsheet" class="sec">
+<div class="hero" style="margin-bottom:24px">
+  <div class="hero-tag">Quick Reference</div>
+  <h1>System Design <span>চিটশিট</span></h1>
+  <p>Interview-এর আগে এই চিটশিট দেখুন — সব গুরুত্বপূর্ণ concept এক জায়গায়।</p>
+</div>
+
+<div class="pg-title">⚡ Numbers Every Engineer Should Know</div>
+<div class="pg-sub" style="margin-bottom:16px">Estimation-এর জন্য এই সংখ্যাগুলো মুখস্থ রাখুন</div>
+<table style="margin-bottom:24px">
+  <tr><th>Operation</th><th>Latency</th><th>Relative Speed</th></tr>
+  <tr><td>L1 Cache Read</td><td>0.5 ns</td><td><span class="badge" style="background:#dcfce7;color:#166534">⚡⚡⚡ সবচেয়ে দ্রুত</span></td></tr>
+  <tr><td>L2 Cache Read</td><td>7 ns</td><td><span class="badge" style="background:#dcfce7;color:#166534">⚡⚡⚡</span></td></tr>
+  <tr><td>RAM Read</td><td>100 ns</td><td><span class="badge" style="background:#dbeafe;color:#1e3a8a">⚡⚡ দ্রুত</span></td></tr>
+  <tr><td>Redis GET</td><td>~0.1 ms</td><td><span class="badge" style="background:#dbeafe;color:#1e3a8a">⚡⚡</span></td></tr>
+  <tr><td>SSD Read</td><td>0.1 ms</td><td><span class="badge" style="background:#fef9c3;color:#713f12">⚡ মধ্যম</span></td></tr>
+  <tr><td>DB Query (indexed)</td><td>1–5 ms</td><td><span class="badge" style="background:#fef9c3;color:#713f12">⚡</span></td></tr>
+  <tr><td>Same DC Network</td><td>0.5 ms</td><td><span class="badge" style="background:#fef9c3;color:#713f12">⚡</span></td></tr>
+  <tr><td>DB Query (no index)</td><td>100+ ms</td><td><span class="badge" style="background:#fee2e2;color:#991b1b">🐢 ধীর</span></td></tr>
+  <tr><td>Cross-continent</td><td>150 ms</td><td><span class="badge" style="background:#fee2e2;color:#991b1b">🐢</span></td></tr>
+  <tr><td>HDD Seek</td><td>10 ms</td><td><span class="badge" style="background:#fee2e2;color:#991b1b">🐢 সবচেয়ে ধীর</span></td></tr>
+</table>
+
+<div class="pg-title" style="margin-top:8px">🔢 Estimation Cheatsheet</div>
+<div class="grid g2" style="margin:16px 0 24px">
+  <div class="card">
+    <div class="lbl">📅 Time Conversion</div>
+    <table>
+      <tr><td>১ দিন</td><td style="color:var(--accent);font-weight:700">~86,400 seconds</td></tr>
+      <tr><td>১ মাস</td><td style="color:var(--accent);font-weight:700">~2.5M seconds</td></tr>
+      <tr><td>১ বছর</td><td style="color:var(--accent);font-weight:700">~31.5M seconds</td></tr>
+      <tr><td>1M req/day</td><td style="color:var(--orange);font-weight:700">~12 req/sec</td></tr>
+      <tr><td>1B req/day</td><td style="color:var(--red);font-weight:700">~11,500 req/sec</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="lbl">💾 Storage</div>
+    <table>
+      <tr><td>1KB</td><td>Tweet 1টি</td></tr>
+      <tr><td>1MB</td><td>ছোট ছবি</td></tr>
+      <tr><td>1GB</td><td>~1 ঘণ্টার HD ভিডিও</td></tr>
+      <tr><td>1TB</td><td>~50,000 ঘণ্টা MP3</td></tr>
+      <tr><td>1PB</td><td>Facebook-এর daily data</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="pg-title">🏗️ Architecture Pattern Quick Reference</div>
+<table style="margin:16px 0 24px">
+  <tr><th>Pattern</th><th>কখন ব্যবহার</th><th>সুবিধা</th><th>অসুবিধা</th></tr>
+  <tr><td><strong>Monolith</strong></td><td>MVP, ছোট টিম</td><td>সহজ deploy, debug</td><td>Scaling সীমিত</td></tr>
+  <tr><td><strong>Microservices</strong></td><td>বড় টিম, আলাদা scaling</td><td>Independent deploy</td><td>Complex ops</td></tr>
+  <tr><td><strong>Event-Driven</strong></td><td>Async, decoupled</td><td>Loose coupling</td><td>Eventual consistency</td></tr>
+  <tr><td><strong>CQRS</strong></td><td>Read/Write আলাদা load</td><td>Optimized queries</td><td>Complexity বাড়ে</td></tr>
+  <tr><td><strong>Saga Pattern</strong></td><td>Distributed transactions</td><td>No 2PC needed</td><td>Compensating logic</td></tr>
+  <tr><td><strong>BFF</strong></td><td>Mobile/Web আলাদা API</td><td>Tailored responses</td><td>Duplication</td></tr>
+</table>
+
+<div class="pg-title">🗄️ Database Selection Guide</div>
+<table style="margin:16px 0 24px">
+  <tr><th>Use Case</th><th>Best Choice</th><th>কেন</th></tr>
+  <tr><td>Financial / Transactional</td><td><span class="tag">MySQL</span> <span class="tag">PostgreSQL</span></td><td>ACID, strong consistency</td></tr>
+  <tr><td>Session / Cache</td><td><span class="tag">Redis</span></td><td>In-memory, microsecond</td></tr>
+  <tr><td>Full-text Search</td><td><span class="tag">Elasticsearch</span></td><td>Inverted index, fast search</td></tr>
+  <tr><td>Analytics / Reporting</td><td><span class="tag">ClickHouse</span> <span class="tag">BigQuery</span></td><td>Columnar, fast aggregation</td></tr>
+  <tr><td>Social / Graph Data</td><td><span class="tag">Neo4j</span></td><td>Graph traversal</td></tr>
+  <tr><td>Time-series (IoT/Metrics)</td><td><span class="tag">InfluxDB</span> <span class="tag">TimescaleDB</span></td><td>Optimized for time queries</td></tr>
+  <tr><td>Document / Flexible schema</td><td><span class="tag">MongoDB</span></td><td>JSON-like, horizontal scale</td></tr>
+  <tr><td>Object Storage</td><td><span class="tag">S3</span> <span class="tag">MinIO</span></td><td>Unlimited, cheap, CDN-ready</td></tr>
+</table>
+
+<div class="pg-title">🔒 Security Checklist</div>
+<div class="grid g2" style="margin:16px 0 24px">
+  <div class="card">
+    <div class="lbl">✅ Auth & Access</div>
+    <div style="font-size:13px;line-height:2">
+      ☑ HTTPS সর্বত্র (HSTS header)<br/>
+      ☑ bcrypt/Argon2 password hashing<br/>
+      ☑ JWT expiry ছোট রাখুন (15m)<br/>
+      ☑ Refresh token rotation<br/>
+      ☑ Rate limiting on login<br/>
+      ☑ 2FA for admin accounts<br/>
+      ☑ RBAC / Permission system
+    </div>
+  </div>
+  <div class="card">
+    <div class="lbl">✅ Data & Input</div>
+    <div style="font-size:13px;line-height:2">
+      ☑ Prepared statements (SQL injection)<br/>
+      ☑ Input validation সার্ভার-সাইডে<br/>
+      ☑ Output escaping (XSS prevention)<br/>
+      ☑ CSRF token সব POST-এ<br/>
+      ☑ Sensitive data encrypt করুন<br/>
+      ☑ .env কখনো git-এ নয়<br/>
+      ☑ File upload type/size check
+    </div>
+  </div>
+</div>
+
+<div class="pg-title">📋 Interview Framework</div>
+<div class="steps" style="margin-top:16px">
+  <div class="step">
+    <div class="step-n">১</div>
+    <div><strong>Requirements Clarify করুন (5 মিনিট)</strong><br/><span style="color:var(--muted);font-size:12.5px">Functional vs Non-functional। Users কতজন? QPS? Read/Write ratio? Availability কত % দরকার?</span></div>
+  </div>
+  <div class="step">
+    <div class="step-n">২</div>
+    <div><strong>Capacity Estimation (3 মিনিট)</strong><br/><span style="color:var(--muted);font-size:12.5px">Storage, bandwidth, QPS calculate করুন। "Back of envelope" calculation দেখান।</span></div>
+  </div>
+  <div class="step">
+    <div class="step-n">৩</div>
+    <div><strong>High-Level Design (10 মিনিট)</strong><br/><span style="color:var(--muted);font-size:12.5px">API design, major components, data flow diagram। Whiteboard বা diagram tool ব্যবহার করুন।</span></div>
+  </div>
+  <div class="step">
+    <div class="step-n">৪</div>
+    <div><strong>Deep Dive (15 মিনিট)</strong><br/><span style="color:var(--muted);font-size:12.5px">Interviewer যে component বেছে দেন সেটা বিস্তারিত আলোচনা। DB schema, algorithm, caching strategy।</span></div>
+  </div>
+  <div class="step">
+    <div class="step-n">৫</div>
+    <div><strong>Bottleneck & Trade-offs (5 মিনিট)</strong><br/><span style="color:var(--muted);font-size:12.5px">Single point of failure কোথায়? কীভাবে scale করবেন? কোন trade-off নিয়েছেন এবং কেন?</span></div>
+  </div>
+</div>
+
+<div class="highlight" style="margin-top:20px">
+  <strong>🎯 Interview-এর Golden Rule:</strong><br/>
+  <span style="opacity:.9;font-size:13px">Perfect answer নেই। Interviewer দেখতে চান আপনি কীভাবে চিন্তা করেন, trade-off বোঝেন কিনা, এবং ambiguity handle করতে পারেন কিনা। "It depends" বলার সাহস রাখুন — তারপর explain করুন কীসের উপর depend করে।</span>
+</div>
+
+<div class="pg-title" style="margin-top:28px">🔑 Key Concepts — এক নজরে</div>
+<div class="grid g3" style="margin-top:16px">
+  <div class="card" style="border-left:4px solid #6366f1">
+    <strong style="color:#6366f1">Scalability</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      Horizontal scaling → Load balancer → Stateless app → Shared cache (Redis) → DB replica
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid #0891b2">
+    <strong style="color:#0891b2">Availability</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      99.9% = 8.7h downtime/yr · 99.99% = 52m/yr · Multi-AZ deploy · Health checks · Failover
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid #059669">
+    <strong style="color:#059669">Consistency</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      Strong (bank) vs Eventual (social feed) · CAP theorem · Read-after-write · Sticky sessions
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid #ea580c">
+    <strong style="color:#ea580c">Performance</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      Cache first · Index everything · Async jobs · CDN · DB connection pool · Query optimization
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid #dc2626">
+    <strong style="color:#dc2626">Reliability</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      Circuit breaker · Retry + backoff · Bulkhead · Timeout · Graceful degradation · Chaos testing
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid #7c3aed">
+    <strong style="color:#7c3aed">Security</strong>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.8">
+      Zero trust · Least privilege · Encrypt at rest & transit · Audit logs · OWASP Top 10
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:32px;padding:20px;background:#f8fafc;border-radius:14px;text-align:center;color:var(--muted);font-size:13px;line-height:2">
+  <div style="font-size:28px;margin-bottom:8px">🎓</div>
+  <strong style="color:var(--text)">এই কোর্সটি সম্পন্ন করার জন্য অভিনন্দন!</strong><br/>
+  System Design একদিনে শেখা যায় না। প্রতিদিন একটি concept নিয়ে practice করুন।<br/>
+  Real project-এ apply করুন। Code review করুন। Tech blog পড়ুন।<br/><br/>
+  <span style="color:#6366f1;font-weight:700">PHP/Laravel · System Design · বাংলায় শিখুন</span>
+</div>
+</div>
+
+</main>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById('sec-' + id);
+  if (sec) sec.classList.add('active');
+  if (el) el.classList.add('active');
+  if (window.innerWidth <= 768) {
+    document.getElementById('sb').classList.remove('open');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function tab(btn, id) {
+  const wrap = btn.closest('.ctabs');
+  wrap.querySelectorAll('.tbn').forEach(b => b.classList.remove('active'));
+  wrap.querySelectorAll('.tpn').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById(id);
+  if (panel) panel.classList.add('active');
+}
+
+function toggleSb() {
+  document.getElementById('sb').classList.toggle('open');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('sb').classList.remove('open');
+});
+
+// Active sidebar highlight on load
+document.querySelector('.sb-item.active')?.scrollIntoView({ block: 'nearest' });
+</script>
+</body>
+</html>
