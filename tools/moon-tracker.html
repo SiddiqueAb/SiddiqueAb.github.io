@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUNA — Live Moon Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04060f;
+    --deep: #080c1a;
+    --glow: #c8d8ff;
+    --silver: #dce8ff;
+    --dim: #6a7fa8;
+    --accent: #7eb3ff;
+    --panel: rgba(12,18,36,0.82);
+    --border: rgba(120,160,255,0.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--silver);
+    font-family: 'DM Mono', monospace;
+    overflow: hidden;
+  }
+
+  /* ── Starfield ── */
+  #starfield {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── Layout ── */
+  #app {
+    position: relative; z-index: 1;
+    width: 100vw; height: 100vh;
+    display: grid;
+    grid-template-columns: 320px 1fr 300px;
+    grid-template-rows: 60px 1fr 120px;
+    gap: 0;
+  }
+
+  /* ── Header ── */
+  #header {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(4,6,15,0.9);
+    backdrop-filter: blur(12px);
+  }
+  #header .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 6px;
+    color: var(--glow);
+    text-shadow: 0 0 24px rgba(200,216,255,0.5);
+  }
+  #header .logo span { color: var(--dim); font-size: 11px; letter-spacing: 3px; display: block; margin-top: -4px; }
+  #live-clock {
+    font-size: 11px; color: var(--dim); letter-spacing: 2px;
+    text-align: right; line-height: 1.8;
+  }
+  #live-clock strong { color: var(--accent); font-size: 15px; letter-spacing: 3px; }
+
+  /* ── Left Panel ── */
+  #left-panel {
+    grid-row: 2;
+    padding: 24px 20px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 18px;
+    overflow-y: auto;
+    background: rgba(4,6,15,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .panel-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .panel-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 4px;
+    color: var(--dim); margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .data-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .data-row .label { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .data-row .value { font-size: 13px; color: var(--silver); letter-spacing: 1px; }
+  .data-row .value.highlight { color: var(--accent); }
+
+  /* Phase visual */
+  #phase-visual {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
+  }
+  #phase-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #f0f4ff, #b8c8e8 40%, #3a4a6a 80%, #111827);
+    box-shadow: 0 0 20px rgba(180,200,255,0.25), inset -8px -4px 18px rgba(0,0,0,0.7);
+    position: relative; overflow: hidden; flex-shrink: 0;
+  }
+  #phase-icon .shadow {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    background: rgba(2,4,12,0.92);
+    border-radius: 0 50% 50% 0;
+    transition: width 0.8s ease;
+  }
+  #phase-name { font-size: 14px; color: var(--glow); letter-spacing: 1px; }
+  #phase-desc { font-size: 10px; color: var(--dim); margin-top: 3px; line-height: 1.5; }
+
+  /* Illumination bar */
+  .bar-wrap { margin-top: 4px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); margin-bottom: 5px; }
+  .bar-track {
+    height: 5px; background: rgba(255,255,255,0.06);
+    border-radius: 10px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3a5a90, #7eb3ff, #c8d8ff);
+    border-radius: 10px;
+    transition: width 1s ease;
+  }
+
+  /* Location */
+  #loc-status { font-size: 10px; color: var(--dim); margin-top: 8px; }
+  #loc-coords { font-size: 11px; color: var(--accent); margin-top: 4px; letter-spacing: 1px; }
+  #loc-btn {
+    margin-top: 10px; width: 100%;
+    background: rgba(126,179,255,0.1);
+    border: 1px solid rgba(126,179,255,0.3);
+    color: var(--accent); font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    padding: 8px; border-radius: 7px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  #loc-btn:hover { background: rgba(126,179,255,0.2); box-shadow: 0 0 12px rgba(126,179,255,0.2); }
+
+  /* ── Moon Stage ── */
+  #moon-stage {
+    grid-row: 2;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Halo rings */
+  .halo {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(200,216,255,0.05);
+    animation: pulse-halo 4s ease-in-out infinite;
+  }
+  .halo:nth-child(1) { width: 440px; height: 440px; animation-delay: 0s; }
+  .halo:nth-child(2) { width: 540px; height: 540px; animation-delay: 0.7s; }
+  .halo:nth-child(3) { width: 650px; height: 650px; animation-delay: 1.4s; }
+  @keyframes pulse-halo {
+    0%,100% { opacity: 0.4; transform: scale(1); }
+    50%      { opacity: 0.15; transform: scale(1.02); }
+  }
+
+  /* Moon canvas wrapper */
+  #moon-wrap {
+    position: relative; width: 340px; height: 340px;
+    filter: drop-shadow(0 0 60px rgba(180,200,255,0.18));
+  }
+  #moon-canvas {
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* Compass ring around moon */
+  #compass-ring {
+    position: absolute; inset: -40px;
+    border-radius: 50%;
+    border: 1px dashed rgba(126,179,255,0.18);
+  }
+  #compass-ring::before, #compass-ring::after {
+    content: ''; position: absolute;
+    background: var(--border);
+  }
+  .compass-label {
+    position: absolute;
+    font-size: 9px; color: var(--dim); letter-spacing: 2px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Right Panel ── */
+  #right-panel {
+    grid-row: 2;
+    padding: 24px 20px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 18px;
+    overflow-y: auto;
+    background: rgba(4,6,15,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Sky arc */
+  #sky-arc-wrap { position: relative; }
+  #sky-canvas { width: 100%; height: 130px; display: block; }
+
+  /* Next events */
+  .event-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(126,179,255,0.07);
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 3px; flex-shrink: 0;
+  }
+  .event-dot.rise { background: #f5c842; box-shadow: 0 0 8px #f5c84280; }
+  .event-dot.set  { background: #6688cc; box-shadow: 0 0 8px #6688cc80; }
+  .event-dot.full { background: #c8d8ff; box-shadow: 0 0 8px #c8d8ff80; }
+  .event-label { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .event-time  { font-size: 13px; color: var(--silver); margin-top: 2px; letter-spacing: 1px; }
+
+  /* ── Bottom Bar ── */
+  #bottom-bar {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 0;
+    border-top: 1px solid var(--border);
+    background: rgba(4,6,15,0.92);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+  }
+
+  .bottom-stat {
+    flex: 1;
+    padding: 14px 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .bottom-stat:last-child { border-right: none; }
+  .bottom-stat .bs-label { font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+  .bottom-stat .bs-value { font-size: 17px; color: var(--glow); letter-spacing: 2px; font-family: 'Bebas Neue', sans-serif; }
+  .bottom-stat .bs-sub   { font-size: 9px; color: var(--dim); margin-top: 2px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(126,179,255,0.2); border-radius: 2px; }
+
+  /* Loading overlay */
+  #loading {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px;
+    transition: opacity 0.6s ease;
+  }
+  #loading .logo-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; letter-spacing: 18px;
+    color: var(--glow);
+    text-shadow: 0 0 60px rgba(200,216,255,0.4);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes glow-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  #loading p { font-size: 11px; color: var(--dim); letter-spacing: 3px; }
+  #loading-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  #loading-fill { height: 100%; width: 0; background: linear-gradient(90deg, #3a5a90, #c8d8ff); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed; z-index: 50;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--silver);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(10px);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div id="loading">
+  <div class="logo-big">LUNA</div>
+  <p>CALCULATING LUNAR POSITION</p>
+  <div id="loading-bar"><div id="loading-fill"></div></div>
+</div>
+
+<div id="app" style="opacity:0;transition:opacity 0.8s ease">
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="logo">LUNA <span>LIVE MOON TRACKER</span></div>
+    <div style="font-size:10px;color:var(--dim);letter-spacing:3px;text-align:center">
+      REAL-TIME ASTRONOMICAL DATA
+    </div>
+    <div id="live-clock">
+      <strong id="clock-time">--:--:--</strong>
+      <div id="clock-date">--- -- ----</div>
+      <div id="clock-tz">UTC</div>
+    </div>
+  </div>
+
+  <!-- LEFT PANEL -->
+  <div id="left-panel">
+
+    <!-- Phase Card -->
+    <div class="panel-card">
+      <h3>Moon Phase</h3>
+      <div id="phase-visual">
+        <div id="phase-icon"><div class="shadow" id="phase-shadow"></div></div>
+        <div>
+          <div id="phase-name">—</div>
+          <div id="phase-desc">Calculating…</div>
+        </div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>ILLUMINATION</span><span id="illum-pct">—</span></div>
+        <div class="bar-track"><div class="bar-fill" id="illum-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Position Card -->
+    <div class="panel-card">
+      <h3>Sky Position</h3>
+      <div class="data-row">
+        <span class="label">AZIMUTH</span>
+        <span class="value highlight" id="azimuth">—°</span>
+      </div>
+      <div class="data-row">
+        <span class="label">ALTITUDE</span>
+        <span class="value highlight" id="altitude">—°</span>
+      </div>
+      <div class="data-row">
+        <span class="label">DIRECTION</span>
+        <span class="value" id="direction">—</span>
+      </div>
+      <div class="data-row">
+        <span class="label">VISIBLE</span>
+        <span class="value" id="visible">—</span>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="panel-card">
+      <h3>Your Location</h3>
+      <div id="loc-status">Waiting for location…</div>
+      <div id="loc-coords"></div>
+      <div id="loc-name" style="font-size:11px;color:var(--silver);margin-top:4px;letter-spacing:1px"></div>
+      <button id="loc-btn">⊕ DETECT MY LOCATION</button>
+    </div>
+
+    <!-- Ecliptic Card -->
+    <div class="panel-card">
+      <h3>Ecliptic Data</h3>
+      <div class="data-row">
+        <span class="label">RIGHT ASCENSION</span>
+        <span class="value" id="ra">—</span>
+      </div>
+      <div class="data-row">
+        <span class="label">DECLINATION</span>
+        <span class="value" id="dec">—°</span>
+      </div>
+      <div class="data-row">
+        <span class="label">DISTANCE</span>
+        <span class="value" id="distance">— km</span>
+      </div>
+      <div class="data-row">
+        <span class="label">ANGULAR SIZE</span>
+        <span class="value" id="ang-size">—′</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MOON STAGE -->
+  <div id="moon-stage">
+    <div class="halo"></div>
+    <div class="halo"></div>
+    <div class="halo"></div>
+    <div id="moon-wrap">
+      <canvas id="moon-canvas" width="680" height="680"></canvas>
+      <div id="compass-ring">
+        <span class="compass-label" style="top:6%;left:50%">N</span>
+        <span class="compass-label" style="top:50%;left:96%">E</span>
+        <span class="compass-label" style="top:94%;left:50%">S</span>
+        <span class="compass-label" style="top:50%;left:4%">W</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+
+    <!-- Sky arc -->
+    <div class="panel-card" id="sky-arc-wrap">
+      <h3>Sky Arc Today</h3>
+      <canvas id="sky-canvas" width="500" height="200"></canvas>
+    </div>
+
+    <!-- Rise/Set -->
+    <div class="panel-card">
+      <h3>Rise &amp; Set</h3>
+      <div class="event-item">
+        <div class="event-dot rise"></div>
+        <div>
+          <div class="event-label">MOONRISE</div>
+          <div class="event-time" id="moonrise">—</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div class="event-dot set"></div>
+        <div>
+          <div class="event-label">MOONSET</div>
+          <div class="event-time" id="moonset">—</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div class="event-dot full"></div>
+        <div>
+          <div class="event-label">NEXT FULL MOON</div>
+          <div class="event-time" id="next-full">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Moon facts -->
+    <div class="panel-card">
+      <h3>Lunar Facts</h3>
+      <div class="data-row">
+        <span class="label">AGE (DAYS)</span>
+        <span class="value" id="moon-age">—</span>
+      </div>
+      <div class="data-row">
+        <span class="label">CYCLE DAY</span>
+        <span class="value" id="cycle-day">— / 29.5</span>
+      </div>
+      <div class="data-row">
+        <span class="label">PERIGEE / APOGEE</span>
+        <span class="value" id="perigee-apogee">—</span>
+      </div>
+      <div class="data-row">
+        <span class="label">ZODIAC SIGN</span>
+        <span class="value" id="zodiac">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bottom-bar">
+    <div class="bottom-stat">
+      <div class="bs-label">Phase Progress</div>
+      <div class="bs-value" id="b-phase">—</div>
+      <div class="bs-sub" id="b-phase-sub">—</div>
+    </div>
+    <div class="bottom-stat">
+      <div class="bs-label">Distance to Moon</div>
+      <div class="bs-value" id="b-dist">—</div>
+      <div class="bs-sub">km (average 384,400)</div>
+    </div>
+    <div class="bottom-stat">
+      <div class="bs-label">Moon Altitude</div>
+      <div class="bs-value" id="b-alt">—°</div>
+      <div class="bs-sub" id="b-alt-sub">—</div>
+    </div>
+    <div class="bottom-stat">
+      <div class="bs-label">Illumination</div>
+      <div class="bs-value" id="b-illum">—%</div>
+      <div class="bs-sub">Waxing / Waning</div>
+    </div>
+    <div class="bottom-stat">
+      <div class="bs-label">Sidereal Period</div>
+      <div class="bs-value">27.3</div>
+      <div class="bs-sub">Earth Days</div>
+    </div>
+    <div class="bottom-stat">
+      <div class="bs-label">Synodic Period</div>
+      <div class="bs-value">29.53</div>
+      <div class="bs-sub">Earth Days</div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STARFIELD
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(function(){
+  const c = document.getElementById('starfield');
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function resize(){
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    stars = Array.from({length:260}, ()=>({
+      x: Math.random()*c.width, y: Math.random()*c.height,
+      r: Math.random()*1.2+0.2,
+      a: Math.random(), da: (Math.random()-0.5)*0.004,
+      twinkle: Math.random()*Math.PI*2
+    }));
+  }
+  resize(); window.addEventListener('resize', resize);
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    t+=0.01;
+    stars.forEach(s=>{
+      s.twinkle+=0.02;
+      const alpha = 0.4 + 0.4*Math.sin(s.twinkle);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,232,255,${alpha*s.a+0.1})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ASTRONOMY ENGINE (compact, accurate)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const Astro = {
+  DEG: Math.PI/180,
+  RAD: 180/Math.PI,
+
+  // Julian Date
+  jd(date){ return date.getTime()/86400000 + 2440587.5; },
+
+  // Moon position (geocentric ecliptic) — Meeus Ch.47
+  moonPos(jd){
+    const T = (jd - 2451545.0) / 36525;
+    const T2 = T*T, T3 = T2*T, T4 = T3*T;
+    const DEG = this.DEG;
+
+    // Moon's mean longitude
+    let Lp = 218.3164477 + 481267.88123421*T - 0.0015786*T2 + T3/538841 - T4/65194000;
+    // Moon's mean anomaly
+    let M_  = 134.9633964 + 477198.8675055*T + 0.0087414*T2 + T3/69699 - T4/14712000;
+    // Moon's argument of latitude
+    let F   = 93.2720950  + 483202.0175233*T - 0.0036539*T2 - T3/3526000 + T4/863310000;
+    // Sun's mean anomaly
+    let M   = 357.5291092 + 35999.0502909*T  - 0.0001536*T2 + T3/24490000;
+    // Longitude of ascending node
+    let Om  = 125.0445479 - 1934.1362608*T   + 0.0020754*T2 + T3/467441 - T4/60616000;
+
+    Lp=((Lp%360)+360)%360; M_=((M_%360)+360)%360;
+    F=((F%360)+360)%360;   M=((M%360)+360)%360;
+    Om=((Om%360)+360)%360;
+
+    const sin=x=>Math.sin(x*DEG), cos=x=>Math.cos(x*DEG);
+
+    // Periodic terms (longitude)
+    let dL = 6288774*sin(M_) + 1274027*sin(2*Lp-M_) + 658314*sin(2*Lp)
+           + 213618*sin(2*M_) - 185116*sin(M) - 114332*sin(2*F)
+           + 58793*sin(2*Lp-2*M_) + 57066*sin(2*Lp-M-M_) + 53322*sin(2*Lp+M_)
+           + 45758*sin(2*Lp-M) - 40923*sin(M-M_) - 34720*sin(Lp)
+           - 30383*sin(M+M_) + 15327*sin(2*Lp-2*F) - 12528*sin(M_+2*F)
+           + 10980*sin(M_-2*F) + 10675*sin(4*Lp-M_) + 10034*sin(3*M_)
+           + 8548*sin(4*Lp-2*M_) - 7888*sin(2*Lp+M-M_) + 6766*sin(2*Lp+M)
+           + 4987*sin(Lp+M) + 4036*sin(2*Lp-M+M_) + 3994*sin(2*Lp+2*M_)
+           + 3861*sin(4*Lp) + 3665*sin(2*Lp-3*M_);
+
+    // Periodic terms (distance)
+    let dR = -20905355*cos(M_) - 3699111*cos(2*Lp-M_) - 2955968*cos(2*Lp)
+           - 569925*cos(2*M_) + 48888*cos(M) - 3149*cos(2*F)
+           + 246158*cos(2*Lp-2*M_) - 152138*cos(2*Lp-M-M_) - 170733*cos(2*Lp+M_)
+           - 204586*cos(2*Lp-M) - 129620*cos(M-M_) + 108743*cos(Lp)
+           + 104755*cos(M+M_) + 10321*cos(2*Lp-2*F) + 79661*cos(M_-2*F)
+           - 34782*cos(4*Lp-M_) - 23210*cos(3*M_) - 21636*cos(4*Lp-2*M_)
+           + 24208*cos(2*Lp+M-M_) + 30824*cos(2*Lp+M) - 8379*cos(Lp-M);
+
+    // Periodic terms (latitude)
+    let dB = 5128122*sin(F) + 280602*sin(M_+F) + 277693*sin(M_-F)
+           + 173237*sin(2*Lp-F) + 55413*sin(2*Lp+F-M_) + 46271*sin(2*Lp-F-M_)
+           + 32573*sin(2*Lp+F) + 17198*sin(2*M_+F) + 9266*sin(2*Lp+M_-F)
+           + 8822*sin(2*M_-F) + 8216*sin(2*Lp-M-F) + 4324*sin(2*Lp-2*M_-F)
+           + 4200*sin(2*Lp+F+M_) - 3359*sin(2*Lp+M-F) + 2463*sin(2*Lp-M-M_+F)
+           + 2211*sin(2*Lp-M+F);
+
+    const lon = ((Lp + dL/1e6)%360+360)%360;  // ecliptic longitude
+    const lat = dB/1e6;                          // ecliptic latitude
+    const dist = 385000.56 + dR/1000;           // km
+
+    // Ecliptic → Equatorial
+    const eps = 23.439291111 - 0.013004167*T;   // obliquity
+    const ra_  = Math.atan2(Math.sin(lon*DEG)*cos(eps*DEG) - Math.tan(lat*DEG)*Math.sin(eps*DEG),
+                            Math.cos(lon*DEG)) * this.RAD;
+    const dec_ = Math.asin(Math.sin(lat*DEG)*cos(eps*DEG) + Math.cos(lat*DEG)*Math.sin(eps*DEG)*Math.sin(lon*DEG)) * this.RAD;
+
+    return { lon, lat, dist, ra: ((ra_%360)+360)%360, dec: dec_ };
+  },
+
+  // Greenwich Sidereal Time
+  gst(jd){
+    const T = (jd - 2451545.0)/36525;
+    let gst = 280.46061837 + 360.98564736629*(jd-2451545.0) + 0.000387933*T*T - T*T*T/38710000;
+    return ((gst%360)+360)%360;
+  },
+
+  // Topocentric horizontal coords
+  altAz(ra, dec, lat, lon, jd){
+    const DEG=this.DEG, RAD=this.RAD;
+    const lst = (this.gst(jd) + lon + 360)%360;
+    const ha  = ((lst - ra)%360+360)%360;
+    const alt = Math.asin(Math.sin(dec*DEG)*Math.sin(lat*DEG)+Math.cos(dec*DEG)*Math.cos(lat*DEG)*Math.cos(ha*DEG))*RAD;
+    const az_ = Math.atan2(-Math.cos(dec*DEG)*Math.sin(ha*DEG),
+                            Math.sin(dec*DEG)*Math.cos(lat*DEG)-Math.cos(dec*DEG)*Math.cos(ha*DEG)*Math.sin(lat*DEG))*RAD;
+    const az  = ((az_%360)+360)%360;
+    return { alt, az };
+  },
+
+  // Moon age & illumination
+  moonPhase(jd){
+    const k = (jd - 2451550.1) / 29.530588853;
+    const age = (k % 1 + 1) % 1 * 29.530588853;
+    const illum = (1 - Math.cos(age / 29.530588853 * 2 * Math.PI)) / 2;
+    return { age, illum };
+  },
+
+  // Zodiac sign from ecliptic longitude
+  zodiac(lon){
+    const signs = ['♈ Aries','♉ Taurus','♊ Gemini','♋ Cancer','♌ Leo','♍ Virgo',
+                   '♎ Libra','♏ Scorpio','♐ Sagittarius','♑ Capricorn','♒ Aquarius','♓ Pisces'];
+    return signs[Math.floor(lon/30)%12];
+  },
+
+  // Find moonrise/set (simple iteration)
+  riseSet(date, lat, lon){
+    const step = 5; // minutes
+    let rise=null, set_=null;
+    let prevAlt = null;
+    for(let m=0; m<1440; m+=step){
+      const d = new Date(date); d.setHours(0,m,0,0);
+      const jd = this.jd(d);
+      const pos = this.moonPos(jd);
+      const {alt} = this.altAz(pos.ra, pos.dec, lat, lon, jd);
+      if(prevAlt !== null){
+        if(prevAlt<0 && alt>=0) rise = new Date(d);
+        if(prevAlt>=0 && alt<0) set_ = new Date(d);
+      }
+      prevAlt = alt;
+    }
+    return {rise, set: set_};
+  },
+
+  // Next full moon
+  nextFullMoon(jd){
+    let j = jd;
+    for(let i=0; i<35; i++){
+      const {age} = this.moonPhase(j);
+      const daysToFull = age < 14.765 ? 14.765-age : 29.53-age+14.765;
+      j += daysToFull;
+      if(Math.abs(this.moonPhase(j).age-14.765) < 0.1) break;
+      j = jd + (i+1)*1.0;
+    }
+    // simpler approach: scan
+    j = jd;
+    let best=null, bestDiff=999;
+    for(let i=0;i<32;i++){
+      const {age} = this.moonPhase(j+i);
+      const d = Math.abs(age-14.765294);
+      if(d<bestDiff){ bestDiff=d; best=j+i; }
+    }
+    return new Date((best - 2440587.5)*86400000);
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const state = { lat: 23.8103, lon: 90.4125, hasLoc: true };  // default: Dhaka
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MOON 3D CANVAS RENDERER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const moonCanvas = document.getElementById('moon-canvas');
+const moonCtx = moonCanvas.getContext('2d');
+const W = 680, R = W/2;
+
+// Crater data [cx_norm, cy_norm, r_norm, brightness, label]
+const craters = [
+  [0.46,0.38,0.065,0.8,'Tycho'],
+  [0.30,0.48,0.05,0.75,'Copernicus'],
+  [0.63,0.30,0.045,0.7,'Kepler'],
+  [0.52,0.52,0.04,0.72,''],
+  [0.40,0.60,0.038,0.7,'Clavius'],
+  [0.55,0.28,0.03,0.75,''],
+  [0.28,0.35,0.035,0.68,''],
+  [0.70,0.44,0.03,0.7,''],
+  [0.35,0.70,0.032,0.69,''],
+  [0.60,0.65,0.028,0.71,''],
+  [0.45,0.25,0.025,0.73,''],
+  [0.72,0.62,0.022,0.74,''],
+  [0.22,0.55,0.02,0.7,''],
+  [0.50,0.75,0.018,0.68,''],
+  [0.38,0.45,0.015,0.72,''],
+  [0.58,0.48,0.018,0.7,''],
+  [0.64,0.54,0.012,0.73,''],
+  [0.43,0.56,0.013,0.71,''],
+  [0.26,0.42,0.016,0.69,''],
+  [0.68,0.37,0.014,0.72,''],
+];
+
+// Mare (dark regions) [cx, cy, rx, ry, angle, alpha]
+const mares = [
+  [0.42,0.38,0.18,0.15, 15, 0.38,'Mare Tranquillitatis'],
+  [0.52,0.32,0.14,0.10,-10, 0.32,'Mare Serenitatis'],
+  [0.38,0.28,0.10,0.08,  5, 0.30,'Mare Imbrium'],
+  [0.30,0.40,0.09,0.07, 20, 0.28,'Mare Nubium'],
+  [0.60,0.42,0.08,0.06,-15, 0.27,'Oceanus Procellarum'],
+  [0.55,0.50,0.07,0.05, 10, 0.29,'Mare Fecunditatis'],
+  [0.46,0.44,0.05,0.04,  0, 0.25,'Mare Vaporum'],
+];
+
+function drawMoon3D(illumination, age){
+  const ctx = moonCtx;
+  ctx.clearRect(0,0,W,W);
+
+  // Limb shadow on edge
+  const waxing = age < 14.765;
+  const lightAngle = waxing ? 0.25 : -0.25; // sun angle fraction across disc
+
+  // ── Base sphere gradient ──
+  const grad = ctx.createRadialGradient(
+    R*0.82, R*0.62, R*0.05,
+    R, R, R
+  );
+  grad.addColorStop(0,   '#f0f4ff');
+  grad.addColorStop(0.25,'#d8e4f8');
+  grad.addColorStop(0.55,'#b0c0d8');
+  grad.addColorStop(0.80,'#7888a8');
+  grad.addColorStop(1,   '#2a3448');
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(R,R,R-2,0,Math.PI*2); ctx.clip();
+
+  // Base
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,W);
+
+  // ── Mare (dark seas) ──
+  ctx.globalAlpha = 0.88;
+  mares.forEach(([cx,cy,rx,ry,ang,alpha])=>{
+    ctx.save();
+    const gm = ctx.createRadialGradient(cx*W, cy*W, 0, cx*W, cy*W, rx*W);
+    gm.addColorStop(0, `rgba(30,38,55,${alpha+0.08})`);
+    gm.addColorStop(0.6, `rgba(30,38,55,${alpha})`);
+    gm.addColorStop(1, `rgba(30,38,55,0)`);
+    ctx.fillStyle = gm;
+    ctx.translate(cx*W, cy*W); ctx.rotate(ang*Math.PI/180);
+    ctx.scale(1, ry/rx);
+    ctx.beginPath(); ctx.arc(0,0,rx*W,0,Math.PI*2);
+    ctx.fill(); ctx.restore();
+  });
+  ctx.globalAlpha = 1;
+
+  // ── Craters ──
+  craters.forEach(([cx,cy,cr])=>{
+    const x=cx*W, y=cy*W, r=cr*W;
+    // outer rim dark
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    const grc = ctx.createRadialGradient(x-r*0.2,y-r*0.2,0, x,y,r);
+    grc.addColorStop(0, 'rgba(220,232,255,0.7)');
+    grc.addColorStop(0.35,'rgba(120,140,170,0.4)');
+    grc.addColorStop(0.7, 'rgba(40,50,70,0.5)');
+    grc.addColorStop(1,   'rgba(200,215,240,0.35)');
+    ctx.fillStyle = grc; ctx.fill();
+    // inner floor
+    ctx.beginPath(); ctx.arc(x,y,r*0.55,0,Math.PI*2);
+    const grf = ctx.createRadialGradient(x,y,0,x,y,r*0.55);
+    grf.addColorStop(0,'rgba(80,95,120,0.5)');
+    grf.addColorStop(1,'rgba(60,75,100,0.25)');
+    ctx.fillStyle=grf; ctx.fill();
+    // highlight on rim
+    ctx.beginPath(); ctx.arc(x-r*0.3,y-r*0.3,r*0.15,0,Math.PI*2);
+    ctx.fillStyle='rgba(240,248,255,0.4)'; ctx.fill();
+  });
+
+  // ── Terminator (shadow) ──
+  // Phase terminator: illumination 0=new,0.5=quarter,1=full
+  const illumFrac = illumination; // 0..1
+  // Terminator x offset as fraction of radius
+  const tx = (1 - 2*illumFrac); // -1..+1
+  // Shadow direction based on waxing/waning
+  ctx.save();
+  ctx.globalCompositeOperation = 'source-atop';
+  if(illumFrac < 0.98){
+    // Dark side
+    ctx.beginPath();
+    if(waxing){
+      // Left side dark (new→first quarter→full)
+      ctx.ellipse(R + tx*R, R, Math.abs(tx)*R, R, 0, 0, Math.PI*2);
+      if(tx < 0){ // crescent — mask left half + ellipse
+        ctx.arc(R,R,R,Math.PI/2,3*Math.PI/2);
+      }
+    }
+    // Use a more accurate terminator
+    const shadow = ctx.createLinearGradient(0, 0, W, 0);
+    const mid = R + tx*R;
+    const w2 = Math.abs(tx)*R;
+    const p0 = Math.max(0, Math.min(1,(mid-w2)/W));
+    const p1 = Math.max(0, Math.min(1,(mid)/W));
+    const p2 = Math.max(0, Math.min(1,(mid+w2)/W));
+    if(waxing){
+      shadow.addColorStop(0,     'rgba(2,5,14,0.96)');
+      shadow.addColorStop(p0,    'rgba(2,5,14,0.96)');
+      shadow.addColorStop(p1,    'rgba(2,5,14,0.5)');
+      shadow.addColorStop(Math.min(p1+0.04,1), 'rgba(2,5,14,0)');
+      shadow.addColorStop(1,     'rgba(2,5,14,0)');
+    } else {
+      shadow.addColorStop(0,     'rgba(2,5,14,0)');
+      shadow.addColorStop(Math.max(p1-0.04,0), 'rgba(2,5,14,0)');
+      shadow.addColorStop(p1,    'rgba(2,5,14,0.5)');
+      shadow.addColorStop(p2,    'rgba(2,5,14,0.96)');
+      shadow.addColorStop(1,     'rgba(2,5,14,0.96)');
+    }
+    ctx.fillStyle = shadow;
+    ctx.fillRect(0,0,W,W);
+  }
+  ctx.restore();
+
+  // ── Atmosphere glow rim ──
+  ctx.globalCompositeOperation = 'source-over';
+  const atm = ctx.createRadialGradient(R,R,R-8,R,R,R+2);
+  atm.addColorStop(0,'rgba(180,200,255,0)');
+  atm.addColorStop(0.7,'rgba(180,200,255,0.04)');
+  atm.addColorStop(1,'rgba(180,200,255,0.18)');
+  ctx.beginPath(); ctx.arc(R,R,R,0,Math.PI*2);
+  ctx.fillStyle=atm; ctx.fill();
+
+  // ── Specular highlight ──
+  const spec = ctx.createRadialGradient(R*0.75,R*0.55,0, R*0.75,R*0.55,R*0.45);
+  spec.addColorStop(0,'rgba(255,255,255,0.12)');
+  spec.addColorStop(0.5,'rgba(255,255,255,0.04)');
+  spec.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=spec; ctx.fillRect(0,0,W,W);
+
+  ctx.restore();
+
+  // Outer glow
+  const outerGlow = ctx.createRadialGradient(R,R,R-4,R,R,R+30);
+  outerGlow.addColorStop(0,'rgba(180,200,255,0.15)');
+  outerGlow.addColorStop(1,'rgba(180,200,255,0)');
+  ctx.beginPath(); ctx.arc(R,R,R+30,0,Math.PI*2);
+  ctx.fillStyle=outerGlow; ctx.fill();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SKY ARC CANVAS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function drawSkyArc(currentAlt){
+  const c = document.getElementById('sky-canvas');
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Horizon
+  ctx.strokeStyle='rgba(126,179,255,0.2)'; ctx.lineWidth=1;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(20,H-30); ctx.lineTo(W-20,H-30);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Labels
+  ctx.fillStyle='rgba(106,127,168,0.8)'; ctx.font='8px "DM Mono"';
+  ctx.fillText('E',16,H-18); ctx.fillText('W',W-20,H-18);
+  ctx.fillText('90°',W/2-8,22);
+  ctx.fillText('HORIZON',W/2-20,H-18);
+
+  // Vertical
+  ctx.strokeStyle='rgba(126,179,255,0.1)'; ctx.lineWidth=1;
+  ctx.setLineDash([3,5]);
+  ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-30); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arc path: sample alt through the day
+  const now = new Date();
+  const pts = [];
+  for(let m=0; m<1440; m+=10){
+    const d=new Date(now); d.setHours(0,m,0,0);
+    const jd=Astro.jd(d);
+    const pos=Astro.moonPos(jd);
+    const {alt,az}=Astro.altAz(pos.ra,pos.dec,state.lat,state.lon,jd);
+    const xp = (az/360)*(W-40)+20;
+    const yp = H-30 - (alt/90)*(H-50);
+    pts.push({xp,yp,alt,m});
+  }
+
+  // Draw arc
+  ctx.strokeStyle='rgba(126,179,255,0.3)'; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  pts.forEach((p,i)=>{ i===0?ctx.moveTo(p.xp,p.yp):ctx.lineTo(p.xp,p.yp); });
+  ctx.stroke();
+
+  // Above-horizon portion highlighted
+  ctx.strokeStyle='rgba(200,220,255,0.6)'; ctx.lineWidth=2;
+  ctx.beginPath();
+  let started=false;
+  pts.forEach(p=>{
+    const y=Math.min(p.yp, H-30);
+    if(p.alt>0){ started?ctx.lineTo(p.xp,y):ctx.moveTo(p.xp,y); started=true; }
+    else started=false;
+  });
+  ctx.stroke();
+
+  // Current moon dot
+  const curMin = now.getHours()*60+now.getMinutes();
+  const cur = pts.find(p=>Math.abs(p.m-curMin)<6);
+  if(cur){
+    const y2=Math.min(cur.yp,H-28);
+    ctx.beginPath(); ctx.arc(cur.xp,y2,5,0,Math.PI*2);
+    ctx.fillStyle=currentAlt>0?'#f0f4ff':'#3a4a6a';
+    ctx.fill();
+    ctx.strokeStyle='rgba(200,220,255,0.8)'; ctx.lineWidth=1.5;
+    ctx.stroke();
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// UI UPDATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function fmt(n,d=1){ return n.toFixed(d); }
+function fmtTime(d){
+  if(!d) return '—';
+  return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+function fmtRA(ra){
+  const h=Math.floor(ra/15); const m=Math.floor((ra/15-h)*60);
+  const s=Math.floor(((ra/15-h)*60-m)*60);
+  return `${h}h ${m}m ${s}s`;
+}
+function azDir(az){
+  const dirs=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return dirs[Math.round(az/22.5)%16];
+}
+const phaseNames=[
+  {name:'New Moon',desc:'The Moon is between Earth and Sun. Not visible.',range:[0,1.85]},
+  {name:'Waxing Crescent',desc:'A thin crescent visible in the western sky after sunset.',range:[1.85,7.38]},
+  {name:'First Quarter',desc:'The right half of the Moon is illuminated.',range:[7.38,11.08]},
+  {name:'Waxing Gibbous',desc:'More than half illuminated, growing toward full.',range:[11.08,14.77]},
+  {name:'Full Moon',desc:'The Moon is fully illuminated, opposite the Sun.',range:[14.77,16.61]},
+  {name:'Waning Gibbous',desc:'Past full, the illuminated portion is decreasing.',range:[16.61,22.15]},
+  {name:'Last Quarter',desc:'The left half of the Moon is illuminated.',range:[22.15,25.85]},
+  {name:'Waning Crescent',desc:'A thin crescent visible in the eastern sky before sunrise.',range:[25.85,29.53]},
+];
+function getPhaseName(age){
+  return phaseNames.find(p=>age>=p.range[0]&&age<p.range[1]) || phaseNames[7];
+}
+
+function update(){
+  const now = new Date();
+  const jd = Astro.jd(now);
+  const pos = Astro.moonPos(jd);
+  const {alt,az} = Astro.altAz(pos.ra,pos.dec,state.lat,state.lon,jd);
+  const {age,illum} = Astro.moonPhase(jd);
+  const phase = getPhaseName(age);
+  const waxing = age < 14.765;
+
+  // Clock
+  document.getElementById('clock-time').textContent = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('clock-date').textContent = now.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('clock-tz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // Phase
+  document.getElementById('phase-name').textContent = phase.name;
+  document.getElementById('phase-desc').textContent = phase.desc;
+  const illumPct = Math.round(illum*100);
+  document.getElementById('illum-pct').textContent = illumPct+'%';
+  document.getElementById('illum-bar').style.width = illumPct+'%';
+  // Phase shadow icon
+  const shadowW = waxing ? (1-illum)*100 : illum*100;
+  const shadow = document.getElementById('phase-shadow');
+  shadow.style.width = shadowW+'%';
+  shadow.style.right = waxing ? '0' : 'auto';
+  shadow.style.left  = waxing ? 'auto' : '0';
+  shadow.style.borderRadius = waxing ? '0 50% 50% 0' : '50% 0 0 50%';
+
+  // Position
+  document.getElementById('azimuth').textContent   = fmt(az)+'°';
+  document.getElementById('altitude').textContent  = fmt(alt)+'°';
+  document.getElementById('direction').textContent = azDir(az);
+  const visible = alt>0;
+  document.getElementById('visible').textContent = visible ? '✓ Above Horizon' : '✗ Below Horizon';
+  document.getElementById('visible').style.color = visible ? '#7eb3ff' : '#6a7fa8';
+
+  // Ecliptic
+  document.getElementById('ra').textContent       = fmtRA(pos.ra);
+  document.getElementById('dec').textContent      = fmt(pos.dec)+'°';
+  document.getElementById('distance').textContent = Math.round(pos.dist).toLocaleString()+' km';
+  const angSize = fmt(2*Math.atan(1737.4/pos.dist)*180/Math.PI*60, 1);
+  document.getElementById('ang-size').textContent = angSize+"′";
+
+  // Moon age
+  document.getElementById('moon-age').textContent = fmt(age,2);
+  document.getElementById('cycle-day').textContent= fmt(age,1)+' / 29.5';
+  const perigeeApogee = pos.dist < 363300 ? '🔴 Near Perigee' : pos.dist > 405500 ? '🔵 Near Apogee' : 'Mid-orbit';
+  document.getElementById('perigee-apogee').textContent = perigeeApogee;
+  document.getElementById('zodiac').textContent = Astro.zodiac(pos.lon);
+
+  // Rise / Set / Full
+  const rs = Astro.riseSet(now, state.lat, state.lon);
+  document.getElementById('moonrise').textContent = rs.rise ? fmtTime(rs.rise) : 'Circumpolar';
+  document.getElementById('moonset').textContent  = rs.set  ? fmtTime(rs.set)  : 'Circumpolar';
+  const nfm = Astro.nextFullMoon(jd);
+  document.getElementById('next-full').textContent = nfm.toLocaleDateString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  // Bottom bar
+  document.getElementById('b-phase').textContent = phase.name.toUpperCase();
+  document.getElementById('b-phase-sub').textContent = waxing ? 'Waxing' : 'Waning';
+  document.getElementById('b-dist').textContent = Math.round(pos.dist/1000).toLocaleString()+'K';
+  document.getElementById('b-alt').textContent = fmt(alt);
+  document.getElementById('b-alt-sub').textContent = visible ? 'Above horizon' : 'Below horizon';
+  document.getElementById('b-illum').textContent = illumPct;
+
+  // Draw moon
+  drawMoon3D(illum, age);
+
+  // Sky arc
+  drawSkyArc(alt);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LOCATION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function setLocation(lat, lon, name){
+  state.lat = lat; state.lon = lon; state.hasLoc = true;
+  document.getElementById('loc-status').textContent = 'Location acquired';
+  document.getElementById('loc-coords').textContent = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+  document.getElementById('loc-name').textContent = name || '';
+  update();
+}
+
+document.getElementById('loc-btn').addEventListener('click', ()=>{
+  document.getElementById('loc-status').textContent = 'Requesting…';
+  if(!navigator.geolocation){
+    document.getElementById('loc-status').textContent = 'Geolocation not supported';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos=>{
+    setLocation(pos.coords.latitude, pos.coords.longitude, 'Your Location');
+  }, err=>{
+    document.getElementById('loc-status').textContent = 'Permission denied — using default';
+  });
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// BOOT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Loading bar
+let loadPct = 0;
+const loadInterval = setInterval(()=>{
+  loadPct += Math.random()*18;
+  if(loadPct>100) loadPct=100;
+  document.getElementById('loading-fill').style.width = loadPct+'%';
+  if(loadPct>=100){
+    clearInterval(loadInterval);
+    setTimeout(()=>{
+      document.getElementById('loading').style.opacity='0';
+      document.getElementById('app').style.opacity='1';
+      setTimeout(()=>document.getElementById('loading').style.display='none',600);
+    },300);
+  }
+},120);
+
+// Initial default location (Dhaka)
+setLocation(23.8103, 90.4125, 'Dhaka, Bangladesh');
+
+// Update every second
+setInterval(update, 1000);
+
+// Try auto-geolocation on load
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    setLocation(pos.coords.latitude, pos.coords.longitude, 'Your Location');
+  }, ()=>{});
+}
+</script>
+</body>
+</html>
