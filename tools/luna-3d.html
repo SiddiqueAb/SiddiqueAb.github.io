@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUNA 3D — Live Moon Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Crimson+Pro:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root {
+  --bg:#030509;--deep:#060a14;--glow:#c8d8ff;--silver:#dce8ff;
+  --dim:#5a6e92;--accent:#7eb3ff;--gold:#f5c842;
+  --panel:rgba(8,13,26,0.88);--border:rgba(100,145,255,0.14);
+  --red:#ff6b6b;--green:#6bffb8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--silver);
+  font-family:'DM Mono',monospace;overflow:hidden;cursor:default}
+
+/* ── STARFIELD ── */
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── LAYOUT ── */
+#app{position:relative;z-index:1;width:100vw;height:100vh;
+  display:grid;grid-template-columns:300px 1fr 280px;
+  grid-template-rows:56px 1fr 100px}
+
+/* ── HEADER ── */
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;border-bottom:1px solid var(--border);
+  background:rgba(3,5,9,0.95);backdrop-filter:blur(16px);z-index:10}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:8px;
+  color:var(--glow);text-shadow:0 0 30px rgba(200,216,255,0.5)}
+.logo sub{font-size:9px;letter-spacing:4px;color:var(--dim);margin-left:6px;vertical-align:middle}
+#clock{text-align:right;line-height:1.7}
+#clock strong{font-size:16px;color:var(--accent);letter-spacing:3px;display:block}
+#clock span{font-size:9px;color:var(--dim);letter-spacing:2px}
+.hdr-mid{display:flex;gap:24px;align-items:center}
+.hdr-pill{padding:4px 12px;border:1px solid var(--border);border-radius:20px;
+  font-size:9px;letter-spacing:2px;color:var(--dim);background:rgba(126,179,255,0.05)}
+.hdr-pill.on{color:var(--green);border-color:rgba(107,255,184,0.3);
+  background:rgba(107,255,184,0.06);box-shadow:0 0 8px rgba(107,255,184,0.15)}
+
+/* ── LEFT PANEL ── */
+#left{grid-row:2;padding:16px 14px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:12px;overflow-y:auto;
+  background:rgba(3,5,9,0.7);backdrop-filter:blur(8px)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.card h3{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:4px;
+  color:var(--dim);margin-bottom:12px;text-transform:uppercase}
+.dr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.dr .lb{font-size:9px;color:var(--dim);letter-spacing:1px}
+.dr .vl{font-size:12px;color:var(--silver);letter-spacing:1px}
+.vl.hi{color:var(--accent)}
+.vl.on{color:var(--green)}
+.vl.off{color:var(--dim)}
+
+/* Phase mini icon */
+#phase-wrap{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+#phase-orb{width:46px;height:46px;border-radius:50%;flex-shrink:0;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 40% 35%,#eef2ff,#b0c4e8 50%,#3a4a68 80%,#0d1220);
+  box-shadow:0 0 18px rgba(180,200,255,0.2),inset -6px -4px 14px rgba(0,0,0,0.7)}
+#phase-shd{position:absolute;top:0;bottom:0;background:rgba(2,4,12,0.93);transition:all .6s ease}
+#phase-nm{font-size:13px;color:var(--glow);letter-spacing:.5px}
+#phase-dc{font-size:9px;color:var(--dim);margin-top:3px;line-height:1.5}
+
+/* Illumination bar */
+.ibar-wrap{margin-top:2px}
+.ibar-hd{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px}
+.ibar-t{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden}
+.ibar-f{height:100%;background:linear-gradient(90deg,#2a4a80,#7eb3ff,#c8d8ff);
+  border-radius:4px;transition:width 1s ease}
+
+/* Location card */
+#loc-st{font-size:9px;color:var(--dim);margin-bottom:4px}
+#loc-xy{font-size:11px;color:var(--accent);letter-spacing:1px}
+#loc-nm{font-size:10px;color:var(--silver);margin-top:3px}
+#loc-btn{margin-top:10px;width:100%;background:rgba(126,179,255,0.08);
+  border:1px solid rgba(126,179,255,0.25);color:var(--accent);font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:2px;padding:7px;border-radius:6px;cursor:pointer;transition:all .2s}
+#loc-btn:hover{background:rgba(126,179,255,0.18);box-shadow:0 0 10px rgba(126,179,255,0.2)}
+
+/* ── 3D STAGE ── */
+#stage{grid-row:2;position:relative;overflow:hidden;background:transparent}
+#three-canvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* Controls */
+#controls{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:20;align-items:center}
+.ctrl-btn{width:38px;height:38px;border-radius:50%;background:rgba(8,13,26,0.85);
+  border:1px solid var(--border);color:var(--silver);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
+.ctrl-btn:hover{background:rgba(126,179,255,0.15);border-color:rgba(126,179,255,0.4);
+  box-shadow:0 0 12px rgba(126,179,255,0.25);color:var(--glow)}
+.ctrl-sep{width:1px;height:24px;background:var(--border)}
+#zoom-val{font-size:9px;color:var(--dim);letter-spacing:2px;min-width:50px;text-align:center}
+
+/* Info overlay on stage */
+#stage-hud{position:absolute;top:16px;left:16px;z-index:20;pointer-events:none}
+.hud-badge{background:rgba(8,13,26,0.8);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;backdrop-filter:blur(8px)}
+.hud-badge strong{color:var(--accent);display:block;font-size:12px;letter-spacing:1px}
+
+/* View toggle */
+#view-toggle{position:absolute;top:16px;right:16px;z-index:20;display:flex;gap:6px}
+.vt-btn{padding:5px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:2px;cursor:pointer;border:1px solid var(--border);transition:all .2s;
+  background:rgba(8,13,26,0.8);color:var(--dim);backdrop-filter:blur(8px)}
+.vt-btn.active{background:rgba(126,179,255,0.15);color:var(--accent);
+  border-color:rgba(126,179,255,0.4);box-shadow:0 0 10px rgba(126,179,255,0.2)}
+
+/* Shadow toggle */
+#shadow-info{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
+  background:rgba(8,13,26,0.85);border:1px solid var(--border);border-radius:8px;
+  padding:6px 16px;font-size:9px;color:var(--dim);letter-spacing:2px;
+  white-space:nowrap;backdrop-filter:blur(8px);z-index:20}
+
+/* ── RIGHT PANEL ── */
+#right{grid-row:2;padding:16px 14px;border-left:1px solid var(--border);
+  display:flex;flex-direction:column;gap:12px;overflow-y:auto;
+  background:rgba(3,5,9,0.7);backdrop-filter:blur(8px)}
+
+/* Map */
+#map-card{flex-shrink:0}
+#map{height:180px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.leaflet-container{background:#060a14!important}
+.leaflet-tile-container{filter:hue-rotate(200deg) saturate(0.4) brightness(0.55)}
+
+/* Sky arc */
+#sky-c{width:100%;height:110px;display:block}
+
+/* Events */
+.ev-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;
+  border-bottom:1px solid rgba(126,179,255,0.06)}
+.ev-item:last-child{border-bottom:none}
+.ev-dot{width:7px;height:7px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.ev-rise{background:#f5c842;box-shadow:0 0 6px #f5c84260}
+.ev-set{background:#5577bb;box-shadow:0 0 6px #5577bb60}
+.ev-full{background:#c8d8ff;box-shadow:0 0 6px #c8d8ff60}
+.ev-lb{font-size:9px;color:var(--dim);letter-spacing:1px}
+.ev-tm{font-size:12px;color:var(--silver);margin-top:2px;letter-spacing:1px}
+
+/* ── BOTTOM ── */
+#bot{grid-column:1/-1;display:flex;border-top:1px solid var(--border);
+  background:rgba(3,5,9,0.95);backdrop-filter:blur(12px);overflow:hidden}
+.bs{flex:1;padding:12px 16px;border-right:1px solid var(--border);text-align:center}
+.bs:last-child{border-right:none}
+.bs-lb{font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.bs-vl{font-size:18px;color:var(--glow);letter-spacing:2px;font-family:'Bebas Neue',sans-serif}
+.bs-sub{font-size:8px;color:var(--dim);margin-top:2px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(126,179,255,0.18);border-radius:2px}
+
+/* Loading */
+#loading{position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .7s ease}
+#loading .big{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:20px;
+  color:var(--glow);text-shadow:0 0 80px rgba(200,216,255,0.35);animation:glp 2s infinite}
+@keyframes glp{0%,100%{opacity:1}50%{opacity:.4}}
+#loading p{font-size:10px;color:var(--dim);letter-spacing:4px}
+#lbar{width:220px;height:2px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+#lfill{height:100%;width:0;background:linear-gradient(90deg,#2a4a80,#c8d8ff);transition:width .3s ease}
+
+/* Drag hint */
+#drag-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,60px);
+  font-size:9px;color:var(--dim);letter-spacing:3px;pointer-events:none;z-index:20;
+  animation:fadeout 4s forwards 3s}
+@keyframes fadeout{to{opacity:0}}
+
+/* Tooltip */
+#tt{position:fixed;z-index:300;background:var(--panel);border:1px solid var(--border);
+  border-radius:8px;padding:8px 12px;font-size:10px;color:var(--silver);pointer-events:none;
+  opacity:0;transition:opacity .15s;backdrop-filter:blur(10px)}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+
+<div id="loading">
+  <div class="big">LUNA</div>
+  <p>INITIALISING 3D LUNAR ENGINE</p>
+  <div id="lbar"><div id="lfill"></div></div>
+  <p id="load-msg" style="font-size:9px;color:#3a4a6a;letter-spacing:3px">LOADING THREE.JS</p>
+</div>
+
+<div id="app" style="opacity:0;transition:opacity .8s ease">
+  <!-- HEADER -->
+  <div id="hdr">
+    <div class="logo">LUNA <sub>3D LIVE</sub></div>
+    <div class="hdr-mid">
+      <div class="hdr-pill on" id="live-pill">● LIVE</div>
+      <div class="hdr-pill" id="loc-pill">📍 LOCATING…</div>
+      <div class="hdr-pill" id="shadow-pill">🌑 SHADOW ON</div>
+    </div>
+    <div id="clock">
+      <strong id="ct">--:--:--</strong>
+      <span id="cd">--- -- ----</span>
+    </div>
+  </div>
+
+  <!-- LEFT -->
+  <div id="left">
+    <div class="card">
+      <h3>Moon Phase</h3>
+      <div id="phase-wrap">
+        <div id="phase-orb"><div id="phase-shd"></div></div>
+        <div><div id="phase-nm">—</div><div id="phase-dc">Calculating…</div></div>
+      </div>
+      <div class="ibar-wrap">
+        <div class="ibar-hd"><span>ILLUMINATION</span><span id="illum-pct">—</span></div>
+        <div class="ibar-t"><div class="ibar-f" id="ibar-f" style="width:0"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Sky Position</h3>
+      <div class="dr"><span class="lb">AZIMUTH</span><span class="vl hi" id="az">—°</span></div>
+      <div class="dr"><span class="lb">ALTITUDE</span><span class="vl hi" id="al">—°</span></div>
+      <div class="dr"><span class="lb">DIRECTION</span><span class="vl" id="dir">—</span></div>
+      <div class="dr"><span class="lb">HORIZON</span><span class="vl" id="vis">—</span></div>
+      <div class="dr"><span class="lb">DISTANCE</span><span class="vl" id="dist2">—</span></div>
+    </div>
+    <div class="card">
+      <h3>Your Location</h3>
+      <div id="loc-st">Default: Dhaka, Bangladesh</div>
+      <div id="loc-xy">23.8103°, 90.4125°</div>
+      <div id="loc-nm"></div>
+      <button id="loc-btn">⊕ DETECT MY LOCATION</button>
+    </div>
+    <div class="card">
+      <h3>Ecliptic</h3>
+      <div class="dr"><span class="lb">RIGHT ASCENSION</span><span class="vl" id="ra">—</span></div>
+      <div class="dr"><span class="lb">DECLINATION</span><span class="vl" id="dec">—°</span></div>
+      <div class="dr"><span class="lb">ANGULAR SIZE</span><span class="vl" id="angs">—′</span></div>
+      <div class="dr"><span class="lb">ZODIAC</span><span class="vl" id="zod">—</span></div>
+    </div>
+  </div>
+
+  <!-- STAGE -->
+  <div id="stage">
+    <canvas id="three-canvas"></canvas>
+    <div id="stage-hud">
+      <div class="hud-badge"><strong id="hud-phase">FULL MOON</strong>PHASE</div>
+      <div class="hud-badge"><strong id="hud-dist">384,400 km</strong>DISTANCE</div>
+      <div class="hud-badge"><strong id="hud-illum">100%</strong>ILLUMINATED</div>
+    </div>
+    <div id="view-toggle">
+      <button class="vt-btn active" id="vt-moon" onclick="setView('moon')">🌕 MOON</button>
+      <button class="vt-btn" id="vt-system" onclick="setView('system')">🌍 SYSTEM</button>
+      <button class="vt-btn" id="vt-shadow" onclick="toggleShadow()">🌑 SHADOW</button>
+    </div>
+    <div id="controls">
+      <button class="ctrl-btn" onclick="rotateLeft()" title="Rotate Left">◁</button>
+      <button class="ctrl-btn" onclick="rotateRight()" title="Rotate Right">▷</button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" onclick="zoomIn()" title="Zoom In">+</button>
+      <div id="zoom-val">100%</div>
+      <button class="ctrl-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" onclick="rotateUp()" title="Tilt Up">△</button>
+      <button class="ctrl-btn" onclick="rotateDown()" title="Tilt Down">▽</button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" onclick="resetView()" title="Reset View">⊙</button>
+      <button class="ctrl-btn" onclick="autoRotate()" title="Auto Rotate" id="auto-btn">↻</button>
+    </div>
+    <div id="shadow-info">PENUMBRA · UMBRA · ANTUMBRA — EARTH SHADOW CONE</div>
+    <div id="drag-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div class="card" id="map-card">
+      <h3>Moon Position on Earth Map</h3>
+      <div id="map"></div>
+      <div style="font-size:8px;color:var(--dim);margin-top:6px;letter-spacing:1px">
+        📍 Sub-lunar point — where Moon is directly overhead
+      </div>
+    </div>
+    <div class="card">
+      <h3>Today's Sky Arc</h3>
+      <canvas id="sky-c" width="500" height="200"></canvas>
+    </div>
+    <div class="card">
+      <h3>Rise &amp; Set</h3>
+      <div class="ev-item"><div class="ev-dot ev-rise"></div>
+        <div><div class="ev-lb">MOONRISE</div><div class="ev-tm" id="mrise">—</div></div>
+      </div>
+      <div class="ev-item"><div class="ev-dot ev-set"></div>
+        <div><div class="ev-lb">MOONSET</div><div class="ev-tm" id="mset">—</div></div>
+      </div>
+      <div class="ev-item"><div class="ev-dot ev-full"></div>
+        <div><div class="ev-lb">NEXT FULL MOON</div><div class="ev-tm" id="nfm">—</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Lunar Facts</h3>
+      <div class="dr"><span class="lb">MOON AGE</span><span class="vl" id="mage">—</span></div>
+      <div class="dr"><span class="lb">CYCLE DAY</span><span class="vl" id="cyc">—</span></div>
+      <div class="dr"><span class="lb">ORBIT STATUS</span><span class="vl" id="orb">—</span></div>
+      <div class="dr"><span class="lb">AXIS TILT</span><span class="vl">6.68°</span></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div id="bot">
+    <div class="bs"><div class="bs-lb">Phase</div><div class="bs-vl" id="b-ph">—</div><div class="bs-sub" id="b-ww">—</div></div>
+    <div class="bs"><div class="bs-lb">Distance</div><div class="bs-vl" id="b-dist">—</div><div class="bs-sub">km to Moon</div></div>
+    <div class="bs"><div class="bs-lb">Altitude</div><div class="bs-vl" id="b-alt">—°</div><div class="bs-sub" id="b-alts">—</div></div>
+    <div class="bs"><div class="bs-lb">Illumination</div><div class="bs-vl" id="b-ill">—%</div><div class="bs-sub" id="b-wax">—</div></div>
+    <div class="bs"><div class="bs-lb">Sidereal</div><div class="bs-vl">27.3</div><div class="bs-sub">days orbit</div></div>
+    <div class="bs"><div class="bs-lb">Synodic</div><div class="bs-vl">29.53</div><div class="bs-sub">days cycle</div></div>
+    <div class="bs"><div class="bs-lb">Equatorial Ø</div><div class="bs-vl">3,474</div><div class="bs-sub">km diameter</div></div>
+    <div class="bs"><div class="bs-lb">Surface Gravity</div><div class="bs-vl">1.62</div><div class="bs-sub">m/s²</div></div>
+  </div>
+</div>
+
+<div id="tt"></div>
+
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════
+// STARFIELD
+// ═══════════════════════════════════════════════
+(()=>{
+  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+  let stars=[];
+  const resize=()=>{
+    c.width=window.innerWidth;c.height=window.innerHeight;
+    stars=Array.from({length:300},()=>({
+      x:Math.random()*c.width,y:Math.random()*c.height,
+      r:Math.random()*1.3+0.2,t:Math.random()*Math.PI*2,
+      sp:Math.random()*0.025+0.008,a:Math.random()*0.6+0.2
+    }));
+  };
+  resize();window.addEventListener('resize',resize);
+  const draw=()=>{
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      s.t+=s.sp;
+      const a=s.a*(0.4+0.6*Math.sin(s.t));
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(210,228,255,${a})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  };
+  draw();
+})();
+
+// ═══════════════════════════════════════════════
+// ASTRONOMY ENGINE
+// ═══════════════════════════════════════════════
+const Astro={
+  D:Math.PI/180, R:180/Math.PI,
+  jd(d){return d.getTime()/86400000+2440587.5},
+  moonPos(jd){
+    const T=(jd-2451545)/36525,T2=T*T,T3=T2*T,T4=T3*T,D=this.D;
+    let Lp=218.3164477+481267.88123421*T-0.0015786*T2+T3/538841-T4/65194000;
+    let Mp=134.9633964+477198.8675055*T+0.0087414*T2+T3/69699-T4/14712000;
+    let F =93.2720950 +483202.0175233*T-0.0036539*T2-T3/3526000+T4/863310000;
+    let M =357.5291092+35999.0502909*T -0.0001536*T2+T3/24490000;
+    let Om=125.0445479-1934.1362608*T +0.0020754*T2+T3/467441-T4/60616000;
+    const n=x=>((x%360)+360)%360;
+    Lp=n(Lp);Mp=n(Mp);F=n(F);M=n(M);Om=n(Om);
+    const s=x=>Math.sin(x*D),c=x=>Math.cos(x*D);
+    let dL=6288774*s(Mp)+1274027*s(2*Lp-Mp)+658314*s(2*Lp)+213618*s(2*Mp)
+          -185116*s(M)-114332*s(2*F)+58793*s(2*Lp-2*Mp)+57066*s(2*Lp-M-Mp)
+          +53322*s(2*Lp+Mp)+45758*s(2*Lp-M)-40923*s(M-Mp)-34720*s(Lp)
+          -30383*s(M+Mp)+15327*s(2*Lp-2*F)+10980*s(Mp-2*F)+10675*s(4*Lp-Mp)
+          +10034*s(3*Mp)+8548*s(4*Lp-2*Mp)-7888*s(2*Lp+M-Mp)+6766*s(2*Lp+M)
+          +4987*s(Lp+M)+4036*s(2*Lp-M+Mp)+3994*s(2*Lp+2*Mp)+3861*s(4*Lp)
+          +3665*s(2*Lp-3*Mp);
+    let dR=-20905355*c(Mp)-3699111*c(2*Lp-Mp)-2955968*c(2*Lp)-569925*c(2*Mp)
+           +48888*c(M)-3149*c(2*F)+246158*c(2*Lp-2*Mp)-152138*c(2*Lp-M-Mp)
+           -170733*c(2*Lp+Mp)-204586*c(2*Lp-M)-129620*c(M-Mp)+108743*c(Lp)
+           +104755*c(M+Mp)+79661*c(Mp-2*F)-34782*c(4*Lp-Mp)-23210*c(3*Mp)
+           +24208*c(2*Lp+M-Mp)+30824*c(2*Lp+M)-8379*c(Lp-M);
+    let dB=5128122*s(F)+280602*s(Mp+F)+277693*s(Mp-F)+173237*s(2*Lp-F)
+          +55413*s(2*Lp+F-Mp)+46271*s(2*Lp-F-Mp)+32573*s(2*Lp+F)
+          +17198*s(2*Mp+F)+9266*s(2*Lp+Mp-F)+8822*s(2*Mp-F)
+          +8216*s(2*Lp-M-F)+4324*s(2*Lp-2*Mp-F)+4200*s(2*Lp+F+Mp)
+          -3359*s(2*Lp+M-F);
+    const lon=n(Lp+dL/1e6),lat=dB/1e6,dist=385000.56+dR/1000;
+    const eps=23.439291111-0.013004167*T;
+    const ra=((Math.atan2(s(lon)*c(eps)-Math.tan(lat*D)*s(eps),c(lon))*this.R)%360+360)%360;
+    const dec=Math.asin(s(lat)*c(eps)+c(lat)*s(eps)*s(lon))*this.R;
+    return{lon,lat,dist,ra,dec};
+  },
+  gst(jd){
+    const T=(jd-2451545)/36525;
+    return(((280.46061837+360.98564736629*(jd-2451545)+0.000387933*T*T-T*T*T/38710000)%360)+360)%360;
+  },
+  altAz(ra,dec,lat,lon,jd){
+    const D=this.D,R=this.R;
+    const lst=(this.gst(jd)+lon+360)%360;
+    const ha=((lst-ra)%360+360)%360;
+    const alt=Math.asin(Math.sin(dec*D)*Math.sin(lat*D)+Math.cos(dec*D)*Math.cos(lat*D)*Math.cos(ha*D))*R;
+    const az=(((Math.atan2(-Math.cos(dec*D)*Math.sin(ha*D),
+      Math.sin(dec*D)*Math.cos(lat*D)-Math.cos(dec*D)*Math.cos(ha*D)*Math.sin(lat*D))*R)%360)+360)%360;
+    return{alt,az};
+  },
+  moonPhase(jd){
+    const age=((jd-2451550.1)/29.530588853%1+1)%1*29.530588853;
+    const illum=(1-Math.cos(age/29.530588853*2*Math.PI))/2;
+    return{age,illum};
+  },
+  zodiac(lon){
+    return['♈ Aries','♉ Taurus','♊ Gemini','♋ Cancer','♌ Leo','♍ Virgo',
+           '♎ Libra','♏ Scorpio','♐ Sagittarius','♑ Capricorn','♒ Aquarius','♓ Pisces'][Math.floor(lon/30)%12];
+  },
+  subLunar(ra,dec,jd){
+    const gst=this.gst(jd);
+    let lon=ra-gst; lon=((lon%360)+360)%360; if(lon>180)lon-=360;
+    return{lat:dec,lon};
+  },
+  riseSet(date,lat,lon){
+    let rise=null,set=null,prev=null;
+    for(let m=0;m<1440;m+=4){
+      const d=new Date(date);d.setHours(0,m,0,0);
+      const jd=this.jd(d),pos=this.moonPos(jd),{alt}=this.altAz(pos.ra,pos.dec,lat,lon,jd);
+      if(prev!==null){if(prev<0&&alt>=0)rise=new Date(d);if(prev>=0&&alt<0)set=new Date(d);}
+      prev=alt;
+    }
+    return{rise,set};
+  },
+  nextFullMoon(jd){
+    let best=jd,bDiff=999;
+    for(let i=0;i<35;i++){const{age}=this.moonPhase(jd+i);const d=Math.abs(age-14.765);if(d<bDiff){bDiff=d;best=jd+i;}}
+    return new Date((best-2440587.5)*86400000);
+  },
+  sunPos(jd){
+    const T=(jd-2451545)/36525;
+    let L=280.46646+36000.76983*T;
+    let M=357.52911+35999.05029*T-0.0001537*T*T;
+    L=((L%360)+360)%360;M=((M%360)+360)%360;
+    const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M*this.D)
+           +(0.019993-0.000101*T)*Math.sin(2*M*this.D)+0.000289*Math.sin(3*M*this.D);
+    const lon=((L+C)%360+360)%360;
+    const eps=23.439291111-0.013004167*T;
+    const ra=((Math.atan2(Math.cos(eps*this.D)*Math.sin(lon*this.D),Math.cos(lon*this.D))*this.R)%360+360)%360;
+    const dec=Math.asin(Math.sin(eps*this.D)*Math.sin(lon*this.D))*this.R;
+    return{ra,dec,lon};
+  }
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state={lat:23.8103,lon:90.4125};
+
+// ═══════════════════════════════════════════════
+// LEAFLET MAP
+// ═══════════════════════════════════════════════
+let map,moonMarker,shadowCircle,userMarker;
+function initMap(){
+  map=L.map('map',{zoomControl:false,attributionControl:false}).setView([20,0],1);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:8,minZoom:1,opacity:.7
+  }).addTo(map);
+
+  // Moon sub-lunar point marker
+  const moonIcon=L.divIcon({
+    html:`<div style="width:18px;height:18px;border-radius:50%;
+      background:radial-gradient(circle at 40% 35%,#f0f4ff,#b0c4e8 50%,#3a4a68);
+      border:2px solid rgba(200,220,255,0.8);
+      box-shadow:0 0 14px rgba(200,220,255,0.6)"></div>`,
+    iconSize:[18,18],iconAnchor:[9,9],className:''
+  });
+  moonMarker=L.marker([0,0],{icon:moonIcon}).addTo(map);
+  moonMarker.bindPopup('<b style="font-family:monospace;font-size:11px">🌕 Sub-Lunar Point<br>Moon is directly overhead</b>');
+
+  // User marker
+  const userIcon=L.divIcon({
+    html:`<div style="width:10px;height:10px;border-radius:50%;
+      background:#7eb3ff;border:2px solid rgba(126,179,255,0.9);
+      box-shadow:0 0 8px rgba(126,179,255,0.8)"></div>`,
+    iconSize:[10,10],iconAnchor:[5,5],className:''
+  });
+  userMarker=L.marker([state.lat,state.lon],{icon:userIcon}).addTo(map);
+  userMarker.bindPopup('<span style="font-family:monospace;font-size:11px">📍 Your Location</span>');
+
+  // Shadow footprint (penumbra)
+  shadowCircle=L.circle([0,0],{
+    radius:1800000,color:'rgba(180,180,255,0.0)',
+    fillColor:'rgba(30,0,60,0.25)',fillOpacity:0.4,weight:0
+  }).addTo(map);
+
+  // Umbra
+  L.circle([0,0],{
+    radius:200000,color:'rgba(100,80,180,0.3)',
+    fillColor:'rgba(10,0,30,0.6)',fillOpacity:0.7,weight:1,
+    dashArray:'4,4'
+  }).addTo(map);
+}
+
+function updateMap(subLat,subLon){
+  if(!map) return;
+  moonMarker.setLatLng([subLat,subLon]);
+  shadowCircle.setLatLng([subLat,subLon]);
+  userMarker.setLatLng([state.lat,state.lon]);
+  // Pan to show both points
+  const bounds=L.latLngBounds([[subLat,subLon],[state.lat,state.lon]]);
+  try{map.fitBounds(bounds.pad(0.5),{maxZoom:4,animate:true,duration:1})}catch(e){}
+}
+
+// ═══════════════════════════════════════════════
+// THREE.JS 3D MOON
+// ═══════════════════════════════════════════════
+let scene,camera,renderer,moonMesh,shadowCone,earthMesh,earthGroup;
+let moonGroup,autoRotating=false,autoAngle=0;
+let showShadowCone=true,currentView='moon';
+let isDragging=false,prevMouse={x:0,y:0};
+let rotX=0.3,rotY=0,camDist=4;
+const BASE_DIST=4;
+
+function buildMoonTexture(){
+  // Procedural moon texture via offscreen canvas
+  const size=1024,c=document.createElement('canvas');
+  c.width=c.height=size;const ctx=c.getContext('2d');
+
+  // Base gradient
+  const g=ctx.createRadialGradient(380,360,10,512,512,512);
+  g.addColorStop(0,'#f2f6ff');g.addColorStop(.3,'#d0dcf0');
+  g.addColorStop(.65,'#94a8c8');g.addColorStop(.9,'#5c6e8a');g.addColorStop(1,'#202d40');
+  ctx.fillStyle=g;ctx.fillRect(0,0,size,size);
+
+  // Mare (dark seas) — realistic shapes
+  const mares=[
+    {x:430,y:370,rx:185,ry:140,a:12,op:.42},
+    {x:510,y:310,rx:145,ry:105,a:-8,op:.36},
+    {x:370,y:275,rx:105,ry:80,a:5,op:.33},
+    {x:305,y:405,rx:90,ry:70,a:18,op:.30},
+    {x:600,y:430,rx:80,ry:60,a:-12,op:.28},
+    {x:545,y:505,rx:70,ry:52,a:8,op:.29},
+    {x:450,y:445,rx:52,ry:40,a:0,op:.22},
+    {x:390,y:340,rx:38,ry:28,a:0,op:.2},
+  ];
+  mares.forEach(m=>{
+    ctx.save();
+    const mg=ctx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.rx);
+    mg.addColorStop(0,`rgba(20,28,42,${m.op+.1})`);
+    mg.addColorStop(.5,`rgba(22,30,45,${m.op})`);
+    mg.addColorStop(1,`rgba(22,30,45,0)`);
+    ctx.fillStyle=mg;
+    ctx.translate(m.x,m.y);ctx.rotate(m.a*Math.PI/180);ctx.scale(1,m.ry/m.rx);
+    ctx.beginPath();ctx.arc(0,0,m.rx,0,Math.PI*2);ctx.fill();ctx.restore();
+  });
+
+  // Craters
+  const craters=[
+    [430,390,64,.88],[305,490,50,.82],[640,305,45,.78],[515,280,32,.8],
+    [400,610,34,.76],[555,490,28,.74],[280,350,28,.7],[700,445,24,.72],
+    [355,710,26,.68],[600,650,22,.7],[450,250,22,.73],[720,625,20,.71],
+    [220,560,18,.68],[500,760,17,.66],[380,460,14,.71],[560,480,16,.7],
+    [648,540,11,.72],[435,565,12,.7],[263,425,14,.68],[678,375,13,.72],
+    [290,290,10,.7],[740,310,10,.69],[180,440,9,.67],[500,180,11,.7],
+    [610,200,9,.68],[360,540,8,.69],[490,600,9,.68],[420,170,8,.7],
+  ];
+  craters.forEach(([cx,cy,cr,b])=>{
+    // shadow arc
+    ctx.save();
+    ctx.beginPath();ctx.arc(cx,cy,cr,0,Math.PI*2);
+    const cg=ctx.createRadialGradient(cx-cr*.25,cy-cr*.25,0,cx,cy,cr);
+    cg.addColorStop(0,`rgba(240,248,255,${b*.5})`);
+    cg.addColorStop(.3,`rgba(140,160,190,${b*.3})`);
+    cg.addColorStop(.65,`rgba(35,45,65,${b*.6})`);
+    cg.addColorStop(1,`rgba(200,215,240,${b*.3})`);
+    ctx.fillStyle=cg;ctx.fill();
+
+    // inner floor
+    ctx.beginPath();ctx.arc(cx,cy,cr*.55,0,Math.PI*2);
+    const fg=ctx.createRadialGradient(cx,cy,0,cx,cy,cr*.55);
+    fg.addColorStop(0,`rgba(70,85,110,.5)`);fg.addColorStop(1,`rgba(55,70,95,.2)`);
+    ctx.fillStyle=fg;ctx.fill();
+
+    // highlight
+    ctx.beginPath();ctx.arc(cx-cr*.32,cy-cr*.32,cr*.16,0,Math.PI*2);
+    ctx.fillStyle=`rgba(240,250,255,${b*.32})`;ctx.fill();
+    ctx.restore();
+  });
+
+  // Subtle noise texture
+  for(let i=0;i<4000;i++){
+    const x=Math.random()*size,y=Math.random()*size;
+    const a=Math.random()*.06;
+    ctx.fillStyle=`rgba(${Math.random()>0.5?180:30},${Math.random()>0.5?190:35},${Math.random()>0.5?210:50},${a})`;
+    ctx.fillRect(x,y,1,1);
+  }
+
+  return new THREE.CanvasTexture(c);
+}
+
+function buildNormalMap(){
+  const size=512,c=document.createElement('canvas');
+  c.width=c.height=size;const ctx=c.getContext('2d');
+  ctx.fillStyle='rgb(128,128,255)';ctx.fillRect(0,0,size,size);
+  // Bump-ish normals from crater circles
+  const craters=[[215,195,32],[152,245,25],[320,152,22],[258,140,16],[200,305,17],[278,245,14],[140,175,14],[350,222,12]];
+  craters.forEach(([cx,cy,cr])=>{
+    for(let a=0;a<Math.PI*2;a+=0.05){
+      const x=cx+Math.cos(a)*cr,y=cy+Math.sin(a)*cr;
+      const nx=Math.floor(128+Math.cos(a)*80),ny=Math.floor(128-Math.sin(a)*80);
+      ctx.fillStyle=`rgb(${nx},${ny},200)`;ctx.fillRect(x,y,2,2);
+    }
+  });
+  return new THREE.CanvasTexture(c);
+}
+
+function init3D(){
+  const canvas=document.getElementById('three-canvas');
+  const stage=document.getElementById('stage');
+  const W=stage.clientWidth,H=stage.clientHeight;
+
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(35,W/H,0.1,1000);
+  camera.position.set(0,0,camDist);
+
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W,H);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  // ── Moon ──
+  moonGroup=new THREE.Group();
+  scene.add(moonGroup);
+
+  const moonGeo=new THREE.SphereGeometry(1,96,96);
+  const moonTex=buildMoonTexture();
+  const normalTex=buildNormalMap();
+
+  const moonMat=new THREE.MeshPhongMaterial({
+    map:moonTex,
+    normalMap:normalTex,
+    normalScale:new THREE.Vector2(.8,.8),
+    shininess:4,
+    specular:new THREE.Color(0x222233),
+  });
+  moonMesh=new THREE.Mesh(moonGeo,moonMat);
+  moonMesh.castShadow=true;
+  moonGroup.add(moonMesh);
+
+  // Atmosphere glow
+  const atmGeo=new THREE.SphereGeometry(1.04,48,48);
+  const atmMat=new THREE.MeshPhongMaterial({
+    color:0x7799cc,transparent:true,opacity:.06,side:THREE.BackSide
+  });
+  moonGroup.add(new THREE.Mesh(atmGeo,atmMat));
+
+  // ── Sun light (directional — actual sun angle) ──
+  const sunLight=new THREE.DirectionalLight(0xfff8f0,2.2);
+  sunLight.position.set(10,0,5);
+  sunLight.castShadow=true;
+  scene.add(sunLight);
+  scene.userData.sunLight=sunLight;
+
+  const ambLight=new THREE.AmbientLight(0x112244,0.18);
+  scene.add(ambLight);
+
+  // ── Earth (in system view) ──
+  earthGroup=new THREE.Group();
+  earthGroup.position.set(-8,0,0);
+  earthGroup.visible=false;
+  scene.add(earthGroup);
+
+  const earthGeo=new THREE.SphereGeometry(2.5,64,64);
+  const earthMat=new THREE.MeshPhongMaterial({color:0x1a4a7a,shininess:15});
+  earthMesh=new THREE.Mesh(earthGeo,earthMat);
+  earthGroup.add(earthMesh);
+
+  // Earth land masses (procedural)
+  const landGeo=new THREE.SphereGeometry(2.52,64,64);
+  const landMat=new THREE.MeshPhongMaterial({color:0x2d6e3a,transparent:true,opacity:.75,shininess:2});
+  earthGroup.add(new THREE.Mesh(landGeo,landMat));
+
+  // Earth atmosphere
+  const eAtmGeo=new THREE.SphereGeometry(2.65,48,48);
+  const eAtmMat=new THREE.MeshPhongMaterial({
+    color:0x3388ff,transparent:true,opacity:.12,side:THREE.BackSide
+  });
+  earthGroup.add(new THREE.Mesh(eAtmGeo,eAtmMat));
+
+  // ── Earth Shadow Cone (Umbra + Penumbra) ──
+  buildShadowCone();
+
+  // ── Stars background ──
+  const starsGeo=new THREE.BufferGeometry();
+  const starVerts=[];
+  for(let i=0;i<3000;i++){
+    const th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
+    starVerts.push(Math.sin(ph)*Math.cos(th)*500,Math.cos(ph)*500,Math.sin(ph)*Math.sin(th)*500);
+  }
+  starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVerts,3));
+  const starsMat=new THREE.PointsMaterial({color:0xd0e0ff,size:0.5,sizeAttenuation:true});
+  scene.add(new THREE.Points(starsGeo,starsMat));
+
+  // ── Mouse controls ──
+  canvas.addEventListener('mousedown',e=>{isDragging=true;prevMouse={x:e.clientX,y:e.clientY}});
+  canvas.addEventListener('mousemove',e=>{
+    if(!isDragging)return;
+    const dx=e.clientX-prevMouse.x,dy=e.clientY-prevMouse.y;
+    rotY+=dx*0.008;rotX+=dy*0.006;
+    rotX=Math.max(-1.2,Math.min(1.2,rotX));
+    prevMouse={x:e.clientX,y:e.clientY};
+    updateCamera();
+  });
+  canvas.addEventListener('mouseup',()=>isDragging=false);
+  canvas.addEventListener('mouseleave',()=>isDragging=false);
+
+  // Touch
+  let lastTouch=null,pinchDist=null;
+  canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    if(e.touches.length===1){isDragging=true;lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};}
+    if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinchDist=Math.sqrt(dx*dx+dy*dy);}
+  },{passive:false});
+  canvas.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===1&&isDragging&&lastTouch){
+      const dx=e.touches[0].clientX-lastTouch.x,dy=e.touches[0].clientY-lastTouch.y;
+      rotY+=dx*0.01;rotX+=dy*0.008;rotX=Math.max(-1.2,Math.min(1.2,rotX));
+      lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};updateCamera();
+    }
+    if(e.touches.length===2&&pinchDist!==null){
+      const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
+      const nd=Math.sqrt(dx*dx+dy*dy);const scale=pinchDist/nd;
+      camDist=Math.max(1.6,Math.min(20,camDist*scale));pinchDist=nd;updateCamera();
+    }
+  },{passive:false});
+  canvas.addEventListener('touchend',()=>{isDragging=false;lastTouch=null;pinchDist=null;});
+
+  // Scroll zoom
+  canvas.addEventListener('wheel',e=>{
+    e.preventDefault();
+    camDist=Math.max(1.6,Math.min(20,camDist+e.deltaY*0.005));
+    updateCamera();
+  },{passive:false});
+
+  window.addEventListener('resize',()=>{
+    const W=stage.clientWidth,H=stage.clientHeight;
+    camera.aspect=W/H;camera.updateProjectionMatrix();
+    renderer.setSize(W,H);
+  });
+
+  animate();
+}
+
+function buildShadowCone(){
+  if(shadowCone){scene.remove(shadowCone);}
+  const sg=new THREE.Group();
+
+  // Penumbra (outer shadow, lighter)
+  const penGeo=new THREE.ConeGeometry(3.5,16,32,1,true);
+  const penMat=new THREE.MeshBasicMaterial({
+    color:0x200840,transparent:true,opacity:.18,side:THREE.BackSide
+  });
+  const penMesh=new THREE.Mesh(penGeo,penMat);
+  penMesh.rotation.z=Math.PI/2;penMesh.position.x=8;
+  sg.add(penMesh);
+
+  // Umbra (inner shadow, darker)
+  const umbGeo=new THREE.ConeGeometry(1.2,14,32,1,true);
+  const umbMat=new THREE.MeshBasicMaterial({
+    color:0x080010,transparent:true,opacity:.45,side:THREE.BackSide
+  });
+  const umbMesh=new THREE.Mesh(umbGeo,umbMat);
+  umbMesh.rotation.z=Math.PI/2;umbMesh.position.x=7;
+  sg.add(umbMesh);
+
+  // Antumbra line (faint extension)
+  const antGeo=new THREE.ConeGeometry(4.5,8,32,1,true);
+  const antMat=new THREE.MeshBasicMaterial({
+    color:0x100020,transparent:true,opacity:.08,side:THREE.FrontSide
+  });
+  const antMesh=new THREE.Mesh(antGeo,antMat);
+  antMesh.rotation.z=Math.PI/2;antMesh.position.x=14;
+  sg.add(antMesh);
+
+  // Label lines
+  const lineMat=new THREE.LineBasicMaterial({color:0x4455aa,transparent:true,opacity:.3});
+  for(let i=0;i<3;i++){
+    const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(16*(i+1)/3,0,0)];
+    const lg=new THREE.BufferGeometry().setFromPoints(pts);
+    sg.add(new THREE.Line(lg,lineMat));
+  }
+
+  sg.position.set(-2.5,0,0);
+  sg.visible=showShadowCone;
+  shadowCone=sg;
+  scene.add(sg);
+}
+
+function updateCamera(){
+  const x=camDist*Math.sin(rotY)*Math.cos(rotX);
+  const y=camDist*Math.sin(rotX);
+  const z=camDist*Math.cos(rotY)*Math.cos(rotX);
+  camera.position.set(x,y,z);
+  camera.lookAt(0,0,0);
+  const pct=Math.round((BASE_DIST/camDist)*100);
+  document.getElementById('zoom-val').textContent=pct+'%';
+}
+
+let animFrame=0;
+function animate(){
+  requestAnimationFrame(animate);
+  animFrame++;
+  if(autoRotating){
+    autoAngle+=0.004;
+    rotY=autoAngle;
+    updateCamera();
+  }
+  // Slow moon axial rotation
+  if(moonMesh) moonMesh.rotation.y+=0.0008;
+  if(earthMesh) earthMesh.rotation.y+=0.002;
+  renderer.render(scene,camera);
+}
+
+// ═══════════════════════════════════════════════
+// UPDATE SUN DIRECTION (for terminator)
+// ═══════════════════════════════════════════════
+function updateSunAngle(illum,age){
+  const light=scene.userData.sunLight;
+  if(!light)return;
+  const waxing=age<14.765;
+  // Sun is on the right for waxing (illuminating left face from right)
+  // In Three.js: moon is at origin, sun direction determines lit side
+  const angle=waxing ? -Math.PI*0.5*(1-illum*2) : Math.PI*0.5*(illum*2-1);
+  light.position.set(Math.cos(angle)*10, 0.5, Math.sin(angle)*5);
+  // Shadow cone follows anti-sun direction
+  if(shadowCone){
+    shadowCone.rotation.y=angle+Math.PI;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// VIEW CONTROLS
+// ═══════════════════════════════════════════════
+function setView(v){
+  currentView=v;
+  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
+  if(v==='moon'){
+    document.getElementById('vt-moon').classList.add('active');
+    moonGroup.position.set(0,0,0);
+    earthGroup.visible=false;
+    camDist=4;rotX=0.2;rotY=0;
+  } else {
+    document.getElementById('vt-system').classList.add('active');
+    moonGroup.position.set(0,0,0);
+    earthGroup.visible=true;
+    camDist=14;rotX=0.15;rotY=-0.3;
+  }
+  updateCamera();
+}
+
+function toggleShadow(){
+  showShadowCone=!showShadowCone;
+  if(shadowCone)shadowCone.visible=showShadowCone;
+  document.getElementById('shadow-pill').textContent=showShadowCone?'🌑 SHADOW ON':'🌑 SHADOW OFF';
+  document.getElementById('vt-shadow').classList.toggle('active',showShadowCone);
+}
+
+function zoomIn(){camDist=Math.max(1.6,camDist*0.82);updateCamera();}
+function zoomOut(){camDist=Math.min(20,camDist*1.22);updateCamera();}
+function rotateLeft(){rotY-=0.18;updateCamera();}
+function rotateRight(){rotY+=0.18;updateCamera();}
+function rotateUp(){rotX=Math.max(-1.2,rotX-0.12);updateCamera();}
+function rotateDown(){rotX=Math.min(1.2,rotX+0.12);updateCamera();}
+function resetView(){rotX=0.2;rotY=0;camDist=4;autoRotating=false;document.getElementById('auto-btn').style.color='';updateCamera();}
+function autoRotate(){
+  autoRotating=!autoRotating;
+  document.getElementById('auto-btn').style.color=autoRotating?'var(--accent)':'';
+  if(autoRotating)autoAngle=rotY;
+}
+
+// ═══════════════════════════════════════════════
+// SKY ARC
+// ═══════════════════════════════════════════════
+function drawSkyArc(curAlt){
+  const c=document.getElementById('sky-c'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='rgba(126,179,255,0.08)';ctx.lineWidth=1;
+  [.25,.5,.75].forEach(f=>{
+    ctx.beginPath();ctx.moveTo(f*W,10);ctx.lineTo(f*W,H-25);ctx.stroke();
+  });
+
+  // Horizon
+  ctx.strokeStyle='rgba(126,179,255,0.25)';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(20,H-25);ctx.lineTo(W-10,H-25);ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle='rgba(90,110,146,0.9)';ctx.font='8px "DM Mono"';
+  ctx.fillText('E',12,H-12);ctx.fillText('W',W-18,H-12);
+  ctx.fillText('ZENITH',W/2-18,14);
+
+  // Sample arc
+  const now=new Date();
+  const pts=[];
+  for(let m=0;m<1440;m+=8){
+    const d=new Date(now);d.setHours(0,m,0,0);
+    const jd=Astro.jd(d),pos=Astro.moonPos(jd);
+    const{alt,az}=Astro.altAz(pos.ra,pos.dec,state.lat,state.lon,jd);
+    pts.push({xp:(az/360)*(W-30)+15,yp:H-25-(alt/90)*(H-40),alt,m});
+  }
+
+  // Full arc
+  ctx.strokeStyle='rgba(126,179,255,0.2)';ctx.lineWidth=1.2;
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.xp,Math.min(p.yp,H-25)):ctx.moveTo(p.xp,Math.min(p.yp,H-25)));
+  ctx.stroke();
+
+  // Above horizon highlight
+  ctx.strokeStyle='rgba(200,220,255,0.7)';ctx.lineWidth=2;
+  ctx.beginPath();let s2=false;
+  pts.forEach(p=>{if(p.alt>0){const y=Math.min(p.yp,H-25);s2?ctx.lineTo(p.xp,y):ctx.moveTo(p.xp,y);s2=true;}else s2=false;});
+  ctx.stroke();
+
+  // Current dot
+  const cm=now.getHours()*60+now.getMinutes();
+  const cur=pts.find(p=>Math.abs(p.m-cm)<10);
+  if(cur){
+    const cy2=Math.min(cur.yp,H-26);
+    ctx.beginPath();ctx.arc(cur.xp,cy2,5.5,0,Math.PI*2);
+    ctx.fillStyle=curAlt>0?'#f0f4ff':'rgba(60,80,120,0.8)';ctx.fill();
+    ctx.strokeStyle='rgba(200,220,255,0.9)';ctx.lineWidth=1.5;ctx.stroke();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// MAIN UPDATE
+// ═══════════════════════════════════════════════
+function fmt(n,d=1){return n.toFixed(d);}
+function fmtT(d){return d?d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'—';}
+function fmtRA(ra){const h=Math.floor(ra/15),m=Math.floor((ra/15-h)*60),s=Math.floor(((ra/15-h)*60-m)*60);return`${h}h ${m}m ${s}s`;}
+function azDir(az){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(az/22.5)%16];}
+const phNames=[
+  {n:'New Moon',d:'Between Earth and Sun — not visible'},
+  {n:'Waxing Crescent',d:'Thin crescent in western evening sky'},
+  {n:'First Quarter',d:'Right half illuminated — rising at noon'},
+  {n:'Waxing Gibbous',d:'More than half lit, growing to full'},
+  {n:'Full Moon',d:'Fully illuminated — opposite the Sun'},
+  {n:'Waning Gibbous',d:'Starts to darken after full moon'},
+  {n:'Last Quarter',d:'Left half illuminated — setting at noon'},
+  {n:'Waning Crescent',d:'Thin crescent in eastern morning sky'},
+];
+function getPh(age){
+  const t=[0,1.85,7.38,11.08,14.77,16.61,22.15,25.85,29.53];
+  for(let i=0;i<8;i++)if(age>=t[i]&&age<t[i+1])return phNames[i];
+  return phNames[7];
+}
+
+function update(){
+  const now=new Date();
+  const jd=Astro.jd(now);
+  const pos=Astro.moonPos(jd);
+  const{alt,az}=Astro.altAz(pos.ra,pos.dec,state.lat,state.lon,jd);
+  const{age,illum}=Astro.moonPhase(jd);
+  const ph=getPh(age);
+  const wax=age<14.765;
+  const illumPct=Math.round(illum*100);
+
+  // Clock
+  document.getElementById('ct').textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('cd').textContent=now.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+  // Phase
+  document.getElementById('phase-nm').textContent=ph.n;
+  document.getElementById('phase-dc').textContent=ph.d;
+  document.getElementById('illum-pct').textContent=illumPct+'%';
+  document.getElementById('ibar-f').style.width=illumPct+'%';
+  const shW=wax?(1-illum)*100:illum*100;
+  const shd=document.getElementById('phase-shd');
+  shd.style.width=shW+'%';shd.style.right=wax?'0':'auto';shd.style.left=wax?'auto':'0';
+  shd.style.borderRadius=wax?'0 50% 50% 0':'50% 0 0 50%';
+
+  // Position
+  document.getElementById('az').textContent=fmt(az)+'°';
+  document.getElementById('al').textContent=fmt(alt)+'°';
+  document.getElementById('dir').textContent=azDir(az);
+  const vis=alt>0;
+  document.getElementById('vis').textContent=vis?'✓ Visible':'✗ Below Horizon';
+  document.getElementById('vis').className='vl '+(vis?'on':'off');
+  document.getElementById('dist2').textContent=Math.round(pos.dist).toLocaleString()+' km';
+
+  // Ecliptic
+  document.getElementById('ra').textContent=fmtRA(pos.ra);
+  document.getElementById('dec').textContent=fmt(pos.dec)+'°';
+  const angS=fmt(2*Math.atan(1737.4/pos.dist)*180/Math.PI*60,1);
+  document.getElementById('angs').textContent=angS+"′";
+  document.getElementById('zod').textContent=Astro.zodiac(pos.lon);
+
+  // Rise/Set
+  const rs=Astro.riseSet(now,state.lat,state.lon);
+  document.getElementById('mrise').textContent=fmtT(rs.rise);
+  document.getElementById('mset').textContent=fmtT(rs.set);
+  const nfm=Astro.nextFullMoon(jd);
+  document.getElementById('nfm').textContent=nfm.toLocaleDateString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  // Facts
+  document.getElementById('mage').textContent=fmt(age,2)+' days';
+  document.getElementById('cyc').textContent=fmt(age,1)+' / 29.5';
+  document.getElementById('orb').textContent=pos.dist<363300?'⬤ Perigee':pos.dist>405500?'⬤ Apogee':'Mid-orbit';
+
+  // HUD
+  document.getElementById('hud-phase').textContent=ph.n.toUpperCase();
+  document.getElementById('hud-dist').textContent=Math.round(pos.dist).toLocaleString()+' km';
+  document.getElementById('hud-illum').textContent=illumPct+'%';
+
+  // Bottom
+  document.getElementById('b-ph').textContent=ph.n.split(' ').map(w=>w[0]).join('').toUpperCase()||ph.n.substring(0,2).toUpperCase();
+  document.getElementById('b-ww').textContent=wax?'Waxing':'Waning';
+  document.getElementById('b-dist').textContent=Math.round(pos.dist/1000).toLocaleString()+'K';
+  document.getElementById('b-alt').textContent=fmt(alt);
+  document.getElementById('b-alts').textContent=vis?'Above horizon':'Below horizon';
+  document.getElementById('b-ill').textContent=illumPct;
+  document.getElementById('b-wax').textContent=wax?'↑ Waxing':'↓ Waning';
+
+  // Update 3D sun light for terminator
+  updateSunAngle(illum,age);
+
+  // Sub-lunar point for map
+  const sl=Astro.subLunar(pos.ra,pos.dec,jd);
+  updateMap(sl.lat,sl.lon);
+
+  // Sky arc
+  drawSkyArc(alt);
+}
+
+// ═══════════════════════════════════════════════
+// LOCATION
+// ═══════════════════════════════════════════════
+function setLoc(lat,lon,name){
+  state.lat=lat;state.lon=lon;
+  document.getElementById('loc-st').textContent='Location acquired';
+  document.getElementById('loc-xy').textContent=`${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+  document.getElementById('loc-nm').textContent=name||'';
+  document.getElementById('loc-pill').textContent='📍 '+(name||'Custom');
+  if(userMarker)userMarker.setLatLng([lat,lon]);
+  update();
+}
+
+document.getElementById('loc-btn').addEventListener('click',()=>{
+  document.getElementById('loc-st').textContent='Requesting GPS…';
+  if(!navigator.geolocation){document.getElementById('loc-st').textContent='Not supported';return;}
+  navigator.geolocation.getCurrentPosition(
+    p=>setLoc(p.coords.latitude,p.coords.longitude,'Your GPS Location'),
+    ()=>{document.getElementById('loc-st').textContent='Permission denied — using Dhaka';}
+  );
+});
+
+// ═══════════════════════════════════════════════
+// BOOT SEQUENCE
+// ═══════════════════════════════════════════════
+let lp=0;
+const li=setInterval(()=>{
+  lp+=Math.random()*15+5;
+  if(lp>100)lp=100;
+  document.getElementById('lfill').style.width=lp+'%';
+  if(lp>30)document.getElementById('load-msg').textContent='BUILDING MOON SURFACE';
+  if(lp>60)document.getElementById('load-msg').textContent='CALCULATING ORBITAL MECHANICS';
+  if(lp>85)document.getElementById('load-msg').textContent='LOADING MAP ENGINE';
+  if(lp>=100){
+    clearInterval(li);
+    setTimeout(()=>{
+      document.getElementById('load-msg').textContent='READY';
+      setTimeout(()=>{
+        document.getElementById('loading').style.opacity='0';
+        document.getElementById('app').style.opacity='1';
+        setTimeout(()=>document.getElementById('loading').style.display='none',700);
+      },300);
+    },200);
+  }
+},100);
+
+// Init everything
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    init3D();
+    initMap();
+    setLoc(23.8103,90.4125,'Dhaka, Bangladesh');
+    setInterval(update,1000);
+    // Try GPS
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        p=>setLoc(p.coords.latitude,p.coords.longitude,'Your Location'),
+        ()=>{}
+      );
+    }
+  },200);
+});
+</script>
+</body>
+</html>
