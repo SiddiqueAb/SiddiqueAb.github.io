@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Bounty & Web Security — সম্পূর্ণ বাংলা গাইড</title>
+<style>
+:root {
+  --bg:#f6f8ff;--bg2:#ffffff;--bg3:#eef1fb;--bg4:#e4e8f7;
+  --sb:#1a2340;--sb2:#111828;
+  --code:#161d30;
+  --border:#dde2f0;--border2:#c5cce8;
+  --accent:#2563eb;--accent2:#1d4ed8;
+  --green:#059669;--red:#dc2626;--orange:#d97706;
+  --purple:#7c3aed;--cyan:#0891b2;--teal:#0d9488;
+  --text:#1a2340;--text2:#4b5780;--text3:#8892b0;
+  --sw:270px;--r:10px;
+  --sh:0 2px 12px rgba(26,35,64,.08);
+  --sh2:0 4px 24px rgba(26,35,64,.13);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Noto Sans Bengali','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.85;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg3)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* SIDEBAR */
+#sb{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sb);overflow-y:auto;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 20px rgba(0,0,0,.18);transition:transform .3s}
+#sb::-webkit-scrollbar-track{background:var(--sb2)}
+#sb::-webkit-scrollbar-thumb{background:#2a3a5c}
+.sb-top{padding:22px 18px 14px;background:var(--sb2);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-ico{font-size:26px;margin-bottom:7px;display:block}
+.sb-t{font-size:13px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:3px}
+.sb-s{font-size:10px;color:#6b7fa8;letter-spacing:.3px}
+.sb-nav{padding:8px 0 24px}
+.sb-g{margin-top:4px}
+.sb-gh{padding:7px 16px 3px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#3d5080;font-family:monospace}
+.sb-a{display:flex;align-items:center;gap:7px;padding:6px 16px 6px 20px;font-size:12px;color:#8fa8d4;text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.4}
+.sb-a .i{font-size:12px;width:15px;text-align:center;flex-shrink:0}
+.sb-a:hover,.sb-a.on{color:#fff;background:rgba(255,255,255,.06);border-left-color:var(--accent)}
+.sb-a.on{color:#93c5fd}
+
+/* LAYOUT */
+#wrap{margin-left:var(--sw);min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a2340 0%,#1e3a8a 55%,#1d4ed8 100%);padding:60px 56px 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:380px;height:380px;background:radial-gradient(circle,rgba(147,197,253,.1) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'🔐';position:absolute;right:52px;bottom:16px;font-size:110px;opacity:.07;pointer-events:none}
+.h-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.9);font-size:10px;font-weight:700;font-family:monospace;letter-spacing:1.2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:18px}
+.hero h1{font-size:34px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:12px}
+.hero h1 span{color:#93c5fd}
+.hero p{font-size:14.5px;color:rgba(255,255,255,.72);max-width:560px;line-height:1.75}
+.h-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.hp{font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;font-family:monospace;border:1px solid}
+.hpb{background:rgba(37,99,235,.2);border-color:rgba(96,165,250,.35);color:#93c5fd}
+.hpg{background:rgba(5,150,105,.2);border-color:rgba(52,211,153,.3);color:#6ee7b7}
+.hpr{background:rgba(220,38,38,.2);border-color:rgba(252,165,165,.3);color:#fca5a5}
+.hpo{background:rgba(217,119,6,.2);border-color:rgba(251,191,36,.3);color:#fde68a}
+
+/* CONTENT */
+.content{padding:0 56px 100px;max-width:980px}
+
+/* SECTION */
+.sec{padding-top:58px}
+.sh{display:flex;align-items:center;gap:11px;padding-bottom:14px;border-bottom:2px solid var(--border);margin-bottom:30px}
+.sn{font-family:monospace;font-size:10px;font-weight:700;color:var(--accent);background:var(--bg4);border:1px solid var(--border2);padding:3px 8px;border-radius:5px;flex-shrink:0}
+.si{font-size:20px;flex-shrink:0}
+.sh h2{font-size:22px;font-weight:800;color:var(--text)}
+.sub{margin-bottom:42px}
+.sub h3{font-size:16.5px;font-weight:700;color:var(--accent2);margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.sub h3::before{content:'';flex-shrink:0;width:4px;height:16px;background:var(--accent);border-radius:2px}
+.sub h4{font-size:13px;font-weight:700;color:var(--text);margin:16px 0 9px;font-family:monospace;letter-spacing:.3px}
+p{margin-bottom:12px;color:var(--text2);font-size:14px;line-height:1.85}
+p strong,li strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.box{border-radius:var(--r);padding:14px 17px;margin:16px 0;border-left:4px solid;font-size:13.5px;box-shadow:var(--sh)}
+.bl{font-family:monospace;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.box.info{background:#eff6ff;border-color:var(--accent)}.box.info .bl{color:var(--accent)}
+.box.warn{background:#fffbeb;border-color:var(--orange)}.box.warn .bl{color:var(--orange)}
+.box.danger{background:#fef2f2;border-color:var(--red)}.box.danger .bl{color:var(--red)}
+.box.ok{background:#f0fdf4;border-color:var(--green)}.box.ok .bl{color:var(--green)}
+.box.tip{background:#f5f3ff;border-color:var(--purple)}.box.tip .bl{color:var(--purple)}
+.box p{margin:0;font-size:13.5px}.box p+p{margin-top:7px}
+
+/* CODE */
+.cw{margin:16px 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);box-shadow:var(--sh2)}
+.cb{display:flex;align-items:center;justify-content:space-between;background:#1e2640;padding:8px 13px}
+.cl{font-family:monospace;font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:.8px;display:flex;align-items:center;gap:5px}
+.cp{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);color:#cbd5e1;font-family:monospace;font-size:10px;padding:3px 9px;border-radius:5px;cursor:pointer;transition:all .15s}
+.cp:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cp.ok{background:#059669;color:#fff;border-color:#059669}
+pre{background:var(--code);padding:16px 18px;overflow-x:auto;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12.5px;line-height:1.75;tab-size:2}
+pre::-webkit-scrollbar{height:4px}
+pre::-webkit-scrollbar-track{background:#1e2640}
+pre::-webkit-scrollbar-thumb{background:#2e4070;border-radius:3px}
+.k{color:#60a5fa;font-weight:700}.f{color:#34d399}.s{color:#fbbf24}.n{color:#fb923c}
+.c{color:#3d5080;font-style:italic}.t{color:#e2e8f0}.col{color:#7dd3fc}.op{color:#a78bfa}
+.tx{color:#f87171;font-weight:700}.g{color:#86efac}
+
+/* TABLES */
+.tw{overflow-x:auto;margin:16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg2)}
+th{background:var(--sb);color:#93c5fd;font-family:monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}tr:hover td{background:var(--bg3)}
+code,p code,td code,li code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:11.5px;background:var(--bg4);border:1px solid var(--border2);padding:2px 6px;border-radius:4px;color:#2563eb}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin:16px 0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.ci{font-size:22px;margin-bottom:7px;display:block}
+.ct{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:5px}
+.cd{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* STEPS */
+.steps{list-style:none;margin:13px 0}
+.steps li{display:flex;gap:13px;align-items:flex-start;margin-bottom:10px;padding:11px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);font-size:13.5px;color:var(--text2);box-shadow:var(--sh)}
+.snum{flex-shrink:0;width:24px;height:24px;background:var(--accent);color:#fff;font-family:monospace;font-size:11px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+
+/* DIAGRAM */
+.dg{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;margin:16px 0;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;color:var(--text2);line-height:1.85;overflow-x:auto;box-shadow:var(--sh)}
+.dg-t{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;font-family:monospace;display:flex;align-items:center;gap:5px}
+.dg-t::before{content:'◈';font-size:11px}
+.da{color:var(--accent);font-weight:700}.dg2{color:var(--green);font-weight:700}
+.do{color:var(--orange);font-weight:700}.dr{color:var(--red);font-weight:700}
+.dp{color:var(--purple);font-weight:700}.db{color:var(--text);font-weight:700}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0}
+.pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid;font-family:monospace}
+.pb{background:#eff6ff;border-color:#bfdbfe;color:var(--accent)}
+.pg{background:#f0fdf4;border-color:#bbf7d0;color:var(--green)}
+.pr{background:#fef2f2;border-color:#fecaca;color:var(--red)}
+.po{background:#fffbeb;border-color:#fde68a;color:var(--orange)}
+.pp{background:#f5f3ff;border-color:#ddd6fe;color:var(--purple)}
+.pc{background:#ecfeff;border-color:#a5f3fc;color:var(--cyan)}
+
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.cmp-bad{border-radius:var(--r);overflow:hidden;border:2px solid #fecaca}
+.cmp-good{border-radius:var(--r);overflow:hidden;border:2px solid #bbf7d0}
+.cmp-h{padding:7px 13px;font-family:monospace;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.cmp-bad .cmp-h{background:#fef2f2;color:var(--red)}
+.cmp-good .cmp-h{background:#f0fdf4;color:var(--green)}
+
+/* SEVERITY */
+.sev{display:inline-block;font-size:10px;font-weight:700;font-family:monospace;padding:2px 8px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;border:1px solid}
+.s-crit{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.s-high{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+.s-med{background:#fffbeb;border-color:#fde68a;color:#b45309}
+.s-low{background:#f0fdf4;border-color:#bbf7d0;color:#15803d}
+.s-info{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+
+.div{height:1px;background:var(--border);margin:46px 0}
+
+/* FOOTER */
+footer{margin-left:var(--sw);padding:20px 56px;border-top:1px solid var(--border);background:var(--bg2);font-size:11px;color:var(--text3);font-family:monospace;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+
+/* MOBILE */
+#mbt{display:none;position:fixed;top:11px;right:13px;z-index:300;background:var(--accent);color:#fff;border:none;width:37px;height:37px;border-radius:8px;cursor:pointer;font-size:17px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(37,99,235,.4)}
+@media(max-width:840px){
+  #sb{transform:translateX(-100%)}#sb.open{transform:translateX(0)}
+  #wrap,footer{margin-left:0}#mbt{display:flex}
+  .hero{padding:48px 20px 34px}.hero h1{font-size:24px}.hero::after{display:none}
+  .content{padding:0 18px 80px}.cmp{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<button id="mbt" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sb">
+  <div class="sb-top">
+    <span class="sb-ico">🛡️</span>
+    <div class="sb-t">Bug Bounty & Web Security<br>সম্পূর্ণ বাংলা গাইড</div>
+    <div class="sb-s">Ethical Hacker Developer Handbook</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-g">
+      <div class="sb-gh">ভূমিকা</div>
+      <a href="#intro" class="sb-a"><span class="i">📋</span>পরিচিতি ও নীতিমালা</a>
+      <a href="#methodology" class="sb-a"><span class="i">🗺️</span>Bug Bounty Methodology</a>
+    </div>
+    <div class="sb-g">
+      <div class="sb-gh">Reconnaissance</div>
+      <a href="#recon" class="sb-a"><span class="i">🔍</span>Recon & Footprinting</a>
+      <a href="#tools" class="sb-a"><span class="i">🛠️</span>Tools & Resources</a>
+    </div>
+    <div class="sb-g">
+      <div class="sb-gh">Vulnerabilities</div>
+      <a href="#sqli" class="sb-a"><span class="i">💉</span>SQL Injection (SQLi)</a>
+      <a href="#xss" class="sb-a"><span class="i">📜</span>Cross-Site Scripting (XSS)</a>
+      <a href="#csrf" class="sb-a"><span class="i">🔄</span>CSRF</a>
+      <a href="#auth" class="sb-a"><span class="i">🔑</span>Broken Auth & AuthZ</a>
+      <a href="#fileup" class="sb-a"><span class="i">📁</span>File Upload Vulns</a>
+      <a href="#api" class="sb-a"><span class="i">🔌</span>Insecure API</a>
+      <a href="#session" class="sb-a"><span class="i">🍪</span>Session Hijacking</a>
+      <a href="#rce" class="sb-a"><span class="i">⚡</span>RCE & Injection</a>
+    </div>
+    <div class="sb-g">
+      <div class="sb-gh">Reporting</div>
+      <a href="#report" class="sb-a"><span class="i">📝</span>Report Writing & PoC</a>
+      <a href="#platforms" class="sb-a"><span class="i">🌐</span>Platforms & Career</a>
+    </div>
+    <div class="sb-g">
+      <div class="sb-gh">Defense</div>
+      <a href="#defense" class="sb-a"><span class="i">🛡️</span>Secure Coding Guide</a>
+      <a href="#cases" class="sb-a"><span class="i">📚</span>Real-World Cases</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="wrap">
+<div class="hero">
+  <div class="h-chip">🛡️ Ethical Hacking · Bug Bounty · বাংলা</div>
+  <h1>Bug Bounty &amp; Web Security<br><span>সম্পূর্ণ বাংলা গাইড</span></h1>
+  <p>OWASP Top 10 থেকে Bug Bounty Methodology — ethical hacker ও developer-দের জন্য সম্পূর্ণ নিরাপত্তা গাইড। Vulnerability বোঝো, নিজের সিস্টেম রক্ষা করো, দায়িত্বশীলভাবে রিপোর্ট করো।</p>
+  <div class="h-pills">
+    <span class="hp hpb">OWASP Top 10</span>
+    <span class="hp hpg">Ethical Hacking</span>
+    <span class="hp hpr">SQLi · XSS · CSRF</span>
+    <span class="hp hpo">Secure Coding</span>
+    <span class="hp hpb">Bug Bounty Workflow</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════
+  §01 INTRO
+══════════════════════════════════════ -->
+<section class="sec" id="intro">
+  <div class="sh"><span class="sn">01</span><span class="si">📋</span><h2>পরিচিতি ও নৈতিক নীতিমালা</h2></div>
+
+  <div class="sub">
+    <h3>Bug Bounty কি?</h3>
+    <p>Bug Bounty হলো এমন একটি প্রোগ্রাম যেখানে কোম্পানি বা সংস্থা তাদের সিস্টেমের নিরাপত্তা দুর্বলতা খুঁজে বের করার জন্য <strong>ethical হacker বা security researcher</strong>-দের পুরস্কার দেয়। এটি একটি আইনি, কাঠামোবদ্ধ পদ্ধতি যেখানে কোম্পানি নির্দিষ্ট সীমার মধ্যে তাদের সিস্টেম পরীক্ষা করার অনুমতি দেয়।</p>
+
+    <div class="cards">
+      <div class="card"><span class="ci">🎯</span><div class="ct">Ethical Hacker</div><div class="cd">অনুমতি নিয়ে সিস্টেম পরীক্ষা করে দুর্বলতা খোঁজেন এবং রিপোর্ট করেন</div></div>
+      <div class="card"><span class="ci">🏆</span><div class="ct">Bug Bounty Hunter</div><div class="cd">Bug খুঁজে পুরস্কার পান — $100 থেকে $100,000+ পর্যন্ত</div></div>
+      <div class="card"><span class="ci">🔒</span><div class="ct">Penetration Tester</div><div class="cd">কোম্পানির চুক্তিতে সিস্টেমের সম্পূর্ণ নিরাপত্তা মূল্যায়ন করেন</div></div>
+      <div class="card"><span class="ci">📚</span><div class="ct">Security Researcher</div><div class="cd">নতুন vulnerability ও attack প্যাটার্ন গবেষণা করেন</div></div>
+    </div>
+
+    <h3>নৈতিক নীতিমালা — এটাই সবচেয়ে গুরুত্বপূর্ণ</h3>
+
+    <div class="box danger">
+      <div class="bl">⚠️ আইনি সতর্কতা</div>
+      <p><strong>অনুমতি ছাড়া কোনো সিস্টেম পরীক্ষা করা সম্পূর্ণ অবৈধ।</strong> বাংলাদেশের Digital Security Act 2018 এবং আন্তর্জাতিক Computer Fraud and Abuse Act (CFAA) অনুযায়ী এটি গুরুতর অপরাধ। শুধুমাত্র নিজের সিস্টেম, অনুমোদিত lab (HackTheBox, TryHackMe), অথবা Bug Bounty scope-এর মধ্যে পরীক্ষা করুন।</p>
+    </div>
+
+    <div class="box ok">
+      <div class="bl">✅ Ethical Hacker-এর নিয়ম</div>
+      <p>১. সবসময় লিখিত অনুমতি নিন।&nbsp; ২. Bug Bounty-এর scope মেনে চলুন।&nbsp; ৩. পাওয়া তথ্য গোপন রাখুন।&nbsp; ৪. Production data কখনো access করবেন না।&nbsp; ৫. খুঁজে পাওয়া vulnerability দ্রুত রিপোর্ট করুন।</p>
+    </div>
+
+    <h3>Ethical Hacking vs Malicious Hacking</h3>
+    <div class="tw"><table>
+      <thead><tr><th>বিষয়</th><th>Ethical Hacker</th><th>Malicious Hacker</th></tr></thead>
+      <tbody>
+        <tr><td>অনুমতি</td><td style="color:var(--green)">✓ লিখিত অনুমতি আছে</td><td style="color:var(--red)">✗ অনুমতি নেই</td></tr>
+        <tr><td>উদ্দেশ্য</td><td style="color:var(--green)">সিস্টেম উন্নত করা</td><td style="color:var(--red)">ক্ষতি/চুরি করা</td></tr>
+        <tr><td>রিপোর্টিং</td><td style="color:var(--green)">কোম্পানিকে জানানো</td><td style="color:var(--red)">গোপন রাখা/বিক্রি করা</td></tr>
+        <tr><td>আইনি অবস্থা</td><td style="color:var(--green)">সম্পূর্ণ আইনি</td><td style="color:var(--red)">অবৈধ — জেল হতে পারে</td></tr>
+        <tr><td>ডেটা</td><td style="color:var(--green)">কিছু নেওয়া হয় না</td><td style="color:var(--red)">চুরি বা ধ্বংস</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Practice Environment — অনুমোদিত Lab সমূহ</h3>
+    <div class="pills">
+      <span class="pill pb">HackTheBox (hackthebox.com)</span>
+      <span class="pill pg">TryHackMe (tryhackme.com)</span>
+      <span class="pill po">PortSwigger Web Academy (free)</span>
+      <span class="pill pp">DVWA (Damn Vulnerable Web App)</span>
+      <span class="pill pc">bWAPP (buggy web app)</span>
+      <span class="pill pb">WebGoat (OWASP)</span>
+      <span class="pill pg">VulnHub (offline VMs)</span>
+    </div>
+    <div class="box info">
+      <div class="bl">💡 শুরু করুন এখানে</div>
+      <p>নতুনদের জন্য সবচেয়ে ভালো: <strong>PortSwigger Web Academy</strong> — সম্পূর্ণ বিনামূল্যে, structured labs, প্রতিটি vulnerability হাতে-কলমে শেখার সুযোগ। URL: <code>portswigger.net/web-security</code></p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §02 METHODOLOGY
+══════════════════════════════════════ -->
+<section class="sec" id="methodology">
+  <div class="sh"><span class="sn">02</span><span class="si">🗺️</span><h2>Bug Bounty Methodology</h2></div>
+
+  <div class="sub">
+    <h3>Standard Bug Hunting Workflow</h3>
+
+    <div class="dg">
+      <div class="dg-t">Bug Bounty Workflow</div>
+<span class="db">┌────────────────────────────────────────────────────────────────┐</span>
+<span class="db">│                  PHASE 1: PREPARATION                          │</span>
+<span class="db">│  Program বেছে নাও → Scope পড়ো → Rules of Engagement বোঝো     │</span>
+<span class="db">│  Target URL, excluded areas, reward range নোট করো             │</span>
+<span class="db">└──────────────────────────┬─────────────────────────────────────┘</span>
+                           <span class="da">↓</span>
+<span class="db">┌──────────────────────────▼─────────────────────────────────────┐</span>
+<span class="db">│                 PHASE 2: RECONNAISSANCE                        │</span>
+<span class="da">│  Subdomain enumeration → Technology fingerprinting             │</span>
+<span class="da">│  Google Dorking → GitHub source code search                    │</span>
+<span class="da">│  Wayback Machine → JS file analysis → API endpoint discovery   │</span>
+<span class="db">└──────────────────────────┬─────────────────────────────────────┘</span>
+                           <span class="da">↓</span>
+<span class="db">┌──────────────────────────▼─────────────────────────────────────┐</span>
+<span class="db">│                PHASE 3: VULNERABILITY ASSESSMENT               │</span>
+<span class="do">│  Manual testing (Burp Suite proxy)                             │</span>
+<span class="do">│  Input fields → Authentication → File uploads → APIs          │</span>
+<span class="do">│  OWASP Top 10 checklist → Business logic flaws                 │</span>
+<span class="db">└──────────────────────────┬─────────────────────────────────────┘</span>
+                           <span class="da">↓</span>
+<span class="db">┌──────────────────────────▼─────────────────────────────────────┐</span>
+<span class="db">│                 PHASE 4: VALIDATION & PoC                      │</span>
+<span class="dg2">│  Vulnerability confirm করো → Impact assess করো               │</span>
+<span class="dg2">│  PoC (Proof of Concept) তৈরি করো → Screenshot/Video নাও      │</span>
+<span class="db">└──────────────────────────┬─────────────────────────────────────┘</span>
+                           <span class="da">↓</span>
+<span class="db">┌──────────────────────────▼─────────────────────────────────────┐</span>
+<span class="db">│                  PHASE 5: REPORTING                            │</span>
+<span class="dp">│  Professional report লিখো → Severity rate করো (CVSS)         │</span>
+<span class="dp">│  Platform-এ submit করো → Follow-up করো                        │</span>
+<span class="db">└────────────────────────────────────────────────────────────────┘</span></div>
+
+    <h3>Scope বোঝা — সবচেয়ে গুরুত্বপূর্ণ পদক্ষেপ</h3>
+    <p>Bug Bounty program-এ সবসময় <strong>scope</strong> মনোযোগ দিয়ে পড়ুন। Scope নির্ধারণ করে কোন domain, IP, বা application পরীক্ষা করা যাবে।</p>
+    <div class="tw"><table>
+      <thead><tr><th>In Scope (করা যাবে)</th><th>Out of Scope (করা যাবে না)</th></tr></thead>
+      <tbody>
+        <tr><td><code>*.example.com</code> — সব subdomain</td><td>Third-party services (Cloudflare, AWS সরাসরি)</td></tr>
+        <tr><td><code>api.example.com</code> — API endpoint</td><td>User personal data access/exfiltration</td></tr>
+        <tr><td>Web application features</td><td>DoS/DDoS attacks</td></tr>
+        <tr><td>Authentication system</td><td>Physical attacks, social engineering</td></tr>
+        <tr><td>File upload functionality</td><td>Production data manipulation</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §03 RECON
+══════════════════════════════════════ -->
+<section class="sec" id="recon">
+  <div class="sh"><span class="sn">03</span><span class="si">🔍</span><h2>Reconnaissance & Footprinting</h2></div>
+
+  <div class="sub">
+    <h3>Passive Reconnaissance — কোনো সরাসরি যোগাযোগ ছাড়া</h3>
+    <p>Passive recon-এ target-এর server-এ সরাসরি কোনো request না পাঠিয়ে publicly available তথ্য সংগ্রহ করা হয়।</p>
+
+    <div class="dg">
+      <div class="dg-t">Passive Recon Sources</div>
+<span class="da">Google Dorking:</span>
+  <span class="db">site:example.com filetype:pdf</span>          <span class="c">→ Public PDF files</span>
+  <span class="db">site:example.com inurl:admin</span>            <span class="c">→ Admin pages</span>
+  <span class="db">site:example.com ext:php inurl:id=</span>      <span class="c">→ PHP param endpoints</span>
+  <span class="db">site:example.com "index of"</span>             <span class="c">→ Directory listing</span>
+  <span class="db">"example.com" filetype:env</span>             <span class="c">→ Exposed .env files</span>
+
+<span class="do">Shodan (shodan.io):</span>
+  <span class="db">org:"Example Company"</span>                  <span class="c">→ All their IPs/services</span>
+  <span class="db">hostname:example.com</span>                   <span class="c">→ Open ports & services</span>
+  <span class="db">ssl:"example.com"</span>                      <span class="c">→ SSL certificates</span>
+
+<span class="dg2">Certificate Transparency (crt.sh):</span>
+  <span class="db">https://crt.sh/?q=%.example.com</span>        <span class="c">→ All issued certificates</span>
+  <span class="db">→ Subdomain discovery without scanning</span>
+
+<span class="dp">GitHub Code Search:</span>
+  <span class="db">org:examplecompany password</span>            <span class="c">→ Leaked credentials</span>
+  <span class="db">org:examplecompany api_key</span>             <span class="c">→ Exposed API keys</span>
+  <span class="db">filename:.env "DB_PASSWORD"</span>            <span class="c">→ Config files</span></div>
+
+    <h3>Subdomain Enumeration</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Tool</th><th>ব্যবহার</th><th>বিশেষত্ব</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Subfinder</strong></td><td><code>subfinder -d example.com</code></td><td>Fast passive subdomain discovery</td></tr>
+        <tr><td><strong>Amass</strong></td><td><code>amass enum -d example.com</code></td><td>Most comprehensive, active+passive</td></tr>
+        <tr><td><strong>AssetFinder</strong></td><td><code>assetfinder example.com</code></td><td>Simple, fast</td></tr>
+        <tr><td><strong>crt.sh</strong></td><td>Browser: <code>crt.sh/?q=%.example.com</code></td><td>Certificate transparency logs</td></tr>
+        <tr><td><strong>DNSdumpster</strong></td><td>dnsdumpster.com</td><td>DNS record mapping, visual</td></tr>
+        <tr><td><strong>theHarvester</strong></td><td><code>theHarvester -d example.com -b all</code></td><td>Email, subdomain, IP aggregation</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Technology Fingerprinting</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">🔍 Recon Commands (Terminal)</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c"># Nmap — Port & Service Discovery</span>
+<span class="c"># শুধুমাত্র অনুমোদিত target-এ ব্যবহার করুন</span>
+nmap -sV -sC -p 80,443,8080,8443 example.com
+<span class="c"># -sV: service version detection</span>
+<span class="c"># -sC: default scripts</span>
+<span class="c"># Output দেখায়: Apache 2.4.41, PHP/7.4, MySQL 8.0</span>
+
+<span class="c"># WhatWeb — Technology Detection</span>
+whatweb https://example.com
+<span class="c"># Output: WordPress[5.8], jQuery[3.6], PHP[7.4], Apache</span>
+
+<span class="c"># Wappalyzer browser extension</span>
+<span class="c"># Browser install করুন — site visit করলেই সব tech দেখাবে</span>
+
+<span class="c"># HTTP Headers analysis</span>
+curl -I https://example.com
+<span class="c"># দেখুন: Server, X-Powered-By, Set-Cookie, Security headers</span>
+
+<span class="c"># JavaScript file enumeration</span>
+<span class="c"># Browser DevTools → Sources → JS files-এ endpoint খোঁজুন</span>
+<span class="c"># গুরুত্বপূর্ণ: /api/v1/users, /admin/dashboard</span>
+
+<span class="c"># Wayback Machine — পুরনো URL</span>
+<span class="c"># web.archive.org/web/*/example.com/*</span>
+<span class="c"># পুরনো endpoint, parameter, admin panel খোঁজুন</span>
+
+<span class="c"># Nikto — Web Server Scanner</span>
+nikto -h https://example.com
+<span class="c"># Common misconfigs, outdated software, insecure headers</span></pre>
+    </div>
+
+    <div class="box warn">
+      <div class="bl">⚠️ Active Scanning নোট</div>
+      <p>Nmap, Nikto-র মতো active scanning tools সরাসরি target-এর server-এ request পাঠায়। <strong>শুধুমাত্র আপনার নিজের সিস্টেম বা Bug Bounty scope-এর মধ্যে ব্যবহার করুন।</strong> Unauthorized scanning অবৈধ।</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §04 TOOLS
+══════════════════════════════════════ -->
+<section class="sec" id="tools">
+  <div class="sh"><span class="sn">04</span><span class="si">🛠️</span><h2>Essential Tools & Resources</h2></div>
+
+  <div class="sub">
+    <h3>Burp Suite — Web Application Testing-এর প্রধান হাতিয়ার</h3>
+    <p>Burp Suite হলো ethical hacker-দের সবচেয়ে বেশি ব্যবহৃত web security testing tool। এটি আপনার browser এবং target website-এর মধ্যে একটি proxy হিসেবে কাজ করে।</p>
+
+    <div class="dg">
+      <div class="dg-t">Burp Suite Architecture</div>
+<span class="db">Browser ──── HTTP Request ────► Burp Proxy (127.0.0.1:8080) ────► Target Server</span>
+<span class="db">Browser ◄─── HTTP Response ──── Burp Proxy ◄────────────────────── Target Server</span>
+
+<span class="da">Burp Suite Main Modules:</span>
+<span class="db">┌─────────────┬───────────────────────────────────────────────────┐</span>
+<span class="db">│ Proxy       │ সব request/response intercept ও modify করো       │</span>
+<span class="db">│ Repeater    │ একটি request বারবার modify করে পাঠাও             │</span>
+<span class="db">│ Intruder    │ Automated fuzzing — parameter testing              │</span>
+<span class="db">│ Scanner     │ Automatic vulnerability scan (Pro version)         │</span>
+<span class="db">│ Decoder     │ Base64, URL, HTML encode/decode                    │</span>
+<span class="db">│ Comparer    │ দুটি response-এর পার্থক্য দেখো                  │</span>
+<span class="db">│ Logger      │ সব HTTP traffic log করো                           │</span>
+<span class="db">└─────────────┴───────────────────────────────────────────────────┘</span></div>
+
+    <h4>Burp Suite Setup (বাংলায়)</h4>
+    <ol class="steps">
+      <li><div class="snum">1</div><div>Download করুন: <code>portswigger.net/burp/communitydownload</code> — Community Edition বিনামূল্যে</div></li>
+      <li><div class="snum">2</div><div>Browser-এ proxy: <code>127.0.0.1:8080</code> set করুন (Firefox recommended, FoxyProxy extension ব্যবহার করুন)</div></li>
+      <li><div class="snum">3</div><div>Burp CA certificate install করুন: <code>http://burp</code> → CA Certificate download → Browser-এ import</div></li>
+      <li><div class="snum">4</div><div>Proxy → Intercept ON করুন → Browser-এ target site browse করুন → সব request দেখতে পাবেন</div></li>
+      <li><div class="snum">5</div><div>Request-এ right-click → "Send to Repeater" → modify করে পাঠান, response দেখুন</div></li>
+    </ol>
+
+    <h3>Essential Tool Reference</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Tool</th><th>ক্যাটাগরি</th><th>বিনামূল্যে?</th><th>কী করে</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Burp Suite Community</strong></td><td>Web Proxy</td><td style="color:var(--green)">✓ Free</td><td>HTTP intercept, manual testing</td></tr>
+        <tr><td><strong>Burp Suite Professional</strong></td><td>Web Proxy</td><td style="color:var(--orange)">$449/yr</td><td>Auto scanner, advanced features</td></tr>
+        <tr><td><strong>OWASP ZAP</strong></td><td>Web Scanner</td><td style="color:var(--green)">✓ Free</td><td>Automated + manual web testing</td></tr>
+        <tr><td><strong>Nmap</strong></td><td>Port Scanner</td><td style="color:var(--green)">✓ Free</td><td>Network/port/service discovery</td></tr>
+        <tr><td><strong>SQLMap</strong></td><td>SQL Injection</td><td style="color:var(--green)">✓ Free</td><td>Automated SQLi detection (authorized use only)</td></tr>
+        <tr><td><strong>Subfinder/Amass</strong></td><td>Recon</td><td style="color:var(--green)">✓ Free</td><td>Subdomain enumeration</td></tr>
+        <tr><td><strong>Nikto</strong></td><td>Web Scanner</td><td style="color:var(--green)">✓ Free</td><td>Web server misconfiguration</td></tr>
+        <tr><td><strong>ffuf</strong></td><td>Fuzzer</td><td style="color:var(--green)">✓ Free</td><td>Directory/parameter brute-force</td></tr>
+        <tr><td><strong>Metasploit</strong></td><td>Exploit Framework</td><td style="color:var(--green)">✓ Free</td><td>Known CVE testing in lab</td></tr>
+        <tr><td><strong>Shodan</strong></td><td>OSINT</td><td style="color:var(--orange)">Limited free</td><td>Internet-connected device search</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>OWASP ZAP Quick Setup</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">🛠️ OWASP ZAP Usage</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c"># OWASP ZAP — Automated Web Scanner</span>
+<span class="c"># Download: zaproxy.org — সম্পূর্ণ বিনামূল্যে</span>
+
+<span class="c"># Command line spider + active scan (নিজের lab-এ)</span>
+zap-cli quick-scan --self-contained \
+  --start-options '-config api.disablekey=true' \
+  http://localhost:8080
+
+<span class="c"># ZAP Proxy mode</span>
+<span class="c"># Tools → Options → Local Proxies → port 8090</span>
+<span class="c"># Browser → proxy 127.0.0.1:8090</span>
+<span class="c"># Spider → Active Scan → Alerts দেখুন</span>
+
+<span class="c"># Directory fuzzing with ffuf (authorized target only)</span>
+ffuf -w /usr/share/wordlists/dirb/common.txt \
+     -u http://target.lab/FUZZ \
+     -mc 200,301,302 \
+     -o results.json
+
+<span class="c"># Parameter discovery</span>
+ffuf -w params.txt -u http://target.lab/page?FUZZ=test -mc 200</pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §05 SQL INJECTION
+══════════════════════════════════════ -->
+<section class="sec" id="sqli">
+  <div class="sh"><span class="sn">05</span><span class="si">💉</span><h2>SQL Injection (SQLi)</h2></div>
+
+  <div class="sub">
+    <h3>SQL Injection কী?</h3>
+    <p>SQL Injection হলো OWASP Top 10-এর সবচেয়ে বিপজ্জনক vulnerability। যখন user input সরাসরি SQL query-তে যুক্ত করা হয় — কোনো sanitization ছাড়া — তখন attacker SQL code inject করে database-এর সম্পূর্ণ নিয়ন্ত্রণ নিতে পারে।</p>
+
+    <div class="pills">
+      <span class="pill pr"><span class="sev s-crit">Critical</span></span>
+      <span class="pill pb">Database access</span>
+      <span class="pill pr">Data theft</span>
+      <span class="pill po">Authentication bypass</span>
+      <span class="pill pp">Admin access</span>
+    </div>
+
+    <h4>কিভাবে দুর্বলতা তৈরি হয়</h4>
+    <div class="cmp">
+      <div class="cmp-bad">
+        <div class="cmp-h">❌ Vulnerable PHP Code</div>
+        <pre style="background:#1a0a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// User input সরাসরি query-তে</span>
+<span class="op">$</span>username <span class="op">=</span> <span class="op">$_POST</span>[<span class="s">'username'</span>];
+<span class="op">$</span>password <span class="op">=</span> <span class="op">$_POST</span>[<span class="s">'password'</span>];
+
+<span class="op">$</span>sql <span class="op">=</span> <span class="s">"SELECT * FROM users
+  WHERE username='</span><span class="op">$</span>username<span class="s">'
+  AND password='</span><span class="op">$</span>password<span class="s">'"</span>;
+
+<span class="op">$</span>result <span class="op">=</span> <span class="f">mysqli_query</span>(<span class="op">$</span>conn, <span class="op">$</span>sql);
+
+<span class="c">// Input: admin' -- -</span>
+<span class="c">// Query হয়:</span>
+<span class="c">// SELECT * FROM users</span>
+<span class="c">// WHERE username='admin'-- -'</span>
+<span class="c">// AND password='...'</span>
+<span class="c">// password check skip হয়!</span></pre>
+      </div>
+      <div class="cmp-good">
+        <div class="cmp-h">✅ Secure PHP Code</div>
+        <pre style="background:#0a1a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// Prepared Statement ব্যবহার করুন</span>
+<span class="op">$</span>username <span class="op">=</span> <span class="op">$_POST</span>[<span class="s">'username'</span>];
+<span class="op">$</span>password <span class="op">=</span> <span class="op">$_POST</span>[<span class="s">'password'</span>];
+
+<span class="op">$</span>stmt <span class="op">=</span> <span class="op">$</span>conn<span class="op">-></span><span class="f">prepare</span>(
+  <span class="s">"SELECT * FROM users
+   WHERE username = ?
+   AND password_hash = ?"</span>
+);
+<span class="op">$</span>stmt<span class="op">-></span><span class="f">bind_param</span>(<span class="s">"ss"</span>,
+  <span class="op">$</span>username, <span class="f">hash</span>(<span class="s">'sha256'</span>,<span class="op">$</span>password)
+);
+<span class="op">$</span>stmt<span class="op">-></span><span class="f">execute</span>();
+<span class="c">// User input এখন data হিসেবে</span>
+<span class="c">// treat হয়, SQL হিসেবে নয়</span></pre>
+      </div>
+    </div>
+
+    <h4>SQL Injection Types</h4>
+    <div class="tw"><table>
+      <thead><tr><th>Type</th><th>কিভাবে কাজ করে</th><th>উদাহরণ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>In-band (Error)</strong></td><td>Error message-এ data দেখায়</td><td>Database version, table names</td></tr>
+        <tr><td><strong>In-band (Union)</strong></td><td>UNION দিয়ে অন্য table-এর data</td><td>User credentials চুরি</td></tr>
+        <tr><td><strong>Blind (Boolean)</strong></td><td>True/False response-এ data বের করা</td><td>Admin account আছে কিনা</td></tr>
+        <tr><td><strong>Blind (Time-based)</strong></td><td>Response time দিয়ে data বের করা</td><td>SLEEP() function abuse</td></tr>
+        <tr><td><strong>Out-of-band</strong></td><td>DNS/HTTP callback দিয়ে data</td><td>Air-gapped systems</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>SQLi Test করার পদ্ধতি (Authorized Lab-এ)</h4>
+    <div class="cw">
+      <div class="cb"><span class="cl">💉 SQLi Detection Techniques</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">-- Step 1: Basic test — একটি single quote দিন</span>
+<span class="c">-- URL: http://lab.local/item?id=1'</span>
+<span class="c">-- SQL Error দেখালে → potentially vulnerable</span>
+
+<span class="c">-- Step 2: Boolean test</span>
+<span class="c">-- URL: http://lab.local/item?id=1 AND 1=1  → normal response</span>
+<span class="c">-- URL: http://lab.local/item?id=1 AND 1=2  → different/empty</span>
+<span class="c">-- Different response → blind SQLi সম্ভব</span>
+
+<span class="c">-- Step 3: Comment test</span>
+<span class="c">-- MySQL:  ' --  বা  ' #</span>
+<span class="c">-- MSSQL:  ' --</span>
+<span class="c">-- Oracle: ' --</span>
+
+<span class="c">-- Step 4: UNION column count</span>
+<span class="c">-- ORDER BY 1-- → ORDER BY 2-- → error না হওয়া পর্যন্ত</span>
+<span class="c">-- Error হলে আগেরটাই column count</span>
+
+<span class="c">-- DVWA/WebGoat Lab-এ উদাহরণ:</span>
+<span class="c">-- Login form-এ username field-এ: admin'-- -</span>
+<span class="c">-- এটি password check skip করে login দেয় (vulnerable app-এ)</span>
+
+<span class="c">-- SQLMap — authorized target এ automated test</span>
+<span class="c">-- sqlmap -u "http://lab.local/item?id=1" --dbs</span>
+<span class="c">-- শুধুমাত্র নিজের DVWA/WebGoat lab-এ ব্যবহার করুন</span></pre>
+    </div>
+
+    <h3>Prevention — Secure Coding</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ PHP — Prepared Statements (PDO)</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">// ✅ PDO Prepared Statement — সবচেয়ে নিরাপদ পদ্ধতি</span>
+<span class="k">try</span> {
+    <span class="op">$</span>pdo <span class="op">=</span> <span class="k">new</span> <span class="f">PDO</span>(<span class="s">'mysql:host=localhost;dbname=mydb'</span>, <span class="op">$</span>user, <span class="op">$</span>pass, [
+        PDO::ATTR_ERRMODE <span class="op">=></span> PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES <span class="op">=></span> <span class="k">false</span>  <span class="c">// Real prepared statements</span>
+    ]);
+
+    <span class="c">// ✅ Named parameter</span>
+    <span class="op">$</span>stmt <span class="op">=</span> <span class="op">$</span>pdo<span class="op">-></span><span class="f">prepare</span>(
+        <span class="s">"SELECT id, name, email FROM users
+         WHERE username = :username AND active = 1"</span>
+    );
+    <span class="op">$</span>stmt<span class="op">-></span><span class="f">execute</span>([<span class="s">':username'</span> <span class="op">=></span> <span class="op">$_POST</span>[<span class="s">'username'</span>]]);
+    <span class="op">$</span>user <span class="op">=</span> <span class="op">$</span>stmt<span class="op">-></span><span class="f">fetch</span>(PDO::FETCH_ASSOC);
+
+} <span class="k">catch</span> (PDOException <span class="op">$</span>e) {
+    <span class="c">// Error details user-কে দেখাবেন না!</span>
+    <span class="f">error_log</span>(<span class="op">$</span>e<span class="op">-></span><span class="f">getMessage</span>());
+    <span class="k">die</span>(<span class="s">'Database error occurred'</span>);
+}
+
+<span class="c">// ✅ Input validation additional layer</span>
+<span class="k">function</span> <span class="f">sanitizeInput</span>(<span class="op">$</span>input, <span class="op">$</span>type <span class="op">=</span> <span class="s">'string'</span>) {
+    <span class="k">switch</span>(<span class="op">$</span>type) {
+        <span class="k">case</span> <span class="s">'int'</span>:
+            <span class="k">return</span> <span class="f">filter_var</span>(<span class="op">$</span>input, FILTER_VALIDATE_INT);
+        <span class="k">case</span> <span class="s">'email'</span>:
+            <span class="k">return</span> <span class="f">filter_var</span>(<span class="op">$</span>input, FILTER_VALIDATE_EMAIL);
+        <span class="k">default</span>:
+            <span class="k">return</span> <span class="f">htmlspecialchars</span>(<span class="f">strip_tags</span>(<span class="f">trim</span>(<span class="op">$</span>input)));
+    }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §06 XSS
+══════════════════════════════════════ -->
+<section class="sec" id="xss">
+  <div class="sh"><span class="sn">06</span><span class="si">📜</span><h2>Cross-Site Scripting (XSS)</h2></div>
+
+  <div class="sub">
+    <h3>XSS কী এবং কতটা বিপজ্জনক?</h3>
+    <p>XSS হলো এমন একটি vulnerability যেখানে attacker একটি website-এ malicious JavaScript inject করতে পারে। সেই script অন্য user-এর browser-এ execute হয়। এটি দিয়ে session চুরি, keylogging, phishing করা সম্ভব।</p>
+
+    <div class="pills">
+      <span class="pill pr"><span class="sev s-high">High</span></span>
+      <span class="pill pb">Cookie theft</span>
+      <span class="pill pr">Session hijacking</span>
+      <span class="pill po">Defacement</span>
+      <span class="pill pp">Credential phishing</span>
+    </div>
+
+    <h4>XSS-এর তিনটি প্রকার</h4>
+    <div class="tw"><table>
+      <thead><tr><th>Type</th><th>কিভাবে কাজ করে</th><th>কোথায় হয়</th><th>Persistence</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reflected XSS</strong></td><td>URL parameter-এ script, server reflect করে</td><td>Search forms, error messages</td><td>Non-persistent</td></tr>
+        <tr><td><strong>Stored XSS</strong></td><td>Database-এ script save হয়, সবাই দেখলে execute</td><td>Comments, profile, messages</td><td>Persistent — বেশি বিপজ্জনক</td></tr>
+        <tr><td><strong>DOM-based XSS</strong></td><td>Client-side JS-এ URL data process</td><td>Single-page apps</td><td>Non-persistent</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="cmp">
+      <div class="cmp-bad">
+        <div class="cmp-h">❌ Vulnerable Code (PHP)</div>
+        <pre style="background:#1a0a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// User input সরাসরি HTML-এ</span>
+<span class="op">$</span>name <span class="op">=</span> <span class="op">$_GET</span>[<span class="s">'name'</span>];
+
+<span class="c">// Vulnerable output</span>
+<span class="k">echo</span> <span class="s">"Hello, "</span> <span class="op">.</span> <span class="op">$</span>name;
+
+<span class="c">// Attacker URL:</span>
+<span class="c">// ?name=&lt;script&gt;alert(1)&lt;/script&gt;</span>
+<span class="c">// ?name=&lt;img src=x onerror=alert(1)&gt;</span>
+<span class="c">// ?name=&lt;svg onload=alert(1)&gt;</span>
+
+<span class="c">// Stored XSS in comment:</span>
+<span class="k">echo</span> <span class="op">$</span>comment[<span class="s">'body'</span>];
+<span class="c">// Database থেকে সরাসরি print</span></pre>
+      </div>
+      <div class="cmp-good">
+        <div class="cmp-h">✅ Secure Code</div>
+        <pre style="background:#0a1a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// htmlspecialchars — সবসময় output encode</span>
+<span class="op">$</span>name <span class="op">=</span> <span class="f">htmlspecialchars</span>(
+    <span class="op">$_GET</span>[<span class="s">'name'</span>],
+    ENT_QUOTES <span class="op">|</span> ENT_HTML5,
+    <span class="s">'UTF-8'</span>
+);
+<span class="k">echo</span> <span class="s">"Hello, "</span> <span class="op">.</span> <span class="op">$</span>name;
+
+<span class="c">// Twig template (auto-escape)</span>
+<span class="c">// {{ name }} → auto escaped</span>
+<span class="c">// {{ name|raw }} → only if safe</span>
+
+<span class="c">// Content Security Policy header</span>
+<span class="c">// header("Content-Security-Policy:</span>
+<span class="c">//   default-src 'self';</span>
+<span class="c">//   script-src 'self';</span>
+<span class="c">//   object-src 'none'");</span></pre>
+      </div>
+    </div>
+
+    <h4>XSS Testing কীভাবে করবেন (Lab-এ)</h4>
+    <div class="cw">
+      <div class="cb"><span class="cl">📜 XSS Detection — DVWA Lab</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">-- XSS চেনার basic test (lab environment-এ)</span>
+<span class="c">-- Input field-এ test করার জন্য harmless payload:</span>
+
+<span class="c">-- 1. Basic alert (harm করে না, শুধু proof)</span>
+&lt;script&gt;alert('XSS Test')&lt;/script&gt;
+
+<span class="c">-- 2. img tag (script tag block হলে)</span>
+&lt;img src="x" onerror="alert('XSS')"&gt;
+
+<span class="c">-- 3. Filter bypass test</span>
+&lt;svg/onload=alert(1)&gt;
+&lt;details open ontoggle=alert(1)&gt;
+
+<span class="c">-- 4. DOM XSS test</span>
+<span class="c">-- URL: http://lab/#&lt;img src=x onerror=alert(1)&gt;</span>
+<span class="c">-- JavaScript: location.hash → innerHTML</span>
+
+<span class="c">-- ⚠️ Real site-এ কখনো না, শুধু:</span>
+<span class="c">-- DVWA (localhost), PortSwigger Labs, TryHackMe</span>
+
+<span class="c">-- JavaScript Prevention:</span>
+<span class="c">// DOMPurify library ব্যবহার করুন</span>
+<span class="c">// const clean = DOMPurify.sanitize(dirtyHTML);</span>
+<span class="c">// document.getElementById('output').innerHTML = clean;</span></pre>
+    </div>
+
+    <h4>Content Security Policy (CSP) — সর্বোত্তম প্রতিরক্ষা</h4>
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ CSP Header Configuration</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">// PHP — Security Headers</span>
+<span class="f">header</span>(<span class="s">"Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{random}'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; object-src 'none'; frame-ancestors 'none';"</span>);
+<span class="f">header</span>(<span class="s">"X-XSS-Protection: 1; mode=block"</span>);
+<span class="f">header</span>(<span class="s">"X-Content-Type-Options: nosniff"</span>);
+<span class="f">header</span>(<span class="s">"X-Frame-Options: DENY"</span>);
+<span class="f">header</span>(<span class="s">"Referrer-Policy: strict-origin-when-cross-origin"</span>);
+
+<span class="c">// Nginx config</span>
+<span class="c">// add_header Content-Security-Policy "default-src 'self'; ...";</span>
+<span class="c">// add_header X-Frame-Options "DENY";</span>
+<span class="c">// add_header X-Content-Type-Options "nosniff";</span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §07 CSRF
+══════════════════════════════════════ -->
+<section class="sec" id="csrf">
+  <div class="sh"><span class="sn">07</span><span class="si">🔄</span><h2>Cross-Site Request Forgery (CSRF)</h2></div>
+
+  <div class="sub">
+    <h3>CSRF কিভাবে কাজ করে?</h3>
+    <p>CSRF-এ একটি malicious website ব্যবহার করে একজন authenticated user-এর browser থেকে target website-এ unauthorized request পাঠানো হয়। User জানেও না যে তার account দিয়ে কিছু হয়েছে।</p>
+
+    <div class="dg">
+      <div class="dg-t">CSRF Attack Flow</div>
+<span class="db">১. User bank.com-এ login করে (session cookie আছে)</span>
+<span class="db">২. User malicious.com visit করে</span>
+<span class="db">③. malicious.com-এ hidden HTML form:</span>
+<span class="da">   &lt;form action="https://bank.com/transfer" method="POST"&gt;</span>
+<span class="da">     &lt;input type="hidden" name="to" value="attacker_account"&gt;</span>
+<span class="da">     &lt;input type="hidden" name="amount" value="50000"&gt;</span>
+<span class="da">   &lt;/form&gt;</span>
+<span class="da">   &lt;script&gt;document.forms[0].submit();&lt;/script&gt;</span>
+<span class="db">৪. Browser auto-submit করে bank.com-এ request পাঠায়</span>
+<span class="db">৫. bank.com user-এর valid session cookie দেখে request execute করে</span>
+<span class="dr">৬. টাকা transfer হয়ে যায় — user কিছু বোঝেনি!</span></div>
+
+    <div class="cmp">
+      <div class="cmp-bad">
+        <div class="cmp-h">❌ No CSRF Protection</div>
+        <pre style="background:#1a0a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// Form — no CSRF token</span>
+<span class="op">&lt;</span>form method<span class="op">=</span><span class="s">"POST"</span>
+      action<span class="op">=</span><span class="s">"/transfer"</span><span class="op">&gt;</span>
+  <span class="op">&lt;</span>input name<span class="op">=</span><span class="s">"to"</span> <span class="op">.../&gt;</span>
+  <span class="op">&lt;</span>input name<span class="op">=</span><span class="s">"amount"</span> <span class="op">.../&gt;</span>
+  <span class="op">&lt;</span>button<span class="op">&gt;</span>Transfer<span class="op">&lt;/</span>button<span class="op">&gt;</span>
+<span class="op">&lt;/</span>form<span class="op">&gt;</span>
+<span class="c">// যেকোনো site থেকে</span>
+<span class="c">// submit করা যায়!</span></pre>
+      </div>
+      <div class="cmp-good">
+        <div class="cmp-h">✅ CSRF Token Protected</div>
+        <pre style="background:#0a1a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// PHP — CSRF Token Generate</span>
+<span class="k">if</span> (<span class="f">empty</span>(<span class="op">$_SESSION</span>[<span class="s">'csrf'</span>])) {
+  <span class="op">$_SESSION</span>[<span class="s">'csrf'</span>] <span class="op">=</span>
+    <span class="f">bin2hex</span>(<span class="f">random_bytes</span>(<span class="n">32</span>));
+}
+<span class="c">// Form-এ hidden field</span>
+<span class="k">echo</span> <span class="s">'&lt;input type="hidden"
+  name="csrf_token"
+  value="'</span><span class="op">.</span><span class="op">$_SESSION</span>[<span class="s">'csrf'</span>]<span class="op">.</span><span class="s">'"&gt;'</span>;
+<span class="c">// Verify on POST</span>
+<span class="k">if</span> (<span class="op">$_POST</span>[<span class="s">'csrf_token'</span>] <span class="op">!==</span>
+    <span class="op">$_SESSION</span>[<span class="s">'csrf'</span>]) {
+  <span class="k">die</span>(<span class="s">'Invalid CSRF token'</span>);
+}</pre>
+      </div>
+    </div>
+
+    <div class="box ok">
+      <div class="bl">✅ CSRF Prevention Checklist</div>
+      <p>① প্রতিটি state-changing request-এ CSRF token। ② SameSite=Strict cookie attribute। ③ Custom request header (API-র জন্য)। ④ Referer/Origin header validation। ⑤ Sensitive action-এ re-authentication।</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §08 BROKEN AUTH
+══════════════════════════════════════ -->
+<section class="sec" id="auth">
+  <div class="sh"><span class="sn">08</span><span class="si">🔑</span><h2>Broken Authentication & Authorization</h2></div>
+
+  <div class="sub">
+    <h3>Authentication vs Authorization</h3>
+    <div class="tw"><table>
+      <thead><tr><th>বিষয়</th><th>Authentication (AuthN)</th><th>Authorization (AuthZ)</th></tr></thead>
+      <tbody>
+        <tr><td>প্রশ্ন</td><td>"তুমি কে?"</td><td>"তুমি কী করতে পারো?"</td></tr>
+        <tr><td>উদাহরণ</td><td>Login, OTP, biometric</td><td>Admin menu দেখা, file delete করা</td></tr>
+        <tr><td>দুর্বলতা</td><td>Weak passwords, no MFA</td><td>IDOR, privilege escalation</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>IDOR — Insecure Direct Object Reference</h3>
+    <p>Bug Bounty-তে সবচেয়ে বেশি পাওয়া vulnerability। একজন user অন্য user-এর resource access করতে পারে।</p>
+
+    <div class="cw">
+      <div class="cb"><span class="cl">🔑 IDOR Vulnerability Example</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">-- ❌ Vulnerable: User ID URL-এ, authorization check নেই</span>
+<span class="c">-- URL: /api/profile?user_id=1001</span>
+<span class="c">-- Attacker changes to: /api/profile?user_id=1002</span>
+<span class="c">-- অন্য user-এর profile দেখা যায়!</span>
+
+<span class="c">-- ❌ Vulnerable PHP code:</span>
+<span class="op">$</span>userId <span class="op">=</span> <span class="op">$_GET</span>[<span class="s">'user_id'</span>];  <span class="c">// user-supplied!</span>
+<span class="op">$</span>profile <span class="op">=</span> <span class="f">getProfile</span>(<span class="op">$</span>userId);  <span class="c">// no ownership check</span>
+<span class="k">echo</span> <span class="f">json_encode</span>(<span class="op">$</span>profile);
+
+<span class="c">-- ✅ Secure: Session-এর user ID ব্যবহার করুন</span>
+<span class="op">$</span>userId <span class="op">=</span> <span class="op">$_SESSION</span>[<span class="s">'user_id'</span>];  <span class="c">// server-side session</span>
+<span class="op">$</span>profile <span class="op">=</span> <span class="f">getProfile</span>(<span class="op">$</span>userId);
+<span class="k">echo</span> <span class="f">json_encode</span>(<span class="op">$</span>profile);
+
+<span class="c">-- ✅ Secure API: ownership verification</span>
+<span class="op">$</span>stmt <span class="op">=</span> <span class="op">$</span>pdo<span class="op">-></span><span class="f">prepare</span>(
+  <span class="s">"SELECT * FROM orders
+   WHERE id = :order_id
+   AND user_id = :session_user_id"</span>
+);
+<span class="op">$</span>stmt<span class="op">-></span><span class="f">execute</span>([
+  <span class="s">':order_id'</span> <span class="op">=></span> <span class="op">$_GET</span>[<span class="s">'id'</span>],
+  <span class="s">':session_user_id'</span> <span class="op">=></span> <span class="op">$_SESSION</span>[<span class="s">'user_id'</span>]
+]);
+<span class="c">-- user_id match না হলে empty result</span>
+
+<span class="c">-- IDOR Testing Methodology:</span>
+<span class="c">-- ১. Account A দিয়ে resource তৈরি করুন (note: ID)</span>
+<span class="c">-- ২. Account B দিয়ে login করুন</span>
+<span class="c">-- ③. Account A-এর ID দিয়ে request করুন</span>
+<span class="c">-- ৪. Access পেলে → IDOR vulnerability!</span></pre>
+    </div>
+
+    <h3>Password Security Best Practices</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Secure Password Handling (PHP)</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">// ✅ Password hashing — bcrypt (PHP built-in)</span>
+<span class="op">$</span>hash <span class="op">=</span> <span class="f">password_hash</span>(<span class="op">$</span>password, PASSWORD_BCRYPT, [<span class="s">'cost'</span> <span class="op">=></span> <span class="n">12</span>]);
+<span class="c">// cost=12: 2^12 iterations — brute force কঠিন</span>
+
+<span class="c">// ✅ Password verify</span>
+<span class="k">if</span> (<span class="f">password_verify</span>(<span class="op">$_POST</span>[<span class="s">'password'</span>], <span class="op">$</span>storedHash)) {
+    <span class="c">// login success</span>
+}
+
+<span class="c">// ✅ Rate limiting — brute force prevent</span>
+<span class="op">$</span>attempts <span class="op">=</span> <span class="op">$</span>redis<span class="op">-></span><span class="f">get</span>(<span class="s">"login_attempts:"</span> <span class="op">.</span> <span class="op">$</span>ip);
+<span class="k">if</span> (<span class="op">$</span>attempts <span class="op">>=</span> <span class="n">5</span>) {
+    <span class="k">die</span>(<span class="s">'Too many attempts. Try after 15 minutes.'</span>);
+}
+
+<span class="c">// ✅ Session regeneration after login</span>
+<span class="f">session_regenerate_id</span>(<span class="k">true</span>);  <span class="c">// prevent session fixation</span>
+
+<span class="c">// ✅ JWT Token best practices</span>
+<span class="c">// - Strong secret key (256+ bits)</span>
+<span class="c">// - Short expiry (15 min access, 7 day refresh)</span>
+<span class="c">// - Algorithm: RS256 or HS256 (never 'none'!)</span>
+<span class="c">// - Validate 'alg' header explicitly</span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §09 FILE UPLOAD
+══════════════════════════════════════ -->
+<section class="sec" id="fileup">
+  <div class="sh"><span class="sn">09</span><span class="si">📁</span><h2>File Upload Vulnerabilities</h2></div>
+
+  <div class="sub">
+    <h3>File Upload — কেন বিপজ্জনক?</h3>
+    <p>Insecure file upload feature দিয়ে attacker malicious file (webshell) upload করে server-এ code execute করতে পারে। এটি সরাসরি RCE (Remote Code Execution) ঘটাতে পারে।</p>
+
+    <div class="cmp">
+      <div class="cmp-bad">
+        <div class="cmp-h">❌ Vulnerable Upload Code</div>
+        <pre style="background:#1a0a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// Only extension check — bypassable</span>
+<span class="op">$</span>ext <span class="op">=</span> <span class="f">pathinfo</span>(<span class="op">$_FILES</span>[<span class="s">'f'</span>][<span class="s">'name'</span>],
+              PATHINFO_EXTENSION);
+<span class="k">if</span> (<span class="op">$</span>ext <span class="op">==</span> <span class="s">'php'</span>) {
+  <span class="k">die</span>(<span class="s">'Not allowed'</span>);
+}
+<span class="c">// Bypass: file.php.jpg</span>
+<span class="c">// Bypass: file.pHp</span>
+<span class="c">// Bypass: file.php%00.jpg</span>
+<span class="c">// Bypass: file.php5, file.phtml</span>
+
+<span class="c">// Web-accessible folder-এ save</span>
+<span class="f">move_uploaded_file</span>(
+  <span class="op">$_FILES</span>[<span class="s">'f'</span>][<span class="s">'tmp_name'</span>],
+  <span class="s">'uploads/'</span> <span class="op">.</span> <span class="op">$_FILES</span>[<span class="s">'f'</span>][<span class="s">'name'</span>]
+);</pre>
+      </div>
+      <div class="cmp-good">
+        <div class="cmp-h">✅ Secure Upload Code</div>
+        <pre style="background:#0a1a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// MIME type check (magic bytes)</span>
+<span class="op">$</span>finfo <span class="op">=</span> <span class="k">new</span> <span class="f">finfo</span>(FILEINFO_MIME_TYPE);
+<span class="op">$</span>mime <span class="op">=</span> <span class="op">$</span>finfo<span class="op">-></span><span class="f">file</span>(
+  <span class="op">$_FILES</span>[<span class="s">'f'</span>][<span class="s">'tmp_name'</span>]
+);
+<span class="op">$</span>allowed <span class="op">=</span> [<span class="s">'image/jpeg'</span>,<span class="s">'image/png'</span>];
+<span class="k">if</span> (<span class="op">!</span><span class="f">in_array</span>(<span class="op">$</span>mime, <span class="op">$</span>allowed)) {
+  <span class="k">die</span>(<span class="s">'Invalid file type'</span>);
+}
+<span class="c">// Random filename</span>
+<span class="op">$</span>name <span class="op">=</span> <span class="f">bin2hex</span>(<span class="f">random_bytes</span>(<span class="n">16</span>));
+<span class="c">// Web root-এর বাইরে save</span>
+<span class="c">// /var/uploads/ (not /var/www/)</span>
+<span class="c">// PHP execution বন্ধ করুন:</span>
+<span class="c">// .htaccess: php_flag engine off</span>
+<span class="c">// Serve via readfile() proxy</span></pre>
+      </div>
+    </div>
+
+    <div class="box info">
+      <div class="bl">📁 Secure File Upload Checklist</div>
+      <p>① MIME type magic bytes দিয়ে validate। ② Allowed whitelist (jpg, png, pdf only)। ③ Random UUID filename। ④ Web root-এর বাইরে store। ⑤ PHP execution disabled in upload dir। ⑥ Maximum file size limit। ⑦ Antivirus scan (ClamAV)। ⑧ CDN/S3 থেকে serve — same domain-এ না।</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §10 INSECURE API
+══════════════════════════════════════ -->
+<section class="sec" id="api">
+  <div class="sh"><span class="sn">10</span><span class="si">🔌</span><h2>Insecure API Endpoints</h2></div>
+
+  <div class="sub">
+    <h3>API Security — OWASP API Top 10</h3>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Vulnerability</th><th>উদাহরণ</th><th>প্রতিরোধ</th></tr></thead>
+      <tbody>
+        <tr><td>API1</td><td>Broken Object Level Auth</td><td><code>GET /api/orders/1234</code> — অন্যের order</td><td>Ownership check</td></tr>
+        <tr><td>API2</td><td>Broken Authentication</td><td>Weak JWT, no token expiry</td><td>Strong tokens, short expiry</td></tr>
+        <tr><td>API3</td><td>Excessive Data Exposure</td><td>Password hash return করা</td><td>Response filtering</td></tr>
+        <tr><td>API4</td><td>Lack of Rate Limiting</td><td>Unlimited requests</td><td>Rate limit, throttling</td></tr>
+        <tr><td>API5</td><td>Function Level AuthZ</td><td><code>DELETE /api/admin/users</code> non-admin</td><td>Role-based access control</td></tr>
+        <tr><td>API8</td><td>Injection</td><td>SQL/NoSQL/Command injection</td><td>Prepared statements</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Secure API Design (Node.js/Express)</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">// ✅ Secure API endpoint example</span>
+app.<span class="f">get</span>(<span class="s">'/api/orders/:id'</span>, authenticate, <span class="k">async</span> (req, res) => {
+  <span class="k">const</span> order <span class="op">=</span> <span class="k">await</span> Order.<span class="f">findOne</span>({
+    where: {
+      id: req.params.id,
+      userId: req.user.id  <span class="c">// ✅ Always filter by authenticated user</span>
+    }
+  });
+  <span class="k">if</span> (<span class="op">!</span>order) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">404</span>).<span class="f">json</span>({ error: <span class="s">'Not found'</span> });
+  
+  <span class="c">// ✅ Return only necessary fields</span>
+  res.<span class="f">json</span>({ id: order.id, amount: order.amount, status: order.status });
+  <span class="c">// ❌ Never: res.json(order) — may include sensitive fields</span>
+});
+
+<span class="c">// ✅ Rate limiting middleware</span>
+<span class="k">const</span> rateLimit <span class="op">=</span> <span class="f">require</span>(<span class="s">'express-rate-limit'</span>);
+<span class="k">const</span> limiter <span class="op">=</span> <span class="f">rateLimit</span>({
+  windowMs: <span class="n">15</span> <span class="op">*</span> <span class="n">60</span> <span class="op">*</span> <span class="n">1000</span>,  <span class="c">// 15 minutes</span>
+  max: <span class="n">100</span>,                   <span class="c">// 100 requests per window</span>
+  message: <span class="s">'Too many requests'</span>
+});
+app.<span class="f">use</span>(<span class="s">'/api/'</span>, limiter);
+
+<span class="c">// ✅ Input validation (Joi)</span>
+<span class="k">const</span> schema <span class="op">=</span> Joi.<span class="f">object</span>({
+  email: Joi.<span class="f">string</span>().<span class="f">email</span>().<span class="f">required</span>(),
+  amount: Joi.<span class="f">number</span>().<span class="f">positive</span>().<span class="f">max</span>(<span class="n">100000</span>).<span class="f">required</span>()
+});
+<span class="k">const</span> { error } <span class="op">=</span> schema.<span class="f">validate</span>(req.body);
+<span class="k">if</span> (error) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">400</span>).<span class="f">json</span>({ error: error.details[<span class="n">0</span>].message });
+
+<span class="c">// ✅ Security headers</span>
+app.<span class="f">use</span>(<span class="f">require</span>(<span class="s">'helmet'</span>)());  <span class="c">// Sets all security headers</span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §11 SESSION
+══════════════════════════════════════ -->
+<section class="sec" id="session">
+  <div class="sh"><span class="sn">11</span><span class="si">🍪</span><h2>Session Management & Cookie Security</h2></div>
+
+  <div class="sub">
+    <h3>Session Hijacking কিভাবে হয়?</h3>
+    <p>Session hijacking-এ attacker একজন user-এর valid session ID চুরি করে তার পরিচয়ে কাজ করে। XSS দিয়ে cookie চুরি, network sniffing, বা session fixation এর মাধ্যমে এটি হতে পারে।</p>
+
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Secure Session Configuration (PHP)</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">// php.ini বা runtime config</span>
+<span class="f">ini_set</span>(<span class="s">'session.cookie_httponly'</span>, <span class="n">1</span>);     <span class="c">// JS থেকে access করতে পারবে না</span>
+<span class="f">ini_set</span>(<span class="s">'session.cookie_secure'</span>, <span class="n">1</span>);       <span class="c">// HTTPS only</span>
+<span class="f">ini_set</span>(<span class="s">'session.cookie_samesite'</span>, <span class="s">'Strict'</span>); <span class="c">// CSRF prevent</span>
+<span class="f">ini_set</span>(<span class="s">'session.use_strict_mode'</span>, <span class="n">1</span>);     <span class="c">// Session fixation prevent</span>
+<span class="f">ini_set</span>(<span class="s">'session.gc_maxlifetime'</span>, <span class="n">1800</span>);   <span class="c">// 30 min timeout</span>
+<span class="f">ini_set</span>(<span class="s">'session.use_only_cookies'</span>, <span class="n">1</span>);    <span class="c">// URL-এ session ID না</span>
+
+<span class="f">session_start</span>();
+
+<span class="c">// Login-এর পর session regenerate করুন</span>
+<span class="f">session_regenerate_id</span>(<span class="k">true</span>);  <span class="c">// পুরনো session delete করে নতুন দেয়</span>
+
+<span class="c">// User fingerprint store করুন</span>
+<span class="op">$_SESSION</span>[<span class="s">'ip'</span>] <span class="op">=</span> <span class="op">$_SERVER</span>[<span class="s">'REMOTE_ADDR'</span>];
+<span class="op">$_SESSION</span>[<span class="s">'ua'</span>] <span class="op">=</span> <span class="f">md5</span>(<span class="op">$_SERVER</span>[<span class="s">'HTTP_USER_AGENT'</span>]);
+
+<span class="c">// প্রতিটি request-এ verify করুন</span>
+<span class="k">if</span> (<span class="op">$_SESSION</span>[<span class="s">'ip'</span>] <span class="op">!==</span> <span class="op">$_SERVER</span>[<span class="s">'REMOTE_ADDR'</span>] <span class="op">||</span>
+    <span class="op">$_SESSION</span>[<span class="s">'ua'</span>] <span class="op">!==</span> <span class="f">md5</span>(<span class="op">$_SERVER</span>[<span class="s">'HTTP_USER_AGENT'</span>])) {
+    <span class="f">session_destroy</span>();
+    <span class="f">header</span>(<span class="s">'Location: /login'</span>);
+    <span class="k">exit</span>;
+}
+
+<span class="c">// Set-Cookie header example:</span>
+<span class="c">// Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict; Path=/</span></pre>
+    </div>
+
+    <div class="box tip">
+      <div class="bl">🍪 Cookie Security Attributes</div>
+      <p><strong>HttpOnly:</strong> JavaScript দিয়ে cookie read করা যাবে না (XSS prevent)। <strong>Secure:</strong> HTTPS-এ only পাঠানো হবে। <strong>SameSite=Strict:</strong> Cross-site request-এ cookie পাঠানো হবে না (CSRF prevent)। <strong>Path ও Domain:</strong> Scope সীমিত করুন।</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §12 RCE
+══════════════════════════════════════ -->
+<section class="sec" id="rce">
+  <div class="sh"><span class="sn">12</span><span class="si">⚡</span><h2>Code Injection & RCE Prevention</h2></div>
+
+  <div class="sub">
+    <h3>Injection Vulnerabilities — বিভিন্ন ধরন</h3>
+    <p>RCE (Remote Code Execution) হলো সবচেয়ে critical vulnerability — attacker সরাসরি server-এ command execute করতে পারে। এটি সাধারণত code injection, deserialization, বা vulnerable library-র মাধ্যমে হয়।</p>
+
+    <div class="cmp">
+      <div class="cmp-bad">
+        <div class="cmp-h">❌ Command Injection (Vulnerable)</div>
+        <pre style="background:#1a0a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// User input সরাসরি shell command-এ</span>
+<span class="op">$</span>ip <span class="op">=</span> <span class="op">$_GET</span>[<span class="s">'ip'</span>];
+<span class="c">// Input: 8.8.8.8; cat /etc/passwd</span>
+<span class="op">$</span>output <span class="op">=</span> <span class="f">shell_exec</span>(<span class="s">"ping -c 1 "</span> <span class="op">.</span> <span class="op">$</span>ip);
+<span class="k">echo</span> <span class="op">$</span>output;
+<span class="c">// Server-এ arbitrary command চালাতে পারে!</span>
+
+<span class="c">// eval() দিয়ে PHP injection</span>
+<span class="k">eval</span>(<span class="op">$_GET</span>[<span class="s">'code'</span>]);  <span class="c">// Never!</span>
+
+<span class="c">// Unsafe deserialization</span>
+<span class="op">$</span>obj <span class="op">=</span> <span class="f">unserialize</span>(<span class="op">$_COOKIE</span>[<span class="s">'data'</span>]);</pre>
+      </div>
+      <div class="cmp-good">
+        <div class="cmp-h">✅ Safe Code</div>
+        <pre style="background:#0a1a0a;padding:14px 16px;font-size:12px;overflow-x:auto"><span class="c">// escapeshellarg() ব্যবহার করুন</span>
+<span class="op">$</span>ip <span class="op">=</span> <span class="op">$_GET</span>[<span class="s">'ip'</span>];
+
+<span class="c">// Whitelist validation</span>
+<span class="k">if</span> (<span class="op">!</span><span class="f">filter_var</span>(<span class="op">$</span>ip, FILTER_VALIDATE_IP)) {
+  <span class="k">die</span>(<span class="s">'Invalid IP'</span>);
+}
+<span class="op">$</span>safeIp <span class="op">=</span> <span class="f">escapeshellarg</span>(<span class="op">$</span>ip);
+<span class="op">$</span>output <span class="op">=</span> <span class="f">shell_exec</span>(<span class="s">"ping -c 1 "</span> <span class="op">.</span> <span class="op">$</span>safeIp);
+
+<span class="c">// Better: avoid shell entirely</span>
+<span class="c">// Use PHP native functions</span>
+
+<span class="c">// JSON instead of serialize</span>
+<span class="op">$</span>data <span class="op">=</span> <span class="f">json_decode</span>(<span class="op">$_COOKIE</span>[<span class="s">'data'</span>], <span class="k">true</span>);
+<span class="c">// Never unserialize user input</span></pre>
+      </div>
+    </div>
+
+    <div class="box danger">
+      <div class="bl">⚡ Never Use in Production</div>
+      <p>PHP: <code>eval()</code>, <code>exec()</code>, <code>shell_exec()</code>, <code>system()</code>, <code>passthru()</code>, <code>unserialize()</code> — user input দিয়ে কখনো না। JavaScript: <code>eval()</code>, <code>innerHTML</code> (unsanitized), <code>document.write()</code>। Template: সরাসরি variable without escaping।</p>
+    </div>
+
+    <h3>Dependency & CVE Management</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Dependency Security Checking</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c"># PHP — Composer security check</span>
+composer audit
+<span class="c"># Known vulnerability check করে</span>
+
+<span class="c"># Node.js — npm audit</span>
+npm audit
+npm audit fix
+
+<span class="c"># Python — safety check</span>
+pip install safety
+safety check
+
+<span class="c"># GitHub Dependabot — automatic PR for security updates</span>
+<span class="c"># .github/dependabot.yml তৈরি করুন</span>
+
+<span class="c"># OWASP Dependency Check</span>
+<span class="c"># dependency-check --project myapp --scan ./</span>
+<span class="c"># CVE database-এর সাথে match করে</span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §13 REPORTING
+══════════════════════════════════════ -->
+<section class="sec" id="report">
+  <div class="sh"><span class="sn">13</span><span class="si">📝</span><h2>Professional Report Writing & PoC</h2></div>
+
+  <div class="sub">
+    <h3>Bug Report-এর Structure</h3>
+    <p>একটি ভালো Bug Report পাওয়ার পর কোম্পানি দ্রুত fix করতে পারে এবং আপনি বেশি reward পান। Vague report — কম reward বা reject।</p>
+
+    <div class="dg">
+      <div class="dg-t">Professional Bug Report Template</div>
+<span class="da">Title:</span> <span class="db">Stored XSS in User Profile Bio Field leads to Session Hijacking</span>
+
+<span class="da">Severity:</span> <span class="dr">High (CVSS: 8.2)</span>
+
+<span class="da">Summary:</span>
+<span class="db">  The bio field in user profile settings does not sanitize HTML input,</span>
+<span class="db">  allowing an attacker to store malicious JavaScript that executes in</span>
+<span class="db">  the browser of any user who views the profile.</span>
+
+<span class="da">Steps to Reproduce:</span>
+<span class="db">  ১. Login at https://example.com/login</span>
+<span class="db">  ২. Navigate to Profile → Settings → Bio</span>
+<span class="db">  ③. Enter: &lt;script&gt;alert(document.domain)&lt;/script&gt;</span>
+<span class="db">  ৪. Click Save</span>
+<span class="db">  ৫. Visit your profile page: https://example.com/profile/testuser</span>
+<span class="db">  ৬. Alert box appears showing: "example.com"</span>
+
+<span class="da">Impact:</span>
+<span class="db">  An attacker can steal session cookies, redirect users to phishing</span>
+<span class="db">  pages, or perform actions on behalf of any user who views the profile.</span>
+
+<span class="dg2">Proof of Concept:</span>
+<span class="db">  [Screenshot 1: Bio field with payload]</span>
+<span class="db">  [Screenshot 2: Alert popup on profile page]</span>
+<span class="db">  [Video: Full reproduction steps]</span>
+
+<span class="dp">Remediation:</span>
+<span class="db">  - htmlspecialchars() on all user-supplied HTML output</span>
+<span class="db">  - Implement Content Security Policy header</span>
+<span class="db">  - Use DOMPurify for any rich text input</span></div>
+
+    <h3>CVSS Score — Severity নির্ধারণ</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Score</th><th>Severity</th><th>উদাহরণ</th><th>Typical Reward</th></tr></thead>
+      <tbody>
+        <tr><td>9.0–10.0</td><td><span class="sev s-crit">Critical</span></td><td>RCE, SQL Injection with DB access</td><td>$5,000–$50,000+</td></tr>
+        <tr><td>7.0–8.9</td><td><span class="sev s-high">High</span></td><td>Stored XSS, IDOR (sensitive data)</td><td>$1,000–$10,000</td></tr>
+        <tr><td>4.0–6.9</td><td><span class="sev s-med">Medium</span></td><td>CSRF, Reflected XSS, Open Redirect</td><td>$200–$2,000</td></tr>
+        <tr><td>0.1–3.9</td><td><span class="sev s-low">Low</span></td><td>Missing security headers, low-impact</td><td>$50–$500</td></tr>
+        <tr><td>0.0</td><td><span class="sev s-info">Informational</span></td><td>Best practice improvement</td><td>Hall of Fame</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Responsible Disclosure Timeline</h3>
+    <ol class="steps">
+      <li><div class="snum">1</div><div><strong>Vulnerability খুঁজে পাওয়ার সাথে সাথে:</strong> Notes নিন, screenshots নিন, কোথাও share করবেন না</div></li>
+      <li><div class="snum">2</div><div><strong>24 ঘণ্টার মধ্যে:</strong> Bug Bounty platform বা security@company.com-এ report করুন</div></li>
+      <li><div class="snum">3</div><div><strong>90 দিন পর্যন্ত:</strong> কোম্পানিকে fix করার সময় দিন (industry standard: 90 days)</div></li>
+      <li><div class="snum">4</div><div><strong>Fix confirmed হলে:</strong> CVE নম্বর নিতে পারেন, তারপর public disclosure করতে পারবেন</div></li>
+      <li><div class="snum">5</div><div><strong>কখনো না:</strong> Fix-এর আগে public করবেন না, social media-তে দেবেন না</div></li>
+    </ol>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §14 PLATFORMS & CAREER
+══════════════════════════════════════ -->
+<section class="sec" id="platforms">
+  <div class="sh"><span class="sn">14</span><span class="si">🌐</span><h2>Bug Bounty Platforms & Career Path</h2></div>
+
+  <div class="sub">
+    <h3>Major Bug Bounty Platforms</h3>
+    <div class="cards">
+      <div class="card"><span class="ci">🏹</span><div class="ct">HackerOne</div><div class="cd">সবচেয়ে বড় platform। $300M+ পুরস্কার দেওয়া হয়েছে। NASA, Twitter, Uber সহ হাজার কোম্পানি।</div></div>
+      <div class="card"><span class="ci">🐛</span><div class="ct">Bugcrowd</div><div class="cd">Enterprise-focused। VDP (Vulnerability Disclosure Program) ও private programs।</div></div>
+      <div class="card"><span class="ci">🔍</span><div class="ct">Intigriti</div><div class="cd">European-focused। High-quality programs, fair rewards।</div></div>
+      <div class="card"><span class="ci">🎯</span><div class="ct">Synack</div><div class="cd">Vetted researcher network। Government ও financial sector।</div></div>
+      <div class="card"><span class="ci">⚡</span><div class="ct">YesWeHack</div><div class="cd">European platform, growing fast। French companies।</div></div>
+      <div class="card"><span class="ci">🏛️</span><div class="ct">Govt Programs</div><div class="cd">US DoD Vulnerability Disclosure। Many govt agencies।</div></div>
+    </div>
+
+    <h3>Learning Path — Roadmap</h3>
+    <div class="dg">
+      <div class="dg-t">Bug Bounty Learning Roadmap</div>
+<span class="da">BEGINNER (Month 1-3)</span>
+<span class="db">  ✓ Linux basics, networking (HTTP, DNS, TCP/IP)</span>
+<span class="db">  ✓ Web technologies (HTML, JS, PHP, SQL)</span>
+<span class="db">  ✓ Burp Suite setup & basic usage</span>
+<span class="db">  ✓ OWASP Top 10 — concept বোঝা</span>
+<span class="db">  ✓ TryHackMe — Web Fundamentals path</span>
+<span class="db">  ✓ PortSwigger Labs — SQLi, XSS (beginner)</span>
+
+<span class="do">INTERMEDIATE (Month 4-8)</span>
+<span class="db">  ✓ PortSwigger Labs complete (all topics)</span>
+<span class="db">  ✓ HackTheBox — Easy & Medium web challenges</span>
+<span class="db">  ✓ DVWA সব vulnerability complete</span>
+<span class="db">  ✓ First public Bug Bounty program (VDP)</span>
+<span class="db">  ✓ GitHub code review for vulnerabilities</span>
+<span class="db">  ✓ API testing — Postman, REST APIs</span>
+
+<span class="dg2">ADVANCED (Month 9+)</span>
+<span class="db">  ✓ Business logic flaws</span>
+<span class="db">  ✓ Mobile app testing (Android/iOS)</span>
+<span class="db">  ✓ Source code review</span>
+<span class="db">  ✓ Private Bug Bounty programs</span>
+<span class="db">  ✓ OSCP, eJPT, eWPT certification</span>
+<span class="db">  ✓ Full-time security researcher</span></div>
+
+    <h3>Certifications</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Certification</th><th>Provider</th><th>Level</th><th>Focus</th></tr></thead>
+      <tbody>
+        <tr><td><strong>eJPT</strong></td><td>eLearnSecurity</td><td>Beginner</td><td>Practical pentesting basics</td></tr>
+        <tr><td><strong>CEH</strong></td><td>EC-Council</td><td>Intermediate</td><td>Theory + practical ethical hacking</td></tr>
+        <tr><td><strong>eWPT</strong></td><td>eLearnSecurity</td><td>Intermediate</td><td>Web application pentesting</td></tr>
+        <tr><td><strong>OSCP</strong></td><td>Offensive Security</td><td>Advanced</td><td>Hands-on, industry gold standard</td></tr>
+        <tr><td><strong>BSCP</strong></td><td>PortSwigger</td><td>Advanced</td><td>Web security practitioner</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §15 DEFENSE
+══════════════════════════════════════ -->
+<section class="sec" id="defense">
+  <div class="sh"><span class="sn">15</span><span class="si">🛡️</span><h2>Secure Coding — Developer Guide</h2></div>
+
+  <div class="sub">
+    <h3>Security Checklist — Production Deploy-এর আগে</h3>
+
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Complete Security Checklist</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c">════════════════════════════════════════════════
+  INPUT VALIDATION
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> সমস্ত user input server-side validate করা হয়েছে
+<span class="g">✓</span> Whitelist validation (allowed values only)
+<span class="g">✓</span> Integer, email, URL type validation
+<span class="g">✓</span> Maximum length limits enforced
+<span class="g">✓</span> File upload MIME type validation
+
+<span class="c">════════════════════════════════════════════════
+  DATABASE
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> সব query-তে Prepared Statements / PDO
+<span class="g">✓</span> Least privilege DB user (no DROP/ALTER)
+<span class="g">✓</span> Error messages user-এ expose হয় না
+<span class="g">✓</span> Database backup encrypted
+
+<span class="c">════════════════════════════════════════════════
+  AUTHENTICATION
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> Passwords bcrypt/argon2 দিয়ে hash করা
+<span class="g">✓</span> Login brute force rate limiting
+<span class="g">✓</span> Multi-factor authentication (MFA) available
+<span class="g">✓</span> Session regenerate after login
+<span class="g">✓</span> Secure password reset flow (token, expire)
+<span class="g">✓</span> Account lockout after X failed attempts
+
+<span class="c">════════════════════════════════════════════════
+  HTTP HEADERS
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> Content-Security-Policy configured
+<span class="g">✓</span> X-Frame-Options: DENY
+<span class="g">✓</span> X-Content-Type-Options: nosniff
+<span class="g">✓</span> Strict-Transport-Security (HSTS)
+<span class="g">✓</span> Referrer-Policy set
+<span class="g">✓</span> Server version header hidden
+
+<span class="c">════════════════════════════════════════════════
+  COOKIES
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> HttpOnly flag set
+<span class="g">✓</span> Secure flag set (HTTPS only)
+<span class="g">✓</span> SameSite=Strict or Lax
+<span class="g">✓</span> Reasonable expiry time
+
+<span class="c">════════════════════════════════════════════════
+  INFRASTRUCTURE
+════════════════════════════════════════════════</span>
+<span class="g">✓</span> HTTPS everywhere (Let's Encrypt)
+<span class="g">✓</span> Dependencies updated (no known CVEs)
+<span class="g">✓</span> Error pages custom (no stack trace)
+<span class="g">✓</span> Directory listing disabled
+<span class="g">✓</span> .env files web-accessible না
+<span class="g">✓</span> Debug mode production-এ off
+<span class="g">✓</span> Logging enabled, monitored</pre>
+    </div>
+
+    <h3>Security Headers — Nginx Config</h3>
+    <div class="cw">
+      <div class="cb"><span class="cl">✅ Nginx Security Configuration</span><button class="cp" onclick="cpCode(this)">⎘ Copy</button></div>
+      <pre><span class="c"># /etc/nginx/conf.d/security.conf</span>
+server {
+    listen 443 ssl http2;
+
+    <span class="c"># Hide server version</span>
+    server_tokens off;
+
+    <span class="c"># Security headers</span>
+    add_header Strict-Transport-Security <span class="s">"max-age=31536000; includeSubDomains; preload"</span> always;
+    add_header X-Frame-Options <span class="s">"DENY"</span> always;
+    add_header X-Content-Type-Options <span class="s">"nosniff"</span> always;
+    add_header X-XSS-Protection <span class="s">"1; mode=block"</span> always;
+    add_header Referrer-Policy <span class="s">"strict-origin-when-cross-origin"</span> always;
+    add_header Permissions-Policy <span class="s">"camera=(), microphone=(), geolocation=()"</span> always;
+    add_header Content-Security-Policy <span class="s">"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; object-src 'none'; frame-ancestors 'none';"</span> always;
+
+    <span class="c"># Block common attack patterns</span>
+    location ~* \.(env|git|htaccess|htpasswd|sql|bak|backup)$ {
+        deny all;
+    }
+
+    <span class="c"># Rate limiting</span>
+    limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+    location /login {
+        limit_req zone=login burst=5 nodelay;
+    }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+  §16 CASE STUDIES
+══════════════════════════════════════ -->
+<section class="sec" id="cases">
+  <div class="sh"><span class="sn">16</span><span class="si">📚</span><h2>Real-World Case Studies</h2></div>
+
+  <div class="sub">
+    <h3>উল্লেখযোগ্য Bug Bounty Finds</h3>
+
+    <div class="tw"><table>
+      <thead><tr><th>Company</th><th>Vulnerability</th><th>Impact</th><th>Reward</th><th>বছর</th></tr></thead>
+      <tbody>
+        <tr><td>Facebook</td><td>Account Takeover via Password Reset</td><td>যেকোনো account takeover</td><td>$20,000</td><td>2013</td></tr>
+        <tr><td>Google</td><td>Cross-site scripting in Google.com</td><td>Admin panel access</td><td>$7,500</td><td>2019</td></tr>
+        <tr><td>Apple</td><td>IDOR — Full iCloud account access</td><td>সব user data</td><td>$100,000</td><td>2020</td></tr>
+        <tr><td>Uber</td><td>SQL Injection in internal tool</td><td>Database access</td><td>$10,000</td><td>2016</td></tr>
+        <tr><td>Twitter</td><td>Authentication bypass via JWT</td><td>Any account access</td><td>$15,000</td><td>2020</td></tr>
+        <tr><td>Microsoft</td><td>RCE in Azure DevOps</td><td>Server takeover</td><td>$40,000</td><td>2021</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>শিক্ষা — এই Cases থেকে কী শিখবো?</h3>
+    <div class="cards">
+      <div class="card"><span class="ci">💡</span><div class="ct">IDOR সবচেয়ে Common</div><div class="cd">Password reset token, order ID, user ID — সব জায়গায় ownership check করুন। এটি সবচেয়ে বেশি পাওয়া high-severity bug।</div></div>
+      <div class="card"><span class="ci">🔐</span><div class="ct">Authentication Logic</div><div class="cd">Password reset, email verification, OAuth flow — এগুলোতে business logic flaw প্রায়ই থাকে। Manual testing করুন।</div></div>
+      <div class="card"><span class="ci">📱</span><div class="ct">Mobile APIs</div><div class="cd">Mobile app-এর API endpoint প্রায়ই web-এর চেয়ে কম tested। Burp দিয়ে intercept করে দেখুন।</div></div>
+      <div class="card"><span class="ci">🔗</span><div class="ct">Third-party Integration</div><div class="cd">OAuth, payment gateway, webhook — integration point-এ প্রায়ই vulnerability থাকে।</div></div>
+    </div>
+
+    <h3>বাংলাদেশের প্রেক্ষাপটে</h3>
+    <div class="box info">
+      <div class="bl">🇧🇩 বাংলাদেশি Ethical Hackers</div>
+      <p>বাংলাদেশ থেকে অনেক security researcher Hall of Fame-এ আছেন। <strong>আইনি সতর্কতা:</strong> বাংলাদেশের Digital Security Act 2018-এর section 17, 19, 21 — unauthorized computer access কঠোরভাবে নিষিদ্ধ। শুধুমাত্র আন্তর্জাতিক Bug Bounty platform-এর scope-এর মধ্যে কাজ করুন, বাংলাদেশি সাইটে bug পেলে সরাসরি কোম্পানির security team-এ জানান।</p>
+    </div>
+
+    <h3>Resources — আরো শিখতে</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Resource</th><th>ধরন</th><th>URL</th></tr></thead>
+      <tbody>
+        <tr><td>PortSwigger Web Security Academy</td><td>Free Course + Labs</td><td>portswigger.net/web-security</td></tr>
+        <tr><td>HackTricks</td><td>Free Reference</td><td>book.hacktricks.xyz</td></tr>
+        <tr><td>OWASP Testing Guide</td><td>Free Guide</td><td>owasp.org/www-project-testing</td></tr>
+        <tr><td>Bug Bounty Bootcamp (book)</td><td>Book</td><td>Vickie Li — No Starch Press</td></tr>
+        <tr><td>TryHackMe</td><td>Free+Paid Labs</td><td>tryhackme.com</td></tr>
+        <tr><td>HackTheBox</td><td>Free+Paid Labs</td><td>hackthebox.com</td></tr>
+        <tr><td>Nahamsec YouTube</td><td>Free Videos</td><td>youtube.com/@nahamsec</td></tr>
+        <tr><td>STÖK YouTube</td><td>Free Videos</td><td>Bug bounty methodology videos</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+</div><!-- /content -->
+</div><!-- /wrap -->
+
+<footer>
+  <span>🛡️ Bug Bounty & Web Security — বাংলা Developer Handbook | Educational Use Only</span>
+  <span>Always get written permission before testing any system</span>
+</footer>
+
+<script>
+function cpCode(btn) {
+  const pre = btn.closest('.cw').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  const copy = () => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = '⎘ Copy'; btn.classList.remove('ok'); }, 2000);
+  };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(copy).catch(copy);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); copy();
+  }
+}
+
+const secs = document.querySelectorAll('.sec[id]');
+const links = document.querySelectorAll('.sb-a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + id));
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+secs.forEach(s => obs.observe(s));
+
+links.forEach(l => l.addEventListener('click', () =>
+  document.getElementById('sb').classList.remove('open')
+));
+</script>
+</body>
+</html>
