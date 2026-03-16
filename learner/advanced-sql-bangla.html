@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced SQL — Concurrency, Locking & Transactions | বাংলা Developer Handbook</title>
+<style>
+/* ═══════════════════════════════════════════════
+   FONTS — self-contained @font-face not needed;
+   we use system Bengali + monospace stack
+═══════════════════════════════════════════════ */
+:root {
+  --bg:       #0b0d12;
+  --bg2:      #11141c;
+  --bg3:      #181c28;
+  --bg4:      #1f2436;
+  --bg5:      #252b42;
+  --border:   #252d45;
+  --border2:  #2e3857;
+  --accent:   #4f8cff;
+  --accent-d: #3a72e8;
+  --green:    #3ddc84;
+  --red:      #ff5c6e;
+  --yellow:   #ffc24b;
+  --purple:   #b085f5;
+  --cyan:     #43d4f0;
+  --orange:   #ff8c42;
+  --text:     #dde4f0;
+  --text2:    #8b98b8;
+  --text3:    #505c7a;
+  --sidebar:  260px;
+  --r:        8px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:15px}
+
+body{
+  font-family: 'Noto Sans Bengali','Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+
+/* ══════════════ SCROLLBAR ══════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ══════════════ SIDEBAR ══════════════ */
+#sidebar{
+  position:fixed;top:0;left:0;
+  width:var(--sidebar);height:100vh;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  overflow-y:auto;z-index:200;
+  display:flex;flex-direction:column;
+  transition:transform .3s ease;
+}
+
+.sb-brand{
+  padding:22px 20px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sb-logo{
+  font-size:11px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--accent);font-family:monospace;
+  margin-bottom:4px;
+}
+.sb-tagline{font-size:11px;color:var(--text3);line-height:1.4}
+
+.sb-nav{padding:8px 0 20px;flex:1}
+
+.sb-group{margin-top:6px}
+.sb-group-label{
+  padding:7px 18px 3px;
+  font-size:9.5px;font-weight:700;
+  letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--text3);font-family:monospace;
+}
+.sb-link{
+  display:block;
+  padding:6px 18px 6px 24px;
+  font-size:12.5px;color:var(--text2);
+  text-decoration:none;
+  border-left:2px solid transparent;
+  transition:all .15s;
+  line-height:1.45;
+}
+.sb-link:hover,.sb-link.active{
+  color:var(--accent);
+  background:rgba(79,140,255,.07);
+  border-left-color:var(--accent);
+}
+.sb-link .tag{
+  font-size:9px;font-family:monospace;
+  background:rgba(79,140,255,.15);
+  color:var(--accent);
+  padding:1px 5px;border-radius:3px;
+  margin-left:4px;vertical-align:middle;
+}
+
+/* ══════════════ LAYOUT ══════════════ */
+#wrap{
+  margin-left:var(--sidebar);
+  min-height:100vh;
+}
+
+/* ══════════════ HERO ══════════════ */
+.hero{
+  padding:70px 64px 52px;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(79,140,255,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(61,220,132,.06) 0%, transparent 60%),
+    var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;
+  bottom:-1px;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--accent),var(--green),transparent);
+}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(79,140,255,.1);
+  border:1px solid rgba(79,140,255,.25);
+  color:var(--accent);
+  font-size:10.5px;font-weight:700;
+  font-family:monospace;letter-spacing:1.2px;
+  padding:4px 12px;border-radius:20px;
+  margin-bottom:22px;
+}
+.hero-chip::before{content:'◈';font-size:10px}
+.hero h1{
+  font-size:38px;font-weight:800;
+  line-height:1.18;margin-bottom:16px;
+  background:linear-gradient(135deg,#dde4f0 20%,#4f8cff 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  font-family:'Noto Sans Bengali',system-ui,sans-serif;
+}
+.hero-sub{
+  font-size:15.5px;color:var(--text2);
+  max-width:580px;line-height:1.75;
+}
+.hero-pills{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;
+}
+.hero-pill{
+  font-size:11px;font-family:monospace;font-weight:600;
+  padding:4px 10px;border-radius:5px;
+  display:flex;align-items:center;gap:5px;
+}
+.hp-blue{background:rgba(79,140,255,.12);color:var(--accent);border:1px solid rgba(79,140,255,.2)}
+.hp-green{background:rgba(61,220,132,.1);color:var(--green);border:1px solid rgba(61,220,132,.2)}
+.hp-yellow{background:rgba(255,194,75,.1);color:var(--yellow);border:1px solid rgba(255,194,75,.2)}
+.hp-red{background:rgba(255,92,110,.1);color:var(--red);border:1px solid rgba(255,92,110,.2)}
+.hp-purple{background:rgba(176,133,245,.1);color:var(--purple);border:1px solid rgba(176,133,245,.2)}
+
+/* ══════════════ CONTENT ══════════════ */
+.content{padding:0 64px 100px;max-width:960px}
+
+/* ══════════════ SECTION ══════════════ */
+.sec{padding-top:64px}
+
+.sec-head{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:32px;
+}
+.sec-num{
+  font-family:monospace;font-size:10px;font-weight:700;
+  color:var(--text3);
+  background:var(--bg3);border:1px solid var(--border);
+  padding:3px 7px;border-radius:4px;flex-shrink:0;
+}
+.sec-head h2{
+  font-size:24px;font-weight:800;
+  color:var(--text);
+  font-family:'Noto Sans Bengali',system-ui,sans-serif;
+}
+
+/* ══════════════ SUBSECTION ══════════════ */
+.sub{margin-bottom:52px}
+.sub h3{
+  font-size:17px;font-weight:700;
+  color:var(--accent);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:9px;
+  font-family:'Noto Sans Bengali',system-ui,sans-serif;
+}
+.sub h3::before{
+  content:'';flex-shrink:0;
+  width:3px;height:17px;
+  background:var(--accent);border-radius:2px;
+  display:inline-block;
+}
+.sub h4{
+  font-size:14px;font-weight:700;
+  color:var(--yellow);margin:18px 0 10px;
+  font-family:monospace;letter-spacing:.5px;
+}
+
+p{margin-bottom:13px;color:var(--text2);font-size:14.5px}
+p strong,li strong{color:var(--text);font-weight:600}
+
+/* ══════════════ CALLOUTS ══════════════ */
+.box{
+  border-radius:var(--r);padding:15px 18px;
+  margin:18px 0;border-left:3px solid;font-size:13.5px;
+}
+.box-label{
+  font-family:monospace;font-size:10px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;
+  margin-bottom:7px;
+}
+.box.info{background:rgba(79,140,255,.07);border-color:var(--accent)}
+.box.info .box-label{color:var(--accent)}
+.box.warn{background:rgba(255,194,75,.07);border-color:var(--yellow)}
+.box.warn .box-label{color:var(--yellow)}
+.box.danger{background:rgba(255,92,110,.07);border-color:var(--red)}
+.box.danger .box-label{color:var(--red)}
+.box.success{background:rgba(61,220,132,.07);border-color:var(--green)}
+.box.success .box-label{color:var(--green)}
+.box.tip{background:rgba(176,133,245,.07);border-color:var(--purple)}
+.box.tip .box-label{color:var(--purple)}
+.box p{margin:0;color:var(--text2)}
+.box p+p{margin-top:8px}
+
+/* ══════════════ CODE BLOCKS ══════════════ */
+.code-wrap{
+  margin:18px 0;
+  border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--border2);
+  box-shadow:0 6px 28px rgba(0,0,0,.4);
+}
+.code-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg3);
+  padding:9px 14px;
+  border-bottom:1px solid var(--border);
+}
+.code-lang{
+  font-family:monospace;font-size:10.5px;font-weight:700;
+  color:var(--yellow);letter-spacing:.8px;
+}
+.copy-btn{
+  display:flex;align-items:center;gap:5px;
+  background:var(--bg4);border:1px solid var(--border2);
+  color:var(--text2);font-family:monospace;font-size:10.5px;
+  padding:4px 10px;border-radius:5px;
+  cursor:pointer;transition:all .15s;
+}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.ok{background:var(--green);color:#000;border-color:var(--green)}
+pre{
+  background:#070910;
+  padding:18px 20px;overflow-x:auto;
+  font-family:'Cascadia Code','Fira Code','JetBrains Mono',Consolas,monospace;
+  font-size:12.5px;line-height:1.75;tab-size:2;
+}
+/* SQL tokens */
+.k{color:#4f8cff;font-weight:700}       /* keyword */
+.f{color:#3ddc84}                        /* function */
+.s{color:#ffc24b}                        /* string */
+.n{color:#ff8c42}                        /* number */
+.c{color:#3a4563;font-style:italic}      /* comment */
+.t{color:#dde4f0}                        /* table/identifier */
+.col{color:#86d9ff}                      /* column */
+.op{color:#b085f5}                       /* operator/punctuation */
+.tx{color:#ff5c6e;font-weight:700}       /* special emphasis */
+
+/* ══════════════ SCENARIO BOX ══════════════ */
+.scenario{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--r);margin:18px 0;overflow:hidden;
+}
+.scenario-head{
+  background:rgba(176,133,245,.1);
+  padding:9px 16px;
+  font-family:monospace;font-size:10.5px;font-weight:700;
+  color:var(--purple);letter-spacing:1px;text-transform:uppercase;
+  display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);
+}
+.scenario-body{padding:14px 16px;font-size:13.5px;color:var(--text2)}
+.scenario-body p{margin-bottom:8px;font-size:13.5px}
+
+/* ══════════════ STEPS ══════════════ */
+.steps{list-style:none;margin:14px 0}
+.steps li{
+  display:flex;gap:13px;align-items:flex-start;
+  margin-bottom:14px;padding:12px 14px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);font-size:13.5px;color:var(--text2);
+}
+.step-n{
+  flex-shrink:0;width:24px;height:24px;
+  background:var(--accent);color:#fff;
+  font-family:monospace;font-size:11px;font-weight:700;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin-top:1px;
+}
+
+/* ══════════════ TABLE ══════════════ */
+.tbl-wrap{overflow-x:auto;margin:18px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+  background:var(--bg3);color:var(--accent);
+  font-family:monospace;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;
+  padding:9px 13px;text-align:left;
+  border-bottom:2px solid var(--border2);
+}
+td{
+  padding:9px 13px;border-bottom:1px solid var(--border);
+  color:var(--text2);vertical-align:top;line-height:1.5;
+}
+tr:hover td{background:rgba(79,140,255,.03)}
+code,td code,p code,li code{
+  font-family:'Cascadia Code','Fira Code','JetBrains Mono',Consolas,monospace;
+  font-size:12px;background:var(--bg4);
+  border:1px solid var(--border2);
+  padding:2px 6px;border-radius:4px;color:var(--yellow);
+}
+
+/* ══════════════ MISTAKE LIST ══════════════ */
+.err-list{list-style:none;margin:14px 0}
+.err-list li{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 14px;margin-bottom:8px;font-size:13.5px;
+  background:rgba(255,92,110,.05);
+  border:1px solid rgba(255,92,110,.15);
+  border-radius:var(--r);color:var(--text2);
+}
+.err-list li::before{
+  content:'⚠';color:var(--red);flex-shrink:0;margin-top:1px;
+}
+
+/* ══════════════ TIMELINE (deadlock) ══════════════ */
+.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.tl-col{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--r);overflow:hidden;
+}
+.tl-head{
+  padding:8px 13px;
+  font-family:monospace;font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.tl-col:first-child .tl-head{background:rgba(79,140,255,.15);color:var(--accent)}
+.tl-col:last-child .tl-head{background:rgba(255,92,110,.15);color:var(--red)}
+.tl-body{padding:12px 13px}
+.tl-row{
+  display:flex;gap:8px;align-items:flex-start;
+  padding-bottom:9px;margin-bottom:9px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  font-size:12px;
+}
+.tl-row:last-child{border:none;margin:0;padding:0}
+.tl-t{
+  font-family:monospace;font-size:9.5px;color:var(--text3);
+  flex-shrink:0;min-width:26px;margin-top:2px;
+}
+.tl-tx{color:var(--text2);line-height:1.5}
+.tl-tx code{font-size:11px}
+
+/* ══════════════ ARCH DIAGRAM ══════════════ */
+.arch{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--r);padding:20px;margin:18px 0;
+  font-family:monospace;font-size:12px;color:var(--text2);
+  line-height:1.9;
+}
+
+/* ══════════════ DIVIDER ══════════════ */
+.div{
+  height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+  margin:48px 0;
+}
+
+/* ══════════════ FOOTER ══════════════ */
+footer{
+  margin-left:var(--sidebar);padding:24px 64px;
+  border-top:1px solid var(--border);background:var(--bg2);
+  font-size:11.5px;color:var(--text3);font-family:monospace;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* ══════════════ MOBILE TOGGLE ══════════════ */
+#mb-toggle{
+  display:none;position:fixed;top:12px;right:14px;z-index:300;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);width:36px;height:36px;
+  border-radius:7px;cursor:pointer;font-size:16px;
+  align-items:center;justify-content:center;
+}
+
+/* ══════════════ RESPONSIVE ══════════════ */
+@media(max-width:860px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #wrap,footer{margin-left:0}
+  #mb-toggle{display:flex}
+  .hero{padding:48px 24px 36px}
+  .hero h1{font-size:26px}
+  .content{padding:0 20px 80px}
+  .tl-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<button id="mb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<nav id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">⬡ SQL Advanced</div>
+    <div class="sb-tagline">Concurrency, Locking & Transactions<br>বাংলা Developer Handbook</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-group">
+      <div class="sb-group-label">শুরু করুন</div>
+      <a href="#intro" class="sb-link">ভূমিকা</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Transaction Basics</div>
+      <a href="#acid" class="sb-link">ACID Properties</a>
+      <a href="#txn-ctrl" class="sb-link">START / COMMIT / ROLLBACK</a>
+      <a href="#isolation" class="sb-link">Isolation Levels</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Row Locking</div>
+      <a href="#for-update" class="sb-link">SELECT … FOR UPDATE</a>
+      <a href="#share-mode" class="sb-link">LOCK IN SHARE MODE</a>
+      <a href="#skip-locked" class="sb-link">SKIP LOCKED <span class="tag">HOT</span></a>
+      <a href="#nowait" class="sb-link">FOR UPDATE NOWAIT</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Concurrency Control</div>
+      <a href="#race" class="sb-link">Race Condition</a>
+      <a href="#deadlock" class="sb-link">Deadlock</a>
+      <a href="#row-vs-table" class="sb-link">Row vs Table Lock</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Advanced Techniques</div>
+      <a href="#get-lock" class="sb-link">GET_LOCK / RELEASE_LOCK</a>
+      <a href="#on-dup" class="sb-link">INSERT ON DUPLICATE KEY</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Real Systems</div>
+      <a href="#payment" class="sb-link">Payment System</a>
+      <a href="#inventory" class="sb-link">Inventory Management</a>
+      <a href="#job-queue" class="sb-link">Job Queue Workers</a>
+      <a href="#booking" class="sb-link">Booking System</a>
+      <a href="#ledger" class="sb-link">Financial Ledger</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Mastery</div>
+      <a href="#patterns" class="sb-link">High-Concurrency Patterns</a>
+      <a href="#best" class="sb-link">Best Practices</a>
+      <a href="#prod" class="sb-link">Production Issues</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<div id="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-chip">MySQL · InnoDB · Production Engineering</div>
+  <h1>Advanced SQL<br>Concurrency &amp; Locking</h1>
+  <p class="hero-sub">Payment gateway থেকে booking system — high-concurrency database engineering-এর সম্পূর্ণ বাংলা গাইড। Race condition, deadlock, isolation level এবং real-world locking pattern সব এক জায়গায়।</p>
+  <div class="hero-pills">
+    <span class="hero-pill hp-blue">🔒 Transaction Isolation</span>
+    <span class="hero-pill hp-green">⚡ Row-Level Locking</span>
+    <span class="hero-pill hp-red">💀 Deadlock Prevention</span>
+    <span class="hero-pill hp-yellow">🏗️ System Architecture</span>
+    <span class="hero-pill hp-purple">🎯 Production Patterns</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════
+     §00 INTRODUCTION
+═══════════════════════════════════════════ -->
+<section class="sec" id="intro">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <h2>ভূমিকা — এই গাইড কেন দরকার?</h2>
+  </div>
+
+  <div class="sub">
+    <p>Backend developer হিসেবে তুমি হয়তো SELECT, INSERT, UPDATE, JOIN লিখতে পারো — কিন্তু production-এ যখন একসাথে হাজার হাজার user একই data access করে, তখন শুধু SQL জানা যথেষ্ট না।</p>
+    <p>কল্পনা করো — ২ জন user একই সময়ে একটি seat বুক করছে। দুজনেই দেখছে seat available, দুজনেই book করলো — এখন কী হবে? অথবা wallet থেকে টাকা কাটা হলো কিন্তু payment fail করলো — টাকা কোথায় গেলো?</p>
+    <p>এই সমস্যাগুলোর সমাধান হলো <strong>Concurrency Control</strong> — যেটা এই গাইডের মূল বিষয়।</p>
+
+    <div class="box info">
+      <div class="box-label">📌 এই গাইড কার জন্য</div>
+      <p>Beginner SQL tutorial না। তুমি যদি basic SQL জানো এবং real production system build করতে চাও — payment, inventory, booking, job queue — তাহলে এই গাইড তোমার জন্য।</p>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>সমস্যা</th><th>কারণ</th><th>সমাধান</th></tr></thead>
+        <tbody>
+          <tr><td>Double booking</td><td>Concurrent reads without lock</td><td><code>SELECT FOR UPDATE</code></td></tr>
+          <tr><td>Negative wallet balance</td><td>Race condition on balance</td><td>Transaction + row lock</td></tr>
+          <tr><td>Same job processed twice</td><td>Multiple workers reading same row</td><td><code>SKIP LOCKED</code></td></tr>
+          <tr><td>Inconsistent inventory</td><td>Lost update problem</td><td>Optimistic / pessimistic locking</td></tr>
+          <tr><td>Application hang</td><td>Deadlock</td><td>Consistent lock ordering</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     §01 ACID
+═══════════════════════════════════════════ -->
+<section class="sec" id="acid">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>ACID Properties</h2>
+  </div>
+
+  <div class="sub">
+    <h3>ACID কি এবং কেন গুরুত্বপূর্ণ?</h3>
+    <p>Database transaction-এর চারটি মূল property হলো ACID। এগুলো ছাড়া কোনো financial বা critical system reliable হতে পারে না।</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Property</th><th>মানে কি</th><th>ব্যর্থ হলে কী হয়</th><th>Real উদাহরণ</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--accent)">Atomicity</strong></td>
+            <td>সব কাজ হবে অথবা কিছুই না</td>
+            <td>Partial update — অর্ধেক টাকা কাটা, credit নেই</td>
+            <td>Fund transfer এর দুটো UPDATE</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--green)">Consistency</strong></td>
+            <td>Data সবসময় valid state-এ থাকবে</td>
+            <td>Balance negative, foreign key ভাঙা</td>
+            <td>Wallet balance ≥ 0 constraint</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--yellow)">Isolation</strong></td>
+            <td>Concurrent transactions একে অপরকে interfere করবে না</td>
+            <td>Dirty read, phantom read</td>
+            <td>দুই payment একসাথে চলছে</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--purple)">Durability</strong></td>
+            <td>COMMIT হলে data permanent</td>
+            <td>Server crash-এ data হারানো</td>
+            <td>Payment confirmed, server রিস্টার্ট</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §02 TRANSACTION CONTROL
+═══════════════════════════════════════════ -->
+<section class="sec" id="txn-ctrl">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Transaction Control — START, COMMIT, ROLLBACK</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Transaction কিভাবে শুরু ও শেষ করতে হয়</h3>
+    <p>MySQL-এ default <strong>autocommit = ON</strong> — মানে প্রতিটি statement নিজেই একটি transaction। Production code-এ manually transaction control করতে হয়।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Basic Transaction Structure</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Transaction শুরু করো</span>
+<span class="k">START TRANSACTION</span>;
+<span class="c">-- অথবা: BEGIN;</span>
+
+<span class="c">-- তোমার SQL operations</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">500</span>
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">101</span>;
+
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">+</span> <span class="n">500</span>
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">202</span>;
+
+<span class="c">-- সব ঠিক? Save করো</span>
+<span class="k">COMMIT</span>;
+
+<span class="c">-- কোনো error? সব বাতিল</span>
+<span class="k">ROLLBACK</span>;</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">🏦 Real Scenario — Wallet Fund Transfer</div>
+      <div class="scenario-body">
+        <p>User A (id=101) থেকে User B (id=202)-তে ৫০০ টাকা transfer। দ্বিতীয় UPDATE fail করলে (user B নেই) — প্রথম debit-ও ROLLBACK হবে। টাকা হারিয়ে যাবে না।</p>
+      </div>
+    </div>
+
+    <h4>Application Code-এ Transaction Pattern (PHP Example)</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">PHP — Transaction with Error Handling</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">// ✅ সঠিক পদ্ধতি</span>
+try {
+    $pdo->beginTransaction();
+
+    $pdo->exec("UPDATE wallets SET balance = balance - 500 WHERE user_id = 101");
+    $pdo->exec("UPDATE wallets SET balance = balance + 500 WHERE user_id = 202");
+    $pdo->exec("INSERT INTO transfer_log (from_id, to_id, amount) VALUES (101, 202, 500)");
+
+    $pdo->commit(); <span class="c">// সব ঠিক, save করো</span>
+
+} catch (Exception $e) {
+    $pdo->rollBack(); <span class="c">// কোনো error, সব বাতিল</span>
+    throw $e;
+}</pre>
+    </div>
+
+    <h4>SAVEPOINT — Partial Rollback</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — SAVEPOINT Usage</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="k">INSERT INTO</span> <span class="t">orders</span> (<span class="col">user_id</span>, <span class="col">amount</span>) <span class="k">VALUES</span> (<span class="n">1</span>, <span class="n">1000</span>);
+
+<span class="k">SAVEPOINT</span> order_placed;  <span class="c">-- এখানে একটা checkpoint</span>
+
+<span class="k">INSERT INTO</span> <span class="t">payments</span> (<span class="col">order_id</span>, <span class="col">method</span>) <span class="k">VALUES</span> (<span class="n">99</span>, <span class="s">'card'</span>);
+
+<span class="c">-- Payment fail? শুধু payment rollback করো, order রাখো</span>
+<span class="k">ROLLBACK TO SAVEPOINT</span> order_placed;
+
+<span class="c">-- Order টা save করো</span>
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>Transaction open রেখে অন্য API call বা user input wait করা — লম্বা transaction = lock held longer = অন্য query blocked</li>
+      <li><code>BEGIN</code> করার পর exception catch না করা — transaction কখনো commit/rollback হয় না, connection-এ ঝুলে থাকে</li>
+      <li>MySQL-এ nested <code>BEGIN</code> ব্যবহার — inner BEGIN আসলে outer-কে implicit COMMIT করে দেয়!</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §03 ISOLATION LEVELS
+═══════════════════════════════════════════ -->
+<section class="sec" id="isolation">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Isolation Levels</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Isolation Level কী এবং কোনটা কখন ব্যবহার করবো?</h3>
+    <p>Isolation level নির্ধারণ করে একটি চলমান transaction অন্য concurrent transaction-এর data কতটুকু দেখতে পাবে। যত বেশি isolation, তত বেশি safety — কিন্তু performance কমে।</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Isolation Level</th>
+            <th>Dirty Read</th>
+            <th>Non-Repeatable Read</th>
+            <th>Phantom Read</th>
+            <th>ব্যবহার করো কখন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>READ UNCOMMITTED</code></td>
+            <td style="color:var(--red)">✓ হয়</td>
+            <td style="color:var(--red)">✓ হয়</td>
+            <td style="color:var(--red)">✓ হয়</td>
+            <td>প্রায় কখনো না</td>
+          </tr>
+          <tr>
+            <td><code>READ COMMITTED</code></td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td style="color:var(--red)">✓ হয়</td>
+            <td style="color:var(--red)">✓ হয়</td>
+            <td>Analytics, reporting</td>
+          </tr>
+          <tr>
+            <td><code>REPEATABLE READ</code> ⭐</td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td style="color:var(--yellow)">~ InnoDB-তে নেই*</td>
+            <td>Default — বেশিরভাগ app</td>
+          </tr>
+          <tr>
+            <td><code>SERIALIZABLE</code></td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td style="color:var(--green)">✗ হয় না</td>
+            <td>Financial critical, slow</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box info">
+      <div class="box-label">💡 InnoDB REPEATABLE READ-এর বিশেষত্ব</div>
+      <p>InnoDB MVCC (Multi-Version Concurrency Control) ব্যবহার করে, তাই Phantom Read সাধারণত হয় না। কিন্তু <code>FOR UPDATE</code> দিলে Gap Lock নেয়, তখন phantom prevent হয়।</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Isolation Level Set করা</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- শুধু এই session-এর জন্য</span>
+<span class="k">SET SESSION TRANSACTION ISOLATION LEVEL</span> <span class="tx">READ COMMITTED</span>;
+
+<span class="c">-- পরবর্তী transaction-এর জন্য</span>
+<span class="k">SET TRANSACTION ISOLATION LEVEL</span> <span class="tx">SERIALIZABLE</span>;
+
+<span class="c">-- Global (সব নতুন connection)</span>
+<span class="k">SET GLOBAL TRANSACTION ISOLATION LEVEL</span> <span class="tx">REPEATABLE READ</span>;
+
+<span class="c">-- Current level দেখো</span>
+<span class="k">SELECT</span> <span class="op">@@</span><span class="col">transaction_isolation</span>;</pre>
+    </div>
+
+    <h4>Dirty Read — কী এবং কেন বিপজ্জনক</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Dirty Read Example (READ UNCOMMITTED)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Connection A (টাকা transfer করছে)</span>
+<span class="k">START TRANSACTION</span>;
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">+</span> <span class="n">1000</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">5</span>;
+<span class="c">-- এখনো COMMIT করেনি...</span>
+
+<span class="c">-- Connection B (READ UNCOMMITTED mode-এ)</span>
+<span class="k">SET SESSION TRANSACTION ISOLATION LEVEL</span> <span class="tx">READ UNCOMMITTED</span>;
+<span class="k">SELECT</span> <span class="col">balance</span> <span class="k">FROM</span> <span class="t">wallets</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">5</span>;
+<span class="c">-- ⚠️ uncommitted +1000 দেখাবে! (dirty read)</span>
+
+<span class="c">-- Connection A তখন ROLLBACK করলো</span>
+<span class="k">ROLLBACK</span>;
+<span class="c">-- B যা দেখেছিল সেটা false data ছিল — বিপদ!</span></pre>
+    </div>
+
+    <ul class="err-list">
+      <li>Analytics query-তে default REPEATABLE READ রাখা — long-running read transaction locks নিতে পারে। READ COMMITTED ব্যবহার করো।</li>
+      <li>SERIALIZABLE সব জায়গায় ব্যবহার — deadlock rate বাড়ে, throughput কমে</li>
+    </ul>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     §04 SELECT FOR UPDATE
+═══════════════════════════════════════════ -->
+<section class="sec" id="for-update">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>SELECT … FOR UPDATE</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Pessimistic Locking — আগে lock নাও, তারপর কাজ করো</h3>
+    <p><code>SELECT ... FOR UPDATE</code> হলো <strong>pessimistic locking</strong>-এর মূল tool। এটি selected row(s)-এ exclusive lock নেয় — অন্য কোনো transaction এই row modify বা exclusive lock নিতে পারবে না যতক্ষণ না তুমি COMMIT/ROLLBACK করো।</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>কে কী করতে পারবে</th><th>FOR UPDATE lock থাকা অবস্থায়</th></tr></thead>
+        <tbody>
+          <tr><td>অন্য transaction — plain SELECT</td><td>✅ পারবে (MVCC snapshot দেখবে)</td></tr>
+          <tr><td>অন্য transaction — SELECT FOR UPDATE</td><td>❌ block হবে, wait করবে</td></tr>
+          <tr><td>অন্য transaction — UPDATE/DELETE</td><td>❌ block হবে, wait করবে</td></tr>
+          <tr><td>অন্য transaction — LOCK IN SHARE MODE</td><td>❌ block হবে</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — SELECT FOR UPDATE Syntax</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Row lock নাও</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">balance</span>
+<span class="k">FROM</span> <span class="t">wallets</span>
+<span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">101</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="c">-- এখন balance পড়া নিরাপদ — অন্য কেউ পরিবর্তন করতে পারবে না</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">300</span>
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">101</span>;
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">🔐 Real Scenario — Wallet Debit (Race Condition থেকে রক্ষা)</div>
+      <div class="scenario-body">
+        <p>User-এর balance ৫০০ টাকা। দুটো payment request একসাথে আসলো — ৪০০ টাকা করে দুটো payment। FOR UPDATE ছাড়া দুজনেই ৫০০ দেখবে, দুজনেই ৪০০ কাটবে — balance -৩০০ হবে!</p>
+        <p>FOR UPDATE দিলে — দ্বিতীয় transaction BLOCK হবে। প্রথমটা শেষ হলে দ্বিতীয়টা দেখবে balance ১০০, ৪০০ কাটতে পারবে না → ROLLBACK।</p>
+      </div>
+    </div>
+
+    <h4>Step-by-Step Execution</h4>
+    <ul class="steps">
+      <li><div class="step-n">1</div><div>Connection A: <code>START TRANSACTION</code> → <code>SELECT balance FROM wallets WHERE user_id=101 FOR UPDATE</code> → balance = ৫০০, row locked ✅</div></li>
+      <li><div class="step-n">2</div><div>Connection B: <code>START TRANSACTION</code> → <code>SELECT balance FROM wallets WHERE user_id=101 FOR UPDATE</code> → <strong>BLOCK হয়ে wait করে</strong></div></li>
+      <li><div class="step-n">3</div><div>Connection A: <code>UPDATE wallets SET balance = balance - 400 WHERE user_id=101</code> → <code>COMMIT</code> → balance = ১০০, lock release</div></li>
+      <li><div class="step-n">4</div><div>Connection B: এখন lock পায় → balance = ১০০ দেখে → ৪০০ কাটতে পারে না → application-level check → ROLLBACK</div></li>
+    </ul>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Complete Safe Debit Pattern</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="c">-- ১. Lock নিয়ে balance পড়ো</span>
+<span class="k">SELECT</span> <span class="col">balance</span>
+<span class="k">INTO</span> @current_balance
+<span class="k">FROM</span> <span class="t">wallets</span>
+<span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">101</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="c">-- ২. Application-এ check করো (অথবা SQL-এ)</span>
+<span class="c">-- IF @current_balance < 400 THEN ROLLBACK; END IF;</span>
+
+<span class="c">-- ৩. Sufficient balance? Debit করো</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span>
+    <span class="col">balance</span>      <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">400</span><span class="op">,</span>
+    <span class="col">updated_at</span>  <span class="op">=</span> <span class="f">NOW</span>()
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">101</span>
+    <span class="k">AND</span> <span class="col">balance</span> <span class="op">>=</span> <span class="n">400</span>;  <span class="c">-- extra safety</span>
+
+<span class="c">-- ৪. Affected rows check করো</span>
+<span class="c">-- ROW_COUNT() = 0 মানে balance insufficient</span>
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>Index ছাড়া WHERE clause দিয়ে FOR UPDATE — full table scan = table-level lock! পুরো table blocked হবে।</li>
+      <li>FOR UPDATE করে কিন্তু COMMIT/ROLLBACK না করা — lock indefinitely held, timeout পর্যন্ত সব blocked</li>
+      <li>Transaction-এর বাইরে FOR UPDATE — কোনো effect নেই, autocommit immediately release করে</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §05 LOCK IN SHARE MODE
+═══════════════════════════════════════════ -->
+<section class="sec" id="share-mode">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>LOCK IN SHARE MODE (FOR SHARE)</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Shared Lock — পড়তে পারবে, কিন্তু কেউ পরিবর্তন করতে পারবে না</h3>
+    <p><code>LOCK IN SHARE MODE</code> (MySQL 8+ এ <code>FOR SHARE</code>) একটি shared lock নেয়। একাধিক transaction একই row-এ shared lock নিতে পারে, কিন্তু কেউ exclusive lock (FOR UPDATE বা UPDATE) নিতে পারবে না।</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Lock Type</th><th>অন্য Shared Lock</th><th>অন্য Exclusive Lock</th><th>ব্যবহার</th></tr></thead>
+        <tbody>
+          <tr><td><strong>FOR UPDATE</strong> (exclusive)</td><td>❌ Block</td><td>❌ Block</td><td>Write করবো</td></tr>
+          <tr><td><strong>LOCK IN SHARE MODE</strong> (shared)</td><td>✅ OK</td><td>❌ Block</td><td>Read করবো, write করবো না</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — LOCK IN SHARE MODE Syntax</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Shared lock — parent record exist করে কিনা verify করছি</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">stock</span>
+<span class="k">FROM</span> <span class="t">products</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span>
+<span class="k">LOCK IN SHARE MODE</span>;
+
+<span class="c">-- এই transaction-এ product exist করে confirmed</span>
+<span class="c">-- এখন order insert করো — product কেউ delete করতে পারবে না</span>
+<span class="k">INSERT INTO</span> <span class="t">order_items</span> (<span class="col">order_id</span><span class="op">,</span> <span class="col">product_id</span><span class="op">,</span> <span class="col">qty</span>)
+<span class="k">VALUES</span> (<span class="n">999</span><span class="op">,</span> <span class="n">42</span><span class="op">,</span> <span class="n">3</span>);
+
+<span class="k">COMMIT</span>;
+
+<span class="c">-- MySQL 8+ syntax</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">products</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span> <span class="k">FOR SHARE</span>;</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">📦 Real Scenario — Order ও Parent Record Consistency</div>
+      <div class="scenario-body">
+        <p>E-commerce-এ order insert করার সময় product exist করে কিনা confirm করতে হয়। LOCK IN SHARE MODE নিলে — অন্য transaction product delete করতে পারবে না যতক্ষণ order insert complete না হয়।</p>
+        <p>Foreign key constraint থাকলেও race condition হতে পারে। Shared lock সেটা prevent করে।</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <div class="box-label">⚠️ Deadlock সম্ভাবনা</div>
+      <p>দুটো transaction একই row-এ LOCK IN SHARE MODE নিয়ে তারপর দুজনেই FOR UPDATE চাইলে — deadlock! দুজনেই অপেক্ষা করবে। এই pattern এড়াও।</p>
+    </div>
+
+    <ul class="err-list">
+      <li>LOCK IN SHARE MODE নিয়ে তারপর UPDATE করার চেষ্টা — এটা deadlock-prone। সরাসরি FOR UPDATE নাও।</li>
+      <li>Report generation-এ LOCK IN SHARE MODE — অনেকক্ষণ lock held, writer blocked। Read-replica বা snapshot ব্যবহার করো।</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §06 SKIP LOCKED
+═══════════════════════════════════════════ -->
+<section class="sec" id="skip-locked">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>FOR UPDATE SKIP LOCKED</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Locked row skip করো — Job Queue-এর জাদুকরী tool</h3>
+    <p>সাধারণত <code>FOR UPDATE</code> blocked row-এর জন্য wait করে। <code>SKIP LOCKED</code> দিলে — currently locked row গুলো <strong>skip করে</strong> পরেরটা নেয়। এটি multi-worker job processing-এর জন্য perfect।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — SKIP LOCKED Basic Syntax</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Pending jobs থেকে একটা নাও (যেটা অন্য worker process করছে না)</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">payload</span><span class="op">,</span> <span class="col">attempts</span>
+<span class="k">FROM</span> <span class="t">jobs</span>
+<span class="k">WHERE</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'pending'</span>
+  <span class="k">AND</span> <span class="col">run_at</span> <span class="op"><=</span> <span class="f">NOW</span>()
+<span class="k">ORDER BY</span> <span class="col">priority</span> <span class="k">DESC</span><span class="op">,</span> <span class="col">created_at</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="n">1</span>
+<span class="k">FOR UPDATE SKIP LOCKED</span>;
+
+<span class="c">-- Job পেলে process করো ও status update করো</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'processing'</span><span class="op">,</span> <span class="col">started_at</span> <span class="op">=</span> <span class="f">NOW</span>()
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">?</span>;  <span class="c">-- application-এ id ব্যবহার করো</span>
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">⚙️ Real Scenario — Multi-Worker Email Queue</div>
+      <div class="scenario-body">
+        <p>১০টি worker process একসাথে চলছে। প্রতিটি worker <code>FOR UPDATE SKIP LOCKED</code> দিয়ে query করে — প্রতিটি আলাদা job পাবে, কেউ একই job দুইবার process করবে না।</p>
+        <p>SKIP LOCKED ছাড়া? সবাই একই job-এর জন্য wait করতো (queue-এর মতো), বা same job multiple বার process হতো।</p>
+      </div>
+    </div>
+
+    <h4>Complete Job Queue Implementation</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Job Queue Table + Worker Pattern</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Job queue table</span>
+<span class="k">CREATE TABLE</span> <span class="t">jobs</span> (
+  <span class="col">id</span>          <span class="k">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">queue</span>       <span class="k">VARCHAR</span>(<span class="n">100</span>) <span class="k">NOT NULL DEFAULT</span> <span class="s">'default'</span><span class="op">,</span>
+  <span class="col">payload</span>     <span class="k">JSON NOT NULL</span><span class="op">,</span>
+  <span class="col">status</span>      <span class="k">ENUM</span>(<span class="s">'pending'</span><span class="op">,</span><span class="s">'processing'</span><span class="op">,</span><span class="s">'done'</span><span class="op">,</span><span class="s">'failed'</span>) <span class="k">DEFAULT</span> <span class="s">'pending'</span><span class="op">,</span>
+  <span class="col">attempts</span>    <span class="k">TINYINT DEFAULT</span> <span class="n">0</span><span class="op">,</span>
+  <span class="col">run_at</span>      <span class="k">DATETIME DEFAULT</span> <span class="f">NOW</span>()<span class="op">,</span>  <span class="c">-- delayed job support</span>
+  <span class="col">created_at</span>  <span class="k">DATETIME DEFAULT</span> <span class="f">NOW</span>(),
+  <span class="k">INDEX</span> <span class="t">idx_queue_status</span> (<span class="col">queue</span><span class="op">,</span> <span class="col">status</span><span class="op">,</span> <span class="col">run_at</span>)
+);
+
+<span class="c">-- Worker: একটি job নাও এবং mark করো</span>
+<span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">payload</span>
+<span class="k">FROM</span> <span class="t">jobs</span>
+<span class="k">WHERE</span> <span class="col">queue</span>   <span class="op">=</span> <span class="s">'emails'</span>
+  <span class="k">AND</span> <span class="col">status</span>  <span class="op">=</span> <span class="s">'pending'</span>
+  <span class="k">AND</span> <span class="col">run_at</span>  <span class="op"><=</span> <span class="f">NOW</span>()
+  <span class="k">AND</span> <span class="col">attempts</span> <span class="op"><</span> <span class="n">3</span>
+<span class="k">ORDER BY</span> <span class="col">run_at</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="n">1</span>
+<span class="k">FOR UPDATE SKIP LOCKED</span>;
+
+<span class="c">-- Application এই row process করে, তারপর:</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span> <span class="col">status</span>   <span class="op">=</span> <span class="s">'done'</span><span class="op">,</span>
+      <span class="col">attempts</span> <span class="op">=</span> <span class="col">attempts</span> <span class="op">+</span> <span class="n">1</span>
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">:job_id</span>;
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>LIMIT ছাড়া SKIP LOCKED — সব unlocked rows return হবে, worker একসাথে হাজার job নিয়ে নেবে</li>
+      <li>Index না থাকলে SKIP LOCKED — full scan হয়, প্রতিটি locked row এক এক করে check করে, অনেক slow</li>
+      <li>Transaction commit না করে loop করা — job locked থাকে, অন্য worker কখনো পাবে না</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §07 NOWAIT
+═══════════════════════════════════════════ -->
+<section class="sec" id="nowait">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2>FOR UPDATE NOWAIT</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Wait না করে immediate fail — Fast-fail pattern</h3>
+    <p>Normal <code>FOR UPDATE</code> lock পেতে wait করে (<code>innodb_lock_wait_timeout</code> পর্যন্ত, default 50 seconds)। <code>NOWAIT</code> দিলে lock পাওয়া না গেলে <strong>তাৎক্ষণিকভাবে error</strong> throw করে। User-facing API-তে এটা অনেক ভালো — user 50 সেকেন্ড wait করে না।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — FOR UPDATE NOWAIT</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="op">*</span>
+<span class="k">FROM</span> <span class="t">seats</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">55</span>
+  <span class="k">AND</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'available'</span>
+<span class="k">FOR UPDATE NOWAIT</span>;
+
+<span class="c">-- Lock পেলে booking করো</span>
+<span class="c">-- Lock না পেলে: ERROR 3572 (ER_LOCK_NOWAIT)</span>
+<span class="c">-- Application তখন user-কে দেখাবে: "Seat currently being booked by another user"</span>
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">🎫 Real Scenario — Ticket Booking API</div>
+      <div class="scenario-body">
+        <p>Concert ticket booking-এ user click করলে API call যায়। NOWAIT দিয়ে lock try করো — কেউ আগে নিয়ে থাকলে ৫০ সেকেন্ড wait না করে তাৎক্ষণিক "This seat is being booked" দেখাও। User experience অনেক ভালো।</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">PHP — NOWAIT Error Handling</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre>try {
+    $pdo->beginTransaction();
+
+    $stmt = $pdo->prepare("
+        SELECT id, status FROM seats
+        WHERE id = ? AND status = 'available'
+        FOR UPDATE NOWAIT
+    ");
+    $stmt->execute([$seatId]);
+    $seat = $stmt->fetch();
+
+    if (!$seat) {
+        $pdo->rollBack();
+        return ['error' => 'Seat not available'];
+    }
+
+    $pdo->prepare("UPDATE seats SET status = 'booked', user_id = ? WHERE id = ?")
+        ->execute([$userId, $seatId]);
+
+    $pdo->commit();
+    return ['success' => true];
+
+} catch (PDOException $e) {
+    $pdo->rollBack();
+
+    <span class="c">// 3572 = ER_LOCK_NOWAIT — কেউ এই moment-এ booking করছে</span>
+    if ($e->getCode() == 3572) {
+        return ['error' => 'Seat is being booked right now, try again'];
+    }
+    throw $e;
+}</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>NOWAIT error handle না করা — user 500 error দেখবে, ব্যাখ্যা ছাড়া</li>
+      <li>Retry logic ছাড়া NOWAIT — legitimate concurrent request fail হবে, revenue হারাবে। Exponential backoff দিয়ে retry করো।</li>
+    </ul>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     §08 RACE CONDITION
+═══════════════════════════════════════════ -->
+<section class="sec" id="race">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <h2>Race Condition</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Race Condition কী এবং কিভাবে ধ্বংস করে?</h3>
+    <p>Race condition তখন হয় যখন দুই বা তার বেশি concurrent operation একই data read করে, decision নেয়, তারপর write করে — কিন্তু একজনের write অন্যজনের read-এর পর কিন্তু write-এর আগে হয়। ফলে একজনের update হারিয়ে যায়।</p>
+
+    <h4>Lost Update Problem</h4>
+    <div class="tl-grid">
+      <div class="tl-col">
+        <div class="tl-head">⏱ Transaction A (payment 1)</div>
+        <div class="tl-body">
+          <div class="tl-row"><div class="tl-t">T1</div><div class="tl-tx">SELECT balance → <strong>500</strong></div></div>
+          <div class="tl-row"><div class="tl-t">T2</div><div class="tl-tx">Application: 500 - 300 = 200</div></div>
+          <div class="tl-row"><div class="tl-t">T5</div><div class="tl-tx">UPDATE SET balance = <strong>200</strong></div></div>
+          <div class="tl-row"><div class="tl-t">T6</div><div class="tl-tx">COMMIT ✅</div></div>
+        </div>
+      </div>
+      <div class="tl-col">
+        <div class="tl-head">⏱ Transaction B (payment 2)</div>
+        <div class="tl-body">
+          <div class="tl-row"><div class="tl-t">T3</div><div class="tl-tx">SELECT balance → <strong>500</strong> (A commit করেনি)</div></div>
+          <div class="tl-row"><div class="tl-t">T4</div><div class="tl-tx">Application: 500 - 400 = 100</div></div>
+          <div class="tl-row"><div class="tl-t">T7</div><div class="tl-tx">UPDATE SET balance = <strong>100</strong></div></div>
+          <div class="tl-row"><div class="tl-t">T8</div><div class="tl-tx">COMMIT ✅ — কিন্তু A-এর deduction হারালো!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box danger">
+      <div class="box-label">💥 ফলাফল</div>
+      <p>মূল balance ৫০০। দুটো payment হয়েছে ৩০০+৪০০=৭০০ টাকার। কিন্তু final balance = ১০০ (শুধু B-এর deduction)। A-এর ৩০০ টাকার deduction হারিয়ে গেছে — user টাকা পেয়েছে কিন্তু wallet থেকে কাটেনি!</p>
+    </div>
+
+    <h4>সমাধান — Atomic Update</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Atomic UPDATE (Race Condition-safe)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- ❌ WRONG — Race condition সম্ভব</span>
+<span class="k">SELECT</span> <span class="col">balance</span> <span class="k">FROM</span> <span class="t">wallets</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span>;
+<span class="c">-- application-এ 500 - 300 = 200 calculate করো</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="n">200</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span>;
+
+<span class="c">-- ✅ CORRECT — Atomic, race condition-safe</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">300</span>
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span>
+    <span class="k">AND</span> <span class="col">balance</span> <span class="op">>=</span> <span class="n">300</span>;  <span class="c">-- insufficient balance guard</span>
+
+<span class="c">-- ROW_COUNT() = 0 মানে balance কম ছিল</span>
+
+<span class="c">-- ✅ CORRECT — FOR UPDATE দিয়ে (read-then-write pattern হলে)</span>
+<span class="k">START TRANSACTION</span>;
+<span class="k">SELECT</span> <span class="col">balance</span> <span class="k">FROM</span> <span class="t">wallets</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span> <span class="k">FOR UPDATE</span>;
+<span class="c">-- safe to read and compute</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">300</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span>;
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>Application-এ balance calculate করে SET balance = new_value — সবচেয়ে বড় race condition pattern</li>
+      <li>Transaction ছাড়া read-then-write — ACID নেই, race guaranteed</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §09 DEADLOCK
+═══════════════════════════════════════════ -->
+<section class="sec" id="deadlock">
+  <div class="sec-head">
+    <span class="sec-num">09</span>
+    <h2>Deadlock</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Deadlock কি — দুই transaction একে অপরের জন্য অপেক্ষা করছে</h3>
+    <p>Deadlock হয় যখন Transaction A, B-র lock-এর জন্য wait করছে, আর Transaction B, A-র lock-এর জন্য wait করছে — circular dependency। MySQL এটা detect করে একটিকে automatically kill করে (victim বানায়) এবং <code>ERROR 1213: Deadlock found</code> throw করে।</p>
+
+    <h4>Classic Deadlock উদাহরণ</h4>
+    <div class="tl-grid">
+      <div class="tl-col">
+        <div class="tl-head">Transaction A — user 1 থেকে user 2</div>
+        <div class="tl-body">
+          <div class="tl-row"><div class="tl-t">T1</div><div class="tl-tx"><code>FOR UPDATE</code> on wallet_id=<strong>1</strong> ✅ lock got</div></div>
+          <div class="tl-row"><div class="tl-t">T3</div><div class="tl-tx"><code>FOR UPDATE</code> on wallet_id=<strong>2</strong> ⏳ WAITING (B holds it)</div></div>
+        </div>
+      </div>
+      <div class="tl-col">
+        <div class="tl-head">Transaction B — user 2 থেকে user 1</div>
+        <div class="tl-body">
+          <div class="tl-row"><div class="tl-t">T2</div><div class="tl-tx"><code>FOR UPDATE</code> on wallet_id=<strong>2</strong> ✅ lock got</div></div>
+          <div class="tl-row"><div class="tl-t">T4</div><div class="tl-tx"><code>FOR UPDATE</code> on wallet_id=<strong>1</strong> ⏳ WAITING (A holds it)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box danger">
+      <div class="box-label">💀 Circular Wait = Deadlock</div>
+      <p>A waits for B's lock, B waits for A's lock → MySQL detects → kills one transaction (usually smaller one) → that transaction gets ERROR 1213.</p>
+    </div>
+
+    <h4>Deadlock Prevention — Consistent Lock Ordering</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Deadlock-Safe Fund Transfer</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- ❌ WRONG — Order depend করে কে sender, কে receiver</span>
+<span class="c">-- Transaction A: lock wallet 1, then wallet 2</span>
+<span class="c">-- Transaction B: lock wallet 2, then wallet 1 → DEADLOCK!</span>
+
+<span class="c">-- ✅ CORRECT — সবসময় smaller ID আগে lock করো</span>
+<span class="c">-- Application-এ sort করো: MIN(from_id, to_id) আগে</span>
+
+<span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Always lock lower ID first (prevents circular wait)</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">balance</span> <span class="k">FROM</span> <span class="t">wallets</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="k">IN</span> (<span class="n">1</span><span class="op">,</span> <span class="n">2</span>)
+<span class="k">ORDER BY</span> <span class="col">id</span> <span class="k">ASC</span>  <span class="c">-- ← এটাই key! consistent ordering</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">500</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span>;
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">+</span> <span class="n">500</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">2</span>;
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+
+    <h4>Deadlock হলে কী করবো?</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">PHP — Deadlock Retry Pattern</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre>function transferWithRetry($from, $to, $amount, $maxRetries = 3) {
+    $attempt = 0;
+
+    while ($attempt < $maxRetries) {
+        try {
+            $pdo->beginTransaction();
+
+            // Lock in consistent order
+            $ids = [$from, $to];
+            sort($ids);
+
+            $stmt = $pdo->prepare("
+                SELECT id, balance FROM wallets
+                WHERE id IN (?, ?)
+                ORDER BY id ASC
+                FOR UPDATE
+            ");
+            $stmt->execute($ids);
+
+            // ... transfer logic ...
+
+            $pdo->commit();
+            return true;
+
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+
+            // 1213 = Deadlock, retry করো
+            if ($e->getCode() == 1213 && $attempt < $maxRetries - 1) {
+                $attempt++;
+                usleep(rand(10000, 50000)); // 10-50ms random wait
+                continue;
+            }
+            throw $e;
+        }
+    }
+}</pre>
+    </div>
+
+    <h4>Deadlock Log দেখো</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Deadlock Diagnosis</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- সর্বশেষ deadlock-এর full detail</span>
+<span class="k">SHOW ENGINE INNODB STATUS</span>\G
+
+<span class="c">-- innodb_print_all_deadlocks = ON করলে সব log-এ যাবে</span>
+<span class="k">SET GLOBAL</span> <span class="col">innodb_print_all_deadlocks</span> <span class="op">=</span> <span class="n">1</span>;
+
+<span class="c">-- Active transactions দেখো</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">information_schema.INNODB_TRX</span>\G
+
+<span class="c">-- Lock waits দেখো</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">performance_schema.data_lock_waits</span>\G</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>Different order-এ multiple rows lock করা — সবচেয়ে common deadlock কারণ। Always consistent ID ordering রাখো।</li>
+      <li>Transaction-এ user interaction wait করা — lock long held → deadlock probability বাড়ে</li>
+      <li>Deadlock retry না করা — একটি legitimate operation silently fail হয়</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §10 ROW VS TABLE LOCK
+═══════════════════════════════════════════ -->
+<section class="sec" id="row-vs-table">
+  <div class="sec-head">
+    <span class="sec-num">10</span>
+    <h2>Row-Level vs Table-Level Locking</h2>
+  </div>
+
+  <div class="sub">
+    <h3>কখন row lock হয়, কখন table lock হয়?</h3>
+    <p>InnoDB row-level locking করে — শুধু যে row(s) access করছো সেগুলো lock হয়। কিন্তু কিছু conditions-এ পুরো table lock হতে পারে, যেটা catastrophic।</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Lock Type</th><th>কী lock হয়</th><th>Concurrency</th><th>কখন হয়</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--green)">Row Lock</strong></td>
+            <td>শুধু affected rows</td>
+            <td>High — অন্য rows free</td>
+            <td>Indexed WHERE clause, FOR UPDATE</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--yellow)">Gap Lock</strong></td>
+            <td>দুই row-এর মধ্যবর্তী gap</td>
+            <td>Medium</td>
+            <td>Range query, REPEATABLE READ</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--orange)">Next-Key Lock</strong></td>
+            <td>Row + preceding gap</td>
+            <td>Medium</td>
+            <td>InnoDB default range locking</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--red)">Table Lock</strong></td>
+            <td>পুরো table</td>
+            <td>Low — সব blocked</td>
+            <td>No index, full scan, DDL, MyISAM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Row Lock vs Table Lock (Index matters!)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- ✅ ROW LOCK — id is primary key (indexed)</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">products</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span> <span class="k">FOR UPDATE</span>;
+<span class="c">-- শুধু row id=42 locked. বাকি সব rows free.</span>
+
+<span class="c">-- ⚠️ TABLE LOCK RISK — non-indexed column</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">products</span> <span class="k">WHERE</span> <span class="col">name</span> <span class="op">=</span> <span class="s">'Widget'</span> <span class="k">FOR UPDATE</span>;
+<span class="c">-- 'name'-এ index না থাকলে: full table scan = table-level lock!</span>
+<span class="c">-- পুরো products table locked হবে, সব operations blocked!</span>
+
+<span class="c">-- Index আছে কিনা দেখো</span>
+<span class="k">EXPLAIN SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">products</span> <span class="k">WHERE</span> <span class="col">name</span> <span class="op">=</span> <span class="s">'Widget'</span> <span class="k">FOR UPDATE</span>\G
+<span class="c">-- type = 'ALL' মানে full scan = table lock risk</span>
+
+<span class="c">-- সমাধান: index যোগ করো</span>
+<span class="k">ALTER TABLE</span> <span class="t">products</span> <span class="k">ADD INDEX</span> <span class="t">idx_name</span> (<span class="col">name</span>);
+
+<span class="c">-- Explicit table lock (প্রয়োজনে)</span>
+<span class="k">LOCK TABLES</span> <span class="t">products</span> <span class="k">WRITE</span>;
+<span class="c">-- ... bulk operation ...</span>
+<span class="k">UNLOCK TABLES</span>;</pre>
+    </div>
+
+    <div class="box warn">
+      <div class="box-label">⚠️ LOCK TABLES vs InnoDB Transactions</div>
+      <p><code>LOCK TABLES</code> InnoDB transaction-এর সাথে mix করা dangerous। LOCK TABLES করলে current transaction implicit COMMIT হয়। Production-এ সাধারণত <code>SELECT FOR UPDATE</code> ব্যবহার করো।</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     §11 GET_LOCK
+═══════════════════════════════════════════ -->
+<section class="sec" id="get-lock">
+  <div class="sec-head">
+    <span class="sec-num">11</span>
+    <h2>GET_LOCK() এবং RELEASE_LOCK()</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Application-level Named Lock — যেকোনো resource lock করো</h3>
+    <p><code>GET_LOCK()</code> হলো MySQL-এর advisory lock system। এটি database row-এর সাথে সম্পর্কিত না — তুমি যেকোনো string দিয়ে একটি named lock তৈরি করতে পারো। এটি distributed locking-এর জন্য useful যেখানে multiple application server একটি shared resource access করছে।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — GET_LOCK / RELEASE_LOCK Syntax</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Lock নাও (timeout = 10 seconds)</span>
+<span class="c">-- Returns: 1 (got lock), 0 (timeout), NULL (error)</span>
+<span class="k">SELECT</span> <span class="f">GET_LOCK</span>(<span class="s">'payment_user_101'</span><span class="op">,</span> <span class="n">10</span>);
+
+<span class="c">-- Lock আছে কিনা check করো (non-blocking)</span>
+<span class="k">SELECT</span> <span class="f">IS_FREE_LOCK</span>(<span class="s">'payment_user_101'</span>);    <span class="c">-- 1=free, 0=locked</span>
+<span class="k">SELECT</span> <span class="f">IS_USED_LOCK</span>(<span class="s">'payment_user_101'</span>);   <span class="c">-- connection id বা NULL</span>
+
+<span class="c">-- Lock ছেড়ে দাও</span>
+<span class="k">SELECT</span> <span class="f">RELEASE_LOCK</span>(<span class="s">'payment_user_101'</span>);   <span class="c">-- 1=released, 0=not held</span>
+
+<span class="c">-- সব lock ছাড়ো</span>
+<span class="k">SELECT</span> <span class="f">RELEASE_ALL_LOCKS</span>();</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">💳 Real Scenario — User Payment Concurrency Control</div>
+      <div class="scenario-body">
+        <p>একই user-এর একসাথে দুটো payment request আসলে — পুরো payment flow lock করো। Wallet row-এ FOR UPDATE ছাড়াও GET_LOCK দিয়ে user-level lock নেওয়া যায়। এটি complex multi-table operation-এ useful।</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">PHP — GET_LOCK Pattern for Payment</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre>function processPayment($userId, $amount) {
+    $lockName = "payment_user_{$userId}";
+
+    // Lock নাও (10 second timeout)
+    $result = $pdo->query("SELECT GET_LOCK('{$lockName}', 10)")->fetchColumn();
+
+    if ($result != 1) {
+        throw new Exception("Could not acquire payment lock. Please try again.");
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Check balance
+        $balance = $pdo->query("SELECT balance FROM wallets WHERE user_id = {$userId} FOR UPDATE")
+                       ->fetchColumn();
+
+        if ($balance < $amount) {
+            throw new Exception("Insufficient balance");
+        }
+
+        // Debit
+        $pdo->exec("UPDATE wallets SET balance = balance - {$amount} WHERE user_id = {$userId}");
+
+        // Log transaction
+        $pdo->exec("INSERT INTO transactions (user_id, amount, type) VALUES ({$userId}, {$amount}, 'debit')");
+
+        $pdo->commit();
+        return true;
+
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        throw $e;
+    } finally {
+        // Always release the lock!
+        $pdo->query("SELECT RELEASE_LOCK('{$lockName}')");
+    }
+}</pre>
+    </div>
+
+    <div class="box info">
+      <div class="box-label">📌 GET_LOCK-এর সীমাবদ্ধতা</div>
+      <p>GET_LOCK connection-specific। Connection বন্ধ হলে lock automatically release হয়। Connection pool-এ সাবধান — একই connection reuse হলে পুরনো lock থাকতে পারে। Production-এ Redis-based distributed lock (RedLock) অনেক সময় ভালো।</p>
+    </div>
+
+    <ul class="err-list">
+      <li>GET_LOCK করে RELEASE_LOCK না করা — সেই connection যতক্ষণ open, lock held। Next request same connection পেলে conflict।</li>
+      <li>Lock name collision — "user_1" কি user_id=1 নাকি product_id=1? Prefix দাও: "payment:user:101"</li>
+      <li>Timeout=0 (no wait) — busy system-এ প্রায়ই fail করবে। Meaningful timeout দাও।</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §12 INSERT ON DUPLICATE KEY UPDATE
+═══════════════════════════════════════════ -->
+<section class="sec" id="on-dup">
+  <div class="sec-head">
+    <span class="sec-num">12</span>
+    <h2>INSERT … ON DUPLICATE KEY UPDATE</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Upsert — Insert অথবা Update, একটি query-তে</h3>
+    <p><code>INSERT ... ON DUPLICATE KEY UPDATE</code> হলো atomic upsert operation। Primary key বা UNIQUE key conflict হলে INSERT এর বদলে UPDATE চালায়। Separate SELECT + INSERT/UPDATE করার দরকার নেই, race condition নেই।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — ON DUPLICATE KEY UPDATE Syntax</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Table structure</span>
+<span class="k">CREATE TABLE</span> <span class="t">product_views</span> (
+  <span class="col">product_id</span>  <span class="k">INT NOT NULL</span><span class="op">,</span>
+  <span class="col">user_id</span>     <span class="k">INT NOT NULL</span><span class="op">,</span>
+  <span class="col">view_count</span>  <span class="k">INT DEFAULT</span> <span class="n">1</span><span class="op">,</span>
+  <span class="col">last_viewed</span> <span class="k">DATETIME DEFAULT</span> <span class="f">NOW</span>()<span class="op">,</span>
+  <span class="k">PRIMARY KEY</span> (<span class="col">product_id</span><span class="op">,</span> <span class="col">user_id</span>)
+);
+
+<span class="c">-- Upsert: নতুন হলে insert, আগে থেকে থাকলে update</span>
+<span class="k">INSERT INTO</span> <span class="t">product_views</span> (<span class="col">product_id</span><span class="op">,</span> <span class="col">user_id</span><span class="op">,</span> <span class="col">view_count</span><span class="op">,</span> <span class="col">last_viewed</span>)
+<span class="k">VALUES</span> (<span class="n">42</span><span class="op">,</span> <span class="n">101</span><span class="op">,</span> <span class="n">1</span><span class="op">,</span> <span class="f">NOW</span>())
+<span class="k">ON DUPLICATE KEY UPDATE</span>
+  <span class="col">view_count</span>  <span class="op">=</span> <span class="col">view_count</span> <span class="op">+</span> <span class="n">1</span><span class="op">,</span>
+  <span class="col">last_viewed</span> <span class="op">=</span> <span class="f">NOW</span>();
+
+<span class="c">-- VALUES() function দিয়ে insert value reference করো</span>
+<span class="k">INSERT INTO</span> <span class="t">inventory</span> (<span class="col">product_id</span><span class="op">,</span> <span class="col">stock</span>)
+<span class="k">VALUES</span> (<span class="n">42</span><span class="op">,</span> <span class="n">100</span>)
+<span class="k">ON DUPLICATE KEY UPDATE</span>
+  <span class="col">stock</span> <span class="op">=</span> <span class="col">stock</span> <span class="op">+</span> <span class="f">VALUES</span>(<span class="col">stock</span>);</pre>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-head">📊 Real Scenario — Counter / Stats Table</div>
+      <div class="scenario-body">
+        <p>High-traffic site-এ page view count track করা। SELECT → if exists UPDATE else INSERT করলে race condition। ON DUPLICATE KEY UPDATE একটি atomic operation — race-free, fast, simple।</p>
+      </div>
+    </div>
+
+    <h4>Inventory Stock Adjustment</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Inventory Upsert Pattern</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Warehouse থেকে stock receive করা — upsert pattern</span>
+<span class="k">INSERT INTO</span> <span class="t">inventory</span> (<span class="col">product_id</span><span class="op">,</span> <span class="col">warehouse_id</span><span class="op">,</span> <span class="col">quantity</span><span class="op">,</span> <span class="col">last_updated</span>)
+<span class="k">VALUES</span>
+  (<span class="n">101</span><span class="op">,</span> <span class="n">1</span><span class="op">,</span> <span class="n">50</span><span class="op">,</span> <span class="f">NOW</span>())<span class="op">,</span>
+  (<span class="n">102</span><span class="op">,</span> <span class="n">1</span><span class="op">,</span> <span class="n">30</span><span class="op">,</span> <span class="f">NOW</span>())<span class="op">,</span>
+  (<span class="n">103</span><span class="op">,</span> <span class="n">1</span><span class="op">,</span> <span class="n">100</span><span class="op">,</span> <span class="f">NOW</span>())
+<span class="k">ON DUPLICATE KEY UPDATE</span>
+  <span class="col">quantity</span>     <span class="op">=</span> <span class="col">quantity</span> <span class="op">+</span> <span class="f">VALUES</span>(<span class="col">quantity</span>)<span class="op">,</span>
+  <span class="col">last_updated</span> <span class="op">=</span> <span class="f">VALUES</span>(<span class="col">last_updated</span>);
+
+<span class="c">-- MySQL 8.0.19+ এ cleaner syntax:</span>
+<span class="k">INSERT INTO</span> <span class="t">inventory</span> (<span class="col">product_id</span><span class="op">,</span> <span class="col">quantity</span>)
+<span class="k">VALUES</span> (<span class="n">101</span><span class="op">,</span> <span class="n">50</span>) <span class="k">AS</span> new
+<span class="k">ON DUPLICATE KEY UPDATE</span>
+  <span class="col">quantity</span> <span class="op">=</span> <span class="t">inventory</span><span class="op">.</span><span class="col">quantity</span> <span class="op">+</span> new<span class="op">.</span><span class="col">quantity</span>;</pre>
+    </div>
+
+    <ul class="err-list">
+      <li>UNIQUE key ছাড়া ON DUPLICATE KEY UPDATE — কখনো trigger হবে না, সবসময় insert হবে</li>
+      <li>Multiple unique keys — যেকোনো একটিতে conflict হলে UPDATE trigger হয়, unexpected behavior</li>
+      <li>AUTO_INCREMENT counter-এ — ON DUPLICATE KEY UPDATE হলেও auto_increment বাড়তে থাকে, gaps তৈরি হয়</li>
+    </ul>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     REAL SYSTEMS
+═══════════════════════════════════════════ -->
+<section class="sec" id="payment">
+  <div class="sec-head">
+    <span class="sec-num">13</span>
+    <h2>Real System: Payment Processing</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Production Payment System — Complete Architecture</h3>
+    <p>Payment system হলো database concurrency-র সবচেয়ে critical use case। এখানে ভুল মানে সরাসরি আর্থিক ক্ষতি।</p>
+
+    <div class="arch">
+┌─────────────────────────────────────────────────┐
+│              PAYMENT FLOW DIAGRAM                │
+├─────────────────────────────────────────────────┤
+│  API Request → Idempotency Check → Lock Wallet  │
+│       ↓              ↓                  ↓       │
+│   Validate      Already done?      FOR UPDATE   │
+│   Amount        Return cached      on wallet    │
+│       ↓         response           row          │
+│   Check                                ↓        │
+│   Balance → Insufficient? → ROLLBACK + Error    │
+│       ↓                                         │
+│   Debit + Credit + Log → COMMIT → Response      │
+└─────────────────────────────────────────────────┘
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Payment Tables Schema</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">CREATE TABLE</span> <span class="t">wallets</span> (
+  <span class="col">id</span>           <span class="k">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">user_id</span>      <span class="k">BIGINT UNSIGNED NOT NULL UNIQUE</span><span class="op">,</span>
+  <span class="col">balance</span>      <span class="k">DECIMAL</span>(<span class="n">15</span><span class="op">,</span><span class="n">2</span>) <span class="k">NOT NULL DEFAULT</span> <span class="n">0.00</span><span class="op">,</span>
+  <span class="col">version</span>      <span class="k">INT NOT NULL DEFAULT</span> <span class="n">0</span><span class="op">,</span>  <span class="c">-- optimistic locking</span>
+  <span class="col">updated_at</span>   <span class="k">DATETIME ON UPDATE</span> <span class="f">NOW</span>()<span class="op">,</span>
+  <span class="k">CONSTRAINT</span> chk_balance <span class="k">CHECK</span> (<span class="col">balance</span> <span class="op">>=</span> <span class="n">0</span>)
+) <span class="k">ENGINE</span><span class="op">=</span>InnoDB;
+
+<span class="k">CREATE TABLE</span> <span class="t">payments</span> (
+  <span class="col">id</span>              <span class="k">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">idempotency_key</span> <span class="k">VARCHAR</span>(<span class="n">64</span>) <span class="k">UNIQUE</span><span class="op">,</span>  <span class="c">-- duplicate prevention</span>
+  <span class="col">from_user_id</span>    <span class="k">BIGINT UNSIGNED NOT NULL</span><span class="op">,</span>
+  <span class="col">to_user_id</span>      <span class="k">BIGINT UNSIGNED NOT NULL</span><span class="op">,</span>
+  <span class="col">amount</span>          <span class="k">DECIMAL</span>(<span class="n">15</span><span class="op">,</span><span class="n">2</span>) <span class="k">NOT NULL</span><span class="op">,</span>
+  <span class="col">status</span>          <span class="k">ENUM</span>(<span class="s">'pending'</span><span class="op">,</span><span class="s">'completed'</span><span class="op">,</span><span class="s">'failed'</span>) <span class="k">DEFAULT</span> <span class="s">'pending'</span><span class="op">,</span>
+  <span class="col">created_at</span>      <span class="k">DATETIME DEFAULT</span> <span class="f">NOW</span>()
+);
+
+<span class="k">CREATE TABLE</span> <span class="t">wallet_ledger</span> (
+  <span class="col">id</span>         <span class="k">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">wallet_id</span>  <span class="k">BIGINT UNSIGNED NOT NULL</span><span class="op">,</span>
+  <span class="col">payment_id</span> <span class="k">BIGINT UNSIGNED NOT NULL</span><span class="op">,</span>
+  <span class="col">type</span>       <span class="k">ENUM</span>(<span class="s">'debit'</span><span class="op">,</span><span class="s">'credit'</span>) <span class="k">NOT NULL</span><span class="op">,</span>
+  <span class="col">amount</span>     <span class="k">DECIMAL</span>(<span class="n">15</span><span class="op">,</span><span class="n">2</span>) <span class="k">NOT NULL</span><span class="op">,</span>
+  <span class="col">balance</span>    <span class="k">DECIMAL</span>(<span class="n">15</span><span class="op">,</span><span class="n">2</span>) <span class="k">NOT NULL</span><span class="op">,</span>  <span class="c">-- snapshot after txn</span>
+  <span class="col">created_at</span> <span class="k">DATETIME DEFAULT</span> <span class="f">NOW</span>()
+);</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Complete Payment Transaction</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Step 1: Idempotency check (duplicate payment prevention)</span>
+<span class="k">INSERT INTO</span> <span class="t">payments</span> (<span class="col">idempotency_key</span><span class="op">,</span> <span class="col">from_user_id</span><span class="op">,</span> <span class="col">to_user_id</span><span class="op">,</span> <span class="col">amount</span>)
+<span class="k">VALUES</span> (<span class="s">'txn_abc123'</span><span class="op">,</span> <span class="n">1</span><span class="op">,</span> <span class="n">2</span><span class="op">,</span> <span class="n">500.00</span>)
+<span class="k">ON DUPLICATE KEY UPDATE</span> <span class="col">id</span> <span class="op">=</span> <span class="col">id</span>;  <span class="c">-- no-op on duplicate</span>
+<span class="c">-- ROW_COUNT() = 2 means new, 0 means duplicate → return cached result</span>
+
+<span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Step 2: Lock both wallets (lower ID first to prevent deadlock)</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">user_id</span><span class="op">,</span> <span class="col">balance</span>
+<span class="k">FROM</span> <span class="t">wallets</span>
+<span class="k">WHERE</span> <span class="col">user_id</span> <span class="k">IN</span> (<span class="n">1</span><span class="op">,</span> <span class="n">2</span>)
+<span class="k">ORDER BY</span> <span class="col">id</span> <span class="k">ASC</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="c">-- Step 3: Validate balance (application-side check)</span>
+<span class="c">-- IF sender_balance < 500 THEN ROLLBACK; END IF;</span>
+
+<span class="c">-- Step 4: Atomic debit + credit</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">500.00</span>
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">1</span> <span class="k">AND</span> <span class="col">balance</span> <span class="op">>=</span> <span class="n">500.00</span>;
+
+<span class="k">UPDATE</span> <span class="t">wallets</span>
+  <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">+</span> <span class="n">500.00</span>
+  <span class="k">WHERE</span> <span class="col">user_id</span> <span class="op">=</span> <span class="n">2</span>;
+
+<span class="c">-- Step 5: Ledger entries</span>
+<span class="k">INSERT INTO</span> <span class="t">wallet_ledger</span> (<span class="col">wallet_id</span><span class="op">,</span> <span class="col">payment_id</span><span class="op">,</span> <span class="col">type</span><span class="op">,</span> <span class="col">amount</span><span class="op">,</span> <span class="col">balance</span>)
+<span class="k">VALUES</span>
+  (<span class="n">1</span><span class="op">,</span> <span class="op">@payment_id</span><span class="op">,</span> <span class="s">'debit'</span><span class="op">,</span>  <span class="n">500.00</span><span class="op">,</span> <span class="op">@sender_new_balance</span>)<span class="op">,</span>
+  (<span class="n">2</span><span class="op">,</span> <span class="op">@payment_id</span><span class="op">,</span> <span class="s">'credit'</span><span class="op">,</span> <span class="n">500.00</span><span class="op">,</span> <span class="op">@receiver_new_balance</span>);
+
+<span class="c">-- Step 6: Update payment status</span>
+<span class="k">UPDATE</span> <span class="t">payments</span> <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'completed'</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">@payment_id</span>;
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- INVENTORY -->
+<section class="sec" id="inventory">
+  <div class="sec-head">
+    <span class="sec-num">14</span>
+    <h2>Real System: Inventory Management</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Stock Overselling Prevention</h3>
+    <p>E-commerce-এর সবচেয়ে বড় nightmare হলো overselling — ১০টি stock আছে কিন্তু ১৫টি order নিয়ে নেওয়া। Proper locking ছাড়া এটা সহজেই হয়।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Safe Stock Deduction</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">START TRANSACTION</span>;
+
+<span class="c">-- Lock the product row first</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">name</span><span class="op">,</span> <span class="col">stock</span><span class="op">,</span> <span class="col">reserved</span>
+<span class="k">FROM</span> <span class="t">products</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="c">-- Application: available = stock - reserved</span>
+<span class="c">-- IF available < order_qty THEN ROLLBACK; END IF;</span>
+
+<span class="c">-- Atomic stock deduction (double safety with WHERE clause)</span>
+<span class="k">UPDATE</span> <span class="t">products</span>
+  <span class="k">SET</span>
+    <span class="col">stock</span>    <span class="op">=</span> <span class="col">stock</span> <span class="op">-</span> <span class="n">2</span><span class="op">,</span>
+    <span class="col">sold</span>     <span class="op">=</span> <span class="col">sold</span> <span class="op">+</span> <span class="n">2</span>
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span>
+    <span class="k">AND</span> <span class="col">stock</span> <span class="op">>=</span> <span class="n">2</span>;  <span class="c">-- guard: sufficient stock</span>
+
+<span class="c">-- ROW_COUNT() = 0 মানে stock কমে গেছে, order fail</span>
+<span class="k">SELECT</span> <span class="f">ROW_COUNT</span>() <span class="k">INTO</span> @affected;
+<span class="c">-- IF @affected = 0 THEN ROLLBACK; SIGNAL "Out of stock"; END IF;</span>
+
+<span class="c">-- Order create করো</span>
+<span class="k">INSERT INTO</span> <span class="t">orders</span> (<span class="col">user_id</span><span class="op">,</span> <span class="col">product_id</span><span class="op">,</span> <span class="col">qty</span><span class="op">,</span> <span class="col">status</span>)
+<span class="k">VALUES</span> (<span class="n">101</span><span class="op">,</span> <span class="n">42</span><span class="op">,</span> <span class="n">2</span><span class="op">,</span> <span class="s">'confirmed'</span>);
+
+<span class="k">COMMIT</span>;
+
+<span class="c">-- ══ OPTIMISTIC LOCKING Alternative ══</span>
+<span class="c">-- Version-based, no explicit lock, retry on conflict</span>
+<span class="k">UPDATE</span> <span class="t">products</span>
+  <span class="k">SET</span>
+    <span class="col">stock</span>   <span class="op">=</span> <span class="col">stock</span> <span class="op">-</span> <span class="n">2</span><span class="op">,</span>
+    <span class="col">version</span> <span class="op">=</span> <span class="col">version</span> <span class="op">+</span> <span class="n">1</span>
+  <span class="k">WHERE</span> <span class="col">id</span>      <span class="op">=</span> <span class="n">42</span>
+    <span class="k">AND</span> <span class="col">version</span> <span class="op">=</span> <span class="n">7</span>    <span class="c">-- previously read version</span>
+    <span class="k">AND</span> <span class="col">stock</span>   <span class="op">>=</span> <span class="n">2</span>;
+<span class="c">-- ROW_COUNT() = 0: someone else updated → retry</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- JOB QUEUE -->
+<section class="sec" id="job-queue">
+  <div class="sec-head">
+    <span class="sec-num">15</span>
+    <h2>Real System: Job Queue Workers</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Database-backed Job Queue — Multi-Worker Safe</h3>
+    <p>Laravel Queue, Sidekiq-style database job queue নিজে implement করতে পারো SKIP LOCKED দিয়ে।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Distributed Job Queue (SKIP LOCKED)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Worker process: একটি job claim করো</span>
+<span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">type</span><span class="op">,</span> <span class="col">payload</span><span class="op">,</span> <span class="col">attempts</span>
+<span class="k">FROM</span> <span class="t">jobs</span>
+<span class="k">WHERE</span> <span class="col">queue</span>     <span class="op">=</span> <span class="s">'default'</span>
+  <span class="k">AND</span> <span class="col">status</span>    <span class="op">=</span> <span class="s">'pending'</span>
+  <span class="k">AND</span> <span class="col">run_at</span>    <span class="op"><=</span> <span class="f">NOW</span>()
+  <span class="k">AND</span> <span class="col">attempts</span>  <span class="op"><</span> <span class="col">max_attempts</span>
+<span class="k">ORDER BY</span> <span class="col">priority</span> <span class="k">DESC</span><span class="op">,</span> <span class="col">run_at</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="n">1</span>
+<span class="k">FOR UPDATE SKIP LOCKED</span>;
+
+<span class="c">-- Job পেলে: claim করো</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span>
+    <span class="col">status</span>       <span class="op">=</span> <span class="s">'processing'</span><span class="op">,</span>
+    <span class="col">attempts</span>     <span class="op">=</span> <span class="col">attempts</span> <span class="op">+</span> <span class="n">1</span><span class="op">,</span>
+    <span class="col">started_at</span>   <span class="op">=</span> <span class="f">NOW</span>()<span class="op">,</span>
+    <span class="col">worker_id</span>    <span class="op">=</span> <span class="op">@worker_id</span><span class="op">,</span>
+    <span class="col">reserved_until</span> <span class="op">=</span> <span class="f">DATE_ADD</span>(<span class="f">NOW</span>()<span class="op">,</span> <span class="k">INTERVAL</span> <span class="n">5</span> <span class="k">MINUTE</span>)
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">@job_id</span>;
+
+<span class="k">COMMIT</span>;
+
+<span class="c">-- Process করার পর: complete করো</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'completed'</span><span class="op">,</span> <span class="col">completed_at</span> <span class="op">=</span> <span class="f">NOW</span>()
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">@job_id</span>;
+
+<span class="c">-- Fail হলে: retry schedule করো</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span>
+    <span class="col">status</span>  <span class="op">=</span> <span class="k">IF</span>(<span class="col">attempts</span> <span class="op">>=</span> <span class="col">max_attempts</span><span class="op">,</span> <span class="s">'failed'</span><span class="op">,</span> <span class="s">'pending'</span>)<span class="op">,</span>
+    <span class="col">run_at</span>  <span class="op">=</span> <span class="f">DATE_ADD</span>(<span class="f">NOW</span>()<span class="op">,</span> <span class="k">INTERVAL</span> <span class="f">POW</span>(<span class="n">2</span><span class="op">,</span> <span class="col">attempts</span>) <span class="k">MINUTE</span>),  <span class="c">-- exponential backoff</span>
+    <span class="col">last_error</span> <span class="op">=</span> <span class="op">@error_message</span>
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="op">@job_id</span>;
+
+<span class="c">-- Stuck jobs recover (worker crashed, reserved_until expired)</span>
+<span class="k">UPDATE</span> <span class="t">jobs</span>
+  <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'pending'</span><span class="op">,</span> <span class="col">worker_id</span> <span class="op">=</span> <span class="k">NULL</span>
+  <span class="k">WHERE</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'processing'</span>
+    <span class="k">AND</span> <span class="col">reserved_until</span> <span class="op"><</span> <span class="f">NOW</span>();</pre>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section class="sec" id="booking">
+  <div class="sec-head">
+    <span class="sec-num">16</span>
+    <h2>Real System: Booking System</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Double Booking Prevention — Seat, Room, Slot</h3>
+    <p>Concert seat, hotel room, doctor appointment — এই সব booking system-এ double booking prevent করতে হয়।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Seat Booking with FOR UPDATE NOWAIT</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">CREATE TABLE</span> <span class="t">seats</span> (
+  <span class="col">id</span>          <span class="k">INT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">event_id</span>    <span class="k">INT NOT NULL</span><span class="op">,</span>
+  <span class="col">section</span>     <span class="k">VARCHAR</span>(<span class="n">10</span>)<span class="op">,</span>
+  <span class="col">row</span>         <span class="k">CHAR</span>(<span class="n">2</span>)<span class="op">,</span>
+  <span class="col">number</span>      <span class="k">INT</span><span class="op">,</span>
+  <span class="col">status</span>      <span class="k">ENUM</span>(<span class="s">'available'</span><span class="op">,</span><span class="s">'held'</span><span class="op">,</span><span class="s">'booked'</span>) <span class="k">DEFAULT</span> <span class="s">'available'</span><span class="op">,</span>
+  <span class="col">held_by</span>     <span class="k">INT NULL</span><span class="op">,</span>
+  <span class="col">held_until</span>  <span class="k">DATETIME NULL</span><span class="op">,</span>  <span class="c">-- temporary hold expires</span>
+  <span class="k">INDEX</span> (<span class="col">event_id</span><span class="op">,</span> <span class="col">status</span>)
+);
+
+<span class="c">-- User selects a seat → temporary hold (5 min to complete payment)</span>
+<span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">status</span>
+<span class="k">FROM</span> <span class="t">seats</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">55</span>
+  <span class="k">AND</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'available'</span>
+<span class="k">FOR UPDATE NOWAIT</span>;  <span class="c">-- fast fail if someone else is booking</span>
+
+<span class="c">-- Hold করো (payment করার আগে 5 মিনিট ধরে রাখো)</span>
+<span class="k">UPDATE</span> <span class="t">seats</span>
+  <span class="k">SET</span>
+    <span class="col">status</span>     <span class="op">=</span> <span class="s">'held'</span><span class="op">,</span>
+    <span class="col">held_by</span>    <span class="op">=</span> <span class="n">101</span><span class="op">,</span>  <span class="c">-- user_id</span>
+    <span class="col">held_until</span> <span class="op">=</span> <span class="f">DATE_ADD</span>(<span class="f">NOW</span>()<span class="op">,</span> <span class="k">INTERVAL</span> <span class="n">5</span> <span class="k">MINUTE</span>)
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">55</span>
+    <span class="k">AND</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'available'</span>;
+
+<span class="k">COMMIT</span>;
+
+<span class="c">-- Payment complete → confirm booking</span>
+<span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="col">id</span> <span class="k">FROM</span> <span class="t">seats</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">55</span>
+  <span class="k">AND</span> <span class="col">status</span>     <span class="op">=</span> <span class="s">'held'</span>
+  <span class="k">AND</span> <span class="col">held_by</span>    <span class="op">=</span> <span class="n">101</span>
+  <span class="k">AND</span> <span class="col">held_until</span> <span class="op">></span> <span class="f">NOW</span>()
+<span class="k">FOR UPDATE</span>;
+
+<span class="k">UPDATE</span> <span class="t">seats</span>
+  <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'booked'</span><span class="op">,</span> <span class="col">held_until</span> <span class="op">=</span> <span class="k">NULL</span>
+  <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">55</span>;
+
+<span class="k">COMMIT</span>;
+
+<span class="c">-- Expired holds release (cron job বা event scheduler)</span>
+<span class="k">UPDATE</span> <span class="t">seats</span>
+  <span class="k">SET</span> <span class="col">status</span> <span class="op">=</span> <span class="s">'available'</span><span class="op">,</span> <span class="col">held_by</span> <span class="op">=</span> <span class="k">NULL</span><span class="op">,</span> <span class="col">held_until</span> <span class="op">=</span> <span class="k">NULL</span>
+  <span class="k">WHERE</span> <span class="col">status</span>     <span class="op">=</span> <span class="s">'held'</span>
+    <span class="k">AND</span> <span class="col">held_until</span> <span class="op"><</span> <span class="f">NOW</span>();</pre>
+    </div>
+  </div>
+</section>
+
+<!-- LEDGER -->
+<section class="sec" id="ledger">
+  <div class="sec-head">
+    <span class="sec-num">17</span>
+    <h2>Real System: Financial Ledger</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Double-Entry Accounting — Immutable Ledger</h3>
+    <p>Financial system-এ balance directly update না করে ledger entries দিয়ে balance calculate করা হয়। প্রতিটি transaction দুটো entry (debit + credit) — double-entry bookkeeping।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Append-Only Ledger Pattern</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="k">CREATE TABLE</span> <span class="t">ledger_entries</span> (
+  <span class="col">id</span>          <span class="k">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">account_id</span>  <span class="k">BIGINT UNSIGNED NOT NULL</span><span class="op">,</span>
+  <span class="col">txn_ref</span>     <span class="k">VARCHAR</span>(<span class="n">64</span>) <span class="k">NOT NULL</span><span class="op">,</span>  <span class="c">-- transaction reference</span>
+  <span class="col">entry_type</span>  <span class="k">ENUM</span>(<span class="s">'DEBIT'</span><span class="op">,</span><span class="s">'CREDIT'</span>) <span class="k">NOT NULL</span><span class="op">,</span>
+  <span class="col">amount</span>      <span class="k">DECIMAL</span>(<span class="n">18</span><span class="op">,</span><span class="n">4</span>) <span class="k">NOT NULL</span><span class="op">,</span>
+  <span class="col">currency</span>    <span class="k">CHAR</span>(<span class="n">3</span>) <span class="k">DEFAULT</span> <span class="s">'BDT'</span><span class="op">,</span>
+  <span class="col">description</span> <span class="k">VARCHAR</span>(<span class="n">255</span>)<span class="op">,</span>
+  <span class="col">created_at</span>  <span class="k">DATETIME</span>(<span class="n">6</span>) <span class="k">DEFAULT</span> <span class="f">NOW</span>(<span class="n">6</span>),  <span class="c">-- microsecond precision</span>
+  <span class="k">INDEX</span> (<span class="col">account_id</span><span class="op">,</span> <span class="col">created_at</span>),
+  <span class="k">INDEX</span> (<span class="col">txn_ref</span>)
+  <span class="c">-- No UPDATE, No DELETE — append-only!</span>
+) <span class="k">ENGINE</span><span class="op">=</span>InnoDB;
+
+<span class="c">-- Balance = SUM(CREDIT) - SUM(DEBIT)</span>
+<span class="k">SELECT</span>
+  <span class="col">account_id</span><span class="op">,</span>
+  <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="col">entry_type</span> <span class="op">=</span> <span class="s">'CREDIT'</span> <span class="k">THEN</span> <span class="col">amount</span> <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>)
+  <span class="op">-</span>
+  <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="col">entry_type</span> <span class="op">=</span> <span class="s">'DEBIT'</span> <span class="k">THEN</span> <span class="col">amount</span> <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>)
+  <span class="k">AS</span> <span class="col">balance</span>
+<span class="k">FROM</span> <span class="t">ledger_entries</span>
+<span class="k">WHERE</span> <span class="col">account_id</span> <span class="op">=</span> <span class="n">101</span>;
+
+<span class="c">-- Performance: materialized balance cache (separate table)</span>
+<span class="k">CREATE TABLE</span> <span class="t">account_balances</span> (
+  <span class="col">account_id</span>  <span class="k">BIGINT UNSIGNED PRIMARY KEY</span><span class="op">,</span>
+  <span class="col">balance</span>     <span class="k">DECIMAL</span>(<span class="n">18</span><span class="op">,</span><span class="n">4</span>) <span class="k">NOT NULL DEFAULT</span> <span class="n">0</span><span class="op">,</span>
+  <span class="col">last_entry_id</span> <span class="k">BIGINT UNSIGNED</span><span class="op">,</span>  <span class="c">-- sync pointer</span>
+  <span class="col">updated_at</span>  <span class="k">DATETIME</span>(<span class="n">6</span>)
+);
+
+<span class="c">-- Insert ledger entry + update balance cache atomically</span>
+<span class="k">START TRANSACTION</span>;
+
+<span class="k">SELECT</span> <span class="col">balance</span> <span class="k">FROM</span> <span class="t">account_balances</span>
+<span class="k">WHERE</span> <span class="col">account_id</span> <span class="op">=</span> <span class="n">101</span>
+<span class="k">FOR UPDATE</span>;
+
+<span class="c">-- Validate sufficient balance for debit...</span>
+
+<span class="k">INSERT INTO</span> <span class="t">ledger_entries</span> (<span class="col">account_id</span><span class="op">,</span> <span class="col">txn_ref</span><span class="op">,</span> <span class="col">entry_type</span><span class="op">,</span> <span class="col">amount</span><span class="op">,</span> <span class="col">description</span>)
+<span class="k">VALUES</span> (<span class="n">101</span><span class="op">,</span> <span class="s">'TXN-2024-001'</span><span class="op">,</span> <span class="s">'DEBIT'</span><span class="op">,</span> <span class="n">500.00</span><span class="op">,</span> <span class="s">'Payment to vendor'</span>);
+
+<span class="k">UPDATE</span> <span class="t">account_balances</span>
+  <span class="k">SET</span>
+    <span class="col">balance</span>       <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">500.00</span><span class="op">,</span>
+    <span class="col">last_entry_id</span> <span class="op">=</span> <span class="f">LAST_INSERT_ID</span>()<span class="op">,</span>
+    <span class="col">updated_at</span>    <span class="op">=</span> <span class="f">NOW</span>(<span class="n">6</span>)
+  <span class="k">WHERE</span> <span class="col">account_id</span> <span class="op">=</span> <span class="n">101</span>;
+
+<span class="k">COMMIT</span>;</pre>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════════════════════
+     §18 HIGH CONCURRENCY PATTERNS
+═══════════════════════════════════════════ -->
+<section class="sec" id="patterns">
+  <div class="sec-head">
+    <span class="sec-num">18</span>
+    <h2>High-Concurrency Database Design Patterns</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Optimistic vs Pessimistic Locking — কোনটা কখন?</h3>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>কিভাবে কাজ করে</th>
+            <th>ব্যবহার করো যখন</th>
+            <th>Avoid করো যখন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--red)">Pessimistic Lock</strong></td>
+            <td>আগে lock নাও, তারপর কাজ করো (<code>FOR UPDATE</code>)</td>
+            <td>Conflict likely, financial transactions</td>
+            <td>Low contention, read-heavy</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--green)">Optimistic Lock</strong></td>
+            <td>Version check দিয়ে update করো, fail হলে retry</td>
+            <td>Low contention, read-heavy scenarios</td>
+            <td>High conflict, cannot afford retries</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--cyan)">Compare and Swap</strong></td>
+            <td>WHERE clause-এ old value check করো</td>
+            <td>Simple counter update</td>
+            <td>Complex multi-step operations</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Optimistic Locking with Version</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- ১. Read with version</span>
+<span class="k">SELECT</span> <span class="col">id</span><span class="op">,</span> <span class="col">stock</span><span class="op">,</span> <span class="col">version</span>
+<span class="k">FROM</span> <span class="t">products</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">42</span>;
+<span class="c">-- Returns: stock=50, version=3</span>
+
+<span class="c">-- ২. Update with version check (no explicit lock needed)</span>
+<span class="k">UPDATE</span> <span class="t">products</span>
+  <span class="k">SET</span>
+    <span class="col">stock</span>   <span class="op">=</span> <span class="col">stock</span> <span class="op">-</span> <span class="n">5</span><span class="op">,</span>
+    <span class="col">version</span> <span class="op">=</span> <span class="col">version</span> <span class="op">+</span> <span class="n">1</span>
+  <span class="k">WHERE</span> <span class="col">id</span>      <span class="op">=</span> <span class="n">42</span>
+    <span class="k">AND</span> <span class="col">version</span> <span class="op">=</span> <span class="n">3</span>     <span class="c">-- stale check</span>
+    <span class="k">AND</span> <span class="col">stock</span>   <span class="op">>=</span> <span class="n">5</span>;
+
+<span class="c">-- ROW_COUNT() = 0 মানে:</span>
+<span class="c">-- অন্য কেউ আগে update করেছে → re-read করো, retry করো</span>
+
+<span class="c">-- ══ Counter Pattern (no lock needed) ══</span>
+<span class="c">-- Atomic increment — race condition-safe without transaction</span>
+<span class="k">UPDATE</span> <span class="t">counters</span>
+  <span class="k">SET</span> <span class="col">value</span> <span class="op">=</span> <span class="col">value</span> <span class="op">+</span> <span class="n">1</span>
+  <span class="k">WHERE</span> <span class="col">name</span> <span class="op">=</span> <span class="s">'daily_signups'</span>;
+<span class="c">-- MySQL UPDATE is atomic at row level</span></pre>
+    </div>
+
+    <h4>Partitioning by User ID — Hot Spot Prevention</h4>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Sharded Counter (High Write Throughput)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- Problem: একটি row-এ লাখ লাখ concurrent update → hot spot</span>
+<span class="c">-- Solution: multiple "slot" rows, random slot update করো</span>
+<span class="k">CREATE TABLE</span> <span class="t">distributed_counters</span> (
+  <span class="col">name</span>   <span class="k">VARCHAR</span>(<span class="n">50</span>)<span class="op">,</span>
+  <span class="col">slot</span>   <span class="k">TINYINT</span><span class="op">,</span>            <span class="c">-- 0-9, 10 slots</span>
+  <span class="col">count</span>  <span class="k">BIGINT DEFAULT</span> <span class="n">0</span><span class="op">,</span>
+  <span class="k">PRIMARY KEY</span> (<span class="col">name</span><span class="op">,</span> <span class="col">slot</span>)
+);
+
+<span class="c">-- Write: random slot-এ increment করো</span>
+<span class="c">-- Application: slot = rand(0,9)</span>
+<span class="k">INSERT INTO</span> <span class="t">distributed_counters</span> (<span class="col">name</span><span class="op">,</span> <span class="col">slot</span><span class="op">,</span> <span class="col">count</span>)
+<span class="k">VALUES</span> (<span class="s">'page_views'</span><span class="op">,</span> <span class="n">3</span><span class="op">,</span> <span class="n">1</span>)
+<span class="k">ON DUPLICATE KEY UPDATE</span> <span class="col">count</span> <span class="op">=</span> <span class="col">count</span> <span class="op">+</span> <span class="n">1</span>;
+
+<span class="c">-- Read: সব slots sum করো</span>
+<span class="k">SELECT</span> <span class="f">SUM</span>(<span class="col">count</span>) <span class="k">AS</span> <span class="col">total</span>
+<span class="k">FROM</span> <span class="t">distributed_counters</span>
+<span class="k">WHERE</span> <span class="col">name</span> <span class="op">=</span> <span class="s">'page_views'</span>;
+<span class="c">-- 10x throughput improvement!</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §19 BEST PRACTICES
+═══════════════════════════════════════════ -->
+<section class="sec" id="best">
+  <div class="sec-head">
+    <span class="sec-num">19</span>
+    <h2>Best Practices</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Production-tested নিয়ম</h3>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Transaction Best Practices Cheatsheet</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">══════════════════════════════════════════════════
+  TRANSACTION BEST PRACTICES
+══════════════════════════════════════════════════</span>
+
+<span class="c">-- ✅ 1. Transaction ছোট রাখো (short transactions)</span>
+<span class="c">--    Lock held time minimize করো</span>
+<span class="k">START TRANSACTION</span>;
+  <span class="c">-- শুধু critical DB operations এখানে</span>
+  <span class="c">-- No API calls, no file IO, no sleep()</span>
+<span class="k">COMMIT</span>;
+
+<span class="c">-- ✅ 2. Index নিশ্চিত করো FOR UPDATE-এর আগে</span>
+<span class="k">EXPLAIN</span> <span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">t</span> <span class="k">WHERE</span> <span class="col">col</span> <span class="op">=</span> <span class="n">1</span> <span class="k">FOR UPDATE</span>\G
+<span class="c">-- type=ref বা eq_ref দেখলে okay, ALL দেখলে বিপদ</span>
+
+<span class="c">-- ✅ 3. Lock ordering consistent রাখো</span>
+<span class="c">--    সবসময় lowest ID আগে lock করো</span>
+<span class="k">WHERE</span> <span class="col">id</span> <span class="k">IN</span> (<span class="op">:id1</span><span class="op">,</span> <span class="op">:id2</span>) <span class="k">ORDER BY</span> <span class="col">id</span> <span class="k">ASC</span> <span class="k">FOR UPDATE</span>
+
+<span class="c">-- ✅ 4. Lock timeout set করো</span>
+<span class="k">SET</span> <span class="col">innodb_lock_wait_timeout</span> <span class="op">=</span> <span class="n">5</span>;  <span class="c">-- 5 sec, default 50</span>
+
+<span class="c">-- ✅ 5. Deadlock retry implement করো</span>
+<span class="c">--    ERROR 1213 হলে 2-3 বার retry করো</span>
+
+<span class="c">-- ✅ 6. Read-only query-তে lock নিও না</span>
+<span class="c">--    Analytics: SET TRANSACTION ISOLATION LEVEL READ COMMITTED;</span>
+
+<span class="c">-- ✅ 7. Idempotency key ব্যবহার করো payment-এ</span>
+<span class="c">--    Duplicate payment prevent করো</span>
+
+<span class="c">-- ✅ 8. ROW_COUNT() check করো critical updates-এর পর</span>
+<span class="k">UPDATE</span> <span class="t">wallets</span> <span class="k">SET</span> <span class="col">balance</span> <span class="op">=</span> <span class="col">balance</span> <span class="op">-</span> <span class="n">100</span> <span class="k">WHERE</span> <span class="col">id</span> <span class="op">=</span> <span class="n">1</span> <span class="k">AND</span> <span class="col">balance</span> <span class="op">>=</span> <span class="n">100</span>;
+<span class="k">SELECT</span> <span class="f">ROW_COUNT</span>();  <span class="c">-- 0 হলে rollback</span>
+
+<span class="c">-- ✅ 9. Job queue-এ reserved_until column রাখো</span>
+<span class="c">--    Worker crash হলে job stuck হবে না</span>
+
+<span class="c">-- ✅ 10. Monitoring: slow transaction alert করো</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">information_schema.INNODB_TRX</span>
+<span class="k">WHERE</span> <span class="f">TIMESTAMPDIFF</span>(<span class="k">SECOND</span><span class="op">,</span> <span class="col">trx_started</span><span class="op">,</span> <span class="f">NOW</span>()) <span class="op">></span> <span class="n">10</span>;</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Scenario</th><th>Recommended Pattern</th><th>Isolation Level</th></tr></thead>
+        <tbody>
+          <tr><td>Payment / Fund transfer</td><td>FOR UPDATE + consistent lock order</td><td>REPEATABLE READ</td></tr>
+          <tr><td>Inventory deduction</td><td>FOR UPDATE + WHERE stock >= qty</td><td>REPEATABLE READ</td></tr>
+          <tr><td>Job queue worker</td><td>FOR UPDATE SKIP LOCKED</td><td>READ COMMITTED</td></tr>
+          <tr><td>Seat/room booking</td><td>FOR UPDATE NOWAIT + hold pattern</td><td>REPEATABLE READ</td></tr>
+          <tr><td>View counter / stats</td><td>ON DUPLICATE KEY UPDATE (atomic)</td><td>autocommit</td></tr>
+          <tr><td>Report generation</td><td>READ COMMITTED, read replica</td><td>READ COMMITTED</td></tr>
+          <tr><td>Distributed lock</td><td>GET_LOCK() বা Redis RedLock</td><td>N/A</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     §20 PRODUCTION ISSUES
+═══════════════════════════════════════════ -->
+<section class="sec" id="prod">
+  <div class="sec-head">
+    <span class="sec-num">20</span>
+    <h2>Common Production Issues</h2>
+  </div>
+
+  <div class="sub">
+    <h3>Real production-এ যেসব সমস্যা হয়</h3>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Diagnosing & Fixing Production Lock Issues</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">════════════════════════════════════════════════
+  DIAGNOSIS QUERIES
+════════════════════════════════════════════════</span>
+
+<span class="c">-- ১. কোন transaction কতক্ষণ ধরে চলছে?</span>
+<span class="k">SELECT</span>
+  <span class="col">trx_id</span><span class="op">,</span>
+  <span class="col">trx_state</span><span class="op">,</span>
+  <span class="col">trx_started</span><span class="op">,</span>
+  <span class="f">TIMESTAMPDIFF</span>(<span class="k">SECOND</span><span class="op">,</span> <span class="col">trx_started</span><span class="op">,</span> <span class="f">NOW</span>()) <span class="k">AS</span> seconds_running<span class="op">,</span>
+  <span class="col">trx_query</span>
+<span class="k">FROM</span> <span class="t">information_schema.INNODB_TRX</span>
+<span class="k">ORDER BY</span> <span class="col">trx_started</span> <span class="k">ASC</span>;
+
+<span class="c">-- ২. Lock wait chain দেখো</span>
+<span class="k">SELECT</span>
+  r<span class="op">.</span><span class="col">trx_id</span> waiting_trx_id<span class="op">,</span>
+  r<span class="op">.</span><span class="col">trx_mysql_thread_id</span> waiting_thread<span class="op">,</span>
+  r<span class="op">.</span><span class="col">trx_query</span> waiting_query<span class="op">,</span>
+  b<span class="op">.</span><span class="col">trx_id</span> blocking_trx_id<span class="op">,</span>
+  b<span class="op">.</span><span class="col">trx_mysql_thread_id</span> blocking_thread<span class="op">,</span>
+  b<span class="op">.</span><span class="col">trx_query</span> blocking_query
+<span class="k">FROM</span> <span class="t">performance_schema.data_lock_waits</span> w
+<span class="k">JOIN</span> <span class="t">information_schema.INNODB_TRX</span> r
+  <span class="k">ON</span> r<span class="op">.</span><span class="col">trx_id</span> <span class="op">=</span> w<span class="op">.</span><span class="col">REQUESTING_ENGINE_TRANSACTION_ID</span>
+<span class="k">JOIN</span> <span class="t">information_schema.INNODB_TRX</span> b
+  <span class="k">ON</span> b<span class="op">.</span><span class="col">trx_id</span> <span class="op">=</span> w<span class="op">.</span><span class="col">BLOCKING_ENGINE_TRANSACTION_ID</span>;
+
+<span class="c">-- ৩. Blocking transaction kill করো (emergency)</span>
+<span class="k">KILL</span> <span class="op">&lt;</span>thread_id<span class="op">&gt;</span>;  <span class="c">-- blocking_thread উপর থেকে</span>
+
+<span class="c">-- ৪. Deadlock history</span>
+<span class="k">SHOW ENGINE INNODB STATUS</span>\G
+<span class="c">-- "LATEST DETECTED DEADLOCK" section খোঁজো</span>
+
+<span class="c">-- ৫. Lock statistics</span>
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">sys.innodb_lock_waits</span>\G
+<span class="k">SELECT</span> <span class="op">*</span> <span class="k">FROM</span> <span class="t">sys.schema_table_lock_waits</span>\G</pre>
+    </div>
+
+    <h4>সবচেয়ে Common Production Problems</h4>
+
+    <ul class="err-list">
+      <li><strong>Long transaction + user interaction:</strong> Transaction open রেখে HTTP response-এর জন্য wait বা user input নেওয়া — lock লম্বা সময় held থাকে। Solution: Transaction শুধু DB work-এর জন্য, শুরুতে সব input validate করো।</li>
+      <li><strong>ORM-generated queries without index:</strong> Eloquent/Hibernate অনেক সময় un-indexed column-এ WHERE দেয়, FOR UPDATE হলে table lock। সবসময় <code>EXPLAIN</code> দিয়ে verify করো।</li>
+      <li><strong>Connection pool + GET_LOCK:</strong> Connection pool-এ পুরনো connection reuse হলে পুরনো lock থাকে। Always <code>RELEASE_LOCK()</code> করো, finally block-এ।</li>
+      <li><strong>Replica lag + read-after-write:</strong> Write করে immediately replica থেকে read — stale data। Critical read সবসময় primary থেকে করো, বা write-after-read pattern avoid করো।</li>
+      <li><strong>Bulk operations without batching:</strong> <code>DELETE FROM logs WHERE created_at &lt; '2023-01-01'</code> — কোটি row lock হয়, production hang। Batch করো: LIMIT 1000, loop করো।</li>
+    </ul>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <span class="code-lang">SQL — Batch Delete (Lock-friendly)</span>
+        <button class="copy-btn" onclick="cpCode(this)">⎘ Copy</button>
+      </div>
+      <pre><span class="c">-- ❌ DANGEROUS — কোটি rows একসাথে lock</span>
+<span class="k">DELETE FROM</span> <span class="t">logs</span> <span class="k">WHERE</span> <span class="col">created_at</span> <span class="op"><</span> <span class="s">'2023-01-01'</span>;
+
+<span class="c">-- ✅ SAFE — Batch করো, pause করো</span>
+<span class="k">REPEAT</span>
+  <span class="k">DELETE FROM</span> <span class="t">logs</span>
+  <span class="k">WHERE</span> <span class="col">created_at</span> <span class="op"><</span> <span class="s">'2023-01-01'</span>
+  <span class="k">LIMIT</span> <span class="n">1000</span>;
+
+  <span class="k">SET</span> @deleted <span class="op">=</span> <span class="f">ROW_COUNT</span>();
+  <span class="k">DO SLEEP</span>(<span class="n">0.1</span>);  <span class="c">-- 100ms pause</span>
+
+<span class="k">UNTIL</span> @deleted <span class="op">=</span> <span class="n">0</span>
+<span class="k">END REPEAT</span>;
+
+<span class="c">-- Monitoring: lock wait timeout configure</span>
+<span class="k">SET GLOBAL</span> <span class="col">innodb_lock_wait_timeout</span> <span class="op">=</span> <span class="n">10</span>;   <span class="c">-- সব connection</span>
+<span class="k">SET SESSION</span> <span class="col">innodb_lock_wait_timeout</span> <span class="op">=</span> <span class="n">3</span>;  <span class="c">-- এই session</span>
+
+<span class="c">-- Performance schema enable করো</span>
+<span class="k">UPDATE</span> <span class="t">performance_schema.setup_instruments</span>
+  <span class="k">SET</span> <span class="col">ENABLED</span> <span class="op">=</span> <span class="s">'YES'</span>
+  <span class="k">WHERE</span> <span class="col">NAME</span> <span class="k">LIKE</span> <span class="s">'wait/lock/innodb%'</span>;</pre>
+    </div>
+
+    <div class="box success">
+      <div class="box-label">🎯 সবচেয়ে গুরুত্বপূর্ণ মনে রাখার জিনিস</div>
+      <p><strong>Transaction যত ছোট, তত নিরাপদ।</strong> Lock যত কম সময় held থাকে, তত বেশি throughput। Database concurrency-র সমস্যার ৯০% সমাধান হয়: সঠিক index + ছোট transaction + consistent lock ordering।</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- /content -->
+</div><!-- /wrap -->
+
+<footer>
+  <span>Advanced SQL Concurrency — বাংলা Developer Handbook</span>
+  <span>MySQL · InnoDB · Production Engineering</span>
+</footer>
+
+<script>
+// ═══ Copy to clipboard ═══
+function cpCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => {
+      btn.textContent = '⎘ Copy';
+      btn.classList.remove('ok');
+    }, 1800);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => {
+      btn.textContent = '⎘ Copy';
+      btn.classList.remove('ok');
+    }, 1800);
+  });
+}
+
+// ═══ Active nav link on scroll ═══
+const sections = document.querySelectorAll('.sec[id]');
+const links = document.querySelectorAll('.sb-link');
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.getAttribute('id');
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => obs.observe(s));
+
+// ═══ Mobile sidebar close on link click ═══
+links.forEach(l => {
+  l.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
