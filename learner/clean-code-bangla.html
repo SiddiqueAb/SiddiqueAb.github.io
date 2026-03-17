@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ক্লিন কোড গাইড — PHP / Laravel / CodeIgniter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#21262d;
+  --border:#30363d;
+  --accent:#58a6ff;
+  --accent2:#f78166;
+  --accent3:#3fb950;
+  --accent4:#e3b341;
+  --text:#e6edf3;
+  --text2:#8b949e;
+  --good:#1f4f2b;
+  --good-border:#3fb950;
+  --bad:#4f1f1f;
+  --bad-border:#f78166;
+  --ok:#4f3e1f;
+  --ok-border:#e3b341;
+  --best:#1a2e4f;
+  --best-border:#58a6ff;
+  --radius:10px;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans Bengali',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.8;
+  font-size:15px;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── COVER ── */
+.cover{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d1117 0%,#0f1e35 50%,#0d1117 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(88,166,255,.08) 0%,transparent 70%);
+}
+.cover-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;opacity:.15;
+}
+.badge{
+  display:inline-block;background:rgba(88,166,255,.12);border:1px solid var(--accent);
+  color:var(--accent);padding:.3rem 1.2rem;border-radius:50px;font-size:.78rem;
+  letter-spacing:.1em;margin-bottom:1.5rem;text-transform:uppercase;
+}
+.cover h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.2rem,7vw,4.5rem);
+  font-weight:900;line-height:1.15;
+  background:linear-gradient(135deg,#e6edf3 0%,#58a6ff 60%,#3fb950 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.8rem;
+}
+.cover .sub{font-size:clamp(1rem,2.5vw,1.3rem);color:var(--text2);margin-bottom:2.5rem;max-width:600px}
+.tags{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:3rem}
+.tag{background:var(--surface2);border:1px solid var(--border);padding:.4rem 1rem;
+     border-radius:50px;font-size:.82rem;color:var(--text2)}
+.tag.php{border-color:#8892bf;color:#8892bf}
+.tag.laravel{border-color:#f05340;color:#f05340}
+.tag.ci{border-color:#e44d26;color:#e44d26}
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  color:var(--text2);font-size:.8rem;animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* ── LAYOUT ── */
+.wrapper{max-width:900px;margin:0 auto;padding:0 1.2rem}
+
+/* ── TOC ── */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+     margin:3rem auto;max-width:900px;padding:0 1.2rem}
+.toc-header{
+  padding:1.5rem 0 1rem;border-bottom:1px solid var(--border);
+  font-size:1.1rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:.6rem;
+}
+.toc-list{list-style:none;padding:1rem 0}
+.toc-list li{border-bottom:1px solid rgba(48,54,61,.5)}
+.toc-list li:last-child{border-bottom:none}
+.toc-list a{
+  display:flex;align-items:center;gap:.8rem;padding:.75rem 0;
+  color:var(--text2);text-decoration:none;transition:color .2s;font-size:.9rem;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-num{
+  min-width:28px;height:28px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;color:var(--text2);font-family:var(--mono);
+}
+
+/* ── CHAPTER ── */
+.chapter{padding:4rem 0 2rem}
+.chapter-label{
+  font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);font-family:var(--mono);margin-bottom:.5rem;
+}
+.chapter h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;
+  color:var(--text);margin-bottom:1rem;
+}
+.chapter-intro{
+  font-size:1rem;color:var(--text2);border-left:3px solid var(--accent);
+  padding-left:1rem;margin-bottom:2rem;
+}
+
+/* ── SECTION ── */
+.section{margin-bottom:3rem}
+.section h3{
+  font-size:1.15rem;font-weight:700;color:var(--text);
+  margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;
+}
+.section h3::before{
+  content:'';display:inline-block;width:4px;height:1.2em;
+  background:var(--accent2);border-radius:2px;flex-shrink:0;
+}
+.section p{color:var(--text2);margin-bottom:.8rem;line-height:1.9}
+.section ul,
+.section ol{color:var(--text2);padding-left:1.5rem;margin-bottom:.8rem}
+.section li{margin-bottom:.4rem}
+
+/* ── CODE BLOCKS ── */
+.code-wrap{margin:1.2rem 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.code-label{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.55rem 1rem;font-size:.75rem;font-family:var(--mono);
+}
+.code-label .fname{color:var(--text2)}
+.good-block .code-label{background:var(--good);border-bottom:1px solid var(--good-border)}
+.good-block .code-label .badge-type{color:var(--good-border)}
+.bad-block .code-label{background:var(--bad);border-bottom:1px solid var(--bad-border)}
+.bad-block .code-label .badge-type{color:var(--bad-border)}
+.ok-block .code-label{background:var(--ok);border-bottom:1px solid var(--ok-border)}
+.ok-block .code-label .badge-type{color:var(--ok-border)}
+.best-block .code-label{background:var(--best);border-bottom:1px solid var(--best-border)}
+.best-block .code-label .badge-type{color:var(--best-border)}
+pre{
+  background:#0d1117;padding:1.2rem;overflow-x:auto;
+  font-family:var(--mono);font-size:.82rem;line-height:1.7;
+  tab-size:4;
+}
+code{font-family:var(--mono)}
+/* syntax highlight */
+.kw{color:#ff7b72}
+.fn{color:#d2a8ff}
+.str{color:#a5d6ff}
+.cm{color:#8b949e;font-style:italic}
+.num{color:#f2cc60}
+.cls{color:#ffa657}
+.var{color:#e6edf3}
+.arr{color:#79c0ff}
+.php-tag{color:#ff7b72}
+
+/* ── CALLOUT BOXES ── */
+.callout{
+  border-radius:var(--radius);padding:1rem 1.2rem;margin:1.2rem 0;
+  border-left:4px solid;font-size:.9rem;
+}
+.callout.tip{background:rgba(63,185,80,.07);border-color:var(--good-border);color:var(--text2)}
+.callout.warn{background:rgba(247,129,102,.07);border-color:var(--bad-border);color:var(--text2)}
+.callout.info{background:rgba(88,166,255,.07);border-color:var(--accent);color:var(--text2)}
+.callout strong{display:block;margin-bottom:.3rem}
+.callout.tip strong{color:var(--good-border)}
+.callout.warn strong{color:var(--bad-border)}
+.callout.info strong{color:var(--accent)}
+
+/* ── COMPARE TABLE ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}
+@media(max-width:600px){.compare{grid-template-columns:1fr}}
+.compare-col h4{
+  padding:.5rem .8rem;border-radius:6px 6px 0 0;font-size:.82rem;
+  font-family:var(--mono);font-weight:600;
+}
+.compare-col.bad-col h4{background:var(--bad);color:var(--bad-border);border:1px solid var(--bad-border);border-bottom:none}
+.compare-col.good-col h4{background:var(--good);color:var(--good-border);border:1px solid var(--good-border);border-bottom:none}
+.compare-col pre{border-radius:0 0 6px 6px;font-size:.78rem}
+.compare-col.bad-col pre{border:1px solid var(--bad-border)}
+.compare-col.good-col pre{border:1px solid var(--good-border)}
+
+/* ── RULE CARD ── */
+.rules{display:grid;gap:.8rem;margin:1rem 0}
+.rule-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.2rem;display:flex;gap:.8rem;align-items:flex-start;
+}
+.rule-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.rule-card h4{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.rule-card p{font-size:.85rem;color:var(--text2);margin:0}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1px solid var(--border);margin:3rem 0}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--surface);border-top:1px solid var(--border);
+  text-align:center;padding:2rem;color:var(--text2);font-size:.85rem;
+}
+
+/* ── NAV ── */
+.sticky-nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:.6rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow-x:auto;
+}
+.sticky-nav a{
+  color:var(--text2);text-decoration:none;font-size:.8rem;white-space:nowrap;
+  padding:.3rem .7rem;border-radius:50px;transition:all .2s;
+}
+.sticky-nav a:hover{background:var(--surface2);color:var(--text)}
+.nav-logo{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:.85rem;white-space:nowrap}
+
+/* ── PRINT ── */
+@media print{
+  .sticky-nav,.cover-grid,.scroll-hint{display:none}
+  .cover{min-height:auto;padding:3rem}
+  pre{white-space:pre-wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<section class="cover" id="top">
+  <div class="cover-grid"></div>
+  <div style="position:relative;z-index:1">
+    <div class="badge">📖 সম্পূর্ণ বাংলা গাইড</div>
+    <h1>ক্লিন কোড<br>মাস্টারক্লাস</h1>
+    <p class="sub">PHP · Laravel · CodeIgniter দিয়ে বড় প্রজেক্টে পরিষ্কার, রক্ষণাবেক্ষণযোগ্য ও পেশাদার কোড লেখার সম্পূর্ণ গাইড</p>
+    <div class="tags">
+      <span class="tag php">PHP 8+</span>
+      <span class="tag laravel">Laravel 11</span>
+      <span class="tag ci">CodeIgniter 4</span>
+      <span class="tag">SOLID Principles</span>
+      <span class="tag">Design Patterns</span>
+      <span class="tag">Best Practices</span>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ পড়তে নিচে স্ক্রোল করুন</div>
+</section>
+
+<!-- ══ NAV ══ -->
+<nav class="sticky-nav">
+  <span class="nav-logo">&lt;CleanCode/&gt;</span>
+  <a href="#naming">নামকরণ</a>
+  <a href="#functions">ফাংশন</a>
+  <a href="#solid">SOLID</a>
+  <a href="#laravel">Laravel</a>
+  <a href="#ci">CodeIgniter</a>
+  <a href="#db">Database</a>
+  <a href="#security">Security</a>
+  <a href="#patterns">Patterns</a>
+  <a href="#mistakes">ভুল</a>
+</nav>
+
+<!-- ══ TOC ══ -->
+<div class="wrapper">
+<div class="toc">
+  <div class="toc-header">📑 বিষয়বস্তু</div>
+  <ul class="toc-list">
+    <li><a href="#naming"><span class="toc-num">01</span> ভেরিয়েবল, ক্লাস ও ফাংশন নামকরণের নিয়ম</a></li>
+    <li><a href="#functions"><span class="toc-num">02</span> ফাংশন / মেথড — সঠিকভাবে লেখার নিয়ম</a></li>
+    <li><a href="#solid"><span class="toc-num">03</span> SOLID নীতিমালা (বাস্তব উদাহরণসহ)</a></li>
+    <li><a href="#laravel"><span class="toc-num">04</span> Laravel ক্লিন কোড — Controller, Service, Repository</a></li>
+    <li><a href="#ci"><span class="toc-num">05</span> CodeIgniter 4 ক্লিন কোড গাইড</a></li>
+    <li><a href="#db"><span class="toc-num">06</span> Database ও Query ক্লিন কোড</a></li>
+    <li><a href="#security"><span class="toc-num">07</span> Security ও Validation সঠিক পদ্ধতি</a></li>
+    <li><a href="#patterns"><span class="toc-num">08</span> Design Patterns (বাস্তব প্রজেক্টে ব্যবহার)</a></li>
+    <li><a href="#mistakes"><span class="toc-num">09</span> সবচেয়ে সাধারণ ভুলগুলো ও সমাধান</a></li>
+  </ul>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHAPTER 1 — NAMING
+══════════════════════════════════════ -->
+<div class="wrapper">
+<section class="chapter" id="naming">
+  <div class="chapter-label">অধ্যায় ০১</div>
+  <h2>ভেরিয়েবল, ক্লাস ও ফাংশন নামকরণ</h2>
+  <p class="chapter-intro">একটি ভালো নাম ১০ লাইনের কমেন্টের চেয়ে বেশি তথ্য দেয়। ক্লিন কোডের সবচেয়ে গুরুত্বপূর্ণ অংশ হলো সঠিক নামকরণ।</p>
+
+  <div class="section">
+    <h3>ভেরিয়েবল নামকরণ</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ খারাপ কোড</h4>
+        <pre><code><span class="php-tag">&lt;?php</span>
+<span class="var">$d</span> = <span class="num">30</span>;
+<span class="var">$x</span> = <span class="fn">getUserData</span>(<span class="num">1</span>);
+<span class="var">$arr</span> = [];
+<span class="var">$flag</span> = <span class="kw">true</span>;
+<span class="var">$temp</span> = <span class="fn">calculateTax</span>(<span class="var">$x</span>);
+<span class="var">$n</span> = <span class="str">"John Doe"</span>;
+<span class="var">$dt</span> = <span class="kw">new</span> <span class="cls">DateTime</span>();</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ ভালো কোড</h4>
+        <pre><code><span class="php-tag">&lt;?php</span>
+<span class="var">$expiryDays</span> = <span class="num">30</span>;
+<span class="var">$user</span> = <span class="fn">getUserById</span>(<span class="num">1</span>);
+<span class="var">$activeOrders</span> = [];
+<span class="var">$isUserVerified</span> = <span class="kw">true</span>;
+<span class="var">$calculatedTax</span> = <span class="fn">calculateTax</span>(<span class="var">$user</span>);
+<span class="var">$fullName</span> = <span class="str">"John Doe"</span>;
+<span class="var">$orderCreatedAt</span> = <span class="kw">new</span> <span class="cls">DateTime</span>();</code></pre>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <strong>✅ নিয়ম মনে রাখুন</strong>
+      Boolean ভেরিয়েবলে সবসময় <code>is</code>, <code>has</code>, <code>can</code> prefix ব্যবহার করুন। যেমন: <code>$isActive</code>, <code>$hasPermission</code>, <code>$canEdit</code>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ক্লাস ও মেথড নামকরণ কনভেনশন</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">📌 Best Practice</span><span class="fname">Naming Convention</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ✅ ক্লাস — PascalCase (বিশেষ্য)</span>
+<span class="kw">class</span> <span class="cls">UserController</span> {}
+<span class="kw">class</span> <span class="cls">OrderRepository</span> {}
+<span class="kw">class</span> <span class="cls">PaymentGateway</span> {}
+<span class="kw">class</span> <span class="cls">InvoiceGeneratorService</span> {}
+
+<span class="cm">// ✅ মেথড — camelCase (ক্রিয়া + বিশেষ্য)</span>
+<span class="kw">public function</span> <span class="fn">getUserOrders</span>(<span class="cls">int</span> <span class="var">$userId</span>): <span class="cls">Collection</span> {}
+<span class="kw">public function</span> <span class="fn">sendVerificationEmail</span>(<span class="cls">User</span> <span class="var">$user</span>): <span class="cls">bool</span> {}
+<span class="kw">public function</span> <span class="fn">calculateOrderTotal</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">float</span> {}
+<span class="kw">public function</span> <span class="fn">isOrderExpired</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">bool</span> {}
+
+<span class="cm">// ✅ কনস্ট্যান্ট — UPPER_SNAKE_CASE</span>
+<span class="kw">const</span> <span class="var">MAX_LOGIN_ATTEMPTS</span> = <span class="num">5</span>;
+<span class="kw">const</span> <span class="var">DEFAULT_CURRENCY</span> = <span class="str">'BDT'</span>;
+<span class="kw">const</span> <span class="var">ORDER_STATUS_PENDING</span> = <span class="str">'pending'</span>;
+
+<span class="cm">// ✅ Interface — 'able' বা 'Interface' suffix</span>
+<span class="kw">interface</span> <span class="cls">Payable</span> {}
+<span class="kw">interface</span> <span class="cls">Exportable</span> {}
+<span class="kw">interface</span> <span class="cls">UserRepositoryInterface</span> {}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>নামকরণের গোল্ডেন রুলস</h3>
+    <div class="rules">
+      <div class="rule-card">
+        <div class="rule-icon">🎯</div>
+        <div>
+          <h4>উদ্দেশ্য প্রকাশ করুন</h4>
+          <p><code>$d</code> না লিখে <code>$daysSinceLastLogin</code> লিখুন — কোড পড়েই বোঝা যাবে কী করছে।</p>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">📏</div>
+        <div>
+          <h4>scope অনুযায়ী নামের দৈর্ঘ্য</h4>
+          <p>Loop counter হলে <code>$i</code> ঠিক আছে। কিন্তু ফাংশন প্যারামিটার বা ক্লাস প্রপার্টি হলে পূর্ণ বর্ণনামূলক নাম দিন।</p>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">🚫</div>
+        <div>
+          <h4>Hungarian Notation এড়িয়ে চলুন</h4>
+          <p><code>$strName</code>, <code>$intAge</code>, <code>$arrUsers</code> — এই ধরনের prefix আধুনিক PHP-তে অপ্রয়োজনীয়।</p>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">🌍</div>
+        <div>
+          <h4>ইংরেজিতে নাম রাখুন</h4>
+          <p>টিম প্রজেক্টে সবসময় ইংরেজি নামকরণ করুন। বাংলা/মিশ্র নাম কোডবেস নষ্ট করে।</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 2 — FUNCTIONS
+══════════════════════════════════════ -->
+<section class="chapter" id="functions">
+  <div class="chapter-label">অধ্যায় ০২</div>
+  <h2>ফাংশন ও মেথড — সঠিক পদ্ধতি</h2>
+  <p class="chapter-intro">একটি ফাংশন শুধুমাত্র একটি কাজ করবে এবং সেটি ভালোভাবে করবে। এটি ক্লিন কোডের সবচেয়ে মৌলিক নীতি।</p>
+
+  <div class="section">
+    <h3>Single Responsibility — একটি ফাংশন, একটি কাজ</h3>
+    <div class="code-wrap bad-block">
+      <div class="code-label"><span class="badge-type">❌ খারাপ কোড — একটি ফাংশনে অনেক কাজ</span><span class="fname">bad_register.php</span></div>
+      <pre><code><span class="kw">public function</span> <span class="fn">register</span>(<span class="cls">Request</span> <span class="var">$request</span>)
+{
+    <span class="cm">// validation</span>
+    <span class="kw">if</span> (empty(<span class="var">$request</span>->name) || empty(<span class="var">$request</span>->email)) {
+        <span class="kw">return</span> <span class="fn">response</span>()->json([<span class="str">'error'</span> => <span class="str">'Missing fields'</span>], <span class="num">400</span>);
+    }
+    <span class="kw">if</span> (!<span class="fn">filter_var</span>(<span class="var">$request</span>->email, <span class="cls">FILTER_VALIDATE_EMAIL</span>)) {
+        <span class="kw">return</span> <span class="fn">response</span>()->json([<span class="str">'error'</span> => <span class="str">'Invalid email'</span>], <span class="num">422</span>);
+    }
+    <span class="cm">// check duplicate</span>
+    <span class="var">$existing</span> = <span class="cls">DB</span>::<span class="fn">table</span>(<span class="str">'users'</span>)->where(<span class="str">'email'</span>, <span class="var">$request</span>->email)->first();
+    <span class="kw">if</span> (<span class="var">$existing</span>) {
+        <span class="kw">return</span> <span class="fn">response</span>()->json([<span class="str">'error'</span> => <span class="str">'Email taken'</span>], <span class="num">409</span>);
+    }
+    <span class="cm">// create user</span>
+    <span class="var">$user</span> = <span class="kw">new</span> <span class="cls">User</span>();
+    <span class="var">$user</span>->name = <span class="var">$request</span>->name;
+    <span class="var">$user</span>->email = <span class="var">$request</span>->email;
+    <span class="var">$user</span>->password = <span class="fn">bcrypt</span>(<span class="var">$request</span>->password);
+    <span class="var">$user</span>->save();
+    <span class="cm">// send welcome email</span>
+    <span class="fn">mail</span>(<span class="var">$request</span>->email, <span class="str">'Welcome!'</span>, <span class="str">'Thanks for joining'</span>);
+    <span class="cm">// log activity</span>
+    <span class="fn">file_put_contents</span>(<span class="str">'logs/users.log'</span>, <span class="var">$user</span>->id . <span class="str">' registered\n'</span>, <span class="cls">FILE_APPEND</span>);
+    <span class="kw">return</span> <span class="fn">response</span>()->json([<span class="str">'message'</span> => <span class="str">'Success'</span>], <span class="num">201</span>);
+}</code></pre>
+    </div>
+
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ ভালো কোড — দায়িত্ব ভাগ করা</span><span class="fname">UserController.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">UserController</span> <span class="kw">extends</span> <span class="cls">Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">UserService</span> <span class="var">$userService</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">register</span>(<span class="cls">RegisterRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->userService-><span class="fn">register</span>(<span class="var">$request</span>-><span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="fn">response</span>()->json(
+            <span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>),
+            <span class="cls">Response</span>::<span class="var">HTTP_CREATED</span>
+        );
+    }
+}
+
+<span class="cm">// ── app/Services/UserService.php ──────────</span>
+<span class="kw">class</span> <span class="cls">UserService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">UserRepository</span> <span class="var">$userRepo</span>,
+        <span class="kw">private</span> <span class="cls">WelcomeMailer</span>  <span class="var">$mailer</span>,
+        <span class="kw">private</span> <span class="cls">ActivityLogger</span> <span class="var">$logger</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">register</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->userRepo-><span class="fn">create</span>(<span class="var">$data</span>);
+        <span class="var">$this</span>->mailer-><span class="fn">sendWelcome</span>(<span class="var">$user</span>);
+        <span class="var">$this</span>->logger-><span class="fn">log</span>(<span class="str">'user.registered'</span>, <span class="var">$user</span>->id);
+        <span class="kw">return</span> <span class="var">$user</span>;
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ফাংশন প্যারামিটার — সঠিক পরিমাণ ও Type Hint</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ খারাপ — অনেক প্যারামিটার</h4>
+        <pre><code><span class="kw">function</span> <span class="fn">createUser</span>(
+    <span class="var">$name</span>,
+    <span class="var">$email</span>,
+    <span class="var">$phone</span>,
+    <span class="var">$address</span>,
+    <span class="var">$role</span>,
+    <span class="var">$status</span>,
+    <span class="var">$avatar</span>
+) {
+    <span class="cm">// ৭টি প্যারামিটার → ভুলবার সম্ভাবনা বেশি</span>
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ ভালো — DTO / Array ব্যবহার</h4>
+        <pre><code><span class="cm">// DTO (Data Transfer Object)</span>
+<span class="kw">class</span> <span class="cls">CreateUserDTO</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly</span> <span class="cls">string</span> <span class="var">$name</span>,
+        <span class="kw">public readonly</span> <span class="cls">string</span> <span class="var">$email</span>,
+        <span class="kw">public readonly</span> <span class="cls">string</span> <span class="var">$phone</span>,
+        <span class="kw">public readonly</span> <span class="cls">string</span> <span class="var">$role</span> = <span class="str">'user'</span>,
+    ) {}
+}
+
+<span class="kw">function</span> <span class="fn">createUser</span>(<span class="cls">CreateUserDTO</span> <span class="var">$dto</span>): <span class="cls">User</span>
+{
+    <span class="cm">// পরিষ্কার ও type-safe</span>
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ সতর্কতা</strong>
+      ৩টির বেশি প্যারামিটার থাকলে DTO, Array বা Request object ব্যবহার করুন। অনেক প্যারামিটার maintenance nightmare তৈরি করে।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Early Return Pattern — Nested Hell এড়িয়ে চলুন</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Nested Hell</h4>
+        <pre><code><span class="kw">function</span> <span class="fn">processOrder</span>(<span class="var">$order</span>)
+{
+    <span class="kw">if</span> (<span class="var">$order</span>) {
+        <span class="kw">if</span> (<span class="var">$order</span>->isActive()) {
+            <span class="kw">if</span> (<span class="var">$order</span>->user) {
+                <span class="kw">if</span> (<span class="var">$order</span>->user->hasPaid()) {
+                    <span class="cm">// আসল কাজ এখানে!</span>
+                    <span class="fn">ship</span>(<span class="var">$order</span>);
+                }
+            }
+        }
+    }
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Early Return</h4>
+        <pre><code><span class="kw">function</span> <span class="fn">processOrder</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">void</span>
+{
+    <span class="kw">if</span> (!<span class="var">$order</span>->isActive()) {
+        <span class="kw">throw new</span> <span class="cls">OrderNotActiveException</span>();
+    }
+
+    <span class="kw">if</span> (!<span class="var">$order</span>->user->hasPaid()) {
+        <span class="kw">throw new</span> <span class="cls">PaymentPendingException</span>();
+    }
+
+    <span class="cm">// আসল কাজ — পরিষ্কার!</span>
+    <span class="var">$this</span>->shipOrder(<span class="var">$order</span>);
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 3 — SOLID
+══════════════════════════════════════ -->
+<section class="chapter" id="solid">
+  <div class="chapter-label">অধ্যায় ০৩</div>
+  <h2>SOLID নীতিমালা</h2>
+  <p class="chapter-intro">SOLID হলো ৫টি মৌলিক নীতির সমষ্টি যা বড় প্রজেক্টে কোড সহজে বোঝার ও পরিবর্তনযোগ্য রাখতে সাহায্য করে।</p>
+
+  <div class="section">
+    <h3>S — Single Responsibility Principle (SRP)</h3>
+    <p style="color:var(--text2)">প্রতিটি ক্লাসের শুধুমাত্র একটি পরিবর্তনের কারণ থাকবে।</p>
+    <div class="code-wrap bad-block">
+      <div class="code-label"><span class="badge-type">❌ SRP লঙ্ঘন</span><span class="fname">UserManager.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">UserManager</span> <span class="cm">// এক ক্লাসে সব কিছু → ভুল!</span>
+{
+    <span class="kw">public function</span> <span class="fn">createUser</span>(<span class="cls">array</span> <span class="var">$data</span>) { <span class="cm">/* ... */</span> }
+    <span class="kw">public function</span> <span class="fn">sendEmail</span>(<span class="cls">string</span> <span class="var">$to</span>, <span class="cls">string</span> <span class="var">$body</span>) { <span class="cm">/* ... */</span> }
+    <span class="kw">public function</span> <span class="fn">generateReport</span>(): <span class="cls">array</span> { <span class="cm">/* ... */</span> }
+    <span class="kw">public function</span> <span class="fn">exportToCsv</span>(): <span class="cls">string</span> { <span class="cm">/* ... */</span> }
+    <span class="kw">public function</span> <span class="fn">hashPassword</span>(<span class="cls">string</span> <span class="var">$pwd</span>): <span class="cls">string</span> { <span class="cm">/* ... */</span> }
+}</code></pre>
+    </div>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ SRP মেনে চলা</span><span class="fname">Separated Classes</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">UserRepository</span>  { <span class="kw">public function</span> <span class="fn">create</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span> { <span class="cm">/* ... */</span> } }
+<span class="kw">class</span> <span class="cls">UserMailer</span>     { <span class="kw">public function</span> <span class="fn">sendWelcome</span>(<span class="cls">User</span> <span class="var">$user</span>): <span class="cls">void</span> { <span class="cm">/* ... */</span> } }
+<span class="kw">class</span> <span class="cls">UserReporter</span>   { <span class="kw">public function</span> <span class="fn">generate</span>(): <span class="cls">array</span> { <span class="cm">/* ... */</span> } }
+<span class="kw">class</span> <span class="cls">CsvExporter</span>    { <span class="kw">public function</span> <span class="fn">export</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">string</span> { <span class="cm">/* ... */</span> } }
+<span class="kw">class</span> <span class="cls">PasswordHasher</span> { <span class="kw">public function</span> <span class="fn">hash</span>(<span class="cls">string</span> <span class="var">$pwd</span>): <span class="cls">string</span> { <span class="cm">/* ... */</span> } }</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>O — Open/Closed Principle (OCP)</h3>
+    <p style="color:var(--text2)">ক্লাস সম্প্রসারণের জন্য খোলা থাকবে, কিন্তু পরিবর্তনের জন্য বন্ধ থাকবে।</p>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ OCP — Interface ব্যবহার</span><span class="fname">PaymentGateway.php</span></div>
+      <pre><code><span class="cm">// Interface — পরিবর্তন না করে নতুন gateway যোগ করা যাবে</span>
+<span class="kw">interface</span> <span class="cls">PaymentGatewayInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">charge</span>(<span class="cls">float</span> <span class="var">$amount</span>, <span class="cls">string</span> <span class="var">$currency</span>): <span class="cls">PaymentResult</span>;
+    <span class="kw">public function</span> <span class="fn">refund</span>(<span class="cls">string</span> <span class="var">$transactionId</span>): <span class="cls">bool</span>;
+}
+
+<span class="kw">class</span> <span class="cls">SslcommerzGateway</span> <span class="kw">implements</span> <span class="cls">PaymentGatewayInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">charge</span>(<span class="cls">float</span> <span class="var">$amount</span>, <span class="cls">string</span> <span class="var">$currency</span>): <span class="cls">PaymentResult</span>
+    {
+        <span class="cm">// SSLCommerz specific implementation</span>
+    }
+    <span class="kw">public function</span> <span class="fn">refund</span>(<span class="cls">string</span> <span class="var">$transactionId</span>): <span class="cls">bool</span>
+    {
+        <span class="cm">// SSLCommerz refund logic</span>
+    }
+}
+
+<span class="kw">class</span> <span class="cls">BkashGateway</span> <span class="kw">implements</span> <span class="cls">PaymentGatewayInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">charge</span>(<span class="cls">float</span> <span class="var">$amount</span>, <span class="cls">string</span> <span class="var">$currency</span>): <span class="cls">PaymentResult</span>
+    {
+        <span class="cm">// bKash specific implementation</span>
+    }
+    <span class="kw">public function</span> <span class="fn">refund</span>(<span class="cls">string</span> <span class="var">$transactionId</span>): <span class="cls">bool</span>
+    {
+        <span class="cm">// bKash refund logic</span>
+    }
+}
+
+<span class="cm">// Service — শুধু Interface জানে, specific class না</span>
+<span class="kw">class</span> <span class="cls">OrderPaymentService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">PaymentGatewayInterface</span> <span class="var">$gateway</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">processPayment</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">PaymentResult</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->gateway-><span class="fn">charge</span>(<span class="var">$order</span>->total, <span class="var">$order</span>->currency);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>D — Dependency Inversion Principle (DIP)</h3>
+    <p style="color:var(--text2)">উচ্চ-স্তরের মডিউল নিম্ন-স্তরের মডিউলের উপর নির্ভর করবে না — উভয়ই abstraction-এর উপর নির্ভর করবে।</p>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Direct Dependency</h4>
+        <pre><code><span class="kw">class</span> <span class="cls">OrderService</span>
+{
+    <span class="kw">private</span> <span class="cls">MySQLOrderRepo</span> <span class="var">$repo</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="cm">// hard-coded dependency!</span>
+        <span class="var">$this</span>->repo = <span class="kw">new</span> <span class="cls">MySQLOrderRepo</span>();
+    }
+}
+<span class="cm">// MySQL থেকে PostgreSQL যেতে হলে
+// OrderService পরিবর্তন করতে হবে!</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Dependency Injection</h4>
+        <pre><code><span class="kw">class</span> <span class="cls">OrderService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">OrderRepositoryInterface</span> <span class="var">$repo</span>
+    ) {}
+    <span class="cm">// Interface-এর উপর নির্ভর করে
+    // MySQL, PostgreSQL, Redis —
+    // যেকোনো implementation দেওয়া যাবে
+    // OrderService পরিবর্তন ছাড়াই!</span>
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 4 — LARAVEL
+══════════════════════════════════════ -->
+<section class="chapter" id="laravel">
+  <div class="chapter-label">অধ্যায় ০৪</div>
+  <h2>Laravel ক্লিন কোড আর্কিটেকচার</h2>
+  <p class="chapter-intro">Laravel-এ Controller, Service Layer, Repository Pattern এবং Form Request ব্যবহার করে কোড কীভাবে সঠিকভাবে সংগঠিত করবেন।</p>
+
+  <div class="section">
+    <h3>ডিরেক্টরি স্ট্রাকচার — বড় প্রজেক্ট</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">📁 Recommended Structure</span><span class="fname">app/</span></div>
+      <pre><code>app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Api/V1/
+│   │   │   ├── UserController.php
+│   │   │   └── OrderController.php
+│   │   └── Admin/
+│   │       └── DashboardController.php
+│   ├── Requests/             <span class="cm">← Form Validation এখানে</span>
+│   │   ├── StoreUserRequest.php
+│   │   └── UpdateOrderRequest.php
+│   ├── Resources/            <span class="cm">← API Response Transformer</span>
+│   │   ├── UserResource.php
+│   │   └── OrderResource.php
+│   └── Middleware/
+├── Services/                 <span class="cm">← Business Logic এখানে</span>
+│   ├── UserService.php
+│   ├── OrderService.php
+│   └── PaymentService.php
+├── Repositories/             <span class="cm">← Database Logic এখানে</span>
+│   ├── Contracts/
+│   │   └── UserRepositoryInterface.php
+│   └── UserRepository.php
+├── DTOs/                     <span class="cm">← Data Transfer Objects</span>
+│   └── CreateUserDTO.php
+├── Events/                   <span class="cm">← Events & Listeners</span>
+├── Jobs/                     <span class="cm">← Queue Jobs</span>
+└── Models/</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Controller — শুধু Request/Response পরিচালনা</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Fat-Free Controller</span><span class="fname">UserController.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Http\Controllers\Api\V1;
+
+<span class="kw">use</span> App\Http\Controllers\Controller;
+<span class="kw">use</span> App\Http\Requests\StoreUserRequest;
+<span class="kw">use</span> App\Http\Requests\UpdateUserRequest;
+<span class="kw">use</span> App\Http\Resources\UserResource;
+<span class="kw">use</span> App\Services\UserService;
+<span class="kw">use</span> Illuminate\Http\JsonResponse;
+<span class="kw">use</span> Symfony\Component\HttpFoundation\Response;
+
+<span class="kw">class</span> <span class="cls">UserController</span> <span class="kw">extends</span> <span class="cls">Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cls">UserService</span> <span class="var">$userService</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">index</span>(): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$users</span> = <span class="var">$this</span>->userService-><span class="fn">getAllPaginated</span>();
+        <span class="kw">return</span> <span class="cls">UserResource</span>::<span class="fn">collection</span>(<span class="var">$users</span>)-><span class="fn">response</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">StoreUserRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->userService-><span class="fn">create</span>(<span class="var">$request</span>-><span class="fn">validated</span>());
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>))
+            -><span class="fn">response</span>()
+            -><span class="fn">setStatusCode</span>(<span class="cls">Response</span>::<span class="var">HTTP_CREATED</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">show</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->userService-><span class="fn">findOrFail</span>(<span class="var">$id</span>);
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>))-><span class="fn">response</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="cls">UpdateUserRequest</span> <span class="var">$request</span>, <span class="cls">int</span> <span class="var">$id</span>): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->userService-><span class="fn">update</span>(<span class="var">$id</span>, <span class="var">$request</span>-><span class="fn">validated</span>());
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>))-><span class="fn">response</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">destroy</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">JsonResponse</span>
+    {
+        <span class="var">$this</span>->userService-><span class="fn">delete</span>(<span class="var">$id</span>);
+        <span class="kw">return</span> <span class="fn">response</span>()->json(null, <span class="cls">Response</span>::<span class="var">HTTP_NO_CONTENT</span>);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Form Request — Validation লজিক আলাদা রাখুন</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Clean Validation</span><span class="fname">StoreUserRequest.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Http\Requests;
+
+<span class="kw">use</span> Illuminate\Foundation\Http\FormRequest;
+<span class="kw">use</span> Illuminate\Validation\Rules\Password;
+
+<span class="kw">class</span> <span class="cls">StoreUserRequest</span> <span class="kw">extends</span> <span class="cls">FormRequest</span>
+{
+    <span class="kw">public function</span> <span class="fn">authorize</span>(): <span class="cls">bool</span>
+    {
+        <span class="kw">return true</span>; <span class="cm">// অথবা permission check করুন</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="cls">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="str">'name'</span>     => [<span class="str">'required'</span>, <span class="str">'string'</span>, <span class="str">'max:255'</span>],
+            <span class="str">'email'</span>    => [<span class="str">'required'</span>, <span class="str">'email:rfc,dns'</span>, <span class="str">'unique:users'</span>],
+            <span class="str">'phone'</span>    => [<span class="str">'required'</span>, <span class="str">'string'</span>, <span class="str">'regex:/^01[3-9]\d{8}$/'</span>],
+            <span class="str">'password'</span> => [<span class="str">'required'</span>, <span class="str">'confirmed'</span>, <span class="cls">Password</span>::<span class="fn">defaults</span>()],
+            <span class="str">'role'</span>     => [<span class="str">'sometimes'</span>, <span class="str">'string'</span>, <span class="str">'in:admin,editor,user'</span>],
+        ];
+    }
+
+    <span class="kw">public function</span> <span class="fn">messages</span>(): <span class="cls">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="str">'phone.regex'</span> => <span class="str">'বৈধ বাংলাদেশ মোবাইল নম্বর দিন (01XXXXXXXXX)'</span>,
+            <span class="str">'email.unique'</span> => <span class="str">'এই ইমেইল আগে থেকেই নিবন্ধিত আছে'</span>,
+        ];
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Service Layer — Business Logic এখানে থাকবে</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ UserService.php</span><span class="fname">app/Services/UserService.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> App\Events\UserRegistered;
+<span class="kw">use</span> App\Models\User;
+<span class="kw">use</span> App\Repositories\Contracts\UserRepositoryInterface;
+<span class="kw">use</span> Illuminate\Contracts\Pagination\LengthAwarePaginator;
+<span class="kw">use</span> Illuminate\Support\Facades\Hash;
+
+<span class="kw">class</span> <span class="cls">UserService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cls">UserRepositoryInterface</span> <span class="var">$userRepo</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">getAllPaginated</span>(<span class="cls">int</span> <span class="var">$perPage</span> = <span class="num">15</span>): <span class="cls">LengthAwarePaginator</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->userRepo-><span class="fn">paginate</span>(<span class="var">$perPage</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>
+    {
+        <span class="var">$data</span>[<span class="str">'password'</span>] = <span class="cls">Hash</span>::<span class="fn">make</span>(<span class="var">$data</span>[<span class="str">'password'</span>]);
+        <span class="var">$data</span>[<span class="str">'role'</span>] ??= <span class="str">'user'</span>; <span class="cm">// default role</span>
+
+        <span class="var">$user</span> = <span class="var">$this</span>->userRepo-><span class="fn">create</span>(<span class="var">$data</span>);
+
+        <span class="cm">// Event fire করুন — Listener পরে handle করবে</span>
+        <span class="fn">event</span>(<span class="kw">new</span> <span class="cls">UserRegistered</span>(<span class="var">$user</span>));
+
+        <span class="kw">return</span> <span class="var">$user</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">findOrFail</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">User</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->userRepo-><span class="fn">findOrFail</span>(<span class="var">$id</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="cls">int</span> <span class="var">$id</span>, <span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>
+    {
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$data</span>[<span class="str">'password'</span>])) {
+            <span class="var">$data</span>[<span class="str">'password'</span>] = <span class="cls">Hash</span>::<span class="fn">make</span>(<span class="var">$data</span>[<span class="str">'password'</span>]);
+        }
+        <span class="kw">return</span> <span class="var">$this</span>->userRepo-><span class="fn">update</span>(<span class="var">$id</span>, <span class="var">$data</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">void</span>
+    {
+        <span class="var">$this</span>->userRepo-><span class="fn">delete</span>(<span class="var">$id</span>);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Laravel Eloquent — N+1 Problem এড়িয়ে চলুন</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ N+1 Query Problem</h4>
+        <pre><code><span class="var">$orders</span> = <span class="cls">Order</span>::<span class="fn">all</span>();
+
+<span class="kw">foreach</span> (<span class="var">$orders</span> <span class="kw">as</span> <span class="var">$order</span>) {
+    <span class="cm">// প্রতিটি order-এ আলাদা query!</span>
+    <span class="cm">// 100 orders = 101 queries!</span>
+    <span class="kw">echo</span> <span class="var">$order</span>->user->name;
+    <span class="kw">echo</span> <span class="var">$order</span>->product->title;
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Eager Loading</h4>
+        <pre><code><span class="var">$orders</span> = <span class="cls">Order</span>::<span class="fn">with</span>([
+    <span class="str">'user'</span>,
+    <span class="str">'product'</span>,
+    <span class="str">'product.category'</span>,
+])-><span class="fn">get</span>();
+
+<span class="kw">foreach</span> (<span class="var">$orders</span> <span class="kw">as</span> <span class="var">$order</span>) {
+    <span class="cm">// মাত্র 3টি query সব data-র জন্য!</span>
+    <span class="kw">echo</span> <span class="var">$order</span>->user->name;
+    <span class="kw">echo</span> <span class="var">$order</span>->product->title;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ N+1 হলো পারফরম্যান্সের সবচেয়ে বড় শত্রু</strong>
+      Laravel Telescope বা Debugbar দিয়ে query count monitor করুন। সবসময় <code>with()</code> দিয়ে relationship load করুন।
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 5 — CODEIGNITER
+══════════════════════════════════════ -->
+<section class="chapter" id="ci">
+  <div class="chapter-label">অধ্যায় ০৫</div>
+  <h2>CodeIgniter 4 ক্লিন কোড</h2>
+  <p class="chapter-intro">CodeIgniter 4-এ পরিষ্কার আর্কিটেকচার তৈরি করে বড় প্রজেক্ট সহজে ম্যানেজ করার পদ্ধতি।</p>
+
+  <div class="section">
+    <h3>CI4 ডিরেক্টরি স্ট্রাকচার</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">📁 CI4 Structure</span></div>
+      <pre><code>app/
+├── Controllers/
+│   ├── Api/
+│   │   ├── UserController.php
+│   │   └── OrderController.php
+│   └── Admin/
+├── Models/                   <span class="cm">← Database Models</span>
+│   ├── UserModel.php
+│   └── OrderModel.php
+├── Services/                 <span class="cm">← Business Logic (custom)</span>
+│   ├── UserService.php
+│   └── PaymentService.php
+├── Libraries/                <span class="cm">← Reusable Libraries</span>
+├── Filters/                  <span class="cm">← Middleware-এর মতো</span>
+│   ├── AuthFilter.php
+│   └── RateLimitFilter.php
+└── Validation/               <span class="cm">← Custom Validation Rules</span>
+    └── PhoneRules.php</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>CI4 Controller — পরিষ্কার পদ্ধতি</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ CI4 Clean Controller</span><span class="fname">UserController.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Controllers\Api;
+
+<span class="kw">use</span> App\Services\UserService;
+<span class="kw">use</span> CodeIgniter\API\ResponseTrait;
+<span class="kw">use</span> CodeIgniter\RESTful\ResourceController;
+
+<span class="kw">class</span> <span class="cls">UserController</span> <span class="kw">extends</span> <span class="cls">ResourceController</span>
+{
+    <span class="kw">use</span> <span class="cls">ResponseTrait</span>;
+
+    <span class="kw">protected</span> <span class="cls">UserService</span> <span class="var">$userService</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="var">$this</span>->userService = <span class="kw">new</span> <span class="cls">UserService</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="var">$users</span> = <span class="var">$this</span>->userService-><span class="fn">getAllUsers</span>();
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">respond</span>(<span class="var">$users</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">create</span>()
+    {
+        <span class="var">$rules</span> = [
+            <span class="str">'name'</span>  => <span class="str">'required|min_length[2]|max_length[100]'</span>,
+            <span class="str">'email'</span> => <span class="str">'required|valid_email|is_unique[users.email]'</span>,
+            <span class="str">'phone'</span> => <span class="str">'required|regex_match[/^01[3-9]\d{8}$/]'</span>,
+        ];
+
+        <span class="kw">if</span> (!<span class="var">$this</span>-><span class="fn">validate</span>(<span class="var">$rules</span>)) {
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">failValidationErrors</span>(<span class="var">$this</span>->validator->getErrors());
+        }
+
+        <span class="kw">try</span> {
+            <span class="var">$user</span> = <span class="var">$this</span>->userService-><span class="fn">createUser</span>(<span class="var">$this</span>->request-><span class="fn">getPost</span>());
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">respondCreated</span>(<span class="var">$user</span>);
+        } <span class="kw">catch</span> (\<span class="cls">Exception</span> <span class="var">$e</span>) {
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">failServerError</span>(<span class="var">$e</span>-><span class="fn">getMessage</span>());
+        }
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>CI4 Model — সঠিক পদ্ধতি</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ খারাপ CI4 Model</h4>
+        <pre><code><span class="kw">class</span> <span class="cls">UserModel</span> <span class="kw">extends</span> <span class="cls">Model</span>
+{
+    <span class="cm">// কোনো configuration নেই!</span>
+    <span class="cm">// Mass assignment vulnerable</span>
+    <span class="cm">// কোনো validation নেই</span>
+    <span class="kw">public function</span> <span class="fn">getAll</span>() {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">query</span>(<span class="str">"SELECT * FROM users"</span>)
+            -><span class="fn">getResultArray</span>();
+        <span class="cm">// Raw query — SQL injection risk!</span>
+    }
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ ভালো CI4 Model</h4>
+        <pre><code><span class="kw">class</span> <span class="cls">UserModel</span> <span class="kw">extends</span> <span class="cls">Model</span>
+{
+    <span class="kw">protected</span> <span class="var">$table</span>      = <span class="str">'users'</span>;
+    <span class="kw">protected</span> <span class="var">$primaryKey</span> = <span class="str">'id'</span>;
+    <span class="kw">protected</span> <span class="var">$returnType</span> = <span class="str">'array'</span>;
+    <span class="kw">protected</span> <span class="var">$useSoftDeletes</span> = <span class="kw">true</span>;
+    <span class="kw">protected</span> <span class="var">$useTimestamps</span>  = <span class="kw">true</span>;
+    <span class="kw">protected</span> <span class="var">$allowedFields</span> = [
+        <span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'phone'</span>,
+        <span class="str">'role'</span>, <span class="str">'password'</span>,
+    ];
+    <span class="kw">protected</span> <span class="var">$validationRules</span> = [
+        <span class="str">'email'</span> => <span class="str">'required|valid_email'</span>,
+    ];
+    <span class="kw">protected</span> <span class="var">$beforeInsert</span> = [<span class="str">'hashPassword'</span>];
+    <span class="kw">protected function</span> <span class="fn">hashPassword</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">array</span>
+    {
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$data</span>[<span class="str">'data'</span>][<span class="str">'password'</span>])) {
+            <span class="var">$data</span>[<span class="str">'data'</span>][<span class="str">'password'</span>] =
+                <span class="fn">password_hash</span>(<span class="var">$data</span>[<span class="str">'data'</span>][<span class="str">'password'</span>], <span class="cls">PASSWORD_BCRYPT</span>);
+        }
+        <span class="kw">return</span> <span class="var">$data</span>;
+    }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 6 — DATABASE
+══════════════════════════════════════ -->
+<section class="chapter" id="db">
+  <div class="chapter-label">অধ্যায় ০৬</div>
+  <h2>Database ও Query ক্লিন কোড</h2>
+  <p class="chapter-intro">Database query-তে ভুল করলে performance ও security দুটোই নষ্ট হয়। সঠিক পদ্ধতি জানুন।</p>
+
+  <div class="section">
+    <h3>Migration — পেশাদার পদ্ধতি</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Laravel Migration Best Practice</span><span class="fname">create_orders_table.php</span></div>
+      <pre><code><span class="kw">public function</span> <span class="fn">up</span>(): <span class="cls">void</span>
+{
+    <span class="cls">Schema</span>::<span class="fn">create</span>(<span class="str">'orders'</span>, <span class="kw">function</span> (<span class="cls">Blueprint</span> <span class="var">$table</span>) {
+        <span class="var">$table</span>-><span class="fn">id</span>();
+        <span class="var">$table</span>-><span class="fn">foreignId</span>(<span class="str">'user_id'</span>)-><span class="fn">constrained</span>()-><span class="fn">cascadeOnDelete</span>();
+        <span class="var">$table</span>-><span class="fn">foreignId</span>(<span class="str">'product_id'</span>)-><span class="fn">constrained</span>();
+        <span class="var">$table</span>-><span class="fn">string</span>(<span class="str">'order_number'</span>)-><span class="fn">unique</span>();
+        <span class="var">$table</span>-><span class="fn">enum</span>(<span class="str">'status'</span>, [
+            <span class="str">'pending'</span>, <span class="str">'processing'</span>, <span class="str">'shipped'</span>,
+            <span class="str">'delivered'</span>, <span class="str">'cancelled'</span>
+        ])-><span class="fn">default</span>(<span class="str">'pending'</span>);
+        <span class="var">$table</span>-><span class="fn">unsignedSmallInteger</span>(<span class="str">'quantity'</span>);
+        <span class="var">$table</span>-><span class="fn">decimal</span>(<span class="str">'unit_price'</span>, <span class="num">10</span>, <span class="num">2</span>);
+        <span class="var">$table</span>-><span class="fn">decimal</span>(<span class="str">'total_price'</span>, <span class="num">10</span>, <span class="num">2</span>);
+        <span class="var">$table</span>-><span class="fn">text</span>(<span class="str">'shipping_address'</span>)-><span class="fn">nullable</span>();
+        <span class="var">$table</span>-><span class="fn">timestamp</span>(<span class="str">'shipped_at'</span>)-><span class="fn">nullable</span>();
+        <span class="var">$table</span>-><span class="fn">timestamps</span>();
+        <span class="var">$table</span>-><span class="fn">softDeletes</span>();
+
+        <span class="cm">// Indexes — দ্রুত query-র জন্য</span>
+        <span class="var">$table</span>-><span class="fn">index</span>([<span class="str">'user_id'</span>, <span class="str">'status'</span>]);
+        <span class="var">$table</span>-><span class="fn">index</span>(<span class="str">'created_at'</span>);
+    });
+}</code></pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>✅ Migration টিপস</strong>
+      সবসময় <code>down()</code> মেথড সঠিকভাবে লিখুন। Production-এ migration rollback করতে হতে পারে। Foreign key constraint সবসময় ব্যবহার করুন — data integrity নিশ্চিত হয়।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Query Scopes — পুনর্ব্যবহারযোগ্য Query</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Eloquent Scopes</span><span class="fname">Order.php (Model)</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">Order</span> <span class="kw">extends</span> <span class="cls">Model</span>
+{
+    <span class="cm">// Local Scope — পুনর্ব্যবহারযোগ্য query filter</span>
+    <span class="kw">public function</span> <span class="fn">scopePending</span>(<span class="cls">Builder</span> <span class="var">$query</span>): <span class="cls">Builder</span>
+    {
+        <span class="kw">return</span> <span class="var">$query</span>-><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'pending'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">scopeForUser</span>(<span class="cls">Builder</span> <span class="var">$query</span>, <span class="cls">int</span> <span class="var">$userId</span>): <span class="cls">Builder</span>
+    {
+        <span class="kw">return</span> <span class="var">$query</span>-><span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="var">$userId</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">scopeRecentFirst</span>(<span class="cls">Builder</span> <span class="var">$query</span>): <span class="cls">Builder</span>
+    {
+        <span class="kw">return</span> <span class="var">$query</span>-><span class="fn">orderByDesc</span>(<span class="str">'created_at'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">scopeWithinDateRange</span>(
+        <span class="cls">Builder</span> <span class="var">$query</span>, <span class="cls">string</span> <span class="var">$from</span>, <span class="cls">string</span> <span class="var">$to</span>
+    ): <span class="cls">Builder</span> {
+        <span class="kw">return</span> <span class="var">$query</span>-><span class="fn">whereBetween</span>(<span class="str">'created_at'</span>, [<span class="var">$from</span>, <span class="var">$to</span>]);
+    }
+}
+
+<span class="cm">// ব্যবহার — পরিষ্কার ও পঠনযোগ্য:</span>
+<span class="var">$orders</span> = <span class="cls">Order</span>::<span class="fn">pending</span>()
+    -><span class="fn">forUser</span>(<span class="var">$userId</span>)
+    -><span class="fn">recentFirst</span>()
+    -><span class="fn">with</span>(<span class="str">'product'</span>)
+    -><span class="fn">paginate</span>(<span class="num">15</span>);</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Transaction — Data Consistency নিশ্চিত করুন</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Database Transaction</span><span class="fname">OrderService.php</span></div>
+      <pre><code><span class="kw">use</span> Illuminate\Support\Facades\DB;
+
+<span class="kw">public function</span> <span class="fn">placeOrder</span>(<span class="cls">array</span> <span class="var">$orderData</span>): <span class="cls">Order</span>
+{
+    <span class="kw">return</span> <span class="cls">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span> () <span class="kw">use</span> (<span class="var">$orderData</span>) {
+        <span class="cm">// ১. Order তৈরি করুন</span>
+        <span class="var">$order</span> = <span class="var">$this</span>->orderRepo-><span class="fn">create</span>(<span class="var">$orderData</span>);
+
+        <span class="cm">// ২. Stock কমান</span>
+        <span class="var">$this</span>->productRepo-><span class="fn">decrementStock</span>(
+            <span class="var">$orderData</span>[<span class="str">'product_id'</span>],
+            <span class="var">$orderData</span>[<span class="str">'quantity'</span>]
+        );
+
+        <span class="cm">// ৩. Payment record করুন</span>
+        <span class="var">$this</span>->paymentRepo-><span class="fn">create</span>([
+            <span class="str">'order_id'</span> => <span class="var">$order</span>->id,
+            <span class="str">'amount'</span>   => <span class="var">$order</span>->total_price,
+            <span class="str">'status'</span>   => <span class="str">'pending'</span>,
+        ]);
+
+        <span class="cm">// যেকোনো step fail করলে সব rollback হবে!</span>
+        <span class="kw">return</span> <span class="var">$order</span>;
+    });
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 7 — SECURITY
+══════════════════════════════════════ -->
+<section class="chapter" id="security">
+  <div class="chapter-label">অধ্যায় ০৭</div>
+  <h2>Security ও Validation</h2>
+  <p class="chapter-intro">নিরাপত্তা পরে যোগ করার বিষয় নয় — শুরু থেকেই কোডের অংশ হওয়া উচিত।</p>
+
+  <div class="section">
+    <h3>SQL Injection থেকে সুরক্ষা</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ SQL Injection Vulnerable</h4>
+        <pre><code><span class="cm">// সরাসরি user input query-তে!</span>
+<span class="var">$email</span> = <span class="var">$_GET</span>[<span class="str">'email'</span>];
+<span class="var">$result</span> = <span class="cls">DB</span>::<span class="fn">select</span>(
+    <span class="str">"SELECT * FROM users
+     WHERE email = '</span><span class="var">$email</span><span class="str">'"</span>
+);
+
+<span class="cm">// Attacker লিখবে:
+// email = ' OR '1'='1
+// সব user-এর data চলে যাবে!</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Parameterized Query</h4>
+        <pre><code><span class="cm">// Eloquent ORM ব্যবহার করুন</span>
+<span class="var">$user</span> = <span class="cls">User</span>::<span class="fn">where</span>(<span class="str">'email'</span>, <span class="var">$email</span>)-><span class="fn">first</span>();
+
+<span class="cm">// অথবা Parameterized query</span>
+<span class="var">$result</span> = <span class="cls">DB</span>::<span class="fn">select</span>(
+    <span class="str">"SELECT * FROM users WHERE email = ?"</span>,
+    [<span class="var">$email</span>]
+);
+
+<span class="cm">// সবসময় bind করুন —
+// ORM এটা automatically করে</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Environment Variable ব্যবহার</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Hardcoded Credentials</h4>
+        <pre><code><span class="kw">class</span> <span class="cls">PaymentService</span>
+{
+    <span class="kw">private</span> <span class="var">$apiKey</span> = <span class="str">'sk_live_abc123xyz'</span>;
+    <span class="kw">private</span> <span class="var">$secret</span> = <span class="str">'super_secret_key'</span>;
+
+    <span class="cm">// Git-এ push হলে সর্বনাশ!</span>
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ .env থেকে লোড করুন</h4>
+        <pre><code><span class="cm">// .env ফাইলে রাখুন:</span>
+<span class="cm">// BKASH_API_KEY=sk_live_abc123</span>
+<span class="cm">// BKASH_SECRET=super_secret</span>
+
+<span class="kw">class</span> <span class="cls">PaymentService</span>
+{
+    <span class="kw">private</span> <span class="cls">string</span> <span class="var">$apiKey</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="var">$this</span>->apiKey = <span class="fn">config</span>(<span class="str">'payment.bkash_key'</span>);
+        <span class="cm">// .env কখনো git-এ push করবেন না!</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ গুরুত্বপূর্ণ</strong>
+      <code>.env</code> ফাইল সবসময় <code>.gitignore</code>-এ রাখুন। Production server-এ সরাসরি environment variable সেট করুন, .env file নয়।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Authentication — Middleware দিয়ে সুরক্ষা</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Route Protection — Laravel</span><span class="fname">routes/api.php</span></div>
+      <pre><code><span class="cm">// Public routes</span>
+<span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'/login'</span>, [<span class="cls">AuthController</span>::class, <span class="str">'login'</span>]);
+<span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'/register'</span>, [<span class="cls">UserController</span>::class, <span class="str">'store'</span>]);
+
+<span class="cm">// Authenticated routes</span>
+<span class="cls">Route</span>::<span class="fn">middleware</span>([<span class="str">'auth:sanctum'</span>, <span class="str">'throttle:60,1'</span>])-><span class="fn">group</span>(<span class="kw">function</span> () {
+    <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'orders'</span>, <span class="cls">OrderController</span>::class);
+    <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'/profile'</span>, [<span class="cls">ProfileController</span>::class, <span class="str">'show'</span>]);
+});
+
+<span class="cm">// Admin only routes</span>
+<span class="cls">Route</span>::<span class="fn">middleware</span>([<span class="str">'auth:sanctum'</span>, <span class="str">'role:admin'</span>])-><span class="fn">group</span>(<span class="kw">function</span> () {
+    <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'users'</span>, <span class="cls">UserController</span>::class);
+    <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'/reports'</span>, [<span class="cls">ReportController</span>::class, <span class="str">'index'</span>]);
+});</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 8 — PATTERNS
+══════════════════════════════════════ -->
+<section class="chapter" id="patterns">
+  <div class="chapter-label">অধ্যায় ০৮</div>
+  <h2>Design Patterns — বাস্তব প্রজেক্টে</h2>
+  <p class="chapter-intro">সঠিক সময়ে সঠিক pattern ব্যবহার কোডকে পুনর্ব্যবহারযোগ্য ও flexible করে তোলে।</p>
+
+  <div class="section">
+    <h3>Repository Pattern</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Repository Pattern</span><span class="fname">UserRepository.php</span></div>
+      <pre><code><span class="cm">// Interface — Contract সংজ্ঞায়িত করুন</span>
+<span class="kw">interface</span> <span class="cls">UserRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="cls">int</span> <span class="var">$id</span>): ?<span class="cls">User</span>;
+    <span class="kw">public function</span> <span class="fn">findByEmail</span>(<span class="cls">string</span> <span class="var">$email</span>): ?<span class="cls">User</span>;
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>;
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="cls">int</span> <span class="var">$id</span>, <span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>;
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">bool</span>;
+    <span class="kw">public function</span> <span class="fn">paginate</span>(<span class="cls">int</span> <span class="var">$perPage</span>): <span class="cls">LengthAwarePaginator</span>;
+}
+
+<span class="cm">// Eloquent Implementation</span>
+<span class="kw">class</span> <span class="cls">EloquentUserRepository</span> <span class="kw">implements</span> <span class="cls">UserRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private</span> <span class="cls">User</span> <span class="var">$model</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="cls">int</span> <span class="var">$id</span>): ?<span class="cls">User</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->model-><span class="fn">find</span>(<span class="var">$id</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">User</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->model-><span class="fn">create</span>(<span class="var">$data</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">paginate</span>(<span class="cls">int</span> <span class="var">$perPage</span>): <span class="cls">LengthAwarePaginator</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->model
+            -><span class="fn">select</span>([<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'created_at'</span>])
+            -><span class="fn">latest</span>()
+            -><span class="fn">paginate</span>(<span class="var">$perPage</span>);
+    }
+
+    <span class="cm">// ... অন্যান্য methods</span>
+}
+
+<span class="cm">// AppServiceProvider-এ bind করুন</span>
+<span class="var">$this</span>->app-><span class="fn">bind</span>(
+    <span class="cls">UserRepositoryInterface</span>::class,
+    <span class="cls">EloquentUserRepository</span>::class
+);</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Observer Pattern — Model Events</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Laravel Observer</span><span class="fname">OrderObserver.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Observers;
+
+<span class="kw">use</span> App\Models\Order;
+<span class="kw">use</span> App\Jobs\SendOrderConfirmationJob;
+<span class="kw">use</span> App\Jobs\UpdateInventoryJob;
+
+<span class="kw">class</span> <span class="cls">OrderObserver</span>
+{
+    <span class="kw">public function</span> <span class="fn">created</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">void</span>
+    {
+        <span class="cm">// Order তৈরি হলে automatically:</span>
+        <span class="cls">SendOrderConfirmationJob</span>::<span class="fn">dispatch</span>(<span class="var">$order</span>);
+        <span class="cls">UpdateInventoryJob</span>::<span class="fn">dispatch</span>(<span class="var">$order</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">updated</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">void</span>
+    {
+        <span class="kw">if</span> (<span class="var">$order</span>-><span class="fn">wasChanged</span>(<span class="str">'status'</span>)) {
+            <span class="cm">// Status পরিবর্তন হলে notification পাঠান</span>
+            <span class="var">$order</span>->user-><span class="fn">notify</span>(<span class="kw">new</span> <span class="cls">OrderStatusChanged</span>(<span class="var">$order</span>));
+        }
+    }
+
+    <span class="kw">public function</span> <span class="fn">deleted</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">void</span>
+    {
+        <span class="cm">// Soft delete — audit log রাখুন</span>
+        <span class="fn">logger</span>()-><span class="fn">info</span>(<span class="str">'Order deleted'</span>, [<span class="str">'order_id'</span> => <span class="var">$order</span>->id]);
+    }
+}
+
+<span class="cm">// Model-এ register করুন অথবা AppServiceProvider-এ:</span>
+<span class="cls">Order</span>::<span class="fn">observe</span>(<span class="cls">OrderObserver</span>::class);</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     CHAPTER 9 — COMMON MISTAKES
+══════════════════════════════════════ -->
+<section class="chapter" id="mistakes">
+  <div class="chapter-label">অধ্যায় ০৯</div>
+  <h2>সবচেয়ে সাধারণ ভুলগুলো</h2>
+  <p class="chapter-intro">বাংলাদেশের PHP ডেভেলপারদের সবচেয়ে বেশি করা ভুলগুলো এবং সেগুলোর সমাধান।</p>
+
+  <div class="section">
+    <h3>ভুল ১ — Fat Controller (মোটা Controller)</h3>
+    <div class="callout warn">
+      <strong>⚠️ সমস্যা</strong>
+      Controller-এ validation, business logic, database query, email sending — সব একসাথে লেখা। ১টি controller method ৩০০+ লাইনের হয়ে যায়।
+    </div>
+    <div class="callout tip">
+      <strong>✅ সমাধান</strong>
+      Controller শুধু Request নেবে এবং Response দেবে। Business Logic → Service, Validation → Form Request, Database → Repository।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ২ — Magic Numbers ও Magic Strings</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Magic Numbers/Strings</h4>
+        <pre><code><span class="kw">if</span> (<span class="var">$user</span>->role === <span class="num">2</span>) {
+    <span class="cm">// 2 মানে কী? admin? moderator?</span>
+}
+
+<span class="kw">if</span> (<span class="var">$order</span>->status === <span class="str">'3'</span>) {
+    <span class="cm">// '3' মানে কী?</span>
+}
+
+<span class="var">$tax</span> = <span class="var">$price</span> * <span class="num">0.15</span>;
+<span class="cm">// 0.15 কোথা থেকে আসলো?</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Constants / Enum ব্যবহার</h4>
+        <pre><code><span class="cm">// PHP 8.1 Enum</span>
+<span class="kw">enum</span> <span class="cls">UserRole</span>: <span class="cls">int</span>
+{
+    <span class="kw">case</span> Admin     = <span class="num">1</span>;
+    <span class="kw">case</span> Editor    = <span class="num">2</span>;
+    <span class="kw">case</span> Customer  = <span class="num">3</span>;
+}
+
+<span class="kw">enum</span> <span class="cls">OrderStatus</span>: <span class="cls">string</span>
+{
+    <span class="kw">case</span> Pending  = <span class="str">'pending'</span>;
+    <span class="kw">case</span> Shipped  = <span class="str">'shipped'</span>;
+    <span class="kw">case</span> Delivered = <span class="str">'delivered'</span>;
+}
+
+<span class="kw">const</span> <span class="var">VAT_RATE</span> = <span class="num">0.15</span>; <span class="cm">// বাংলাদেশ VAT</span>
+<span class="var">$tax</span> = <span class="var">$price</span> * <span class="cls">self</span>::<span class="var">VAT_RATE</span>;</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৩ — Error Handling না করা</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ No Error Handling</h4>
+        <pre><code><span class="kw">public function</span> <span class="fn">getUser</span>(<span class="var">$id</span>)
+{
+    <span class="var">$user</span> = <span class="cls">User</span>::<span class="fn">find</span>(<span class="var">$id</span>);
+    <span class="cm">// $user হতে পারে null!
+    // পরের লাইনে crash হবে</span>
+    <span class="kw">return</span> <span class="var">$user</span>->name;
+}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Proper Error Handling</h4>
+        <pre><code><span class="kw">public function</span> <span class="fn">getUser</span>(<span class="cls">int</span> <span class="var">$id</span>): <span class="cls">User</span>
+{
+    <span class="kw">return</span> <span class="cls">User</span>::<span class="fn">findOrFail</span>(<span class="var">$id</span>);
+    <span class="cm">// না পেলে 404 Exception throw করে
+    // Laravel automatically handle করে</span>
+}
+
+<span class="cm">// অথবা Custom Exception</span>
+<span class="kw">$user</span> = <span class="cls">User</span>::<span class="fn">find</span>(<span class="var">$id</span>)
+    ?? <span class="kw">throw new</span> <span class="cls">UserNotFoundException</span>(
+        <span class="str">"User #</span><span class="var">$id</span><span class="str"> not found"</span>
+    );</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৪ — Comment এর অপব্যবহার</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ অপ্রয়োজনীয় Comment</h4>
+        <pre><code><span class="cm">// $age বাড়াও ১ দিয়ে</span>
+<span class="var">$age</span>++;
+
+<span class="cm">// Users array ফেরত দাও</span>
+<span class="kw">return</span> <span class="var">$users</span>;
+
+<span class="cm">// user-এর বয়স check করো</span>
+<span class="kw">if</span> (<span class="var">$user</span>->age > <span class="num">18</span>) {</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Meaningful Comment</h4>
+        <pre><code><span class="cm">// bKash API requires amount in paisa (1 taka = 100 paisa)</span>
+<span class="var">$amountInPaisa</span> = <span class="var">$amount</span> * <span class="num">100</span>;
+
+<span class="cm">// HACK: API returns duplicate entries when
+// pagination is used with sort. Remove after
+// API v2 release (tracked in ticket #234)</span>
+<span class="var">$results</span> = <span class="fn">array_unique</span>(<span class="var">$results</span>);
+
+<span class="cm">// Self-explanatory code → no comment needed:</span>
+<span class="kw">if</span> (<span class="var">$user</span>-><span class="fn">isAdult</span>()) { <span class="cm">/* ... */</span> }</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৫ — Facade Overuse (Laravel)</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Dependency Injection vs Facade</span></div>
+      <pre><code><span class="cm">// ❌ Facade সর্বত্র — testing কঠিন</span>
+<span class="kw">class</span> <span class="cls">ReportService</span>
+{
+    <span class="kw">public function</span> <span class="fn">generate</span>(): <span class="cls">string</span>
+    {
+        <span class="var">$users</span> = <span class="cls">DB</span>::<span class="fn">table</span>(<span class="str">'users'</span>)-><span class="fn">get</span>(); <span class="cm">// Facade</span>
+        <span class="cls">Cache</span>::<span class="fn">put</span>(<span class="str">'report'</span>, <span class="var">$users</span>, <span class="num">3600</span>);    <span class="cm">// Facade</span>
+        <span class="cls">Log</span>::<span class="fn">info</span>(<span class="str">'Report generated'</span>);          <span class="cm">// Facade</span>
+    }
+}
+
+<span class="cm">// ✅ Dependency Injection — testable ও explicit</span>
+<span class="kw">class</span> <span class="cls">ReportService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">UserRepositoryInterface</span> <span class="var">$userRepo</span>,
+        <span class="kw">private</span> <span class="cls">CacheInterface</span>          <span class="var">$cache</span>,
+        <span class="kw">private</span> <span class="cls">LoggerInterface</span>         <span class="var">$logger</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">generate</span>(): <span class="cls">string</span>
+    {
+        <span class="var">$users</span> = <span class="var">$this</span>->userRepo-><span class="fn">getAll</span>();
+        <span class="var">$this</span>->cache-><span class="fn">set</span>(<span class="str">'report'</span>, <span class="var">$users</span>, <span class="num">3600</span>);
+        <span class="var">$this</span>->logger-><span class="fn">info</span>(<span class="str">'Report generated'</span>);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>চেকলিস্ট — Code Review এর আগে</h3>
+    <div class="rules">
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>নামকরণ অর্থবহ?</h4><p>ভেরিয়েবল, ফাংশন, ক্লাসের নাম পড়েই কী করে বোঝা যাচ্ছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>ফাংশন একটি কাজ করছে?</h4><p>একটি ফাংশন ২০ লাইনের বেশি হলে split করার কথা ভাবুন।</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>Validation করা হয়েছে?</h4><p>সব user input validate করা হয়েছে? Type hint ব্যবহার করা হয়েছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>Error handling আছে?</h4><p>Exception throw করা হয়েছে? Null check করা হয়েছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>Database query optimize?</h4><p>N+1 problem নেই? Index আছে? Unnecessary query নেই?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>Secret/credentials .env-এ?</h4><p>কোনো password, API key hardcode করা নেই?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>Test লেখা হয়েছে?</h4><p>Unit test ও Feature test লেখা আছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">✅</div><div><h4>DRY মানা হয়েছে?</h4><p>একই code ২ বা তার বেশি জায়গায় copy-paste করা হয়নি?</p></div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div style="font-size:1.5rem;margin-bottom:.5rem">⌨️</div>
+  <p style="color:var(--text);font-weight:600;margin-bottom:.3rem">ক্লিন কোড মাস্টারক্লাস</p>
+  <p>PHP · Laravel · CodeIgniter — সম্পূর্ণ বাংলা গাইড</p>
+  <p style="margin-top:.5rem;font-size:.8rem">"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler</p>
+</footer>
+
+</body>
+</html>

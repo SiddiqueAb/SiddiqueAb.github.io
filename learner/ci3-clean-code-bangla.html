@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeIgniter 3 — ক্লিন কোড গাইড (বাংলা)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#21262d;
+  --border:#30363d;
+  --accent:#e44d26;
+  --accent-soft:rgba(228,77,38,.12);
+  --blue:#58a6ff;
+  --text:#e6edf3;
+  --text2:#8b949e;
+  --good:#1f4f2b;
+  --good-border:#3fb950;
+  --bad:#4f1f1f;
+  --bad-border:#f78166;
+  --ok:#4f3e1f;
+  --ok-border:#e3b341;
+  --best:#1a2e4f;
+  --best-border:#58a6ff;
+  --radius:10px;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans Bengali',sans-serif;background:var(--bg);color:var(--text);line-height:1.85;font-size:15px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* COVER */
+.cover{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d1117 0%,#1a0d0a 50%,#0d1117 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 55% at 50% 40%,rgba(228,77,38,.1) 0%,transparent 70%);
+}
+.cover-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:44px 44px;opacity:.12;
+}
+.ci-logo{
+  width:72px;height:72px;margin-bottom:1.5rem;position:relative;z-index:1;
+  background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:2rem;font-weight:900;color:#fff;font-family:var(--mono);
+  box-shadow:0 0 40px rgba(228,77,38,.4);
+}
+.badge{
+  display:inline-block;background:rgba(228,77,38,.12);border:1px solid var(--accent);
+  color:var(--accent);padding:.3rem 1.2rem;border-radius:50px;font-size:.78rem;
+  letter-spacing:.08em;margin-bottom:1.5rem;position:relative;z-index:1;
+}
+.cover h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,7vw,4.2rem);font-weight:900;line-height:1.15;
+  background:linear-gradient(135deg,#e6edf3 0%,#e44d26 55%,#f7a265 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.8rem;position:relative;z-index:1;
+}
+.cover .sub{font-size:clamp(.95rem,2.5vw,1.2rem);color:var(--text2);margin-bottom:2rem;max-width:580px;position:relative;z-index:1}
+.tags{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:2.5rem;position:relative;z-index:1}
+.tag{background:var(--surface2);border:1px solid var(--border);padding:.35rem 1rem;border-radius:50px;font-size:.8rem;color:var(--text2)}
+.tag.ci{border-color:var(--accent);color:var(--accent)}
+.tag.php{border-color:#8892bf;color:#8892bf}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--text2);font-size:.8rem;animation:bounce 2s infinite;z-index:1}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* NAV */
+.sticky-nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,.93);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:.6rem 1.2rem;display:flex;align-items:center;gap:.8rem;overflow-x:auto;
+}
+.nav-logo{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:.88rem;white-space:nowrap}
+.sticky-nav a{color:var(--text2);text-decoration:none;font-size:.8rem;white-space:nowrap;padding:.3rem .7rem;border-radius:50px;transition:all .2s}
+.sticky-nav a:hover{background:var(--surface2);color:var(--text)}
+
+/* LAYOUT */
+.wrapper{max-width:920px;margin:0 auto;padding:0 1.2rem}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:3rem auto;max-width:920px;padding:0 1.2rem}
+.toc-header{padding:1.5rem 0 1rem;border-bottom:1px solid var(--border);font-size:1.05rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:.6rem}
+.toc-list{list-style:none;padding:.8rem 0}
+.toc-list li{border-bottom:1px solid rgba(48,54,61,.5)}
+.toc-list li:last-child{border-bottom:none}
+.toc-list a{display:flex;align-items:center;gap:.8rem;padding:.7rem 0;color:var(--text2);text-decoration:none;transition:color .2s;font-size:.9rem}
+.toc-list a:hover{color:var(--accent)}
+.toc-num{min-width:28px;height:28px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--text2);font-family:var(--mono);flex-shrink:0}
+
+/* CHAPTER */
+.chapter{padding:4rem 0 2rem}
+.chapter-label{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:.5rem}
+.chapter h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:700;color:var(--text);margin-bottom:1rem}
+.chapter-intro{font-size:.98rem;color:var(--text2);border-left:3px solid var(--accent);padding-left:1rem;margin-bottom:2rem}
+
+/* SECTION */
+.section{margin-bottom:3rem}
+.section h3{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.section h3::before{content:'';display:inline-block;width:4px;height:1.1em;background:var(--accent);border-radius:2px;flex-shrink:0}
+.section p{color:var(--text2);margin-bottom:.8rem;line-height:1.9}
+.section ul,.section ol{color:var(--text2);padding-left:1.5rem;margin-bottom:.8rem}
+.section li{margin-bottom:.4rem}
+
+/* CODE */
+.code-wrap{margin:1.2rem 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;font-size:.75rem;font-family:var(--mono)}
+.code-label .fname{color:var(--text2)}
+.good-block .code-label{background:var(--good);border-bottom:1px solid var(--good-border)}
+.good-block .code-label .badge-type{color:var(--good-border)}
+.bad-block .code-label{background:var(--bad);border-bottom:1px solid var(--bad-border)}
+.bad-block .code-label .badge-type{color:var(--bad-border)}
+.ok-block .code-label{background:var(--ok);border-bottom:1px solid var(--ok-border)}
+.ok-block .code-label .badge-type{color:var(--ok-border)}
+.best-block .code-label{background:var(--best);border-bottom:1px solid var(--best-border)}
+.best-block .code-label .badge-type{color:var(--best-border)}
+pre{background:#0d1117;padding:1.2rem;overflow-x:auto;font-family:var(--mono);font-size:.81rem;line-height:1.75;tab-size:4}
+code{font-family:var(--mono)}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.str{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}
+.num{color:#f2cc60}.cls{color:#ffa657}.var{color:#e6edf3}.arr{color:#79c0ff}.php-tag{color:#ff7b72}
+
+/* CALLOUT */
+.callout{border-radius:var(--radius);padding:1rem 1.2rem;margin:1.2rem 0;border-left:4px solid;font-size:.9rem}
+.callout.tip{background:rgba(63,185,80,.07);border-color:var(--good-border);color:var(--text2)}
+.callout.warn{background:rgba(247,129,102,.07);border-color:var(--bad-border);color:var(--text2)}
+.callout.info{background:rgba(88,166,255,.07);border-color:var(--blue);color:var(--text2)}
+.callout.ci{background:rgba(228,77,38,.07);border-color:var(--accent);color:var(--text2)}
+.callout strong{display:block;margin-bottom:.3rem}
+.callout.tip strong{color:var(--good-border)}
+.callout.warn strong{color:var(--bad-border)}
+.callout.info strong{color:var(--blue)}
+.callout.ci strong{color:var(--accent)}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}
+@media(max-width:620px){.compare{grid-template-columns:1fr}}
+.compare-col h4{padding:.5rem .8rem;border-radius:6px 6px 0 0;font-size:.82rem;font-family:var(--mono);font-weight:600}
+.compare-col.bad-col h4{background:var(--bad);color:var(--bad-border);border:1px solid var(--bad-border);border-bottom:none}
+.compare-col.good-col h4{background:var(--good);color:var(--good-border);border:1px solid var(--good-border);border-bottom:none}
+.compare-col pre{border-radius:0 0 6px 6px;font-size:.78rem}
+.compare-col.bad-col pre{border:1px solid var(--bad-border)}
+.compare-col.good-col pre{border:1px solid var(--good-border)}
+
+/* RULE CARDS */
+.rules{display:grid;gap:.8rem;margin:1rem 0}
+.rule-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;display:flex;gap:.8rem;align-items:flex-start}
+.rule-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.rule-card h4{font-size:.93rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.rule-card p{font-size:.84rem;color:var(--text2);margin:0}
+
+/* FILE TREE */
+.file-tree{background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;font-family:var(--mono);font-size:.82rem;line-height:2;overflow-x:auto}
+.ft-dir{color:var(--accent)}
+.ft-file{color:var(--text2)}
+.ft-comment{color:#8b949e;font-style:italic}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:3rem 0}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);text-align:center;padding:2.5rem 1.2rem;color:var(--text2);font-size:.85rem}
+
+/* VERSION BADGE */
+.v-badge{display:inline-flex;align-items:center;gap:.4rem;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent);padding:.25rem .8rem;border-radius:50px;font-size:.75rem;font-family:var(--mono);margin-left:.5rem;vertical-align:middle}
+
+@media(max-width:480px){pre{font-size:.74rem}.section h3{font-size:1rem}.chapter h2{font-size:1.4rem}}
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<section class="cover" id="top">
+  <div class="cover-grid"></div>
+  <div class="ci-logo">CI</div>
+  <div class="badge">📖 সম্পূর্ণ বাংলা গাইড · CodeIgniter 3</div>
+  <h1>ক্লিন কোড<br>CodeIgniter 3</h1>
+  <p class="sub">CI3 দিয়ে বড় প্রজেক্টে পেশাদার, পরিষ্কার ও রক্ষণাবেক্ষণযোগ্য কোড লেখার সম্পূর্ণ গাইড — ভালো, খারাপ ও সেরা কোড উদাহরণসহ</p>
+  <div class="tags">
+    <span class="tag ci">CodeIgniter 3.x</span>
+    <span class="tag php">PHP 7+</span>
+    <span class="tag">MVC Pattern</span>
+    <span class="tag">Best Practices</span>
+    <span class="tag">Real Project</span>
+  </div>
+  <div class="scroll-hint">↓ পড়তে নিচে স্ক্রোল করুন</div>
+</section>
+
+<!-- ══ NAV ══ -->
+<nav class="sticky-nav">
+  <span class="nav-logo">CI3 &gt;</span>
+  <a href="#structure">স্ট্রাকচার</a>
+  <a href="#naming">নামকরণ</a>
+  <a href="#controller">Controller</a>
+  <a href="#model">Model</a>
+  <a href="#view">View</a>
+  <a href="#library">Library</a>
+  <a href="#db">Database</a>
+  <a href="#security">Security</a>
+  <a href="#mistakes">ভুল</a>
+  <a href="#checklist">চেকলিস্ট</a>
+</nav>
+
+<!-- ══ TOC ══ -->
+<div class="wrapper">
+<div class="toc">
+  <div class="toc-header">📑 বিষয়বস্তু</div>
+  <ul class="toc-list">
+    <li><a href="#structure"><span class="toc-num">01</span> প্রজেক্ট স্ট্রাকচার ও ফাইল সংগঠন</a></li>
+    <li><a href="#naming"><span class="toc-num">02</span> নামকরণ কনভেনশন — CI3 স্টাইল</a></li>
+    <li><a href="#controller"><span class="toc-num">03</span> Controller — সঠিক ও ভুল পদ্ধতি</a></li>
+    <li><a href="#model"><span class="toc-num">04</span> Model — ডেটাবেস লজিক সঠিকভাবে</a></li>
+    <li><a href="#view"><span class="toc-num">05</span> View — Template ক্লিন রাখা</a></li>
+    <li><a href="#library"><span class="toc-num">06</span> Library ও Helper — কাস্টম কোড পুনর্ব্যবহার</a></li>
+    <li><a href="#db"><span class="toc-num">07</span> Database Query — সঠিক পদ্ধতি</a></li>
+    <li><a href="#security"><span class="toc-num">08</span> Security ও Validation</a></li>
+    <li><a href="#mistakes"><span class="toc-num">09</span> সবচেয়ে সাধারণ ভুলগুলো</a></li>
+    <li><a href="#checklist"><span class="toc-num">10</span> Code Review চেকলিস্ট</a></li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CH 1 — STRUCTURE
+═══════════════════════════════════ -->
+<div class="wrapper">
+<section class="chapter" id="structure">
+  <div class="chapter-label">অধ্যায় ০১</div>
+  <h2>প্রজেক্ট স্ট্রাকচার <span class="v-badge">CI 3.x</span></h2>
+  <p class="chapter-intro">একটি সুসংগঠিত ফাইল স্ট্রাকচার বড় প্রজেক্টে টিম ওয়ার্ক সহজ করে এবং নতুন ডেভেলপারদের দ্রুত কাজে লাগতে সাহায্য করে।</p>
+
+  <div class="section">
+    <h3>CI3 ডিফল্ট বনাম প্রজেক্ট স্ট্রাকচার</h3>
+
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ খারাপ — সব একসাথে গাদাগাদি</h4>
+        <pre><code>application/
+├── controllers/
+│   ├── user.php
+│   ├── admin_user.php
+│   ├── admin_product.php
+│   ├── api_user.php
+│   ├── welcome.php
+│   └── ... (৫০+ ফাইল একসাথে!)
+├── models/
+│   └── ... (৫০+ model একসাথে)
+└── views/
+    └── ... (১০০+ view একসাথে)</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ ভালো — Sub-folder দিয়ে সংগঠিত</h4>
+        <pre><code>application/
+├── controllers/
+│   ├── admin/
+│   │   ├── Users.php
+│   │   └── Products.php
+│   ├── api/
+│   │   └── v1/
+│   │       └── Users.php
+│   └── frontend/
+│       └── Home.php
+├── models/
+│   ├── User_model.php
+│   └── Product_model.php
+└── views/
+    ├── admin/
+    ├── frontend/
+    └── templates/</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>বড় প্রজেক্টের জন্য পূর্ণ স্ট্রাকচার</h3>
+    <div class="file-tree">
+<span class="ft-dir">application/</span>
+├── <span class="ft-dir">config/</span>
+│   ├── <span class="ft-file">autoload.php</span>      <span class="ft-comment">← Auto-load libraries, helpers</span>
+│   ├── <span class="ft-file">database.php</span>      <span class="ft-comment">← DB config (.env থেকে নিন)</span>
+│   ├── <span class="ft-file">routes.php</span>        <span class="ft-comment">← Custom routes</span>
+│   └── <span class="ft-file">constants.php</span>     <span class="ft-comment">← App-wide constants</span>
+├── <span class="ft-dir">controllers/</span>
+│   ├── <span class="ft-dir">admin/</span>
+│   │   ├── <span class="ft-file">Dashboard.php</span>
+│   │   ├── <span class="ft-file">Users.php</span>
+│   │   └── <span class="ft-file">Products.php</span>
+│   ├── <span class="ft-dir">api/</span>
+│   │   └── <span class="ft-dir">v1/</span>
+│   │       ├── <span class="ft-file">Auth.php</span>
+│   │       └── <span class="ft-file">Orders.php</span>
+│   └── <span class="ft-dir">frontend/</span>
+│       ├── <span class="ft-file">Home.php</span>
+│       └── <span class="ft-file">Shop.php</span>
+├── <span class="ft-dir">models/</span>
+│   ├── <span class="ft-file">User_model.php</span>    <span class="ft-comment">← CI3 convention: _model suffix</span>
+│   ├── <span class="ft-file">Product_model.php</span>
+│   └── <span class="ft-file">Order_model.php</span>
+├── <span class="ft-dir">views/</span>
+│   ├── <span class="ft-dir">admin/</span>
+│   ├── <span class="ft-dir">frontend/</span>
+│   └── <span class="ft-dir">templates/</span>         <span class="ft-comment">← header, footer, sidebar</span>
+│       ├── <span class="ft-file">header.php</span>
+│       ├── <span class="ft-file">footer.php</span>
+│       └── <span class="ft-file">sidebar.php</span>
+├── <span class="ft-dir">libraries/</span>           <span class="ft-comment">← Custom reusable libraries</span>
+│   ├── <span class="ft-file">MY_Controller.php</span> <span class="ft-comment">← Base controller</span>
+│   ├── <span class="ft-file">Upload_lib.php</span>
+│   └── <span class="ft-file">Sms_lib.php</span>
+├── <span class="ft-dir">helpers/</span>             <span class="ft-comment">← Custom helper functions</span>
+│   ├── <span class="ft-file">app_helper.php</span>
+│   └── <span class="ft-file">format_helper.php</span>
+└── <span class="ft-dir">third_party/</span>         <span class="ft-comment">← Third-party packages</span>
+    </div>
+
+    <div class="callout ci">
+      <strong>🔶 CI3 গুরুত্বপূর্ণ নিয়ম</strong>
+      CI3-এ ফাইলের নাম uppercase দিয়ে শুরু করুন যেমন <code>Users.php</code>, <code>User_model.php</code>। Model-এর ক্ষেত্রে <code>_model</code> suffix ব্যবহার করা CI3-এর convention।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>autoload.php — সঠিক কনফিগারেশন</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ অপ্রয়োজনীয় সব কিছু লোড</h4>
+        <pre><code><span class="cm">// সব কিছু autoload করলে</span>
+<span class="cm">// প্রতিটি page slow হয়!</span>
+<span class="var">$autoload</span>[<span class="str">'libraries'</span>] = [
+    <span class="str">'database'</span>,
+    <span class="str">'session'</span>,
+    <span class="str">'email'</span>,      <span class="cm">// শুধু mail page-এ দরকার</span>
+    <span class="str">'cart'</span>,       <span class="cm">// শুধু shop-এ দরকার</span>
+    <span class="str">'upload'</span>,     <span class="cm">// শুধু upload page-এ</span>
+    <span class="str">'pagination'</span>, <span class="cm">// শুধু list page-এ</span>
+];</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ শুধু দরকারি জিনিস autoload করুন</h4>
+        <pre><code><span class="cm">// সত্যিই সব জায়গায় দরকার এগুলো</span>
+<span class="var">$autoload</span>[<span class="str">'libraries'</span>] = [
+    <span class="str">'database'</span>,
+    <span class="str">'session'</span>,
+];
+
+<span class="var">$autoload</span>[<span class="str">'helper'</span>] = [
+    <span class="str">'url'</span>,
+    <span class="str">'form'</span>,
+];
+
+<span class="cm">// Controller-এ শুধু দরকার হলে লোড:</span>
+<span class="cm">// $this->load->library('email');</span>
+<span class="cm">// $this->load->library('upload');</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 2 — NAMING
+═══════════════════════════════════ -->
+<section class="chapter" id="naming">
+  <div class="chapter-label">অধ্যায় ০২</div>
+  <h2>নামকরণ কনভেনশন</h2>
+  <p class="chapter-intro">CI3-এর নিজস্ব naming convention আছে। সেগুলো সঠিকভাবে মেনে চললে কোড পড়তে ও বুঝতে সহজ হয়।</p>
+
+  <div class="section">
+    <h3>CI3 Naming Convention সারসংক্ষেপ</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">📌 CI3 Naming Rules</span></div>
+      <pre><code><span class="cm">// ── Controllers ──────────────────────────────</span>
+<span class="cm">// ফাইল নাম: Users.php (Ucfirst)</span>
+<span class="cm">// ক্লাস নাম: class Users extends CI_Controller</span>
+<span class="cm">// Method নাম: camelCase বা snake_case (একটা বেছে নিন, সব জায়গায় একই রাখুন)</span>
+<span class="kw">class</span> <span class="cls">Users</span> <span class="kw">extends</span> <span class="cls">CI_Controller</span> {
+    <span class="kw">public function</span> <span class="fn">getUserList</span>() {}  <span class="cm">// camelCase</span>
+    <span class="kw">public function</span> <span class="fn">get_user_list</span>() {} <span class="cm">// snake_case — CI3 prefer করে</span>
+}
+
+<span class="cm">// ── Models ───────────────────────────────────</span>
+<span class="cm">// ফাইল নাম: User_model.php</span>
+<span class="cm">// ক্লাস নাম: class User_model extends CI_Model</span>
+<span class="kw">class</span> <span class="cls">User_model</span> <span class="kw">extends</span> <span class="cls">CI_Model</span> {
+    <span class="kw">public function</span> <span class="fn">get_all_users</span>() {}
+    <span class="kw">public function</span> <span class="fn">get_user_by_id</span>(<span class="var">$id</span>) {}
+    <span class="kw">public function</span> <span class="fn">insert_user</span>(<span class="var">$data</span>) {}
+    <span class="kw">public function</span> <span class="fn">update_user</span>(<span class="var">$id</span>, <span class="var">$data</span>) {}
+    <span class="kw">public function</span> <span class="fn">delete_user</span>(<span class="var">$id</span>) {}
+}
+
+<span class="cm">// ── Libraries ────────────────────────────────</span>
+<span class="cm">// ফাইল নাম: Sms_sender.php</span>
+<span class="cm">// ক্লাস নাম: class Sms_sender</span>
+<span class="kw">class</span> <span class="cls">Sms_sender</span> {
+    <span class="kw">public function</span> <span class="fn">send_sms</span>(<span class="var">$phone</span>, <span class="var">$message</span>) {}
+}
+
+<span class="cm">// ── Helpers ──────────────────────────────────</span>
+<span class="cm">// ফাইল নাম: format_helper.php (_helper suffix)</span>
+<span class="cm">// ফাংশন নাম: snake_case</span>
+<span class="kw">function</span> <span class="fn">format_currency</span>(<span class="var">$amount</span>) {}
+<span class="kw">function</span> <span class="fn">format_date</span>(<span class="var">$date</span>) {}
+
+<span class="cm">// ── Variables ────────────────────────────────</span>
+<span class="var">$user_id</span>        = <span class="num">1</span>;     <span class="cm">// snake_case</span>
+<span class="var">$order_total</span>    = <span class="num">0.0</span>;  <span class="cm">// snake_case</span>
+<span class="var">$is_logged_in</span>   = <span class="kw">false</span>;<span class="cm">// boolean: is_ prefix</span>
+<span class="var">$has_permission</span> = <span class="kw">true</span>; <span class="cm">// boolean: has_ prefix</span>
+
+<span class="cm">// ── Constants ────────────────────────────────</span>
+<span class="kw">define</span>(<span class="str">'MAX_LOGIN_ATTEMPTS'</span>, <span class="num">5</span>);
+<span class="kw">define</span>(<span class="str">'DEFAULT_CURRENCY'</span>, <span class="str">'BDT'</span>);
+<span class="kw">define</span>(<span class="str">'ORDER_STATUS_PENDING'</span>, <span class="str">'pending'</span>);</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>অর্থবহ নাম বনাম অর্থহীন নাম</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ অর্থহীন নাম</h4>
+        <pre><code><span class="var">$d</span>    = <span class="num">30</span>;
+<span class="var">$u</span>    = <span class="fn">get_user</span>(<span class="num">1</span>);
+<span class="var">$temp</span> = [];
+<span class="var">$flag</span> = <span class="kw">true</span>;
+<span class="var">$x</span>    = <span class="fn">calculate</span>(<span class="var">$u</span>);
+<span class="var">$res</span>  = <span class="var">$this</span>->db-><span class="fn">get</span>(<span class="str">'t1'</span>);
+<span class="var">$arr2</span> = [];
+
+<span class="cm">// function নাম ও অর্থহীন</span>
+<span class="kw">function</span> <span class="fn">proc</span>(<span class="var">$a</span>, <span class="var">$b</span>) {}
+<span class="kw">function</span> <span class="fn">do_stuff</span>(<span class="var">$x</span>) {}
+<span class="kw">function</span> <span class="fn">handle</span>() {}</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ অর্থবহ নাম</h4>
+        <pre><code><span class="var">$expiry_days</span>    = <span class="num">30</span>;
+<span class="var">$user</span>           = <span class="fn">get_user_by_id</span>(<span class="num">1</span>);
+<span class="var">$active_orders</span>  = [];
+<span class="var">$is_verified</span>    = <span class="kw">true</span>;
+<span class="var">$calculated_tax</span> = <span class="fn">calculate_tax</span>(<span class="var">$user</span>);
+<span class="var">$users_result</span>   = <span class="var">$this</span>->db-><span class="fn">get</span>(<span class="str">'users'</span>);
+<span class="var">$pending_orders</span> = [];
+
+<span class="cm">// অর্থবহ function নাম</span>
+<span class="kw">function</span> <span class="fn">send_order_confirmation</span>(<span class="var">$order_id</span>, <span class="var">$email</span>) {}
+<span class="kw">function</span> <span class="fn">calculate_invoice_total</span>(<span class="var">$items</span>) {}
+<span class="kw">function</span> <span class="fn">get_active_products</span>() {}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 3 — CONTROLLER
+═══════════════════════════════════ -->
+<section class="chapter" id="controller">
+  <div class="chapter-label">অধ্যায় ০৩</div>
+  <h2>Controller — সঠিক পদ্ধতি</h2>
+  <p class="chapter-intro">CI3-তে Controller-ই সবচেয়ে বেশি ভুল হয়। Controller শুধু Request ও Response পরিচালনা করবে — business logic এখানে থাকবে না।</p>
+
+  <div class="section">
+    <h3>Base Controller — MY_Controller</h3>
+    <p style="color:var(--text2)">সব controller-এ দরকারি shared logic <code>MY_Controller</code>-এ রাখুন। এটি CI3-এর সবচেয়ে গুরুত্বপূর্ণ pattern।</p>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Base Controller</span><span class="fname">application/core/MY_Controller.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="kw">class</span> <span class="cls">MY_Controller</span> <span class="kw">extends</span> <span class="cls">CI_Controller</span>
+{
+    <span class="kw">protected</span> <span class="var">$data</span> = [];  <span class="cm">// view-এ pass করার data</span>
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>();
+        <span class="cm">// সব controller-এ দরকারি setup</span>
+        <span class="var">$this</span>->load->model(<span class="str">'User_model'</span>);
+        <span class="var">$this</span>-><span class="var">data</span>[<span class="str">'site_name'</span>] = <span class="var">$this</span>->config->item(<span class="str">'site_name'</span>);
+    }
+
+    <span class="cm">// ── View Loader Helper ─────────────────────</span>
+    <span class="kw">protected function</span> <span class="fn">render</span>(<span class="var">$view</span>, <span class="var">$extra_data</span> = [])
+    {
+        <span class="var">$data</span> = <span class="fn">array_merge</span>(<span class="var">$this</span>-><span class="var">data</span>, <span class="var">$extra_data</span>);
+        <span class="var">$this</span>->load->view(<span class="str">'templates/header'</span>, <span class="var">$data</span>);
+        <span class="var">$this</span>->load->view(<span class="var">$view</span>, <span class="var">$data</span>);
+        <span class="var">$this</span>->load->view(<span class="str">'templates/footer'</span>, <span class="var">$data</span>);
+    }
+
+    <span class="cm">// ── JSON Response Helper ───────────────────</span>
+    <span class="kw">protected function</span> <span class="fn">json_response</span>(<span class="var">$data</span>, <span class="var">$status_code</span> = <span class="num">200</span>)
+    {
+        <span class="var">$this</span>->output
+            ->set_status_header(<span class="var">$status_code</span>)
+            ->set_content_type(<span class="str">'application/json'</span>)
+            ->set_output(<span class="fn">json_encode</span>(<span class="var">$data</span>));
+    }
+
+    <span class="cm">// ── Auth Check ────────────────────────────</span>
+    <span class="kw">protected function</span> <span class="fn">require_login</span>()
+    {
+        <span class="kw">if</span> (!<span class="var">$this</span>->session->userdata(<span class="str">'user_id'</span>)) {
+            <span class="fn">redirect</span>(<span class="str">'auth/login'</span>);
+        }
+    }
+}
+
+<span class="cm">// ── Admin Base Controller ──────────────────────────</span>
+<span class="kw">class</span> <span class="cls">Admin_Controller</span> <span class="kw">extends</span> <span class="cls">MY_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>();
+        <span class="var">$this</span>-><span class="fn">require_login</span>();
+        <span class="var">$this</span>-><span class="fn">require_role</span>(<span class="str">'admin'</span>);
+    }
+
+    <span class="kw">protected function</span> <span class="fn">require_role</span>(<span class="var">$role</span>)
+    {
+        <span class="kw">if</span> (<span class="var">$this</span>->session->userdata(<span class="str">'role'</span>) !== <span class="var">$role</span>) {
+            <span class="fn">show_error</span>(<span class="str">'Access Denied'</span>, <span class="num">403</span>);
+        }
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Controller — ভালো ও খারাপ তুলনা</h3>
+    <div class="code-wrap bad-block">
+      <div class="code-label"><span class="badge-type">❌ Fat Controller — সব কিছু এক জায়গায়</span><span class="fname">controllers/Users.php (ভুল)</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">Users</span> <span class="kw">extends</span> <span class="cls">CI_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">register</span>()
+    {
+        <span class="cm">// ❌ validation controller-এ</span>
+        <span class="kw">if</span> (empty(<span class="var">$_POST</span>[<span class="str">'name'</span>]) || empty(<span class="var">$_POST</span>[<span class="str">'email'</span>])) {
+            <span class="kw">echo</span> <span class="str">'Missing fields'</span>;
+            <span class="kw">return</span>;
+        }
+
+        <span class="cm">// ❌ raw query controller-এ</span>
+        <span class="var">$existing</span> = <span class="var">$this</span>->db->query(
+            <span class="str">"SELECT * FROM users WHERE email='"</span>
+            . <span class="var">$_POST</span>[<span class="str">'email'</span>] . <span class="str">"'"</span>  <span class="cm">// SQL INJECTION!</span>
+        )->row();
+
+        <span class="kw">if</span> (<span class="var">$existing</span>) {
+            <span class="kw">echo</span> <span class="str">'Email taken'</span>;
+            <span class="kw">return</span>;
+        }
+
+        <span class="cm">// ❌ password hashing controller-এ</span>
+        <span class="var">$hashed</span> = md5(<span class="var">$_POST</span>[<span class="str">'password'</span>]); <span class="cm">// MD5 NEVER USE!</span>
+        <span class="var">$this</span>->db->insert(<span class="str">'users'</span>, [
+            <span class="str">'name'</span>     => <span class="var">$_POST</span>[<span class="str">'name'</span>],
+            <span class="str">'email'</span>    => <span class="var">$_POST</span>[<span class="str">'email'</span>],
+            <span class="str">'password'</span> => <span class="var">$hashed</span>,
+        ]);
+
+        <span class="cm">// ❌ email sending controller-এ</span>
+        <span class="fn">mail</span>(<span class="var">$_POST</span>[<span class="str">'email'</span>], <span class="str">'Welcome'</span>, <span class="str">'Hello'</span>);
+
+        <span class="kw">redirect</span>(<span class="str">'users/dashboard'</span>);
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Slim Controller — সঠিক পদ্ধতি</span><span class="fname">controllers/frontend/Users.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="kw">class</span> <span class="cls">Users</span> <span class="kw">extends</span> <span class="cls">MY_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>();
+        <span class="var">$this</span>->load->model(<span class="str">'User_model'</span>);
+        <span class="var">$this</span>->load->library([<span class="str">'form_validation'</span>, <span class="str">'email'</span>]);
+        <span class="var">$this</span>->load->helper(<span class="str">'security'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="var">$users</span> = <span class="var">$this</span>->User_model-><span class="fn">get_all_paginated</span>(<span class="num">15</span>);
+        <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'users/index'</span>, [<span class="str">'users'</span> => <span class="var">$users</span>]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">register</span>()
+    {
+        <span class="kw">if</span> (<span class="var">$this</span>->input->server(<span class="str">'REQUEST_METHOD'</span>) !== <span class="str">'POST'</span>) {
+            <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'users/register'</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">if</span> (!<span class="var">$this</span>-><span class="fn">_validate_registration</span>()) {
+            <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'users/register'</span>, [
+                <span class="str">'errors'</span> => <span class="var">$this</span>->form_validation->error_array(),
+            ]);
+            <span class="kw">return</span>;
+        }
+
+        <span class="var">$user_id</span> = <span class="var">$this</span>->User_model-><span class="fn">register</span>([
+            <span class="str">'name'</span>     => <span class="var">$this</span>->input->post(<span class="str">'name'</span>, <span class="kw">TRUE</span>),
+            <span class="str">'email'</span>    => <span class="var">$this</span>->input->post(<span class="str">'email'</span>, <span class="kw">TRUE</span>),
+            <span class="str">'password'</span> => <span class="var">$this</span>->input->post(<span class="str">'password'</span>),
+        ]);
+
+        <span class="var">$this</span>->session->set_flashdata(<span class="str">'success'</span>, <span class="str">'নিবন্ধন সফল!'</span>);
+        <span class="fn">redirect</span>(<span class="str">'users/login'</span>);
+    }
+
+    <span class="cm">// ── Private Helpers ───────────────────────</span>
+    <span class="kw">private function</span> <span class="fn">_validate_registration</span>()
+    {
+        <span class="var">$this</span>->form_validation->set_rules(<span class="str">'name'</span>,     <span class="str">'নাম'</span>,       <span class="str">'required|min_length[2]|max_length[100]|trim'</span>);
+        <span class="var">$this</span>->form_validation->set_rules(<span class="str">'email'</span>,    <span class="str">'ইমেইল'</span>,     <span class="str">'required|valid_email|is_unique[users.email]'</span>);
+        <span class="var">$this</span>->form_validation->set_rules(<span class="str">'phone'</span>,    <span class="str">'ফোন'</span>,       <span class="str">'required|regex_match[/^01[3-9]\d{8}$/]'</span>);
+        <span class="var">$this</span>->form_validation->set_rules(<span class="str">'password'</span>, <span class="str">'পাসওয়ার্ড'</span>, <span class="str">'required|min_length[8]|matches[confirm_password]'</span>);
+        <span class="kw">return</span> <span class="var">$this</span>->form_validation-><span class="fn">run</span>();
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>API Controller — JSON Response</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ CI3 API Controller</span><span class="fname">controllers/api/v1/Users.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="kw">class</span> <span class="cls">Users</span> <span class="kw">extends</span> <span class="cls">MY_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>();
+        <span class="var">$this</span>->load->model(<span class="str">'User_model'</span>);
+        <span class="cm">// API middleware: token check</span>
+        <span class="var">$this</span>-><span class="fn">_verify_api_token</span>();
+    }
+
+    <span class="cm">// GET /api/v1/users</span>
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="var">$users</span> = <span class="var">$this</span>->User_model-><span class="fn">get_all_users</span>();
+        <span class="var">$this</span>-><span class="fn">json_response</span>([
+            <span class="str">'status'</span>  => <span class="str">'success'</span>,
+            <span class="str">'data'</span>    => <span class="var">$users</span>,
+            <span class="str">'count'</span>   => <span class="fn">count</span>(<span class="var">$users</span>),
+        ]);
+    }
+
+    <span class="cm">// GET /api/v1/users/1</span>
+    <span class="kw">public function</span> <span class="fn">show</span>(<span class="var">$id</span>)
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>->User_model-><span class="fn">get_user_by_id</span>((int)<span class="var">$id</span>);
+
+        <span class="kw">if</span> (!<span class="var">$user</span>) {
+            <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'error'</span>, <span class="str">'message'</span> => <span class="str">'User not found'</span>], <span class="num">404</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'success'</span>, <span class="str">'data'</span> => <span class="var">$user</span>]);
+    }
+
+    <span class="cm">// POST /api/v1/users</span>
+    <span class="kw">public function</span> <span class="fn">create</span>()
+    {
+        <span class="var">$input</span> = <span class="fn">json_decode</span>(<span class="var">$this</span>->input->raw_input_stream, <span class="kw">true</span>);
+
+        <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$input</span>[<span class="str">'name'</span>], <span class="var">$input</span>[<span class="str">'email'</span>], <span class="var">$input</span>[<span class="str">'password'</span>])) {
+            <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'error'</span>, <span class="str">'message'</span> => <span class="str">'Missing required fields'</span>], <span class="num">422</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">try</span> {
+            <span class="var">$user_id</span> = <span class="var">$this</span>->User_model-><span class="fn">create_user</span>(<span class="var">$input</span>);
+            <span class="var">$user</span>    = <span class="var">$this</span>->User_model-><span class="fn">get_user_by_id</span>(<span class="var">$user_id</span>);
+            <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'success'</span>, <span class="str">'data'</span> => <span class="var">$user</span>], <span class="num">201</span>);
+        } <span class="kw">catch</span> (<span class="cls">Exception</span> <span class="var">$e</span>) {
+            <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'error'</span>, <span class="str">'message'</span> => <span class="var">$e</span>->getMessage()], <span class="num">500</span>);
+        }
+    }
+
+    <span class="kw">private function</span> <span class="fn">_verify_api_token</span>()
+    {
+        <span class="var">$token</span> = <span class="var">$this</span>->input->get_request_header(<span class="str">'Authorization'</span>);
+        <span class="kw">if</span> (!<span class="var">$token</span> || !<span class="var">$this</span>-><span class="fn">_is_valid_token</span>(<span class="var">$token</span>)) {
+            <span class="var">$this</span>-><span class="fn">json_response</span>([<span class="str">'status'</span> => <span class="str">'error'</span>, <span class="str">'message'</span> => <span class="str">'Unauthorized'</span>], <span class="num">401</span>);
+            exit;
+        }
+    }
+
+    <span class="kw">private function</span> <span class="fn">_is_valid_token</span>(<span class="var">$token</span>)
+    {
+        <span class="cm">// token validation logic</span>
+        <span class="kw">return</span> <span class="var">$this</span>->User_model-><span class="fn">verify_api_token</span>(<span class="var">$token</span>);
+    }
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 4 — MODEL
+═══════════════════════════════════ -->
+<section class="chapter" id="model">
+  <div class="chapter-label">অধ্যায় ০৪</div>
+  <h2>Model — ডেটাবেস লজিক সঠিকভাবে</h2>
+  <p class="chapter-intro">CI3-এ Model-ই database-এর একমাত্র যোগাযোগকারী হওয়া উচিত। Controller বা View থেকে সরাসরি DB access করবেন না।</p>
+
+  <div class="section">
+    <h3>Model তুলনা — ভালো বনাম খারাপ</h3>
+    <div class="code-wrap bad-block">
+      <div class="code-label"><span class="badge-type">❌ খারাপ Model</span><span class="fname">User_model.php (ভুল)</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">User_model</span> <span class="kw">extends</span> <span class="cls">CI_Model</span>
+{
+    <span class="cm">// ❌ Raw query — SQL Injection ঝুঁকি</span>
+    <span class="kw">public function</span> <span class="fn">getUser</span>(<span class="var">$id</span>)
+    {
+        <span class="var">$sql</span> = <span class="str">"SELECT * FROM users WHERE id = "</span> . <span class="var">$id</span>;
+        <span class="kw">return</span> <span class="var">$this</span>->db-><span class="fn">query</span>(<span class="var">$sql</span>)-><span class="fn">row</span>();
+    }
+
+    <span class="cm">// ❌ MD5 password — insecure!</span>
+    <span class="kw">public function</span> <span class="fn">login</span>(<span class="var">$email</span>, <span class="var">$password</span>)
+    {
+        <span class="var">$pass</span> = md5(<span class="var">$password</span>);
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">where</span>(<span class="str">'email'</span>, <span class="var">$email</span>)
+            -><span class="fn">where</span>(<span class="str">'password'</span>, <span class="var">$pass</span>)
+            -><span class="fn">get</span>(<span class="str">'users'</span>)-><span class="fn">row</span>();
+    }
+
+    <span class="cm">// ❌ password hash model-এ নেই</span>
+    <span class="cm">// ❌ input sanitize নেই</span>
+    <span class="cm">// ❌ return type নেই</span>
+    <span class="kw">public function</span> <span class="fn">save</span>(<span class="var">$data</span>)
+    {
+        <span class="var">$this</span>->db-><span class="fn">insert</span>(<span class="str">'users'</span>, <span class="var">$data</span>);
+        <span class="kw">return</span> <span class="var">$this</span>->db->insert_id();
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ ভালো Model — সম্পূর্ণ পদ্ধতি</span><span class="fname">application/models/User_model.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="kw">class</span> <span class="cls">User_model</span> <span class="kw">extends</span> <span class="cls">CI_Model</span>
+{
+    <span class="kw">private</span> <span class="var">$table</span> = <span class="str">'users'</span>;
+
+    <span class="cm">// ── Read Operations ────────────────────────</span>
+
+    <span class="kw">public function</span> <span class="fn">get_all_users</span>()
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">select</span>(<span class="str">'id, name, email, phone, role, created_at'</span>)
+            -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+            -><span class="fn">order_by</span>(<span class="str">'created_at'</span>, <span class="str">'DESC'</span>)
+            -><span class="fn">get</span>(<span class="var">$this</span>-><span class="var">table</span>)
+            -><span class="fn">result_array</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">get_all_paginated</span>(<span class="var">$per_page</span> = <span class="num">15</span>, <span class="var">$offset</span> = <span class="num">0</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">select</span>(<span class="str">'id, name, email, role, created_at'</span>)
+            -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+            -><span class="fn">order_by</span>(<span class="str">'created_at'</span>, <span class="str">'DESC'</span>)
+            -><span class="fn">limit</span>(<span class="var">$per_page</span>, <span class="var">$offset</span>)
+            -><span class="fn">get</span>(<span class="var">$this</span>-><span class="var">table</span>)
+            -><span class="fn">result_array</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">get_user_by_id</span>(<span class="var">$id</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">where</span>(<span class="str">'id'</span>, (int)<span class="var">$id</span>)
+            -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+            -><span class="fn">get</span>(<span class="var">$this</span>-><span class="var">table</span>)
+            -><span class="fn">row_array</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">get_user_by_email</span>(<span class="var">$email</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">where</span>(<span class="str">'email'</span>, <span class="var">$email</span>)
+            -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+            -><span class="fn">get</span>(<span class="var">$this</span>-><span class="var">table</span>)
+            -><span class="fn">row_array</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">count_all</span>()
+    {
+        <span class="kw">return</span> <span class="var">$this</span>->db
+            -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+            -><span class="fn">count_all_results</span>(<span class="var">$this</span>-><span class="var">table</span>);
+    }
+
+    <span class="cm">// ── Write Operations ───────────────────────</span>
+
+    <span class="kw">public function</span> <span class="fn">create_user</span>(<span class="var">$data</span>)
+    {
+        <span class="var">$insert_data</span> = [
+            <span class="str">'name'</span>       => <span class="var">$this</span>->security->xss_clean(<span class="var">$data</span>[<span class="str">'name'</span>]),
+            <span class="str">'email'</span>      => <span class="fn">strtolower</span>(<span class="fn">trim</span>(<span class="var">$data</span>[<span class="str">'email'</span>])),
+            <span class="str">'phone'</span>      => <span class="var">$data</span>[<span class="str">'phone'</span>] ?? <span class="kw">NULL</span>,
+            <span class="str">'password'</span>   => <span class="fn">password_hash</span>(<span class="var">$data</span>[<span class="str">'password'</span>], <span class="cls">PASSWORD_BCRYPT</span>),
+            <span class="str">'role'</span>       => <span class="var">$data</span>[<span class="str">'role'</span>] ?? <span class="str">'user'</span>,
+            <span class="str">'created_at'</span> => <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>),
+        ];
+
+        <span class="var">$this</span>->db-><span class="fn">insert</span>(<span class="var">$this</span>-><span class="var">table</span>, <span class="var">$insert_data</span>);
+        <span class="kw">return</span> <span class="var">$this</span>->db->insert_id();
+    }
+
+    <span class="kw">public function</span> <span class="fn">update_user</span>(<span class="var">$id</span>, <span class="var">$data</span>)
+    {
+        <span class="cm">// শুধু allowed fields update করুন</span>
+        <span class="var">$allowed_fields</span> = [<span class="str">'name'</span>, <span class="str">'phone'</span>, <span class="str">'email'</span>, <span class="str">'role'</span>];
+        <span class="var">$update_data</span> = <span class="fn">array_intersect_key</span>(<span class="var">$data</span>, <span class="fn">array_flip</span>(<span class="var">$allowed_fields</span>));
+        <span class="var">$update_data</span>[<span class="str">'updated_at'</span>] = <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>);
+
+        <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'id'</span>, (int)<span class="var">$id</span>)-><span class="fn">update</span>(<span class="var">$this</span>-><span class="var">table</span>, <span class="var">$update_data</span>);
+        <span class="kw">return</span> <span class="var">$this</span>->db->affected_rows();
+    }
+
+    <span class="kw">public function</span> <span class="fn">soft_delete</span>(<span class="var">$id</span>)
+    {
+        <span class="cm">// সত্যিকারের delete না — soft delete</span>
+        <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'id'</span>, (int)<span class="var">$id</span>)-><span class="fn">update</span>(<span class="var">$this</span>-><span class="var">table</span>, [
+            <span class="str">'deleted_at'</span> => <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>),
+        ]);
+        <span class="kw">return</span> <span class="var">$this</span>->db->affected_rows() > <span class="num">0</span>;
+    }
+
+    <span class="cm">// ── Auth ───────────────────────────────────</span>
+
+    <span class="kw">public function</span> <span class="fn">verify_login</span>(<span class="var">$email</span>, <span class="var">$password</span>)
+    {
+        <span class="var">$user</span> = <span class="var">$this</span>-><span class="fn">get_user_by_email</span>(<span class="var">$email</span>);
+
+        <span class="kw">if</span> (!<span class="var">$user</span>) {
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+
+        <span class="cm">// password_verify() — সঠিক পদ্ধতি</span>
+        <span class="kw">if</span> (!<span class="fn">password_verify</span>(<span class="var">$password</span>, <span class="var">$user</span>[<span class="str">'password'</span>])) {
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+
+        <span class="cm">// Password return করবেন না!</span>
+        <span class="fn">unset</span>(<span class="var">$user</span>[<span class="str">'password'</span>]);
+        <span class="kw">return</span> <span class="var">$user</span>;
+    }
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 5 — VIEW
+═══════════════════════════════════ -->
+<section class="chapter" id="view">
+  <div class="chapter-label">অধ্যায় ০৫</div>
+  <h2>View — Template পরিষ্কার রাখুন</h2>
+  <p class="chapter-intro">View-এ শুধু HTML ও display logic থাকবে। কোনো business logic বা database query থাকবে না।</p>
+
+  <div class="section">
+    <h3>Template System — Header/Footer আলাদা</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Template Structure</span><span class="fname">views/templates/header.php</span></div>
+      <pre><code><span class="php-tag">&lt;!DOCTYPE html&gt;</span>
+&lt;<span class="arr">html</span> lang="<span class="str">bn</span>"&gt;
+&lt;<span class="arr">head</span>&gt;
+    &lt;<span class="arr">meta</span> charset="<span class="str">UTF-8</span>"&gt;
+    &lt;<span class="arr">meta</span> name="<span class="str">viewport</span>" content="<span class="str">width=device-width, initial-scale=1.0</span>"&gt;
+    &lt;<span class="arr">title</span>&gt;<span class="php-tag">&lt;?= htmlspecialchars($page_title ?? $site_name, ENT_QUOTES, 'UTF-8') ?&gt;</span>&lt;/<span class="arr">title</span>&gt;
+    &lt;<span class="arr">link</span> rel="<span class="str">stylesheet</span>" href="<span class="php-tag">&lt;?= base_url('assets/css/app.css') ?&gt;</span>"&gt;
+&lt;/<span class="arr">head</span>&gt;
+&lt;<span class="arr">body</span>&gt;
+&lt;<span class="arr">nav</span> class="<span class="str">navbar</span>"&gt;
+    &lt;<span class="arr">a</span> href="<span class="php-tag">&lt;?= base_url() ?&gt;</span>"&gt;
+        <span class="php-tag">&lt;?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?&gt;</span>
+    &lt;/<span class="arr">a</span>&gt;
+    <span class="php-tag">&lt;?php if ($this-&gt;session-&gt;userdata('user_id')): ?&gt;</span>
+        &lt;<span class="arr">a</span> href="<span class="php-tag">&lt;?= site_url('auth/logout') ?&gt;</span>"&gt;লগআউট&lt;/<span class="arr">a</span>&gt;
+    <span class="php-tag">&lt;?php else: ?&gt;</span>
+        &lt;<span class="arr">a</span> href="<span class="php-tag">&lt;?= site_url('auth/login') ?&gt;</span>"&gt;লগইন&lt;/<span class="arr">a</span>&gt;
+    <span class="php-tag">&lt;?php endif; ?&gt;</span>
+&lt;/<span class="arr">nav</span>&gt;
+&lt;<span class="arr">main</span> class="<span class="str">container</span>"&gt;</code></pre>
+    </div>
+
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ View-এ Business Logic</h4>
+        <pre><code><span class="php-tag">&lt;?php</span>
+<span class="cm">// ❌ DB query view-এ!</span>
+<span class="var">$this</span>->db->where(<span class="str">'status'</span>, <span class="str">'active'</span>);
+<span class="var">$products</span> = <span class="var">$this</span>->db-><span class="fn">get</span>(<span class="str">'products'</span>);
+
+<span class="cm">// ❌ Complex logic view-এ</span>
+<span class="kw">foreach</span> (<span class="var">$products</span>-><span class="fn">result</span>() <span class="kw">as</span> <span class="var">$p</span>) {
+    <span class="var">$tax</span> = <span class="var">$p</span>->price * <span class="num">0.15</span>;
+    <span class="var">$discount</span> = <span class="fn">calculate_discount</span>(<span class="var">$p</span>);
+    <span class="cm">// ...জটিল logic...</span>
+}
+<span class="php-tag">?&gt;</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ View শুধু Display করে</h4>
+        <pre><code><span class="cm">&lt;!-- Controller থেকে $products পাস হয়েছে --&gt;</span>
+<span class="php-tag">&lt;?php foreach ($products as $product): ?&gt;</span>
+&lt;<span class="arr">div</span> class="<span class="str">product-card</span>"&gt;
+    &lt;<span class="arr">h3</span>&gt;
+        <span class="php-tag">&lt;?= htmlspecialchars(
+            $product['name'],
+            ENT_QUOTES, 'UTF-8'
+        ) ?&gt;</span>
+    &lt;/<span class="arr">h3</span>&gt;
+    &lt;<span class="arr">p</span>&gt;৳ <span class="php-tag">&lt;?= number_format($product['price'], 2) ?&gt;</span>&lt;/<span class="arr">p</span>&gt;
+    <span class="php-tag">&lt;?php if ($product['stock'] > 0): ?&gt;</span>
+        &lt;<span class="arr">span</span> class="<span class="str">badge-green</span>"&gt;স্টকে আছে&lt;/<span class="arr">span</span>&gt;
+    <span class="php-tag">&lt;?php else: ?&gt;</span>
+        &lt;<span class="arr">span</span> class="<span class="str">badge-red</span>"&gt;স্টক শেষ&lt;/<span class="arr">span</span>&gt;
+    <span class="php-tag">&lt;?php endif; ?&gt;</span>
+&lt;/<span class="arr">div</span>&gt;
+<span class="php-tag">&lt;?php endforeach; ?&gt;</span></code></pre>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ XSS থেকে সুরক্ষা</strong>
+      View-এ user data display করার সময় সবসময় <code>htmlspecialchars($data, ENT_QUOTES, 'UTF-8')</code> ব্যবহার করুন। CI3-এর <code>$this->security->xss_clean()</code> output-এ নয়, input-এ ব্যবহার করুন।
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 6 — LIBRARY & HELPER
+═══════════════════════════════════ -->
+<section class="chapter" id="library">
+  <div class="chapter-label">অধ্যায় ০৬</div>
+  <h2>Library ও Helper — কাস্টম কোড পুনর্ব্যবহার</h2>
+  <p class="chapter-intro">একই কোড বারবার না লিখে Library বা Helper-এ রাখুন এবং যেকোনো জায়গা থেকে ব্যবহার করুন।</p>
+
+  <div class="section">
+    <h3>Custom Library — OOP পদ্ধতিতে</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ SMS Library</span><span class="fname">application/libraries/Sms_sender.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="kw">class</span> <span class="cls">Sms_sender</span>
+{
+    <span class="kw">private</span> <span class="var">$ci</span>;
+    <span class="kw">private</span> <span class="var">$api_url</span>;
+    <span class="kw">private</span> <span class="var">$api_key</span>;
+    <span class="kw">private</span> <span class="var">$sender_id</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="var">$this</span>->ci =& <span class="fn">get_instance</span>(); <span class="cm">// CI instance</span>
+        <span class="var">$this</span>->ci->config-><span class="fn">load</span>(<span class="str">'sms'</span>);
+        <span class="var">$this</span>-><span class="var">api_url</span>   = <span class="var">$this</span>->ci->config->item(<span class="str">'sms_api_url'</span>);
+        <span class="var">$this</span>-><span class="var">api_key</span>   = <span class="var">$this</span>->ci->config->item(<span class="str">'sms_api_key'</span>);
+        <span class="var">$this</span>-><span class="var">sender_id</span> = <span class="var">$this</span>->ci->config->item(<span class="str">'sms_sender_id'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">send</span>(<span class="var">$phone</span>, <span class="var">$message</span>)
+    {
+        <span class="kw">if</span> (!<span class="var">$this</span>-><span class="fn">is_valid_phone</span>(<span class="var">$phone</span>)) {
+            <span class="fn">log_message</span>(<span class="str">'error'</span>, <span class="str">"Invalid phone: {$phone}"</span>);
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+
+        <span class="var">$payload</span> = [
+            <span class="str">'api_key'</span>   => <span class="var">$this</span>-><span class="var">api_key</span>,
+            <span class="str">'sender_id'</span> => <span class="var">$this</span>-><span class="var">sender_id</span>,
+            <span class="str">'to'</span>        => <span class="var">$phone</span>,
+            <span class="str">'message'</span>   => <span class="var">$message</span>,
+        ];
+
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">make_request</span>(<span class="var">$payload</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">send_otp</span>(<span class="var">$phone</span>)
+    {
+        <span class="var">$otp</span> = <span class="fn">sprintf</span>(<span class="str">'%06d'</span>, <span class="fn">random_int</span>(<span class="num">100000</span>, <span class="num">999999</span>));
+        <span class="var">$message</span> = <span class="str">"আপনার OTP কোড: {$otp} (৫ মিনিট বৈধ)"</span>;
+
+        <span class="kw">if</span> (<span class="var">$this</span>-><span class="fn">send</span>(<span class="var">$phone</span>, <span class="var">$message</span>)) {
+            <span class="cm">// OTP session-এ রাখুন</span>
+            <span class="var">$this</span>->ci->session->set_userdata([
+                <span class="str">'otp_code'</span>   => <span class="fn">password_hash</span>(<span class="var">$otp</span>, <span class="cls">PASSWORD_BCRYPT</span>),
+                <span class="str">'otp_expiry'</span> => <span class="fn">time</span>() + (<span class="num">5</span> * <span class="num">60</span>),
+            ]);
+            <span class="kw">return</span> <span class="kw">true</span>;
+        }
+        <span class="kw">return</span> <span class="kw">false</span>;
+    }
+
+    <span class="kw">private function</span> <span class="fn">is_valid_phone</span>(<span class="var">$phone</span>)
+    {
+        <span class="kw">return</span> (bool)<span class="fn">preg_match</span>(<span class="str">'/^01[3-9]\d{8}$/'</span>, <span class="var">$phone</span>);
+    }
+
+    <span class="kw">private function</span> <span class="fn">make_request</span>(<span class="var">$payload</span>)
+    {
+        <span class="var">$ch</span> = <span class="fn">curl_init</span>(<span class="var">$this</span>-><span class="var">api_url</span>);
+        <span class="fn">curl_setopt_array</span>(<span class="var">$ch</span>, [
+            <span class="cls">CURLOPT_RETURNTRANSFER</span> => <span class="kw">true</span>,
+            <span class="cls">CURLOPT_POST</span>           => <span class="kw">true</span>,
+            <span class="cls">CURLOPT_POSTFIELDS</span>     => <span class="fn">json_encode</span>(<span class="var">$payload</span>),
+            <span class="cls">CURLOPT_HTTPHEADER</span>     => [<span class="str">'Content-Type: application/json'</span>],
+            <span class="cls">CURLOPT_TIMEOUT</span>        => <span class="num">30</span>,
+        ]);
+        <span class="var">$response</span> = <span class="fn">curl_exec</span>(<span class="var">$ch</span>);
+        <span class="var">$http_code</span> = <span class="fn">curl_getinfo</span>(<span class="var">$ch</span>, <span class="cls">CURLINFO_HTTP_CODE</span>);
+        <span class="fn">curl_close</span>(<span class="var">$ch</span>);
+        <span class="kw">return</span> <span class="var">$http_code</span> === <span class="num">200</span>;
+    }
+}
+
+<span class="cm">// Controller-এ ব্যবহার:</span>
+<span class="cm">// $this->load->library('sms_sender');</span>
+<span class="cm">// $this->sms_sender->send_otp('01712345678');</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Custom Helper — Reusable Functions</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Custom Helper Functions</span><span class="fname">application/helpers/app_helper.php</span></div>
+      <pre><code><span class="php-tag">&lt;?php</span>
+<span class="kw">defined</span>(<span class="str">'BASEPATH'</span>) <span class="kw">OR exit</span>(<span class="str">'No direct script access allowed'</span>);
+
+<span class="cm">// ── Currency Formatting ────────────────────</span>
+<span class="kw">if</span> (!<span class="kw">function_exists</span>(<span class="str">'format_taka'</span>)) {
+    <span class="kw">function</span> <span class="fn">format_taka</span>(<span class="var">$amount</span>, <span class="var">$symbol</span> = <span class="str">'৳'</span>)
+    {
+        <span class="kw">return</span> <span class="var">$symbol</span> . <span class="fn">number_format</span>((float)<span class="var">$amount</span>, <span class="num">2</span>);
+    }
+}
+
+<span class="cm">// ── Date Formatting (Bangla) ──────────────</span>
+<span class="kw">if</span> (!<span class="kw">function_exists</span>(<span class="str">'format_date_bn'</span>)) {
+    <span class="kw">function</span> <span class="fn">format_date_bn</span>(<span class="var">$date</span>, <span class="var">$format</span> = <span class="str">'d M Y'</span>)
+    {
+        <span class="kw">if</span> (empty(<span class="var">$date</span>)) <span class="kw">return</span> <span class="str">''</span>;
+        <span class="kw">return</span> <span class="fn">date</span>(<span class="var">$format</span>, <span class="fn">strtotime</span>(<span class="var">$date</span>));
+    }
+}
+
+<span class="cm">// ── Truncate Text ─────────────────────────</span>
+<span class="kw">if</span> (!<span class="kw">function_exists</span>(<span class="str">'truncate_text'</span>)) {
+    <span class="kw">function</span> <span class="fn">truncate_text</span>(<span class="var">$text</span>, <span class="var">$length</span> = <span class="num">100</span>, <span class="var">$suffix</span> = <span class="str">'...'</span>)
+    {
+        <span class="kw">if</span> (<span class="fn">mb_strlen</span>(<span class="var">$text</span>) <= <span class="var">$length</span>) <span class="kw">return</span> <span class="var">$text</span>;
+        <span class="kw">return</span> <span class="fn">mb_substr</span>(<span class="var">$text</span>, <span class="num">0</span>, <span class="var">$length</span>) . <span class="var">$suffix</span>;
+    }
+}
+
+<span class="cm">// ── Slug Generator ────────────────────────</span>
+<span class="kw">if</span> (!<span class="kw">function_exists</span>(<span class="str">'generate_slug'</span>)) {
+    <span class="kw">function</span> <span class="fn">generate_slug</span>(<span class="var">$text</span>)
+    {
+        <span class="var">$text</span> = <span class="fn">strtolower</span>(<span class="fn">trim</span>(<span class="var">$text</span>));
+        <span class="var">$text</span> = <span class="fn">preg_replace</span>(<span class="str">'/[^a-z0-9\s-]/'</span>, <span class="str">''</span>, <span class="var">$text</span>);
+        <span class="var">$text</span> = <span class="fn">preg_replace</span>(<span class="str">'/[\s-]+/'</span>, <span class="str">'-'</span>, <span class="var">$text</span>);
+        <span class="kw">return</span> <span class="fn">trim</span>(<span class="var">$text</span>, <span class="str">'-'</span>);
+    }
+}
+
+<span class="cm">// ── Flash Message ─────────────────────────</span>
+<span class="kw">if</span> (!<span class="kw">function_exists</span>(<span class="str">'show_flash'</span>)) {
+    <span class="kw">function</span> <span class="fn">show_flash</span>()
+    {
+        <span class="var">$ci</span> =& <span class="fn">get_instance</span>();
+        <span class="kw">foreach</span> ([<span class="str">'success'</span>, <span class="str">'error'</span>, <span class="str">'warning'</span>, <span class="str">'info'</span>] <span class="kw">as</span> <span class="var">$type</span>) {
+            <span class="var">$msg</span> = <span class="var">$ci</span>->session->flashdata(<span class="var">$type</span>);
+            <span class="kw">if</span> (<span class="var">$msg</span>) {
+                <span class="kw">echo</span> <span class="str">"&lt;div class='alert alert-{$type}'&gt;"</span>
+                   . <span class="fn">htmlspecialchars</span>(<span class="var">$msg</span>, <span class="cls">ENT_QUOTES</span>, <span class="str">'UTF-8'</span>)
+                   . <span class="str">"&lt;/div&gt;"</span>;
+            }
+        }
+    }
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 7 — DATABASE
+═══════════════════════════════════ -->
+<section class="chapter" id="db">
+  <div class="chapter-label">অধ্যায় ০৭</div>
+  <h2>Database Query — সঠিক পদ্ধতি</h2>
+  <p class="chapter-intro">CI3-এর Query Builder (Active Record) ব্যবহার করুন। Raw SQL শুধুমাত্র যখন Query Builder দিয়ে সম্ভব নয় তখন।</p>
+
+  <div class="section">
+    <h3>Query Builder — সঠিক ব্যবহার</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Raw Query — Dangerous</h4>
+        <pre><code><span class="cm">// SQL Injection ঝুঁকি!</span>
+<span class="var">$name</span> = <span class="var">$_GET</span>[<span class="str">'name'</span>];
+<span class="var">$sql</span> = <span class="str">"SELECT * FROM users
+         WHERE name LIKE '%</span><span class="var">$name</span><span class="str">%'
+         AND status = 'active'"</span>;
+<span class="var">$result</span> = <span class="var">$this</span>->db
+    -><span class="fn">query</span>(<span class="var">$sql</span>)
+    -><span class="fn">result_array</span>();</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Query Builder — Safe</h4>
+        <pre><code><span class="cm">// Automatically escape করে</span>
+<span class="var">$name</span> = <span class="var">$this</span>->input-><span class="fn">get</span>(<span class="str">'name'</span>, <span class="kw">TRUE</span>);
+<span class="var">$result</span> = <span class="var">$this</span>->db
+    -><span class="fn">like</span>(<span class="str">'name'</span>, <span class="var">$name</span>)
+    -><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'active'</span>)
+    -><span class="fn">where</span>(<span class="str">'deleted_at'</span>, <span class="kw">NULL</span>)
+    -><span class="fn">get</span>(<span class="str">'users'</span>)
+    -><span class="fn">result_array</span>();</code></pre>
+      </div>
+    </div>
+
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ CI3 Query Builder Advanced Examples</span></div>
+      <pre><code><span class="cm">// ── JOIN Query ──────────────────────────────────────────</span>
+<span class="var">$orders</span> = <span class="var">$this</span>->db
+    -><span class="fn">select</span>(<span class="str">'orders.id, orders.total, orders.status, users.name AS user_name, products.title AS product_name'</span>)
+    -><span class="fn">from</span>(<span class="str">'orders'</span>)
+    -><span class="fn">join</span>(<span class="str">'users'</span>,    <span class="str">'users.id = orders.user_id'</span>)
+    -><span class="fn">join</span>(<span class="str">'products'</span>, <span class="str">'products.id = orders.product_id'</span>)
+    -><span class="fn">where</span>(<span class="str">'orders.status'</span>, <span class="str">'pending'</span>)
+    -><span class="fn">where</span>(<span class="str">'orders.deleted_at'</span>, <span class="kw">NULL</span>)
+    -><span class="fn">order_by</span>(<span class="str">'orders.created_at'</span>, <span class="str">'DESC'</span>)
+    -><span class="fn">limit</span>(<span class="num">20</span>)
+    -><span class="fn">get</span>()
+    -><span class="fn">result_array</span>();
+
+<span class="cm">// ── WHERE IN ────────────────────────────────────────────</span>
+<span class="var">$user_ids</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">5</span>, <span class="num">8</span>];
+<span class="var">$users</span> = <span class="var">$this</span>->db
+    -><span class="fn">where_in</span>(<span class="str">'id'</span>, <span class="var">$user_ids</span>)
+    -><span class="fn">get</span>(<span class="str">'users'</span>)
+    -><span class="fn">result_array</span>();
+
+<span class="cm">// ── Date Range ──────────────────────────────────────────</span>
+<span class="var">$report</span> = <span class="var">$this</span>->db
+    -><span class="fn">select</span>(<span class="str">'DATE(created_at) as date, COUNT(*) as total, SUM(amount) as revenue'</span>)
+    -><span class="fn">where</span>(<span class="str">'created_at &gt;='</span>, <span class="str">'2024-01-01'</span>)
+    -><span class="fn">where</span>(<span class="str">'created_at &lt;='</span>, <span class="str">'2024-12-31'</span>)
+    -><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'completed'</span>)
+    -><span class="fn">group_by</span>(<span class="str">'DATE(created_at)'</span>)
+    -><span class="fn">order_by</span>(<span class="str">'date'</span>, <span class="str">'DESC'</span>)
+    -><span class="fn">get</span>(<span class="str">'orders'</span>)
+    -><span class="fn">result_array</span>();
+
+<span class="cm">// ── Transaction ─────────────────────────────────────────</span>
+<span class="var">$this</span>->db-><span class="fn">trans_start</span>();
+
+    <span class="var">$this</span>->db-><span class="fn">insert</span>(<span class="str">'orders'</span>, <span class="var">$order_data</span>);
+    <span class="var">$order_id</span> = <span class="var">$this</span>->db->insert_id();
+
+    <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'id'</span>, <span class="var">$product_id</span>)
+              -><span class="fn">set</span>(<span class="str">'stock'</span>, <span class="str">'stock - '</span> . (int)<span class="var">$quantity</span>, <span class="kw">FALSE</span>)
+              -><span class="fn">update</span>(<span class="str">'products'</span>);
+
+    <span class="var">$this</span>->db-><span class="fn">insert</span>(<span class="str">'payments'</span>, [
+        <span class="str">'order_id'</span>   => <span class="var">$order_id</span>,
+        <span class="str">'amount'</span>     => <span class="var">$total</span>,
+        <span class="str">'status'</span>     => <span class="str">'pending'</span>,
+        <span class="str">'created_at'</span> => <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>),
+    ]);
+
+<span class="var">$this</span>->db-><span class="fn">trans_complete</span>();
+
+<span class="kw">if</span> (<span class="var">$this</span>->db->trans_status() === <span class="kw">FALSE</span>) {
+    <span class="cm">// Transaction fail! সব rollback হয়েছে</span>
+    <span class="fn">log_message</span>(<span class="str">'error'</span>, <span class="str">'Order transaction failed'</span>);
+    <span class="kw">throw new</span> <span class="cls">Exception</span>(<span class="str">'অর্ডার সম্পন্ন করা যায়নি'</span>);
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Pagination — সঠিক পদ্ধতি</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ CI3 Pagination</span><span class="fname">controllers/Products.php</span></div>
+      <pre><code><span class="kw">public function</span> <span class="fn">index</span>()
+{
+    <span class="var">$this</span>->load->library(<span class="str">'pagination'</span>);
+    <span class="var">$this</span>->load->model(<span class="str">'Product_model'</span>);
+
+    <span class="var">$per_page</span>    = <span class="num">12</span>;
+    <span class="var">$total_items</span> = <span class="var">$this</span>->Product_model-><span class="fn">count_active</span>();
+    <span class="var">$current_page</span> = (int)(<span class="var">$this</span>->input-><span class="fn">get</span>(<span class="str">'page'</span>) ?? <span class="num">1</span>);
+    <span class="var">$offset</span>      = (<span class="var">$current_page</span> - <span class="num">1</span>) * <span class="var">$per_page</span>;
+
+    <span class="cm">// Pagination config</span>
+    <span class="var">$config</span> = [
+        <span class="str">'base_url'</span>    => <span class="fn">site_url</span>(<span class="str">'products'</span>),
+        <span class="str">'total_rows'</span>  => <span class="var">$total_items</span>,
+        <span class="str">'per_page'</span>    => <span class="var">$per_page</span>,
+        <span class="str">'uri_segment'</span> => <span class="num">3</span>,
+        <span class="str">'use_page_numbers'</span> => <span class="kw">TRUE</span>,
+        <span class="str">'num_links'</span>   => <span class="num">5</span>,
+        <span class="cm">// Bootstrap styling</span>
+        <span class="str">'full_tag_open'</span>  => <span class="str">'&lt;ul class="pagination"&gt;'</span>,
+        <span class="str">'full_tag_close'</span> => <span class="str">'&lt;/ul&gt;'</span>,
+        <span class="str">'num_tag_open'</span>   => <span class="str">'&lt;li class="page-item"&gt;&lt;a class="page-link" href="'</span>,
+        <span class="str">'num_tag_close'</span>  => <span class="str">'"&gt;'</span>,
+    ];
+
+    <span class="var">$this</span>->pagination-><span class="fn">initialize</span>(<span class="var">$config</span>);
+
+    <span class="var">$products</span> = <span class="var">$this</span>->Product_model-><span class="fn">get_active</span>(<span class="var">$per_page</span>, <span class="var">$offset</span>);
+
+    <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'products/index'</span>, [
+        <span class="str">'products'</span>   => <span class="var">$products</span>,
+        <span class="str">'pagination'</span> => <span class="var">$this</span>->pagination-><span class="fn">create_links</span>(),
+        <span class="str">'total'</span>      => <span class="var">$total_items</span>,
+    ]);
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 8 — SECURITY
+═══════════════════════════════════ -->
+<section class="chapter" id="security">
+  <div class="chapter-label">অধ্যায় ০৮</div>
+  <h2>Security ও Validation</h2>
+  <p class="chapter-intro">CI3-এ security built-in আছে — সঠিকভাবে ব্যবহার করতে হবে।</p>
+
+  <div class="section">
+    <h3>Input Handling — সবসময় sanitize করুন</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Direct $_POST/$_GET ব্যবহার</h4>
+        <pre><code><span class="cm">// XSS, SQL injection ঝুঁকি!</span>
+<span class="var">$name</span>  = <span class="var">$_POST</span>[<span class="str">'name'</span>];
+<span class="var">$id</span>    = <span class="var">$_GET</span>[<span class="str">'id'</span>];
+<span class="var">$email</span> = <span class="var">$_REQUEST</span>[<span class="str">'email'</span>];
+
+<span class="cm">// $_FILES সরাসরি ব্যবহার</span>
+<span class="fn">move_uploaded_file</span>(
+    <span class="var">$_FILES</span>[<span class="str">'image'</span>][<span class="str">'tmp_name'</span>],
+    <span class="str">'uploads/'</span> . <span class="var">$_FILES</span>[<span class="str">'image'</span>][<span class="str">'name'</span>]
+);</code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ CI3 Input Class ব্যবহার</h4>
+        <pre><code><span class="cm">// TRUE = XSS clean করবে</span>
+<span class="var">$name</span>  = <span class="var">$this</span>->input-><span class="fn">post</span>(<span class="str">'name'</span>, <span class="kw">TRUE</span>);
+<span class="var">$id</span>    = (int)<span class="var">$this</span>->input-><span class="fn">get</span>(<span class="str">'id'</span>);
+<span class="var">$email</span> = <span class="var">$this</span>->input-><span class="fn">post</span>(<span class="str">'email'</span>, <span class="kw">TRUE</span>);
+
+<span class="cm">// File upload — CI3 Upload Library</span>
+<span class="var">$config</span> = [
+    <span class="str">'upload_path'</span>   => <span class="str">'./uploads/images/'</span>,
+    <span class="str">'allowed_types'</span> => <span class="str">'jpg|jpeg|png|webp'</span>,
+    <span class="str">'max_size'</span>      => <span class="num">2048</span>, <span class="cm">// KB</span>
+    <span class="str">'encrypt_name'</span>  => <span class="kw">TRUE</span>,  <span class="cm">// random name!</span>
+];
+<span class="var">$this</span>->upload-><span class="fn">initialize</span>(<span class="var">$config</span>);
+<span class="var">$this</span>->upload-><span class="fn">do_upload</span>(<span class="str">'image'</span>);</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>CSRF Protection ও Form Validation</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ Security Best Practices — CI3</span></div>
+      <pre><code><span class="cm">// ── config.php — CSRF Enable ──────────────────────────</span>
+<span class="var">$config</span>[<span class="str">'csrf_protection'</span>]   = <span class="kw">TRUE</span>;
+<span class="var">$config</span>[<span class="str">'csrf_token_name'</span>]   = <span class="str">'csrf_token'</span>;
+<span class="var">$config</span>[<span class="str">'csrf_cookie_name'</span>]  = <span class="str">'csrf_cookie'</span>;
+<span class="var">$config</span>[<span class="str">'csrf_expire'</span>]       = <span class="num">7200</span>;
+<span class="var">$config</span>[<span class="str">'csrf_regenerate'</span>]   = <span class="kw">TRUE</span>;
+<span class="var">$config</span>[<span class="str">'csrf_exclude_uris'</span>] = [<span class="str">'api/v1/webhook'</span>]; <span class="cm">// API routes</span>
+
+<span class="cm">// ── Form View-এ CSRF field ─────────────────────────</span>
+<span class="cm">// &lt;?= form_open('users/register') ?&gt; — automatically CSRF field যোগ করে</span>
+
+<span class="cm">// ── Form Validation — Custom Rules ────────────────</span>
+<span class="kw">class</span> <span class="cls">MY_Form_validation</span> <span class="kw">extends</span> <span class="cls">CI_Form_validation</span>
+{
+    <span class="kw">public function</span> <span class="fn">valid_bd_phone</span>(<span class="var">$phone</span>)
+    {
+        <span class="var">$this</span>->CI->form_validation->set_message(
+            <span class="str">'valid_bd_phone'</span>,
+            <span class="str">'বৈধ বাংলাদেশ ফোন নম্বর দিন'</span>
+        );
+        <span class="kw">return</span> (bool)<span class="fn">preg_match</span>(<span class="str">'/^01[3-9]\d{8}$/'</span>, <span class="var">$phone</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">strong_password</span>(<span class="var">$password</span>)
+    {
+        <span class="var">$this</span>->CI->form_validation->set_message(
+            <span class="str">'strong_password'</span>,
+            <span class="str">'পাসওয়ার্ডে অক্ষর, সংখ্যা ও বিশেষ চিহ্ন থাকতে হবে'</span>
+        );
+        <span class="kw">return</span> (bool)<span class="fn">preg_match</span>(<span class="str">'/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W]).{8,}$/'</span>, <span class="var">$password</span>);
+    }
+}
+
+<span class="cm">// ── Controller-এ ব্যবহার ──────────────────────────</span>
+<span class="var">$this</span>->form_validation-><span class="fn">set_rules</span>(<span class="str">'phone'</span>,    <span class="str">'ফোন'</span>,       <span class="str">'required|valid_bd_phone'</span>);
+<span class="var">$this</span>->form_validation-><span class="fn">set_rules</span>(<span class="str">'password'</span>, <span class="str">'পাসওয়ার্ড'</span>, <span class="str">'required|strong_password'</span>);</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Session ও Authentication</h3>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Secure Session Management</span><span class="fname">controllers/Auth.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">Auth</span> <span class="kw">extends</span> <span class="cls">MY_Controller</span>
+{
+    <span class="kw">private</span> <span class="var">$max_attempts</span> = <span class="num">5</span>;
+    <span class="kw">private</span> <span class="var">$lockout_time</span> = <span class="num">900</span>; <span class="cm">// 15 minutes</span>
+
+    <span class="kw">public function</span> <span class="fn">login</span>()
+    {
+        <span class="kw">if</span> (<span class="var">$this</span>->session->userdata(<span class="str">'user_id'</span>)) {
+            <span class="fn">redirect</span>(<span class="str">'dashboard'</span>);
+        }
+
+        <span class="kw">if</span> (<span class="var">$this</span>->input->server(<span class="str">'REQUEST_METHOD'</span>) !== <span class="str">'POST'</span>) {
+            <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'auth/login'</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="cm">// Brute force check</span>
+        <span class="kw">if</span> (<span class="var">$this</span>-><span class="fn">is_rate_limited</span>()) {
+            <span class="var">$this</span>->session->set_flashdata(<span class="str">'error'</span>, <span class="str">'অনেকবার চেষ্টা করা হয়েছে। ১৫ মিনিট পরে আবার চেষ্টা করুন।'</span>);
+            <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'auth/login'</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="var">$email</span>    = <span class="var">$this</span>->input-><span class="fn">post</span>(<span class="str">'email'</span>, <span class="kw">TRUE</span>);
+        <span class="var">$password</span> = <span class="var">$this</span>->input-><span class="fn">post</span>(<span class="str">'password'</span>);
+
+        <span class="var">$user</span> = <span class="var">$this</span>->User_model-><span class="fn">verify_login</span>(<span class="var">$email</span>, <span class="var">$password</span>);
+
+        <span class="kw">if</span> (!<span class="var">$user</span>) {
+            <span class="var">$this</span>-><span class="fn">increment_login_attempts</span>();
+            <span class="var">$this</span>->session->set_flashdata(<span class="str">'error'</span>, <span class="str">'ইমেইল বা পাসওয়ার্ড সঠিক নয়'</span>);
+            <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'auth/login'</span>);
+            <span class="kw">return</span>;
+        }
+
+        <span class="cm">// Session regenerate — session fixation প্রতিরোধ</span>
+        <span class="var">$this</span>->session-><span class="fn">sess_regenerate</span>(<span class="kw">true</span>);
+        <span class="var">$this</span>-><span class="fn">reset_login_attempts</span>();
+
+        <span class="var">$this</span>->session-><span class="fn">set_userdata</span>([
+            <span class="str">'user_id'</span>    => <span class="var">$user</span>[<span class="str">'id'</span>],
+            <span class="str">'user_name'</span>  => <span class="var">$user</span>[<span class="str">'name'</span>],
+            <span class="str">'user_email'</span> => <span class="var">$user</span>[<span class="str">'email'</span>],
+            <span class="str">'user_role'</span>  => <span class="var">$user</span>[<span class="str">'role'</span>],
+            <span class="str">'logged_in'</span>  => <span class="kw">TRUE</span>,
+        ]);
+
+        <span class="fn">redirect</span>(<span class="str">'dashboard'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">logout</span>()
+    {
+        <span class="var">$this</span>->session-><span class="fn">sess_destroy</span>();
+        <span class="fn">redirect</span>(<span class="str">'auth/login'</span>);
+    }
+
+    <span class="kw">private function</span> <span class="fn">is_rate_limited</span>()
+    {
+        <span class="var">$attempts</span> = <span class="var">$this</span>->session->userdata(<span class="str">'login_attempts'</span>) ?? <span class="num">0</span>;
+        <span class="var">$last_attempt</span> = <span class="var">$this</span>->session->userdata(<span class="str">'last_attempt_time'</span>) ?? <span class="num">0</span>;
+
+        <span class="kw">if</span> (<span class="var">$attempts</span> >= <span class="var">$this</span>-><span class="var">max_attempts</span>
+            && (<span class="fn">time</span>() - <span class="var">$last_attempt</span>) < <span class="var">$this</span>-><span class="var">lockout_time</span>) {
+            <span class="kw">return true</span>;
+        }
+        <span class="kw">return false</span>;
+    }
+}</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 9 — MISTAKES
+═══════════════════════════════════ -->
+<section class="chapter" id="mistakes">
+  <div class="chapter-label">অধ্যায় ০৯</div>
+  <h2>সবচেয়ে সাধারণ CI3 ভুলগুলো</h2>
+  <p class="chapter-intro">CI3 ডেভেলপাররা যেসব ভুল সবচেয়ে বেশি করেন — এবং কীভাবে সেগুলো এড়ানো যায়।</p>
+
+  <div class="section">
+    <h3>ভুল ১ — MD5/SHA1 দিয়ে Password Hash</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ কখনো এটা করবেন না!</h4>
+        <pre><code><span class="cm">// MD5 — ২০০৩ সালেই ভাঙা!</span>
+<span class="var">$pass</span> = <span class="fn">md5</span>(<span class="var">$password</span>);
+
+<span class="cm">// SHA1 — ও insecure</span>
+<span class="var">$pass</span> = <span class="fn">sha1</span>(<span class="var">$password</span>);
+
+<span class="cm">// MD5 + salt — এখনো insecure!</span>
+<span class="var">$pass</span> = <span class="fn">md5</span>(<span class="var">$salt</span> . <span class="var">$password</span>);
+
+<span class="cm">// Plain text store!</span>
+<span class="var">$pass</span> = <span class="var">$password</span>; <span class="cm">// সর্বনাশ!</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ password_hash() ব্যবহার করুন</h4>
+        <pre><code><span class="cm">// ✅ সঠিক — bcrypt</span>
+<span class="var">$hashed</span> = <span class="fn">password_hash</span>(
+    <span class="var">$password</span>,
+    <span class="cls">PASSWORD_BCRYPT</span>
+);
+
+<span class="cm">// ✅ Verify করার সময়</span>
+<span class="kw">if</span> (<span class="fn">password_verify</span>(<span class="var">$input_pass</span>, <span class="var">$db_hash</span>)) {
+    <span class="cm">// login success</span>
+}
+
+<span class="cm">// PHP 7.2+ উত্তম পদ্ধতি</span>
+<span class="var">$hashed</span> = <span class="fn">password_hash</span>(
+    <span class="var">$password</span>,
+    <span class="cls">PASSWORD_ARGON2ID</span>
+);</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ২ — $_GET/$_POST সরাসরি ব্যবহার</h3>
+    <div class="callout warn">
+      <strong>⚠️ CI3-এ সবসময় Input Class ব্যবহার করুন</strong>
+      <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_SERVER</code> সরাসরি ব্যবহার করবেন না। সবসময় <code>$this->input->get()</code>, <code>$this->input->post()</code> ব্যবহার করুন। দ্বিতীয় parameter <code>TRUE</code> দিলে XSS filtering হয়।
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৩ — Error Display Production-এ চালু</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Production-এ error দেখানো</h4>
+        <pre><code><span class="cm">// index.php-তে:</span>
+<span class="kw">define</span>(<span class="str">'ENVIRONMENT'</span>, <span class="str">'development'</span>);
+<span class="cm">// Production-এ রেখে দিলে
+// সব error হ্যাকাররা দেখতে পাবে!
+// DB password, file path সব!</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Environment অনুযায়ী সেট করুন</h4>
+        <pre><code><span class="cm">// index.php</span>
+<span class="kw">define</span>(<span class="str">'ENVIRONMENT'</span>,
+    <span class="fn">isset</span>(<span class="var">$_SERVER</span>[<span class="str">'CI_ENV'</span>])
+        ? <span class="var">$_SERVER</span>[<span class="str">'CI_ENV'</span>]
+        : <span class="str">'production'</span>  <span class="cm">// default production</span>
+);
+
+<span class="cm">// Server-এ set করুন:</span>
+<span class="cm">// SetEnv CI_ENV development (Apache)</span>
+<span class="cm">// fastcgi_param CI_ENV development (Nginx)</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৪ — Hardcoded Database Config</h3>
+    <div class="compare">
+      <div class="compare-col bad-col">
+        <h4>❌ Git-এ credentials</h4>
+        <pre><code><span class="cm">// application/config/database.php</span>
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'hostname'</span>] = <span class="str">'localhost'</span>;
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'username'</span>] = <span class="str">'root'</span>;
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'password'</span>] = <span class="str">'mypassword123'</span>;
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'database'</span>] = <span class="str">'myapp_db'</span>;
+<span class="cm">// Git push করলে সর্বনাশ!</span></code></pre>
+      </div>
+      <div class="compare-col good-col">
+        <h4>✅ Environment Variable ব্যবহার</h4>
+        <pre><code><span class="cm">// vlucas/phpdotenv ব্যবহার করুন
+// অথবা Server Environment Variable</span>
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'hostname'</span>] =
+    <span class="fn">getenv</span>(<span class="str">'DB_HOST'</span>) ?: <span class="str">'localhost'</span>;
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'username'</span>] =
+    <span class="fn">getenv</span>(<span class="str">'DB_USER'</span>);
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'password'</span>] =
+    <span class="fn">getenv</span>(<span class="str">'DB_PASS'</span>);
+<span class="var">$db</span>[<span class="str">'default'</span>][<span class="str">'database'</span>] =
+    <span class="fn">getenv</span>(<span class="str">'DB_NAME'</span>);</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৫ — Model-এ Logic না রেখে Controller-এ</h3>
+    <div class="code-wrap bad-block">
+      <div class="code-label"><span class="badge-type">❌ Controller-এ DB Query — সবচেয়ে বড় ভুল</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">Dashboard</span> <span class="kw">extends</span> <span class="cls">CI_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="cm">// ❌ Controller-এ সরাসরি DB query</span>
+        <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'active'</span>);
+        <span class="var">$users</span> = <span class="var">$this</span>->db-><span class="fn">get</span>(<span class="str">'users'</span>)-><span class="fn">result_array</span>();
+
+        <span class="cm">// ❌ Controller-এ calculation</span>
+        <span class="var">$total_revenue</span> = <span class="num">0</span>;
+        <span class="kw">foreach</span> (<span class="var">$users</span> <span class="kw">as</span> <span class="var">$user</span>) {
+            <span class="var">$orders</span> = <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="var">$user</span>[<span class="str">'id'</span>])-><span class="fn">get</span>(<span class="str">'orders'</span>)->result_array();
+            <span class="kw">foreach</span> (<span class="var">$orders</span> <span class="kw">as</span> <span class="var">$order</span>) {
+                <span class="var">$total_revenue</span> += <span class="var">$order</span>[<span class="str">'total'</span>];
+            }
+        }
+        <span class="cm">// এটি N+1 query problem + controller pollution!</span>
+    }
+}</code></pre>
+    </div>
+    <div class="code-wrap good-block">
+      <div class="code-label"><span class="badge-type">✅ Model-এ রাখুন — সঠিক পদ্ধতি</span></div>
+      <pre><code><span class="cm">// ── models/Dashboard_model.php ────────────────────</span>
+<span class="kw">class</span> <span class="cls">Dashboard_model</span> <span class="kw">extends</span> <span class="cls">CI_Model</span>
+{
+    <span class="kw">public function</span> <span class="fn">get_stats</span>()
+    {
+        <span class="cm">// একটি optimized query-তে সব data</span>
+        <span class="kw">return</span> [
+            <span class="str">'total_users'</span>   => <span class="var">$this</span>->db-><span class="fn">count_all_results</span>(<span class="str">'users'</span>),
+            <span class="str">'active_orders'</span> => <span class="var">$this</span>->db-><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'pending'</span>)-><span class="fn">count_all_results</span>(<span class="str">'orders'</span>),
+            <span class="str">'total_revenue'</span> => <span class="var">$this</span>->db-><span class="fn">select_sum</span>(<span class="str">'amount'</span>)-><span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'completed'</span>)-><span class="fn">get</span>(<span class="str">'payments'</span>)-><span class="fn">row</span>()-><span class="arr">amount</span>,
+        ];
+    }
+}
+
+<span class="cm">// ── controllers/admin/Dashboard.php ─────────────</span>
+<span class="kw">class</span> <span class="cls">Dashboard</span> <span class="kw">extends</span> <span class="cls">Admin_Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="var">$this</span>->load->model(<span class="str">'Dashboard_model'</span>);
+        <span class="var">$stats</span> = <span class="var">$this</span>->Dashboard_model-><span class="fn">get_stats</span>(); <span class="cm">// পরিষ্কার!</span>
+        <span class="var">$this</span>-><span class="fn">render</span>(<span class="str">'admin/dashboard'</span>, [<span class="str">'stats'</span> => <span class="var">$stats</span>]);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ভুল ৬ — Routes সঠিকভাবে না লেখা</h3>
+    <div class="code-wrap best-block">
+      <div class="code-label"><span class="badge-type">✅ routes.php — সঠিক পদ্ধতি</span><span class="fname">application/config/routes.php</span></div>
+      <pre><code><span class="cm">// ── Default Route ───────────────────────────────</span>
+<span class="var">$route</span>[<span class="str">'default_controller'</span>] = <span class="str">'frontend/home'</span>;
+<span class="var">$route</span>[<span class="str">'404_override'</span>]       = <span class="str">'errors/not_found'</span>;
+<span class="var">$route</span>[<span class="str">'translate_uri_dashes'</span>] = <span class="kw">FALSE</span>;
+
+<span class="cm">// ── Frontend Routes ─────────────────────────────</span>
+<span class="var">$route</span>[<span class="str">'products']                  = 'frontend/products/index'</span>;
+<span class="var">$route</span>[<span class="str">'products/(:num)'</span>]           = <span class="str">'frontend/products/show/$1'</span>;
+<span class="var">$route</span>[<span class="str">'products/category/(:any)'</span>]  = <span class="str">'frontend/products/by_category/$1'</span>;
+
+<span class="cm">// ── Auth Routes ─────────────────────────────────</span>
+<span class="var">$route</span>[<span class="str">'login']    = 'auth/login'</span>;
+<span class="var">$route</span>[<span class="str">'logout']   = 'auth/logout'</span>;
+<span class="var">$route</span>[<span class="str">'register'] = 'auth/register'</span>;
+
+<span class="cm">// ── Admin Routes ────────────────────────────────</span>
+<span class="var">$route</span>[<span class="str">'admin']                           = <span class="str">'admin/dashboard/index'</span>;
+<span class="var">$route</span>[<span class="str">'admin/users']                     = <span class="str">'admin/users/index'</span>;
+<span class="var">$route</span>[<span class="str">'admin/users/create']             = <span class="str">'admin/users/create'</span>;
+<span class="var">$route</span>[<span class="str">'admin/users/(:num)']             = <span class="str">'admin/users/show/$1'</span>;
+<span class="var">$route</span>[<span class="str">'admin/users/(:num)/edit']        = <span class="str">'admin/users/edit/$1'</span>;
+<span class="var">$route</span>[<span class="str">'admin/users/(:num)/delete']      = <span class="str">'admin/users/delete/$1'</span>;
+
+<span class="cm">// ── API Routes ──────────────────────────────────</span>
+<span class="var">$route</span>[<span class="str">'api/v1/users']                   = <span class="str">'api/v1/users/index'</span>;
+<span class="var">$route</span>[<span class="str">'api/v1/users/(:num)']            = <span class="str">'api/v1/users/show/$1'</span>;
+<span class="var">$route</span>[<span class="str">'api/v1/orders']                  = <span class="str">'api/v1/orders/index'</span>;</code></pre>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ═══════════════════════════════════
+     CH 10 — CHECKLIST
+═══════════════════════════════════ -->
+<section class="chapter" id="checklist">
+  <div class="chapter-label">অধ্যায় ১০</div>
+  <h2>Code Review চেকলিস্ট</h2>
+  <p class="chapter-intro">CI3 প্রজেক্টে কোড deploy করার আগে এই সব বিষয়গুলো নিশ্চিত করুন।</p>
+
+  <div class="section">
+    <h3>🔒 Security চেকলিস্ট</h3>
+    <div class="rules">
+      <div class="rule-card"><div class="rule-icon">🔐</div><div><h4>Password Hashing</h4><p>সব password <code>password_hash()</code> দিয়ে hash করা হয়েছে? MD5/SHA1 কোথাও নেই?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🛡️</div><div><h4>CSRF Protection</h4><p>config.php-তে <code>csrf_protection = TRUE</code> আছে? সব form-এ CSRF field আছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🧹</div><div><h4>Input Sanitization</h4><p>সব input <code>$this->input->post/get()</code> দিয়ে নেওয়া হচ্ছে? XSS cleaning চালু?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🗄️</div><div><h4>Query Builder</h4><p>Raw SQL কোথাও নেই? সব জায়গায় Query Builder বা parameterized query ব্যবহার?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🔑</div><div><h4>Credentials .gitignore-এ</h4><p>database.php ও sensitive config git-এ push হচ্ছে না? .env বা server variable ব্যবহার?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🌍</div><div><h4>Environment</h4><p>Production server-এ <code>ENVIRONMENT = 'production'</code> সেট আছে? Error display বন্ধ?</p></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📐 Code Quality চেকলিস্ট</h3>
+    <div class="rules">
+      <div class="rule-card"><div class="rule-icon">📂</div><div><h4>MY_Controller ব্যবহার</h4><p>Shared logic MY_Controller-এ আছে? Auth check সব protected controller-এ?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🏗️</div><div><h4>MVC মানা হয়েছে?</h4><p>Controller-এ DB query নেই? View-এ business logic নেই? Model-ই database-এর gateway?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">♻️</div><div><h4>DRY Principle</h4><p>একই code বারবার লেখা নেই? Reusable logic Library বা Helper-এ আছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">📛</div><div><h4>Naming Convention</h4><p>Model: <code>_model</code> suffix আছে? ফাইল নাম Ucfirst? Variable snake_case?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">⚡</div><div><h4>Query Optimization</h4><p>N+1 query নেই? Necessary column-ই SELECT করা হয়েছে? Index সঠিক জায়গায় আছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🧪</div><div><h4>Error Handling</h4><p>Exception handle করা হয়েছে? <code>log_message()</code> দিয়ে error log করা হচ্ছে?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">📦</div><div><h4>Autoload Minimal</h4><p>শুধু সত্যিই দরকারি library autoload করা হয়েছে? অপ্রয়োজনীয় কিছু নেই?</p></div></div>
+      <div class="rule-card"><div class="rule-icon">🔗</div><div><h4>Routes Clean</h4><p>সব route routes.php-তে সংজ্ঞায়িত? URL structure consistent ও meaningful?</p></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🚀 Performance চেকলিস্ট</h3>
+    <div class="callout info">
+      <strong>🔵 Production Deployment-এর আগে</strong>
+      <ul style="margin-top:.5rem;padding-left:1.2rem">
+        <li><code>$config['cache_query_string'] = TRUE</code> — Query string caching</li>
+        <li>Database-এ frequently searched column-এ Index যোগ করুন</li>
+        <li><code>SELECT *</code> এড়িয়ে প্রয়োজনীয় column শুধু নিন</li>
+        <li>CI3-এর built-in caching ব্যবহার করুন: <code>$this->output->cache(5)</code></li>
+        <li>Static assets (CSS/JS/Image) CDN বা browser cache ব্যবহার করুন</li>
+        <li>PHP OpCache চালু রাখুন (server config)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div style="font-size:1.8rem;margin-bottom:.6rem">🔥</div>
+  <p style="color:var(--text);font-weight:700;font-size:1.05rem;margin-bottom:.3rem">CodeIgniter 3 ক্লিন কোড গাইড</p>
+  <p>বাংলাদেশের PHP ডেভেলপারদের জন্য সম্পূর্ণ বাংলায়</p>
+  <p style="margin-top:1rem;padding:.8rem;background:var(--surface2);border-radius:8px;display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--accent)">"Clean code always looks like it was written by someone who cares." — Robert C. Martin</p>
+</footer>
+
+</body>
+</html>
