@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ক্যাশিং স্ট্র্যাটেজি — সম্পূর্ণ গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1526;
+    --bg3: #151d35;
+    --surface: #1a2440;
+    --surface2: #1f2b4a;
+    --border: #2a3a60;
+    --border2: #344870;
+    --accent: #4f9cf9;
+    --accent2: #7c5cfc;
+    --accent3: #f97c4f;
+    --accent4: #4ff9c0;
+    --accent5: #f9d44f;
+    --text: #e8edf5;
+    --text2: #a8b5cc;
+    --text3: #6b7d9a;
+    --red: #f95c5c;
+    --green: #4ff985;
+    --yellow: #f9e44f;
+    --glow: 0 0 30px rgba(79,156,249,0.15);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,156,249,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,156,249,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px 60px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(79,156,249,0.1) 0%, rgba(124,92,252,0.05) 40%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,156,249,0.1);
+    border: 1px solid rgba(79,156,249,0.3);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 28px;
+    animation: fadeSlideDown 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    animation: fadeSlideDown 0.7s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--text2);
+    max-width: 680px;
+    margin: 0 auto 40px;
+    animation: fadeSlideDown 0.7s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeSlideDown 0.7s 0.3s ease both;
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-pill span { color: var(--accent4); font-weight: 600; }
+
+  /* NAV */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sticky-nav::-webkit-scrollbar { display: none; }
+
+  .nav-inner {
+    display: flex;
+    gap: 4px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 0;
+    white-space: nowrap;
+  }
+
+  .nav-inner a {
+    color: var(--text3);
+    text-decoration: none;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-inner a:hover {
+    color: var(--accent);
+    background: rgba(79,156,249,0.1);
+  }
+
+  /* MAIN */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SECTION */
+  .section {
+    margin: 60px 0;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .section-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    font-size: 0.88rem;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 60px 0;
+  }
+
+  /* CARDS GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card.accent-blue::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .card.accent-green::before { background: linear-gradient(90deg, var(--accent4), #4ff985); }
+  .card.accent-orange::before { background: linear-gradient(90deg, var(--accent3), var(--accent5)); }
+  .card.accent-purple::before { background: linear-gradient(90deg, var(--accent2), #c084fc); }
+  .card.accent-red::before { background: linear-gradient(90deg, var(--red), #f97c4f); }
+
+  .card-icon { font-size: 2rem; margin-bottom: 12px; }
+  .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .card-desc { font-size: 0.9rem; color: var(--text2); }
+
+  /* INFO BOX */
+  .info-box {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border-left: 3px solid;
+    margin: 20px 0;
+  }
+
+  .info-box.blue { background: rgba(79,156,249,0.06); border-color: var(--accent); }
+  .info-box.green { background: rgba(79,249,192,0.06); border-color: var(--accent4); }
+  .info-box.orange { background: rgba(249,124,79,0.06); border-color: var(--accent3); }
+  .info-box.red { background: rgba(249,92,92,0.06); border-color: var(--red); }
+  .info-box.yellow { background: rgba(249,228,79,0.06); border-color: var(--yellow); }
+  .info-box.purple { background: rgba(124,92,252,0.06); border-color: var(--accent2); }
+
+  .info-box-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-box p { font-size: 0.88rem; color: var(--text2); }
+
+  /* CODE BLOCK */
+  .code-wrap {
+    background: #080c18;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .dot-red { background: #f95c5c; }
+  .dot-yellow { background: #f9e44f; }
+  .dot-green { background: #4ff985; }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #c9d8f5;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .kw { color: #c084fc; }
+  .fn { color: #60a5fa; }
+  .str { color: #86efac; }
+  .num { color: #fb923c; }
+  .cm { color: #4b6088; font-style: italic; }
+  .cl { color: #f9d44f; }
+  .op { color: #94a3b8; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    background: var(--surface);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 11px 16px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    border-bottom: 1px solid rgba(42,58,96,0.4);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(79,156,249,0.03); }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 16px 0;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .flow-step .icon { font-size: 1.5rem; }
+  .flow-step .label { font-size: 0.78rem; color: var(--text2); }
+
+  .flow-arrow {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin: 0 8px;
+    flex-shrink: 0;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .badge-blue { background: rgba(79,156,249,0.15); color: var(--accent); }
+  .badge-green { background: rgba(79,249,192,0.15); color: var(--accent4); }
+  .badge-orange { background: rgba(249,124,79,0.15); color: var(--accent3); }
+  .badge-red { background: rgba(249,92,92,0.15); color: var(--red); }
+  .badge-purple { background: rgba(124,92,252,0.15); color: var(--accent2); }
+  .badge-yellow { background: rgba(249,228,79,0.15); color: var(--yellow); }
+
+  /* LIST */
+  .fancy-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .fancy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--text2);
+  }
+
+  .fancy-list li::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* BIG FEATURE */
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .feature-row { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .flow { justify-content: center; }
+    pre { font-size: 0.72rem; }
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 30px; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent4));
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 12px rgba(79,156,249,0.5);
+  }
+
+  .timeline-title { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .timeline-desc { font-size: 0.88rem; color: var(--text2); }
+
+  /* COMPARISON */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card { border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); }
+  .compare-card.good { background: rgba(79,249,192,0.04); border-color: rgba(79,249,192,0.2); }
+  .compare-card.bad { background: rgba(249,92,92,0.04); border-color: rgba(249,92,92,0.2); }
+  .compare-title { font-weight: 700; margin-bottom: 12px; }
+  .compare-card.good .compare-title { color: var(--accent4); }
+  .compare-card.bad .compare-title { color: var(--red); }
+
+  /* TAG */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .tag {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* HIGHLIGHT ROW */
+  .highlight-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .highlight-item {
+    text-align: center;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .highlight-num { font-size: 2rem; font-weight: 800; }
+  .highlight-label { font-size: 0.8rem; color: var(--text3); margin-top: 4px; }
+
+  /* SECTION BG */
+  .section-dark {
+    background: var(--bg2);
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin: 20px 0 12px; }
+  h3 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin: 16px 0 10px; }
+  p { color: var(--text2); font-size: 0.92rem; line-height: 1.85; margin: 10px 0; }
+  strong { color: var(--text); }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 0.8rem;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <div class="live-dot"></div>
+    Senior Web Engineer Guide · ক্যাশিং মাস্টারক্লাস
+  </div>
+  <h1>
+    <div class="line1">ওয়েব ক্যাশিং</div>
+    <div class="line2">সম্পূর্ণ গভীর জ্ঞান</div>
+  </h1>
+  <p>ক্যাশ কী, কোথায় স্টোর হয়, কীভাবে কাজ করে, কীভাবে আপডেট হয় — Redis, Memcached, Browser Cache, CDN, HTTP Cache সহ সব ধরনের ক্যাশিং স্ট্র্যাটেজি একটি গাইডে।</p>
+  <div class="hero-stats">
+    <div class="stat-pill">🗄️ <span>Redis</span> ইন-মেমরি ক্যাশ</div>
+    <div class="stat-pill">⚡ <span>Memcached</span> ডিস্ট্রিবিউটেড</div>
+    <div class="stat-pill">🌐 <span>CDN</span> এজ ক্যাশ</div>
+    <div class="stat-pill">🖥️ <span>Browser</span> ক্লায়েন্ট ক্যাশ</div>
+    <div class="stat-pill">🔄 <span>Service Worker</span> অফলাইন ক্যাশ</div>
+  </div>
+</section>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#basics">#ক্যাশ-কী</a>
+    <a href="#types">#ক্যাশ-টাইপ</a>
+    <a href="#http">#HTTP-ক্যাশ</a>
+    <a href="#browser">#ব্রাউজার-ক্যাশ</a>
+    <a href="#redis">#Redis</a>
+    <a href="#memcached">#Memcached</a>
+    <a href="#cdn">#CDN</a>
+    <a href="#serviceworker">#ServiceWorker</a>
+    <a href="#strategy">#স্ট্র্যাটেজি</a>
+    <a href="#invalidation">#ইনভ্যালিডেশন</a>
+    <a href="#database">#ডেটাবেস-ক্যাশ</a>
+    <a href="#bestpractice">#বেস্ট-প্র্যাকটিস</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ১. ক্যাশ কী? -->
+  <section class="section" id="basics">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(79,156,249,0.15);">💡</div>
+      <div>
+        <div class="section-title">ক্যাশিং কী এবং কেন দরকার?</div>
+        <div class="section-subtitle"># What is Caching & Why</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div>
+        <p>ক্যাশিং হলো <strong>ডেটা অস্থায়ীভাবে দ্রুততর স্টোরেজে রাখার প্রক্রিয়া</strong> যাতে পরবর্তীবার একই ডেটা চাইলে মূল সোর্স থেকে না এনে সরাসরি ক্যাশ থেকে দেওয়া যায়।</p>
+        <p>মনে করো তুমি প্রতিদিন একই প্রশ্নের উত্তর দিতে হয়। বুদ্ধিমানের কাজ হলো উত্তরটি একটি নোটবুকে লিখে রাখা — এটাই ক্যাশ।</p>
+
+        <div class="info-box blue">
+          <div class="info-box-title">⚡ মূল সুবিধা</div>
+          <p>ডেটাবেস কোয়েরি কমে, সার্ভার লোড কমে, রেসপন্স টাইম মিলিসেকেন্ডে নামে, ব্যান্ডউইডথ সাশ্রয় হয় এবং ব্যবহারকারীর অভিজ্ঞতা অনেক ভালো হয়।</p>
+        </div>
+      </div>
+      <div>
+        <div class="flow" style="flex-direction: column; gap: 12px; align-items: stretch;">
+          <div style="text-align:center; font-size:0.8rem; color:var(--text3); margin-bottom:4px;">ক্যাশ ছাড়া vs ক্যাশ সহ</div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div class="flow-step"><div class="icon">👤</div><div class="label">User</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="icon">🖥️</div><div class="label">Server</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="icon">🗃️</div><div class="label">DB</div></div>
+            <div style="margin-left:auto; font-size:0.75rem; color:var(--red)">🐢 500ms</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div class="flow-step"><div class="icon">👤</div><div class="label">User</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" style="border-color:var(--accent4);"><div class="icon">⚡</div><div class="label">Cache</div></div>
+            <div style="margin-left:auto; font-size:0.75rem; color:var(--accent4)">🚀 2ms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-row">
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent)">250x</div>
+        <div class="highlight-label">গড় স্পিড বৃদ্ধি</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent4)">90%</div>
+        <div class="highlight-label">DB Load কমে</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent3)">70%</div>
+        <div class="highlight-label">ব্যান্ডউইডথ সাশ্রয়</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent2)">99.9%</div>
+        <div class="highlight-label">Uptime সম্ভাবনা</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ২. ক্যাশ টাইপ -->
+  <section class="section" id="types">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(124,92,252,0.15);">🗂️</div>
+      <div>
+        <div class="section-title">ক্যাশের সব ধরন — ম্যাপ</div>
+        <div class="section-subtitle"># All Types of Cache</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card accent-blue">
+        <div class="card-icon">🖥️</div>
+        <div class="card-title">Client-Side Cache</div>
+        <div class="card-desc">ব্রাউজারে ব্যবহারকারীর ডিভাইসে সংরক্ষিত। Browser Cache, localStorage, sessionStorage, IndexedDB, Cookie, Service Worker Cache।</div>
+        <div class="tag-row">
+          <span class="tag">Browser Cache</span>
+          <span class="tag">localStorage</span>
+          <span class="tag">IndexedDB</span>
+        </div>
+      </div>
+      <div class="card accent-green">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Network/Proxy Cache</div>
+        <div class="card-desc">ব্যবহারকারী ও সার্ভারের মাঝে অবস্থিত। CDN, Reverse Proxy (Nginx, Varnish), Forward Proxy। Edge-এ ডেটা রাখা হয়।</div>
+        <div class="tag-row">
+          <span class="tag">CDN</span>
+          <span class="tag">Varnish</span>
+          <span class="tag">Nginx</span>
+        </div>
+      </div>
+      <div class="card accent-orange">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Server-Side Cache</div>
+        <div class="card-desc">অ্যাপ্লিকেশন সার্ভারে। Redis, Memcached, In-memory (local), Object Cache, Query Cache, Page Cache।</div>
+        <div class="tag-row">
+          <span class="tag">Redis</span>
+          <span class="tag">Memcached</span>
+          <span class="tag">In-Memory</span>
+        </div>
+      </div>
+      <div class="card accent-purple">
+        <div class="card-icon">🗃️</div>
+        <div class="card-title">Database Cache</div>
+        <div class="card-desc">ডেটাবেস ইঞ্জিনের নিজস্ব ক্যাশ। MySQL Query Cache, PostgreSQL Buffer Pool, MongoDB WiredTiger Cache।</div>
+        <div class="tag-row">
+          <span class="tag">Query Cache</span>
+          <span class="tag">Buffer Pool</span>
+        </div>
+      </div>
+      <div class="card accent-red">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Application Cache</div>
+        <div class="card-desc">অ্যাপ্লিকেশন লেভেলে প্রোগ্রামেটিক্যালি। Object caching, Fragment caching, Full-page caching, Memoization।</div>
+        <div class="tag-row">
+          <span class="tag">Memoization</span>
+          <span class="tag">Object Cache</span>
+        </div>
+      </div>
+      <div class="card accent-blue">
+        <div class="card-icon">🔧</div>
+        <div class="card-title">CPU/Hardware Cache</div>
+        <div class="card-desc">হার্ডওয়্যার লেভেলে L1/L2/L3 CPU Cache, TLB (Translation Lookaside Buffer)। OS এবং CPU নিজেই ম্যানেজ করে।</div>
+        <div class="tag-row">
+          <span class="tag">L1 Cache</span>
+          <span class="tag">L2 Cache</span>
+          <span class="tag">TLB</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৩. HTTP Cache -->
+  <section class="section" id="http">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(79,249,192,0.15);">🌐</div>
+      <div>
+        <div class="section-title">HTTP ক্যাশিং — হেডার থেকে মেকানিজম</div>
+        <div class="section-subtitle"># HTTP Caching Deep Dive</div>
+      </div>
+    </div>
+
+    <p>HTTP ক্যাশিং হলো ওয়েবের সবচেয়ে মৌলিক ক্যাশিং মেকানিজম। এটি <strong>HTTP হেডার</strong>-এর মাধ্যমে ব্রাউজার, প্রক্সি ও CDN-কে বলে দেয় রেসপন্স কতক্ষণ ক্যাশ করতে হবে।</p>
+
+    <h2>গুরুত্বপূর্ণ HTTP Cache Headers</h2>
+
+    <div class="grid-2">
+      <div>
+        <div class="info-box blue">
+          <div class="info-box-title">Cache-Control</div>
+          <p>সবচেয়ে গুরুত্বপূর্ণ হেডার। ব্রাউজার ও প্রক্সি উভয়কে নির্দেশনা দেয়। HTTP/1.1 এ যোগ হয়েছে।</p>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+            <div class="code-lang">HTTP Headers</div>
+          </div>
+          <pre><span class="cm"># পাবলিক রিসোর্স — ১ বছর ক্যাশ</span>
+Cache-Control: <span class="str">public, max-age=31536000, immutable</span>
+
+<span class="cm"># প্রাইভেট ডেটা — শুধু ব্রাউজার ক্যাশ করবে</span>
+Cache-Control: <span class="str">private, max-age=3600</span>
+
+<span class="cm"># রিভ্যালিডেট করো, কিন্তু stale ব্যবহার করো</span>
+Cache-Control: <span class="str">stale-while-revalidate=60</span>
+
+<span class="cm"># একদমই ক্যাশ করবে না</span>
+Cache-Control: <span class="str">no-store</span>
+
+<span class="cm"># ক্যাশ করো কিন্তু আগে ভ্যালিডেট করো</span>
+Cache-Control: <span class="str">no-cache</span>
+
+<span class="cm"># সর্বোচ্চ বয়স + শেয়ার্ড ক্যাশ বয়স</span>
+Cache-Control: <span class="str">public, max-age=600, s-maxage=86400</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="info-box green">
+          <div class="info-box-title">ETag ও Last-Modified</div>
+          <p>Conditional Request-এর জন্য ব্যবহার হয়। সার্ভার জানায় রিসোর্স পরিবর্তন হয়েছে কিনা।</p>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+            <div class="code-lang">ETag Workflow</div>
+          </div>
+          <pre><span class="cm"># ১ম রিকোয়েস্ট — সার্ভার রেসপন্স</span>
+HTTP/1.1 200 OK
+ETag: <span class="str">"abc123def456"</span>
+Last-Modified: <span class="str">Wed, 01 Jan 2025 10:00:00 GMT</span>
+
+<span class="cm"># ২য় রিকোয়েস্ট — ব্রাউজার চেক করে</span>
+GET /api/products
+If-None-Match: <span class="str">"abc123def456"</span>
+If-Modified-Since: <span class="str">Wed, 01 Jan 2025 10:00:00 GMT</span>
+
+<span class="cm"># পরিবর্তন না হলে সার্ভার বলে</span>
+HTTP/1.1 304 Not Modified
+<span class="cm"># (body নেই, bandwidth সাশ্রয়!)</span>
+
+<span class="cm"># পরিবর্তন হলে নতুন ETag দিয়ে 200</span>
+HTTP/1.1 200 OK
+ETag: <span class="str">"xyz789new"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>মানে</th>
+            <th>ব্যবহার</th>
+            <th>উদাহরণ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code style="color:var(--accent4)">max-age=N</code></td><td>N সেকেন্ড ক্যাশ থাকবে</td><td>স্ট্যাটিক ফাইল</td><td>max-age=86400</td></tr>
+          <tr><td><code style="color:var(--accent4)">s-maxage=N</code></td><td>শেয়ার্ড ক্যাশ (CDN) এর জন্য</td><td>CDN TTL</td><td>s-maxage=3600</td></tr>
+          <tr><td><code style="color:var(--accent4)">no-cache</code></td><td>ক্যাশ করো কিন্তু ব্যবহারে আগে ভ্যালিডেট</td><td>ডায়নামিক পেজ</td><td>no-cache</td></tr>
+          <tr><td><code style="color:var(--accent4)">no-store</code></td><td>মোটেই ক্যাশ করো না</td><td>সেনসিটিভ ডেটা</td><td>no-store</td></tr>
+          <tr><td><code style="color:var(--accent4)">immutable</code></td><td>কখনো পরিবর্তন হবে না</td><td>হ্যাশড অ্যাসেট</td><td>immutable</td></tr>
+          <tr><td><code style="color:var(--accent4)">must-revalidate</code></td><td>expire হলে অবশ্যই চেক করো</td><td>নির্ভুলতা জরুরি</td><td>must-revalidate</td></tr>
+          <tr><td><code style="color:var(--accent4)">stale-while-revalidate</code></td><td>পুরনো দাও, পিছনে আপডেট করো</td><td>নিউজ, ব্লগ</td><td>stale-while-revalidate=60</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box orange">
+      <div class="info-box-title">🧠 Cache Busting — ক্যাশ ভাঙার কৌশল</div>
+      <p>ফাইল পরিবর্তন হলে পুরনো ক্যাশ ভাঙতে হয়। সবচেয়ে ভালো উপায়: ফাইলনামে content hash যোগ করো। যেমন: <code style="color:var(--accent4)">main.a3f9b2c1.js</code> — এতে max-age অনেক বড় দেওয়া যায়, নতুন ফাইল হলে নাম বদলে যাবে।</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Nginx — HTTP Cache Config</div>
+      </div>
+      <pre><span class="cm"># /etc/nginx/sites-available/mysite</span>
+<span class="kw">server</span> {
+    <span class="kw">listen</span> <span class="num">80</span>;
+
+    <span class="cm"># স্ট্যাটিক অ্যাসেট — ১ বছর, immutable</span>
+    <span class="kw">location</span> ~* \.<span class="str">(js|css|png|jpg|svg|woff2)$</span> {
+        expires <span class="num">1y</span>;
+        add_header Cache-Control <span class="str">"public, max-age=31536000, immutable"</span>;
+        add_header Vary <span class="str">"Accept-Encoding"</span>;
+    }
+
+    <span class="cm"># HTML — no-cache (ভ্যালিডেট করবে)</span>
+    <span class="kw">location</span> ~* <span class="str">\.html$</span> {
+        add_header Cache-Control <span class="str">"no-cache, must-revalidate"</span>;
+        etag <span class="kw">on</span>;
+    }
+
+    <span class="cm"># API — সাধারণত ক্যাশ করা উচিত না</span>
+    <span class="kw">location</span> <span class="str">/api/</span> {
+        add_header Cache-Control <span class="str">"no-store"</span>;
+        proxy_pass http://backend;
+    }
+}</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৪. Browser Cache -->
+  <section class="section" id="browser">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,124,79,0.15);">🖥️</div>
+      <div>
+        <div class="section-title">ব্রাউজার স্টোরেজ ও ক্লায়েন্ট ক্যাশ</div>
+        <div class="section-subtitle"># Browser Storage Deep Dive</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card accent-blue">
+        <div class="card-title">🍪 Cookie</div>
+        <div class="card-desc">HTTP রিকোয়েস্টের সাথে সার্ভারে পাঠানো হয়। সেশন, অথেন্টিকেশন, ট্র্যাকিং-এ ব্যবহার।</div>
+        <div class="tag-row">
+          <span class="badge badge-yellow">4KB সীমা</span>
+          <span class="badge badge-blue">সার্ভারে যায়</span>
+        </div>
+      </div>
+      <div class="card accent-green">
+        <div class="card-title">📦 localStorage</div>
+        <div class="card-desc">ডোমেন-ভিত্তিক স্থায়ী স্টোরেজ। ব্রাউজার বন্ধ করলেও থাকে। সার্ভারে পাঠানো হয় না।</div>
+        <div class="tag-row">
+          <span class="badge badge-green">5-10MB</span>
+          <span class="badge badge-green">স্থায়ী</span>
+        </div>
+      </div>
+      <div class="card accent-orange">
+        <div class="card-title">📋 sessionStorage</div>
+        <div class="card-desc">ট্যাব বন্ধ হলে মুছে যায়। একটি সেশনের জন্য অস্থায়ী ডেটা রাখতে ব্যবহার।</div>
+        <div class="tag-row">
+          <span class="badge badge-orange">5MB</span>
+          <span class="badge badge-orange">সেশন-ভিত্তিক</span>
+        </div>
+      </div>
+      <div class="card accent-purple">
+        <div class="card-title">🗃️ IndexedDB</div>
+        <div class="card-desc">ব্রাউজারে সম্পূর্ণ NoSQL ডেটাবেস। বড় structured ডেটা, অফলাইন অ্যাপের জন্য আদর্শ।</div>
+        <div class="tag-row">
+          <span class="badge badge-purple">GBs</span>
+          <span class="badge badge-purple">Async</span>
+        </div>
+      </div>
+      <div class="card accent-red">
+        <div class="card-title">⚡ Cache API</div>
+        <div class="card-desc">Service Worker-এর সাথে কাজ করে। HTTP রেসপন্স ক্যাশ করে। অফলাইন-ফার্স্ট অ্যাপের মেরুদণ্ড।</div>
+        <div class="tag-row">
+          <span class="badge badge-red">GBs</span>
+          <span class="badge badge-red">SW API</span>
+        </div>
+      </div>
+      <div class="card accent-blue">
+        <div class="card-title">🧩 Memory Cache</div>
+        <div class="card-desc">ব্রাউজারের RAM-এ বর্তমান সেশনে। সবচেয়ে দ্রুত। ব্যাক বাটনে পেজ ফিরে আসে।</div>
+        <div class="tag-row">
+          <span class="badge badge-blue">RAM</span>
+          <span class="badge badge-blue">সবচেয়ে দ্রুত</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">JavaScript — localStorage ক্যাশিং প্যাটার্ন</div>
+      </div>
+      <pre><span class="cm">// সিম্পল localStorage ক্যাশ ইমপ্লিমেন্টেশন</span>
+<span class="kw">const</span> <span class="cl">CacheManager</span> = {
+  <span class="cm">// ডেটা সেট করো TTL সহ</span>
+  <span class="fn">set</span>(key, data, ttlSeconds = <span class="num">300</span>) {
+    <span class="kw">const</span> item = {
+      data,
+      expires: <span class="cl">Date</span>.<span class="fn">now</span>() + (ttlSeconds * <span class="num">1000</span>),
+      createdAt: <span class="kw">new</span> <span class="cl">Date</span>().<span class="fn">toISOString</span>()
+    };
+    <span class="fn">localStorage</span>.<span class="fn">setItem</span>(key, <span class="cl">JSON</span>.<span class="fn">stringify</span>(item));
+  },
+
+  <span class="cm">// ডেটা পাও — expire হলে null</span>
+  <span class="fn">get</span>(key) {
+    <span class="kw">const</span> raw = <span class="fn">localStorage</span>.<span class="fn">getItem</span>(key);
+    <span class="kw">if</span> (!raw) <span class="kw">return</span> <span class="kw">null</span>;
+
+    <span class="kw">const</span> item = <span class="cl">JSON</span>.<span class="fn">parse</span>(raw);
+    <span class="kw">if</span> (<span class="cl">Date</span>.<span class="fn">now</span>() > item.expires) {
+      <span class="fn">localStorage</span>.<span class="fn">removeItem</span>(key); <span class="cm">// পুরনো মুছে দাও</span>
+      <span class="kw">return</span> <span class="kw">null</span>;
+    }
+    <span class="kw">return</span> item.data;
+  },
+
+  <span class="cm">// Cache-or-Fetch প্যাটার্ন</span>
+  <span class="kw">async</span> <span class="fn">getOrFetch</span>(key, fetchFn, ttl = <span class="num">300</span>) {
+    <span class="kw">const</span> cached = <span class="kw">this</span>.<span class="fn">get</span>(key);
+    <span class="kw">if</span> (cached) {
+      console.<span class="fn">log</span>(<span class="str">`✅ Cache HIT: ${key}`</span>);
+      <span class="kw">return</span> cached;
+    }
+    console.<span class="fn">log</span>(<span class="str">`❌ Cache MISS: ${key}`</span>);
+    <span class="kw">const</span> freshData = <span class="kw">await</span> <span class="fn">fetchFn</span>();
+    <span class="kw">this</span>.<span class="fn">set</span>(key, freshData, ttl);
+    <span class="kw">return</span> freshData;
+  }
+};
+
+<span class="cm">// ব্যবহার</span>
+<span class="kw">const</span> products = <span class="kw">await</span> <span class="cl">CacheManager</span>.<span class="fn">getOrFetch</span>(
+  <span class="str">'products_list'</span>,
+  () => <span class="fn">fetch</span>(<span class="str">'/api/products'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>()),
+  <span class="num">600</span> <span class="cm">// ১০ মিনিট</span>
+);</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৫. REDIS -->
+  <section class="section" id="redis">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,92,92,0.15);">🔴</div>
+      <div>
+        <div class="section-title">Redis — সম্পূর্ণ গাইড</div>
+        <div class="section-subtitle"># Redis In-Memory Database</div>
+      </div>
+    </div>
+
+    <p>Redis (Remote Dictionary Server) হলো সবচেয়ে জনপ্রিয় <strong>ইন-মেমরি ডেটা স্টোর</strong>। এটি শুধু ক্যাশ নয় — একটি সম্পূর্ণ ডেটা স্ট্রাকচার সার্ভার।</p>
+
+    <div class="section-dark">
+      <h2>Redis কোথায় ডেটা রাখে?</h2>
+      <div class="grid-2">
+        <div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-title">RAM (প্রাথমিক স্টোরেজ)</div>
+              <div class="timeline-desc">সমস্ত ডেটা RAM-এ থাকে। তাই অবিশ্বাস্য দ্রুত — microsecond latency।</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-title">RDB Snapshot (ডিস্ক)</div>
+              <div class="timeline-desc">নির্দিষ্ট সময় পর পর সম্পূর্ণ ডেটাসেটের snapshot ডিস্কে সেভ। restart-এ লোড হয়।</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-title">AOF Log (ডিস্ক)</div>
+              <div class="timeline-desc">প্রতিটি write অপারেশন log ফাইলে লেখা হয়। Crash recovery-তে সাহায্য করে।</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-title">Replica (অন্য সার্ভার)</div>
+              <div class="timeline-desc">Master-Replica replication। High availability ও read scaling-এর জন্য।</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="info-box green">
+            <div class="info-box-title">💾 Redis Data Types</div>
+            <ul class="fancy-list">
+              <li><strong>String</strong> — সাধারণ key-value, counter</li>
+              <li><strong>Hash</strong> — Object/Map (user profile)</li>
+              <li><strong>List</strong> — Ordered list, queue, stack</li>
+              <li><strong>Set</strong> — Unique values, tags</li>
+              <li><strong>Sorted Set</strong> — Leaderboard, ranking</li>
+              <li><strong>Stream</strong> — Event log, message queue</li>
+              <li><strong>Bitmap</strong> — Feature flags, analytics</li>
+              <li><strong>HyperLogLog</strong> — Unique count (approx)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Redis ইনস্টল ও সংযোগ</h2>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Terminal — Redis Setup</div>
+      </div>
+      <pre><span class="cm"># Ubuntu/Debian</span>
+sudo apt-get install redis-server
+sudo systemctl start redis
+sudo systemctl enable redis
+
+<span class="cm"># Docker (সহজ পদ্ধতি)</span>
+docker run -d --name redis \
+  -p <span class="num">6379</span>:<span class="num">6379</span> \
+  -v redis_data:/data \
+  redis:alpine redis-server --appendonly yes
+
+<span class="cm"># Redis CLI দিয়ে টেস্ট</span>
+redis-cli ping        <span class="cm"># PONG</span>
+redis-cli set name <span class="str">"Rahim"</span>
+redis-cli get name    <span class="cm"># "Rahim"</span></pre>
+    </div>
+
+    <h2>Node.js-এ Redis ব্যবহার (ioredis)</h2>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Node.js — Redis Cache Implementation</div>
+      </div>
+      <pre><span class="kw">const</span> Redis = <span class="fn">require</span>(<span class="str">'ioredis'</span>);
+<span class="kw">const</span> redis = <span class="kw">new</span> <span class="cl">Redis</span>({
+  host: <span class="str">'localhost'</span>,
+  port: <span class="num">6379</span>,
+  retryStrategy: (times) => <span class="cl">Math</span>.<span class="fn">min</span>(times * <span class="num">50</span>, <span class="num">2000</span>)
+});
+
+<span class="cm">// ১. সিম্পল String ক্যাশ</span>
+<span class="kw">async function</span> <span class="fn">getUserById</span>(userId) {
+  <span class="kw">const</span> cacheKey = <span class="str">`user:${userId}`</span>;
+
+  <span class="cm">// প্রথমে ক্যাশ চেক</span>
+  <span class="kw">const</span> cached = <span class="kw">await</span> redis.<span class="fn">get</span>(cacheKey);
+  <span class="kw">if</span> (cached) <span class="kw">return</span> <span class="cl">JSON</span>.<span class="fn">parse</span>(cached);
+
+  <span class="cm">// ক্যাশ miss — DB থেকে আনো</span>
+  <span class="kw">const</span> user = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">'SELECT * FROM users WHERE id = ?'</span>, [userId]);
+
+  <span class="cm">// ক্যাশে রাখো — ৩৬০০ সেকেন্ড TTL</span>
+  <span class="kw">await</span> redis.<span class="fn">setex</span>(cacheKey, <span class="num">3600</span>, <span class="cl">JSON</span>.<span class="fn">stringify</span>(user));
+  <span class="kw">return</span> user;
+}
+
+<span class="cm">// ২. Hash দিয়ে Object ক্যাশ</span>
+<span class="kw">async function</span> <span class="fn">cacheUserProfile</span>(userId, profile) {
+  <span class="kw">await</span> redis.<span class="fn">hset</span>(<span class="str">`profile:${userId}`</span>, {
+    name: profile.name,
+    email: profile.email,
+    score: profile.score
+  });
+  <span class="kw">await</span> redis.<span class="fn">expire</span>(<span class="str">`profile:${userId}`</span>, <span class="num">7200</span>);
+}
+
+<span class="cm">// ৩. Sorted Set — Leaderboard</span>
+<span class="kw">async function</span> <span class="fn">updateLeaderboard</span>(username, score) {
+  <span class="kw">await</span> redis.<span class="fn">zadd</span>(<span class="str">'leaderboard'</span>, score, username);
+}
+
+<span class="kw">async function</span> <span class="fn">getTopPlayers</span>(n = <span class="num">10</span>) {
+  <span class="cm">// সর্বোচ্চ স্কোর থেকে ঘুরে নাও</span>
+  <span class="kw">return</span> redis.<span class="fn">zrevrange</span>(<span class="str">'leaderboard'</span>, <span class="num">0</span>, n - <span class="num">1</span>, <span class="str">'WITHSCORES'</span>);
+}
+
+<span class="cm">// ৪. Cache Invalidation — ব্যবহারকারী আপডেট হলে</span>
+<span class="kw">async function</span> <span class="fn">updateUser</span>(userId, data) {
+  <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">'UPDATE users SET ...'</span>, data);
+  <span class="cm">// ক্যাশ মুছে দাও</span>
+  <span class="kw">await</span> redis.<span class="fn">del</span>(<span class="str">`user:${userId}`</span>);
+  <span class="kw">await</span> redis.<span class="fn">del</span>(<span class="str">`profile:${userId}`</span>);
+}</pre>
+    </div>
+
+    <h2>Redis Pub/Sub — রিয়েলটাইম ক্যাশ ইনভ্যালিডেশন</h2>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Redis Pub/Sub Pattern</div>
+      </div>
+      <pre><span class="cm">// Publisher — ডেটা পরিবর্তন হলে broadcast</span>
+<span class="kw">async function</span> <span class="fn">invalidateCacheAcrossServers</span>(pattern) {
+  <span class="kw">await</span> redisPublisher.<span class="fn">publish</span>(<span class="str">'cache:invalidate'</span>, pattern);
+}
+
+<span class="cm">// Subscriber — প্রতিটি সার্ভার শুনছে</span>
+redisSubscriber.<span class="fn">subscribe</span>(<span class="str">'cache:invalidate'</span>);
+redisSubscriber.<span class="fn">on</span>(<span class="str">'message'</span>, <span class="kw">async</span> (channel, pattern) => {
+  <span class="kw">const</span> keys = <span class="kw">await</span> redis.<span class="fn">keys</span>(pattern);
+  <span class="kw">if</span> (keys.length > <span class="num">0</span>) {
+    <span class="kw">await</span> redis.<span class="fn">del</span>(...keys);
+    console.<span class="fn">log</span>(<span class="str">`Cleared ${keys.length} cache entries`</span>);
+  }
+});</pre>
+    </div>
+
+    <div class="info-box yellow">
+      <div class="info-box-title">⚙️ Redis Production Config (redis.conf)</div>
+      <p><code style="color:var(--accent4)">maxmemory 2gb</code> — সর্বোচ্চ মেমরি সীমা।
+      <code style="color:var(--accent4)">maxmemory-policy allkeys-lru</code> — পুরনো key স্বয়ংক্রিয়ভাবে মুছবে (LRU অ্যালগরিদম)।
+      <code style="color:var(--accent4)">appendonly yes</code> — AOF persistence চালু।
+      <code style="color:var(--accent4)">save 900 1</code> — ৯০০ সেকেন্ডে ১টি পরিবর্তন হলে snapshot।</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৬. Memcached -->
+  <section class="section" id="memcached">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(79,249,192,0.15);">🟢</div>
+      <div>
+        <div class="section-title">Memcached — ডিস্ট্রিবিউটেড ক্যাশ</div>
+        <div class="section-subtitle"># Memcached Complete Guide</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div>
+        <p>Memcached হলো একটি সিম্পল, দ্রুত, <strong>ডিস্ট্রিবিউটেড মেমরি ক্যাশিং সিস্টেম</strong>। এটি শুধু String key-value স্টোর। Redis-এর মতো rich data types নেই, কিন্তু horizontal scaling অনেক সহজ।</p>
+        <div class="info-box green">
+          <div class="info-box-title">Memcached কোথায় ডেটা রাখে?</div>
+          <p>শুধু RAM-এ। কোনো persistence নেই। Server restart করলে সব মুছে যায়। একাধিক সার্ভার জুড়ে consistent hashing দিয়ে key বিতরণ হয়।</p>
+        </div>
+      </div>
+      <div>
+        <div class="compare-grid">
+          <div class="compare-card good">
+            <div class="compare-title">✅ Memcached সুবিধা</div>
+            <ul class="fancy-list">
+              <li>অতি সরল আর্কিটেকচার</li>
+              <li>Multi-threaded</li>
+              <li>Horizontal scaling সহজ</li>
+              <li>কম ওভারহেড</li>
+            </ul>
+          </div>
+          <div class="compare-card bad">
+            <div class="compare-title">❌ সীমাবদ্ধতা</div>
+            <ul class="fancy-list">
+              <li>শুধু String type</li>
+              <li>Persistence নেই</li>
+              <li>Pub/Sub নেই</li>
+              <li>Replication নেই</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Node.js — Memcached Implementation</div>
+      </div>
+      <pre><span class="kw">const</span> Memcached = <span class="fn">require</span>(<span class="str">'memcached'</span>);
+
+<span class="cm">// একাধিক সার্ভারে ক্যাশ ডিস্ট্রিবিউট</span>
+<span class="kw">const</span> memcached = <span class="kw">new</span> <span class="cl">Memcached</span>([
+  <span class="str">'192.168.1.1:11211'</span>,
+  <span class="str">'192.168.1.2:11211'</span>,
+  <span class="str">'192.168.1.3:11211'</span>
+], {
+  retries: <span class="num">10</span>,
+  retry: <span class="num">10000</span>,
+  remove: <span class="kw">true</span>,
+  failOverServers: [<span class="str">'192.168.1.4:11211'</span>]
+});
+
+<span class="cm">// Set — ডেটা সেভ করো</span>
+<span class="kw">const</span> <span class="fn">cacheSet</span> = (key, value, lifetime = <span class="num">600</span>) =>
+  <span class="kw">new</span> <span class="cl">Promise</span>((resolve, reject) =>
+    memcached.<span class="fn">set</span>(key, <span class="cl">JSON</span>.<span class="fn">stringify</span>(value), lifetime,
+      err => err ? <span class="fn">reject</span>(err) : <span class="fn">resolve</span>(<span class="kw">true</span>)));
+
+<span class="cm">// Get — ডেটা পাও</span>
+<span class="kw">const</span> <span class="fn">cacheGet</span> = (key) =>
+  <span class="kw">new</span> <span class="cl">Promise</span>((resolve, reject) =>
+    memcached.<span class="fn">get</span>(key, (err, data) =>
+      err ? <span class="fn">reject</span>(err) : <span class="fn">resolve</span>(data ? <span class="cl">JSON</span>.<span class="fn">parse</span>(data) : <span class="kw">null</span>)));
+
+<span class="cm">// Express middleware হিসেবে ব্যবহার</span>
+<span class="kw">const</span> <span class="fn">cacheMiddleware</span> = (duration) => <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">const</span> key = <span class="str">`page:${req.url}`</span>;
+  <span class="kw">const</span> cached = <span class="kw">await</span> <span class="fn">cacheGet</span>(key);
+
+  <span class="kw">if</span> (cached) {
+    res.<span class="fn">setHeader</span>(<span class="str">'X-Cache'</span>, <span class="str">'HIT'</span>);
+    <span class="kw">return</span> res.<span class="fn">json</span>(cached);
+  }
+  res.<span class="fn">sendResponse</span> = res.json;
+  res.<span class="fn">json</span> = <span class="kw">async</span> (body) => {
+    <span class="kw">await</span> <span class="fn">cacheSet</span>(key, body, duration);
+    res.<span class="fn">setHeader</span>(<span class="str">'X-Cache'</span>, <span class="str">'MISS'</span>);
+    res.<span class="fn">sendResponse</span>(body);
+  };
+  <span class="fn">next</span>();
+};
+
+<span class="cm">// Route-এ ব্যবহার</span>
+app.<span class="fn">get</span>(<span class="str">'/api/products'</span>, <span class="fn">cacheMiddleware</span>(<span class="num">300</span>), getProducts);</pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>বিষয়</th><th>Redis</th><th>Memcached</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Data Types</td><td><span class="badge badge-green">String, Hash, List, Set, Stream...</span></td><td><span class="badge badge-orange">শুধু String</span></td></tr>
+          <tr><td>Persistence</td><td><span class="badge badge-green">RDB + AOF</span></td><td><span class="badge badge-red">নেই</span></td></tr>
+          <tr><td>Threading</td><td><span class="badge badge-blue">Single-threaded (I/O)</span></td><td><span class="badge badge-green">Multi-threaded</span></td></tr>
+          <tr><td>Pub/Sub</td><td><span class="badge badge-green">হ্যাঁ</span></td><td><span class="badge badge-red">নেই</span></td></tr>
+          <tr><td>Replication</td><td><span class="badge badge-green">Master-Replica</span></td><td><span class="badge badge-red">নেই</span></td></tr>
+          <tr><td>Max Value Size</td><td><span class="badge badge-blue">512 MB</span></td><td><span class="badge badge-orange">1 MB</span></td></tr>
+          <tr><td>ব্যবহার করো যখন</td><td>Complex data, persistence, Pub/Sub দরকার</td><td>সিম্পল string cache, multi-threaded দরকার</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৭. CDN -->
+  <section class="section" id="cdn">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,212,79,0.15);">🌍</div>
+      <div>
+        <div class="section-title">CDN ক্যাশিং — Edge-এ রাখো</div>
+        <div class="section-subtitle"># Content Delivery Network</div>
+      </div>
+    </div>
+
+    <p>CDN (Content Delivery Network) হলো বিশ্বের বিভিন্ন স্থানে থাকা সার্ভারের নেটওয়ার্ক যা <strong>ব্যবহারকারীর কাছাকাছি থেকে</strong> কন্টেন্ট সরবরাহ করে। Cloudflare, AWS CloudFront, Fastly, Akamai জনপ্রিয় CDN।</p>
+
+    <div class="flow">
+      <div class="flow-step"><div class="icon">👤</div><div class="label">ঢাকার User</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="border-color:var(--accent5);"><div class="icon">🌐</div><div class="label">CDN Edge<br>সিঙ্গাপুর</div></div>
+      <div class="flow-arrow" style="color:var(--accent4)">✓ HIT</div>
+      <div class="flow-step" style="border-color:var(--accent4);"><div class="icon">⚡</div><div class="label">5ms রেসপন্স</div></div>
+      <div style="flex: 1 0 100%; border-top: 1px dashed var(--border); margin: 8px 0;"></div>
+      <div class="flow-step"><div class="icon">👤</div><div class="label">ঢাকার User</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="border-color:var(--red);"><div class="icon">🌐</div><div class="label">CDN Edge<br>(MISS)</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="icon">🖥️</div><div class="label">Origin<br>US Server</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="border-color:var(--red);"><div class="icon">🐢</div><div class="label">200ms</div></div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Cloudflare Cache Rules (Page Rules)</div>
+      </div>
+      <pre><span class="cm"># Cloudflare Workers দিয়ে কাস্টম ক্যাশিং</span>
+<span class="kw">addEventListener</span>(<span class="str">'fetch'</span>, event => {
+  event.<span class="fn">respondWith</span>(<span class="fn">handleRequest</span>(event.request));
+});
+
+<span class="kw">async function</span> <span class="fn">handleRequest</span>(request) {
+  <span class="kw">const</span> url = <span class="kw">new</span> <span class="cl">URL</span>(request.url);
+  <span class="kw">const</span> cache = caches.<span class="kw">default</span>;
+
+  <span class="cm">// API রেসপন্স ক্যাশ করো</span>
+  <span class="kw">if</span> (url.pathname.<span class="fn">startsWith</span>(<span class="str">'/api/public'</span>)) {
+    <span class="kw">let</span> cachedResponse = <span class="kw">await</span> cache.<span class="fn">match</span>(request);
+    <span class="kw">if</span> (cachedResponse) <span class="kw">return</span> cachedResponse;
+
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(request);
+    <span class="kw">const</span> newResponse = <span class="kw">new</span> <span class="cl">Response</span>(response.body, {
+      status: response.status,
+      headers: {
+        ...response.headers,
+        <span class="str">'Cache-Control'</span>: <span class="str">'public, max-age=300'</span>,
+        <span class="str">'CF-Cache-Status'</span>: <span class="str">'HIT'</span>
+      }
+    });
+    event.<span class="fn">waitUntil</span>(cache.<span class="fn">put</span>(request, newResponse.<span class="fn">clone</span>()));
+    <span class="kw">return</span> newResponse;
+  }
+
+  <span class="kw">return</span> <span class="fn">fetch</span>(request);
+}</pre>
+    </div>
+
+    <div class="info-box purple">
+      <div class="info-box-title">🔄 CDN Cache Purge — আপডেট করো</div>
+      <p>নতুন কন্টেন্ট deploy করলে CDN cache purge করতে হয়। Cloudflare API: <code style="color:var(--accent4)">POST /zones/{zone_id}/purge_cache</code> — নির্দিষ্ট URL বা সব purge করো।</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৮. Service Worker -->
+  <section class="section" id="serviceworker">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(124,92,252,0.15);">🔧</div>
+      <div>
+        <div class="section-title">Service Worker ক্যাশিং — অফলাইন প্রথম</div>
+        <div class="section-subtitle"># Service Worker & PWA Cache</div>
+      </div>
+    </div>
+
+    <p>Service Worker হলো ব্রাউজারে একটি <strong>background JavaScript thread</strong> যা নেটওয়ার্ক রিকোয়েস্ট intercept করতে পারে এবং Cache API ব্যবহার করে অফলাইনেও কাজ করতে পারে।</p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">sw.js — Service Worker</div>
+      </div>
+      <pre><span class="kw">const</span> CACHE_NAME = <span class="str">'my-app-v1.0.0'</span>;
+<span class="kw">const</span> STATIC_ASSETS = [
+  <span class="str">'/'</span>, <span class="str">'/index.html'</span>,
+  <span class="str">'/css/app.css'</span>, <span class="str">'/js/app.js'</span>,
+  <span class="str">'/offline.html'</span>
+];
+
+<span class="cm">// ইনস্টল — স্ট্যাটিক ফাইল আগে থেকে ক্যাশ করো</span>
+self.<span class="fn">addEventListener</span>(<span class="str">'install'</span>, <span class="kw">async</span> event => {
+  event.<span class="fn">waitUntil</span>(
+    caches.<span class="fn">open</span>(CACHE_NAME).<span class="fn">then</span>(cache =>
+      cache.<span class="fn">addAll</span>(STATIC_ASSETS))
+  );
+  self.<span class="fn">skipWaiting</span>(); <span class="cm">// তাৎক্ষণিক activate</span>
+});
+
+<span class="cm">// Activate — পুরনো cache মুছে দাও</span>
+self.<span class="fn">addEventListener</span>(<span class="str">'activate'</span>, event => {
+  event.<span class="fn">waitUntil</span>(
+    caches.<span class="fn">keys</span>().<span class="fn">then</span>(keys =>
+      <span class="cl">Promise</span>.<span class="fn">all</span>(
+        keys.<span class="fn">filter</span>(k => k !== CACHE_NAME)
+            .<span class="fn">map</span>(k => caches.<span class="fn">delete</span>(k))
+      ))
+  );
+  self.clients.<span class="fn">claim</span>();
+});
+
+<span class="cm">// Fetch — নেটওয়ার্ক রিকোয়েস্ট intercept</span>
+self.<span class="fn">addEventListener</span>(<span class="str">'fetch'</span>, event => {
+  <span class="kw">const</span> { request } = event;
+
+  <span class="cm">// API রিকোয়েস্ট: Network First</span>
+  <span class="kw">if</span> (request.url.<span class="fn">includes</span>(<span class="str">'/api/'</span>)) {
+    event.<span class="fn">respondWith</span>(
+      <span class="fn">fetch</span>(request)
+        .<span class="fn">then</span>(<span class="kw">async</span> res => {
+          <span class="kw">const</span> cache = <span class="kw">await</span> caches.<span class="fn">open</span>(CACHE_NAME);
+          cache.<span class="fn">put</span>(request, res.<span class="fn">clone</span>());
+          <span class="kw">return</span> res;
+        })
+        .<span class="fn">catch</span>(() => caches.<span class="fn">match</span>(request)) <span class="cm">// offline fallback</span>
+    );
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// স্ট্যাটিক: Cache First</span>
+  event.<span class="fn">respondWith</span>(
+    caches.<span class="fn">match</span>(request)
+      .<span class="fn">then</span>(cached => cached || <span class="fn">fetch</span>(request))
+      .<span class="fn">catch</span>(() => caches.<span class="fn">match</span>(<span class="str">'/offline.html'</span>))
+  );
+});</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ৯. স্ট্র্যাটেজি -->
+  <section class="section" id="strategy">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(79,249,192,0.15);">🎯</div>
+      <div>
+        <div class="section-title">ক্যাশিং স্ট্র্যাটেজি — কোনটি কখন?</div>
+        <div class="section-subtitle"># Caching Patterns & Strategies</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card accent-blue">
+        <div class="card-title">1. Cache-Aside (Lazy Loading)</div>
+        <div class="card-desc">সবচেয়ে প্রচলিত প্যাটার্ন। অ্যাপ নিজেই ক্যাশ ম্যানেজ করে। Cache Miss হলে DB থেকে এনে ক্যাশে রাখে।</div>
+        <div class="info-box blue" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> Cache Check → Miss হলে DB → DB ডেটা Cache-এ রাখো → Return</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ সহজ</span>
+          <span class="badge badge-green">✅ resilient</span>
+          <span class="badge badge-orange">⚠️ Thundering herd</span>
+        </div>
+      </div>
+      <div class="card accent-green">
+        <div class="card-title">2. Write-Through</div>
+        <div class="card-desc">ডেটা লেখার সময় একসাথে ক্যাশ ও DB দুটোতেই লেখা হয়। ক্যাশ সবসময় up-to-date থাকে।</div>
+        <div class="info-box green" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> Write → Cache-এ লেখো → DB-তে লেখো → Return</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ সামঞ্জস্যপূর্ণ</span>
+          <span class="badge badge-orange">⚠️ Write latency বাড়ে</span>
+        </div>
+      </div>
+      <div class="card accent-orange">
+        <div class="card-title">3. Write-Behind (Write-Back)</div>
+        <div class="card-desc">আগে ক্যাশে লেখো, পরে অ্যাসিঙ্ক্রোনাসলি DB-তে লেখো। Write অনেক দ্রুত হয় কিন্তু ডেটা লস ঝুঁকি আছে।</div>
+        <div class="info-box orange" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> Write → Cache → (async) → DB পরে</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ দ্রুত write</span>
+          <span class="badge badge-red">⚠️ ডেটা লস ঝুঁকি</span>
+        </div>
+      </div>
+      <div class="card accent-purple">
+        <div class="card-title">4. Read-Through</div>
+        <div class="card-desc">Cache নিজেই DB-এর সামনে বসে থাকে। অ্যাপ শুধু ক্যাশ থেকে পড়ে, ক্যাশ নিজে DB-কে কল করে।</div>
+        <div class="info-box purple" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> App → Cache → Cache Miss হলে → DB → Cache update → App</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ সহজ App Logic</span>
+          <span class="badge badge-orange">⚠️ প্রথম read ধীর</span>
+        </div>
+      </div>
+      <div class="card accent-red">
+        <div class="card-title">5. Refresh-Ahead</div>
+        <div class="card-desc">Cache expire হওয়ার আগেই প্রি-এম্পটিভলি নতুন ডেটা লোড করো। কখনো Cache Miss হয় না।</div>
+        <div class="info-box red" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> TTL ৮০% শেষ → Background refresh → ব্যবহারকারী সবসময় fresh ডেটা পায়</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ Low latency</span>
+          <span class="badge badge-orange">⚠️ অপ্রয়োজনীয় refresh</span>
+        </div>
+      </div>
+      <div class="card accent-blue">
+        <div class="card-title">6. Stale-While-Revalidate</div>
+        <div class="card-desc">পুরনো (stale) ডেটা এখনই দাও, পিছনে নতুন ডেটা আনো। HTTP Cache-Control এ বিদ্যমান।</div>
+        <div class="info-box blue" style="margin-top:12px;">
+          <p><strong>প্রবাহ:</strong> Request → Stale দাও তাৎক্ষণিক → Background-এ নতুন আনো → পরের request-এ নতুন</p>
+        </div>
+        <div class="tag-row">
+          <span class="badge badge-green">✅ UX চমৎকার</span>
+          <span class="badge badge-orange">⚠️ Briefly stale</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ১০. Invalidation -->
+  <section class="section" id="invalidation">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,92,92,0.15);">🔄</div>
+      <div>
+        <div class="section-title">Cache Invalidation — সবচেয়ে কঠিন সমস্যা</div>
+        <div class="section-subtitle"># Cache Invalidation Strategies</div>
+      </div>
+    </div>
+
+    <div class="info-box red">
+      <div class="info-box-title">🧠 বিখ্যাত উক্তি</div>
+      <p>"Computer Science-এ শুধু দুটো কঠিন জিনিস আছে: Cache Invalidation আর জিনিসের নাম দেওয়া।" — Phil Karlton</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card accent-blue">
+        <div class="card-title">TTL (Time To Live)</div>
+        <div class="card-desc">নির্দিষ্ট সময় পর ক্যাশ স্বয়ংক্রিয়ভাবে expire হয়। সহজ কিন্তু stale ডেটা থাকার ঝুঁকি।</div>
+        <div class="tag-row"><span class="badge badge-blue">SETEX key 3600</span></div>
+      </div>
+      <div class="card accent-green">
+        <div class="card-title">Event-Based Invalidation</div>
+        <div class="card-desc">ডেটা পরিবর্তন হলে ইভেন্ট trigger হয় এবং সম্পর্কিত ক্যাশ মুছে দেওয়া হয়।</div>
+        <div class="tag-row"><span class="badge badge-green">Pub/Sub Pattern</span></div>
+      </div>
+      <div class="card accent-orange">
+        <div class="card-title">Tag-Based Invalidation</div>
+        <div class="card-desc">ক্যাশ এন্ট্রিকে tag দিয়ে গ্রুপ করো। একটি tag-এর সব ক্যাশ একসাথে মুছে দাও।</div>
+        <div class="tag-row"><span class="badge badge-orange">product:123 tag</span></div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Node.js — Tag-Based Cache Invalidation</div>
+      </div>
+      <pre><span class="cm">// Tag-based invalidation Redis দিয়ে</span>
+<span class="kw">class</span> <span class="cl">TaggedCache</span> {
+  <span class="kw">constructor</span>(redis) { <span class="kw">this</span>.redis = redis; }
+
+  <span class="cm">// ক্যাশ সেট করো tags সহ</span>
+  <span class="kw">async</span> <span class="fn">set</span>(key, value, tags = [], ttl = <span class="num">3600</span>) {
+    <span class="kw">const</span> pipeline = <span class="kw">this</span>.redis.<span class="fn">pipeline</span>();
+    pipeline.<span class="fn">setex</span>(key, ttl, <span class="cl">JSON</span>.<span class="fn">stringify</span>(value));
+
+    <span class="cm">// প্রতিটি tag-এ key যোগ করো</span>
+    <span class="kw">for</span> (<span class="kw">const</span> tag <span class="kw">of</span> tags) {
+      pipeline.<span class="fn">sadd</span>(<span class="str">`tag:${tag}`</span>, key);
+      pipeline.<span class="fn">expire</span>(<span class="str">`tag:${tag}`</span>, ttl + <span class="num">60</span>);
+    }
+    <span class="kw">await</span> pipeline.<span class="fn">exec</span>();
+  }
+
+  <span class="cm">// একটি tag-এর সব cache মুছে দাও</span>
+  <span class="kw">async</span> <span class="fn">invalidateTag</span>(tag) {
+    <span class="kw">const</span> keys = <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">smembers</span>(<span class="str">`tag:${tag}`</span>);
+    <span class="kw">if</span> (keys.length === <span class="num">0</span>) <span class="kw">return</span>;
+
+    <span class="kw">const</span> pipeline = <span class="kw">this</span>.redis.<span class="fn">pipeline</span>();
+    keys.<span class="fn">forEach</span>(key => pipeline.<span class="fn">del</span>(key));
+    pipeline.<span class="fn">del</span>(<span class="str">`tag:${tag}`</span>);
+    <span class="kw">await</span> pipeline.<span class="fn">exec</span>();
+    console.<span class="fn">log</span>(<span class="str">`🗑️ ${keys.length} cache entries cleared for tag: ${tag}`</span>);
+  }
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="kw">const</span> cache = <span class="kw">new</span> <span class="cl">TaggedCache</span>(redis);
+
+<span class="cm">// Product list ক্যাশ — tag: 'products', 'category:electronics'</span>
+<span class="kw">await</span> cache.<span class="fn">set</span>(<span class="str">'products:list'</span>, productData, [<span class="str">'products'</span>, <span class="str">'category:electronics'</span>]);
+
+<span class="cm">// Product আপডেট হলে — সব সম্পর্কিত ক্যাশ মুছো</span>
+<span class="kw">await</span> cache.<span class="fn">invalidateTag</span>(<span class="str">'products'</span>); <span class="cm">// সব product ক্যাশ মুছবে</span></pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ১১. Database Cache -->
+  <section class="section" id="database">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,228,79,0.15);">🗃️</div>
+      <div>
+        <div class="section-title">ডেটাবেস কোয়েরি ক্যাশিং</div>
+        <div class="section-subtitle"># Database Query Caching</div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Node.js — Smart Query Cache Layer</div>
+      </div>
+      <pre><span class="cm">// Database Query Cache Wrapper</span>
+<span class="kw">class</span> <span class="cl">QueryCache</span> {
+  <span class="kw">constructor</span>(db, redis) {
+    <span class="kw">this</span>.db = db;
+    <span class="kw">this</span>.redis = redis;
+  }
+
+  <span class="cm">// Query hash তৈরি (unique key)</span>
+  <span class="fn">hashQuery</span>(sql, params) {
+    <span class="kw">const</span> crypto = <span class="fn">require</span>(<span class="str">'crypto'</span>);
+    <span class="kw">return</span> <span class="str">'qcache:'</span> + crypto
+      .<span class="fn">createHash</span>(<span class="str">'md5'</span>)
+      .<span class="fn">update</span>(sql + <span class="cl">JSON</span>.<span class="fn">stringify</span>(params))
+      .<span class="fn">digest</span>(<span class="str">'hex'</span>);
+  }
+
+  <span class="cm">// Cached query execute</span>
+  <span class="kw">async</span> <span class="fn">query</span>(sql, params = [], ttl = <span class="num">300</span>) {
+    <span class="kw">const</span> key = <span class="kw">this</span>.<span class="fn">hashQuery</span>(sql, params);
+
+    <span class="cm">// ক্যাশ চেক</span>
+    <span class="kw">const</span> cached = <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">get</span>(key);
+    <span class="kw">if</span> (cached) {
+      <span class="kw">return</span> { data: <span class="cl">JSON</span>.<span class="fn">parse</span>(cached), fromCache: <span class="kw">true</span> };
+    }
+
+    <span class="cm">// DB থেকে আনো</span>
+    <span class="kw">const</span> rows = <span class="kw">await</span> <span class="kw">this</span>.db.<span class="fn">execute</span>(sql, params);
+
+    <span class="cm">// ক্যাশে রাখো</span>
+    <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">setex</span>(key, ttl, <span class="cl">JSON</span>.<span class="fn">stringify</span>(rows));
+
+    <span class="kw">return</span> { data: rows, fromCache: <span class="kw">false</span> };
+  }
+}
+
+<span class="cm">// Memoization — Function Level Cache</span>
+<span class="kw">function</span> <span class="fn">memoize</span>(fn, ttl = <span class="num">60000</span>) {
+  <span class="kw">const</span> cache = <span class="kw">new</span> <span class="cl">Map</span>();
+  <span class="kw">return</span> <span class="kw">async function</span>(...args) {
+    <span class="kw">const</span> key = <span class="cl">JSON</span>.<span class="fn">stringify</span>(args);
+    <span class="kw">if</span> (cache.<span class="fn">has</span>(key)) {
+      <span class="kw">const</span> { value, expires } = cache.<span class="fn">get</span>(key);
+      <span class="kw">if</span> (<span class="cl">Date</span>.<span class="fn">now</span>() < expires) <span class="kw">return</span> value;
+    }
+    <span class="kw">const</span> result = <span class="kw">await</span> fn.<span class="fn">apply</span>(<span class="kw">this</span>, args);
+    cache.<span class="fn">set</span>(key, { value: result, expires: <span class="cl">Date</span>.<span class="fn">now</span>() + ttl });
+    <span class="kw">return</span> result;
+  };
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="kw">const</span> <span class="fn">cachedGetUser</span> = <span class="fn">memoize</span>(getUserById, <span class="num">30000</span>);
+<span class="kw">const</span> user = <span class="kw">await</span> <span class="fn">cachedGetUser</span>(<span class="num">42</span>);</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ১২. Best Practices -->
+  <section class="section" id="bestpractice">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(79,249,192,0.15);">🏆</div>
+      <div>
+        <div class="section-title">Best Practices — প্রফেশনাল কৌশল</div>
+        <div class="section-subtitle"># Senior Engineer Best Practices</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="compare-card good">
+        <div class="compare-title">✅ করো (DO)</div>
+        <ul class="fancy-list">
+          <li>ক্যাশ key-এ version বা hash যোগ করো</li>
+          <li>TTL সবসময় set করো — orphan cache এড়াতে</li>
+          <li>Graceful degradation: ক্যাশ unavailable হলে DB থেকে আনো</li>
+          <li>Cache stampede/thundering herd প্রতিরোধ করো (lock দিয়ে)</li>
+          <li>মেমরি সীমা ও eviction policy সেট করো</li>
+          <li>ক্যাশ hit/miss metrics monitor করো</li>
+          <li>সেনসিটিভ ডেটা ক্যাশ করার আগে encrypt করো</li>
+          <li>ক্যাশ warming করো deployment-এর পরে</li>
+        </ul>
+      </div>
+      <div class="compare-card bad">
+        <div class="compare-title">❌ করো না (DON'T)</div>
+        <ul class="fancy-list">
+          <li>ব্যক্তিগত/সেনসিটিভ ডেটা CDN-এ ক্যাশ করো না</li>
+          <li>TTL ছাড়া ক্যাশ করো না</li>
+          <li>সব কিছু ক্যাশ করো না — overhead বাড়ে</li>
+          <li>ক্যাশ invalidation ignore করো না</li>
+          <li>ক্যাশকে primary data source হিসেবে ধরো না</li>
+          <li>ক্যাশ failure-এ app crash করো না</li>
+          <li>অত্যন্ত ছোট TTL দিও না — লাভ হবে না</li>
+          <li>একটি বিশাল ক্যাশ key তৈরি করো না</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Cache Stampede সমাধান</h2>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="code-lang">Redis — Mutex Lock দিয়ে Stampede প্রতিরোধ</div>
+      </div>
+      <pre><span class="cm">// একই সময়ে হাজার request আসলে DB-তে চাপ পড়া ঠেকাও</span>
+<span class="kw">async function</span> <span class="fn">getWithLock</span>(key, fetchFn, ttl = <span class="num">300</span>) {
+  <span class="cm">// ক্যাশ চেক</span>
+  <span class="kw">let</span> data = <span class="kw">await</span> redis.<span class="fn">get</span>(key);
+  <span class="kw">if</span> (data) <span class="kw">return</span> <span class="cl">JSON</span>.<span class="fn">parse</span>(data);
+
+  <span class="kw">const</span> lockKey = <span class="str">`lock:${key}`</span>;
+  <span class="kw">const</span> lockValue = <span class="cl">Date</span>.<span class="fn">now</span>().<span class="fn">toString</span>();
+
+  <span class="cm">// Mutex lock নাও (NX = not exists)</span>
+  <span class="kw">const</span> locked = <span class="kw">await</span> redis.<span class="fn">set</span>(lockKey, lockValue, <span class="str">'EX'</span>, <span class="num">10</span>, <span class="str">'NX'</span>);
+
+  <span class="kw">if</span> (locked) {
+    <span class="kw">try</span> {
+      <span class="cm">// আমরাই DB fetch করি</span>
+      <span class="kw">const</span> freshData = <span class="kw">await</span> <span class="fn">fetchFn</span>();
+      <span class="kw">await</span> redis.<span class="fn">setex</span>(key, ttl, <span class="cl">JSON</span>.<span class="fn">stringify</span>(freshData));
+      <span class="kw">return</span> freshData;
+    } <span class="kw">finally</span> {
+      <span class="kw">await</span> redis.<span class="fn">del</span>(lockKey); <span class="cm">// lock ছাড়ো</span>
+    }
+  } <span class="kw">else</span> {
+    <span class="cm">// অন্যরা অপেক্ষা করে পুনরায় চেক করবে</span>
+    <span class="kw">await new</span> <span class="cl">Promise</span>(r => <span class="fn">setTimeout</span>(r, <span class="num">100</span>));
+    <span class="kw">return</span> <span class="fn">getWithLock</span>(key, fetchFn, ttl); <span class="cm">// retry</span>
+  }
+}</pre>
+    </div>
+
+    <h2>ক্যাশ Monitoring — কী দেখতে হবে</h2>
+    <div class="grid-4">
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent4)">Hit Rate</div>
+        <div class="highlight-label">≥90% হলে ভালো</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent)">Latency</div>
+        <div class="highlight-label">&lt;1ms লক্ষ্য</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent3)">Memory</div>
+        <div class="highlight-label">৮০% এর নিচে</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-num" style="color:var(--accent2)">Evictions</div>
+        <div class="highlight-label">কম হওয়া উচিত</div>
+      </div>
+    </div>
+
+    <div class="info-box green">
+      <div class="info-box-title">📊 Redis Monitoring Command</div>
+      <p><code style="color:var(--accent4)">redis-cli info stats</code> — keyspace_hits, keyspace_misses, evicted_keys দেখো।
+      Hit Rate = hits / (hits + misses) × 100. Grafana + Prometheus দিয়ে ড্যাশবোর্ড বানাও।</p>
+    </div>
+
+    <h2>কোন ডেটা ক্যাশ করবে?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ডেটার ধরন</th><th>ক্যাশ করা উচিত?</th><th>TTL</th><th>কারণ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>স্ট্যাটিক অ্যাসেট (CSS/JS)</td><td><span class="badge badge-green">হ্যাঁ</span></td><td>১ বছর</td><td>কখনো পরিবর্তন হয় না (hash versioned)</td></tr>
+          <tr><td>প্রোডাক্ট লিস্ট</td><td><span class="badge badge-green">হ্যাঁ</span></td><td>৫-১৫ মিনিট</td><td>ঘনঘন পড়া, মাঝেমধ্যে পরিবর্তন</td></tr>
+          <tr><td>ব্যবহারকারীর সেশন</td><td><span class="badge badge-green">হ্যাঁ</span></td><td>২৪ ঘণ্টা</td><td>প্রতি রিকোয়েস্টে দরকার</td></tr>
+          <tr><td>ব্যাংক ব্যালেন্স</td><td><span class="badge badge-red">না</span></td><td>—</td><td>রিয়েলটাইম সঠিকতা জরুরি</td></tr>
+          <tr><td>OTP/যাচাই কোড</td><td><span class="badge badge-orange">সাবধানে</span></td><td>৫ মিনিট</td><td>শুধু server-side, never client</td></tr>
+          <tr><td>API Rate Limit</td><td><span class="badge badge-green">হ্যাঁ</span></td><td>১ মিনিট</td><td>Redis counter ব্যবহার করো</td></tr>
+          <tr><td>DB Aggregation Query</td><td><span class="badge badge-green">অবশ্যই</span></td><td>১ ঘণ্টা</td><td>ব্যয়বহুল query বারবার করা উচিত না</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- সারসংক্ষেপ -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background: rgba(249,212,79,0.15);">📋</div>
+      <div>
+        <div class="section-title">সারসংক্ষেপ — পুরো ক্যাশিং ইকোসিস্টেম</div>
+        <div class="section-subtitle"># Complete Caching Ecosystem Map</div>
+      </div>
+    </div>
+
+    <div class="section-dark">
+      <div class="grid-3">
+        <div>
+          <h3 style="color:var(--accent)">🔴 কোথায় ডেটা থাকে</h3>
+          <ul class="fancy-list">
+            <li>Redis — RAM (+ optional disk)</li>
+            <li>Memcached — শুধু RAM</li>
+            <li>Browser — RAM + ডিস্ক</li>
+            <li>CDN — Edge Server ডিস্ক</li>
+            <li>Service Worker — Cache API (ডিস্ক)</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="color:var(--accent4)">🟢 কীভাবে আপডেট হয়</h3>
+          <ul class="fancy-list">
+            <li>TTL expire → auto মুছে যায়</li>
+            <li>DEL command → ম্যানুয়াল মুছো</li>
+            <li>ETag → সার্ভার থেকে validate</li>
+            <li>CDN Purge API → edge মুছো</li>
+            <li>SW update event → নতুন ভার্সন</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="color:var(--accent3)">🟠 সিদ্ধান্তের মানদণ্ড</h3>
+          <ul class="fancy-list">
+            <li>Complex data → Redis</li>
+            <li>Simple string, scale → Memcached</li>
+            <li>Static files → CDN + HTTP</li>
+            <li>Offline → Service Worker</li>
+            <li>Small client data → localStorage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p>তৈরি করেছে একজন Senior Web Engineer-এর দৃষ্টিকোণ থেকে · সম্পূর্ণ বাংলায় ক্যাশিং মাস্টারক্লাস</p>
+  <p style="margin-top:8px;">Redis · Memcached · HTTP Cache · CDN · Service Worker · Browser Storage · Invalidation Strategies</p>
+</footer>
+
+</body>
+</html>
