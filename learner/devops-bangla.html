@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps সম্পূর্ণ গাইড - বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0d1320;
+  --bg3: #111827;
+  --card: #141c2e;
+  --card2: #1a2340;
+  --border: #1e2d47;
+  --accent: #00d4aa;
+  --accent2: #0080ff;
+  --accent3: #ff6b35;
+  --accent4: #a855f7;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --cyan: #06b6d4;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Hind Siliguri', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ===== HEADER ===== */
+header {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  padding: 2rem;
+}
+
+.header-bg {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,170,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,128,255,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 20% 60%, rgba(168,85,247,0.06) 0%, transparent 50%);
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,212,170,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,170,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+.pipeline-anim {
+  position: absolute;
+  top: 50%;
+  left: -100px;
+  width: calc(100% + 200px);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: pipelineFlow 4s linear infinite;
+  opacity: 0.4;
+}
+
+@keyframes pipelineFlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.3);
+  color: var(--accent);
+  padding: 0.4rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  animation: fadeDown 0.8s ease both;
+}
+
+.badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+h1.main-title {
+  font-family: 'Tiro Bangla', serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  animation: fadeDown 0.9s ease both 0.1s;
+}
+
+h1.main-title span.gradient {
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text2);
+  max-width: 600px;
+  margin-bottom: 3rem;
+  animation: fadeDown 1s ease both 0.2s;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 1s ease both 0.4s;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== NAV ===== */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,14,26,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  overflow-x: auto;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 1.2rem;
+  color: var(--text3);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== MAIN CONTENT ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  margin-bottom: 3rem;
+}
+
+.section-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: 'Tiro Bangla', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.section-title .accent { color: var(--accent); }
+
+.section-desc {
+  color: var(--text2);
+  font-size: 1.05rem;
+  max-width: 700px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.card-body {
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+/* ===== CODE BLOCKS ===== */
+.code-window {
+  background: #050810;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.2rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+
+.code-lang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+
+.code-body {
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: #e2e8f0;
+}
+
+.kw { color: #c792ea; }
+.str { color: #c3e88d; }
+.comment { color: #546e7a; }
+.fn { color: #82aaff; }
+.num { color: #f78c6c; }
+.var { color: #eeffff; }
+.key { color: #ffcb6b; }
+.val { color: #89ddff; }
+.op { color: #89ddff; }
+.tag { color: #f07178; }
+.attr { color: #ffcb6b; }
+
+/* ===== PIPELINE FLOW ===== */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 2rem 0;
+  flex-wrap: nowrap;
+}
+
+.pipeline-step {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-box {
+  background: var(--card2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 100px;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--step-color, var(--accent));
+}
+
+.step-box:hover {
+  border-color: var(--step-color, var(--accent));
+  box-shadow: 0 0 20px rgba(0,212,170,0.15);
+}
+
+.step-icon { font-size: 1.8rem; }
+.step-label { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+.step-sublabel { font-size: 0.7rem; color: var(--text3); }
+
+.pipeline-arrow {
+  color: var(--text3);
+  font-size: 1.5rem;
+  padding: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ===== TIMELINE ===== */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.45rem;
+  top: 0.4rem;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.timeline-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+
+.timeline-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-body {
+  color: var(--text2);
+  font-size: 0.95rem;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text3);
+  padding: 0.75rem 1.2rem;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  transform: translateY(1px);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tab-btn:hover { color: var(--text); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ===== COMPARISON TABLE ===== */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.compare-table th {
+  background: var(--card2);
+  padding: 1rem 1.2rem;
+  text-align: left;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+.compare-table td {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+}
+
+.compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.compare-table tr:hover td { background: rgba(0,212,170,0.04); }
+
+/* ===== HIGHLIGHT BOXES ===== */
+.highlight-box {
+  border-left: 4px solid var(--accent);
+  background: rgba(0,212,170,0.06);
+  border-radius: 0 12px 12px 0;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.highlight-box.warning {
+  border-color: var(--yellow);
+  background: rgba(245,158,11,0.06);
+}
+
+.highlight-box.danger {
+  border-color: var(--red);
+  background: rgba(239,68,68,0.06);
+}
+
+.highlight-box.info {
+  border-color: var(--cyan);
+  background: rgba(6,182,212,0.06);
+}
+
+.highlight-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+}
+
+.highlight-box.warning .highlight-title { color: var(--yellow); }
+.highlight-box.danger .highlight-title { color: var(--red); }
+.highlight-box.info .highlight-title { color: var(--cyan); }
+
+/* ===== TOOLS GRID ===== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.tool-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.tool-item:hover {
+  border-color: var(--accent);
+  background: var(--card2);
+  transform: translateY(-3px);
+}
+
+.tool-emoji { font-size: 2rem; margin-bottom: 0.4rem; }
+.tool-name { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+.tool-cat { font-size: 0.7rem; color: var(--text3); }
+
+/* ===== PROJECT SECTION ===== */
+.project-header {
+  background: linear-gradient(135deg, var(--card), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-header::before {
+  content: 'REAL PROJECT';
+  position: absolute;
+  top: 1rem; right: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.2rem 0.7rem;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.project-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text3);
+}
+
+.meta-item span { color: var(--text2); }
+
+/* ===== ARCH DIAGRAM ===== */
+.arch-diagram {
+  background: #050810;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  overflow-x: auto;
+}
+
+.arch-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0;
+}
+
+.arch-box {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1.2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  min-width: 100px;
+}
+
+.arch-box .ab-icon { font-size: 1.3rem; }
+.arch-box .ab-name { font-size: 0.75rem; font-weight: 700; }
+.arch-box .ab-sub { font-size: 0.65rem; color: var(--text3); }
+
+.arch-box.primary { border-color: var(--accent); background: rgba(0,212,170,0.08); }
+.arch-box.blue { border-color: var(--accent2); background: rgba(0,128,255,0.08); }
+.arch-box.purple { border-color: var(--accent4); background: rgba(168,85,247,0.08); }
+.arch-box.orange { border-color: var(--accent3); background: rgba(255,107,53,0.08); }
+
+.arch-arrow { color: var(--text3); font-size: 1.2rem; }
+.arch-label { 
+  text-align: center; 
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin: 0.3rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ===== STATUS BADGES ===== */
+.status { 
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+}
+.status.success { background: rgba(34,197,94,0.15); color: var(--green); }
+.status.running { background: rgba(0,212,170,0.15); color: var(--accent); }
+.status.pending { background: rgba(245,158,11,0.15); color: var(--yellow); }
+.status.failed { background: rgba(239,68,68,0.15); color: var(--red); }
+.status::before { content: '●'; }
+
+/* ===== CHECKLIST ===== */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text2);
+  font-size: 0.95rem;
+}
+.checklist li:before {
+  content: '✓';
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* ===== NUMBERED LIST ===== */
+.num-list { list-style: none; counter-reset: steps; }
+.num-list li {
+  counter-increment: steps;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+.num-list li::before {
+  content: counter(steps);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.footer-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.footer-sub { color: var(--text3); font-size: 0.9rem; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .pipeline { flex-direction: column; }
+  .pipeline-arrow { transform: rotate(90deg); }
+  .compare-table { font-size: 0.8rem; }
+  nav { padding: 0 1rem; }
+  .container { padding: 0 1rem; }
+}
+
+/* Animated counter */
+.counter { 
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Two col layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+
+.inline-code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(0,212,170,0.1);
+  color: var(--accent);
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+h2 { font-family: 'Tiro Bangla', serif; }
+h3 { font-weight: 700; font-size: 1.15rem; margin-bottom: 0.75rem; }
+p { margin-bottom: 1rem; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<!-- ======== HEADER ======== -->
+<header>
+  <div class="header-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="pipeline-anim"></div>
+  <div style="position:relative;z-index:1;">
+    <div class="badge">🚀 Senior DevOps Engineer গাইড</div>
+    <h1 class="main-title">
+      <span class="gradient">DevOps</span> সম্পূর্ণ গাইড<br>
+      <span style="font-size:0.6em;color:var(--text2);">বাংলায় বিস্তারিত ব্যাখ্যা</span>
+    </h1>
+    <p class="subtitle">
+      কোড লেখা থেকে শুরু করে Production Deployment পর্যন্ত — প্রতিটি ধাপ সহজ বাংলায়, 
+      Real-world উদাহরণসহ
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">8+</div><div class="stat-label">মূল বিষয়</div></div>
+      <div class="stat-item"><div class="stat-num">15+</div><div class="stat-label">কোড উদাহরণ</div></div>
+      <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">Real Project</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">বাংলায়</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ======== NAV ======== -->
+<nav>
+  <div class="nav-inner">
+    <a href="#what-is" class="nav-link">🔍 কী DevOps?</a>
+    <a href="#lifecycle" class="nav-link">🔄 Lifecycle</a>
+    <a href="#ci-cd" class="nav-link">⚡ CI/CD</a>
+    <a href="#docker" class="nav-link">🐳 Docker</a>
+    <a href="#kubernetes" class="nav-link">☸️ Kubernetes</a>
+    <a href="#monitoring" class="nav-link">📊 Monitoring</a>
+    <a href="#tools" class="nav-link">🛠️ Tools</a>
+    <a href="#project" class="nav-link">🏗️ Real Project</a>
+  </div>
+</nav>
+
+<!-- ======== MAIN ======== -->
+<main>
+
+<!-- ======== SECTION 1: WHAT IS DEVOPS ======== -->
+<section id="what-is">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 01</div>
+      <h2 class="section-title">DevOps <span class="accent">কী?</span></h2>
+      <p class="section-desc">Development এবং Operations — এই দুই টিমের মধ্যে সেতুবন্ধন তৈরি করাই DevOps এর মূল লক্ষ্য</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div>
+        <p>
+          আগে যখন কোনো software তৈরি হতো, <strong>Developer</strong> টিম কোড লিখত এবং 
+          <strong>Operations</strong> টিম সেই কোড server-এ deploy করত। কিন্তু এই দুই টিমের মধ্যে 
+          সবসময় ঝামেলা লেগে থাকত।
+        </p>
+        <p>
+          Developer বলত: "আমার computer-এ তো ঠিকঠাক চলছে!" আর Operations বলত: "Server-এ দিলেই crash করছে!" 
+          এই সমস্যার সমাধান হলো <strong style="color:var(--accent)">DevOps</strong>.
+        </p>
+
+        <div class="highlight-box">
+          <div class="highlight-title">🎯 সহজ ভাষায়</div>
+          DevOps মানে হলো — Code লেখা, Test করা, Build করা, Deploy করা এবং Monitor করা — 
+          এই পুরো প্রক্রিয়াকে <strong>দ্রুত, নির্ভরযোগ্য এবং স্বয়ংক্রিয়</strong> করা।
+        </div>
+
+        <h3>DevOps এর তিনটি মূল স্তম্ভ:</h3>
+        <ul class="checklist">
+          <li><strong>Culture:</strong> Dev ও Ops টিম একসাথে কাজ করবে, blame করবে না</li>
+          <li><strong>Automation:</strong> Repetitive কাজ machine দিয়ে করাও</li>
+          <li><strong>Measurement:</strong> সব কিছু measure করো — speed, errors, uptime</li>
+          <li><strong>Sharing:</strong> Knowledge ও responsibility শেয়ার করো</li>
+        </ul>
+      </div>
+
+      <div>
+        <!-- Before/After comparison -->
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-title" style="color:var(--red)">❌ DevOps ছাড়া</div>
+          <ul class="checklist" style="margin-top:0.5rem;">
+            <li style="color:var(--text2)">Deploy করতে ২ সপ্তাহ লাগে</li>
+            <li style="color:var(--text2)">Manual testing, অনেক ভুল</li>
+            <li style="color:var(--text2)">Production crash হলে কে দায়ী বোঝা যায় না</li>
+            <li style="color:var(--text2)">Dev ও Ops এর মধ্যে দোষারোপ</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:var(--accent)">
+          <div class="card-title" style="color:var(--green)">✅ DevOps সহ</div>
+          <ul class="checklist" style="margin-top:0.5rem;">
+            <li>প্রতিদিন বা প্রতিঘণ্টায় deploy</li>
+            <li>Automated testing, কম ভুল</li>
+            <li>সবাই সব কিছুর দায়িত্ব নেয়</li>
+            <li>দ্রুত সমস্যা সমাধান</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-grid reveal" style="margin-top:2rem;">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Speed (গতি)</div>
+        <div class="card-body">Amazon প্রতি ১১ সেকেন্ডে একবার deploy করে। DevOps ছাড়া এটা সম্ভব না।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">Reliability (নির্ভরযোগ্যতা)</div>
+        <div class="card-body">Automated test ও rollback থাকায় production-এ সমস্যা হলে তাৎক্ষণিক ফিরে আসা যায়।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📏</div>
+        <div class="card-title">Scale (বড় হওয়া)</div>
+        <div class="card-body">১০০ user থেকে ১ কোটি user — infrastructure automatically scale হয়।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Security (নিরাপত্তা)</div>
+        <div class="card-body">DevSecOps: Security শুরু থেকেই pipeline-এ যুক্ত থাকে।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 2: DEVOPS LIFECYCLE ======== -->
+<section id="lifecycle">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 02</div>
+      <h2 class="section-title">DevOps <span class="accent">Lifecycle</span></h2>
+      <p class="section-desc">৮টি ধাপে একটি software জন্ম নেয়, চলে, এবং উন্নত হয়</p>
+    </div>
+
+    <div class="pipeline reveal" style="padding:2rem 0;">
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#00d4aa">
+          <div class="step-icon">💡</div>
+          <div class="step-label">Plan</div>
+          <div class="step-sublabel">পরিকল্পনা</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#0080ff">
+          <div class="step-icon">💻</div>
+          <div class="step-label">Code</div>
+          <div class="step-sublabel">কোড লেখা</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#a855f7">
+          <div class="step-icon">🔨</div>
+          <div class="step-label">Build</div>
+          <div class="step-sublabel">তৈরি করা</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#f59e0b">
+          <div class="step-icon">🧪</div>
+          <div class="step-label">Test</div>
+          <div class="step-sublabel">পরীক্ষা</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#ff6b35">
+          <div class="step-icon">📦</div>
+          <div class="step-label">Release</div>
+          <div class="step-sublabel">প্রকাশ</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#22c55e">
+          <div class="step-icon">🚀</div>
+          <div class="step-label">Deploy</div>
+          <div class="step-sublabel">স্থাপন</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#06b6d4">
+          <div class="step-icon">⚙️</div>
+          <div class="step-label">Operate</div>
+          <div class="step-sublabel">পরিচালনা</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="step-box" style="--step-color:#ec4899">
+          <div class="step-icon">📊</div>
+          <div class="step-label">Monitor</div>
+          <div class="step-sublabel">পর্যবেক্ষণ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline reveal" style="margin-top:2rem;">
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 1</div>
+        <div class="timeline-title">💡 Plan — পরিকল্পনা</div>
+        <div class="timeline-body">Jira, Trello বা GitHub Issues ব্যবহার করে কী করা হবে তা ঠিক করা। Agile sprint-এ কাজ ভাগ করা।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 2</div>
+        <div class="timeline-title">💻 Code — কোড লেখা</div>
+        <div class="timeline-body">Developer কোড লেখে Git-এ। Feature branch তৈরি করে, Pull Request দেয়। Code Review হয়।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 3</div>
+        <div class="timeline-title">🔨 Build — তৈরি করা</div>
+        <div class="timeline-body">কোড compile হয়, dependencies install হয়। Docker image তৈরি হয়। Jenkins/GitHub Actions এটা automatically করে।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 4</div>
+        <div class="timeline-title">🧪 Test — পরীক্ষা</div>
+        <div class="timeline-body">Unit test, Integration test, Security scan সব automatic হয়। কোনো test fail করলে deploy হবে না।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 5-6</div>
+        <div class="timeline-title">🚀 Release & Deploy</div>
+        <div class="timeline-body">Production server-এ নতুন version পাঠানো হয়। Blue-Green বা Canary deployment strategy ব্যবহার হয়।</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 7-8</div>
+        <div class="timeline-title">📊 Operate & Monitor</div>
+        <div class="timeline-body">Prometheus, Grafana দিয়ে সব কিছু দেখা হয়। কোনো সমস্যা হলে alert আসে। Feedback loop শুরু হয়।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 3: CI/CD ======== -->
+<section id="ci-cd">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 03</div>
+      <h2 class="section-title">CI/CD <span class="accent">Pipeline</span></h2>
+      <p class="section-desc">Continuous Integration এবং Continuous Deployment — DevOps এর হৃদয়</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div>
+        <h3>CI — Continuous Integration কী?</h3>
+        <p>
+          প্রতিবার কেউ কোড push করলে automatically সেই কোড test হয় এবং build হয়। 
+          ধরো ৫ জন developer একসাথে কাজ করছে — CI নিশ্চিত করে তাদের কোড একসাথে ভালোভাবে কাজ করছে।
+        </p>
+        
+        <h3 style="margin-top:1.5rem;">CD — Continuous Deployment কী?</h3>
+        <p>
+          CI সফল হলে automatically production-এ deploy হয়। কোনো manual কাজ নেই। 
+          Code push করো → Test pass → Deploy! 🎉
+        </p>
+
+        <div class="highlight-box info">
+          <div class="highlight-title">💡 উদাহরণ দিয়ে বুঝি</div>
+          তুমি একটি e-commerce site এর developer। নতুন "ছাড়" feature add করলে। 
+          Git-এ push করার ২০ মিনিটের মধ্যে সেই feature লাখো user দেখতে পাচ্ছে — 
+          কোনো manual কাজ ছাড়াই!
+        </div>
+      </div>
+
+      <div>
+        <!-- CI/CD Status Demo -->
+        <div class="card" style="border-color:var(--accent)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <div class="card-title" style="margin:0">🔄 Pipeline Status</div>
+            <span class="status running">Running</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;background:var(--bg3);border-radius:8px;">
+              <span style="font-size:0.85rem;">📥 Checkout Code</span>
+              <span class="status success">Success</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;background:var(--bg3);border-radius:8px;">
+              <span style="font-size:0.85rem;">📦 Install Dependencies</span>
+              <span class="status success">Success</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;background:var(--bg3);border-radius:8px;">
+              <span style="font-size:0.85rem;">🧪 Run Tests</span>
+              <span class="status running">Running...</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;background:var(--bg3);border-radius:8px;opacity:0.5;">
+              <span style="font-size:0.85rem;">🐳 Build Docker Image</span>
+              <span class="status pending">Pending</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;background:var(--bg3);border-radius:8px;opacity:0.5;">
+              <span style="font-size:0.85rem;">🚀 Deploy to Production</span>
+              <span class="status pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub Actions Example -->
+    <div class="reveal" style="margin-top:2rem;">
+      <h3>⚡ GitHub Actions — সবচেয়ে জনপ্রিয় CI/CD Tool</h3>
+      <p>এই YAML ফাইলটি <span class="inline-code">.github/workflows/deploy.yml</span> এ রাখলেই CI/CD শুরু হয়ে যায়:</p>
+      
+      <div class="code-window">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+          <div class="code-lang">YAML — .github/workflows/deploy.yml</div>
+        </div>
+        <div class="code-body">
+<pre><span class="comment"># GitHub Actions CI/CD Pipeline — বাংলা ই-কমার্স প্রজেক্টের জন্য</span>
+
+<span class="key">name</span><span class="op">:</span> <span class="str">CI/CD Pipeline</span>
+
+<span class="comment"># কখন এই pipeline চলবে?</span>
+<span class="key">on</span><span class="op">:</span>
+  <span class="key">push</span><span class="op">:</span>
+    <span class="key">branches</span><span class="op">:</span> <span class="op">[</span> <span class="str">main</span><span class="op">,</span> <span class="str">develop</span> <span class="op">]</span>
+  <span class="key">pull_request</span><span class="op">:</span>
+    <span class="key">branches</span><span class="op">:</span> <span class="op">[</span> <span class="str">main</span> <span class="op">]</span>
+
+<span class="key">jobs</span><span class="op">:</span>
+  <span class="comment"># ধাপ ১: Test করা</span>
+  <span class="key">test</span><span class="op">:</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">কোড নামিয়ে আনা</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="str">actions/checkout@v3</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Node.js সেটআপ</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="str">actions/setup-node@v3</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">node-version</span><span class="op">:</span> <span class="str">'18'</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Dependencies install করা</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm install</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Unit test চালানো</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm test</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Code quality check</span>
+        <span class="key">run</span><span class="op">:</span> <span class="str">npm run lint</span>
+
+  <span class="comment"># ধাপ ২: Docker Image তৈরি ও Push</span>
+  <span class="key">build-and-push</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> <span class="str">test</span>  <span class="comment"># test পাস না হলে এটা চলবে না</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">uses</span><span class="op">:</span> <span class="str">actions/checkout@v3</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Docker Hub-এ login করা</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="str">docker/login-action@v2</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">username</span><span class="op">:</span> <span class="val">${{ secrets.DOCKER_USERNAME }}</span>
+          <span class="key">password</span><span class="op">:</span> <span class="val">${{ secrets.DOCKER_PASSWORD }}</span>
+      
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Docker image তৈরি ও push</span>
+        <span class="key">run</span><span class="op">:</span> <span class="op">|</span>
+          <span class="str">docker build -t myapp:${{ github.sha }} .</span>
+          <span class="str">docker push myapp:${{ github.sha }}</span>
+
+  <span class="comment"># ধাপ ৩: Production-এ Deploy</span>
+  <span class="key">deploy</span><span class="op">:</span>
+    <span class="key">needs</span><span class="op">:</span> <span class="str">build-and-push</span>
+    <span class="key">runs-on</span><span class="op">:</span> <span class="str">ubuntu-latest</span>
+    <span class="key">if</span><span class="op">:</span> <span class="str">github.ref == 'refs/heads/main'</span>  <span class="comment"># শুধু main branch এ</span>
+    <span class="key">steps</span><span class="op">:</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">Server-এ deploy করা</span>
+        <span class="key">uses</span><span class="op">:</span> <span class="str">appleboy/ssh-action@master</span>
+        <span class="key">with</span><span class="op">:</span>
+          <span class="key">host</span><span class="op">:</span> <span class="val">${{ secrets.SERVER_IP }}</span>
+          <span class="key">username</span><span class="op">:</span> <span class="val">${{ secrets.SERVER_USER }}</span>
+          <span class="key">key</span><span class="op">:</span> <span class="val">${{ secrets.SSH_KEY }}</span>
+          <span class="key">script</span><span class="op">:</span> <span class="op">|</span>
+            <span class="str">docker pull myapp:${{ github.sha }}</span>
+            <span class="str">docker stop myapp-container || true</span>
+            <span class="str">docker run -d --name myapp-container -p 80:3000 myapp:${{ github.sha }}</span>
+            <span class="str">echo "✅ Deploy সফল হয়েছে!"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 4: DOCKER ======== -->
+<section id="docker">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 04</div>
+      <h2 class="section-title">🐳 Docker — <span class="accent">Container Technology</span></h2>
+      <p class="section-desc">"আমার computer-এ চলে" এই সমস্যার সমাধান!</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div>
+        <h3>Docker কেন দরকার?</h3>
+        <p>
+          ধরো তুমি একটি রান্না করলে বাড়িতে — সুন্দর হলো। কিন্তু রেস্তোরাঁয় গিয়ে একই রান্না করলে 
+          ভিন্ন স্বাদ! কারণ উপকরণ ও পরিবেশ আলাদা।
+        </p>
+        <p>
+          Docker হলো রান্নার <strong>সম্পূর্ণ Recipe + উপকরণ + রান্নাঘর</strong> একসাথে প্যাক করার মতো। 
+          যেখানেই নিয়ে যাও, একই ফলাফল।
+        </p>
+
+        <div class="highlight-box">
+          <div class="highlight-title">🐳 Docker এর চার মূল ধারণা</div>
+          <ul class="checklist" style="margin-top:0.5rem;">
+            <li><strong>Image:</strong> রান্নার Recipe — একটি template</li>
+            <li><strong>Container:</strong> চলমান application — Recipe থেকে রান্না</li>
+            <li><strong>Dockerfile:</strong> Image তৈরির নির্দেশনা</li>
+            <li><strong>Registry:</strong> Image store করার জায়গা (Docker Hub)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <!-- Docker Architecture Visual -->
+        <div class="arch-diagram">
+          <div class="arch-label">তোমার Computer (Host Machine)</div>
+          <div class="arch-row">
+            <div class="arch-box primary">
+              <div class="ab-icon">📦</div>
+              <div class="ab-name">Container 1</div>
+              <div class="ab-sub">Node.js App</div>
+            </div>
+            <div class="arch-box blue">
+              <div class="ab-icon">📦</div>
+              <div class="ab-name">Container 2</div>
+              <div class="ab-sub">PostgreSQL</div>
+            </div>
+            <div class="arch-box purple">
+              <div class="ab-icon">📦</div>
+              <div class="ab-name">Container 3</div>
+              <div class="ab-sub">Redis Cache</div>
+            </div>
+          </div>
+          <div class="arch-label">↑ সব আলাদা, কিন্তু যোগাযোগ করতে পারে</div>
+          <div class="arch-row">
+            <div class="arch-box orange" style="width:80%">
+              <div class="ab-name">Docker Engine</div>
+              <div class="ab-sub">Container পরিচালনা করে</div>
+            </div>
+          </div>
+          <div class="arch-row">
+            <div class="arch-box" style="width:90%;background:var(--bg3)">
+              <div class="ab-name">Linux Kernel (OS)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dockerfile Example -->
+    <div class="reveal" style="margin-top:2rem;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'dockerfile')">Dockerfile</button>
+        <button class="tab-btn" onclick="switchTab(this,'dockercompose')">docker-compose.yml</button>
+        <button class="tab-btn" onclick="switchTab(this,'dockercmds')">Commands</button>
+      </div>
+
+      <div id="dockerfile" class="tab-content active">
+        <div class="code-window">
+          <div class="code-header">
+            <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+            <div class="code-lang">Dockerfile</div>
+          </div>
+          <div class="code-body">
+<pre><span class="comment"># Node.js Application এর Dockerfile</span>
+
+<span class="comment"># ধাপ ১: Base Image — Node.js 18 Alpine (হালকা version)</span>
+<span class="kw">FROM</span> <span class="str">node:18-alpine</span>
+
+<span class="comment"># ধাপ ২: Container-এর ভেতরে কাজের ফোল্ডার</span>
+<span class="kw">WORKDIR</span> <span class="str">/app</span>
+
+<span class="comment"># ধাপ ৩: package.json আগে copy করা (cache এর জন্য)</span>
+<span class="kw">COPY</span> <span class="str">package*.json ./</span>
+
+<span class="comment"># ধাপ ৪: Dependencies install করা</span>
+<span class="kw">RUN</span> <span class="str">npm ci --only=production</span>
+
+<span class="comment"># ধাপ ৫: সব কোড copy করা</span>
+<span class="kw">COPY</span> <span class="str">. .</span>
+
+<span class="comment"># ধাপ ৬: কোন Port ব্যবহার হবে</span>
+<span class="kw">EXPOSE</span> <span class="num">3000</span>
+
+<span class="comment"># ধাপ ৭: Non-root user (নিরাপত্তার জন্য)</span>
+<span class="kw">RUN</span> <span class="str">addgroup -S appgroup && adduser -S appuser -G appgroup</span>
+<span class="kw">USER</span> <span class="str">appuser</span>
+
+<span class="comment"># ধাপ ৮: Container চালু হলে কী করবে</span>
+<span class="kw">CMD</span> <span class="op">[</span><span class="str">"node"</span><span class="op">,</span> <span class="str">"server.js"</span><span class="op">]</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="dockercompose" class="tab-content">
+        <div class="code-window">
+          <div class="code-header">
+            <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+            <div class="code-lang">docker-compose.yml</div>
+          </div>
+          <div class="code-body">
+<pre><span class="comment"># একসাথে অনেক service চালানোর জন্য</span>
+<span class="key">version</span><span class="op">:</span> <span class="str">'3.8'</span>
+
+<span class="key">services</span><span class="op">:</span>
+  <span class="comment"># আমাদের Main Application</span>
+  <span class="key">app</span><span class="op">:</span>
+    <span class="key">build</span><span class="op">:</span> <span class="str">.</span>
+    <span class="key">ports</span><span class="op">:</span>
+      - <span class="str">"3000:3000"</span>
+    <span class="key">environment</span><span class="op">:</span>
+      - <span class="str">DATABASE_URL=postgres://user:pass@db:5432/mydb</span>
+      - <span class="str">REDIS_URL=redis://cache:6379</span>
+    <span class="key">depends_on</span><span class="op">:</span>
+      - <span class="str">db</span>
+      - <span class="str">cache</span>
+    <span class="key">restart</span><span class="op">:</span> <span class="str">unless-stopped</span>
+
+  <span class="comment"># Database</span>
+  <span class="key">db</span><span class="op">:</span>
+    <span class="key">image</span><span class="op">:</span> <span class="str">postgres:15</span>
+    <span class="key">volumes</span><span class="op">:</span>
+      - <span class="str">postgres_data:/var/lib/postgresql/data</span>
+    <span class="key">environment</span><span class="op">:</span>
+      <span class="key">POSTGRES_DB</span><span class="op">:</span> <span class="str">mydb</span>
+      <span class="key">POSTGRES_USER</span><span class="op">:</span> <span class="str">user</span>
+      <span class="key">POSTGRES_PASSWORD</span><span class="op">:</span> <span class="str">securepassword</span>
+
+  <span class="comment"># Cache</span>
+  <span class="key">cache</span><span class="op">:</span>
+    <span class="key">image</span><span class="op">:</span> <span class="str">redis:7-alpine</span>
+    <span class="key">command</span><span class="op">:</span> <span class="str">redis-server --maxmemory 256mb</span>
+
+  <span class="comment"># Nginx Reverse Proxy</span>
+  <span class="key">nginx</span><span class="op">:</span>
+    <span class="key">image</span><span class="op">:</span> <span class="str">nginx:alpine</span>
+    <span class="key">ports</span><span class="op">:</span>
+      - <span class="str">"80:80"</span>
+      - <span class="str">"443:443"</span>
+    <span class="key">volumes</span><span class="op">:</span>
+      - <span class="str">./nginx.conf:/etc/nginx/nginx.conf</span>
+
+<span class="key">volumes</span><span class="op">:</span>
+  <span class="key">postgres_data</span><span class="op">:</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="dockercmds" class="tab-content">
+        <div class="code-window">
+          <div class="code-header">
+            <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+            <div class="code-lang">Terminal Commands</div>
+          </div>
+          <div class="code-body">
+<pre><span class="comment"># ===== Docker সবচেয়ে দরকারী Commands =====</span>
+
+<span class="comment"># Image তৈরি করা</span>
+<span class="fn">docker</span> <span class="kw">build</span> <span class="var">-t</span> myapp:v1.0 <span class="str">.</span>
+
+<span class="comment"># Container চালু করা</span>
+<span class="fn">docker</span> <span class="kw">run</span> <span class="var">-d</span> <span class="var">-p</span> 3000:3000 <span class="var">--name</span> myapp myapp:v1.0
+
+<span class="comment"># চলমান Container দেখা</span>
+<span class="fn">docker</span> <span class="kw">ps</span>
+
+<span class="comment"># Container-এর log দেখা (সমস্যা ধরতে কাজে লাগে)</span>
+<span class="fn">docker</span> <span class="kw">logs</span> <span class="var">-f</span> myapp
+
+<span class="comment"># Container-এর ভেতরে ঢোকা</span>
+<span class="fn">docker</span> <span class="kw">exec</span> <span class="var">-it</span> myapp <span class="str">/bin/sh</span>
+
+<span class="comment"># docker-compose দিয়ে সব service একসাথে চালু</span>
+<span class="fn">docker-compose</span> <span class="kw">up</span> <span class="var">-d</span>
+
+<span class="comment"># সব বন্ধ করা</span>
+<span class="fn">docker-compose</span> <span class="kw">down</span>
+
+<span class="comment"># পুরনো image পরিষ্কার করা</span>
+<span class="fn">docker</span> <span class="kw">system</span> prune <span class="var">-f</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 5: KUBERNETES ======== -->
+<section id="kubernetes">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 05</div>
+      <h2 class="section-title">☸️ Kubernetes — <span class="accent">Container Orchestration</span></h2>
+      <p class="section-desc">হাজারো Container পরিচালনা করার ব্যবস্থাপক</p>
+    </div>
+
+    <div class="reveal">
+      <div class="highlight-box info">
+        <div class="highlight-title">🤔 কেন Kubernetes দরকার?</div>
+        Docker দিয়ে একটি container চালাতে পারো। কিন্তু যদি ১০০০ container চালাতে হয়? কোনটা crash করলে restart করবে কে? 
+        Traffic বাড়লে আপনা-আপনি আরও container চালু হবে কীভাবে? — এই সব সমস্যার সমাধান Kubernetes (K8s)।
+      </div>
+    </div>
+
+    <div class="two-col reveal" style="margin-top:2rem;">
+      <div>
+        <h3>Kubernetes এর মূল Concepts:</h3>
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-title">🏘️ Cluster</div>
+          <div class="card-body">অনেকগুলো server মিলে একটি cluster। একটি Master node বাকিদের নিয়ন্ত্রণ করে।</div>
+        </div>
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-title">📦 Pod</div>
+          <div class="card-body">K8s এ সবচেয়ে ছোট unit। এক বা একাধিক container নিয়ে একটি Pod।</div>
+        </div>
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-title">🔄 Deployment</div>
+          <div class="card-body">কতটি Pod চলবে, কীভাবে update হবে তা নির্ধারণ করে।</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌐 Service</div>
+          <div class="card-body">Pod গুলোতে traffic পাঠায়, load balancing করে।</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="code-window">
+          <div class="code-header">
+            <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+            <div class="code-lang">deployment.yaml</div>
+          </div>
+          <div class="code-body">
+<pre><span class="comment"># K8s Deployment — 3টি replica চলবে</span>
+<span class="key">apiVersion</span><span class="op">:</span> <span class="str">apps/v1</span>
+<span class="key">kind</span><span class="op">:</span> <span class="str">Deployment</span>
+<span class="key">metadata</span><span class="op">:</span>
+  <span class="key">name</span><span class="op">:</span> <span class="str">myapp</span>
+<span class="key">spec</span><span class="op">:</span>
+  <span class="key">replicas</span><span class="op">:</span> <span class="num">3</span>  <span class="comment"># ৩টি copy চলবে</span>
+  <span class="key">selector</span><span class="op">:</span>
+    <span class="key">matchLabels</span><span class="op">:</span>
+      <span class="key">app</span><span class="op">:</span> <span class="str">myapp</span>
+  <span class="key">template</span><span class="op">:</span>
+    <span class="key">spec</span><span class="op">:</span>
+      <span class="key">containers</span><span class="op">:</span>
+      - <span class="key">name</span><span class="op">:</span> <span class="str">myapp</span>
+        <span class="key">image</span><span class="op">:</span> <span class="str">myapp:v1.0</span>
+        <span class="key">ports</span><span class="op">:</span>
+        - <span class="key">containerPort</span><span class="op">:</span> <span class="num">3000</span>
+        <span class="key">resources</span><span class="op">:</span>
+          <span class="key">requests</span><span class="op">:</span>
+            <span class="key">memory</span><span class="op">:</span> <span class="str">"256Mi"</span>
+            <span class="key">cpu</span><span class="op">:</span> <span class="str">"250m"</span>
+          <span class="key">limits</span><span class="op">:</span>
+            <span class="key">memory</span><span class="op">:</span> <span class="str">"512Mi"</span>
+            <span class="key">cpu</span><span class="op">:</span> <span class="str">"500m"</span>
+        <span class="key">livenessProbe</span><span class="op">:</span>  <span class="comment"># Crash হলে restart</span>
+          <span class="key">httpGet</span><span class="op">:</span>
+            <span class="key">path</span><span class="op">:</span> <span class="str">/health</span>
+            <span class="key">port</span><span class="op">:</span> <span class="num">3000</span>
+---
+<span class="comment"># Service — বাইরে থেকে access দেওয়া</span>
+<span class="key">apiVersion</span><span class="op">:</span> <span class="str">v1</span>
+<span class="key">kind</span><span class="op">:</span> <span class="str">Service</span>
+<span class="key">metadata</span><span class="op">:</span>
+  <span class="key">name</span><span class="op">:</span> <span class="str">myapp-service</span>
+<span class="key">spec</span><span class="op">:</span>
+  <span class="key">type</span><span class="op">:</span> <span class="str">LoadBalancer</span>
+  <span class="key">ports</span><span class="op">:</span>
+  - <span class="key">port</span><span class="op">:</span> <span class="num">80</span>
+    <span class="key">targetPort</span><span class="op">:</span> <span class="num">3000</span>
+  <span class="key">selector</span><span class="op">:</span>
+    <span class="key">app</span><span class="op">:</span> <span class="str">myapp</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 6: MONITORING ======== -->
+<section id="monitoring">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 06</div>
+      <h2 class="section-title">📊 Monitoring & <span class="accent">Observability</span></h2>
+      <p class="section-desc">Production-এ কী হচ্ছে না জানলে কীভাবে সমস্যা সমাধান করবে?</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div>
+        <h3>তিনটি স্তম্ভ (Three Pillars):</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-phase">Pillar 1</div>
+            <div class="timeline-title">📈 Metrics</div>
+            <div class="timeline-body">
+              CPU, Memory, Request rate, Error rate এর সংখ্যাগত তথ্য। 
+              <strong>Prometheus</strong> collect করে, <strong>Grafana</strong> সুন্দর graph বানায়।
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-phase">Pillar 2</div>
+            <div class="timeline-title">📝 Logs</div>
+            <div class="timeline-body">
+              Application কী করছে তার বিস্তারিত লেখা। Error হলে কোথায় হলো বোঝা যায়। 
+              <strong>ELK Stack</strong> (Elasticsearch, Logstash, Kibana) জনপ্রিয়।
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-phase">Pillar 3</div>
+            <div class="timeline-title">🔍 Traces</div>
+            <div class="timeline-body">
+              একটি request কোন কোন service এর মধ্য দিয়ে গেছে তার পথ। 
+              <strong>Jaeger</strong> বা <strong>Zipkin</strong> ব্যবহার হয়।
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Fake Dashboard -->
+        <div class="card" style="border-color:var(--accent)">
+          <div style="margin-bottom:1rem;font-weight:700;font-size:1rem;">📊 Real-time Dashboard (Demo)</div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+            <div style="background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace;" id="cpu-val">23%</div>
+              <div style="font-size:0.75rem;color:var(--text3);">CPU Usage</div>
+            </div>
+            <div style="background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;" id="mem-val">61%</div>
+              <div style="font-size:0.75rem;color:var(--text3);">Memory</div>
+            </div>
+            <div style="background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--accent2);font-family:'JetBrains Mono',monospace;" id="req-val">847</div>
+              <div style="font-size:0.75rem;color:var(--text3);">Requests/min</div>
+            </div>
+            <div style="background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--red);font-family:'JetBrains Mono',monospace;" id="err-val">0.02%</div>
+              <div style="font-size:0.75rem;color:var(--text3);">Error Rate</div>
+            </div>
+          </div>
+
+          <!-- Simple Bar Chart -->
+          <div style="font-size:0.8rem;color:var(--text3);margin-bottom:0.5rem;">Response Time (ms) — শেষ ৭ মিনিট</div>
+          <div style="display:flex;align-items:flex-end;gap:4px;height:60px;" id="chart">
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:40%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:55%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:35%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:70%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--yellow);opacity:0.9;height:85%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:45%;border-radius:2px 2px 0 0;"></div>
+            <div style="flex:1;background:var(--accent);opacity:0.7;height:50%;border-radius:2px 2px 0 0;animation:pulse 1s ease infinite;"></div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--text3);margin-top:0.5rem;text-align:right;">🟡 Spike detected: 420ms (স্বাভাবিক: 85ms)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem;">
+      <h3>Prometheus + Grafana Setup</h3>
+      <div class="code-window">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+          <div class="code-lang">prometheus.yml</div>
+        </div>
+        <div class="code-body">
+<pre><span class="comment"># Prometheus Configuration — কোথা থেকে metrics নেবে</span>
+<span class="key">global</span><span class="op">:</span>
+  <span class="key">scrape_interval</span><span class="op">:</span> <span class="str">15s</span>  <span class="comment"># প্রতি ১৫ সেকেন্ডে data নেবে</span>
+
+<span class="key">scrape_configs</span><span class="op">:</span>
+  <span class="comment"># আমাদের app থেকে metrics নেওয়া</span>
+  - <span class="key">job_name</span><span class="op">:</span> <span class="str">'myapp'</span>
+    <span class="key">static_configs</span><span class="op">:</span>
+      - <span class="key">targets</span><span class="op">:</span> <span class="op">[</span><span class="str">'app:3000'</span><span class="op">]</span>
+    <span class="key">metrics_path</span><span class="op">:</span> <span class="str">'/metrics'</span>
+  
+  <span class="comment"># Node metrics (CPU, Memory) নেওয়া</span>
+  - <span class="key">job_name</span><span class="op">:</span> <span class="str">'node-exporter'</span>
+    <span class="key">static_configs</span><span class="op">:</span>
+      - <span class="key">targets</span><span class="op">:</span> <span class="op">[</span><span class="str">'node-exporter:9100'</span><span class="op">]</span>
+
+<span class="comment"># Alert rules — কখন notification পাঠাবে</span>
+<span class="key">rule_files</span><span class="op">:</span>
+  - <span class="str">"alert_rules.yml"</span>
+
+<span class="key">alerting</span><span class="op">:</span>
+  <span class="key">alertmanagers</span><span class="op">:</span>
+    - <span class="key">static_configs</span><span class="op">:</span>
+        - <span class="key">targets</span><span class="op">:</span> <span class="op">[</span><span class="str">'alertmanager:9093'</span><span class="op">]</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 7: TOOLS ======== -->
+<section id="tools">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 07</div>
+      <h2 class="section-title">🛠️ DevOps <span class="accent">Tools</span> পরিচিতি</h2>
+      <p class="section-desc">Category অনুযায়ী সেরা tools এবং কোনটা কোথায় ব্যবহার হয়</p>
+    </div>
+
+    <div class="reveal">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Tools</th>
+            <th>কাজ</th>
+            <th>কঠিনতা</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Version Control</strong></td>
+            <td>Git, GitHub, GitLab</td>
+            <td>কোড track করা, team এ কাজ করা</td>
+            <td>⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>CI/CD</strong></td>
+            <td>GitHub Actions, Jenkins, GitLab CI</td>
+            <td>Automatic build, test, deploy</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Containerization</strong></td>
+            <td>Docker, Podman</td>
+            <td>Application package করা</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Orchestration</strong></td>
+            <td>Kubernetes, Docker Swarm</td>
+            <td>Container পরিচালনা</td>
+            <td>⭐⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>IaC</strong></td>
+            <td>Terraform, Ansible, Pulumi</td>
+            <td>Code দিয়ে infrastructure তৈরি</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud</strong></td>
+            <td>AWS, GCP, Azure</td>
+            <td>Server, Database, Storage</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Monitoring</strong></td>
+            <td>Prometheus, Grafana, Datadog</td>
+            <td>System পর্যবেক্ষণ ও alert</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Logging</strong></td>
+            <td>ELK Stack, Loki, Splunk</td>
+            <td>Log collect ও বিশ্লেষণ</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Security</strong></td>
+            <td>Vault, SonarQube, Trivy</td>
+            <td>Secret management, code scan</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem;">
+      <h3>সব Tools একনজরে:</h3>
+      <div class="tools-grid">
+        <div class="tool-item"><div class="tool-emoji">🐙</div><div class="tool-name">Git</div><div class="tool-cat">VCS</div></div>
+        <div class="tool-item"><div class="tool-emoji">⚡</div><div class="tool-name">GitHub Actions</div><div class="tool-cat">CI/CD</div></div>
+        <div class="tool-item"><div class="tool-emoji">🐳</div><div class="tool-name">Docker</div><div class="tool-cat">Container</div></div>
+        <div class="tool-item"><div class="tool-emoji">☸️</div><div class="tool-name">Kubernetes</div><div class="tool-cat">Orchestration</div></div>
+        <div class="tool-item"><div class="tool-emoji">🏗️</div><div class="tool-name">Terraform</div><div class="tool-cat">IaC</div></div>
+        <div class="tool-item"><div class="tool-emoji">🤖</div><div class="tool-name">Ansible</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-emoji">☁️</div><div class="tool-name">AWS</div><div class="tool-cat">Cloud</div></div>
+        <div class="tool-item"><div class="tool-emoji">📈</div><div class="tool-name">Prometheus</div><div class="tool-cat">Monitoring</div></div>
+        <div class="tool-item"><div class="tool-emoji">📊</div><div class="tool-name">Grafana</div><div class="tool-cat">Dashboard</div></div>
+        <div class="tool-item"><div class="tool-emoji">🔍</div><div class="tool-name">Elasticsearch</div><div class="tool-cat">Search/Log</div></div>
+        <div class="tool-item"><div class="tool-emoji">🔒</div><div class="tool-name">Vault</div><div class="tool-cat">Security</div></div>
+        <div class="tool-item"><div class="tool-emoji">🌐</div><div class="tool-name">Nginx</div><div class="tool-cat">Proxy</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SECTION 8: REAL PROJECT ======== -->
+<section id="project">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Section 08 — Real World</div>
+      <h2 class="section-title">🏗️ Real Life <span class="accent">Deployment Project</span></h2>
+      <p class="section-desc">একটি বাস্তব E-Commerce প্রজেক্ট কীভাবে Production-এ যায় — প্রতিটি ধাপ বিস্তারিত</p>
+    </div>
+
+    <!-- Project Overview -->
+    <div class="project-header reveal">
+      <div class="project-title">🛒 BanglaShop — E-Commerce Platform</div>
+      <p style="color:var(--text2);margin:0;">একটি বাংলাদেশী e-commerce site যেখানে প্রতিদিন ৫০,০০০+ user আসে। Node.js backend, React frontend, PostgreSQL database।</p>
+      <div class="project-meta">
+        <div class="meta-item">☁️ Cloud: <span>AWS</span></div>
+        <div class="meta-item">🐳 Container: <span>Docker + K8s</span></div>
+        <div class="meta-item">⚡ CI/CD: <span>GitHub Actions</span></div>
+        <div class="meta-item">📊 Monitor: <span>Prometheus + Grafana</span></div>
+        <div class="meta-item">🌐 CDN: <span>CloudFront</span></div>
+      </div>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <div class="reveal">
+      <h3 style="margin-bottom:1rem;">🏛️ Architecture Overview</h3>
+      <div class="arch-diagram">
+        <div class="arch-label">👤 User (Browser/Mobile)</div>
+        <div class="arch-row">
+          <div class="arch-arrow">↓</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-box blue">
+            <div class="ab-icon">🌐</div>
+            <div class="ab-name">CloudFront CDN</div>
+            <div class="ab-sub">Static files serve</div>
+          </div>
+          <div class="arch-arrow">+</div>
+          <div class="arch-box primary">
+            <div class="ab-icon">🛡️</div>
+            <div class="ab-name">WAF</div>
+            <div class="ab-sub">Security firewall</div>
+          </div>
+        </div>
+        <div class="arch-row"><div class="arch-arrow">↓</div></div>
+        <div class="arch-row">
+          <div class="arch-box orange">
+            <div class="ab-icon">⚖️</div>
+            <div class="ab-name">Load Balancer</div>
+            <div class="ab-sub">Traffic বিতরণ</div>
+          </div>
+        </div>
+        <div class="arch-row"><div class="arch-arrow">↓</div></div>
+        <div class="arch-row">
+          <div class="arch-box primary">
+            <div class="ab-icon">📦</div>
+            <div class="ab-name">App Pod 1</div>
+            <div class="ab-sub">Node.js</div>
+          </div>
+          <div class="arch-box primary">
+            <div class="ab-icon">📦</div>
+            <div class="ab-name">App Pod 2</div>
+            <div class="ab-sub">Node.js</div>
+          </div>
+          <div class="arch-box primary">
+            <div class="ab-icon">📦</div>
+            <div class="ab-name">App Pod 3</div>
+            <div class="ab-sub">Node.js</div>
+          </div>
+        </div>
+        <div class="arch-label">☸️ Kubernetes Cluster (3 Pods — Auto-scaling)</div>
+        <div class="arch-row"><div class="arch-arrow">↓</div></div>
+        <div class="arch-row">
+          <div class="arch-box blue">
+            <div class="ab-icon">🗄️</div>
+            <div class="ab-name">RDS PostgreSQL</div>
+            <div class="ab-sub">Primary DB</div>
+          </div>
+          <div class="arch-arrow">+</div>
+          <div class="arch-box purple">
+            <div class="ab-icon">⚡</div>
+            <div class="ab-name">ElastiCache Redis</div>
+            <div class="ab-sub">Caching</div>
+          </div>
+          <div class="arch-arrow">+</div>
+          <div class="arch-box orange">
+            <div class="ab-icon">🗂️</div>
+            <div class="ab-name">S3 Bucket</div>
+            <div class="ab-sub">File storage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step by Step Deployment -->
+    <div class="reveal" style="margin-top:3rem;">
+      <h3>📋 Step-by-Step: Developer থেকে Production পর্যন্ত</h3>
+      <ol class="num-list" style="margin-top:1.5rem;">
+        <li>
+          <div>
+            <strong>Developer কোড লেখে ও push করে</strong>
+            <p style="margin:0.3rem 0 0;">নতুন "Flash Sale" feature branch তৈরি করে কোড লিখলো। 
+            <span class="inline-code">git push origin feature/flash-sale</span> করলো।</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Pull Request ও Code Review</strong>
+            <p style="margin:0.3rem 0 0;">GitHub-এ PR তৈরি করলো। Team lead code review করলো। 
+            Automated linting ও security scan চললো।</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>CI Pipeline চালু হলো</strong>
+            <p style="margin:0.3rem 0 0;">PR merge হতেই GitHub Actions চালু হলো। 
+            ২৫০টি unit test চললো, সব pass করলো। Docker image তৈরি হলো।</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Staging Environment-এ Deploy</strong>
+            <p style="margin:0.3rem 0 0;">Production-এর মতো একটি test environment-এ আগে deploy হলো। 
+            QA team manual testing করলো।</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Production Deployment — Blue-Green Strategy</strong>
+            <p style="margin:0.3rem 0 0;">পুরনো version (Blue) চলতে থাকলো। নতুন version (Green) deploy হলো। 
+            ধীরে ধীরে ১০% → ৫০% → ১০০% traffic Green-এ গেলো।</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Health Check ও Monitoring</strong>
+            <p style="margin:0.3rem 0 0;">Grafana dashboard দেখলো — error rate ০.০১%, response time স্বাভাবিক। 
+            সব ঠিক আছে! Blue environment বন্ধ করা হলো।</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Terraform IaC Example -->
+    <div class="reveal" style="margin-top:2rem;">
+      <h3>🏗️ Terraform দিয়ে AWS Infrastructure</h3>
+      <p>Code দিয়ে server তৈরি! Manual console-এ click করার দরকার নেই:</p>
+      <div class="code-window">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+          <div class="code-lang">main.tf — AWS Infrastructure</div>
+        </div>
+        <div class="code-body">
+<pre><span class="comment"># Terraform দিয়ে AWS Infrastructure তৈরি</span>
+
+<span class="kw">terraform</span> {
+  <span class="key">required_providers</span> {
+    <span class="key">aws</span> = {
+      <span class="key">source</span>  = <span class="str">"hashicorp/aws"</span>
+      <span class="key">version</span> = <span class="str">"~> 5.0"</span>
+    }
+  }
+  <span class="comment"># State file S3 এ রাখা — team এর সবাই একই state দেখবে</span>
+  <span class="key">backend</span> <span class="str">"s3"</span> {
+    <span class="key">bucket</span> = <span class="str">"banglashop-terraform-state"</span>
+    <span class="key">key</span>    = <span class="str">"prod/terraform.tfstate"</span>
+    <span class="key">region</span> = <span class="str">"ap-southeast-1"</span>
+  }
+}
+
+<span class="kw">provider</span> <span class="str">"aws"</span> {
+  <span class="key">region</span> = <span class="str">"ap-southeast-1"</span>  <span class="comment"># Singapore region</span>
+}
+
+<span class="comment"># EKS Cluster (Kubernetes)</span>
+<span class="kw">module</span> <span class="str">"eks"</span> {
+  <span class="key">source</span>          = <span class="str">"terraform-aws-modules/eks/aws"</span>
+  <span class="key">cluster_name</span>    = <span class="str">"banglashop-prod"</span>
+  <span class="key">cluster_version</span> = <span class="str">"1.29"</span>
+  
+  <span class="key">node_groups</span> = {
+    <span class="key">general</span> = {
+      <span class="key">desired_size</span> = <span class="num">3</span>  <span class="comment"># ৩টি server</span>
+      <span class="key">min_size</span>     = <span class="num">2</span>  <span class="comment"># কমপক্ষে ২টি</span>
+      <span class="key">max_size</span>     = <span class="num">10</span> <span class="comment"># সর্বোচ্চ ১০টি</span>
+      <span class="key">instance_types</span> = [<span class="str">"t3.medium"</span>]
+    }
+  }
+}
+
+<span class="comment"># RDS PostgreSQL Database</span>
+<span class="kw">resource</span> <span class="str">"aws_db_instance"</span> <span class="str">"main"</span> {
+  <span class="key">identifier</span>        = <span class="str">"banglashop-db"</span>
+  <span class="key">engine</span>            = <span class="str">"postgres"</span>
+  <span class="key">engine_version</span>    = <span class="str">"15.4"</span>
+  <span class="key">instance_class</span>    = <span class="str">"db.t3.medium"</span>
+  <span class="key">allocated_storage</span> = <span class="num">100</span>  <span class="comment"># 100 GB</span>
+  
+  <span class="key">multi_az</span>          = <span class="kw">true</span>   <span class="comment"># High availability</span>
+  <span class="key">backup_retention_period</span> = <span class="num">7</span>  <span class="comment"># ৭ দিনের backup</span>
+  
+  <span class="key">tags</span> = {
+    <span class="key">Environment</span> = <span class="str">"production"</span>
+    <span class="key">Project</span>     = <span class="str">"BanglaShop"</span>
+  }
+}
+
+<span class="comment"># Redis Cache</span>
+<span class="kw">resource</span> <span class="str">"aws_elasticache_cluster"</span> <span class="str">"main"</span> {
+  <span class="key">cluster_id</span>   = <span class="str">"banglashop-cache"</span>
+  <span class="key">engine</span>       = <span class="str">"redis"</span>
+  <span class="key">node_type</span>    = <span class="str">"cache.t3.micro"</span>
+  <span class="key">num_cache_nodes</span> = <span class="num">1</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="margin-top:1rem;">
+        <div class="highlight-title">💡 Terraform ব্যবহারের সুবিধা</div>
+        এই ফাইল থেকে পুরো AWS infrastructure তৈরি হবে। 
+        <span class="inline-code">terraform init</span> → <span class="inline-code">terraform plan</span> → <span class="inline-code">terraform apply</span> — 
+        মাত্র ৩টি command! এবং সব কিছু Git-এ থাকবে তাই ইতিহাস জানা যাবে।
+      </div>
+    </div>
+
+    <!-- Incident Response -->
+    <div class="reveal" style="margin-top:2rem;">
+      <h3>🚨 Production Incident — কীভাবে সামলাবে?</h3>
+      <div class="highlight-box danger">
+        <div class="highlight-title">⚠️ Scenario: রাত ২টায় website down!</div>
+        Grafana-তে alert এলো — Error rate ৪৫%, Response time ৩০ সেকেন্ড। কী করবে?
+      </div>
+      
+      <div class="code-window" style="margin-top:1rem;">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+          <div class="code-lang">Incident Response Steps</div>
+        </div>
+        <div class="code-body">
+<pre><span class="comment"># ধাপ ১: কী হচ্ছে বোঝো</span>
+<span class="fn">kubectl</span> <span class="kw">get</span> pods <span class="var">-n</span> production
+<span class="comment"># Output: myapp-xxx   0/1   CrashLoopBackOff   ← সমস্যা এখানে!</span>
+
+<span class="fn">kubectl</span> <span class="kw">logs</span> myapp-xxx <span class="var">--previous</span>
+<span class="comment"># Output: Error: Cannot connect to database</span>
+
+<span class="comment"># ধাপ ২: সাথে সাথে rollback করো (আগের version-এ ফিরে যাও)</span>
+<span class="fn">kubectl</span> <span class="kw">rollout</span> undo deployment/myapp
+<span class="comment"># ৩০ সেকেন্ডেই আগের stable version চলবে!</span>
+
+<span class="fn">kubectl</span> <span class="kw">rollout</span> status deployment/myapp
+<span class="comment"># Waiting for rollout to finish...</span>
+<span class="comment"># deployment "myapp" successfully rolled out ✅</span>
+
+<span class="comment"># ধাপ ৩: কারণ খোঁজো</span>
+<span class="fn">kubectl</span> <span class="kw">describe</span> pod myapp-xxx
+<span class="comment"># Events: database connection pool exhausted</span>
+
+<span class="comment"># ধাপ ৪: Fix করো ও আবার deploy করো (সকালে)</span>
+<span class="comment"># database connection limit বাড়ানো হলো</span>
+<span class="comment"># নতুন version deploy হলো</span>
+<span class="comment"># Postmortem লেখা হলো — ভবিষ্যতে এটা যাতে না হয়</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== LEARNING PATH ======== -->
+<section id="path" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Bonus</div>
+      <h2 class="section-title">🗺️ DevOps <span class="accent">Roadmap</span></h2>
+      <p class="section-desc">কোথা থেকে শুরু করবে? ধাপে ধাপে শেখার পথ</p>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="card" style="border-color:var(--green)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--green);margin-bottom:0.5rem;">BEGINNER — ০-৩ মাস</div>
+        <div class="card-title">🌱 শুরু করো এখানে</div>
+        <ul class="checklist" style="font-size:0.9rem;">
+          <li>Linux basics (ls, cd, grep, vim)</li>
+          <li>Git ও GitHub</li>
+          <li>Basic Networking (HTTP, DNS, TCP/IP)</li>
+          <li>Shell scripting</li>
+          <li>Docker basics</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--yellow)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--yellow);margin-bottom:0.5rem;">INTERMEDIATE — ৩-৮ মাস</div>
+        <div class="card-title">🔥 মাঝারি পর্যায়</div>
+        <ul class="checklist" style="font-size:0.9rem;">
+          <li>CI/CD (GitHub Actions)</li>
+          <li>Kubernetes fundamentals</li>
+          <li>Cloud (AWS বা GCP)</li>
+          <li>Terraform basics</li>
+          <li>Monitoring (Prometheus/Grafana)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--accent)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent);margin-bottom:0.5rem;">ADVANCED — ৮+ মাস</div>
+        <div class="card-title">🚀 Senior স্তর</div>
+        <ul class="checklist" style="font-size:0.9rem;">
+          <li>Service Mesh (Istio)</li>
+          <li>GitOps (ArgoCD)</li>
+          <li>Platform Engineering</li>
+          <li>Chaos Engineering</li>
+          <li>FinOps — Cost optimization</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:2rem;border-color:var(--accent2);background:linear-gradient(135deg,var(--card),var(--card2));">
+      <div class="card-title" style="font-size:1.3rem;">💬 মনে রাখার কথা</div>
+      <p style="font-size:1.05rem;line-height:2;">
+        DevOps কোনো tool নয়, এটা একটি <strong style="color:var(--accent)">mindset</strong>। 
+        দ্রুত fail করো, তাড়াতাড়ি শেখো, আবার চেষ্টা করো। 
+        বড় বড় company শুরুতে ছোট ছোট script দিয়ে automation শুরু করেছিল। 
+        তুমিও পারবে! 🎯
+      </p>
+      <p style="color:var(--text3);font-size:0.9rem;margin:0;">
+        একটি পরামর্শ: আজই একটি ছোট project নাও এবং GitHub Actions দিয়ে auto-deploy সেটআপ করো। 
+        Theory পড়ার চেয়ে হাতে-কলমে শেখা বেশি কার্যকর।
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ======== FOOTER ======== -->
+<footer>
+  <div class="footer-title">DevOps সম্পূর্ণ গাইড — বাংলায়</div>
+  <p class="footer-sub">তৈরি করা হয়েছে বাংলাদেশের প্রতিটি tech enthusiast এর জন্য ❤️</p>
+  <p style="color:var(--text3);font-size:0.8rem;margin-top:1rem;">
+    CI/CD • Docker • Kubernetes • Terraform • Monitoring • Cloud
+  </p>
+</footer>
+
+<script>
+// Tab switching
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Live dashboard simulation
+function updateDashboard() {
+  const cpuEl = document.getElementById('cpu-val');
+  const memEl = document.getElementById('mem-val');
+  const reqEl = document.getElementById('req-val');
+  
+  if (!cpuEl) return;
+  
+  const cpu = Math.floor(15 + Math.random() * 40);
+  const mem = Math.floor(55 + Math.random() * 20);
+  const req = Math.floor(750 + Math.random() * 200);
+  
+  cpuEl.textContent = cpu + '%';
+  memEl.textContent = mem + '%';
+  reqEl.textContent = req;
+  
+  cpuEl.style.color = cpu > 70 ? 'var(--red)' : cpu > 50 ? 'var(--yellow)' : 'var(--green)';
+}
+
+setInterval(updateDashboard, 2000);
+
+// Smooth nav active state
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(l => {
+    l.style.color = l.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    l.style.borderBottomColor = l.getAttribute('href') === '#' + current ? 'var(--accent)' : 'transparent';
+  });
+});
+</script>
+</body>
+</html>
