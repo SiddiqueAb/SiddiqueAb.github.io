@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shell & Batch Script গাইড — বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #0d1117;
+  --surface:   #161b22;
+  --surface2:  #21262d;
+  --surface3:  #30363d;
+  --border:    #30363d;
+  --text:      #e6edf3;
+  --muted:     #8b949e;
+  --green:     #3fb950;
+  --green-dim: #1a3a22;
+  --blue:      #58a6ff;
+  --blue-dim:  #1a2a4a;
+  --orange:    #ffa657;
+  --orange-dim:#3a2510;
+  --red:       #ff7b72;
+  --yellow:    #e3b341;
+  --purple:    #bc8cff;
+  --teal:      #39d0c8;
+  --sh-bg:     #0d2137;
+  --bat-bg:    #1a0d2e;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Hind Siliguri', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+/* ── HERO ─────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0d1117 0%, #0d2137 50%, #1a0d2e 100%);
+  padding: 70px 20px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(63,185,80,0.07) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(188,140,255,0.07) 0%, transparent 60%);
+}
+.hero-tags {
+  display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 24px; position: relative;
+}
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid; text-transform: uppercase;
+}
+.tag-sh  { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.tag-bat { border-color: var(--purple); color: var(--purple); background: #2a1a3e; }
+.tag-bn  { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+.hero h1 {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  position: relative;
+  margin-bottom: 16px;
+}
+.hero h1 .sh-col  { color: var(--green); }
+.hero h1 .bat-col { color: var(--purple); }
+
+.hero-sub {
+  color: var(--muted); font-size: 16px;
+  max-width: 600px; margin: 0 auto 32px;
+  font-family: 'Tiro Bangla', serif;
+  position: relative;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+  position: relative;
+}
+.stat { text-align: center; }
+.stat-num { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; }
+.stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── NAV ─────────────────────────────────────────── */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; gap: 0; overflow-x: auto;
+  scrollbar-width: none;
+}
+.sticky-nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  padding: 14px 18px;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); cursor: pointer;
+  font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 500;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.nav-btn:hover { color: var(--text); }
+.nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
+.nav-btn.bat-nav.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* ── LAYOUT ──────────────────────────────────────── */
+.container { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* ── SECTION HEADER ──────────────────────────────── */
+.sec-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 36px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sec-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.sec-icon.sh-icon  { background: var(--green-dim); border: 1px solid var(--green); }
+.sec-icon.bat-icon { background: #2a1a3e; border: 1px solid var(--purple); }
+.sec-icon.cmp-icon { background: var(--blue-dim); border: 1px solid var(--blue); }
+
+.sec-title { font-size: 1.7rem; font-weight: 700; }
+.sec-desc  { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+/* ── CARDS ───────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.card-header h3 { font-size: 16px; font-weight: 600; }
+.card-body { padding: 20px; }
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; padding: 2px 8px; border-radius: 99px;
+  font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.badge-sh   { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.badge-bat  { background: #2a1a3e; color: var(--purple); border: 1px solid var(--purple); }
+.badge-info { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+.badge-warn { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+.badge-tip  { background: #1a2e1a; color: var(--teal); border: 1px solid var(--teal); }
+
+/* ── CODE BLOCKS ─────────────────────────────────── */
+.code-wrap {
+  position: relative; margin: 14px 0;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.code-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+}
+.code-bar.sh-bar  { background: var(--sh-bg); color: var(--green); border-bottom: 1px solid #1a3a4a; }
+.code-bar.bat-bar { background: var(--bat-bg); color: var(--purple); border-bottom: 1px solid #2a1a3e; }
+.code-bar.gen-bar { background: var(--surface2); color: var(--muted); border-bottom: 1px solid var(--border); }
+
+.dots { display: flex; gap: 6px; }
+.dot  { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r{ background: #ff5f56; }
+.dot-y{ background: #ffbd2e; }
+.dot-g{ background: #27c93f; }
+
+.copy-btn {
+  background: none; border: 1px solid currentColor;
+  color: inherit; padding: 2px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  cursor: pointer; opacity: 0.7; transition: opacity .2s;
+}
+.copy-btn:hover { opacity: 1; }
+
+pre {
+  padding: 18px 20px;
+  overflow-x: auto; font-size: 13.5px;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.65; white-space: pre;
+}
+pre.sh-pre  { background: #060e17; }
+pre.bat-pre { background: #0d0615; }
+pre.gen-pre { background: var(--surface2); }
+
+/* Syntax highlight spans */
+.cm { color: #6e8c6e; font-style: italic; }   /* comment */
+.kw { color: var(--blue); }                    /* keyword */
+.fn { color: var(--green); }                   /* function/command */
+.st { color: var(--orange); }                  /* string */
+.vr { color: var(--teal); }                    /* variable */
+.nm { color: var(--yellow); }                  /* number */
+.op { color: var(--red); }                     /* operator */
+.fl { color: var(--purple); }                  /* flag/option */
+
+/* ── PROSE ───────────────────────────────────────── */
+p { color: var(--muted); margin-bottom: 12px; font-size: 15px; }
+p strong { color: var(--text); }
+ul.guide-list, ol.guide-list {
+  padding-left: 20px; color: var(--muted); font-size: 15px;
+  margin-bottom: 14px;
+}
+ul.guide-list li, ol.guide-list li { margin-bottom: 7px; }
+ul.guide-list li strong, ol.guide-list li strong { color: var(--text); }
+
+/* ── TABLE ───────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; margin: 14px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+  background: var(--surface2); color: var(--text);
+  padding: 10px 14px; text-align: left;
+  border: 1px solid var(--border); font-weight: 600;
+}
+td {
+  padding: 9px 14px;
+  border: 1px solid var(--border); color: var(--muted);
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+td code, th code {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  background: var(--surface3); padding: 1px 5px; border-radius: 3px;
+  color: var(--teal);
+}
+
+/* ── ALERT BOXES ─────────────────────────────────── */
+.alert {
+  padding: 14px 18px; border-radius: 8px;
+  margin: 16px 0; display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-tip    { background: #0d2a1a; border: 1px solid #2a5a3a; color: #7de8a0; }
+.alert-warn   { background: var(--orange-dim); border: 1px solid #6a4020; color: #ffb980; }
+.alert-info   { background: var(--blue-dim); border: 1px solid #2a4a7a; color: #90c8ff; }
+.alert-danger { background: #2a0d0d; border: 1px solid #6a2020; color: #ffaaaa; }
+
+/* ── STEP LIST ───────────────────────────────────── */
+.steps { counter-reset: step; margin: 16px 0; }
+.step  {
+  display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start;
+}
+.step-num {
+  counter-increment: step;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-num.sh-num  { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.step-num.bat-num { background: #2a1a3e; color: var(--purple); border: 1px solid var(--purple); }
+.step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.step-content p  { margin: 0; }
+
+/* ── COMPARISON TABLE ────────────────────────────── */
+.cmp-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;
+}
+@media(max-width:600px){ .cmp-grid{ grid-template-columns:1fr; } }
+.cmp-card {
+  border-radius: 10px; overflow: hidden; border: 1px solid;
+}
+.cmp-card.sh-cmp  { border-color: var(--green); }
+.cmp-card.bat-cmp { border-color: var(--purple); }
+.cmp-head {
+  padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 15px;
+}
+.cmp-head.sh-head  { background: var(--green-dim); color: var(--green); }
+.cmp-head.bat-head { background: #2a1a3e; color: var(--purple); }
+.cmp-body { padding: 14px 16px; background: var(--surface); }
+.cmp-row  {
+  display: flex; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.cmp-row:last-child { border-bottom: none; }
+.cmp-key { color: var(--muted); }
+.cmp-val { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+/* ── INLINE CODE ─────────────────────────────────── */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface3); color: var(--teal);
+  padding: 1px 5px; border-radius: 3px; font-size: 13px;
+}
+
+/* ── DIVIDER ─────────────────────────────────────── */
+.divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer {
+  text-align: center; padding: 30px 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 13px;
+}
+footer span { color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-tags">
+    <span class="hero-tag tag-sh">🐧 Shell Script (.sh)</span>
+    <span class="hero-tag tag-bat">🪟 Batch Script (.bat/.cmd)</span>
+    <span class="hero-tag tag-bn">বাংলা গাইড</span>
+  </div>
+  <h1><span class="sh-col">Shell</span> ও <span class="bat-col">Batch</span> স্ক্রিপ্ট<br/>সম্পূর্ণ বাংলা গাইড</h1>
+  <p class="hero-sub">শূন্য থেকে শুরু করে প্রফেশনাল স্ক্রিপ্ট লেখা শিখুন — সহজ বাংলায়, বাস্তব উদাহরণসহ</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" style="color:var(--green)">৫+</div><div class="stat-lbl">Shell টপিক</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--purple)">৫+</div><div class="stat-lbl">Batch টপিক</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--blue)">৩০+</div><div class="stat-lbl">কোড উদাহরণ</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--orange)">১০০%</div><div class="stat-lbl">বাংলায়</div></div>
+  </div>
+</section>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="sticky-nav" id="mainNav">
+  <button class="nav-btn active"       onclick="show('intro',this)">🏠 ভূমিকা</button>
+  <button class="nav-btn"              onclick="show('shell',this)">🐧 Shell (.sh)</button>
+  <button class="nav-btn bat-nav"      onclick="show('batch',this)">🪟 Batch (.bat)</button>
+  <button class="nav-btn"              onclick="show('compare',this)">⚖️ পার্থক্য</button>
+  <button class="nav-btn"              onclick="show('projects',this)">🚀 প্রজেক্ট</button>
+  <button class="nav-btn"              onclick="show('cheatsheet',this)">📋 চিটশিট</button>
+</nav>
+
+<!-- ══════════════ CONTENT ══════════════ -->
+<div class="container">
+
+<!-- ─────────── INTRO ─────────── -->
+<section id="intro" class="section active">
+  <div class="sec-header">
+    <div class="sec-icon cmp-icon">🏠</div>
+    <div><div class="sec-title">ভূমিকা — স্ক্রিপ্ট কী?</div><div class="sec-desc">শুরু করার আগে যা জানা দরকার</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>📌 স্ক্রিপ্ট মানে কী?</h3></div>
+    <div class="card-body">
+      <p>স্ক্রিপ্ট হলো একটি <strong>টেক্সট ফাইল</strong> যেখানে একের পর এক কমান্ড লেখা থাকে। কম্পিউটার সেই কমান্ডগুলো <strong>উপর থেকে নিচে</strong> পড়ে এবং স্বয়ংক্রিয়ভাবে কাজ করে।</p>
+      <p>সহজ ভাষায়: আপনি যদি প্রতিদিন ১০টি কমান্ড টাইপ করেন, সেগুলো একটি ফাইলে লিখে রাখুন — একবার চালালেই সব হয়ে যাবে!</p>
+      <div class="alert alert-tip"><div class="alert-icon">💡</div><div><strong>উদাহরণ:</strong> ব্যাকআপ নেওয়া, ফোল্ডার তৈরি করা, ফাইল মুভ করা, সফটওয়্যার ইনস্টল করা — এসব কাজ স্ক্রিপ্ট দিয়ে অটোমেট করা যায়।</div></div>
+    </div>
+  </div>
+
+  <div class="cmp-grid">
+    <div class="cmp-card sh-cmp">
+      <div class="cmp-head sh-head">🐧 Shell Script (.sh)</div>
+      <div class="cmp-body">
+        <div class="cmp-row"><span class="cmp-key">OS</span><span class="cmp-val">Linux / macOS</span></div>
+        <div class="cmp-row"><span class="cmp-key">Shell</span><span class="cmp-val">Bash / Zsh / sh</span></div>
+        <div class="cmp-row"><span class="cmp-key">Extension</span><span class="cmp-val">.sh</span></div>
+        <div class="cmp-row"><span class="cmp-key">চালানো</span><span class="cmp-val">./script.sh</span></div>
+        <div class="cmp-row"><span class="cmp-key">শক্তি</span><span class="cmp-val">অনেক বেশি</span></div>
+      </div>
+    </div>
+    <div class="cmp-card bat-cmp">
+      <div class="cmp-head bat-head">🪟 Batch Script (.bat)</div>
+      <div class="cmp-body">
+        <div class="cmp-row"><span class="cmp-key">OS</span><span class="cmp-val">Windows</span></div>
+        <div class="cmp-row"><span class="cmp-key">Shell</span><span class="cmp-val">CMD / Command Prompt</span></div>
+        <div class="cmp-row"><span class="cmp-key">Extension</span><span class="cmp-val">.bat বা .cmd</span></div>
+        <div class="cmp-row"><span class="cmp-key">চালানো</span><span class="cmp-val">Double click</span></div>
+        <div class="cmp-row"><span class="cmp-key">সহজতা</span><span class="cmp-val">শিখতে সহজ</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>🛠️ কোনটা শিখব?</h3></div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>আপনার OS</th><th>শিখুন</th><th>কারণ</th></tr>
+          <tr><td>Ubuntu / Debian / Fedora</td><td><code>.sh</code> (Bash)</td><td>Linux এর নেটিভ ভাষা</td></tr>
+          <tr><td>macOS</td><td><code>.sh</code> (Zsh/Bash)</td><td>Terminal এ সরাসরি চলে</td></tr>
+          <tr><td>Windows 10/11</td><td><code>.bat</code> / <code>.cmd</code></td><td>CMD এ সহজে চলে</td></tr>
+          <tr><td>উভয় OS</td><td>দুটোই শিখুন</td><td>DevOps এর জন্য জরুরি</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SHELL ─────────── -->
+<section id="shell" class="section">
+  <div class="sec-header">
+    <div class="sec-icon sh-icon">🐧</div>
+    <div><div class="sec-title">Shell Script (.sh) গাইড</div><div class="sec-desc">Linux/macOS এ Bash স্ক্রিপ্ট লেখার সম্পূর্ণ গাইড</div></div>
+  </div>
+
+  <!-- Step 1: প্রথম ফাইল -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">ধাপ ১</span>&nbsp;<h3>প্রথম Shell Script ফাইল তৈরি</h3></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num sh-num">১</div>
+          <div class="step-content">
+            <h4>Terminal খুলুন</h4>
+            <p>Linux: <code>Ctrl + Alt + T</code> &nbsp;|&nbsp; macOS: <code>Cmd + Space</code> → "Terminal" লিখুন</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num sh-num">২</div>
+          <div class="step-content">
+            <h4>ফাইল তৈরি করুন</h4>
+            <div class="code-wrap">
+              <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>terminal</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <pre class="sh-pre"><span class="fn">nano</span> myscript.sh
+<span class="cm"># অথবা: vim myscript.sh  অথবা: gedit myscript.sh</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num sh-num">৩</div>
+          <div class="step-content">
+            <h4>Shebang লাইন লিখুন (সবচেয়ে গুরুত্বপূর্ণ!)</h4>
+            <p><strong>প্রতিটি</strong> Shell Script এর প্রথম লাইনে এটি লিখতে হয়:</p>
+            <div class="code-wrap">
+              <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>myscript.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+<span class="cm"># এটিকে বলে "Shebang" — কোন Shell দিয়ে চালাবে তা বলে</span>
+<span class="cm"># #!/bin/sh   → যেকোনো POSIX shell</span>
+<span class="cm"># #!/bin/bash → Bash shell (সবচেয়ে বেশি ব্যবহার হয়)</span>
+<span class="cm"># #!/bin/zsh  → Zsh shell (macOS এ ডিফল্ট)</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num sh-num">৪</div>
+          <div class="step-content">
+            <h4>Permission দিন ও চালান</h4>
+            <div class="code-wrap">
+              <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>terminal</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <pre class="sh-pre"><span class="fn">chmod</span> <span class="fl">+x</span> myscript.sh     <span class="cm"># execute permission দিন</span>
+<span class="fn">./myscript.sh</span>            <span class="cm"># চালান</span>
+<span class="cm"># অথবা সরাসরি: bash myscript.sh</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variables -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">ভেরিয়েবল</span>&nbsp;<h3>Variable — তথ্য সংরক্ষণ</h3></div>
+    <div class="card-body">
+      <div class="alert alert-warn"><div class="alert-icon">⚠️</div><div><strong>মনে রাখুন:</strong> <code>=</code> এর দুই পাশে কোনো space দেওয়া যাবে না! <code>name = "Rahim"</code> ভুল, <code>name="Rahim"</code> সঠিক।</div></div>
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>variables.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+
+<span class="cm"># ── Variable তৈরি ──────────────────────────</span>
+<span class="vr">name</span>=<span class="st">"রহিম"</span>
+<span class="vr">age</span>=<span class="nm">25</span>
+<span class="vr">city</span>=<span class="st">"ঢাকা"</span>
+
+<span class="cm"># ── Variable ব্যবহার ($চিহ্ন দিয়ে) ────────</span>
+<span class="fn">echo</span> <span class="st">"নাম: <span class="vr">$name</span>"</span>
+<span class="fn">echo</span> <span class="st">"বয়স: <span class="vr">$age</span>"</span>
+<span class="fn">echo</span> <span class="st">"শহর: <span class="vr">$city</span>"</span>
+
+<span class="cm"># ── Command এর output variable এ রাখা ──────</span>
+<span class="vr">today</span>=<span class="op">$(</span><span class="fn">date</span> +%Y-%m-%d<span class="op">)</span>
+<span class="vr">whoami_result</span>=<span class="op">$(</span><span class="fn">whoami</span><span class="op">)</span>
+<span class="fn">echo</span> <span class="st">"আজকের তারিখ: <span class="vr">$today</span>"</span>
+<span class="fn">echo</span> <span class="st">"আপনি: <span class="vr">$whoami_result</span>"</span>
+
+<span class="cm"># ── Read-only (পরিবর্তন করা যাবে না) ───────</span>
+<span class="kw">readonly</span> <span class="vr">PI</span>=<span class="nm">3.14159</span>
+<span class="fn">echo</span> <span class="st">"PI = <span class="vr">$PI</span>"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Input -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">ইনপুট</span>&nbsp;<h3>User থেকে Input নেওয়া</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>input.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+
+<span class="cm"># সাধারণ input</span>
+<span class="fn">echo</span> <span class="st">"আপনার নাম লিখুন:"</span>
+<span class="kw">read</span> <span class="vr">username</span>
+<span class="fn">echo</span> <span class="st">"স্বাগতম, <span class="vr">$username</span>!"</span>
+
+<span class="cm"># একই লাইনে prompt</span>
+<span class="kw">read</span> <span class="fl">-p</span> <span class="st">"আপনার বয়স: "</span> <span class="vr">age</span>
+
+<span class="cm"># পাসওয়ার্ড (দেখাবে না)</span>
+<span class="kw">read</span> <span class="fl">-s</span> <span class="fl">-p</span> <span class="st">"পাসওয়ার্ড: "</span> <span class="vr">pass</span>
+<span class="fn">echo</span>   <span class="cm"># নতুন লাইন</span>
+<span class="fn">echo</span> <span class="st">"পাসওয়ার্ড সেট হয়েছে।"</span>
+
+<span class="cm"># Command line argument</span>
+<span class="cm"># ./script.sh রহিম ২৫</span>
+<span class="fn">echo</span> <span class="st">"প্রথম argument: <span class="vr">$1</span>"</span>   <span class="cm"># রহিম</span>
+<span class="fn">echo</span> <span class="st">"দ্বিতীয় argument: <span class="vr">$2</span>"</span>  <span class="cm"># ২৫</span>
+<span class="fn">echo</span> <span class="st">"মোট arguments: <span class="vr">$#</span>"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conditions -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">শর্ত</span>&nbsp;<h3>If-Else — শর্তভিত্তিক কাজ</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>conditions.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+
+<span class="kw">read</span> <span class="fl">-p</span> <span class="st">"সংখ্যা লিখুন: "</span> <span class="vr">num</span>
+
+<span class="cm"># ── সংখ্যা তুলনা ──────────────────────────</span>
+<span class="kw">if</span> [ <span class="vr">$num</span> <span class="fl">-gt</span> <span class="nm">100</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"১০০ এর বেশি"</span>
+<span class="kw">elif</span> [ <span class="vr">$num</span> <span class="fl">-eq</span> <span class="nm">100</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"ঠিক ১০০"</span>
+<span class="kw">else</span>
+    <span class="fn">echo</span> <span class="st">"১০০ এর কম"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ── তুলনা অপারেটর ─────────────────────────</span>
+<span class="cm"># -eq  সমান (equal)</span>
+<span class="cm"># -ne  সমান না (not equal)</span>
+<span class="cm"># -gt  বড় (greater than)</span>
+<span class="cm"># -lt  ছোট (less than)</span>
+<span class="cm"># -ge  বড় বা সমান</span>
+<span class="cm"># -le  ছোট বা সমান</span>
+
+<span class="cm"># ── ফাইল চেক ──────────────────────────────</span>
+<span class="kw">if</span> [ <span class="fl">-f</span> <span class="st">"/etc/passwd"</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"ফাইলটি আছে"</span>
+<span class="kw">fi</span>
+
+<span class="kw">if</span> [ <span class="fl">-d</span> <span class="st">"/home"</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"ফোল্ডারটি আছে"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ── String তুলনা ──────────────────────────</span>
+<span class="kw">read</span> <span class="fl">-p</span> <span class="st">"হ্যাঁ বা না? "</span> <span class="vr">ans</span>
+<span class="kw">if</span> [ <span class="st">"<span class="vr">$ans</span>"</span> = <span class="st">"হ্যাঁ"</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="st">"আপনি হ্যাঁ বললেন!"</span>
+<span class="kw">fi</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loops -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">লুপ</span>&nbsp;<h3>Loop — বারবার কাজ করা</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>loops.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+
+<span class="cm"># ── For Loop ──────────────────────────────</span>
+<span class="fn">echo</span> <span class="st">"=== ফলের তালিকা ==="</span>
+<span class="kw">for</span> <span class="vr">fruit</span> <span class="kw">in</span> আম কলা লিচু আনারস; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"  ফল: <span class="vr">$fruit</span>"</span>
+<span class="kw">done</span>
+
+<span class="cm"># ── সংখ্যার range ─────────────────────────</span>
+<span class="kw">for</span> <span class="vr">i</span> <span class="kw">in</span> <span class="op">{</span><span class="nm">1</span>..<span class="nm">5</span><span class="op">}</span>; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"  সংখ্যা: <span class="vr">$i</span>"</span>
+<span class="kw">done</span>
+
+<span class="cm"># ── While Loop ────────────────────────────</span>
+<span class="vr">count</span>=<span class="nm">1</span>
+<span class="kw">while</span> [ <span class="vr">$count</span> <span class="fl">-le</span> <span class="nm">3</span> ]; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"  গণনা: <span class="vr">$count</span>"</span>
+    <span class="vr">count</span>=<span class="op">$((</span><span class="vr">count</span> + <span class="nm">1</span><span class="op">))</span>
+<span class="kw">done</span>
+
+<span class="cm"># ── ফাইল পড়া loop দিয়ে ───────────────────</span>
+<span class="kw">for</span> <span class="vr">file</span> <span class="kw">in</span> *.txt; <span class="kw">do</span>
+    <span class="fn">echo</span> <span class="st">"  পাওয়া গেছে: <span class="vr">$file</span>"</span>
+<span class="kw">done</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Functions -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">ফাংশন</span>&nbsp;<h3>Function — পুনর্ব্যবহারযোগ্য কোড</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>functions.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+
+<span class="cm"># ── Function তৈরি ─────────────────────────</span>
+<span class="fn">greet</span>() {
+    <span class="fn">echo</span> <span class="st">"হ্যালো, <span class="vr">$1</span>! আপনাকে স্বাগতম।"</span>
+}
+
+<span class="cm"># ── Function call ─────────────────────────</span>
+<span class="fn">greet</span> <span class="st">"রহিম"</span>
+<span class="fn">greet</span> <span class="st">"করিম"</span>
+
+<span class="cm"># ── যোগফল বের করার function ───────────────</span>
+<span class="fn">add_numbers</span>() {
+    <span class="kw">local</span> <span class="vr">result</span>=<span class="op">$((</span><span class="vr">$1</span> + <span class="vr">$2</span><span class="op">))</span>
+    <span class="fn">echo</span> <span class="st">"<span class="vr">$1</span> + <span class="vr">$2</span> = <span class="vr">$result</span>"</span>
+}
+
+<span class="fn">add_numbers</span> <span class="nm">15</span> <span class="nm">27</span>
+<span class="fn">add_numbers</span> <span class="nm">100</span> <span class="nm">200</span>
+
+<span class="cm"># ── Return value ──────────────────────────</span>
+<span class="fn">check_age</span>() {
+    <span class="kw">if</span> [ <span class="vr">$1</span> <span class="fl">-ge</span> <span class="nm">18</span> ]; <span class="kw">then</span>
+        <span class="fn">echo</span> <span class="st">"প্রাপ্তবয়স্ক"</span>
+    <span class="kw">else</span>
+        <span class="fn">echo</span> <span class="st">"অপ্রাপ্তবয়স্ক"</span>
+    <span class="kw">fi</span>
+}
+<span class="vr">status</span>=<span class="op">$(</span><span class="fn">check_age</span> <span class="nm">20</span><span class="op">)</span>
+<span class="fn">echo</span> <span class="st">"বয়স যাচাই: <span class="vr">$status</span>"</span></pre>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─────────── BATCH ─────────── -->
+<section id="batch" class="section">
+  <div class="sec-header">
+    <div class="sec-icon bat-icon">🪟</div>
+    <div><div class="sec-title">Batch Script (.bat/.cmd) গাইড</div><div class="sec-desc">Windows CMD এ Batch স্ক্রিপ্ট লেখার সম্পূর্ণ গাইড</div></div>
+  </div>
+
+  <!-- .bat vs .cmd -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">পার্থক্য</span>&nbsp;<h3>.bat বনাম .cmd — কোনটা ব্যবহার করব?</h3></div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>বিষয়</th><th>.bat</th><th>.cmd</th></tr>
+          <tr><td>পুরনো Windows সমর্থন</td><td>✅ Windows 95 থেকে</td><td>❌ Windows NT থেকে</td></tr>
+          <tr><td>আধুনিক ব্যবহার</td><td>✅ চলে</td><td>✅ বেশি ভালো</td></tr>
+          <tr><td>Error handling</td><td>সীমিত</td><td>উন্নত</td></tr>
+          <tr><td>পরামর্শ</td><td>পুরনো কোডে</td><td>নতুন কাজে ব্যবহার করুন</td></tr>
+        </table>
+      </div>
+      <div class="alert alert-tip"><div class="alert-icon">💡</div><div>আজকাল <strong>.bat</strong> আর <strong>.cmd</strong> প্রায় একই কাজ করে। নতুন স্ক্রিপ্টে <code>.bat</code> ব্যবহার করলেই যথেষ্ট।</div></div>
+    </div>
+  </div>
+
+  <!-- প্রথম ফাইল -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">ধাপ ১</span>&nbsp;<h3>প্রথম Batch ফাইল তৈরি</h3></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num bat-num">১</div>
+          <div class="step-content">
+            <h4>Notepad খুলুন</h4>
+            <p><code>Win + R</code> চাপুন → <code>notepad</code> লিখুন → Enter</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num bat-num">২</div>
+          <div class="step-content">
+            <h4>কোড লিখুন</h4>
+            <div class="code-wrap">
+              <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>hello.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+              <pre class="bat-pre"><span class="kw">@echo off</span>
+<span class="cm">REM এটি আমার প্রথম Batch Script</span>
+<span class="fn">echo</span> <span class="st">হ্যালো, বাংলাদেশ!</span>
+<span class="fn">echo</span> <span class="st">আমার প্রথম .bat ফাইল চলছে।</span>
+<span class="fn">pause</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num bat-num">৩</div>
+          <div class="step-content">
+            <h4>Save করুন</h4>
+            <p><code>Ctrl + S</code> → ফাইলের নাম দিন <code>hello.bat</code> → "Save as type" → <strong>"All Files"</strong> সিলেক্ট করুন → Save</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num bat-num">৪</div>
+          <div class="step-content">
+            <h4>চালান</h4>
+            <p>ফাইলটিতে <strong>Double Click</strong> করুন — CMD window খুলে কমান্ড চলবে!</p>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warn"><div class="alert-icon">⚠️</div><div><strong>@echo off</strong> না লিখলে প্রতিটি command screen এ দেখা যাবে। সব .bat ফাইলের প্রথম লাইনে এটি লিখুন।</div></div>
+    </div>
+  </div>
+
+  <!-- Variables -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">ভেরিয়েবল</span>&nbsp;<h3>Variable — তথ্য সংরক্ষণ</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>variables.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="bat-pre"><span class="kw">@echo off</span>
+
+<span class="cm">REM ── Variable তৈরি (SET ব্যবহার করে) ────</span>
+<span class="kw">SET</span> <span class="vr">name</span>=<span class="st">রহিম</span>
+<span class="kw">SET</span> <span class="vr">age</span>=<span class="nm">25</span>
+<span class="kw">SET</span> <span class="vr">city</span>=<span class="st">ঢাকা</span>
+
+<span class="cm">REM ── Variable ব্যবহার (%চিহ্ন দিয়ে%) ───</span>
+<span class="fn">echo</span> নাম: <span class="vr">%name%</span>
+<span class="fn">echo</span> বয়স: <span class="vr">%age%</span>
+<span class="fn">echo</span> শহর: <span class="vr">%city%</span>
+
+<span class="cm">REM ── গণনা ─────────────────────────────</span>
+<span class="kw">SET</span> /A <span class="vr">result</span>=<span class="nm">10</span>+<span class="nm">20</span>
+<span class="fn">echo</span> ১০+২০ = <span class="vr">%result%</span>
+
+<span class="cm">REM ── User থেকে Input নেওয়া ─────────────</span>
+<span class="kw">SET</span> /P <span class="vr">username</span>=<span class="st">আপনার নাম লিখুন: </span>
+<span class="fn">echo</span> স্বাগতম, <span class="vr">%username%</span>!
+
+<span class="cm">REM ── Built-in Variables ────────────────</span>
+<span class="fn">echo</span> তারিখ: <span class="vr">%DATE%</span>
+<span class="fn">echo</span> সময়: <span class="vr">%TIME%</span>
+<span class="fn">echo</span> Username: <span class="vr">%USERNAME%</span>
+<span class="fn">echo</span> Computer: <span class="vr">%COMPUTERNAME%</span>
+
+<span class="fn">pause</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conditions -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">শর্ত</span>&nbsp;<h3>IF-ELSE — শর্তভিত্তিক কাজ</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>conditions.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="bat-pre"><span class="kw">@echo off</span>
+
+<span class="kw">SET</span> /P <span class="vr">num</span>=<span class="st">একটি সংখ্যা লিখুন: </span>
+
+<span class="cm">REM ── সংখ্যা তুলনা ─────────────────────</span>
+<span class="kw">IF</span> <span class="vr">%num%</span> <span class="kw">GTR</span> <span class="nm">100</span> (
+    <span class="fn">echo</span> ১০০ এর বেশি
+) <span class="kw">ELSE IF</span> <span class="vr">%num%</span> <span class="kw">EQU</span> <span class="nm">100</span> (
+    <span class="fn">echo</span> ঠিক ১০০
+) <span class="kw">ELSE</span> (
+    <span class="fn">echo</span> ১০০ এর কম
+)
+
+<span class="cm">REM ── তুলনা অপারেটর ────────────────────</span>
+<span class="cm">REM EQU = সমান,  NEQ = সমান না</span>
+<span class="cm">REM GTR = বড়,   LSS = ছোট</span>
+<span class="cm">REM GEQ = >=,    LEQ = &lt;=</span>
+
+<span class="cm">REM ── ফাইল চেক ────────────────────────</span>
+<span class="kw">IF</span> <span class="kw">EXIST</span> <span class="st">"C:\Windows\notepad.exe"</span> (
+    <span class="fn">echo</span> Notepad পাওয়া গেছে!
+)
+
+<span class="cm">REM ── ফোল্ডার চেক ─────────────────────</span>
+<span class="kw">IF</span> <span class="kw">EXIST</span> <span class="st">"C:\Users"</span> (
+    <span class="fn">echo</span> Users ফোল্ডার আছে
+)
+
+<span class="cm">REM ── String তুলনা ────────────────────</span>
+<span class="kw">SET</span> /P <span class="vr">ans</span>=<span class="st">চালিয়ে যাবেন? (হ্যাঁ/না): </span>
+<span class="kw">IF</span> /I <span class="st">"<span class="vr">%ans%</span>"</span>==<span class="st">"হ্যাঁ"</span> <span class="fn">echo</span> ঠিক আছে, চলুন!
+
+<span class="fn">pause</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loops -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">লুপ</span>&nbsp;<h3>FOR Loop — বারবার কাজ করা</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>loops.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="bat-pre"><span class="kw">@echo off</span>
+
+<span class="cm">REM ── তালিকার উপর loop ─────────────────</span>
+<span class="fn">echo</span> === ফলের তালিকা ===
+<span class="kw">FOR</span> <span class="vr">%%f</span> <span class="kw">IN</span> (আম কলা লিচু আনারস) <span class="kw">DO</span> (
+    <span class="fn">echo</span>   ফল: <span class="vr">%%f</span>
+)
+
+<span class="cm">REM ── সংখ্যার range: 1 থেকে 5 ───────────</span>
+<span class="cm">REM FOR /L %%var IN (শুরু, বৃদ্ধি, শেষ)</span>
+<span class="kw">FOR</span> /L <span class="vr">%%i</span> <span class="kw">IN</span> (<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">5</span>) <span class="kw">DO</span> (
+    <span class="fn">echo</span>   সংখ্যা: <span class="vr">%%i</span>
+)
+
+<span class="cm">REM ── .txt ফাইল খোঁজা ─────────────────</span>
+<span class="fn">echo</span> === টেক্সট ফাইল ===
+<span class="kw">FOR</span> <span class="vr">%%f</span> <span class="kw">IN</span> (*.txt) <span class="kw">DO</span> (
+    <span class="fn">echo</span>   পাওয়া গেছে: <span class="vr">%%f</span>
+)
+
+<span class="cm">REM ── GOTO দিয়ে loop (while এর মতো) ─────</span>
+<span class="kw">SET</span> <span class="vr">count</span>=<span class="nm">1</span>
+:<span class="fn">LOOP_START</span>
+<span class="kw">IF</span> <span class="vr">%count%</span> <span class="kw">GTR</span> <span class="nm">3</span> <span class="kw">GOTO</span> <span class="fn">LOOP_END</span>
+<span class="fn">echo</span>   গণনা: <span class="vr">%count%</span>
+<span class="kw">SET</span> /A <span class="vr">count</span>=<span class="vr">%count%</span>+<span class="nm">1</span>
+<span class="kw">GOTO</span> <span class="fn">LOOP_START</span>
+:<span class="fn">LOOP_END</span>
+
+<span class="fn">pause</span></pre>
+      </div>
+      <div class="alert alert-warn"><div class="alert-icon">⚠️</div><div>CMD এ loop variable এর আগে <strong>%%</strong> (দুইটি percent) দিতে হয়। কিন্তু CMD তে সরাসরি টাইপ করলে <strong>%</strong> (একটি) দিন।</div></div>
+    </div>
+  </div>
+
+  <!-- GOTO & Labels -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">GOTO</span>&nbsp;<h3>GOTO ও Label — কোডের মধ্যে লাফ দেওয়া</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>goto_example.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="bat-pre"><span class="kw">@echo off</span>
+<span class="fn">echo</span> মেনু:
+<span class="fn">echo</span>   1. হ্যালো বলুন
+<span class="fn">echo</span>   2. তারিখ দেখুন
+<span class="fn">echo</span>   3. বের হন
+<span class="kw">SET</span> /P <span class="vr">choice</span>=<span class="st">বেছে নিন: </span>
+
+<span class="kw">IF</span> <span class="st">"<span class="vr">%choice%</span>"</span>==<span class="st">"1"</span> <span class="kw">GOTO</span> <span class="fn">SAY_HELLO</span>
+<span class="kw">IF</span> <span class="st">"<span class="vr">%choice%</span>"</span>==<span class="st">"2"</span> <span class="kw">GOTO</span> <span class="fn">SHOW_DATE</span>
+<span class="kw">IF</span> <span class="st">"<span class="vr">%choice%</span>"</span>==<span class="st">"3"</span> <span class="kw">GOTO</span> <span class="fn">EXIT</span>
+<span class="fn">echo</span> ভুল choice!
+<span class="kw">GOTO</span> <span class="fn">END</span>
+
+:<span class="fn">SAY_HELLO</span>
+<span class="fn">echo</span> হ্যালো! কেমন আছেন?
+<span class="kw">GOTO</span> <span class="fn">END</span>
+
+:<span class="fn">SHOW_DATE</span>
+<span class="fn">echo</span> আজকের তারিখ: <span class="vr">%DATE%</span>
+<span class="kw">GOTO</span> <span class="fn">END</span>
+
+:<span class="fn">EXIT</span>
+<span class="fn">echo</span> বিদায়!
+<span class="kw">EXIT</span>
+
+:<span class="fn">END</span>
+<span class="fn">pause</span></pre>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─────────── COMPARE ─────────── -->
+<section id="compare" class="section">
+  <div class="sec-header">
+    <div class="sec-icon cmp-icon">⚖️</div>
+    <div><div class="sec-title">Shell vs Batch তুলনা</div><div class="sec-desc">দুটির মধ্যে মূল পার্থক্য ও মিল</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>📊 পাশাপাশি তুলনা</h3></div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>কাজ</th><th>Shell (.sh)</th><th>Batch (.bat)</th></tr>
+          <tr><td>Comment লেখা</td><td><code># এটি comment</code></td><td><code>REM এটি comment</code></td></tr>
+          <tr><td>কিছু print করা</td><td><code>echo "Hello"</code></td><td><code>echo Hello</code></td></tr>
+          <tr><td>Variable সেট</td><td><code>name="Rahim"</code></td><td><code>SET name=Rahim</code></td></tr>
+          <tr><td>Variable পড়া</td><td><code>$name</code></td><td><code>%name%</code></td></tr>
+          <tr><td>Input নেওয়া</td><td><code>read -p "নাম:" name</code></td><td><code>SET /P name=নাম:</code></td></tr>
+          <tr><td>If condition</td><td><code>if [ ... ]; then</code></td><td><code>IF ... ( )</code></td></tr>
+          <tr><td>For loop</td><td><code>for i in 1 2 3; do</code></td><td><code>FOR %%i IN (1 2 3) DO</code></td></tr>
+          <tr><td>Function</td><td><code>myFunc() { }</code></td><td><code>:LABEL + CALL</code></td></tr>
+          <tr><td>ফাইল চেক</td><td><code>if [ -f file ]</code></td><td><code>IF EXIST file</code></td></tr>
+          <tr><td>ফোল্ডার তৈরি</td><td><code>mkdir -p folder</code></td><td><code>MKDIR folder</code></td></tr>
+          <tr><td>ফাইল কপি</td><td><code>cp source dest</code></td><td><code>COPY source dest</code></td></tr>
+          <tr><td>ফাইল মুভ</td><td><code>mv source dest</code></td><td><code>MOVE source dest</code></td></tr>
+          <tr><td>ফাইল মুছা</td><td><code>rm file</code></td><td><code>DEL file</code></td></tr>
+          <tr><td>বর্তমান ফোল্ডার</td><td><code>pwd</code></td><td><code>CD</code></td></tr>
+          <tr><td>ফোল্ডার দেখা</td><td><code>ls -la</code></td><td><code>DIR</code></td></tr>
+          <tr><td>স্ক্রিপ্ট বন্ধ করা</td><td><code>exit 0</code></td><td><code>EXIT /B 0</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>🔄 একই কাজ, দুটি ভাষায়</h3><span class="badge badge-info">Backup Script</span></div>
+    <div class="card-body">
+      <p style="margin-bottom:16px">নিচে একই কাজ (backup folder তৈরি ও ফাইল কপি) Shell ও Batch দুটি ভাষায় দেখানো হয়েছে:</p>
+      <div class="cmp-grid">
+        <div>
+          <div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:8px">🐧 Shell Script</div>
+          <div class="code-wrap">
+            <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>backup.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+<span class="vr">src</span>=<span class="st">"/home/user/docs"</span>
+<span class="vr">dst</span>=<span class="st">"/backup"</span>
+<span class="vr">date</span>=<span class="op">$(</span><span class="fn">date</span> +%Y%m%d<span class="op">)</span>
+
+<span class="fn">mkdir</span> <span class="fl">-p</span> <span class="st">"<span class="vr">$dst</span>/<span class="vr">$date</span>"</span>
+<span class="fn">cp</span> <span class="fl">-r</span> <span class="st">"<span class="vr">$src</span>"</span> <span class="st">"<span class="vr">$dst</span>/<span class="vr">$date</span>"</span>
+<span class="fn">echo</span> <span class="st">"Backup সম্পন্ন!"</span></pre>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;color:var(--purple);font-weight:600;margin-bottom:8px">🪟 Batch Script</div>
+          <div class="code-wrap">
+            <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>backup.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre class="bat-pre"><span class="kw">@echo off</span>
+<span class="kw">SET</span> <span class="vr">src</span>=C:\Users\docs
+<span class="kw">SET</span> <span class="vr">dst</span>=C:\Backup
+<span class="kw">SET</span> <span class="vr">dt</span>=<span class="vr">%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%</span>
+
+<span class="fn">MKDIR</span> <span class="st">"<span class="vr">%dst%</span>\<span class="vr">%dt%</span>"</span>
+<span class="fn">XCOPY</span> <span class="st">"<span class="vr">%src%</span>"</span> <span class="st">"<span class="vr">%dst%</span>\<span class="vr">%dt%</span>"</span> /E /I
+<span class="fn">echo</span> Backup সম্পন্ন!
+<span class="fn">pause</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── PROJECTS ─────────── -->
+<section id="projects" class="section">
+  <div class="sec-header">
+    <div class="sec-icon sh-icon">🚀</div>
+    <div><div class="sec-title">বাস্তব প্রজেক্ট উদাহরণ</div><div class="sec-desc">শেখার পর যা বানাতে পারবেন</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">Shell</span>&nbsp;<h3>System Info Script — Linux</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar sh-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>sysinfo.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="sh-pre"><span class="op">#!/bin/bash</span>
+<span class="cm"># ════════════════════════════════════════</span>
+<span class="cm">#  System Information Script</span>
+<span class="cm"># ════════════════════════════════════════</span>
+
+<span class="fn">echo</span> <span class="st">"╔══════════════════════════════╗"</span>
+<span class="fn">echo</span> <span class="st">"║  সিস্টেম তথ্য রিপোর্ট        ║"</span>
+<span class="fn">echo</span> <span class="st">"╚══════════════════════════════╝"</span>
+
+<span class="fn">echo</span> <span class="st">""</span>
+<span class="fn">echo</span> <span class="st">"📅 তারিখ ও সময়  : <span class="vr">$(date)</span>"</span>
+<span class="fn">echo</span> <span class="st">"👤 ব্যবহারকারী   : <span class="vr">$(whoami)</span>"</span>
+<span class="fn">echo</span> <span class="st">"💻 Hostname      : <span class="vr">$(hostname)</span>"</span>
+<span class="fn">echo</span> <span class="st">"🐧 OS            : <span class="vr">$(uname -o)</span>"</span>
+<span class="fn">echo</span> <span class="st">"⚡ Kernel        : <span class="vr">$(uname -r)</span>"</span>
+<span class="fn">echo</span> <span class="st">"🔧 CPU           : <span class="vr">$(grep 'model name' /proc/cpuinfo | head -1 | cut -d: -f2)</span>"</span>
+<span class="fn">echo</span> <span class="st">"📊 RAM           : <span class="vr">$(free -h | awk '/Mem/{print $3"/"$2}')</span> ব্যবহৃত"</span>
+<span class="fn">echo</span> <span class="st">"💾 Disk          : <span class="vr">$(df -h / | awk 'NR==2{print $3"/"$2}')</span> ব্যবহৃত"</span>
+<span class="fn">echo</span> <span class="st">"🔋 Uptime        : <span class="vr">$(uptime -p)</span>"</span>
+<span class="fn">echo</span> <span class="st">""</span>
+<span class="fn">echo</span> <span class="st">"✅ রিপোর্ট সম্পন্ন!"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">Batch</span>&nbsp;<h3>Automatic Folder Cleaner — Windows</h3></div>
+    <div class="card-body">
+      <div class="code-wrap">
+        <div class="code-bar bat-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span>cleaner.bat</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre class="bat-pre"><span class="kw">@echo off</span>
+<span class="fn">title</span> ফোল্ডার ক্লিনার
+<span class="fn">color</span> <span class="nm">0A</span>
+
+<span class="fn">echo</span> ╔═══════════════════════════════╗
+<span class="fn">echo</span> ║   Downloads ফোল্ডার ক্লিনার   ║
+<span class="fn">echo</span> ╚═══════════════════════════════╝
+<span class="fn">echo</span>.
+
+<span class="cm">REM ── ফোল্ডার তৈরি ─────────────────────</span>
+<span class="kw">SET</span> <span class="vr">base</span>=C:\Users\<span class="vr">%USERNAME%</span>\Downloads
+
+<span class="fn">MKDIR</span> <span class="st">"<span class="vr">%base%</span>\Images"</span>    2>nul
+<span class="fn">MKDIR</span> <span class="st">"<span class="vr">%base%</span>\Videos"</span>    2>nul
+<span class="fn">MKDIR</span> <span class="st">"<span class="vr">%base%</span>\Documents"</span>  2>nul
+<span class="fn">MKDIR</span> <span class="st">"<span class="vr">%base%</span>\Archives"</span>  2>nul
+
+<span class="fn">echo</span> ফোল্ডার তৈরি হয়েছে।
+
+<span class="cm">REM ── ফাইল সরানো ────────────────────────</span>
+<span class="kw">FOR</span> <span class="vr">%%f</span> <span class="kw">IN</span> (<span class="st">"<span class="vr">%base%</span>\*.jpg"</span> <span class="st">"<span class="vr">%base%</span>\*.png"</span> <span class="st">"<span class="vr">%base%</span>\*.gif"</span>) <span class="kw">DO</span>
+    <span class="kw">IF</span> <span class="kw">EXIST</span> <span class="st">"%%f"</span> <span class="fn">MOVE</span> <span class="st">"%%f"</span> <span class="st">"<span class="vr">%base%</span>\Images\"</span>
+
+<span class="kw">FOR</span> <span class="vr">%%f</span> <span class="kw">IN</span> (<span class="st">"<span class="vr">%base%</span>\*.mp4"</span> <span class="st">"<span class="vr">%base%</span>\*.mkv"</span>) <span class="kw">DO</span>
+    <span class="kw">IF</span> <span class="kw">EXIST</span> <span class="st">"%%f"</span> <span class="fn">MOVE</span> <span class="st">"%%f"</span> <span class="st">"<span class="vr">%base%</span>\Videos\"</span>
+
+<span class="kw">FOR</span> <span class="vr">%%f</span> <span class="kw">IN</span> (<span class="st">"<span class="vr">%base%</span>\*.zip"</span> <span class="st">"<span class="vr">%base%</span>\*.rar"</span>) <span class="kw">DO</span>
+    <span class="kw">IF</span> <span class="kw">EXIST</span> <span class="st">"%%f"</span> <span class="fn">MOVE</span> <span class="st">"%%f"</span> <span class="st">"<span class="vr">%base%</span>\Archives\"</span>
+
+<span class="fn">echo</span>.
+<span class="fn">echo</span> ✅ ক্লিন সম্পন্ন!
+<span class="fn">pause</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── CHEATSHEET ─────────── -->
+<section id="cheatsheet" class="section">
+  <div class="sec-header">
+    <div class="sec-icon cmp-icon">📋</div>
+    <div><div class="sec-title">দ্রুত রেফারেন্স চিটশিট</div><div class="sec-desc">সব গুরুত্বপূর্ণ কমান্ড এক জায়গায়</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="badge badge-sh">Shell</span>&nbsp;<h3>Bash — গুরুত্বপূর্ণ কমান্ড সমূহ</h3></div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>কমান্ড</th><th>কাজ</th><th>উদাহরণ</th></tr>
+          <tr><td><code>echo</code></td><td>কিছু প্রিন্ট করা</td><td><code>echo "হ্যালো"</code></td></tr>
+          <tr><td><code>read</code></td><td>ইনপুট নেওয়া</td><td><code>read -p "নাম: " name</code></td></tr>
+          <tr><td><code>ls</code></td><td>ফাইল তালিকা</td><td><code>ls -la</code></td></tr>
+          <tr><td><code>cd</code></td><td>ফোল্ডার চেঞ্জ</td><td><code>cd /home/user</code></td></tr>
+          <tr><td><code>mkdir</code></td><td>ফোল্ডার তৈরি</td><td><code>mkdir -p a/b/c</code></td></tr>
+          <tr><td><code>cp</code></td><td>কপি করা</td><td><code>cp file.txt backup/</code></td></tr>
+          <tr><td><code>mv</code></td><td>মুভ/রিনেম</td><td><code>mv old.txt new.txt</code></td></tr>
+          <tr><td><code>rm</code></td><td>মুছে ফেলা</td><td><code>rm -rf folder/</code></td></tr>
+          <tr><td><code>cat</code></td><td>ফাইল দেখা</td><td><code>cat file.txt</code></td></tr>
+          <tr><td><code>grep</code></td><td>খোঁজা</td><td><code>grep "word" file.txt</code></td></tr>
+          <tr><td><code>chmod</code></td><td>Permission</td><td><code>chmod +x script.sh</code></td></tr>
+          <tr><td><code>date</code></td><td>তারিখ/সময়</td><td><code>date +%Y-%m-%d</code></td></tr>
+          <tr><td><code>sleep</code></td><td>অপেক্ষা করা</td><td><code>sleep 5</code></td></tr>
+          <tr><td><code>exit</code></td><td>বের হওয়া</td><td><code>exit 0</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="badge badge-bat">Batch</span>&nbsp;<h3>Batch — গুরুত্বপূর্ণ কমান্ড সমূহ</h3></div>
+    <div class="card-body">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>কমান্ড</th><th>কাজ</th><th>উদাহরণ</th></tr>
+          <tr><td><code>@echo off</code></td><td>command দেখানো বন্ধ</td><td>প্রথম লাইনে লিখুন</td></tr>
+          <tr><td><code>echo</code></td><td>প্রিন্ট করা</td><td><code>echo হ্যালো</code></td></tr>
+          <tr><td><code>SET</code></td><td>variable সেট</td><td><code>SET name=Rahim</code></td></tr>
+          <tr><td><code>SET /P</code></td><td>ইনপুট নেওয়া</td><td><code>SET /P x=লিখুন:</code></td></tr>
+          <tr><td><code>SET /A</code></td><td>গণনা করা</td><td><code>SET /A x=5+3</code></td></tr>
+          <tr><td><code>IF</code></td><td>শর্ত চেক</td><td><code>IF %x%==5 echo হ্যাঁ</code></td></tr>
+          <tr><td><code>FOR</code></td><td>লুপ চালানো</td><td><code>FOR %%i IN (1 2) DO</code></td></tr>
+          <tr><td><code>GOTO</code></td><td>লাফ দেওয়া</td><td><code>GOTO LABEL</code></td></tr>
+          <tr><td><code>CALL</code></td><td>অন্য script ডাকা</td><td><code>CALL other.bat</code></td></tr>
+          <tr><td><code>DIR</code></td><td>ফাইল তালিকা</td><td><code>DIR /B *.txt</code></td></tr>
+          <tr><td><code>CD</code></td><td>ফোল্ডার চেঞ্জ</td><td><code>CD C:\Users</code></td></tr>
+          <tr><td><code>MKDIR</code></td><td>ফোল্ডার তৈরি</td><td><code>MKDIR MyFolder</code></td></tr>
+          <tr><td><code>COPY</code></td><td>কপি করা</td><td><code>COPY a.txt b.txt</code></td></tr>
+          <tr><td><code>DEL</code></td><td>ফাইল মুছা</td><td><code>DEL file.txt</code></td></tr>
+          <tr><td><code>CLS</code></td><td>স্ক্রিন পরিষ্কার</td><td><code>CLS</code></td></tr>
+          <tr><td><code>PAUSE</code></td><td>থামানো</td><td><code>PAUSE</code></td></tr>
+          <tr><td><code>EXIT</code></td><td>বের হওয়া</td><td><code>EXIT /B 0</code></td></tr>
+          <tr><td><code>TITLE</code></td><td>Window title</td><td><code>TITLE আমার App</code></td></tr>
+          <tr><td><code>COLOR</code></td><td>রঙ পরিবর্তন</td><td><code>COLOR 0A</code></td></tr>
+          <tr><td><code>TIMEOUT</code></td><td>অপেক্ষা করা</td><td><code>TIMEOUT /T 5</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>💡 সেরা অভ্যাস (Best Practices)</h3></div>
+    <div class="card-body">
+      <div class="cmp-grid">
+        <div>
+          <div style="font-size:13px;color:var(--green);font-weight:700;margin-bottom:12px">🐧 Shell Script</div>
+          <ul class="guide-list">
+            <li>সবসময় <strong>#!/bin/bash</strong> দিয়ে শুরু করুন</li>
+            <li>Variable এ <strong>""</strong> ব্যবহার করুন: <code>"$var"</code></li>
+            <li><code>set -e</code> দিন — error হলে বন্ধ হবে</li>
+            <li>Comment লিখুন <strong>#</strong> দিয়ে</li>
+            <li>ফাইল চেক করে তারপর কাজ করুন</li>
+            <li>Meaningful নাম দিন variable এ</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px;color:var(--purple);font-weight:700;margin-bottom:12px">🪟 Batch Script</div>
+          <ul class="guide-list">
+            <li>সবসময় <strong>@echo off</strong> দিয়ে শুরু করুন</li>
+            <li>Label গুলো বড় হাতে লিখুন: <code>:LABEL</code></li>
+            <li><code>2>nul</code> দিয়ে error চাপা দিন</li>
+            <li>Comment লিখুন <strong>REM</strong> দিয়ে</li>
+            <li>Path এ space থাকলে <code>""</code> ব্যবহার করুন</li>
+            <li>শেষে <strong>PAUSE</strong> রাখুন</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <p>তৈরি করা হয়েছে ❤️ দিয়ে &nbsp;|&nbsp; <span>Shell & Batch Script বাংলা গাইড</span></p>
+  <p style="margin-top:6px;font-size:11px">শিখতে থাকুন, এগিয়ে যান 🚀</p>
+</footer>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ done';
+    setTimeout(() => btn.textContent = orig, 1800);
+  });
+}
+</script>
+</body>
+</html>
