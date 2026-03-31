@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REST API মাস্টারক্লাস বাংলায় | Senior Engineer Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07090f;
+  --bg2:      #0d1117;
+  --bg3:      #111823;
+  --card:     #131c2e;
+  --card2:    #192236;
+  --border:   #1e2d45;
+  --border2:  #243352;
+  --cyan:     #00e5ff;
+  --green:    #00ff88;
+  --amber:    #ffb300;
+  --red:      #ff4757;
+  --purple:   #b44dff;
+  --blue:     #4d8fff;
+  --pink:     #ff4d9d;
+  --text:     #dde6f5;
+  --text2:    #8899bb;
+  --text3:    #445577;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Hind Siliguri', sans-serif;
+  --display:  'Syne', sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.75;overflow-x:hidden;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--purple));border-radius:3px;}
+
+/* ===================== NAV ===================== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(7,9,15,0.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  height:58px;display:flex;align-items:center;
+  padding:0 20px;gap:16px;
+}
+.nav-brand{font-family:var(--display);font-size:1.1rem;font-weight:800;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;
+}
+.nav-scroll{display:flex;gap:4px;overflow-x:auto;flex:1;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.nav-scroll::-webkit-scrollbar{display:none;}
+.nav-scroll a{
+  color:var(--text2);text-decoration:none;font-size:0.72rem;font-weight:600;
+  padding:4px 10px;border-radius:5px;white-space:nowrap;
+  border:1px solid transparent;transition:all .2s;letter-spacing:.3px;
+}
+.nav-scroll a:hover{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.05);}
+
+/* ===================== HERO ===================== */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%,rgba(0,229,255,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 0% 100%,rgba(180,77,255,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 50%,rgba(0,255,136,.04) 0%,transparent 60%);
+}
+.hero-grid-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 70%);
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);
+  padding:5px 16px;border-radius:999px;font-size:.78rem;color:var(--cyan);
+  margin-bottom:20px;letter-spacing:.5px;font-weight:600;
+  animation:fadeIn .6s ease;
+}
+.blink{animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.hero h1{
+  font-family:var(--display);font-size:clamp(2rem,6vw,4.2rem);
+  font-weight:800;line-height:1.1;margin-bottom:14px;
+  animation:fadeUp .7s ease .1s both;
+}
+.hero h1 .g1{background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero h1 .g2{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+.hero-sub{font-size:1rem;color:var(--text2);max-width:580px;margin-bottom:36px;animation:fadeUp .7s ease .2s both;}
+
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;animation:fadeUp .7s ease .3s both;}
+.stat-chip{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 20px;text-align:center;
+}
+.stat-chip .num{font-family:var(--display);font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-chip .lbl{font-size:.72rem;color:var(--text2);font-weight:600;letter-spacing:.5px;}
+
+.toc-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;width:100%;max-width:800px;animation:fadeUp .7s ease .4s both;
+}
+.toc-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px 10px;text-align:center;
+  text-decoration:none;color:var(--text);transition:all .25s;
+}
+.toc-item:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 0 18px rgba(0,229,255,.15);}
+.toc-item .ti{font-size:1.5rem;margin-bottom:4px;}
+.toc-item .tl{font-size:.78rem;font-weight:600;}
+.toc-item .tn{font-size:.65rem;color:var(--text3);font-family:var(--mono);}
+
+/* ===================== LAYOUT ===================== */
+.page-section{max-width:1080px;margin:0 auto;padding:72px 24px;}
+.hdiv{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 24px;}
+
+/* ===================== SECTION HEADER ===================== */
+.sec-head{margin-bottom:40px;}
+.sec-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.7rem;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;
+  padding:4px 12px;background:rgba(0,229,255,.07);border-radius:4px;
+  border-left:3px solid var(--cyan);
+}
+.sec-head h2{font-family:var(--display);font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;}
+.sec-head p{color:var(--text2);font-size:.95rem;margin-top:8px;max-width:680px;}
+
+/* ===================== CARDS ===================== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color .2s;}
+.card:hover{border-color:var(--border2);}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+
+/* ===================== CODE ===================== */
+.code-wrap{position:relative;margin:14px 0;}
+.code-lang{
+  position:absolute;top:-1px;right:0;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:0 12px 0 8px;padding:3px 12px;
+  font-family:var(--mono);font-size:.65rem;color:var(--text3);
+  letter-spacing:1px;text-transform:uppercase;
+}
+pre{
+  background:#0a0e18;border:1px solid var(--border);
+  border-radius:12px;padding:20px;overflow-x:auto;
+  font-family:var(--mono);font-size:.8rem;line-height:1.75;
+}
+.kw{color:#ff79c6;} .fn{color:#50fa7b;} .str{color:#f1fa8c;} 
+.num{color:#bd93f9;} .cm{color:#556688;font-style:italic;}
+.op{color:#ff79c6;} .var{color:#8be9fd;} .cls{color:#ffb86c;}
+.dec{color:#ff9580;} .met{color:#69ff47;} .key{color:#ff6b9d;}
+.val{color:#a8ff78;} .url{color:#79c0ff;} .hdr{color:#e3b341;}
+.ok{color:#3fb950;} .err{color:#ff4757;} .warn{color:#d29922;}
+
+/* ===================== TAGS ===================== */
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;font-weight:700;letter-spacing:.3px;}
+.tc{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.tg{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.ta{background:rgba(255,179,0,.12);color:var(--amber);border:1px solid rgba(255,179,0,.3);}
+.tr{background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.tp{background:rgba(180,77,255,.12);color:var(--purple);border:1px solid rgba(180,77,255,.3);}
+.tb{background:rgba(77,143,255,.12);color:var(--blue);border:1px solid rgba(77,143,255,.3);}
+
+/* ===================== INFO BOX ===================== */
+.box{border-radius:12px;padding:16px 20px;font-size:.88rem;margin:16px 0;display:flex;gap:12px;align-items:flex-start;}
+.box-c{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);}
+.box-g{background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);}
+.box-a{background:rgba(255,179,0,.06);border:1px solid rgba(255,179,0,.2);}
+.box-r{background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.2);}
+.box-p{background:rgba(180,77,255,.06);border:1px solid rgba(180,77,255,.2);}
+.box .ic{font-size:1.2rem;flex-shrink:0;margin-top:2px;}
+.box p{color:var(--text2);line-height:1.65;}
+.box strong{color:var(--text);}
+
+/* ===================== HTTP METHOD BADGES ===================== */
+.method{
+  display:inline-block;font-family:var(--mono);font-size:.7rem;
+  font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.5px;
+}
+.GET{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.POST{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.PUT{background:rgba(255,179,0,.15);color:var(--amber);border:1px solid rgba(255,179,0,.3);}
+.PATCH{background:rgba(77,143,255,.15);color:var(--blue);border:1px solid rgba(77,143,255,.3);}
+.DELETE{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+
+/* ===================== STATUS CODE BADGES ===================== */
+.s2xx{color:var(--green);font-family:var(--mono);font-weight:700;}
+.s3xx{color:var(--blue);font-family:var(--mono);font-weight:700;}
+.s4xx{color:var(--amber);font-family:var(--mono);font-weight:700;}
+.s5xx{color:var(--red);font-family:var(--mono);font-weight:700;}
+
+/* ===================== ENDPOINT TABLE ===================== */
+.ep-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+.ep-table th{
+  background:var(--bg3);padding:11px 14px;text-align:left;
+  border-bottom:2px solid var(--border2);color:var(--cyan);font-weight:700;
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.5px;
+}
+.ep-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);}
+.ep-table tr:hover td{background:rgba(255,255,255,.02);}
+.ep-url{font-family:var(--mono);color:var(--text);font-size:.8rem;}
+
+/* ===================== PIPELINE VIZ ===================== */
+.pipeline{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:16px 0;}
+.pipe-step{
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 16px;font-size:.78rem;font-weight:700;
+  white-space:nowrap;cursor:default;transition:all .2s;
+}
+.pipe-step:hover{border-color:var(--cyan);color:var(--cyan);}
+.pipe-arr{color:var(--text3);font-size:1.3rem;margin:0 4px;flex-shrink:0;}
+.pipe-step.ps-c{border-color:rgba(0,229,255,.4);color:var(--cyan);}
+.pipe-step.ps-g{border-color:rgba(0,255,136,.4);color:var(--green);}
+.pipe-step.ps-a{border-color:rgba(255,179,0,.4);color:var(--amber);}
+.pipe-step.ps-r{border-color:rgba(255,71,87,.4);color:var(--red);}
+.pipe-step.ps-p{border-color:rgba(180,77,255,.4);color:var(--purple);}
+
+/* ===================== COMPARISON TABLE ===================== */
+.cmp-table{width:100%;border-collapse:collapse;font-size:.84rem;}
+.cmp-table th{background:var(--bg3);padding:12px 16px;text-align:left;border-bottom:2px solid var(--border2);color:var(--text);font-weight:700;}
+.cmp-table td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--text2);}
+.cmp-table tr:hover td{background:rgba(255,255,255,.02);}
+.cmp-table td:first-child{color:var(--text);font-weight:600;}
+
+/* ===================== RATE LIMIT VIZ ===================== */
+.rl-bar{background:var(--bg3);border-radius:999px;height:12px;overflow:hidden;margin:6px 0;}
+.rl-fill{height:100%;border-radius:999px;transition:width 1s ease;}
+
+/* ===================== CHECKLIST ===================== */
+.checklist{display:flex;flex-direction:column;gap:8px;}
+.cl-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;font-size:.88rem;transition:all .2s;
+}
+.cl-item:hover{border-color:var(--border2);}
+.cl-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;}
+.cl-done{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.cl-warn{background:rgba(255,179,0,.15);color:var(--amber);border:1px solid rgba(255,179,0,.3);}
+.cl-text{color:var(--text2);}
+.cl-text strong{color:var(--text);}
+
+/* ===================== COST METER ===================== */
+.cost-meter{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;margin:8px 0;
+}
+.cost-label{flex:1;font-size:.88rem;color:var(--text2);}
+.cost-label strong{color:var(--text);display:block;font-size:.95rem;}
+.cost-val{font-family:var(--display);font-size:1.2rem;font-weight:800;}
+.cost-save{font-size:.75rem;color:var(--green);font-weight:700;}
+
+/* ===================== FLOW DIAGRAM ===================== */
+.flow{display:flex;flex-direction:column;gap:0;align-items:center;}
+.flow-node{
+  background:var(--card2);border:2px solid var(--border2);border-radius:10px;
+  padding:10px 24px;font-size:.85rem;font-weight:700;text-align:center;
+  min-width:180px;transition:all .2s;cursor:default;
+}
+.flow-node:hover{border-color:var(--cyan);color:var(--cyan);}
+.flow-node.fn-c{border-color:var(--cyan);color:var(--cyan);}
+.flow-node.fn-g{border-color:var(--green);color:var(--green);}
+.flow-node.fn-a{border-color:var(--amber);color:var(--amber);}
+.flow-node.fn-r{border-color:var(--red);color:var(--red);}
+.flow-node.fn-p{border-color:var(--purple);color:var(--purple);}
+.flow-line{width:2px;height:24px;background:var(--border2);flex-shrink:0;}
+.flow-diamond{
+  background:var(--card2);border:2px solid var(--amber);border-radius:6px;
+  transform:rotate(45deg);width:70px;height:70px;
+  display:flex;align-items:center;justify-content:center;cursor:default;transition:all .2s;
+}
+.flow-diamond:hover{border-color:var(--cyan);}
+.flow-diamond span{transform:rotate(-45deg);font-size:.7rem;font-weight:700;color:var(--amber);text-align:center;line-height:1.2;}
+.flow-branch{display:flex;gap:40px;align-items:flex-start;}
+.flow-branch-arm{display:flex;flex-direction:column;align-items:center;gap:0;}
+.flow-h-line{height:2px;width:80px;background:var(--border2);margin-top:12px;}
+
+/* ===================== SECURITY GRID ===================== */
+.sec-item{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:20px;border-top:3px solid var(--red);transition:all .2s;
+}
+.sec-item:hover{border-top-color:var(--cyan);transform:translateY(-2px);}
+.sec-title{font-size:.95rem;font-weight:700;margin-bottom:8px;}
+.sec-desc{font-size:.83rem;color:var(--text2);line-height:1.6;}
+
+/* ===================== VERSIONING ===================== */
+.ver-timeline{display:flex;flex-direction:column;gap:0;}
+.ver-item{display:flex;gap:16px;padding-bottom:20px;position:relative;}
+.ver-item::before{content:'';position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--border);}
+.ver-item:last-child::before{display:none;}
+.ver-dot{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;z-index:1;}
+.ver-body{flex:1;padding-top:6px;}
+.ver-label{font-weight:700;margin-bottom:4px;}
+.ver-desc{font-size:.85rem;color:var(--text2);}
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* ===================== RESPONSE EXAMPLE ===================== */
+.resp-block{
+  background:#080c14;border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;font-family:var(--mono);font-size:.79rem;
+}
+.resp-head{
+  background:var(--bg3);border-bottom:1px solid var(--border);
+  padding:8px 16px;display:flex;align-items:center;gap:10px;font-size:.72rem;
+}
+.resp-body{padding:16px;}
+.resp-status{font-weight:700;}
+
+/* ===================== ACCORDION ===================== */
+.acc-item{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px;}
+.acc-head{
+  width:100%;background:var(--card);border:none;
+  padding:14px 18px;text-align:left;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--sans);font-size:.9rem;font-weight:700;color:var(--text);
+  transition:background .2s;
+}
+.acc-head:hover{background:var(--card2);}
+.acc-arrow{color:var(--text3);font-size:1.1rem;transition:transform .3s;}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.acc-body.open{max-height:2000px;}
+.acc-inner{padding:16px 18px;background:var(--bg3);border-top:1px solid var(--border);}
+.acc-item.active .acc-arrow{transform:rotate(180deg);}
+
+/* ===================== FOOTER ===================== */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:40px 24px;text-align:center;
+}
+
+/* ===================== BACK TOP ===================== */
+#btop{
+  position:fixed;bottom:24px;right:24px;z-index:99;
+  width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:var(--bg);font-size:1rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,229,255,.3);
+  transition:transform .2s,opacity .3s;
+  opacity:0;
+}
+#btop:hover{transform:scale(1.1) translateY(-2px);}
+
+@media(max-width:640px){.nav-brand{font-size:.95rem;}.toc-grid{grid-template-columns:repeat(3,1fr);}.g2,.g3,.g4{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav>
+  <div class="nav-brand">⚡ API মাস্টারক্লাস</div>
+  <div class="nav-scroll">
+    <a href="#basics">Basics</a>
+    <a href="#design">Design</a>
+    <a href="#endpoints">Endpoints</a>
+    <a href="#request">Request/Response</a>
+    <a href="#auth">Auth</a>
+    <a href="#versioning">Versioning</a>
+    <a href="#error">Error Handling</a>
+    <a href="#pagination">Pagination</a>
+    <a href="#caching">Caching</a>
+    <a href="#ratelimit">Rate Limiting</a>
+    <a href="#security">Security</a>
+    <a href="#scaling">Scaling</a>
+    <a href="#cost">Cost Reduce</a>
+    <a href="#testing">Testing</a>
+    <a href="#docs">Documentation</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-bg"></div>
+
+  <div class="hero-eyebrow"><span class="blink">■</span> Senior Engineer Level · PHP · Laravel · CI4</div>
+
+  <h1>
+    <span class="g1">REST API</span> Design,<br>
+    Scaling & <span class="g2">Cost Reduction</span>
+  </h1>
+  <p class="hero-sub">
+    শুরু থেকে শেষ পর্যন্ত — কীভাবে একজন Senior Engineer এর মতো API বানাবে,
+    scale করবে, cost কমাবে — সব বাংলায়।
+  </p>
+
+  <div class="stat-row">
+    <div class="stat-chip"><div class="num">16+</div><div class="lbl">Topics</div></div>
+    <div class="stat-chip"><div class="num">60+</div><div class="lbl">Code Examples</div></div>
+    <div class="stat-chip"><div class="num">100%</div><div class="lbl">বাংলায়</div></div>
+    <div class="stat-chip"><div class="num">PHP</div><div class="lbl">Laravel/CI4</div></div>
+  </div>
+
+  <div class="toc-grid">
+    <a class="toc-item" href="#basics"><div class="ti">📡</div><div class="tl">API Basics</div><div class="tn">01</div></a>
+    <a class="toc-item" href="#design"><div class="ti">🏗️</div><div class="tl">Design Rules</div><div class="tn">02</div></a>
+    <a class="toc-item" href="#endpoints"><div class="ti">🔌</div><div class="tl">Endpoints</div><div class="tn">03</div></a>
+    <a class="toc-item" href="#request"><div class="ti">📨</div><div class="tl">Req/Response</div><div class="tn">04</div></a>
+    <a class="toc-item" href="#auth"><div class="ti">🔐</div><div class="tl">Auth</div><div class="tn">05</div></a>
+    <a class="toc-item" href="#versioning"><div class="ti">🏷️</div><div class="tl">Versioning</div><div class="tn">06</div></a>
+    <a class="toc-item" href="#error"><div class="ti">⚠️</div><div class="tl">Errors</div><div class="tn">07</div></a>
+    <a class="toc-item" href="#pagination"><div class="ti">📄</div><div class="tl">Pagination</div><div class="tn">08</div></a>
+    <a class="toc-item" href="#caching"><div class="ti">⚡</div><div class="tl">Caching</div><div class="tn">09</div></a>
+    <a class="toc-item" href="#ratelimit"><div class="ti">🚦</div><div class="tl">Rate Limit</div><div class="tn">10</div></a>
+    <a class="toc-item" href="#security"><div class="ti">🛡️</div><div class="tl">Security</div><div class="tn">11</div></a>
+    <a class="toc-item" href="#scaling"><div class="ti">📈</div><div class="tl">Scaling</div><div class="tn">12</div></a>
+    <a class="toc-item" href="#cost"><div class="ti">💰</div><div class="tl">Cost Reduce</div><div class="tn">13</div></a>
+    <a class="toc-item" href="#testing"><div class="ti">🧪</div><div class="tl">Testing</div><div class="tn">14</div></a>
+    <a class="toc-item" href="#docs"><div class="ti">📚</div><div class="tl">Docs</div><div class="tn">15</div></a>
+    <a class="toc-item" href="#checklist"><div class="ti">✅</div><div class="tl">Checklist</div><div class="tn">16</div></a>
+  </div>
+</div>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 01 · API BASICS -->
+<!-- ============================================================ -->
+<section class="page-section" id="basics">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 01 / FUNDAMENTALS</div>
+    <h2>API কী এবং REST কীভাবে কাজ করে?</h2>
+    <p>একজন senior engineer হিসেবে শুধু "API বানাতে পারা" যথেষ্ট না — বুঝতে হবে কেন এভাবে বানাচ্ছি।</p>
+  </div>
+
+  <div class="g2" style="margin-bottom:24px;">
+    <div class="card">
+      <div class="card-title">📡 API কী?</div>
+      <p style="color:var(--text2);font-size:.88rem;">API (Application Programming Interface) হলো দুটো সিস্টেমের মধ্যে কথা বলার চুক্তি। রেস্টুরেন্টের waiter-এর মতো — তুমি order করো (request), সে রান্নাঘর থেকে খাবার এনে দেয় (response)। তুমি রান্নাঘরের ভেতরে যাও না।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏗️ REST কী?</div>
+      <p style="color:var(--text2);font-size:.88rem;">REST (Representational State Transfer) হলো একটা architectural style — নিয়মের সেট। HTTP ব্যবহার করে, stateless, URL দিয়ে resource চেনা যায়, JSON/XML দিয়ে data আদান-প্রদান। Roy Fielding ২০০০ সালে define করেন।</p>
+    </div>
+  </div>
+
+  <!-- How HTTP works -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔄 HTTP Request-Response Cycle — পুরো যাত্রা</div>
+    <div class="pipeline" style="flex-wrap:wrap;gap:6px;">
+      <div class="pipe-step ps-c">Client (App/Browser)</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step">DNS Lookup</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step">TCP Handshake</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-a">Load Balancer</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step">Middleware Stack</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-g">Controller</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step">Business Logic</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step">Database</div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-c">JSON Response</div>
+    </div>
+  </div>
+
+  <!-- REST Constraints -->
+  <div class="g3">
+    <div class="card">
+      <div class="card-title">1️⃣ Stateless</div>
+      <p style="color:var(--text2);font-size:.84rem;">প্রতিটা request সম্পূর্ণ স্বতন্ত্র। Server আগের request মনে রাখবে না। Authentication token প্রতিবার পাঠাতে হবে।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">2️⃣ Uniform Interface</div>
+      <p style="color:var(--text2);font-size:.84rem;">একই নিয়মে সব resource access। GET /users, GET /products — একই pattern follow করে।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">3️⃣ Client-Server</div>
+      <p style="color:var(--text2);font-size:.84rem;">Frontend ও Backend আলাদা। Backend শুধু data দেয়, Frontend সেটা দেখায়। আলাদা scale করা যায়।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">4️⃣ Cacheable</div>
+      <p style="color:var(--text2);font-size:.84rem;">Response cache করা যাবে। GET /products বারবার না চেয়ে cache থেকে দাও। Server load কমে।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">5️⃣ Layered System</div>
+      <p style="color:var(--text2);font-size:.84rem;">Client জানে না সে directly server-এ কথা বলছে নাকি proxy/load balancer-এ। Layer add করা যায়।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">6️⃣ Code on Demand (optional)</div>
+      <p style="color:var(--text2);font-size:.84rem;">Server চাইলে executable code (JavaScript) পাঠাতে পারে। Optional constraint।</p>
+    </div>
+  </div>
+
+  <!-- HTTP Methods -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">⚡ HTTP Methods — কোনটা কখন?</div>
+    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:12px;">
+      <table class="ep-table">
+        <thead><tr><th>Method</th><th>কাজ</th><th>Idempotent?</th><th>Body?</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method GET">GET</span></td><td>Data পড়া</td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td><span style="color:var(--red)">✗ না</span></td><td class="ep-url">GET /api/users</td></tr>
+          <tr><td><span class="method POST">POST</span></td><td>নতুন তৈরি</td><td><span style="color:var(--red)">✗ না</span></td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td class="ep-url">POST /api/users</td></tr>
+          <tr><td><span class="method PUT">PUT</span></td><td>পুরো update</td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td class="ep-url">PUT /api/users/5</td></tr>
+          <tr><td><span class="method PATCH">PATCH</span></td><td>আংশিক update</td><td><span style="color:var(--amber)">~ মাঝে মাঝে</span></td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td class="ep-url">PATCH /api/users/5</td></tr>
+          <tr><td><span class="method DELETE">DELETE</span></td><td>মুছে ফেলা</td><td><span style="color:var(--green)">✓ হ্যাঁ</span></td><td><span style="color:var(--red)">✗ সাধারণত না</span></td><td class="ep-url">DELETE /api/users/5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box box-a" style="margin-top:12px;">
+      <div class="ic">💡</div>
+      <p><strong>Idempotent মানে:</strong> একই request ১০ বার করলেও result একই। PUT /users/5 বারবার করলে সেই user-ই update হবে। কিন্তু POST /users বারবার করলে ১০টা নতুন user তৈরি হবে — তাই Idempotent না।</p>
+    </div>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 02 · API DESIGN RULES -->
+<!-- ============================================================ -->
+<section class="page-section" id="design">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 02 / DESIGN PRINCIPLES</div>
+    <h2>API Design — Senior Engineer-এর নিয়ম</h2>
+    <p>ভালো API design একবার শিখলে কোড লেখার চেয়ে বেশি কাজে আসে।</p>
+  </div>
+
+  <!-- Naming Rules -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📝 URL Naming Convention — সঠিক vs ভুল</div>
+    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:12px;">
+      <table class="ep-table">
+        <thead><tr><th>❌ ভুল (Beginner)</th><th>✅ সঠিক (Senior)</th><th>কারণ</th></tr></thead>
+        <tbody>
+          <tr><td class="ep-url" style="color:var(--red)">/getUsers</td><td class="ep-url" style="color:var(--green)">/users</td><td style="color:var(--text2);font-size:.82rem;">URL noun হবে, verb না। HTTP method-ই verb।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/createNewProduct</td><td class="ep-url" style="color:var(--green)">/products</td><td style="color:var(--text2);font-size:.82rem;">POST /products মানেই create।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/user_list</td><td class="ep-url" style="color:var(--green)">/users</td><td style="color:var(--text2);font-size:.82rem;">lowercase, hyphen-case, plural noun।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/Users/GetById/5</td><td class="ep-url" style="color:var(--green)">/users/5</td><td style="color:var(--text2);font-size:.82rem;">ID সরাসরি path-এ।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/deleteUser?id=5</td><td class="ep-url" style="color:var(--green)">/users/5</td><td style="color:var(--text2);font-size:.82rem;">DELETE /users/5 — method বলে দেয়।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/user/5/getOrders</td><td class="ep-url" style="color:var(--green)">/users/5/orders</td><td style="color:var(--text2);font-size:.82rem;">Nested resource দিয়ে relationship বোঝাও।</td></tr>
+          <tr><td class="ep-url" style="color:var(--red)">/searchProducts?q=laptop</td><td class="ep-url" style="color:var(--green)">/products?search=laptop</td><td style="color:var(--text2);font-size:.82rem;">Filter query parameter হবে।</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Resource Design -->
+  <div class="g2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">🏗️ Resource Hierarchy Design</div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:12px;">সম্পর্ক বোঝানোর নিয়ম:</p>
+      <div class="code-wrap">
+        <pre><code><span class="cm"># একটা resource</span>
+<span class="method GET">GET</span>    <span class="url">/users</span>          <span class="cm"># সব users</span>
+<span class="method GET">GET</span>    <span class="url">/users/5</span>        <span class="cm"># user #5</span>
+<span class="method POST">POST</span>   <span class="url">/users</span>          <span class="cm"># নতুন user</span>
+<span class="method PUT">PUT</span>    <span class="url">/users/5</span>        <span class="cm"># পুরো update</span>
+<span class="method PATCH">PATCH</span>  <span class="url">/users/5</span>        <span class="cm"># আংশিক</span>
+<span class="method DELETE">DELETE</span> <span class="url">/users/5</span>        <span class="cm"># মুছো</span>
+
+<span class="cm"># Nested resources</span>
+<span class="method GET">GET</span>    <span class="url">/users/5/orders</span> <span class="cm"># user 5-এর orders</span>
+<span class="method GET">GET</span>    <span class="url">/orders/3/items</span> <span class="cm"># order 3-এর items</span>
+
+<span class="cm"># ⚠️ Nesting ৩ level-এর বেশি না!</span>
+<span class="cm"># ❌ /users/5/orders/3/items/7/reviews</span>
+<span class="cm"># ✅ /order-items/7/reviews</span></code></pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 Query Parameters — কখন কী?</div>
+      <div class="code-wrap">
+        <pre><code><span class="cm"># Filtering — কী দেখাবো?</span>
+<span class="url">GET /products?category=mobile&brand=samsung</span>
+
+<span class="cm"># Sorting — কীভাবে সাজাবো?</span>
+<span class="url">GET /products?sort=price&order=asc</span>
+
+<span class="cm"># Pagination — কত করে দেখাবো?</span>
+<span class="url">GET /products?page=2&per_page=20</span>
+
+<span class="cm"># Searching — কী খুঁজছি?</span>
+<span class="url">GET /products?search=iphone+15</span>
+
+<span class="cm"># Field selection — কোন field দরকার?</span>
+<span class="url">GET /users?fields=id,name,email</span>
+
+<span class="cm"># সব একসাথে</span>
+<span class="url">GET /products?category=mobile
+  &sort=price&order=asc
+  &page=1&per_page=10
+  &search=samsung</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-g">
+    <div class="ic">🎯</div>
+    <p><strong>Senior Engineer Rule:</strong> URL একটা resource-এর address। যেমন ঘরের ঠিকানা দেয়া হয় — কী করতে হবে সেটা বলার দরকার নেই ঠিকানায়। HTTP method সেটা বলে। URL সবসময় lowercase, hyphen (-) দিয়ে শব্দ আলাদা, plural noun ব্যবহার করো।</p>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 03 · ENDPOINTS -->
+<!-- ============================================================ -->
+<section class="page-section" id="endpoints">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 03 / ENDPOINTS</div>
+    <h2>Complete API Endpoint Design — Laravel Example</h2>
+    <p>একটা e-commerce API-র সম্পূর্ণ endpoint structure।</p>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📋 Complete CRUD Endpoints — E-Commerce</div>
+    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:12px;">
+      <table class="ep-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>কাজ</th><th>Auth?</th><th>Response</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method GET">GET</span></td><td class="ep-url">/api/v1/products</td><td style="color:var(--text2);font-size:.82rem;">সব product (filtered)</td><td><span style="color:var(--red)">না</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="ep-url">/api/v1/products/{id}</td><td style="color:var(--text2);font-size:.82rem;">একটা product</td><td><span style="color:var(--red)">না</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="ep-url">/api/v1/products</td><td style="color:var(--text2);font-size:.82rem;">নতুন product</td><td><span style="color:var(--green)">হ্যাঁ (admin)</span></td><td><span class="s2xx">201</span></td></tr>
+          <tr><td><span class="method PUT">PUT</span></td><td class="ep-url">/api/v1/products/{id}</td><td style="color:var(--text2);font-size:.82rem;">Product পুরো update</td><td><span style="color:var(--green)">হ্যাঁ (admin)</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method PATCH">PATCH</span></td><td class="ep-url">/api/v1/products/{id}</td><td style="color:var(--text2);font-size:.82rem;">Stock/price update</td><td><span style="color:var(--green)">হ্যাঁ (admin)</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method DELETE">DELETE</span></td><td class="ep-url">/api/v1/products/{id}</td><td style="color:var(--text2);font-size:.82rem;">Product মুছো</td><td><span style="color:var(--green)">হ্যাঁ (admin)</span></td><td><span class="s2xx">204</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="ep-url">/api/v1/users/{id}/orders</td><td style="color:var(--text2);font-size:.82rem;">User-এর orders</td><td><span style="color:var(--green)">হ্যাঁ</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="ep-url">/api/v1/orders</td><td style="color:var(--text2);font-size:.82rem;">নতুন order</td><td><span style="color:var(--green)">হ্যাঁ</span></td><td><span class="s2xx">201</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="ep-url">/api/v1/auth/login</td><td style="color:var(--text2);font-size:.82rem;">Login</td><td><span style="color:var(--red)">না</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="ep-url">/api/v1/auth/logout</td><td style="color:var(--text2);font-size:.82rem;">Logout</td><td><span style="color:var(--green)">হ্যাঁ</span></td><td><span class="s2xx">200</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="ep-url">/api/v1/auth/refresh</td><td style="color:var(--text2);font-size:.82rem;">Token refresh</td><td><span style="color:var(--green)">Refresh token</span></td><td><span class="s2xx">200</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Laravel Routes -->
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · routes/api.php</div>
+    <pre><code><span class="cm">// routes/api.php</span>
+<span class="kw">use</span> <span class="cls">Illuminate\Support\Facades\Route</span>;
+
+<span class="cm">// =====================================================</span>
+<span class="cm">// PUBLIC ROUTES — Auth লাগবে না</span>
+<span class="cm">// =====================================================</span>
+<span class="cls">Route</span>::<span class="fn">prefix</span>(<span class="str">'v1'</span>)-><span class="fn">group</span>(<span class="kw">function</span> () {
+
+    <span class="cm">// Auth</span>
+    <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/register'</span>, [<span class="cls">AuthController</span>::class, <span class="str">'register'</span>]);
+    <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/login'</span>,    [<span class="cls">AuthController</span>::class, <span class="str">'login'</span>]);
+    <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/refresh'</span>,  [<span class="cls">AuthController</span>::class, <span class="str">'refresh'</span>]);
+
+    <span class="cm">// Public products</span>
+    <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'products'</span>,     [<span class="cls">ProductController</span>::class, <span class="str">'index'</span>]);
+    <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'products/{id}'</span>, [<span class="cls">ProductController</span>::class, <span class="str">'show'</span>]);
+
+    <span class="cm">// =====================================================</span>
+    <span class="cm">// PROTECTED ROUTES — Bearer Token লাগবে</span>
+    <span class="cm">// =====================================================</span>
+    <span class="cls">Route</span>::<span class="fn">middleware</span>(<span class="str">'auth:sanctum'</span>)-><span class="fn">group</span>(<span class="kw">function</span> () {
+
+        <span class="cm">// Auth</span>
+        <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/logout'</span>, [<span class="cls">AuthController</span>::class, <span class="str">'logout'</span>]);
+        <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'me'</span>,           [<span class="cls">AuthController</span>::class, <span class="str">'me'</span>]);
+
+        <span class="cm">// User orders</span>
+        <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'orders'</span>, <span class="cls">OrderController</span>::class);
+        <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'users/{id}/orders'</span>, [<span class="cls">OrderController</span>::class, <span class="str">'userOrders'</span>]);
+
+        <span class="cm">// Admin only</span>
+        <span class="cls">Route</span>::<span class="fn">middleware</span>(<span class="str">'can:admin'</span>)-><span class="fn">group</span>(<span class="kw">function</span> () {
+            <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'products'</span>, <span class="cls">ProductController</span>::class)
+                -><span class="fn">except</span>([<span class="str">'index'</span>, <span class="str">'show'</span>]); <span class="cm">// only CUD</span>
+            <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'users'</span>, <span class="cls">UserController</span>::class);
+        });
+    });
+});</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 04 · REQUEST & RESPONSE -->
+<!-- ============================================================ -->
+<section class="page-section" id="request">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 04 / REQUEST & RESPONSE</div>
+    <h2>Standard Request & Response Structure</h2>
+    <p>Consistent structure না থাকলে frontend developer-রা পাগল হয়ে যাবে।</p>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px;">
+    <!-- Standard Success Response -->
+    <div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:8px;font-family:var(--mono);">// ✅ Success Response — সবসময় এই format</p>
+      <div class="resp-block">
+        <div class="resp-head">
+          <span class="resp-status" style="color:var(--green)">200 OK</span>
+          <span style="color:var(--text3)">application/json</span>
+        </div>
+        <div class="resp-body">
+<pre style="background:transparent;border:none;padding:0;font-size:.78rem;"><code>{
+  <span class="key">"success"</span>: <span class="val">true</span>,
+  <span class="key">"message"</span>: <span class="str">"Products retrieved"</span>,
+  <span class="key">"data"</span>: {
+    <span class="key">"items"</span>: [
+      {
+        <span class="key">"id"</span>: <span class="num">1</span>,
+        <span class="key">"name"</span>: <span class="str">"iPhone 15"</span>,
+        <span class="key">"price"</span>: <span class="num">95000</span>,
+        <span class="key">"stock"</span>: <span class="num">42</span>
+      }
+    ],
+    <span class="key">"meta"</span>: {
+      <span class="key">"total"</span>: <span class="num">150</span>,
+      <span class="key">"page"</span>: <span class="num">1</span>,
+      <span class="key">"per_page"</span>: <span class="num">15</span>,
+      <span class="key">"last_page"</span>: <span class="num">10</span>
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standard Error Response -->
+    <div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:8px;font-family:var(--mono);">// ❌ Error Response — একই format সবসময়</p>
+      <div class="resp-block">
+        <div class="resp-head">
+          <span class="resp-status" style="color:var(--red)">422 Unprocessable Entity</span>
+        </div>
+        <div class="resp-body">
+<pre style="background:transparent;border:none;padding:0;font-size:.78rem;"><code>{
+  <span class="key">"success"</span>: <span class="val">false</span>,
+  <span class="key">"message"</span>: <span class="str">"Validation failed"</span>,
+  <span class="key">"errors"</span>: {
+    <span class="key">"email"</span>: [
+      <span class="str">"Email already taken"</span>
+    ],
+    <span class="key">"password"</span>: [
+      <span class="str">"Min 8 characters required"</span>
+    ]
+  },
+  <span class="key">"error_code"</span>: <span class="str">"VALIDATION_ERROR"</span>,
+  <span class="key">"trace_id"</span>: <span class="str">"req_8f3a9b2c"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Resource in Laravel -->
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · API Resource + Controller</div>
+    <pre><code><span class="cm">// app/Http/Resources/ProductResource.php</span>
+<span class="kw">class</span> <span class="cls">ProductResource</span> <span class="kw">extends</span> <span class="cls">JsonResource</span> {
+    <span class="kw">public function</span> <span class="fn">toArray</span>(<span class="var">$request</span>): <span class="cls">array</span> {
+        <span class="kw">return</span> [
+            <span class="str">'id'</span>          => <span class="var">$this</span>-><span class="var">id</span>,
+            <span class="str">'name'</span>        => <span class="var">$this</span>-><span class="var">name</span>,
+            <span class="str">'slug'</span>        => <span class="var">$this</span>-><span class="var">slug</span>,
+            <span class="str">'price'</span>       => [
+                <span class="str">'amount'</span>   => <span class="var">$this</span>-><span class="var">price</span>,
+                <span class="str">'currency'</span> => <span class="str">'BDT'</span>,
+                <span class="str">'formatted'</span>=> <span class="str">'৳'</span> . <span class="fn">number_format</span>(<span class="var">$this</span>-><span class="var">price</span>, <span class="num">2</span>),
+            ],
+            <span class="str">'stock'</span>       => <span class="var">$this</span>-><span class="var">stock</span>,
+            <span class="str">'in_stock'</span>    => <span class="var">$this</span>-><span class="var">stock</span> > <span class="num">0</span>,
+            <span class="str">'category'</span>    => <span class="kw">new</span> <span class="cls">CategoryResource</span>(<span class="var">$this</span>-><span class="fn">whenLoaded</span>(<span class="str">'category'</span>)),
+            <span class="str">'created_at'</span>  => <span class="var">$this</span>-><span class="var">created_at</span>-><span class="fn">toISOString</span>(),
+        ];
+    }
+}
+
+<span class="cm">// app/Http/Controllers/Api/V1/ProductController.php</span>
+<span class="kw">class</span> <span class="cls">ProductController</span> <span class="kw">extends</span> <span class="cls">BaseApiController</span> {
+
+    <span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">ProductIndexRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+        <span class="var">$products</span> = <span class="cls">Product</span>::<span class="fn">query</span>()
+            -><span class="fn">with</span>([<span class="str">'category'</span>])                             <span class="cm">// Eager load</span>
+            -><span class="fn">when</span>(<span class="var">$request</span>-><span class="fn">filled</span>(<span class="str">'search'</span>), <span class="kw">fn</span>(<span class="var">$q</span>) =>
+                <span class="var">$q</span>-><span class="fn">where</span>(<span class="str">'name'</span>, <span class="str">'like'</span>, <span class="str">"%{$request->search}%"</span>))
+            -><span class="fn">when</span>(<span class="var">$request</span>-><span class="fn">filled</span>(<span class="str">'category'</span>), <span class="kw">fn</span>(<span class="var">$q</span>) =>
+                <span class="var">$q</span>-><span class="fn">whereHas</span>(<span class="str">'category'</span>, <span class="kw">fn</span>(<span class="var">$c</span>) =>
+                    <span class="var">$c</span>-><span class="fn">where</span>(<span class="str">'slug'</span>, <span class="var">$request</span>-><span class="var">category</span>)))
+            -><span class="fn">orderBy</span>(<span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'sort'</span>, <span class="str">'created_at'</span>),
+                     <span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'order'</span>, <span class="str">'desc'</span>))
+            -><span class="fn">paginate</span>(<span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'per_page'</span>, <span class="num">15</span>));
+
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(
+            <span class="cls">ProductResource</span>::<span class="fn">collection</span>(<span class="var">$products</span>),
+            <span class="str">'Products retrieved successfully'</span>
+        );
+    }
+
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">StoreProductRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+        <span class="var">$product</span> = <span class="cls">Product</span>::<span class="fn">create</span>(<span class="var">$request</span>-><span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(
+            <span class="kw">new</span> <span class="cls">ProductResource</span>(<span class="var">$product</span>),
+            <span class="str">'Product created'</span>, <span class="num">201</span>
+        );
+    }
+}
+
+<span class="cm">// app/Http/Controllers/Api/BaseApiController.php</span>
+<span class="kw">abstract class</span> <span class="cls">BaseApiController</span> <span class="kw">extends</span> <span class="cls">Controller</span> {
+
+    <span class="kw">protected function</span> <span class="fn">successResponse</span>(<span class="var">$data</span>, <span class="var">$msg</span> = <span class="str">'Success'</span>, <span class="var">$code</span> = <span class="num">200</span>): <span class="cls">JsonResponse</span> {
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+            <span class="str">'success'</span> => <span class="kw">true</span>,
+            <span class="str">'message'</span> => <span class="var">$msg</span>,
+            <span class="str">'data'</span>    => <span class="var">$data</span>,
+        ], <span class="var">$code</span>);
+    }
+
+    <span class="kw">protected function</span> <span class="fn">errorResponse</span>(<span class="var">$msg</span>, <span class="var">$code</span> = <span class="num">400</span>, <span class="var">$errors</span> = []): <span class="cls">JsonResponse</span> {
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+            <span class="str">'success'</span>    => <span class="kw">false</span>,
+            <span class="str">'message'</span>    => <span class="var">$msg</span>,
+            <span class="str">'errors'</span>     => <span class="var">$errors</span>,
+            <span class="str">'trace_id'</span>   => <span class="str">'req_'</span> . <span class="fn">substr</span>(<span class="fn">uniqid</span>(), -<span class="num">8</span>),
+        ], <span class="var">$code</span>);
+    }
+}</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 05 · AUTHENTICATION -->
+<!-- ============================================================ -->
+<section class="page-section" id="auth">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 05 / AUTHENTICATION</div>
+    <h2>API Authentication — JWT vs Sanctum vs OAuth</h2>
+    <p>কোনটা কখন ব্যবহার করবে এবং কীভাবে সঠিকভাবে implement করবে।</p>
+  </div>
+
+  <div class="g3" style="margin-bottom:20px;">
+    <div class="card" style="border-top:3px solid var(--cyan);">
+      <div class="card-title">🔑 Laravel Sanctum <span class="tag tc">Recommended</span></div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:8px;">SPA এবং mobile app-এর জন্য best। Simple token-based। Database-এ token store হয়।</p>
+      <p style="color:var(--text2);font-size:.8rem;"><strong>কখন:</strong> নিজের frontend + mobile app</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--purple);">
+      <div class="card-title">🎟️ JWT (tymon/jwt-auth) <span class="tag tp">Stateless</span></div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:8px;">Stateless — DB hit লাগে না। Token-এই সব info থাকে। Microservices-এ ভালো।</p>
+      <p style="color:var(--text2);font-size:.8rem;"><strong>কখন:</strong> Microservice, multiple service</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber);">
+      <div class="card-title">🌐 OAuth 2.0 (Passport) <span class="tag ta">Third-party</span></div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:8px;">Third-party app-কে access দিতে হলে। Google Login, Facebook Login-এর মতো।</p>
+      <p style="color:var(--text2);font-size:.8rem;"><strong>কখন:</strong> Public API, 3rd party access</p>
+    </div>
+  </div>
+
+  <!-- JWT Flow -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔄 JWT Authentication Flow</div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">
+      <div class="flow-node fn-c" style="font-size:.78rem;">Client Login<br><small style="font-size:.68rem;color:var(--text2);">email+password</small></div>
+      <div style="color:var(--text3);font-size:1.3rem;">→</div>
+      <div class="flow-node" style="font-size:.78rem;">Server Verify<br><small style="font-size:.68rem;color:var(--text2);">DB check</small></div>
+      <div style="color:var(--text3);font-size:1.3rem;">→</div>
+      <div class="flow-node fn-g" style="font-size:.78rem;">Generate JWT<br><small style="font-size:.68rem;color:var(--text2);">access+refresh</small></div>
+      <div style="color:var(--text3);font-size:1.3rem;">→</div>
+      <div class="flow-node fn-a" style="font-size:.78rem;">Client Stores<br><small style="font-size:.68rem;color:var(--text2);">httpOnly cookie</small></div>
+      <div style="color:var(--text3);font-size:1.3rem;">→</div>
+      <div class="flow-node fn-p" style="font-size:.78rem;">Each Request<br><small style="font-size:.68rem;color:var(--text2);">Bearer token</small></div>
+      <div style="color:var(--text3);font-size:1.3rem;">→</div>
+      <div class="flow-node fn-c" style="font-size:.78rem;">Verify & Respond<br><small style="font-size:.68rem;color:var(--text2);">no DB hit</small></div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Sanctum Auth</div>
+    <pre><code><span class="cm">// AuthController.php — Senior Level Implementation</span>
+<span class="kw">class</span> <span class="cls">AuthController</span> <span class="kw">extends</span> <span class="cls">BaseApiController</span> {
+
+    <span class="kw">public function</span> <span class="fn">login</span>(<span class="cls">LoginRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+        <span class="cm">// Rate limiting — brute force রোধে</span>
+        <span class="var">$key</span> = <span class="str">'login:'</span> . <span class="var">$request</span>-><span class="fn">ip</span>();
+        <span class="kw">if</span> (<span class="cls">RateLimiter</span>::<span class="fn">tooManyAttempts</span>(<span class="var">$key</span>, <span class="num">5</span>)) {
+            <span class="var">$seconds</span> = <span class="cls">RateLimiter</span>::<span class="fn">availableIn</span>(<span class="var">$key</span>);
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">errorResponse</span>(
+                <span class="str">"Too many attempts. Retry in {$seconds}s"</span>, <span class="num">429</span>
+            );
+        }
+
+        <span class="kw">if</span> (! <span class="cls">Auth</span>::<span class="fn">attempt</span>(<span class="var">$request</span>-><span class="fn">only</span>(<span class="str">'email'</span>, <span class="str">'password'</span>))) {
+            <span class="cls">RateLimiter</span>::<span class="fn">hit</span>(<span class="var">$key</span>, <span class="num">300</span>); <span class="cm">// 5 minutes</span>
+            <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">errorResponse</span>(<span class="str">'Invalid credentials'</span>, <span class="num">401</span>);
+        }
+
+        <span class="cls">RateLimiter</span>::<span class="fn">clear</span>(<span class="var">$key</span>); <span class="cm">// সফল হলে reset</span>
+
+        <span class="var">$user</span>  = <span class="cls">Auth</span>::<span class="fn">user</span>();
+        <span class="var">$token</span> = <span class="var">$user</span>-><span class="fn">createToken</span>(
+            <span class="str">'api-token'</span>,
+            [<span class="str">'*'</span>],              <span class="cm">// abilities/scopes</span>
+            <span class="fn">now</span>()-><span class="fn">addDays</span>(<span class="num">30</span>)  <span class="cm">// expires in 30 days</span>
+        );
+
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>([
+            <span class="str">'user'</span>         => <span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>),
+            <span class="str">'access_token'</span> => <span class="var">$token</span>-><span class="fn">plainTextToken</span>(),
+            <span class="str">'token_type'</span>   => <span class="str">'Bearer'</span>,
+            <span class="str">'expires_at'</span>   => <span class="fn">now</span>()-><span class="fn">addDays</span>(<span class="num">30</span>)-><span class="fn">toISOString</span>(),
+        ], <span class="str">'Login successful'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">logout</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+        <span class="var">$request</span>-><span class="fn">user</span>()-><span class="fn">currentAccessToken</span>()-><span class="fn">delete</span>();
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>([], <span class="str">'Logged out successfully'</span>);
+    }
+}
+
+<span class="cm">// LoginRequest.php — Validation</span>
+<span class="kw">class</span> <span class="cls">LoginRequest</span> <span class="kw">extends</span> <span class="cls">FormRequest</span> {
+    <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="cls">array</span> {
+        <span class="kw">return</span> [
+            <span class="str">'email'</span>    => [<span class="str">'required'</span>, <span class="str">'email'</span>, <span class="str">'max:255'</span>],
+            <span class="str">'password'</span> => [<span class="str">'required'</span>, <span class="str">'string'</span>, <span class="str">'min:8'</span>],
+        ];
+    }
+}</code></pre>
+  </div>
+
+  <div class="box box-r" style="margin-top:12px;">
+    <div class="ic">⚠️</div>
+    <p><strong>Security Warning:</strong> Token কখনো URL-এ পাঠাবে না (<code>?token=xyz</code>)। সবসময় <code>Authorization: Bearer TOKEN</code> header ব্যবহার করো। Token localStorage-এ না রেখে httpOnly cookie-তে রাখো XSS attack থেকে বাঁচতে।</p>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 06 · VERSIONING -->
+<!-- ============================================================ -->
+<section class="page-section" id="versioning">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 06 / VERSIONING</div>
+    <h2>API Versioning — পুরনো client ভাঙবে না</h2>
+    <p>Version না থাকলে API update করতে পারবে না — পুরনো mobile app ভেঙে যাবে।</p>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">3 ধরনের Versioning</div>
+      <div class="ver-timeline">
+        <div class="ver-item">
+          <div class="ver-dot" style="background:rgba(0,229,255,.15);border:2px solid var(--cyan);color:var(--cyan);">✓</div>
+          <div class="ver-body">
+            <div class="ver-label">URL Versioning <span class="tag tc">Most Common</span></div>
+            <div class="ver-desc"><code style="font-family:var(--mono);font-size:.8rem;">/api/v1/users</code> — সহজ, debug করা সহজ। Laravel-এর জন্য best।</div>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-dot" style="background:rgba(255,179,0,.15);border:2px solid var(--amber);color:var(--amber);">~</div>
+          <div class="ver-body">
+            <div class="ver-label">Header Versioning</div>
+            <div class="ver-desc"><code style="font-family:var(--mono);font-size:.8rem;">Accept: application/vnd.api+json;version=1</code> — Clean URL কিন্তু complex।</div>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-dot" style="background:rgba(255,71,87,.15);border:2px solid var(--red);color:var(--red);">✗</div>
+          <div class="ver-body">
+            <div class="ver-label">Query Parameter Versioning</div>
+            <div class="ver-desc"><code style="font-family:var(--mono);font-size:.8rem;">/api/users?version=1</code> — Messy, cache করা কঠিন।</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="code-wrap">
+        <div class="code-lang">Laravel · Versioning Structure</div>
+        <pre><code><span class="cm">// ফোল্ডার structure</span>
+app/Http/Controllers/
+├── Api/
+│   ├── V1/
+│   │   ├── ProductController.php
+│   │   ├── UserController.php
+│   │   └── AuthController.php
+│   └── V2/
+│       ├── ProductController.php  <span class="cm">// নতুন</span>
+│       └── UserController.php
+
+app/Http/Resources/
+├── V1/ProductResource.php
+└── V2/ProductResource.php  <span class="cm">// ভিন্ন format</span>
+
+<span class="cm">// routes/api.php</span>
+<span class="cm">// V1 — পুরনো, maintain করো</span>
+<span class="cls">Route</span>::<span class="fn">prefix</span>(<span class="str">'v1'</span>)
+    -><span class="fn">namespace</span>(<span class="str">'App\Http\Controllers\Api\V1'</span>)
+    -><span class="fn">group</span>(<span class="fn">base_path</span>(<span class="str">'routes/api_v1.php'</span>));
+
+<span class="cm">// V2 — নতুন features</span>
+<span class="cls">Route</span>::<span class="fn">prefix</span>(<span class="str">'v2'</span>)
+    -><span class="fn">namespace</span>(<span class="str">'App\Http\Controllers\Api\V2'</span>)
+    -><span class="fn">group</span>(<span class="fn">base_path</span>(<span class="str">'routes/api_v2.php'</span>));</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-a">
+    <div class="ic">💡</div>
+    <p><strong>Deprecation Strategy:</strong> V1 deprecate করার আগে সব client-কে warn করো। Response header-এ <code>Deprecation: true</code> এবং <code>Sunset: Sat, 31 Dec 2025 00:00:00 GMT</code> পাঠাও। কমপক্ষে ৬ মাস আগে notice দাও।</p>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 07 · ERROR HANDLING -->
+<!-- ============================================================ -->
+<section class="page-section" id="error">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 07 / ERROR HANDLING</div>
+    <h2>Proper Error Handling — Senior Engineer Style</h2>
+    <p>Good error response client developer-এর জন্য উপহার।</p>
+  </div>
+
+  <!-- HTTP Status Codes -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📊 HTTP Status Codes — কোনটা কখন?</div>
+    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:12px;">
+      <table class="ep-table">
+        <thead><tr><th>Code</th><th>Name</th><th>কখন ব্যবহার</th></tr></thead>
+        <tbody>
+          <tr><td><span class="s2xx">200</span></td><td>OK</td><td style="color:var(--text2);font-size:.82rem;">সফল GET, PUT, PATCH</td></tr>
+          <tr><td><span class="s2xx">201</span></td><td>Created</td><td style="color:var(--text2);font-size:.82rem;">সফল POST — নতুন তৈরি হয়েছে</td></tr>
+          <tr><td><span class="s2xx">204</span></td><td>No Content</td><td style="color:var(--text2);font-size:.82rem;">সফল DELETE — body নেই</td></tr>
+          <tr><td><span class="s3xx">301</span></td><td>Moved Permanently</td><td style="color:var(--text2);font-size:.82rem;">URL permanently পরিবর্তন</td></tr>
+          <tr><td><span class="s3xx">304</span></td><td>Not Modified</td><td style="color:var(--text2);font-size:.82rem;">Cache valid, নতুন data নেই</td></tr>
+          <tr><td><span class="s4xx">400</span></td><td>Bad Request</td><td style="color:var(--text2);font-size:.82rem;">Invalid request format/data</td></tr>
+          <tr><td><span class="s4xx">401</span></td><td>Unauthorized</td><td style="color:var(--text2);font-size:.82rem;">Login করা হয়নি বা token invalid</td></tr>
+          <tr><td><span class="s4xx">403</span></td><td>Forbidden</td><td style="color:var(--text2);font-size:.82rem;">Login করা আছে কিন্তু permission নেই</td></tr>
+          <tr><td><span class="s4xx">404</span></td><td>Not Found</td><td style="color:var(--text2);font-size:.82rem;">Resource খুঁজে পাওয়া যায়নি</td></tr>
+          <tr><td><span class="s4xx">409</span></td><td>Conflict</td><td style="color:var(--text2);font-size:.82rem;">Duplicate data, email already exists</td></tr>
+          <tr><td><span class="s4xx">422</span></td><td>Unprocessable Entity</td><td style="color:var(--text2);font-size:.82rem;">Validation failed</td></tr>
+          <tr><td><span class="s4xx">429</span></td><td>Too Many Requests</td><td style="color:var(--text2);font-size:.82rem;">Rate limit exceeded</td></tr>
+          <tr><td><span class="s5xx">500</span></td><td>Internal Server Error</td><td style="color:var(--text2);font-size:.82rem;">Server-এ bug — client-এর দোষ না</td></tr>
+          <tr><td><span class="s5xx">503</span></td><td>Service Unavailable</td><td style="color:var(--text2);font-size:.82rem;">Server busy/maintenance</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Global Exception Handler</div>
+    <pre><code><span class="cm">// app/Exceptions/Handler.php</span>
+<span class="kw">class</span> <span class="cls">Handler</span> <span class="kw">extends</span> <span class="cls">ExceptionHandler</span> {
+
+    <span class="kw">public function</span> <span class="fn">register</span>(): <span class="kw">void</span> {
+
+        <span class="cm">// Validation errors</span>
+        <span class="var">$this</span>-><span class="fn">renderable</span>(<span class="kw">function</span> (<span class="cls">ValidationException</span> <span class="var">$e</span>, <span class="var">$req</span>) {
+            <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">expectsJson</span>()) {
+                <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                    <span class="str">'success'</span>    => <span class="kw">false</span>,
+                    <span class="str">'message'</span>    => <span class="str">'Validation failed'</span>,
+                    <span class="str">'errors'</span>     => <span class="var">$e</span>-><span class="fn">errors</span>(),
+                    <span class="str">'error_code'</span> => <span class="str">'VALIDATION_ERROR'</span>,
+                ], <span class="num">422</span>);
+            }
+        });
+
+        <span class="cm">// 404 Not Found</span>
+        <span class="var">$this</span>-><span class="fn">renderable</span>(<span class="kw">function</span> (<span class="cls">ModelNotFoundException</span> <span class="var">$e</span>, <span class="var">$req</span>) {
+            <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">expectsJson</span>()) {
+                <span class="var">$model</span> = <span class="fn">class_basename</span>(<span class="var">$e</span>-><span class="fn">getModel</span>());
+                <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                    <span class="str">'success'</span>    => <span class="kw">false</span>,
+                    <span class="str">'message'</span>    => <span class="str">"{$model} not found"</span>,
+                    <span class="str">'error_code'</span> => <span class="str">'NOT_FOUND'</span>,
+                ], <span class="num">404</span>);
+            }
+        });
+
+        <span class="cm">// 401 Unauthenticated</span>
+        <span class="var">$this</span>-><span class="fn">renderable</span>(<span class="kw">function</span> (<span class="cls">AuthenticationException</span> <span class="var">$e</span>, <span class="var">$req</span>) {
+            <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">expectsJson</span>()) {
+                <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                    <span class="str">'success'</span>    => <span class="kw">false</span>,
+                    <span class="str">'message'</span>    => <span class="str">'Unauthenticated. Please login.'</span>,
+                    <span class="str">'error_code'</span> => <span class="str">'UNAUTHENTICATED'</span>,
+                ], <span class="num">401</span>);
+            }
+        });
+
+        <span class="cm">// 403 Forbidden</span>
+        <span class="var">$this</span>-><span class="fn">renderable</span>(<span class="kw">function</span> (<span class="cls">AuthorizationException</span> <span class="var">$e</span>, <span class="var">$req</span>) {
+            <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">expectsJson</span>()) {
+                <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                    <span class="str">'success'</span>    => <span class="kw">false</span>,
+                    <span class="str">'message'</span>    => <span class="str">'You do not have permission.'</span>,
+                    <span class="str">'error_code'</span> => <span class="str">'FORBIDDEN'</span>,
+                ], <span class="num">403</span>);
+            }
+        });
+
+        <span class="cm">// 500 — Production-এ details hide করো!</span>
+        <span class="var">$this</span>-><span class="fn">renderable</span>(<span class="kw">function</span> (<span class="cls">Throwable</span> <span class="var">$e</span>, <span class="var">$req</span>) {
+            <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">expectsJson</span>()) {
+                <span class="fn">Log</span>::<span class="fn">error</span>(<span class="var">$e</span>); <span class="cm">// log করো কিন্তু expose করো না</span>
+                <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                    <span class="str">'success'</span>    => <span class="kw">false</span>,
+                    <span class="str">'message'</span>    => <span class="fn">app</span>()-><span class="fn">isProduction</span>()
+                        ? <span class="str">'Something went wrong'</span>
+                        : <span class="var">$e</span>-><span class="fn">getMessage</span>(),
+                    <span class="str">'error_code'</span> => <span class="str">'SERVER_ERROR'</span>,
+                ], <span class="num">500</span>);
+            }
+        });
+    }
+}</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 08 · PAGINATION -->
+<!-- ============================================================ -->
+<section class="page-section" id="pagination">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 08 / PAGINATION</div>
+    <h2>Pagination — ১ মিলিয়ন record একসাথে দিও না</h2>
+    <p>Without pagination, একটা API call পুরো server ডোবাতে পারে।</p>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">📄 Offset Pagination <span class="tag tc">Simple</span></div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:8px;">page=2&per_page=20 মানে প্রথম 20টা skip করে পরের 20টা দাও।</p>
+      <div class="box box-r" style="margin-top:8px;">
+        <div class="ic">⚠️</div>
+        <p style="font-size:.8rem;"><strong>সমস্যা:</strong> বড় dataset-এ OFFSET ধীর হয়। page=1000&per_page=20 মানে ২০,০০০ row skip করা — expensive!</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ Cursor Pagination <span class="tag tg">Scalable</span></div>
+      <p style="color:var(--text2);font-size:.83rem;margin-bottom:8px;">শেষ দেখা item-এর ID/cursor ব্যবহার করে পরের page আনে। Large dataset-এ fast।</p>
+      <div class="box box-g" style="margin-top:8px;">
+        <div class="ic">✅</div>
+        <p style="font-size:.8rem;"><strong>Best for:</strong> Infinite scroll, large dataset (Twitter/Instagram feed)। Index ব্যবহার করে — O(log n)!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Both Pagination Types</div>
+    <pre><code><span class="cm">// ১. Offset Pagination — সাধারণ ব্যবহারে</span>
+<span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$products</span> = <span class="cls">Product</span>::<span class="fn">paginate</span>(<span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'per_page'</span>, <span class="num">15</span>));
+
+    <span class="cm">// Response structure</span>
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+        <span class="str">'data'</span> => <span class="cls">ProductResource</span>::<span class="fn">collection</span>(<span class="var">$products</span>),
+        <span class="str">'meta'</span> => [
+            <span class="str">'current_page'</span> => <span class="var">$products</span>-><span class="fn">currentPage</span>(),
+            <span class="str">'last_page'</span>    => <span class="var">$products</span>-><span class="fn">lastPage</span>(),
+            <span class="str">'per_page'</span>     => <span class="var">$products</span>-><span class="fn">perPage</span>(),
+            <span class="str">'total'</span>        => <span class="var">$products</span>-><span class="fn">total</span>(),
+            <span class="str">'from'</span>         => <span class="var">$products</span>-><span class="fn">firstItem</span>(),
+            <span class="str">'to'</span>           => <span class="var">$products</span>-><span class="fn">lastItem</span>(),
+        ],
+        <span class="str">'links'</span> => [
+            <span class="str">'first'</span> => <span class="var">$products</span>-><span class="fn">url</span>(<span class="num">1</span>),
+            <span class="str">'last'</span>  => <span class="var">$products</span>-><span class="fn">url</span>(<span class="var">$products</span>-><span class="fn">lastPage</span>()),
+            <span class="str">'prev'</span>  => <span class="var">$products</span>-><span class="fn">previousPageUrl</span>(),
+            <span class="str">'next'</span>  => <span class="var">$products</span>-><span class="fn">nextPageUrl</span>(),
+        ],
+    ]);
+}
+
+<span class="cm">// ২. Cursor Pagination — বড় dataset, infinite scroll</span>
+<span class="kw">public function</span> <span class="fn">feed</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$posts</span> = <span class="cls">Post</span>::<span class="fn">orderBy</span>(<span class="str">'id'</span>, <span class="str">'desc'</span>)
+        -><span class="fn">cursorPaginate</span>(<span class="num">20</span>);
+
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+        <span class="str">'data'</span>        => <span class="var">$posts</span>-><span class="fn">items</span>(),
+        <span class="str">'next_cursor'</span> => <span class="var">$posts</span>-><span class="fn">nextCursor</span>()?-><span class="fn">encode</span>(),
+        <span class="str">'prev_cursor'</span> => <span class="var">$posts</span>-><span class="fn">previousCursor</span>()?-><span class="fn">encode</span>(),
+        <span class="str">'has_more'</span>    => <span class="var">$posts</span>-><span class="fn">hasMorePages</span>(),
+    ]);
+    <span class="cm">// Client পরের request: GET /feed?cursor=eyJpZCI6MTAwfQ</span>
+}
+
+<span class="cm">// ⚠️ per_page limit করো — DDoS রোধে</span>
+<span class="var">$perPage</span> = <span class="fn">min</span>(<span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'per_page'</span>, <span class="num">15</span>), <span class="num">100</span>); <span class="cm">// max 100</span></code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 09 · CACHING -->
+<!-- ============================================================ -->
+<section class="page-section" id="caching">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 09 / CACHING</div>
+    <h2>API Caching — DB hit কমাও, দ্রুত করো</h2>
+    <p>Caching মানে শুধু fast না — এটা cost সরাসরি কমায়।</p>
+  </div>
+
+  <!-- Caching layers -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🏗️ Caching Layers — কোন layer-এ cache?</div>
+    <div class="pipeline" style="flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <div class="pipe-step ps-c">Client Cache<br><small style="font-size:.65rem;">Browser/App</small></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-a">CDN Cache<br><small style="font-size:.65rem;">Cloudflare</small></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-p">HTTP Cache<br><small style="font-size:.65rem;">ETag/Last-Modified</small></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-g">App Cache<br><small style="font-size:.65rem;">Redis/Memcached</small></div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-step ps-r">Database<br><small style="font-size:.65rem;">Query Cache</small></div>
+    </div>
+    <p style="color:var(--text2);font-size:.82rem;margin-top:12px;">প্রতিটা layer request থামাতে পারলে DB-তে পৌঁছায় না। Left থেকে right — cost ও latency বাড়ে।</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Redis Caching — Smart Strategy</div>
+    <pre><code><span class="cm">// ১. Simple Cache — এক line!</span>
+<span class="kw">public function</span> <span class="fn">categories</span>(): <span class="cls">JsonResponse</span> {
+    <span class="var">$data</span> = <span class="cls">Cache</span>::<span class="fn">remember</span>(
+        <span class="str">'categories:all'</span>,     <span class="cm">// cache key</span>
+        <span class="fn">now</span>()-><span class="fn">addHours</span>(<span class="num">6</span>),   <span class="cm">// TTL</span>
+        <span class="kw">fn</span>() => <span class="cls">Category</span>::<span class="fn">with</span>(<span class="str">'children'</span>)-><span class="fn">whereNull</span>(<span class="str">'parent_id'</span>)-><span class="fn">get</span>()
+    );
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="var">$data</span>);
+}
+
+<span class="cm">// ২. Per-user Cache — user-specific data</span>
+<span class="kw">public function</span> <span class="fn">dashboard</span>(<span class="cls">Request</span> <span class="var">$req</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$userId</span> = <span class="var">$req</span>-><span class="fn">user</span>()-><span class="var">id</span>;
+    <span class="var">$key</span>    = <span class="str">"dashboard:user:{$userId}"</span>;
+
+    <span class="var">$data</span> = <span class="cls">Cache</span>::<span class="fn">remember</span>(<span class="var">$key</span>, <span class="fn">now</span>()-><span class="fn">addMinutes</span>(<span class="num">5</span>), <span class="kw">function</span> () <span class="kw">use</span> (<span class="var">$userId</span>) {
+        <span class="kw">return</span> [
+            <span class="str">'orders_count'</span>  => <span class="cls">Order</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="var">$userId</span>)-><span class="fn">count</span>(),
+            <span class="str">'total_spent'</span>   => <span class="cls">Order</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="var">$userId</span>)-><span class="fn">sum</span>(<span class="str">'total'</span>),
+            <span class="str">'recent_orders'</span> => <span class="cls">Order</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="var">$userId</span>)
+                                -><span class="fn">latest</span>()-><span class="fn">limit</span>(<span class="num">5</span>)-><span class="fn">get</span>(),
+        ];
+    });
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="var">$data</span>);
+}
+
+<span class="cm">// ৩. Cache Invalidation — data পরিবর্তনে cache clear</span>
+<span class="kw">class</span> <span class="cls">Product</span> <span class="kw">extends</span> <span class="cls">Model</span> {
+    <span class="kw">protected static function</span> <span class="fn">booted</span>(): <span class="kw">void</span> {
+        <span class="cm">// Product create/update/delete হলে cache clear</span>
+        <span class="kw">static</span>::<span class="fn">saved</span>(<span class="kw">fn</span>() => <span class="cls">Cache</span>::<span class="fn">tags</span>([<span class="str">'products'</span>])-><span class="fn">flush</span>());
+        <span class="kw">static</span>::<span class="fn">deleted</span>(<span class="kw">fn</span>() => <span class="cls">Cache</span>::<span class="fn">tags</span>([<span class="str">'products'</span>])-><span class="fn">flush</span>());
+    }
+}
+
+<span class="cm">// ৪. HTTP Cache Headers — browser/CDN cache</span>
+<span class="kw">public function</span> <span class="fn">show</span>(<span class="var">$id</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$product</span> = <span class="cls">Product</span>::<span class="fn">findOrFail</span>(<span class="var">$id</span>);
+
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>(
+        <span class="kw">new</span> <span class="cls">ProductResource</span>(<span class="var">$product</span>)
+    )-><span class="fn">withHeaders</span>([
+        <span class="str">'Cache-Control'</span> => <span class="str">'public, max-age=300'</span>, <span class="cm">// 5 min</span>
+        <span class="str">'ETag'</span>          => <span class="fn">md5</span>(<span class="var">$product</span>-><span class="fn">updated_at</span>),
+        <span class="str">'Last-Modified'</span> => <span class="var">$product</span>-><span class="fn">updated_at</span>-><span class="fn">toRfc7231String</span>(),
+    ]);
+}
+
+<span class="cm">// ৫. Response Compression — bandwidth কমাও</span>
+<span class="cm">// .env</span>
+<span class="cm">// COMPRESS_RESPONSE=true</span>
+<span class="cm">// Nginx config: gzip on; gzip_types application/json;</span></code></pre>
+  </div>
+
+  <div class="g3" style="margin-top:16px;">
+    <div class="cost-meter">
+      <div class="cost-label"><strong>Cache Hit (Redis)</strong><span style="font-family:var(--mono);font-size:.75rem;color:var(--text3);display:block;">No DB query</span></div>
+      <div><div class="cost-val" style="color:var(--green)">~1ms</div><div class="cost-save">99% faster</div></div>
+    </div>
+    <div class="cost-meter">
+      <div class="cost-label"><strong>DB Query (indexed)</strong><span style="font-family:var(--mono);font-size:.75rem;color:var(--text3);display:block;">With proper index</span></div>
+      <div><div class="cost-val" style="color:var(--amber)">~10ms</div></div>
+    </div>
+    <div class="cost-meter">
+      <div class="cost-label"><strong>DB Query (no index)</strong><span style="font-family:var(--mono);font-size:.75rem;color:var(--text3);display:block;">Full table scan</span></div>
+      <div><div class="cost-val" style="color:var(--red)">~500ms+</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 10 · RATE LIMITING -->
+<!-- ============================================================ -->
+<section class="page-section" id="ratelimit">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 10 / RATE LIMITING</div>
+    <h2>Rate Limiting — API কে abuse থেকে বাঁচাও</h2>
+    <p>Rate limit ছাড়া একজন bad actor পুরো server ডোবাতে পারে।</p>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📊 Rate Limit Strategy — Tiered</div>
+    <div style="margin-top:12px;">
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;">
+          <span>Public (No Auth)</span><span style="color:var(--red)">60 req/min</span>
+        </div>
+        <div class="rl-bar"><div class="rl-fill" style="width:15%;background:linear-gradient(90deg,var(--red),#ff6b9d);"></div></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;">
+          <span>Authenticated User</span><span style="color:var(--amber)">300 req/min</span>
+        </div>
+        <div class="rl-bar"><div class="rl-fill" style="width:40%;background:linear-gradient(90deg,var(--amber),#ffd60a);"></div></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;">
+          <span>Premium User</span><span style="color:var(--cyan)">1000 req/min</span>
+        </div>
+        <div class="rl-bar"><div class="rl-fill" style="width:70%;background:linear-gradient(90deg,var(--cyan),var(--blue));"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;">
+          <span>Admin</span><span style="color:var(--green)">Unlimited</span>
+        </div>
+        <div class="rl-bar"><div class="rl-fill" style="width:100%;background:linear-gradient(90deg,var(--green),#00cc6a);"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Advanced Rate Limiting</div>
+    <pre><code><span class="cm">// app/Providers/RouteServiceProvider.php</span>
+<span class="kw">use</span> <span class="cls">Illuminate\Cache\RateLimiting\Limit</span>;
+
+<span class="kw">protected function</span> <span class="fn">configureRateLimiting</span>(): <span class="kw">void</span> {
+
+    <span class="cm">// Public API</span>
+    <span class="cls">RateLimiter</span>::<span class="fn">for</span>(<span class="str">'api'</span>, <span class="kw">function</span> (<span class="cls">Request</span> <span class="var">$req</span>) {
+        <span class="kw">if</span> (<span class="var">$req</span>-><span class="fn">user</span>()) {
+            <span class="cm">// Authenticated: user plan অনুযায়ী</span>
+            <span class="var">$limit</span> = <span class="kw">match</span>(<span class="var">$req</span>-><span class="fn">user</span>()-><span class="var">plan</span>) {
+                <span class="str">'premium'</span> => <span class="num">1000</span>,
+                <span class="str">'basic'</span>   => <span class="num">300</span>,
+                <span class="kw">default</span>   => <span class="num">120</span>,
+            };
+            <span class="kw">return</span> <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="var">$limit</span>)
+                        -><span class="fn">by</span>(<span class="var">$req</span>-><span class="fn">user</span>()-><span class="var">id</span>);
+        }
+        <span class="cm">// Guest: IP-based</span>
+        <span class="kw">return</span> <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="num">60</span>)-><span class="fn">by</span>(<span class="var">$req</span>-><span class="fn">ip</span>());
+    });
+
+    <span class="cm">// Login endpoint — brute force রোধে কঠোর</span>
+    <span class="cls">RateLimiter</span>::<span class="fn">for</span>(<span class="str">'login'</span>, <span class="kw">function</span> (<span class="cls">Request</span> <span class="var">$req</span>) {
+        <span class="kw">return</span> <span class="cls">Limit</span>::<span class="fn">perMinutes</span>(<span class="num">5</span>, <span class="num">5</span>)  <span class="cm">// 5 min এ 5 attempt</span>
+                    -><span class="fn">by</span>(<span class="var">$req</span>-><span class="fn">input</span>(<span class="str">'email'</span>) . <span class="var">$req</span>-><span class="fn">ip</span>())
+                    -><span class="fn">response</span>(<span class="kw">function</span> () {
+                        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+                            <span class="str">'success'</span>    => <span class="kw">false</span>,
+                            <span class="str">'message'</span>    => <span class="str">'Too many login attempts. Try again in 5 minutes.'</span>,
+                            <span class="str">'error_code'</span> => <span class="str">'RATE_LIMITED'</span>,
+                        ], <span class="num">429</span>);
+                    });
+    });
+
+    <span class="cm">// Search endpoint — DB heavy, কম limit</span>
+    <span class="cls">RateLimiter</span>::<span class="fn">for</span>(<span class="str">'search'</span>, <span class="kw">function</span> (<span class="cls">Request</span> <span class="var">$req</span>) {
+        <span class="kw">return</span> <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="num">30</span>)-><span class="fn">by</span>(<span class="var">$req</span>-><span class="fn">user</span>()?-><span class="var">id</span> ?? <span class="var">$req</span>-><span class="fn">ip</span>());
+    });
+}
+
+<span class="cm">// Middleware-এ apply করো</span>
+<span class="cm">// Route: ->middleware('throttle:api')</span>
+<span class="cm">// Route: ->middleware('throttle:login')</span>
+
+<span class="cm">// Rate limit headers client-কে জানাও</span>
+<span class="cm">// X-RateLimit-Limit: 300</span>
+<span class="cm">// X-RateLimit-Remaining: 250</span>
+<span class="cm">// X-RateLimit-Reset: 1735689600</span>
+<span class="cm">// Retry-After: 60 (429 হলে)</span></code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 11 · SECURITY -->
+<!-- ============================================================ -->
+<section class="page-section" id="security">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 11 / SECURITY</div>
+    <h2>API Security — হামলা থেকে বাঁচার পূর্ণ গাইড</h2>
+    <p>Security একটা একটা layer — কোনো একটা না থাকলে পুরো system vulnerable।</p>
+  </div>
+
+  <div class="g3" style="margin-bottom:20px;">
+    <div class="sec-item">
+      <div class="sec-title">🔒 HTTPS Only</div>
+      <div class="sec-desc">সব API call HTTPS-এ হতে হবে। HTTP redirect করো। TLS 1.2+ use করো।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">💉 SQL Injection</div>
+      <div class="sec-desc">Raw query avoid করো। Laravel Eloquent/Query Builder parameterized query ব্যবহার করে।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">🌐 CORS</div>
+      <div class="sec-desc">শুধু allowed origin-এর request accept করো। Wildcard (*) production-এ ব্যবহার করো না।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">📦 Mass Assignment</div>
+      <div class="sec-desc">Model-এ $fillable define করো। $guarded = [] কখনো করো না — সব field update হবে।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">📧 Input Validation</div>
+      <div class="sec-desc">সব input validate করো। Never trust client data. FormRequest class ব্যবহার করো।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">🔑 Secret Management</div>
+      <div class="sec-desc">.env file-এ secret রাখো। .env কখনো git-এ push করো না। AWS Secrets Manager ব্যবহার করো।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">🚫 Sensitive Data</div>
+      <div class="sec-desc">Password, card number API response-এ দিও না। Log-এও না। Mask করো।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">🔐 Authorization</div>
+      <div class="sec-desc">Authentication ≠ Authorization। Login করলেই সব data দেওয়া যাবে না। Policy ব্যবহার করো।</div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-title">📝 Audit Log</div>
+      <div class="sec-desc">কে কখন কী করলো সব log করো। Security breach হলে trace করা যাবে।</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Security Best Practices</div>
+    <pre><code><span class="cm">// ১. CORS — config/cors.php</span>
+<span class="kw">return</span> [
+    <span class="str">'paths'</span>         => [<span class="str">'api/*'</span>],
+    <span class="str">'allowed_methods'</span> => [<span class="str">'GET'</span>, <span class="str">'POST'</span>, <span class="str">'PUT'</span>, <span class="str">'PATCH'</span>, <span class="str">'DELETE'</span>],
+    <span class="str">'allowed_origins'</span> => [<span class="str">'https://myapp.com'</span>, <span class="str">'https://admin.myapp.com'</span>],
+    <span class="str">'allowed_headers'</span> => [<span class="str">'*'</span>],
+    <span class="cm">// ❌ 'allowed_origins' => ['*'] — কখনো না! (production)</span>
+];
+
+<span class="cm">// ২. Authorization — Policy ব্যবহার করো</span>
+<span class="kw">class</span> <span class="cls">OrderPolicy</span> {
+    <span class="kw">public function</span> <span class="fn">view</span>(<span class="cls">User</span> <span class="var">$user</span>, <span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">bool</span> {
+        <span class="cm">// শুধু নিজের order দেখতে পারবে, অথবা admin</span>
+        <span class="kw">return</span> <span class="var">$user</span>-><span class="var">id</span> === <span class="var">$order</span>-><span class="var">user_id</span> || <span class="var">$user</span>-><span class="fn">isAdmin</span>();
+    }
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="cls">User</span> <span class="var">$user</span>, <span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">bool</span> {
+        <span class="kw">return</span> <span class="var">$user</span>-><span class="fn">isAdmin</span>(); <span class="cm">// শুধু admin delete করতে পারবে</span>
+    }
+}
+
+<span class="cm">// Controller-এ policy check</span>
+<span class="kw">public function</span> <span class="fn">show</span>(<span class="cls">Order</span> <span class="var">$order</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$this</span>-><span class="fn">authorize</span>(<span class="str">'view'</span>, <span class="var">$order</span>); <span class="cm">// 403 throws automatically</span>
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="kw">new</span> <span class="cls">OrderResource</span>(<span class="var">$order</span>));
+}
+
+<span class="cm">// ৩. Sensitive data hidden</span>
+<span class="kw">class</span> <span class="cls">User</span> <span class="kw">extends</span> <span class="cls">Authenticatable</span> {
+    <span class="kw">protected</span> <span class="var">$hidden</span> = [
+        <span class="str">'password'</span>, <span class="str">'remember_token'</span>, <span class="str">'two_factor_secret'</span>
+    ];
+    <span class="kw">protected</span> <span class="var">$fillable</span> = [<span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'password'</span>]; <span class="cm">// explicit!</span>
+    <span class="cm">// ❌ protected $guarded = []; — never!</span>
+}
+
+<span class="cm">// ৪. Security Headers — Middleware</span>
+<span class="kw">class</span> <span class="cls">SecurityHeadersMiddleware</span> {
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="var">$req</span>, <span class="cls">Closure</span> <span class="var">$next</span>) {
+        <span class="var">$response</span> = <span class="var">$next</span>(<span class="var">$req</span>);
+        <span class="kw">return</span> <span class="var">$response</span>-><span class="fn">withHeaders</span>([
+            <span class="str">'X-Content-Type-Options'</span>   => <span class="str">'nosniff'</span>,
+            <span class="str">'X-Frame-Options'</span>          => <span class="str">'DENY'</span>,
+            <span class="str">'X-XSS-Protection'</span>         => <span class="str">'1; mode=block'</span>,
+            <span class="str">'Referrer-Policy'</span>          => <span class="str">'strict-origin'</span>,
+            <span class="str">'Permissions-Policy'</span>       => <span class="str">'geolocation=()'</span>,
+            <span class="str">'Strict-Transport-Security'</span>=> <span class="str">'max-age=31536000'</span>,
+        ]);
+    }
+}</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 12 · SCALING -->
+<!-- ============================================================ -->
+<section class="page-section" id="scaling">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 12 / SCALING</div>
+    <h2>API Scaling — ১০ user থেকে ১ মিলিয়ন user</h2>
+    <p>Scale মানে শুধু বড় server না — smart architecture।</p>
+  </div>
+
+  <!-- Scaling tiers -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📈 Scaling Tiers — কোন পর্যায়ে কী করবে?</div>
+    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:12px;">
+      <table class="cmp-table">
+        <thead><tr><th>পর্যায়</th><th>Users</th><th>কী করবে</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Tier 1</td><td style="color:var(--text2)">0–1K</td><td style="color:var(--text2);font-size:.82rem;">Single server, MySQL, File cache, Optimize queries</td><td style="color:var(--green)">কম</td></tr>
+          <tr><td>Tier 2</td><td style="color:var(--text2)">1K–10K</td><td style="color:var(--text2);font-size:.82rem;">Redis cache, Queue jobs, DB indexing, CDN for static files</td><td style="color:var(--green)">মাঝারি</td></tr>
+          <tr><td>Tier 3</td><td style="color:var(--text2)">10K–100K</td><td style="color:var(--text2);font-size:.82rem;">Load balancer, Read replicas, Horizontal scaling, DB connection pooling</td><td style="color:var(--amber)">বেশি</td></tr>
+          <tr><td>Tier 4</td><td style="color:var(--text2)">100K–1M</td><td style="color:var(--text2);font-size:.82rem;">Microservices, Message queue (Kafka), Elasticsearch, Multi-region</td><td style="color:var(--red)">অনেক বেশি</td></tr>
+          <tr><td>Tier 5</td><td style="color:var(--text2)">1M+</td><td style="color:var(--text2);font-size:.82rem;">Sharding, Global CDN, Event-driven arch, Auto-scaling</td><td style="color:var(--red)">Enterprise</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Scaling Techniques</div>
+    <pre><code><span class="cm">// ১. Database Read Replica — Write আলাদা, Read আলাদা</span>
+<span class="cm">// config/database.php</span>
+<span class="str">'mysql'</span> => [
+    <span class="str">'read'</span>  => [<span class="str">'host'</span> => [<span class="str">'replica1.db'</span>, <span class="str">'replica2.db'</span>]],
+    <span class="str">'write'</span> => [<span class="str">'host'</span> => [<span class="str">'primary.db'</span>]],
+    <span class="cm">// Laravel automatically routes SELECT to read, writes to write</span>
+],
+
+<span class="cm">// ২. Queue Jobs — Heavy tasks background-এ</span>
+<span class="cm">// report generate, email send, image resize — সব queue-এ</span>
+<span class="kw">class</span> <span class="cls">GenerateReportJob</span> <span class="kw">implements</span> <span class="cls">ShouldQueue</span> {
+    <span class="kw">use</span> <span class="cls">Dispatchable</span>, <span class="cls">InteractsWithQueue</span>, <span class="cls">Queueable</span>, <span class="cls">SerializesModels</span>;
+
+    <span class="kw">public</span> <span class="var">$timeout</span>  = <span class="num">300</span>;   <span class="cm">// max 5 min</span>
+    <span class="kw">public</span> <span class="var">$tries</span>    = <span class="num">3</span>;     <span class="cm">// fail হলে 3 বার retry</span>
+    <span class="kw">public</span> <span class="var">$backoff</span>  = [<span class="num">60</span>, <span class="num">120</span>, <span class="num">300</span>]; <span class="cm">// exponential backoff</span>
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(): <span class="kw">void</span> {
+        <span class="cm">// Heavy processing এখানে</span>
+        <span class="cls">ReportService</span>::<span class="fn">generate</span>(<span class="var">$this</span>-><span class="var">params</span>);
+        <span class="cm">// User-কে notify করো</span>
+        <span class="var">$this</span>-><span class="var">user</span>-><span class="fn">notify</span>(<span class="kw">new</span> <span class="cls">ReportReadyNotification</span>());
+    }
+}
+
+<span class="cm">// ৩. Event-Driven — Decoupled services</span>
+<span class="kw">class</span> <span class="cls">OrderController</span> {
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">StoreOrderRequest</span> <span class="var">$req</span>): <span class="cls">JsonResponse</span> {
+        <span class="var">$order</span> = <span class="cls">Order</span>::<span class="fn">create</span>(<span class="var">$req</span>-><span class="fn">validated</span>());
+
+        <span class="cm">// Event fire করো — decoupled!</span>
+        <span class="cls">OrderPlaced</span>::<span class="fn">dispatch</span>(<span class="var">$order</span>);
+
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="kw">new</span> <span class="cls">OrderResource</span>(<span class="var">$order</span>), <span class="str">'Order placed'</span>, <span class="num">201</span>);
+    }
+}
+
+<span class="cm">// EventServiceProvider-এ listeners</span>
+<span class="cls">OrderPlaced</span>::class => [
+    <span class="cls">SendOrderConfirmationEmail</span>::class,   <span class="cm">// Queue-এ</span>
+    <span class="cls">UpdateInventory</span>::class,               <span class="cm">// Sync</span>
+    <span class="cls">NotifyWarehouse</span>::class,               <span class="cm">// Queue-এ</span>
+    <span class="cls">UpdateUserStats</span>::class,               <span class="cm">// Queue-এ</span>
+],
+
+<span class="cm">// ৪. Database Indexing — Query অনেক দ্রুত করে</span>
+<span class="cm">// Migration:</span>
+<span class="var">$table</span>-><span class="fn">index</span>([<span class="str">'user_id'</span>, <span class="str">'status'</span>]); <span class="cm">// Composite index</span>
+<span class="var">$table</span>-><span class="fn">index</span>([<span class="str">'created_at'</span>]);          <span class="cm">// Date filtering</span>
+<span class="var">$table</span>-><span class="fn">fullText</span>([<span class="str">'name'</span>, <span class="str">'description'</span>]); <span class="cm">// Full-text search</span>
+
+<span class="cm">// ৫. N+1 সমস্যা সমাধান</span>
+<span class="cm">// ❌ N+1 Problem (100 orders = 101 queries!)</span>
+<span class="var">$orders</span> = <span class="cls">Order</span>::<span class="fn">all</span>();
+<span class="kw">foreach</span> (<span class="var">$orders</span> <span class="kw">as</span> <span class="var">$order</span>) {
+    <span class="kw">echo</span> <span class="var">$order</span>-><span class="var">user</span>-><span class="var">name</span>; <span class="cm">// N queries!</span>
+}
+
+<span class="cm">// ✅ Eager Loading (মাত্র 2 queries)</span>
+<span class="var">$orders</span> = <span class="cls">Order</span>::<span class="fn">with</span>([<span class="str">'user'</span>, <span class="str">'items.product'</span>])-><span class="fn">get</span>();</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 13 · COST REDUCTION -->
+<!-- ============================================================ -->
+<section class="page-section" id="cost">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 13 / COST REDUCTION</div>
+    <h2>💰 API Cost Reduction — টাকা বাঁচানোর পূর্ণ গাইড</h2>
+    <p>ভালো engineer কোড লেখেই না, infrastructure cost-ও কমায়।</p>
+  </div>
+
+  <!-- Cost breakdown -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">📊 API Cost কোথায় যায়?</div>
+    <div class="g4" style="margin-top:14px;">
+      <div class="cost-meter" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div class="cost-label"><strong>🖥️ Server Compute</strong></div>
+        <div style="width:100%;">
+          <div class="rl-bar"><div class="rl-fill" style="width:35%;background:linear-gradient(90deg,var(--red),#ff6b9d);"></div></div>
+          <div style="font-size:.75rem;color:var(--text2);">CPU/RAM — ~35%</div>
+        </div>
+      </div>
+      <div class="cost-meter" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div class="cost-label"><strong>🗄️ Database</strong></div>
+        <div style="width:100%;">
+          <div class="rl-bar"><div class="rl-fill" style="width:30%;background:linear-gradient(90deg,var(--amber),#ffd60a);"></div></div>
+          <div style="font-size:.75rem;color:var(--text2);">Queries/Storage — ~30%</div>
+        </div>
+      </div>
+      <div class="cost-meter" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div class="cost-label"><strong>🌐 Bandwidth</strong></div>
+        <div style="width:100%;">
+          <div class="rl-bar"><div class="rl-fill" style="width:20%;background:linear-gradient(90deg,var(--blue),var(--purple));"></div></div>
+          <div style="font-size:.75rem;color:var(--text2);">Data transfer — ~20%</div>
+        </div>
+      </div>
+      <div class="cost-meter" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div class="cost-label"><strong>⚡ Cache/Other</strong></div>
+        <div style="width:100%;">
+          <div class="rl-bar"><div class="rl-fill" style="width:15%;background:linear-gradient(90deg,var(--green),#00cc6a);"></div></div>
+          <div style="font-size:.75rem;color:var(--text2);">Redis/CDN/Others — ~15%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Cost Reduction Techniques</div>
+    <pre><code><span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ১. RESPONSE COMPRESSION — Bandwidth কমাও</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// Nginx config:</span>
+<span class="cm">// gzip on;</span>
+<span class="cm">// gzip_types application/json text/plain;</span>
+<span class="cm">// gzip_min_length 1000;</span>
+<span class="cm">// সাধারণত JSON 60-80% compress হয়!</span>
+
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ২. FIELD SELECTION — অপ্রয়োজনীয় data পাঠাবে না</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$fields</span>  = <span class="var">$request</span>-><span class="fn">get</span>(<span class="str">'fields'</span>); <span class="cm">// ?fields=id,name,price</span>
+    <span class="var">$allowed</span> = [<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'price'</span>, <span class="str">'stock'</span>, <span class="str">'category'</span>];
+
+    <span class="var">$select</span>  = <span class="var">$fields</span>
+        ? <span class="fn">array_intersect</span>(<span class="fn">explode</span>(<span class="str">','</span>, <span class="var">$fields</span>), <span class="var">$allowed</span>)
+        : [<span class="str">'*'</span>];
+
+    <span class="var">$products</span> = <span class="cls">Product</span>::<span class="fn">select</span>(<span class="var">$select</span>)-><span class="fn">paginate</span>(<span class="num">20</span>);
+    <span class="cm">// GET /products?fields=id,name,price → শুধু ৩টা field</span>
+    <span class="cm">// 100 products × 50 bytes vs 100 products × 500 bytes = 10x কম!</span>
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="var">$products</span>);
+}
+
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ৩. CONDITIONAL REQUESTS — Change না হলে পাঠাবে না</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="kw">public function</span> <span class="fn">show</span>(<span class="var">$id</span>, <span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">Response</span>|<span class="cls">JsonResponse</span> {
+    <span class="var">$product</span> = <span class="cls">Product</span>::<span class="fn">findOrFail</span>(<span class="var">$id</span>);
+    <span class="var">$etag</span>    = <span class="fn">md5</span>(<span class="var">$product</span>-><span class="fn">updated_at</span> . <span class="var">$product</span>-><span class="var">id</span>);
+
+    <span class="cm">// Client পাঠিয়েছে: If-None-Match: "abc123"</span>
+    <span class="kw">if</span> (<span class="var">$request</span>-><span class="fn">header</span>(<span class="str">'If-None-Match'</span>) === <span class="var">$etag</span>) {
+        <span class="kw">return</span> <span class="fn">response</span>(<span class="str">''</span>, <span class="num">304</span>); <span class="cm">// 304 Not Modified — no data!</span>
+        <span class="cm">// Bandwidth = 0! শুধু header</span>
+    }
+
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>(<span class="kw">new</span> <span class="cls">ProductResource</span>(<span class="var">$product</span>))
+        -><span class="fn">withHeaders</span>([<span class="str">'ETag'</span> => <span class="var">$etag</span>]);
+}
+
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ৪. LAZY LOADING — Unused data load করো না</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="kw">public function</span> <span class="fn">products</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$query</span> = <span class="cls">Product</span>::<span class="fn">query</span>();
+
+    <span class="cm">// Client যা চায় তাই include করো</span>
+    <span class="kw">if</span> (<span class="var">$request</span>-><span class="fn">has</span>(<span class="str">'include'</span>)) {
+        <span class="var">$allowed</span> = [<span class="str">'category'</span>, <span class="str">'reviews'</span>, <span class="str">'images'</span>];
+        <span class="var">$include</span> = <span class="fn">array_intersect</span>(
+            <span class="fn">explode</span>(<span class="str">','</span>, <span class="var">$request</span>-><span class="var">include</span>), <span class="var">$allowed</span>
+        );
+        <span class="var">$query</span>-><span class="fn">with</span>(<span class="var">$include</span>);
+    }
+    <span class="cm">// GET /products → শুধু product</span>
+    <span class="cm">// GET /products?include=category → product + category</span>
+    <span class="cm">// GET /products?include=category,reviews → সব</span>
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(<span class="var">$query</span>-><span class="fn">paginate</span>(<span class="num">20</span>));
+}
+
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ৫. BATCH OPERATIONS — Multiple request → 1 request</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ❌ ৫টা item update = ৫টা API call</span>
+<span class="cm">// ✅ Batch endpoint</span>
+<span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'products/batch-update'</span>, [<span class="cls">ProductController</span>::class, <span class="str">'batchUpdate'</span>]);
+
+<span class="kw">public function</span> <span class="fn">batchUpdate</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$items</span> = <span class="var">$request</span>-><span class="fn">validate</span>([
+        <span class="str">'items'</span>         => <span class="str">'required|array|max:100'</span>,
+        <span class="str">'items.*.id'</span>    => <span class="str">'required|exists:products,id'</span>,
+        <span class="str">'items.*.price'</span> => <span class="str">'required|numeric|min:0'</span>,
+    ]);
+
+    <span class="cls">Product</span>::<span class="fn">upsert</span>(<span class="var">$items</span>[<span class="str">'items'</span>], [<span class="str">'id'</span>], [<span class="str">'price'</span>]);
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>([], <span class="str">'Batch update successful'</span>);
+}
+
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="cm">// ৬. ASYNC PROCESSING — Expensive ops background-এ</span>
+<span class="cm">// ══════════════════════════════════════════════</span>
+<span class="kw">public function</span> <span class="fn">generateReport</span>(<span class="cls">Request</span> <span class="var">$req</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$jobId</span> = <span class="fn">uniqid</span>(<span class="str">'report_'</span>);
+    <span class="cls">GenerateReportJob</span>::<span class="fn">dispatch</span>(<span class="var">$req</span>-><span class="fn">validated</span>(), <span class="var">$jobId</span>);
+
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">successResponse</span>(
+        [<span class="str">'job_id'</span> => <span class="var">$jobId</span>, <span class="str">'status_url'</span> => <span class="str">"/api/v1/jobs/{$jobId}"</span>],
+        <span class="str">'Report generation started'</span>, <span class="num">202</span>  <span class="cm">// 202 Accepted</span>
+    );
+    <span class="cm">// Client poll করবে /api/v1/jobs/{jobId} — তাৎক্ষণিক response!</span>
+}</code></pre>
+  </div>
+
+  <!-- Cost savings table -->
+  <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-top:20px;">
+    <table class="cmp-table">
+      <thead><tr><th>Technique</th><th>Cost Saving</th><th>কীভাবে</th><th>কঠিনতা</th></tr></thead>
+      <tbody>
+        <tr><td>Redis Caching</td><td><span style="color:var(--green)">60–80%</span></td><td style="color:var(--text2);font-size:.82rem;">DB queries কমায়</td><td><span class="tag tc">Easy</span></td></tr>
+        <tr><td>Response Compression</td><td><span style="color:var(--green)">60–70%</span></td><td style="color:var(--text2);font-size:.82rem;">Bandwidth কমায়</td><td><span class="tag tc">Easy</span></td></tr>
+        <tr><td>CDN (Cloudflare)</td><td><span style="color:var(--green)">40–60%</span></td><td style="color:var(--text2);font-size:.82rem;">Server load কমায়</td><td><span class="tag tc">Easy</span></td></tr>
+        <tr><td>Proper DB Indexing</td><td><span style="color:var(--green)">50–90%</span></td><td style="color:var(--text2);font-size:.82rem;">Slow query কমায়</td><td><span class="tag tg">Medium</span></td></tr>
+        <tr><td>Field Selection</td><td><span style="color:var(--green)">30–80%</span></td><td style="color:var(--text2);font-size:.82rem;">Bandwidth + DB I/O কমায়</td><td><span class="tag tg">Medium</span></td></tr>
+        <tr><td>Queue Jobs</td><td><span style="color:var(--green)">20–40%</span></td><td style="color:var(--text2);font-size:.82rem;">CPU usage সমান করে</td><td><span class="tag tg">Medium</span></td></tr>
+        <tr><td>Read Replicas</td><td><span style="color:var(--green)">30–50%</span></td><td style="color:var(--text2);font-size:.82rem;">DB load distribute</td><td><span class="tag ta">Hard</span></td></tr>
+        <tr><td>Conditional Requests (ETag)</td><td><span style="color:var(--green)">20–50%</span></td><td style="color:var(--text2);font-size:.82rem;">Unchanged data skip</td><td><span class="tag tg">Medium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 14 · TESTING -->
+<!-- ============================================================ -->
+<section class="page-section" id="testing">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 14 / TESTING</div>
+    <h2>API Testing — Bug production-এ যাবে না</h2>
+    <p>Senior engineer-রা test ছাড়া code merge করে না।</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Feature Tests</div>
+    <pre><code><span class="cm">// tests/Feature/Api/V1/ProductTest.php</span>
+<span class="kw">class</span> <span class="cls">ProductApiTest</span> <span class="kw">extends</span> <span class="cls">TestCase</span> {
+    <span class="kw">use</span> <span class="cls">RefreshDatabase</span>, <span class="cls">WithFaker</span>;
+
+    <span class="cm">/** @test */</span>
+    <span class="kw">public function</span> <span class="fn">it_returns_paginated_products</span>(): <span class="kw">void</span> {
+        <span class="cls">Product</span>::<span class="fn">factory</span>()-><span class="fn">count</span>(<span class="num">30</span>)-><span class="fn">create</span>();
+
+        <span class="var">$response</span> = <span class="var">$this</span>-><span class="fn">getJson</span>(<span class="str">'/api/v1/products?per_page=10'</span>);
+
+        <span class="var">$response</span>
+            -><span class="fn">assertStatus</span>(<span class="num">200</span>)
+            -><span class="fn">assertJsonStructure</span>([
+                <span class="str">'success'</span>,
+                <span class="str">'data'</span> => [<span class="str">'items'</span> => [<span class="str">'*'</span> => [<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'price'</span>]]],
+                <span class="str">'meta'</span> => [<span class="str">'total'</span>, <span class="str">'page'</span>, <span class="str">'per_page'</span>, <span class="str">'last_page'</span>],
+            ])
+            -><span class="fn">assertJsonPath</span>(<span class="str">'success'</span>, <span class="kw">true</span>)
+            -><span class="fn">assertJsonCount</span>(<span class="num">10</span>, <span class="str">'data.items'</span>);
+    }
+
+    <span class="cm">/** @test */</span>
+    <span class="kw">public function</span> <span class="fn">it_requires_auth_to_create_product</span>(): <span class="kw">void</span> {
+        <span class="var">$this</span>-><span class="fn">postJson</span>(<span class="str">'/api/v1/products'</span>, [])
+            -><span class="fn">assertStatus</span>(<span class="num">401</span>)
+            -><span class="fn">assertJsonPath</span>(<span class="str">'error_code'</span>, <span class="str">'UNAUTHENTICATED'</span>);
+    }
+
+    <span class="cm">/** @test */</span>
+    <span class="kw">public function</span> <span class="fn">admin_can_create_product</span>(): <span class="kw">void</span> {
+        <span class="var">$admin</span> = <span class="cls">User</span>::<span class="fn">factory</span>()-><span class="fn">admin</span>()-><span class="fn">create</span>();
+
+        <span class="var">$response</span> = <span class="var">$this</span>
+            -><span class="fn">actingAs</span>(<span class="var">$admin</span>)
+            -><span class="fn">postJson</span>(<span class="str">'/api/v1/products'</span>, [
+                <span class="str">'name'</span>        => <span class="str">'iPhone 15 Pro'</span>,
+                <span class="str">'price'</span>       => <span class="num">120000</span>,
+                <span class="str">'stock'</span>       => <span class="num">50</span>,
+                <span class="str">'category_id'</span> => <span class="cls">Category</span>::<span class="fn">factory</span>()-><span class="fn">create</span>()-><span class="var">id</span>,
+            ]);
+
+        <span class="var">$response</span>
+            -><span class="fn">assertStatus</span>(<span class="num">201</span>)
+            -><span class="fn">assertJsonPath</span>(<span class="str">'data.name'</span>, <span class="str">'iPhone 15 Pro'</span>)
+            -><span class="fn">assertJsonPath</span>(<span class="str">'data.price.amount'</span>, <span class="num">120000</span>);
+
+        <span class="var">$this</span>-><span class="fn">assertDatabaseHas</span>(<span class="str">'products'</span>, [<span class="str">'name'</span> => <span class="str">'iPhone 15 Pro'</span>]);
+    }
+
+    <span class="cm">/** @test */</span>
+    <span class="kw">public function</span> <span class="fn">it_validates_product_creation</span>(): <span class="kw">void</span> {
+        <span class="var">$admin</span> = <span class="cls">User</span>::<span class="fn">factory</span>()-><span class="fn">admin</span>()-><span class="fn">create</span>();
+
+        <span class="var">$this</span>-><span class="fn">actingAs</span>(<span class="var">$admin</span>)
+            -><span class="fn">postJson</span>(<span class="str">'/api/v1/products'</span>, []) <span class="cm">// empty body</span>
+            -><span class="fn">assertStatus</span>(<span class="num">422</span>)
+            -><span class="fn">assertJsonValidationErrors</span>([<span class="str">'name'</span>, <span class="str">'price'</span>, <span class="str">'stock'</span>]);
+    }
+
+    <span class="cm">/** @test */</span>
+    <span class="kw">public function</span> <span class="fn">it_rate_limits_login_attempts</span>(): <span class="kw">void</span> {
+        <span class="kw">for</span> (<span class="var">$i</span> = <span class="num">0</span>; <span class="var">$i</span> < <span class="num">6</span>; <span class="var">$i</span>++) {
+            <span class="var">$this</span>-><span class="fn">postJson</span>(<span class="str">'/api/v1/auth/login'</span>, [
+                <span class="str">'email'</span>    => <span class="str">'test@test.com'</span>,
+                <span class="str">'password'</span> => <span class="str">'wrongpassword'</span>,
+            ]);
+        }
+        <span class="var">$this</span>-><span class="fn">postJson</span>(<span class="str">'/api/v1/auth/login'</span>, [...])->
+            <span class="fn">assertStatus</span>(<span class="num">429</span>); <span class="cm">// 6th attempt blocked</span>
+    }
+}</code></pre>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 15 · DOCUMENTATION -->
+<!-- ============================================================ -->
+<section class="page-section" id="docs">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 15 / DOCUMENTATION</div>
+    <h2>API Documentation — ভালো docs = কম support ticket</h2>
+    <p>Undocumented API একটা nightmare। এটা code-এর মতোই গুরুত্বপূর্ণ।</p>
+  </div>
+
+  <div class="g2" style="margin-bottom:20px;">
+    <div class="card" style="border-top:3px solid var(--cyan);">
+      <div class="card-title">📋 Swagger/OpenAPI <span class="tag tc">Industry Standard</span></div>
+      <p style="color:var(--text2);font-size:.84rem;">YAML/JSON দিয়ে API describe করো। Auto-generate interactive docs। Test করা যায় docs থেকেই।</p>
+      <p style="color:var(--text2);font-size:.8rem;margin-top:8px;"><strong>Package:</strong> darkaonline/l5-swagger</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--purple);">
+      <div class="card-title">🎯 Postman Collection <span class="tag tp">Team Sharing</span></div>
+      <p style="color:var(--text2);font-size:.84rem;">Postman collection export করো। Team share করো। Environment variable দিয়ে dev/prod switch।</p>
+      <p style="color:var(--text2);font-size:.8rem;margin-top:8px;"><strong>Export:</strong> JSON v2.1 format</p>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-lang">Laravel · Swagger Annotations</div>
+    <pre><code><span class="cm">/**
+ * @OA\Get(
+ *     path="/api/v1/products",
+ *     summary="Get all products",
+ *     description="Returns paginated list of products with optional filtering",
+ *     tags={"Products"},
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         description="Page number",
+ *         @OA\Schema(type="integer", default=1)
+ *     ),
+ *     @OA\Parameter(
+ *         name="search",
+ *         in="query",
+ *         description="Search by name",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successful",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="data", type="object")
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="Unauthenticated"),
+ *     security={{"sanctum": {}}}
+ * )
+ */</span>
+<span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="cm">// ...</span>
+}
+
+<span class="cm">// Generate docs:</span>
+<span class="cm">// php artisan l5-swagger:generate</span>
+<span class="cm">// Visit: /api/documentation</span></code></pre>
+  </div>
+
+  <div class="box box-c">
+    <div class="ic">📌</div>
+    <p><strong>Documentation Checklist:</strong> প্রতিটা endpoint-এ — Description, Parameters (type, required, example), Request body example, Response examples (success + error), Authentication requirement, Rate limits উল্লেখ করো।</p>
+  </div>
+</section>
+
+<hr class="hdiv">
+
+<!-- ============================================================ -->
+<!-- 16 · CHECKLIST -->
+<!-- ============================================================ -->
+<section class="page-section" id="checklist">
+  <div class="sec-head">
+    <div class="sec-kicker">▸ 16 / PRODUCTION CHECKLIST</div>
+    <h2>✅ Production Deploy-এর আগে এই চেকলিস্ট</h2>
+    <p>Senior engineer কখনো checklist skip করে না।</p>
+  </div>
+
+  <div class="g2">
+    <!-- Design -->
+    <div>
+      <h3 style="font-size:1rem;margin-bottom:12px;color:var(--cyan);">🏗️ Design & Structure</h3>
+      <div class="checklist">
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>URL naming:</strong> Lowercase, plural nouns, hyphen-case</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>HTTP methods:</strong> GET/POST/PUT/PATCH/DELETE সঠিকভাবে</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Versioning:</strong> /api/v1/ prefix আছে</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Response format:</strong> সব endpoint-এ consistent structure</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Status codes:</strong> Proper HTTP codes ব্যবহার</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Nesting:</strong> URL nesting ৩ level-এর বেশি না</div></div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div>
+      <h3 style="font-size:1rem;margin-bottom:12px;color:var(--red);">🛡️ Security</h3>
+      <div class="checklist">
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>HTTPS:</strong> শুধু HTTPS, HTTP redirect করা</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Authentication:</strong> সব protected route-এ auth middleware</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Authorization:</strong> Policy/Gate দিয়ে permission check</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Validation:</strong> সব input validate করা</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>CORS:</strong> Specific origins allow, no wildcard</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Secrets:</strong> .env-এ, .gitignore-এ আছে</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Error exposure:</strong> Production-এ stack trace hide</div></div>
+      </div>
+    </div>
+
+    <!-- Performance -->
+    <div>
+      <h3 style="font-size:1rem;margin-bottom:12px;color:var(--green);">⚡ Performance & Cost</h3>
+      <div class="checklist">
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Caching:</strong> Redis cache heavy queries-এ</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Pagination:</strong> সব list endpoint-এ pagination</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Eager Loading:</strong> N+1 problem নেই</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>DB Indexing:</strong> WHERE/ORDER BY fields-এ index</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Rate Limiting:</strong> সব public endpoint-এ throttle</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Compression:</strong> Gzip enabled on server</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Queue:</strong> Heavy operations queue-এ</div></div>
+      </div>
+    </div>
+
+    <!-- Quality -->
+    <div>
+      <h3 style="font-size:1rem;margin-bottom:12px;color:var(--purple);">🧪 Quality & Ops</h3>
+      <div class="checklist">
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Tests:</strong> Feature tests লেখা আছে</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Documentation:</strong> Swagger/Postman ready</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Logging:</strong> Error logging configured (Sentry)</div></div>
+        <div class="cl-item"><div class="cl-check cl-done">✓</div><div class="cl-text"><strong>Health check:</strong> /api/health endpoint আছে</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Monitoring:</strong> APM tool connected</div></div>
+        <div class="cl-item"><div class="cl-check cl-warn">!</div><div class="cl-text"><strong>Backup:</strong> DB backup scheduled</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final summary -->
+  <div class="card" style="margin-top:32px;border-color:var(--cyan);background:rgba(0,229,255,.04);">
+    <div class="card-title" style="font-size:1.1rem;">🎓 Senior Engineer হওয়ার সংক্ষিপ্ত পথ</div>
+    <div class="g3" style="margin-top:14px;">
+      <div>
+        <p style="color:var(--cyan);font-weight:700;margin-bottom:6px;">Level 1 — Junior</p>
+        <p style="color:var(--text2);font-size:.83rem;">CRUD API বানাতে পারা। Basic auth। POST/GET ব্যবহার।</p>
+      </div>
+      <div>
+        <p style="color:var(--amber);font-weight:700;margin-bottom:6px;">Level 2 — Mid</p>
+        <p style="color:var(--text2);font-size:.83rem;">Versioning, validation, proper status codes, pagination, basic caching।</p>
+      </div>
+      <div>
+        <p style="color:var(--green);font-weight:700;margin-bottom:6px;">Level 3 — Senior</p>
+        <p style="color:var(--text2);font-size:.83rem;">Security hardening, scaling architecture, cost optimization, comprehensive testing, monitoring।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div style="font-size:2rem;margin-bottom:10px;">⚡</div>
+  <p style="font-family:var(--display);font-size:1.1rem;font-weight:800;margin-bottom:6px;">
+    REST API মাস্টারক্লাস বাংলায়
+  </p>
+  <p style="color:var(--text2);font-size:.85rem;">
+    PHP · Laravel · CodeIgniter · Senior Engineer Level
+  </p>
+  <p style="color:var(--text3);font-size:.78rem;margin-top:10px;">
+    Design → Endpoints → Auth → Versioning → Error Handling → Pagination → Caching → Rate Limiting → Security → Scaling → Cost Reduction → Testing → Documentation
+  </p>
+</footer>
+
+<!-- Back to top -->
+<button id="btop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Scroll to top button
+window.addEventListener('scroll', () => {
+  document.getElementById('btop').style.opacity = scrollY > 400 ? '1' : '0';
+});
+
+// Accordion
+document.querySelectorAll('.acc-head').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.acc-item');
+    const body = item.querySelector('.acc-body');
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('active'));
+    if (!isOpen) { body.classList.add('open'); item.classList.add('active'); }
+  });
+});
+
+// Animate rate limit bars on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.rl-fill').forEach(bar => {
+        bar.style.width = bar.style.width; // trigger reflow
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('#ratelimit, #cost').forEach(s => observer.observe(s));
+
+// Nav active state on scroll
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-scroll a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    if (scrollY >= sec.offsetTop - 100) current = sec.id;
+  });
+  navLinks.forEach(link => {
+    link.style.color = link.getAttribute('href') === '#' + current ? 'var(--cyan)' : '';
+  });
+});
+</script>
+</body>
+</html>
