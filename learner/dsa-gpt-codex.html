@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSA বাংলা গাইড — PHP/Laravel/CodeIgniter ডেভেলপারদের জন্য</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #131a2f;
+      --muted: #9fb0d8;
+      --text: #e9efff;
+      --brand: #7aa2ff;
+      --green: #33d69f;
+      --yellow: #ffd166;
+      --red: #ff6b6b;
+      --border: #2a365f;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: "Noto Sans Bengali", "Hind Siliguri", system-ui, -apple-system, Segoe UI, sans-serif; background: radial-gradient(circle at 20% 0%, #172347, var(--bg) 40%); color: var(--text); }
+    a { color: #aecdff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { width: min(1100px, 92%); margin: 0 auto; }
+
+    header {
+      padding: 36px 0 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(11,16,32,0.75);
+      z-index: 10;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 20px;
+      padding: 24px 0;
+      align-items: center;
+    }
+
+    h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 38px); }
+    h2 { margin: 30px 0 12px; font-size: clamp(20px, 2.3vw, 28px); color: #d8e5ff; }
+    h3 { margin: 14px 0 8px; font-size: 19px; color: #c9dbff; }
+    p { line-height: 1.7; color: #dfe7ff; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: #c7d7ff;
+      font-size: 14px;
+      background: rgba(122,162,255,0.08);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin: 10px 0 20px;
+    }
+
+    .toc a {
+      display: block;
+      border: 1px solid var(--border);
+      background: #111a34;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #d8e5ff;
+      font-size: 14px;
+    }
+
+    .logic {
+      border-left: 4px solid var(--brand);
+      padding: 10px 12px;
+      background: rgba(122,162,255,0.08);
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #d6e6ff;
+    }
+
+    .mini {
+      font-size: 13px;
+      color: #b8c9ee;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .pill { display:inline-block; margin:4px 6px 0 0; padding:5px 10px; border-radius:999px; font-size:12px; border:1px solid var(--border); color:#cfe0ff; }
+
+    pre {
+      margin: 0;
+      background: #0b1229;
+      border: 1px solid #26345f;
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+      color: #d4e6ff;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code { font-family: "Fira Code", "JetBrains Mono", Consolas, monospace; }
+
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #111a34;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th { background: #1a2550; color: #d9e6ff; }
+    tr:last-child td { border-bottom: none; }
+
+    .ok { color: var(--green); }
+    .warn { color: var(--yellow); }
+    .bad { color: var(--red); }
+
+    .flow {
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(122,162,255,0.06);
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+
+    .dot {
+      min-width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      background:#27407f;
+      color:#dff0ff;
+      border:1px solid #3d59a8;
+    }
+
+    footer {
+      margin: 40px 0 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .svg-box {
+      background: #101935;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      header { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <span class="badge">📘 PHP/Laravel/CodeIgniter ডেভেলপারদের জন্য DSA শর্টকাট গাইড</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>ডাটা স্ট্রাকচার ও অ্যালগরিদম (DSA) — ডিটেইল বাংলা গাইড</h1>
+        <p>
+          আপনি যদি <strong>PHP, Laravel, CodeIgniter</strong> জানেন, তাহলে DSA শেখা আপনার জন্য কঠিন না।
+          DSA মানে: <strong>ডাটা কীভাবে সাজাবেন</strong> + <strong>সমস্যা দ্রুত কীভাবে সমাধান করবেন</strong>।
+          বড় প্রজেক্ট, ইন্টারভিউ, এবং পারফরম্যান্স-ক্রিটিক্যাল API-তে DSA খুব কাজে লাগে।
+          এই পেইজে প্রতিটি টপিকে <strong>What / When / How / Logic / Code / Use case</strong> দেওয়া আছে।
+        </p>
+        <div>
+          <span class="pill">সময় বাঁচায়</span>
+          <span class="pill">মেমোরি বাঁচায়</span>
+          <span class="pill">কোড পরিষ্কার হয়</span>
+          <span class="pill">ইন্টারভিউ প্রস্তুতি</span>
+        </div>
+      </div>
+      <div class="svg-box">
+        <svg viewBox="0 0 420 230" width="100%" height="100%" aria-label="DSA map">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0%" stop-color="#7aa2ff" />
+              <stop offset="100%" stop-color="#33d69f" />
+            </linearGradient>
+          </defs>
+          <rect x="10" y="20" width="120" height="50" rx="10" fill="#24335f" stroke="#3e5aa9"/>
+          <text x="70" y="50" text-anchor="middle" fill="#dbe8ff" font-size="14">Data</text>
+
+          <rect x="150" y="20" width="120" height="50" rx="10" fill="#24335f" stroke="#3e5aa9"/>
+          <text x="210" y="50" text-anchor="middle" fill="#dbe8ff" font-size="14">Structure</text>
+
+          <rect x="290" y="20" width="120" height="50" rx="10" fill="#24335f" stroke="#3e5aa9"/>
+          <text x="350" y="50" text-anchor="middle" fill="#dbe8ff" font-size="14">Algorithm</text>
+
+          <line x1="130" y1="45" x2="150" y2="45" stroke="url(#g1)" stroke-width="3"/>
+          <line x1="270" y1="45" x2="290" y2="45" stroke="url(#g1)" stroke-width="3"/>
+
+          <rect x="40" y="120" width="100" height="40" rx="8" fill="#193050" stroke="#2c4c7c"/>
+          <text x="90" y="145" text-anchor="middle" fill="#cfe4ff" font-size="12">Array</text>
+
+          <rect x="160" y="120" width="100" height="40" rx="8" fill="#193050" stroke="#2c4c7c"/>
+          <text x="210" y="145" text-anchor="middle" fill="#cfe4ff" font-size="12">Queue</text>
+
+          <rect x="280" y="120" width="100" height="40" rx="8" fill="#193050" stroke="#2c4c7c"/>
+          <text x="330" y="145" text-anchor="middle" fill="#cfe4ff" font-size="12">Tree/Graph</text>
+
+          <text x="210" y="205" text-anchor="middle" fill="#9db4df" font-size="13">সঠিক স্ট্রাকচার + সঠিক অ্যালগরিদম = দ্রুত সিস্টেম</text>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>দ্রুত নেভিগেশন</h2>
+      <div class="toc">
+        <a href="#mindset">Problem solving mindset</a>
+        <a href="#bigo">Big-O with backend thinking</a>
+        <a href="#ds-choice">Data structure selection guide</a>
+        <a href="#patterns">Core coding patterns</a>
+        <a href="#examples">Detailed PHP examples</a>
+        <a href="#laravel-ci">Laravel/CI real mapping</a>
+        <a href="#mistakes">Common mistakes + fixes</a>
+        <a href="#plan">45 days plan</a>
+      </div>
+    </section>
+
+    <section id="mindset">
+      <h2>১) Problem Solving Mindset (DSA শুরু করার আগে)</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>What (কি করবেন?)</h3>
+          <p>সমস্যা দেখেই কোড লিখবেন না। আগে ৩টি জিনিস লিখুন:</p>
+          <ul>
+            <li>Input কী?</li>
+            <li>Output কী?</li>
+            <li>Constraint কত? (n = 10³ না 10⁶?)</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>When (কখন optimize?)</h3>
+          <p>যখন full scan বা nested loop বড় n এ ধীর হবে। উদাহরণ:</p>
+          <p class="mini">n = 100000 হলে O(n²) প্রায় অসম্ভব; O(n log n) বা O(n) দরকার।</p>
+        </article>
+        <article class="card">
+          <h3>How (কিভাবে?)</h3>
+          <p>Step:</p>
+          <ol>
+            <li>Brute force লিখুন</li>
+            <li>Time complexity হিসাব করুন</li>
+            <li>Pattern apply করুন (HashMap/Two pointers/Window)</li>
+            <li>Edge case দিয়ে test করুন</li>
+          </ol>
+        </article>
+      </div>
+      <div class="logic">
+        <strong>Decision formula:</strong> যদি বারবার lookup লাগে ⇒ HashMap; যদি sorted data ⇒ Binary Search/Two pointers; যদি range sum query ⇒ Prefix Sum; যদি sequence state repeated ⇒ Dynamic Programming.
+      </div>
+    </section>
+
+    <section id="bigo">
+      <h2>২) Big-O Complexity (Backend engineer এর ভাষায়)</h2>
+      <p>
+        Big-O দিয়ে বোঝানো হয় ইনপুট বড় হলে আপনার কোডের সময়/মেমোরি কীভাবে বাড়ে।
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Complexity</th>
+            <th>নাম</th>
+            <th>বাস্তব অর্থ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ok">O(1)</td><td>Constant</td><td>ইনপুট যতই হোক, সময় প্রায় একই</td></tr>
+          <tr><td class="ok">O(log n)</td><td>Logarithmic</td><td>খুব স্কেলেবল (Binary Search)</td></tr>
+          <tr><td class="warn">O(n)</td><td>Linear</td><td>একবার পুরো ডাটা দেখা লাগে</td></tr>
+          <tr><td class="warn">O(n log n)</td><td>Efficient Sorting</td><td>ভালো মানের sort (Merge/Quick গড়পড়তা)</td></tr>
+          <tr><td class="bad">O(n²)</td><td>Quadratic</td><td>Nested loop, বড় ডাটায় ধীর</td></tr>
+        </tbody>
+      </table>
+      <div class="grid" style="margin-top:12px;">
+        <article class="card">
+          <h3>API উদাহরণ</h3>
+          <p>১০০ ইউজার list এ id খোঁজা:</p>
+          <p>Loop search → O(n), কিন্তু id=>user map হলে → O(1) average</p>
+        </article>
+        <article class="card">
+          <h3>DB সম্পর্ক</h3>
+          <p>DB index না থাকলে full table scan ≈ O(n)</p>
+          <p>Index থাকলে seek অপারেশন log-টাইপ আচরণ করে</p>
+        </article>
+        <article class="card">
+          <h3>Memory complexity</h3>
+          <p>HashMap speed বাড়ায়, কিন্তু extra memory লাগে O(n)।</p>
+          <p class="mini">Trade-off বুঝে ব্যবহার করুন।</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="ds-choice">
+      <h2>৩) Data Structure Selection Guide (কখন কোনটা?)</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Array</h3>
+          <p><strong>What:</strong> ধারাবাহিক লিস্ট</p>
+          <p><strong>কখন ব্যবহার করবেন:</strong> Indexed data, ordered list, simple collection</p>
+          <p><strong>Use case:</strong> Product list, user ids, paginated response</p>
+          <p><strong>How:</strong> index access O(1), search O(n)</p>
+          <p><strong>নোট:</strong> মাঝখানে insert/delete খরচ বেশি</p>
+        </article>
+
+        <article class="card">
+          <h3>Hash Map (Associative Array)</h3>
+          <p><strong>What:</strong> key→value store</p>
+          <p><strong>কখন:</strong> key দিয়ে দ্রুত খোঁজা দরকার</p>
+          <p><strong>Use case:</strong> email → user lookup, cache map</p>
+          <p><strong>How:</strong> hash table; average insert/search/delete O(1)</p>
+          <p><strong>নোট:</strong> order guaranteed না</p>
+        </article>
+
+        <article class="card">
+          <h3>Stack (LIFO)</h3>
+          <p><strong>What:</strong> Last In First Out</p>
+          <p><strong>কখন:</strong> শেষ ঢুকেছে, আগে বের হবে</p>
+          <p><strong>Use case:</strong> Undo feature, function call stack</p>
+          <p><strong>নোট:</strong> push/pop O(1)</p>
+        </article>
+
+        <article class="card">
+          <h3>Queue (FIFO)</h3>
+          <p><strong>কখন:</strong> আগে ঢুকেছে, আগে বের হবে</p>
+          <p><strong>Use case:</strong> Job queue, message processing</p>
+          <p><strong>নোট:</strong> Laravel queue-এর মূল ধারণা এটি</p>
+        </article>
+
+        <article class="card">
+          <h3>Tree</h3>
+          <p><strong>What:</strong> hierarchical relation</p>
+          <p><strong>কখন:</strong> parent-child relation</p>
+          <p><strong>Use case:</strong> Category tree, menu hierarchy</p>
+          <p><strong>How:</strong> DFS/BFS traverse করে query</p>
+          <p><strong>নোট:</strong> BST balanced হলে search দ্রুত</p>
+        </article>
+
+        <article class="card">
+          <h3>Graph</h3>
+          <p><strong>What:</strong> node + edge network</p>
+          <p><strong>কখন:</strong> node-network relation</p>
+          <p><strong>Use case:</strong> Social connections, route planning</p>
+          <p><strong>How:</strong> shortest path/connected components এ BFS/DFS</p>
+          <p><strong>নোট:</strong> BFS/DFS খুব গুরুত্বপূর্ণ</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="patterns">
+      <h2>৪) Core DSA Patterns (ইন্টারভিউ + রিয়েল প্রজেক্টে সবচেয়ে বেশি লাগে)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>কখন ব্যবহার</th>
+            <th>Complexity typical</th>
+            <th>Backend use case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>HashMap counting</td>
+            <td>frequency/duplicate detect</td>
+            <td>O(n)</td>
+            <td>logs এ top error code</td>
+          </tr>
+          <tr>
+            <td>Two Pointers</td>
+            <td>sorted array + pair/range</td>
+            <td>O(n)</td>
+            <td>price pairing / allocation</td>
+          </tr>
+          <tr>
+            <td>Sliding Window</td>
+            <td>subarray/substring constraints</td>
+            <td>O(n)</td>
+            <td>rate limit window, analytics</td>
+          </tr>
+          <tr>
+            <td>Prefix Sum</td>
+            <td>range sum query বারবার</td>
+            <td>build O(n), query O(1)</td>
+            <td>daily sales রিপোর্ট</td>
+          </tr>
+          <tr>
+            <td>BFS/DFS</td>
+            <td>tree/graph traverse</td>
+            <td>O(V+E)</td>
+            <td>category depth/menu</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="examples">
+      <h2>৫) Detailed PHP Code + Logic (What/When/How)</h2>
+      <div class="two-col">
+        <article class="card">
+          <h3>Example A: Hash Map দিয়ে দ্রুত lookup</h3>
+<pre><code>&lt;?php
+$users = [
+  ['id' =&gt; 1, 'email' =&gt; 'a@mail.com'],
+  ['id' =&gt; 2, 'email' =&gt; 'b@mail.com'],
+];
+
+$byEmail = [];
+foreach ($users as $u) {
+  $byEmail[$u['email']] = $u;
+}
+
+$target = 'b@mail.com';
+$result = $byEmail[$target] ?? null;
+print_r($result);
+</code></pre>
+          <p><strong>What:</strong> একবার map বানিয়ে বারবার দ্রুত search</p>
+          <p><strong>When:</strong> একই list থেকে একাধিক lookup</p>
+          <p><strong>How logic:</strong> key তৈরি করে direct access; loop search এ প্রতিবার O(n), map এ O(1) average</p>
+          <p><strong>Complexity:</strong> Build O(n), Search O(1) average, Memory O(n)</p>
+        </article>
+
+        <article class="card">
+          <h3>Example B: Queue (FIFO) — job processing idea</h3>
+<pre><code>&lt;?php
+$queue = new SplQueue();
+$queue-&gt;enqueue('SendWelcomeEmail');
+$queue-&gt;enqueue('GenerateInvoicePdf');
+$queue-&gt;enqueue('SyncCRM');
+
+while (!$queue-&gt;isEmpty()) {
+  $job = $queue-&gt;dequeue();
+  echo "Processing: $job\n";
+}
+</code></pre>
+          <p><strong>What:</strong> আগে আসা job আগে process</p>
+          <p><strong>When:</strong> async ব্যাকগ্রাউন্ড কাজ</p>
+          <p><strong>How logic:</strong> enqueue =&gt; শেষ লাইনে যোগ, dequeue =&gt; প্রথম থেকে বের</p>
+          <p><strong>Laravel mapping:</strong> `dispatch()` করা job worker FIFO ধাঁচে টানে</p>
+        </article>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <article class="card">
+          <h3>Example C: Binary Search (sorted data)</h3>
+<pre><code>&lt;?php
+function binarySearch(array $arr, int $target): int {
+  $l = 0; $r = count($arr) - 1;
+  while ($l &lt;= $r) {
+    $m = intdiv($l + $r, 2);
+    if ($arr[$m] === $target) return $m;
+    if ($arr[$m] &lt; $target) $l = $m + 1;
+    else $r = $m - 1;
+  }
+  return -1;
+}
+
+echo binarySearch([2,4,7,9,11,15], 11); // 4
+</code></pre>
+          <p><strong>What:</strong> search space অর্ধেক করে কমানো</p>
+          <p><strong>When:</strong> data sorted + random access possible</p>
+          <p><strong>How logic:</strong> mid compare, ছোট/বড় পাশে move</p>
+          <p><strong>Complexity:</strong> O(log n)</p>
+        </article>
+
+        <article class="card">
+          <h3>Example D: Two Pointers — pair sum</h3>
+<pre><code>&lt;?php
+function hasPairSum(array $arr, int $target): bool {
+  sort($arr);
+  $i = 0; $j = count($arr) - 1;
+  while ($i &lt; $j) {
+    $sum = $arr[$i] + $arr[$j];
+    if ($sum === $target) return true;
+    if ($sum &lt; $target) $i++;
+    else $j--;
+  }
+  return false;
+}
+</code></pre>
+          <p><strong>What:</strong> দুই প্রান্ত থেকে pointer move</p>
+          <p><strong>When:</strong> sorted array তে pair/triplet/range problem</p>
+          <p><strong>How logic:</strong> sum ছোট হলে left++, বড় হলে right--</p>
+          <p><strong>Use case:</strong> price pair matching, budget split</p>
+        </article>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <article class="card">
+          <h3>Example E: Sliding Window — longest unique substring</h3>
+<pre><code>&lt;?php
+function longestUniqueLen(string $s): int {
+  $lastPos = [];
+  $left = 0;
+  $best = 0;
+
+  for ($right = 0; $right &lt; strlen($s); $right++) {
+    $ch = $s[$right];
+    if (isset($lastPos[$ch]) &amp;&amp; $lastPos[$ch] &gt;= $left) {
+      $left = $lastPos[$ch] + 1;
+    }
+    $lastPos[$ch] = $right;
+    $best = max($best, $right - $left + 1);
+  }
+
+  return $best;
+}
+
+echo longestUniqueLen('abcaefbb'); // 5 (bcaef)
+</code></pre>
+          <p><strong>When:</strong> continuous range/substring নিয়ে condition check</p>
+          <p><strong>How logic:</strong> duplicate এলে window shrink, না হলে expand</p>
+          <p><strong>Complexity:</strong> O(n)</p>
+        </article>
+
+        <article class="card">
+          <h3>Example F: Prefix Sum — range sum query</h3>
+<pre><code>&lt;?php
+function buildPrefix(array $arr): array {
+  $prefix = [0];
+  $sum = 0;
+  foreach ($arr as $v) {
+    $sum += $v;
+    $prefix[] = $sum;
+  }
+  return $prefix;
+}
+
+function rangeSum(array $prefix, int $l, int $r): int {
+  return $prefix[$r + 1] - $prefix[$l];
+}
+
+$a = [3, 5, 2, 8, 1];
+$p = buildPrefix($a);
+echo rangeSum($p, 1, 3); // 5+2+8 = 15
+</code></pre>
+          <p><strong>When:</strong> একই array তে বারবার range sum query</p>
+          <p><strong>How logic:</strong> cumulative sum store করে O(1) query</p>
+          <p><strong>Complexity:</strong> Build O(n), each query O(1)</p>
+        </article>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <article class="card">
+          <h3>Example G: BFS on Tree-like categories</h3>
+<pre><code>&lt;?php
+$graph = [
+  1 =&gt; [2,3],
+  2 =&gt; [4],
+  3 =&gt; [5,6],
+  4 =&gt; [],
+  5 =&gt; [],
+  6 =&gt; []
+];
+
+function bfs(array $graph, int $start): array {
+  $q = new SplQueue();
+  $q-&gt;enqueue($start);
+  $visited = [$start =&gt; true];
+  $order = [];
+
+  while (!$q-&gt;isEmpty()) {
+    $node = $q-&gt;dequeue();
+    $order[] = $node;
+    foreach ($graph[$node] as $nei) {
+      if (!isset($visited[$nei])) {
+        $visited[$nei] = true;
+        $q-&gt;enqueue($nei);
+      }
+    }
+  }
+  return $order;
+}
+</code></pre>
+          <p><strong>When:</strong> level wise traverse দরকার হলে</p>
+          <p><strong>Use case:</strong> depth-wise category expand, shortest step count</p>
+        </article>
+
+        <article class="card">
+          <h3>Example H: Dynamic Programming (Fibonacci)</h3>
+<pre><code>&lt;?php
+function fibDP(int $n): int {
+  if ($n &lt;= 1) return $n;
+  $dp = array_fill(0, $n + 1, 0);
+  $dp[1] = 1;
+
+  for ($i = 2; $i &lt;= $n; $i++) {
+    $dp[$i] = $dp[$i - 1] + $dp[$i - 2];
+  }
+  return $dp[$n];
+}
+</code></pre>
+          <p><strong>When:</strong> same subproblem repeated হলে</p>
+          <p><strong>How logic:</strong> previous result cache করে পুনরায় calculation কমানো</p>
+          <p><strong>Complexity:</strong> O(n), naive recursion O(2^n)</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>৬) Sorting কবে কোনটা?</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>গড় সময়</th>
+            <th>কখন ব্যবহার</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Built-in sort()</td>
+            <td>সাধারণত O(n log n)</td>
+            <td>Production-এ প্রথম পছন্দ (নিজে sort লিখার দরকার কম)</td>
+          </tr>
+          <tr>
+            <td>Merge Sort</td>
+            <td>O(n log n)</td>
+            <td>Stable sort দরকার হলে</td>
+          </tr>
+          <tr>
+            <td>Quick Sort</td>
+            <td>Avg O(n log n)</td>
+            <td>প্র্যাকটিক্যালি দ্রুত, কিন্তু worst O(n²)</td>
+          </tr>
+          <tr>
+            <td>Bubble/Selection</td>
+            <td>O(n²)</td>
+            <td>শুধু শেখার জন্য</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="logic">
+        <strong>Rule:</strong> Production-এ built-in `sort/usort` আগে ব্যবহার করুন। custom sort সাধারণত তখনই দরকার যখন interview বা special comparator logic লাগে।
+      </div>
+    </section>
+
+    <section id="laravel-ci">
+      <h2>৭) Laravel/CodeIgniter-এ DSA এর বাস্তব ব্যবহার (ডিটেইল)</h2>
+      <div class="flow">
+        <div class="step"><span class="dot">1</span><div><strong>API cache key map</strong> — associative array/Redis hash দিয়ে দ্রুত response। <span class="mini">Use: user:123/profile</span></div></div>
+        <div class="step"><span class="dot">2</span><div><strong>Queue jobs</strong> — FIFO queue + retry + dead-letter style handling for failed jobs</div></div>
+        <div class="step"><span class="dot">3</span><div><strong>Category tree</strong> — nested comments/menu/category parent-child relation; DFS দিয়ে full path</div></div>
+        <div class="step"><span class="dot">4</span><div><strong>Search optimization</strong> — full scan বাদ দিয়ে index, binary search, hashmap pre-processing</div></div>
+        <div class="step"><span class="dot">5</span><div><strong>Rate limiting/window</strong> — sliding window + queue ব্যাকপ্রেশার</div></div>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <article class="card">
+          <h3>Laravel mini example: frequency counter</h3>
+<pre><code>&lt;?php
+// $codes = ['E500','E401','E500','E500','E404'];
+$freq = [];
+foreach ($codes as $c) {
+  $freq[$c] = ($freq[$c] ?? 0) + 1;
+}
+arsort($freq);
+// এখন top error code পাওয়া গেল
+</code></pre>
+          <p>Monitoring dashboard-এ top failing error quickly দেখাতে ব্যবহার করুন।</p>
+        </article>
+        <article class="card">
+          <h3>CodeIgniter mini example: grouped data map</h3>
+<pre><code>&lt;?php
+// orders grouped by user_id
+$grouped = [];
+foreach ($orders as $o) {
+  $uid = $o['user_id'];
+  $grouped[$uid][] = $o;
+}
+</code></pre>
+          <p>N+1 style repeated loops কমিয়ে grouped processing করুন।</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="mistakes">
+      <h2>৮) Common Mistakes + How to Fix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ভুল</th>
+            <th>সমস্যা</th>
+            <th>সমাধান</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Problem বুঝে না লিখা</td>
+            <td>Wrong direction</td>
+            <td>Input/Output/Constraint আগে লিখুন</td>
+          </tr>
+          <tr>
+            <td>সব সমস্যায় nested loop</td>
+            <td>O(n²) bottleneck</td>
+            <td>HashMap/Two-pointer/Window ভাবুন</td>
+          </tr>
+          <tr>
+            <td>Edge case miss</td>
+            <td>runtime bug</td>
+            <td>empty, single, duplicate, negative test দিন</td>
+          </tr>
+          <tr>
+            <td>Optimization আগে, correctness পরে</td>
+            <td>complex bug</td>
+            <td>Brute force -&gt; optimize approach নিন</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="plan">
+      <h2>৯) দ্রুত শেখার রোডম্যাপ (৪৫ দিন)</h2>
+      <div class="grid">
+        <article class="card"><h3>Days 1-7</h3><p>Big-O + Array + HashMap + 20 easy problem</p></article>
+        <article class="card"><h3>Days 8-15</h3><p>Stack, Queue, Two Pointer, Sliding Window + 20 problem</p></article>
+        <article class="card"><h3>Days 16-25</h3><p>Binary Search, Prefix Sum, Sorting, Recursion</p></article>
+        <article class="card"><h3>Days 26-35</h3><p>Linked List, Tree traversal, BFS/DFS</p></article>
+        <article class="card"><h3>Days 36-45</h3><p>Basic DP + mixed interview sets + timed practice</p></article>
+      </div>
+      <p style="margin-top:10px; color:#c8d8ff;">
+        প্রতিদিন ২-৩টি সমস্যা নিন। আগে brute force লিখুন, পরে optimize করুন।
+        সপ্তাহ শেষে নিজের লেখা solution refactor করুন।
+      </p>
+    </section>
+
+    <section>
+      <h2>১০) ইন্টারভিউ/প্র্যাকটিক্যাল চেকলিস্ট</h2>
+      <div class="grid">
+        <article class="card"><p>✅ Problem statement আগে নিজের ভাষায় লিখুন</p></article>
+        <article class="card"><p>✅ Input size দেখে complexity target ঠিক করুন</p></article>
+        <article class="card"><p>✅ Edge case: empty/null/single item check করুন</p></article>
+        <article class="card"><p>✅ Test case দিয়ে dry run করুন</p></article>
+        <article class="card"><p>✅ Time + Space দুটোই বলুন</p></article>
+        <article class="card"><p>✅ কেন এই data structure নিলেন, justify করুন</p></article>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        এই single-page নোটটি PHP/Laravel/CodeIgniter ব্যাকগ্রাউন্ড থেকে DSA শেখা দ্রুত করতে তৈরি করা হয়েছে।
+        আপনি চাইলে পরের ভার্সনে: MCQ, interactive practice tracker, এবং problem difficulty filter যোগ করা যাবে।
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA শিখি বাংলায় | Data Structures & Algorithms</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --card: #1e2d45;
+    --card2: #243352;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --border: #2d4060;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(124,58,237,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-size: 1.3rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex; gap: 6px; list-style: none; flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: var(--text2); text-decoration: none; font-size: 0.78rem;
+    padding: 5px 10px; border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .nav-links a:hover {
+    color: var(--accent); border-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 80px 24px 40px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(124,58,237,0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(0,212,255,0.08) 0%, transparent 60%);
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    padding: 6px 16px; border-radius: 999px; font-size: 0.85rem;
+    color: var(--accent); margin-bottom: 24px;
+    animation: fadeDown 0.6s ease;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 700; line-height: 1.2;
+    margin-bottom: 16px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 1.1rem; color: var(--text2); max-width: 600px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .hero-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px; width: 100%; max-width: 700px;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+
+  .hero-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 12px; text-align: center;
+    cursor: pointer; transition: all 0.25s;
+    text-decoration: none; color: var(--text);
+  }
+
+  .hero-card:hover {
+    border-color: var(--accent); transform: translateY(-3px);
+    box-shadow: var(--glow);
+  }
+
+  .hero-card .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .hero-card .label { font-size: 0.85rem; font-weight: 600; }
+
+  /* SECTIONS */
+  section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+
+  .section-header {
+    margin-bottom: 40px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-num {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+  }
+
+  .section-header h2 {
+    font-size: 1.7rem; font-weight: 700;
+  }
+
+  .section-header h2 small {
+    display: block; font-size: 0.9rem; font-weight: 400;
+    color: var(--text2); margin-top: 2px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 24px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: var(--accent2); }
+
+  .card-title {
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .tag {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  .tag-blue { background: rgba(0,212,255,0.15); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .tag-purple { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--accent4); border: 1px solid rgba(16,185,129,0.3); }
+  .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent3); border: 1px solid rgba(245,158,11,0.3); }
+  .tag-red { background: rgba(239,68,68,0.15); color: var(--accent5); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* CODE */
+  pre {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    line-height: 1.7; margin: 16px 0; position: relative;
+  }
+
+  .code-label {
+    position: absolute; top: 10px; right: 14px;
+    font-size: 0.65rem; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;
+  }
+
+  .kw { color: #ff79c6; }
+  .fn { color: #50fa7b; }
+  .str { color: #f1fa8c; }
+  .num { color: #bd93f9; }
+  .cm { color: #6272a4; font-style: italic; }
+  .op { color: #ff79c6; }
+  .var { color: #8be9fd; }
+  .cls { color: #ffb86c; }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+
+  /* COMPLEXITY TABLE */
+  .complexity-table {
+    width: 100%; border-collapse: collapse; font-size: 0.88rem;
+  }
+
+  .complexity-table th {
+    background: var(--bg3); padding: 12px 16px; text-align: left;
+    border-bottom: 2px solid var(--border); color: var(--accent);
+    font-weight: 600;
+  }
+
+  .complexity-table td {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .complexity-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .o-n { color: var(--accent4); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .o-n2 { color: var(--accent5); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .o-log { color: var(--accent3); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .o-1 { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  /* VISUAL DIAGRAM */
+  .diagram {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; overflow: hidden;
+  }
+
+  .diagram-title {
+    font-size: 0.8rem; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ARRAY VIZ */
+  .array-viz {
+    display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+  }
+
+  .arr-cell {
+    width: 52px; height: 52px; border: 2px solid var(--border);
+    border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--card); transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .arr-cell .val { font-weight: 700; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; }
+  .arr-cell .idx { font-size: 0.65rem; color: var(--text3); }
+  .arr-cell:hover { border-color: var(--accent); background: rgba(0,212,255,0.08); transform: translateY(-3px); }
+  .arr-cell.hl { border-color: var(--accent3); background: rgba(245,158,11,0.12); }
+
+  /* STACK VIZ */
+  .stack-viz {
+    display: flex; flex-direction: column-reverse; gap: 4px; max-width: 200px;
+  }
+
+  .stack-item {
+    padding: 10px 20px; background: var(--card);
+    border: 2px solid var(--border); border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    text-align: center; transition: all 0.2s;
+  }
+
+  .stack-item.top { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.08); }
+
+  /* LINKED LIST VIZ */
+  .ll-viz { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+
+  .ll-node {
+    display: flex; align-items: center;
+  }
+
+  .ll-box {
+    display: flex; border: 2px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+
+  .ll-val {
+    padding: 10px 14px; background: var(--card);
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  }
+
+  .ll-ptr {
+    padding: 10px 10px; background: rgba(124,58,237,0.15);
+    font-size: 0.75rem; color: #a78bfa; border-left: 2px solid var(--border);
+    display: flex; align-items: center;
+  }
+
+  .ll-arrow { font-size: 1.5rem; color: var(--text3); margin: 0 4px; }
+  .ll-null { font-family: 'JetBrains Mono', monospace; color: var(--accent5); font-size: 0.85rem; padding: 4px; }
+
+  /* TREE VIZ */
+  .tree-viz { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+  .tree-level { display: flex; justify-content: center; gap: 12px; position: relative; margin-bottom: 0; }
+
+  .tree-node {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--card2); border: 2px solid var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1rem; font-family: 'JetBrains Mono', monospace;
+    color: #a78bfa; transition: all 0.2s; cursor: pointer;
+    position: relative; z-index: 1;
+  }
+
+  .tree-node:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.1); }
+
+  .tree-edges {
+    display: flex; justify-content: center;
+    position: relative; height: 36px;
+  }
+
+  svg.tree-svg { width: 100%; }
+
+  /* QUEUE VIZ */
+  .queue-viz { display: flex; gap: 4px; align-items: center; }
+  .q-cell {
+    padding: 10px 18px; background: var(--card); border: 2px solid var(--border);
+    border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    transition: all 0.2s;
+  }
+
+  .q-cell.front { border-color: var(--accent4); color: var(--accent4); background: rgba(16,185,129,0.08); }
+  .q-cell.back { border-color: var(--accent3); color: var(--accent3); background: rgba(245,158,11,0.08); }
+  .q-label { font-size: 0.72rem; color: var(--text3); text-align: center; margin-top: 4px; }
+
+  /* GRAPH VIZ */
+  .graph-container { position: relative; height: 200px; }
+
+  .graph-node {
+    position: absolute; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--card2); border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent);
+    font-size: 0.9rem;
+  }
+
+  /* ALGO STEPS */
+  .algo-steps { display: flex; flex-direction: column; gap: 10px; }
+
+  .algo-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 10px;
+    transition: all 0.2s;
+  }
+
+  .algo-step:hover { border-color: var(--accent2); background: rgba(124,58,237,0.05); }
+
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+  }
+
+  .step-text { font-size: 0.9rem; color: var(--text2); }
+  .step-text strong { color: var(--text); }
+
+  /* USE CASE CARD */
+  .usecase-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px;
+    border-left: 3px solid var(--accent2);
+    transition: all 0.2s;
+  }
+
+  .usecase-card:hover { border-left-color: var(--accent); }
+  .usecase-title { font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
+  .usecase-desc { font-size: 0.85rem; color: var(--text2); }
+
+  /* PHP LABEL */
+  .lang-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .php { background: rgba(119,123,252,0.15); color: #777bfc; border: 1px solid rgba(119,123,252,0.3); }
+  .python { background: rgba(255,212,59,0.15); color: #ffd43b; border: 1px solid rgba(255,212,59,0.3); }
+  .js { background: rgba(247,223,30,0.15); color: #f7df1e; border: 1px solid rgba(247,223,30,0.3); }
+
+  /* HIGHLIGHT BOX */
+  .info-box {
+    border-radius: 12px; padding: 16px 20px;
+    font-size: 0.88rem; margin: 16px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+
+  .info-box.blue { background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.25); }
+  .info-box.purple { background: rgba(124,58,237,0.07); border: 1px solid rgba(124,58,237,0.25); }
+  .info-box.green { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.25); }
+  .info-box.orange { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.25); }
+
+  .info-box .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  .info-box p { color: var(--text2); line-height: 1.6; }
+  .info-box strong { color: var(--text); }
+
+  /* BIG COMPARE */
+  .compare-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin: 16px 0;
+  }
+
+  @media (max-width: 600px) {
+    .compare-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 1.8rem; }
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 40px 24px; text-align: center;
+    color: var(--text3); font-size: 0.85rem;
+  }
+
+  footer strong { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .pulse { animation: pulse 2s infinite; }
+
+  /* BREADCRUMB */
+  .section-path {
+    font-size: 0.75rem; color: var(--text3); font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 32px; padding: 8px 16px; background: var(--bg2);
+    border-radius: 6px; display: inline-block;
+  }
+
+  /* BACK TO TOP */
+  #back-top {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none; color: white; font-size: 1.2rem; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s; z-index: 99;
+  }
+
+  #back-top:hover { transform: scale(1.1) translateY(-3px); }
+
+  /* INTERACTIVE */
+  .btn {
+    padding: 8px 20px; border-radius: 8px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); font-family: 'Hind Siliguri', sans-serif;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+    font-weight: 600;
+  }
+
+  .btn:hover { background: rgba(0,212,255,0.1); }
+  .btn-purple { border-color: var(--accent2); color: #a78bfa; }
+  .btn-purple:hover { background: rgba(124,58,237,0.1); }
+
+  .interactive-demo {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+
+  .demo-output {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px; margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    min-height: 60px; color: var(--accent4);
+  }
+
+  .demo-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+
+  input.demo-input {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; color: var(--text);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;
+    width: 80px; outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input.demo-input:focus { border-color: var(--accent); }
+
+  /* Index highlight */
+  .arr-cell.active { border-color: var(--accent); background: rgba(0,212,255,0.15); }
+  .arr-cell.found { border-color: var(--accent4); background: rgba(16,185,129,0.15); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚡ DSA বাংলায়</div>
+  <ul class="nav-links">
+    <li><a href="#array">Array</a></li>
+    <li><a href="#linkedlist">Linked List</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#queue">Queue</a></li>
+    <li><a href="#tree">Tree</a></li>
+    <li><a href="#graph">Graph</a></li>
+    <li><a href="#sorting">Sorting</a></li>
+    <li><a href="#searching">Searching</a></li>
+    <li><a href="#complexity">Complexity</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="pulse">●</span> PHP / Laravel / CodeIgniter ডেভেলপারদের জন্য সম্পূর্ণ DSA গাইড
+  </div>
+  <h1>Data Structures &<br><span>Algorithms শিখি বাংলায়</span></h1>
+  <p>সহজ ভাষায়, বাস্তব উদাহরণ দিয়ে — PHP কোড সহ। কখন কোনটা ব্যবহার করবে, কেন করবে — সব পাবে এখানে।</p>
+
+  <div class="hero-grid">
+    <a class="hero-card" href="#array"><div class="icon">📦</div><div class="label">Array</div></a>
+    <a class="hero-card" href="#linkedlist"><div class="icon">🔗</div><div class="label">Linked List</div></a>
+    <a class="hero-card" href="#stack"><div class="icon">🥞</div><div class="label">Stack</div></a>
+    <a class="hero-card" href="#queue"><div class="icon">🚶</div><div class="label">Queue</div></a>
+    <a class="hero-card" href="#tree"><div class="icon">🌳</div><div class="label">Tree</div></a>
+    <a class="hero-card" href="#graph"><div class="icon">🕸️</div><div class="label">Graph</div></a>
+    <a class="hero-card" href="#sorting"><div class="icon">🔀</div><div class="label">Sorting</div></a>
+    <a class="hero-card" href="#searching"><div class="icon">🔍</div><div class="label">Searching</div></a>
+    <a class="hero-card" href="#complexity"><div class="icon">⏱️</div><div class="label">Complexity</div></a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ============================= ARRAY ============================= -->
+<section id="array">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <h2>Array — অ্যারে <small>একই রকম ডেটা একসাথে রাখার বাক্স</small></h2>
+  </div>
+
+  <div class="info-box blue">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> Array হলো একটা লকার সিস্টেমের মতো। প্রতিটা লকারের একটা নম্বর (index) আছে — 0, 1, 2, 3... তুমি যেকোনো লকার নম্বর দিলেই সরাসরি সেটা খুলতে পারো।</p>
+  </div>
+
+  <!-- Visual -->
+  <div class="diagram" style="margin-bottom:20px;">
+    <div class="diagram-title">// Array Visualization — index দিয়ে access</div>
+    <div class="array-viz" id="arr-demo">
+      <div class="arr-cell hl"><div class="val">10</div><div class="idx">[0]</div></div>
+      <div class="arr-cell"><div class="val">25</div><div class="idx">[1]</div></div>
+      <div class="arr-cell"><div class="val">37</div><div class="idx">[2]</div></div>
+      <div class="arr-cell"><div class="val">42</div><div class="idx">[3]</div></div>
+      <div class="arr-cell"><div class="val">58</div><div class="idx">[4]</div></div>
+      <div class="arr-cell"><div class="val">63</div><div class="idx">[5]</div></div>
+      <div class="arr-cell"><div class="val">71</div><div class="idx">[6]</div></div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--text3);margin-top:10px;">💡 যেকোনো cell-এ hover করো — সরাসরি O(1) এ access!</p>
+  </div>
+
+  <!-- PHP Code -->
+  <div class="lang-badge php">PHP</div>
+  <pre><code><span class="cm">// ১. Array তৈরি করা</span>
+<span class="var">$numbers</span> = [<span class="num">10</span>, <span class="num">25</span>, <span class="num">37</span>, <span class="num">42</span>, <span class="num">58</span>];
+
+<span class="cm">// ২. Index দিয়ে access — O(1) সময় লাগে</span>
+<span class="kw">echo</span> <span class="var">$numbers</span>[<span class="num">2</span>]; <span class="cm">// Output: 37</span>
+
+<span class="cm">// ৩. Element যোগ করা</span>
+<span class="var">$numbers</span>[] = <span class="num">90</span>;           <span class="cm">// শেষে যোগ</span>
+<span class="fn">array_unshift</span>(<span class="var">$numbers</span>, <span class="num">5</span>); <span class="cm">// শুরুতে যোগ</span>
+
+<span class="cm">// ৪. Element মুছে ফেলা</span>
+<span class="fn">array_pop</span>(<span class="var">$numbers</span>);        <span class="cm">// শেষ থেকে বাদ</span>
+<span class="fn">array_shift</span>(<span class="var">$numbers</span>);      <span class="cm">// শুরু থেকে বাদ</span>
+
+<span class="cm">// ৫. Array তে খোঁজা</span>
+<span class="kw">if</span> (<span class="fn">in_array</span>(<span class="num">37</span>, <span class="var">$numbers</span>)) {
+    <span class="kw">echo</span> <span class="str">"পাওয়া গেছে!"</span>;
+}
+
+<span class="cm">// ৬. Laravel এ Array সব জায়গায়!</span>
+<span class="var">$users</span> = <span class="cls">User</span>::<span class="fn">all</span>()->toArray(); <span class="cm">// Collection → Array</span>
+<span class="var">$names</span> = <span class="fn">array_column</span>(<span class="var">$users</span>, <span class="str">'name'</span>); <span class="cm">// শুধু name গুলো</span>
+<div class="code-label">PHP</div></code></pre>
+
+  <div class="grid-2" style="margin:20px 0;">
+    <div class="card">
+      <div class="card-title">✅ Array কখন ব্যবহার করবে?</div>
+      <ul style="color:var(--text2);font-size:0.88rem;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
+        <li>Index দিয়ে দ্রুত access দরকার হলে</li>
+        <li>ডেটার সংখ্যা জানা থাকলে</li>
+        <li>List render করতে (product list, user list)</li>
+        <li>Database result store করতে</li>
+        <li>JSON response পাঠাতে</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">❌ Array কখন ব্যবহার করবে না?</div>
+      <ul style="color:var(--text2);font-size:0.88rem;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
+        <li>মাঝ থেকে বারবার insert/delete করলে</li>
+        <li>ডেটার সংখ্যা অজানা ও অনেক বড় হলে</li>
+        <li>Key-Value pair দরকার হলে (তখন HashMap)</li>
+        <li>Hierarchical ডেটা হলে (তখন Tree)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">🏭 Real Use Case — Laravel-এ কোথায় দেখবে?</div>
+    <div class="grid-3">
+      <div class="usecase-card">
+        <div class="usecase-title">📋 Blade তে @foreach</div>
+        <div class="usecase-desc">Product array loop করে সব card দেখানো</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">📊 Collection::toArray()</div>
+        <div class="usecase-desc">DB query result কে array করে JSON return</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">🔧 config() files</div>
+        <div class="usecase-desc">config/app.php পুরোটাই nested array</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= LINKED LIST ============================= -->
+<section id="linkedlist">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <h2>Linked List — লিংকড লিস্ট <small>একটা node আরেকটাকে ধরে থাকে</small></h2>
+  </div>
+
+  <div class="info-box purple">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> রেলগাড়ির বগির মতো। প্রতিটা বগি (node) তার ডেটা রাখে এবং পরের বগিকে চেনে। শুরু থেকে গুনে যেতে হয়, সরাসরি যাওয়া যায় না।</p>
+  </div>
+
+  <div class="diagram" style="margin-bottom:20px;">
+    <div class="diagram-title">// Singly Linked List — Head থেকে Tail পর্যন্ত</div>
+    <div class="ll-viz">
+      <div class="ll-node">
+        <div class="ll-box">
+          <div class="ll-val" style="color:var(--accent)">10</div>
+          <div class="ll-ptr">next→</div>
+        </div>
+      </div>
+      <div class="ll-arrow">→</div>
+      <div class="ll-node">
+        <div class="ll-box">
+          <div class="ll-val">25</div>
+          <div class="ll-ptr">next→</div>
+        </div>
+      </div>
+      <div class="ll-arrow">→</div>
+      <div class="ll-node">
+        <div class="ll-box">
+          <div class="ll-val">37</div>
+          <div class="ll-ptr">next→</div>
+        </div>
+      </div>
+      <div class="ll-arrow">→</div>
+      <div class="ll-node">
+        <div class="ll-box">
+          <div class="ll-val" style="color:var(--accent3)">50</div>
+          <div class="ll-ptr">next→</div>
+        </div>
+      </div>
+      <div class="ll-arrow">→</div>
+      <div class="ll-null">NULL</div>
+    </div>
+    <div style="margin-top:10px;font-size:0.8rem;color:var(--text3)">
+      <span style="color:var(--accent)">■ Head (শুরু)</span> &nbsp;&nbsp;
+      <span style="color:var(--accent3)">■ Tail (শেষ)</span>
+    </div>
+  </div>
+
+  <div class="lang-badge php">PHP</div>
+  <pre><code><span class="cm">// Node Class তৈরি</span>
+<span class="kw">class</span> <span class="cls">Node</span> {
+    <span class="kw">public</span> <span class="var">$data</span>;
+    <span class="kw">public</span> <span class="var">$next</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="var">$data</span>) {
+        <span class="var">$this</span>-><span class="var">data</span> = <span class="var">$data</span>;
+        <span class="var">$this</span>-><span class="var">next</span> = <span class="kw">null</span>;
+    }
+}
+
+<span class="cm">// LinkedList Class</span>
+<span class="kw">class</span> <span class="cls">LinkedList</span> {
+    <span class="kw">private</span> <span class="var">$head</span> = <span class="kw">null</span>;
+
+    <span class="cm">// শেষে যোগ করা — O(n)</span>
+    <span class="kw">public function</span> <span class="fn">append</span>(<span class="var">$data</span>) {
+        <span class="var">$new</span> = <span class="kw">new</span> <span class="cls">Node</span>(<span class="var">$data</span>);
+        <span class="kw">if</span> (!<span class="var">$this</span>-><span class="var">head</span>) {
+            <span class="var">$this</span>-><span class="var">head</span> = <span class="var">$new</span>;
+            <span class="kw">return</span>;
+        }
+        <span class="var">$curr</span> = <span class="var">$this</span>-><span class="var">head</span>;
+        <span class="kw">while</span> (<span class="var">$curr</span>-><span class="var">next</span>) {
+            <span class="var">$curr</span> = <span class="var">$curr</span>-><span class="var">next</span>;
+        }
+        <span class="var">$curr</span>-><span class="var">next</span> = <span class="var">$new</span>;
+    }
+
+    <span class="cm">// Print করা</span>
+    <span class="kw">public function</span> <span class="fn">print</span>() {
+        <span class="var">$curr</span> = <span class="var">$this</span>-><span class="var">head</span>;
+        <span class="kw">while</span> (<span class="var">$curr</span>) {
+            <span class="kw">echo</span> <span class="var">$curr</span>-><span class="var">data</span> . <span class="str">" → "</span>;
+            <span class="var">$curr</span> = <span class="var">$curr</span>-><span class="var">next</span>;
+        }
+        <span class="kw">echo</span> <span class="str">"NULL"</span>;
+    }
+}
+
+<span class="var">$list</span> = <span class="kw">new</span> <span class="cls">LinkedList</span>();
+<span class="var">$list</span>-><span class="fn">append</span>(<span class="num">10</span>);
+<span class="var">$list</span>-><span class="fn">append</span>(<span class="num">25</span>);
+<span class="var">$list</span>-><span class="fn">append</span>(<span class="num">37</span>);
+<span class="var">$list</span>-><span class="fn">print</span>(); <span class="cm">// 10 → 25 → 37 → NULL</span>
+<div class="code-label">PHP</div></code></pre>
+
+  <div class="info-box green" style="margin-top:16px;">
+    <div class="icon">🏭</div>
+    <p><strong>Laravel-এ কোথায় দেখবে:</strong> Laravel-এর <strong>Collection</strong> internally linked list-এর মতো কাজ করে। <code>->chunk()</code>, <code>->filter()</code> — এগুলো linked traversal। PHP-তে সরাসরি LinkedList কম দরকার হয়, কিন্তু concept বুঝলে Collection API বুঝা সহজ হয়।</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= STACK ============================= -->
+<section id="stack">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <h2>Stack — স্ট্যাক <small>শেষে যা ঢুকবে, আগে বের হবে</small></h2>
+  </div>
+
+  <div class="info-box orange">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> প্লেটের স্তূপের মতো। উপর থেকে রাখো, উপর থেকে তোলো। এটাই <strong>LIFO</strong> — Last In, First Out। Browser-এর Back button ঠিক এভাবে কাজ করে!</p>
+  </div>
+
+  <div class="compare-row">
+    <div class="diagram">
+      <div class="diagram-title">// Stack Visualization — LIFO</div>
+      <div style="display:flex;gap:20px;align-items:flex-end;">
+        <div class="stack-viz">
+          <div class="stack-item">10</div>
+          <div class="stack-item">25</div>
+          <div class="stack-item">37</div>
+          <div class="stack-item top">50 ← TOP</div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text2);max-width:180px;">
+          <p style="margin-bottom:8px;"><span style="color:var(--accent3)">Push(60)</span> → উপরে যোগ হবে</p>
+          <p><span style="color:var(--accent5)">Pop()</span> → 50 বের হবে</p>
+          <p style="margin-top:8px;"><span style="color:var(--accent)">Peek()</span> → শুধু দেখবো (50)</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="lang-badge php">PHP</div>
+      <pre><code><span class="cm">// PHP তে Stack = Array!</span>
+<span class="var">$stack</span> = [];
+
+<span class="cm">// Push — উপরে রাখো O(1)</span>
+<span class="fn">array_push</span>(<span class="var">$stack</span>, <span class="num">10</span>);
+<span class="fn">array_push</span>(<span class="var">$stack</span>, <span class="num">25</span>);
+<span class="fn">array_push</span>(<span class="var">$stack</span>, <span class="num">50</span>);
+
+<span class="cm">// Pop — উপর থেকে তোলো O(1)</span>
+<span class="var">$top</span> = <span class="fn">array_pop</span>(<span class="var">$stack</span>);
+<span class="kw">echo</span> <span class="var">$top</span>; <span class="cm">// 50</span>
+
+<span class="cm">// Peek — না তুলে দেখো</span>
+<span class="var">$peek</span> = <span class="fn">end</span>(<span class="var">$stack</span>);
+
+<span class="cm">// Empty check</span>
+<span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$stack</span>)) {
+    <span class="kw">echo</span> <span class="str">"Stack খালি!"</span>;
+}
+<div class="code-label">PHP</div></code></pre>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">🏭 Stack-এর Real Use Cases</div>
+    <div class="grid-3">
+      <div class="usecase-card">
+        <div class="usecase-title">🌐 Browser Back Button</div>
+        <div class="usecase-desc">যে page দেখলে সেটা stack-এ push হয়। Back চাপলে pop হয়।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">↩️ Undo/Redo</div>
+        <div class="usecase-desc">Text editor-এ Ctrl+Z চাপলে stack থেকে last action pop হয়।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">🔧 Laravel Middleware</div>
+        <div class="usecase-desc">Request pipeline stack-এর মতো। শেষে যোগ হওয়া middleware আগে run করে।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">📞 Function Call</div>
+        <div class="usecase-desc">PHP function call করলে call stack-এ যায়, return করলে বের হয়।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">{ } Bracket Check</div>
+        <div class="usecase-desc">Code-এ bracket মিলে কিনা stack দিয়ে চেক করা হয়।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">🛒 Shopping Cart</div>
+        <div class="usecase-desc">Last added item কে আগে remove করা।</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bracket check example -->
+  <div class="lang-badge php">PHP — Real Example: Bracket Check</div>
+  <pre><code><span class="kw">function</span> <span class="fn">isBalanced</span>(<span class="var">$str</span>): <span class="cls">bool</span> {
+    <span class="var">$stack</span> = [];
+    <span class="var">$map</span> = [<span class="str">')'</span> => <span class="str">'('</span>, <span class="str">']'</span> => <span class="str">'['</span>, <span class="str">'}'</span> => <span class="str">'{'</span>];
+
+    <span class="kw">foreach</span> (<span class="fn">str_split</span>(<span class="var">$str</span>) <span class="kw">as</span> <span class="var">$ch</span>) {
+        <span class="kw">if</span> (<span class="fn">in_array</span>(<span class="var">$ch</span>, [<span class="str">'('</span>, <span class="str">'['</span>, <span class="str">'{'</span>])) {
+            <span class="fn">array_push</span>(<span class="var">$stack</span>, <span class="var">$ch</span>); <span class="cm">// push opening</span>
+        } <span class="kw">elseif</span> (<span class="fn">isset</span>(<span class="var">$map</span>[<span class="var">$ch</span>])) {
+            <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$stack</span>) || <span class="fn">array_pop</span>(<span class="var">$stack</span>) !== <span class="var">$map</span>[<span class="var">$ch</span>])
+                <span class="kw">return false</span>;
+        }
+    }
+    <span class="kw">return empty</span>(<span class="var">$stack</span>);
+}
+
+<span class="kw">echo</span> <span class="fn">isBalanced</span>(<span class="str">"{[()]}"</span>) ? <span class="str">"✅ Balanced"</span> : <span class="str">"❌ Not Balanced"</span>;
+<span class="cm">// Output: ✅ Balanced</span>
+<div class="code-label">PHP</div></code></pre>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= QUEUE ============================= -->
+<section id="queue">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <h2>Queue — কিউ <small>আগে যে ঢুকবে, আগে বের হবে</small></h2>
+  </div>
+
+  <div class="info-box blue">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> ATM লাইনের মতো। যে আগে আসবে, আগে টাকা পাবে। এটাই <strong>FIFO</strong> — First In, First Out।</p>
+  </div>
+
+  <div class="diagram" style="margin-bottom:20px;">
+    <div class="diagram-title">// Queue Visualization — FIFO</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="font-size:0.8rem;color:var(--text3);">Enqueue →</span>
+    </div>
+    <div class="queue-viz">
+      <div>
+        <div class="q-cell back">D</div>
+        <div class="q-label">BACK (নতুন)</div>
+      </div>
+      <div class="q-cell">C</div>
+      <div class="q-cell">B</div>
+      <div>
+        <div class="q-cell front">A</div>
+        <div class="q-label">FRONT (পুরনো)</div>
+      </div>
+      <span style="font-size:1.5rem;color:var(--text3)">→</span>
+      <span style="color:var(--accent4);font-size:0.85rem;">Dequeue হবে</span>
+    </div>
+  </div>
+
+  <div class="lang-badge php">PHP — Queue + Laravel Queue Jobs</div>
+  <pre><code><span class="cm">// Basic Queue in PHP</span>
+<span class="var">$queue</span> = [];
+
+<span class="cm">// Enqueue — পেছনে যোগ</span>
+<span class="fn">array_push</span>(<span class="var">$queue</span>, <span class="str">"রফিক"</span>);
+<span class="fn">array_push</span>(<span class="var">$queue</span>, <span class="str">"করিম"</span>);
+<span class="fn">array_push</span>(<span class="var">$queue</span>, <span class="str">"সালাম"</span>);
+
+<span class="cm">// Dequeue — সামনে থেকে বের</span>
+<span class="var">$first</span> = <span class="fn">array_shift</span>(<span class="var">$queue</span>);
+<span class="kw">echo</span> <span class="var">$first</span>; <span class="cm">// রফিক (আগে আসছে, আগে বের)</span>
+
+<span class="cm">// ==========================================</span>
+<span class="cm">// Laravel Queue — Real World!</span>
+<span class="cm">// ==========================================</span>
+
+<span class="cm">// Job তৈরি:</span>
+<span class="kw">class</span> <span class="cls">SendEmailJob</span> <span class="kw">implements</span> <span class="cls">ShouldQueue</span> {
+    <span class="kw">public function</span> <span class="fn">handle</span>() {
+        <span class="cm">// Email পাঠানো (background-এ)</span>
+        <span class="cls">Mail</span>::<span class="fn">to</span>(<span class="var">$this</span>-><span class="var">user</span>)->send(<span class="kw">new</span> <span class="cls">WelcomeMail</span>());
+    }
+}
+
+<span class="cm">// Queue তে পাঠানো:</span>
+<span class="cls">SendEmailJob</span>::<span class="fn">dispatch</span>(<span class="var">$user</span>)->delay(<span class="fn">now</span>()-><span class="fn">addMinutes</span>(<span class="num">5</span>));
+
+<span class="cm">// Worker চালানো:</span>
+<span class="cm">// php artisan queue:work</span>
+<div class="code-label">PHP / Laravel</div></code></pre>
+
+  <div class="info-box green">
+    <div class="icon">🏭</div>
+    <p><strong>Laravel Queue কী?</strong> ব্যবহারকারী Email পাঠালে তাকে wait করানো ঠিক না। তাই job queue-তে রেখে background-এ process করা হয়। এটাই real-world queue-এর সবচেয়ে বড় ব্যবহার — <strong>Email, SMS, Notification, PDF generation।</strong></p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= TREE ============================= -->
+<section id="tree">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <h2>Tree — ট্রি <small>শাখা-প্রশাখার মতো ডেটা</small></h2>
+  </div>
+
+  <div class="info-box purple">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> পরিবারের গাছের মতো। একটা root (মূল) থেকে শাখা বের হয়। প্রতিটা node-এর parent এবং children আছে। Category &gt; Sub-category — এটাই tree।</p>
+  </div>
+
+  <div class="compare-row">
+    <div class="diagram">
+      <div class="diagram-title">// Binary Search Tree (BST)</div>
+      <div class="tree-viz">
+        <div class="tree-level">
+          <div class="tree-node" style="border-color:var(--accent);color:var(--accent)">50</div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:60px;height:30px;">
+          <div style="width:2px;background:var(--border);margin-left:-30px;"></div>
+          <div style="width:2px;background:var(--border);margin-right:-30px;"></div>
+        </div>
+        <div class="tree-level">
+          <div class="tree-node">30</div>
+          <div class="tree-node">70</div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:20px;height:30px;">
+          <div style="width:2px;background:var(--border);margin-left:-50px;"></div>
+          <div style="width:2px;background:var(--border);margin-left:30px;"></div>
+          <div style="width:2px;background:var(--border);margin-left:30px;"></div>
+          <div style="width:2px;background:var(--border);"></div>
+        </div>
+        <div class="tree-level" style="gap:6px;">
+          <div class="tree-node" style="width:40px;height:40px;font-size:0.8rem;">20</div>
+          <div class="tree-node" style="width:40px;height:40px;font-size:0.8rem;">40</div>
+          <div class="tree-node" style="width:40px;height:40px;font-size:0.8rem;">60</div>
+          <div class="tree-node" style="width:40px;height:40px;font-size:0.8rem;">80</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:0.78rem;color:var(--text3);">
+        Left child সবসময় ছোট, Right child সবসময় বড়
+      </div>
+    </div>
+
+    <div>
+      <div class="lang-badge php">PHP</div>
+      <pre style="font-size:0.78rem;"><code><span class="kw">class</span> <span class="cls">TreeNode</span> {
+    <span class="kw">public</span> <span class="var">$val</span>, <span class="var">$left</span>, <span class="var">$right</span>;
+    <span class="kw">function</span> <span class="fn">__construct</span>(<span class="var">$v</span>) {
+        <span class="var">$this</span>-><span class="var">val</span> = <span class="var">$v</span>;
+        <span class="var">$this</span>-><span class="var">left</span> = <span class="var">$this</span>-><span class="var">right</span> = <span class="kw">null</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="cls">BST</span> {
+    <span class="kw">public</span> <span class="var">$root</span> = <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">insert</span>(<span class="var">$val</span>) {
+        <span class="var">$this</span>-><span class="var">root</span> = <span class="var">$this</span>-><span class="fn">_insert</span>(
+            <span class="var">$this</span>-><span class="var">root</span>, <span class="var">$val</span>
+        );
+    }
+
+    <span class="kw">private function</span> <span class="fn">_insert</span>(<span class="var">$node</span>, <span class="var">$val</span>) {
+        <span class="kw">if</span> (!<span class="var">$node</span>) <span class="kw">return new</span> <span class="cls">TreeNode</span>(<span class="var">$val</span>);
+        <span class="kw">if</span> (<span class="var">$val</span> < <span class="var">$node</span>-><span class="var">val</span>)
+            <span class="var">$node</span>-><span class="var">left</span> = <span class="var">$this</span>-><span class="fn">_insert</span>(
+                <span class="var">$node</span>-><span class="var">left</span>, <span class="var">$val</span>
+            );
+        <span class="kw">else</span>
+            <span class="var">$node</span>-><span class="var">right</span> = <span class="var">$this</span>-><span class="fn">_insert</span>(
+                <span class="var">$node</span>-><span class="var">right</span>, <span class="var">$val</span>
+            );
+        <span class="kw">return</span> <span class="var">$node</span>;
+    }
+}
+<div class="code-label">PHP</div></code></pre>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">🏭 Tree — Laravel-এ কোথায় দেখবে?</div>
+    <div class="grid-3">
+      <div class="usecase-card">
+        <div class="usecase-title">📂 Category Tree</div>
+        <div class="usecase-desc">Electronics &gt; Mobile &gt; Samsung। Nested set বা parent_id দিয়ে tree তৈরি।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">💬 Comment Threads</div>
+        <div class="usecase-desc">Reply-এর reply। Recursive Eloquent relationship দিয়ে tree।</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-title">🗺️ Route Tree</div>
+        <div class="usecase-desc">Laravel Router internally tree structure দিয়ে routes match করে।</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang-badge php">PHP — Laravel Recursive Category Tree</div>
+  <pre><code><span class="cm">// Model</span>
+<span class="kw">class</span> <span class="cls">Category</span> <span class="kw">extends</span> <span class="cls">Model</span> {
+    <span class="kw">public function</span> <span class="fn">children</span>() {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">hasMany</span>(<span class="cls">Category</span>::class, <span class="str">'parent_id'</span>)
+                    -><span class="fn">with</span>(<span class="str">'children'</span>); <span class="cm">// Recursive!</span>
+    }
+    <span class="kw">public function</span> <span class="fn">parent</span>() {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">belongsTo</span>(<span class="cls">Category</span>::class, <span class="str">'parent_id'</span>);
+    }
+}
+
+<span class="cm">// Root categories সব tree সহ</span>
+<span class="var">$tree</span> = <span class="cls">Category</span>::<span class="fn">whereNull</span>(<span class="str">'parent_id'</span>)-><span class="fn">with</span>(<span class="str">'children'</span>)-><span class="fn">get</span>();
+
+<span class="cm">// Blade তে Recursive render</span>
+<span class="cm">// @each('category-item', $tree, 'category')</span>
+<div class="code-label">Laravel</div></code></pre>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= GRAPH ============================= -->
+<section id="graph">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <h2>Graph — গ্রাফ <small>সব কিছু সবার সাথে যুক্ত</small></h2>
+  </div>
+
+  <div class="info-box orange">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> Facebook friendship-এর মতো। তুমি আমার বন্ধু, আমি তার বন্ধু। কোনো hierarchy নেই — যেকোনো node যেকোনো node-কে চিনতে পারে।</p>
+  </div>
+
+  <div class="compare-row">
+    <div class="diagram">
+      <div class="diagram-title">// Graph — Social Network Example</div>
+      <div class="graph-container">
+        <svg width="100%" height="200" style="position:absolute;top:0;left:0;">
+          <line x1="80" y1="60" x2="200" y2="40" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+          <line x1="80" y1="60" x2="60" y2="150" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+          <line x1="200" y1="40" x2="300" y2="100" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+          <line x1="60" y1="150" x2="200" y2="160" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+          <line x1="200" y1="160" x2="300" y2="100" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+          <line x1="200" y1="40" x2="200" y2="160" stroke="rgba(124,58,237,0.4)" stroke-width="2" stroke-dasharray="5"/>
+        </svg>
+        <div class="graph-node" style="left:58px;top:38px;">A</div>
+        <div class="graph-node" style="left:178px;top:18px;">B</div>
+        <div class="graph-node" style="left:278px;top:78px;">C</div>
+        <div class="graph-node" style="left:178px;top:138px;">D</div>
+        <div class="graph-node" style="left:38px;top:128px;">E</div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-top:8px;">
+        <span style="color:var(--accent)">— </span>Undirected Edge (বন্ধুত্ব)&nbsp;&nbsp;
+        <span style="color:#a78bfa">- - </span>Directed Edge (follow)
+      </div>
+    </div>
+
+    <div>
+      <div class="lang-badge php">PHP — Adjacency List</div>
+      <pre style="font-size:0.78rem;"><code><span class="cm">// Graph — Adjacency List দিয়ে</span>
+<span class="var">$graph</span> = [
+    <span class="str">'A'</span> => [<span class="str">'B'</span>, <span class="str">'E'</span>],
+    <span class="str">'B'</span> => [<span class="str">'A'</span>, <span class="str">'C'</span>, <span class="str">'D'</span>],
+    <span class="str">'C'</span> => [<span class="str">'B'</span>, <span class="str">'D'</span>],
+    <span class="str">'D'</span> => [<span class="str">'B'</span>, <span class="str">'C'</span>, <span class="str">'E'</span>],
+    <span class="str">'E'</span> => [<span class="str">'A'</span>, <span class="str">'D'</span>],
+];
+
+<span class="cm">// BFS — Breadth First Search</span>
+<span class="kw">function</span> <span class="fn">bfs</span>(<span class="var">$graph</span>, <span class="var">$start</span>) {
+    <span class="var">$visited</span> = [<span class="var">$start</span> => <span class="kw">true</span>];
+    <span class="var">$queue</span>   = [<span class="var">$start</span>];
+
+    <span class="kw">while</span> (!<span class="fn">empty</span>(<span class="var">$queue</span>)) {
+        <span class="var">$node</span> = <span class="fn">array_shift</span>(<span class="var">$queue</span>);
+        <span class="kw">echo</span> <span class="var">$node</span> . <span class="str">" "</span>;
+
+        <span class="kw">foreach</span> (<span class="var">$graph</span>[<span class="var">$node</span>] <span class="kw">as</span> <span class="var">$neighbor</span>) {
+            <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$visited</span>[<span class="var">$neighbor</span>])) {
+                <span class="var">$visited</span>[<span class="var">$neighbor</span>] = <span class="kw">true</span>;
+                <span class="var">$queue</span>[] = <span class="var">$neighbor</span>;
+            }
+        }
+    }
+}
+
+<span class="fn">bfs</span>(<span class="var">$graph</span>, <span class="str">'A'</span>);
+<span class="cm">// Output: A B E C D</span>
+<div class="code-label">PHP</div></code></pre>
+    </div>
+  </div>
+
+  <div class="info-box green" style="margin-top:16px;">
+    <div class="icon">🏭</div>
+    <p><strong>Real Use Cases:</strong> Google Maps shortest path, Social network friend suggestions, Laravel route dependency resolution, Recommendation engine ("যারা এটা কিনেছে তারা এটাও কিনেছে")।</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= SORTING ============================= -->
+<section id="sorting">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <h2>Sorting Algorithms — সাজানোর উপায় <small>কম সময়ে কীভাবে সাজাবো?</small></h2>
+  </div>
+
+  <!-- BUBBLE SORT -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🫧 Bubble Sort — বাবল সর্ট <span class="tag tag-red">O(n²) — ধীরে</span></div>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:12px;">পাশাপাশি দুটো compare করো, বড়টাকে ডানে পাঠাও। বারবার করো।</p>
+
+    <div class="diagram" style="margin-bottom:12px;">
+      <div class="diagram-title">// Bubble Sort — একটা pass</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
+        <div class="arr-cell hl"><div class="val">64</div></div>
+        <div class="arr-cell hl"><div class="val">34</div></div>
+        <span style="color:var(--text3);font-size:0.8rem;">← compare</span>
+        <span style="color:var(--accent3);font-size:1rem;">→ swap!</span>
+        <div class="arr-cell"><div class="val">25</div></div>
+        <div class="arr-cell"><div class="val">12</div></div>
+        <div class="arr-cell"><div class="val">22</div></div>
+        <div class="arr-cell"><div class="val">11</div></div>
+        <div class="arr-cell"><div class="val">90</div></div>
+      </div>
+    </div>
+
+    <div class="lang-badge php">PHP</div>
+    <pre><code><span class="kw">function</span> <span class="fn">bubbleSort</span>(<span class="var">$arr</span>) {
+    <span class="var">$n</span> = <span class="fn">count</span>(<span class="var">$arr</span>);
+    <span class="kw">for</span> (<span class="var">$i</span> = <span class="num">0</span>; <span class="var">$i</span> < <span class="var">$n</span> - <span class="num">1</span>; <span class="var">$i</span>++) {
+        <span class="kw">for</span> (<span class="var">$j</span> = <span class="num">0</span>; <span class="var">$j</span> < <span class="var">$n</span> - <span class="var">$i</span> - <span class="num">1</span>; <span class="var">$j</span>++) {
+            <span class="kw">if</span> (<span class="var">$arr</span>[<span class="var">$j</span>] > <span class="var">$arr</span>[<span class="var">$j</span>+<span class="num">1</span>]) {
+                <span class="cm">// Swap</span>
+                [<span class="var">$arr</span>[<span class="var">$j</span>], <span class="var">$arr</span>[<span class="var">$j</span>+<span class="num">1</span>]] = [<span class="var">$arr</span>[<span class="var">$j</span>+<span class="num">1</span>], <span class="var">$arr</span>[<span class="var">$j</span>]];
+            }
+        }
+    }
+    <span class="kw">return</span> <span class="var">$arr</span>;
+}
+
+<span class="var">$arr</span> = [<span class="num">64</span>, <span class="num">34</span>, <span class="num">25</span>, <span class="num">12</span>, <span class="num">22</span>, <span class="num">11</span>, <span class="num">90</span>];
+<span class="fn">print_r</span>(<span class="fn">bubbleSort</span>(<span class="var">$arr</span>));
+<span class="cm">// [11, 12, 22, 25, 34, 64, 90]</span>
+<div class="code-label">PHP</div></code></pre>
+  </div>
+
+  <!-- MERGE SORT -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔀 Merge Sort — মার্জ সর্ট <span class="tag tag-green">O(n log n) — দ্রুত</span></div>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:12px;">ভাগ করো → সাজাও → মিলাও। Divide & Conquer কৌশল।</p>
+
+    <div class="algo-steps">
+      <div class="algo-step">
+        <div class="step-num">১</div>
+        <div class="step-text"><strong>ভাগ করো:</strong> Array কে মাঝ থেকে দুই ভাগ করো</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num">২</div>
+        <div class="step-text"><strong>Recursive sort:</strong> প্রতিটা অংশ আলাদা sort করো</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num">৩</div>
+        <div class="step-text"><strong>Merge:</strong> sorted দুটো অংশ তুলনা করে মিলিয়ে দাও</div>
+      </div>
+    </div>
+
+    <div class="lang-badge php" style="margin-top:12px;">PHP</div>
+    <pre><code><span class="kw">function</span> <span class="fn">mergeSort</span>(<span class="var">$arr</span>) {
+    <span class="var">$n</span> = <span class="fn">count</span>(<span class="var">$arr</span>);
+    <span class="kw">if</span> (<span class="var">$n</span> <= <span class="num">1</span>) <span class="kw">return</span> <span class="var">$arr</span>;
+
+    <span class="var">$mid</span>   = (<span class="kw">int</span>) (<span class="var">$n</span> / <span class="num">2</span>);
+    <span class="var">$left</span>  = <span class="fn">mergeSort</span>(<span class="fn">array_slice</span>(<span class="var">$arr</span>, <span class="num">0</span>, <span class="var">$mid</span>));
+    <span class="var">$right</span> = <span class="fn">mergeSort</span>(<span class="fn">array_slice</span>(<span class="var">$arr</span>, <span class="var">$mid</span>));
+
+    <span class="kw">return</span> <span class="fn">merge</span>(<span class="var">$left</span>, <span class="var">$right</span>);
+}
+
+<span class="kw">function</span> <span class="fn">merge</span>(<span class="var">$left</span>, <span class="var">$right</span>) {
+    <span class="var">$result</span> = [];
+    <span class="var">$i</span> = <span class="var">$j</span> = <span class="num">0</span>;
+
+    <span class="kw">while</span> (<span class="var">$i</span> < <span class="fn">count</span>(<span class="var">$left</span>) && <span class="var">$j</span> < <span class="fn">count</span>(<span class="var">$right</span>)) {
+        <span class="kw">if</span> (<span class="var">$left</span>[<span class="var">$i</span>] <= <span class="var">$right</span>[<span class="var">$j</span>]) {
+            <span class="var">$result</span>[] = <span class="var">$left</span>[<span class="var">$i</span>++];
+        } <span class="kw">else</span> {
+            <span class="var">$result</span>[] = <span class="var">$right</span>[<span class="var">$j</span>++];
+        }
+    }
+
+    <span class="kw">return</span> <span class="fn">array_merge</span>(<span class="var">$result</span>,
+        <span class="fn">array_slice</span>(<span class="var">$left</span>, <span class="var">$i</span>),
+        <span class="fn">array_slice</span>(<span class="var">$right</span>, <span class="var">$j</span>)
+    );
+}
+
+<span class="fn">print_r</span>(<span class="fn">mergeSort</span>([<span class="num">38</span>, <span class="num">27</span>, <span class="num">43</span>, <span class="num">3</span>, <span class="num">9</span>, <span class="num">82</span>, <span class="num">10</span>]));
+<span class="cm">// [3, 9, 10, 27, 38, 43, 82]</span>
+<div class="code-label">PHP</div></code></pre>
+  </div>
+
+  <!-- PHP built-in -->
+  <div class="info-box green">
+    <div class="icon">✨</div>
+    <p><strong>Laravel-এ sort:</strong> বেশিরভাগ সময় PHP-র built-in <code>sort()</code>, <code>usort()</code> বা Laravel-এর <code>->sortBy()</code>, <code>->orderBy()</code> ব্যবহার করো। সেগুলো internally Quicksort/Timsort ব্যবহার করে।</p>
+  </div>
+
+  <div class="lang-badge php">PHP — Laravel sorting (real world)</div>
+  <pre><code><span class="cm">// Database level sort (সবচেয়ে ভালো)</span>
+<span class="var">$products</span> = <span class="cls">Product</span>::<span class="fn">orderBy</span>(<span class="str">'price'</span>, <span class="str">'asc'</span>)-><span class="fn">get</span>();
+
+<span class="cm">// Collection sort</span>
+<span class="var">$sorted</span> = <span class="fn">collect</span>([<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>])-><span class="fn">sort</span>()-><span class="fn">values</span>();
+
+<span class="cm">// Object array sort by field</span>
+<span class="var">$users</span> = <span class="cls">User</span>::<span class="fn">all</span>()-><span class="fn">sortBy</span>(<span class="str">'name'</span>);
+
+<span class="cm">// usort — custom logic</span>
+<span class="fn">usort</span>(<span class="var">$products</span>, <span class="kw">fn</span>(<span class="var">$a</span>, <span class="var">$b</span>) => <span class="var">$a</span>[<span class="str">'price'</span>] <span class="op"><=> </span><span class="var">$b</span>[<span class="str">'price'</span>]);
+<div class="code-label">Laravel / PHP</div></code></pre>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= SEARCHING ============================= -->
+<section id="searching">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <h2>Searching — খোঁজা <small>Linear vs Binary</small></h2>
+  </div>
+
+  <div class="compare-row">
+    <!-- LINEAR -->
+    <div class="card">
+      <div class="card-title">🔦 Linear Search <span class="tag tag-orange">O(n)</span></div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:12px;">একটা একটা করে দেখো। Unsorted array-তে কাজ করে।</p>
+
+      <div class="diagram">
+        <div class="diagram-title">// Finding 37</div>
+        <div class="array-viz">
+          <div class="arr-cell" style="border-color:var(--accent5)"><div class="val">10</div><div class="idx">✗</div></div>
+          <div class="arr-cell" style="border-color:var(--accent5)"><div class="val">25</div><div class="idx">✗</div></div>
+          <div class="arr-cell found"><div class="val">37</div><div class="idx">✓</div></div>
+          <div class="arr-cell"><div class="val">42</div><div class="idx">[3]</div></div>
+          <div class="arr-cell"><div class="val">58</div><div class="idx">[4]</div></div>
+        </div>
+      </div>
+
+      <div class="lang-badge php" style="margin-top:12px;">PHP</div>
+      <pre style="font-size:0.78rem;"><code><span class="kw">function</span> <span class="fn">linearSearch</span>(<span class="var">$arr</span>, <span class="var">$target</span>) {
+    <span class="kw">foreach</span> (<span class="var">$arr</span> <span class="kw">as</span> <span class="var">$i</span> => <span class="var">$val</span>) {
+        <span class="kw">if</span> (<span class="var">$val</span> === <span class="var">$target</span>) <span class="kw">return</span> <span class="var">$i</span>;
+    }
+    <span class="kw">return</span> -<span class="num">1</span>;
+}
+
+<span class="kw">echo</span> <span class="fn">linearSearch</span>([<span class="num">10</span>,<span class="num">25</span>,<span class="num">37</span>,<span class="num">42</span>], <span class="num">37</span>);
+<span class="cm">// Output: 2</span>
+<div class="code-label">PHP</div></code></pre>
+    </div>
+
+    <!-- BINARY -->
+    <div class="card">
+      <div class="card-title">⚡ Binary Search <span class="tag tag-green">O(log n)</span></div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:12px;">মাঝখানে দেখো, বাদ দাও, আবার মাঝে দেখো। Sorted array দরকার।</p>
+
+      <div class="diagram">
+        <div class="diagram-title">// Finding 37 in sorted array</div>
+        <div class="array-viz">
+          <div class="arr-cell"><div class="val">10</div></div>
+          <div class="arr-cell"><div class="val">25</div></div>
+          <div class="arr-cell found"><div class="val">37</div><div class="idx">mid✓</div></div>
+          <div class="arr-cell"><div class="val">42</div></div>
+          <div class="arr-cell"><div class="val">58</div></div>
+        </div>
+      </div>
+
+      <div class="lang-badge php" style="margin-top:12px;">PHP</div>
+      <pre style="font-size:0.78rem;"><code><span class="kw">function</span> <span class="fn">binarySearch</span>(<span class="var">$arr</span>, <span class="var">$target</span>) {
+    <span class="var">$low</span> = <span class="num">0</span>; <span class="var">$high</span> = <span class="fn">count</span>(<span class="var">$arr</span>) - <span class="num">1</span>;
+
+    <span class="kw">while</span> (<span class="var">$low</span> <= <span class="var">$high</span>) {
+        <span class="var">$mid</span> = (<span class="kw">int</span>)((<span class="var">$low</span> + <span class="var">$high</span>) / <span class="num">2</span>);
+
+        <span class="kw">if</span> (<span class="var">$arr</span>[<span class="var">$mid</span>] === <span class="var">$target</span>)
+            <span class="kw">return</span> <span class="var">$mid</span>;    <span class="cm">// পাওয়া গেছে!</span>
+        <span class="kw">elseif</span> (<span class="var">$arr</span>[<span class="var">$mid</span>] < <span class="var">$target</span>)
+            <span class="var">$low</span> = <span class="var">$mid</span> + <span class="num">1</span>; <span class="cm">// ডানে খোঁজো</span>
+        <span class="kw">else</span>
+            <span class="var">$high</span> = <span class="var">$mid</span> - <span class="num">1</span>;<span class="cm">// বামে খোঁজো</span>
+    }
+    <span class="kw">return</span> -<span class="num">1</span>;
+}
+<div class="code-label">PHP</div></code></pre>
+    </div>
+  </div>
+
+  <!-- Interactive Demo -->
+  <div class="interactive-demo" style="margin-top:24px;">
+    <div class="card-title">🎮 Interactive: Binary Search Demo</div>
+    <div style="color:var(--text2);font-size:0.85rem;margin-bottom:12px;">নিচের sorted array-তে একটা সংখ্যা খোঁজো!</div>
+    <div class="array-viz" id="search-arr">
+      <div class="arr-cell"><div class="val">5</div><div class="idx">[0]</div></div>
+      <div class="arr-cell"><div class="val">12</div><div class="idx">[1]</div></div>
+      <div class="arr-cell"><div class="val">18</div><div class="idx">[2]</div></div>
+      <div class="arr-cell"><div class="val">27</div><div class="idx">[3]</div></div>
+      <div class="arr-cell"><div class="val">35</div><div class="idx">[4]</div></div>
+      <div class="arr-cell"><div class="val">44</div><div class="idx">[5]</div></div>
+      <div class="arr-cell"><div class="val">56</div><div class="idx">[6]</div></div>
+      <div class="arr-cell"><div class="val">67</div><div class="idx">[7]</div></div>
+      <div class="arr-cell"><div class="val">78</div><div class="idx">[8]</div></div>
+      <div class="arr-cell"><div class="val">91</div><div class="idx">[9]</div></div>
+    </div>
+    <div class="demo-controls">
+      <input class="demo-input" type="number" id="search-input" placeholder="যেমন: 35">
+      <button class="btn" onclick="doBinarySearch()">🔍 খোঁজো</button>
+      <button class="btn btn-purple" onclick="resetSearch()">↺ Reset</button>
+    </div>
+    <div class="demo-output" id="search-output">এখানে result দেখাবে...</div>
+  </div>
+
+  <div class="info-box blue" style="margin-top:20px;">
+    <div class="icon">🏭</div>
+    <p><strong>Laravel-এ searching:</strong> Database-এ LIKE query হলো linear search। Index যোগ করলে Binary Search-এর মতো দ্রুত হয়। <code>->where('name', 'LIKE', "%$q%")</code> — এটা full-table scan। <code>->whereFullText('body', $query)</code> — এটা index ব্যবহার করে।</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ============================= COMPLEXITY ============================= -->
+<section id="complexity">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <h2>Time & Space Complexity — Big O Notation <small>কোডের গতি পরিমাপ</small></h2>
+  </div>
+
+  <div class="info-box blue">
+    <div class="icon">💡</div>
+    <p><strong>সহজ কথায়:</strong> Big O বলে দেয় — data বাড়লে আমার code কতটা ধীর হবে। <strong>O(1)</strong> মানে সবসময় একই দ্রুত। <strong>O(n²)</strong> মানে 1000 item হলে 1 million কাজ করতে হবে!</p>
+  </div>
+
+  <div class="diagram" style="margin-bottom:24px;overflow:hidden;">
+    <div class="diagram-title">// Big O — গতির তুলনা (কম হলে ভালো)</div>
+    <div style="position:relative;height:180px;padding-top:10px;">
+      <!-- Simple bar chart using divs -->
+      <div style="display:flex;align-items:flex-end;gap:20px;height:140px;padding:0 10px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:16px;background:linear-gradient(180deg,var(--accent),#00a8cc);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent)">O(1)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">최고</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:36px;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#4ade80">O(log n)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">চমৎকার</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:60px;background:linear-gradient(180deg,#a3e635,#65a30d);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#a3e635">O(n)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">ভালো</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:90px;background:linear-gradient(180deg,var(--accent3),#b45309);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent3)">O(n log n)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">মোটামুটি</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:120px;background:linear-gradient(180deg,#f97316,#c2410c);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#f97316">O(n²)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">খারাপ</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+          <div style="height:140px;background:linear-gradient(180deg,var(--accent5),#991b1b);border-radius:4px 4px 0 0;width:100%;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent5)">O(2ⁿ)</div>
+          <div style="font-size:0.65rem;color:var(--text3)">ভয়ানক</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);">
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Data Structure</th>
+          <th>Access</th>
+          <th>Search</th>
+          <th>Insert</th>
+          <th>Delete</th>
+          <th>কখন ব্যবহার</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Array</strong></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">index access দরকার হলে</td>
+        </tr>
+        <tr>
+          <td><strong>Linked List</strong></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">insert/delete বেশি হলে</td>
+        </tr>
+        <tr>
+          <td><strong>Stack</strong></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">LIFO দরকার হলে</td>
+        </tr>
+        <tr>
+          <td><strong>Queue</strong></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">FIFO দরকার হলে</td>
+        </tr>
+        <tr>
+          <td><strong>Hash Table</strong></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td><span class="o-1">O(1)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">key-value, fast lookup</td>
+        </tr>
+        <tr>
+          <td><strong>BST</strong></td>
+          <td><span class="o-log">O(log n)</span></td>
+          <td><span class="o-log">O(log n)</span></td>
+          <td><span class="o-log">O(log n)</span></td>
+          <td><span class="o-log">O(log n)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">sorted data, range query</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sorting comparison -->
+  <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-top:20px;">
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Sorting Algorithm</th>
+          <th>Best Case</th>
+          <th>Average</th>
+          <th>Worst Case</th>
+          <th>কখন ব্যবহার</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bubble Sort</strong></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n2">O(n²)</span></td>
+          <td><span class="o-n2">O(n²)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">শেখার জন্য, ছোট array</td>
+        </tr>
+        <tr>
+          <td><strong>Insertion Sort</strong></td>
+          <td><span class="o-n">O(n)</span></td>
+          <td><span class="o-n2">O(n²)</span></td>
+          <td><span class="o-n2">O(n²)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">প্রায় sorted array-তে</td>
+        </tr>
+        <tr>
+          <td><strong>Merge Sort</strong></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">বড় data, stable sort</td>
+        </tr>
+        <tr>
+          <td><strong>Quick Sort</strong></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-n2">O(n²)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">সাধারণত সবচেয়ে দ্রুত</td>
+        </tr>
+        <tr>
+          <td><strong>PHP sort()</strong></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td><span class="o-log">O(n log n)</span></td>
+          <td style="font-size:0.82rem;color:var(--text2)">Laravel-এ এটাই ব্যবহার করো</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Code examples for complexity -->
+  <div class="lang-badge php" style="margin-top:24px;">PHP — Complexity Examples</div>
+  <pre><code><span class="cm">// O(1) — সবসময় একই সময়</span>
+<span class="var">$arr</span>[<span class="num">5</span>]; <span class="cm">// index দিয়ে access</span>
+<span class="fn">array_push</span>(<span class="var">$stack</span>, <span class="var">$val</span>); <span class="cm">// stack push</span>
+
+<span class="cm">// O(n) — data বাড়লে সময় বাড়ে</span>
+<span class="kw">foreach</span> (<span class="var">$arr</span> <span class="kw">as</span> <span class="var">$item</span>) { <span class="fn">echo</span> <span class="var">$item</span>; } <span class="cm">// loop</span>
+<span class="fn">in_array</span>(<span class="num">5</span>, <span class="var">$arr</span>); <span class="cm">// linear search</span>
+
+<span class="cm">// O(log n) — অনেক দ্রুত!</span>
+<span class="fn">binarySearch</span>(<span class="var">$sortedArr</span>, <span class="num">5</span>); <span class="cm">// binary search</span>
+
+<span class="cm">// O(n²) — ধীরে! বড় data-তে এড়িয়ে চলো</span>
+<span class="kw">foreach</span> (<span class="var">$arr</span> <span class="kw">as</span> <span class="var">$i</span>) {
+    <span class="kw">foreach</span> (<span class="var">$arr</span> <span class="kw">as</span> <span class="var">$j</span>) { <span class="cm">// nested loop = O(n²)</span>
+        <span class="cm">// ...</span>
+    }
+}
+
+<span class="cm">// ⚠️ Laravel-এ N+1 Problem = O(n) queries!</span>
+<span class="var">$posts</span> = <span class="cls">Post</span>::<span class="fn">all</span>(); <span class="cm">// 1 query</span>
+<span class="kw">foreach</span> (<span class="var">$posts</span> <span class="kw">as</span> <span class="var">$post</span>) {
+    <span class="kw">echo</span> <span class="var">$post</span>-><span class="var">user</span>-><span class="var">name</span>; <span class="cm">// N queries! ❌</span>
+}
+
+<span class="cm">// ✅ সমাধান: Eager Loading = O(1) queries</span>
+<span class="var">$posts</span> = <span class="cls">Post</span>::<span class="fn">with</span>(<span class="str">'user'</span>)-><span class="fn">all</span>(); <span class="cm">// 2 queries ✅</span>
+<div class="code-label">PHP / Laravel</div></code></pre>
+</section>
+
+<hr class="divider">
+
+<!-- SUMMARY -->
+<section id="summary">
+  <div class="section-header">
+    <div class="section-num">✓</div>
+    <h2>সারসংক্ষেপ — কোনটা কখন? <small>Quick Reference</small></h2>
+  </div>
+
+  <div class="grid-3">
+    <div class="usecase-card" style="border-left-color:var(--accent)">
+      <div class="usecase-title">📦 Array</div>
+      <div class="usecase-desc">Product list, User list, Config data, JSON response। Index দিয়ে দ্রুত access দরকার হলে।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:#a78bfa">
+      <div class="usecase-title">🔗 Linked List</div>
+      <div class="usecase-desc">Playlist, Undo list, Browser history। মাঝে মাঝে insert/delete বেশি হলে।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent3)">
+      <div class="usecase-title">🥞 Stack</div>
+      <div class="usecase-desc">Undo/Redo, Back button, Function calls, Bracket matching। LIFO দরকার হলে।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent4)">
+      <div class="usecase-title">🚶 Queue</div>
+      <div class="usecase-desc">Laravel Jobs, Email queue, Print queue, Customer service। FIFO দরকার হলে।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent2)">
+      <div class="usecase-title">🌳 Tree</div>
+      <div class="usecase-desc">Category tree, Comment threads, Route system, File directory। Hierarchy দরকার হলে।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent5)">
+      <div class="usecase-title">🕸️ Graph</div>
+      <div class="usecase-desc">Social network, Google Maps, Recommendation system, Dependency resolution। Complex relationships-এ।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent)">
+      <div class="usecase-title">🔀 Merge Sort</div>
+      <div class="usecase-desc">বড় data sort করতে। O(n log n) stable। Laravel-এ orderBy() ব্যবহার করো।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent4)">
+      <div class="usecase-title">⚡ Binary Search</div>
+      <div class="usecase-desc">Sorted data-তে দ্রুত খোঁজা। O(log n)। DB index-এর পেছনে এই idea।</div>
+    </div>
+    <div class="usecase-card" style="border-left-color:var(--accent3)">
+      <div class="usecase-title">🗂️ Hash Map</div>
+      <div class="usecase-desc">PHP associative array! O(1) lookup। Cache, Session, Config-এ সব জায়গায়।</div>
+    </div>
+  </div>
+
+  <div class="info-box green" style="margin-top:24px;">
+    <div class="icon">🎯</div>
+    <p><strong>মনে রাখো:</strong> PHP/Laravel ডেভেলপার হিসেবে তুমি Array, Stack, Queue সবচেয়ে বেশি ব্যবহার করবে। Database index বোঝার জন্য Binary Search জানতে হবে। Category/Menu-র জন্য Tree। Laravel Queue Job-এর জন্য Queue। N+1 Problem এড়াতে Eager Loading — এটাই Complexity বোঝার সবচেয়ে বড় practical benefit।</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="font-size:1.5rem;margin-bottom:8px;">⚡</div>
+  <p>তৈরি করা হয়েছে <strong>PHP / Laravel / CodeIgniter</strong> ডেভেলপারদের জন্য</p>
+  <p style="margin-top:6px;color:var(--text3)">DSA বাংলায় — সহজ ভাষায়, বাস্তব উদাহরণে</p>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Binary Search Demo
+const arr = [5, 12, 18, 27, 35, 44, 56, 67, 78, 91];
+const cells = document.querySelectorAll('#search-arr .arr-cell');
+
+function resetSearch() {
+  cells.forEach(c => { c.classList.remove('active','found'); c.style.borderColor=''; c.style.background=''; });
+  document.getElementById('search-output').textContent = 'এখানে result দেখাবে...';
+  document.getElementById('search-output').style.color = 'var(--accent4)';
+  document.getElementById('search-input').value = '';
+}
+
+async function doBinarySearch() {
+  const target = parseInt(document.getElementById('search-input').value);
+  if (isNaN(target)) { document.getElementById('search-output').textContent = '⚠️ একটা সংখ্যা দাও!'; return; }
+  
+  resetSearch();
+  const out = document.getElementById('search-output');
+  let low = 0, high = arr.length - 1, step = 0;
+  let log = '';
+
+  while (low <= high) {
+    step++;
+    const mid = Math.floor((low + high) / 2);
+    
+    // highlight mid
+    cells[mid].style.borderColor = 'var(--accent3)';
+    cells[mid].style.background = 'rgba(245,158,11,0.15)';
+    
+    await new Promise(r => setTimeout(r, 600));
+
+    if (arr[mid] === target) {
+      cells[mid].classList.add('found');
+      cells[mid].style.borderColor = '';
+      cells[mid].style.background = '';
+      out.textContent = `✅ পাওয়া গেছে! arr[${mid}] = ${target} | মাত্র ${step}টি step লাগলো!`;
+      out.style.color = 'var(--accent4)';
+      return;
+    } else if (arr[mid] < target) {
+      for (let i = low; i <= mid; i++) {
+        cells[i].style.opacity = '0.3';
+      }
+      out.textContent = `Step ${step}: arr[${mid}]=${arr[mid]} < ${target} → ডানে খুঁজি`;
+      low = mid + 1;
+    } else {
+      for (let i = mid; i <= high; i++) {
+        cells[i].style.opacity = '0.3';
+      }
+      out.textContent = `Step ${step}: arr[${mid}]=${arr[mid]} > ${target} → বামে খুঁজি`;
+      high = mid - 1;
+    }
+
+    cells[mid].style.borderColor = '';
+    cells[mid].style.background = '';
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  out.textContent = `❌ পাওয়া যায়নি! ${step}টি step এ নিশ্চিত হলাম। Array-তে ${target} নেই।`;
+  out.style.color = 'var(--accent5)';
+}
+
+// Back to top visibility
+window.addEventListener('scroll', () => {
+  document.getElementById('back-top').style.opacity = window.scrollY > 300 ? '1' : '0';
+});
+document.getElementById('back-top').style.opacity = '0';
+document.getElementById('back-top').style.transition = 'opacity 0.3s';
+</script>
+</body>
+</html>
