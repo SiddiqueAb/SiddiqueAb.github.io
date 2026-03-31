@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সোলো ডেভেলপারের ক্যারিয়ার গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --bg3: #141c30;
+    --card: #131929;
+    --border: #1e2d4a;
+    --accent1: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --accent5: #ef4444;
+    --accent6: #ec4899;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --gold: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent1);
+    letter-spacing: -0.3px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .nav-links a:hover {
+    color: var(--accent1);
+    border-color: var(--accent1);
+    background: rgba(0,212,255,0.06);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent1);
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text2);
+    max-width: 640px;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent1);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-top: 0.25rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--text2);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* CAREER CARDS GRID */
+  .careers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .career-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .career-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .career-card:nth-child(1):hover { border-color: var(--accent1); box-shadow: 0 20px 60px rgba(0,212,255,0.1); }
+  .career-card:nth-child(2):hover { border-color: var(--accent2); box-shadow: 0 20px 60px rgba(124,58,237,0.1); }
+  .career-card:nth-child(3):hover { border-color: var(--accent3); box-shadow: 0 20px 60px rgba(245,158,11,0.1); }
+  .career-card:nth-child(4):hover { border-color: var(--accent4); box-shadow: 0 20px 60px rgba(16,185,129,0.1); }
+  .career-card:nth-child(5):hover { border-color: var(--accent6); box-shadow: 0 20px 60px rgba(236,72,153,0.1); }
+  .career-card:nth-child(6):hover { border-color: var(--accent5); box-shadow: 0 20px 60px rgba(239,68,68,0.1); }
+
+  .card-header {
+    padding: 1.5rem 1.5rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: rgba(0,212,255,0.15); }
+  .icon-purple { background: rgba(124,58,237,0.15); }
+  .icon-amber { background: rgba(245,158,11,0.15); }
+  .icon-green { background: rgba(16,185,129,0.15); }
+  .icon-pink { background: rgba(236,72,153,0.15); }
+  .icon-red { background: rgba(239,68,68,0.15); }
+
+  .card-meta { flex: 1; }
+
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text3);
+  }
+
+  .card-body {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: var(--text2);
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent1); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .tag-amber { background: rgba(245,158,11,0.1); color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .tag-green { background: rgba(16,185,129,0.1); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-pink { background: rgba(236,72,153,0.1); color: var(--accent6); border: 1px solid rgba(236,72,153,0.2); }
+  .tag-red { background: rgba(239,68,68,0.1); color: var(--accent5); border: 1px solid rgba(239,68,68,0.2); }
+
+  .card-income {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .income-label { font-size: 0.78rem; color: var(--text3); }
+  .income-value { font-size: 0.92rem; font-weight: 700; }
+  .income-blue { color: var(--accent1); }
+  .income-purple { color: #a78bfa; }
+  .income-amber { color: var(--accent3); }
+  .income-green { color: var(--accent4); }
+  .income-pink { color: var(--accent6); }
+  .income-red { color: var(--accent5); }
+
+  /* DEEP DIVE SECTIONS */
+  .deep-section {
+    margin-bottom: 4rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .deep-header {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .deep-icon {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .deep-title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+  }
+
+  .deep-tagline { color: var(--text2); font-size: 0.9rem; }
+
+  .deep-body {
+    padding: 2.5rem;
+  }
+
+  .deep-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .deep-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .deep-box h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .deep-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .deep-box ul li {
+    font-size: 0.88rem;
+    color: var(--text2);
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .deep-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text3);
+    font-size: 0.8rem;
+  }
+
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .step-content p {
+    font-size: 0.87rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ROADMAP */
+  .roadmap {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent1), var(--accent2), var(--accent4));
+    border-radius: 2px;
+  }
+
+  .roadmap-item {
+    position: relative;
+    padding: 1.5rem 1.5rem 1.5rem 2rem;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .roadmap-dot {
+    position: absolute;
+    left: -2.6rem;
+    top: 1.6rem;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg2);
+  }
+
+  .roadmap-phase {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .roadmap-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .roadmap-desc {
+    font-size: 0.87rem;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* TIPS SECTION */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+
+  .tip-card:hover { transform: translateY(-3px); }
+
+  .tip-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .tip-card:nth-child(1)::before { background: var(--accent1); }
+  .tip-card:nth-child(2)::before { background: var(--accent2); }
+  .tip-card:nth-child(3)::before { background: var(--accent3); }
+  .tip-card:nth-child(4)::before { background: var(--accent4); }
+  .tip-card:nth-child(5)::before { background: var(--accent6); }
+  .tip-card:nth-child(6)::before { background: var(--accent5); }
+
+  .tip-emoji { font-size: 1.8rem; margin-bottom: 0.75rem; display: block; }
+
+  .tip-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .tip-text {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* INVEST TABLE */
+  .invest-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+  }
+
+  .invest-table th {
+    background: rgba(0,212,255,0.08);
+    color: var(--accent1);
+    padding: 0.85rem 1.25rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .invest-table td {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .invest-table tr:last-child td { border-bottom: none; }
+  .invest-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .invest-table td:first-child { color: var(--text); font-weight: 500; }
+
+  .free-tag {
+    background: rgba(16,185,129,0.15);
+    color: var(--accent4);
+    border: 1px solid rgba(16,185,129,0.3);
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .paid-tag {
+    background: rgba(245,158,11,0.12);
+    color: var(--accent3);
+    border: 1px solid rgba(245,158,11,0.25);
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  /* COMPARISON */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .compare-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .compare-item .score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .compare-item .label {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-bottom: 1rem;
+  }
+
+  .compare-item .name {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.85rem;
+  }
+
+  footer span { color: var(--accent1); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 2rem;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .highlight-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,212,255,0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .highlight-box h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent1);
+    margin-bottom: 0.75rem;
+  }
+
+  .highlight-box p {
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .careers-grid { grid-template-columns: 1fr; }
+    .deep-grid { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: repeat(2, 1fr); }
+    .deep-header { flex-direction: column; gap: 1rem; }
+    .deep-body { padding: 1.5rem; }
+    .invest-table { font-size: 0.82rem; }
+    .invest-table th, .invest-table td { padding: 0.65rem 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">⚡ সোলো ডেভ গাইড</div>
+  <ul class="nav-links">
+    <li><a href="#careers">ক্যারিয়ার পথ</a></li>
+    <li><a href="#saas">SaaS</a></li>
+    <li><a href="#freelance">ফ্রিল্যান্স</a></li>
+    <li><a href="#ecommerce">ই-কমার্স</a></li>
+    <li><a href="#agency">এজেন্সি</a></li>
+    <li><a href="#invest">বিনিয়োগ</a></li>
+    <li><a href="#roadmap">রোডম্যাপ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">🇧🇩 বাংলাদেশি সোলো ডেভেলপারদের জন্য সম্পূর্ণ গাইড</div>
+
+  <h1>
+    একজন সোলো ডেভেলপার হিসেবে<br>
+    <span>কোটি টাকা আয়ের পথ</span>
+  </h1>
+
+  <p class="hero-desc">
+    কম বিনিয়োগে, নিজের দক্ষতা ব্যবহার করে স্বাধীন ব্যবসা গড়ার সম্পূর্ণ রোডম্যাপ — SaaS, ফ্রিল্যান্স, ই-কমার্স, এজেন্সি এবং আরও অনেক কিছু।
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">৬টি</div>
+      <div class="stat-label">ক্যারিয়ার পথ</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$০</div>
+      <div class="stat-label">ন্যূনতম বিনিয়োগ</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">১২মাস</div>
+      <div class="stat-label">সফলতার টাইমলাইন</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">সম্ভাবনা</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CAREERS OVERVIEW -->
+<section class="section" id="careers">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">ক্যারিয়ার পথসমূহ</div>
+    <h2 class="section-title">৬টি সেরা ক্যারিয়ার অপশন</h2>
+    <p class="section-sub">একজন সোলো ওয়েব ডেভেলপার হিসেবে আপনার জন্য সবচেয়ে উপযুক্ত পথগুলো</p>
+  </div>
+
+  <div class="careers-grid">
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-blue">💡</div>
+        <div class="card-meta">
+          <div class="card-title">SaaS প্রোডাক্ট</div>
+          <div class="card-subtitle">Software as a Service</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">একটি সফটওয়্যার তৈরি করুন এবং প্রতি মাসে সাবস্ক্রিপশন ফি নিন। এটি সবচেয়ে স্কেলযোগ্য ব্যবসা মডেল — ঘুমের সময়ও আয় হয়।</p>
+        <div class="card-tags">
+          <span class="tag tag-blue">MRR ইনকাম</span>
+          <span class="tag tag-blue">স্কেলযোগ্য</span>
+          <span class="tag tag-blue">প্যাসিভ ইনকাম</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-blue">$৫০০ – $১০,০০০+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-purple">💼</div>
+        <div class="card-meta">
+          <div class="card-title">ফ্রিল্যান্স ডেভেলপমেন্ট</div>
+          <div class="card-subtitle">Client-based Work</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Upwork, Fiverr বা সরাসরি ক্লায়েন্টের জন্য ওয়েব অ্যাপ্লিকেশন তৈরি করুন। দ্রুত আয়ের সবচেয়ে নির্ভরযোগ্য পথ।</p>
+        <div class="card-tags">
+          <span class="tag tag-purple">তাৎক্ষণিক আয়</span>
+          <span class="tag tag-purple">নেটওয়ার্ক</span>
+          <span class="tag tag-purple">ফ্লেক্সিবল</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-purple">$৮০০ – $৫,০০০+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-amber">🛒</div>
+        <div class="card-meta">
+          <div class="card-title">ই-কমার্স টুল</div>
+          <div class="card-subtitle">E-commerce Solutions</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">বাংলাদেশি ই-কমার্স ব্যবসার জন্য কাস্টম সলিউশন বা নিজের প্রোডাক্ট মার্কেটপ্লেসে বিক্রি করুন।</p>
+        <div class="card-tags">
+          <span class="tag tag-amber">বিশাল মার্কেট</span>
+          <span class="tag tag-amber">লোকাল</span>
+          <span class="tag tag-amber">রিপিট বিজনেস</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-amber">৳৫০,০০০ – ৳৩,০০,০০০</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-green">🏢</div>
+        <div class="card-meta">
+          <div class="card-title">মাইক্রো এজেন্সি</div>
+          <div class="card-subtitle">Solo Agency Model</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">স্থানীয় ব্যবসায়ীদের জন্য ওয়েবসাইট ও অ্যাপ তৈরি করে এজেন্সি মডেলে কাজ করুন। রিটেইনার-ভিত্তিক আয়।</p>
+        <div class="card-tags">
+          <span class="tag tag-green">লোকাল মার্কেট</span>
+          <span class="tag tag-green">রিটেইনার</span>
+          <span class="tag tag-green">ট্রাস্ট</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-green">৳৮০,০০০ – ৳৫,০০,০০০</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-pink">📚</div>
+        <div class="card-meta">
+          <div class="card-title">কন্টেন্ট + শিক্ষা</div>
+          <div class="card-subtitle">Course & Tutorial Creator</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">আপনার দক্ষতা শেখান। YouTube, Udemy বা নিজের প্ল্যাটফর্মে কোর্স বিক্রি করুন — সম্পূর্ণ প্যাসিভ ইনকাম।</p>
+        <div class="card-tags">
+          <span class="tag tag-pink">প্যাসিভ</span>
+          <span class="tag tag-pink">ব্র্যান্ড</span>
+          <span class="tag tag-pink">দীর্ঘমেয়াদি</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-pink">$৩০০ – $৮,০০০+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="career-card animate-on-scroll">
+      <div class="card-header">
+        <div class="card-icon icon-red">🤖</div>
+        <div class="card-meta">
+          <div class="card-title">AI-Powered টুলস</div>
+          <div class="card-subtitle">AI Tool Builder</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">AI API ব্যবহার করে নিশ-স্পেসিফিক টুল তৈরি করুন। এটি এখন সবচেয়ে হট সেক্টর — প্রতিযোগিতা কম, চাহিদা বেশি।</p>
+        <div class="card-tags">
+          <span class="tag tag-red">ট্রেন্ডিং</span>
+          <span class="tag tag-red">AI যুগ</span>
+          <span class="tag tag-red">কম প্রতিযোগিতা</span>
+        </div>
+        <div class="card-income">
+          <span class="income-label">মাসিক আয় সম্ভাবনা</span>
+          <span class="income-value income-red">$১,০০০ – $২০,০০০+</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DEEP DIVE: SaaS -->
+<section class="section" id="saas">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিস্তারিত গাইড — ০১</div>
+    <h2 class="section-title">SaaS বিজনেস মডেল</h2>
+    <p class="section-sub">একজন সোলো ডেভেলপারের জন্য সবচেয়ে শক্তিশালী ব্যবসা মডেল</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-header" style="background: linear-gradient(135deg, rgba(0,212,255,0.05), transparent);">
+      <div class="deep-icon icon-blue">💡</div>
+      <div>
+        <div class="deep-title">SaaS কী এবং কেন এটি আপনার জন্য?</div>
+        <div class="deep-tagline">Software as a Service — একবার বানাও, বারবার বিক্রি করো</div>
+      </div>
+    </div>
+    <div class="deep-body">
+      <p style="color: var(--text2); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1.5rem;">
+        SaaS মানে হলো এমন একটি সফটওয়্যার যা আপনি ক্লাউডে হোস্ট করবেন এবং ব্যবহারকারীরা প্রতি মাসে বা বছরে সাবস্ক্রিপশন ফি দিয়ে ব্যবহার করবে। আপনাকে একবারই কোড লিখতে হবে, কিন্তু হাজারো মানুষ ব্যবহার করতে পারবে। এটি একটি প্রোডাক্ট ব্যবসা — সার্ভিস ব্যবসা নয়।
+      </p>
+
+      <div class="deep-grid">
+        <div class="deep-box">
+          <h4>💰 কেন SaaS সেরা?</h4>
+          <ul>
+            <li>প্রতি মাসে নিশ্চিত MRR (Monthly Recurring Revenue)</li>
+            <li>একবার বানালে হাজারো ইউজার ব্যবহার করতে পারে</li>
+            <li>সার্ভার খরচ বাদে আর কোনো বড় খরচ নেই</li>
+            <li>ঘুমের সময়ও আয় হয়</li>
+            <li>ভবিষ্যতে বড় কোম্পানির কাছে বিক্রি করা যায়</li>
+            <li>বাংলাদেশ থেকে বসে বিশ্বকে সার্ভ করা সম্ভব</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4>🎯 বাংলাদেশ থেকে জনপ্রিয় SaaS আইডিয়া</h4>
+          <ul>
+            <li>ছোট ব্যবসার জন্য POS / ইনভয়েস সফটওয়্যার</li>
+            <li>রেস্তোরাঁ ম্যানেজমেন্ট সিস্টেম</li>
+            <li>HR / অ্যাটেনডেন্স ম্যানেজমেন্ট টুল</li>
+            <li>ই-কমার্স অ্যানালিটিক্স ড্যাশবোর্ড</li>
+            <li>ফ্রিল্যান্সারদের জন্য প্রজেক্ট ম্যানেজমেন্ট</li>
+            <li>স্কুল/কোচিং সেন্টার ম্যানেজমেন্ট সিস্টেম</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4>🛠️ প্রয়োজনীয় টেক স্ট্যাক</h4>
+          <ul>
+            <li><strong>Frontend:</strong> React / Next.js</li>
+            <li><strong>Backend:</strong> Node.js / Laravel / Django</li>
+            <li><strong>Database:</strong> PostgreSQL / MySQL</li>
+            <li><strong>Auth:</strong> Clerk / Supabase Auth</li>
+            <li><strong>Payment:</strong> Stripe / SSLCommerz</li>
+            <li><strong>Hosting:</strong> Vercel + Railway / Render</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4>💳 বিনিয়োগ পরিকল্পনা</h4>
+          <ul>
+            <li>ডোমেইন: $১০-১৫/বছর</li>
+            <li>Vercel Hosting: ফ্রি টায়ার দিয়ে শুরু</li>
+            <li>Railway/Render: $৫-২০/মাস</li>
+            <li>Supabase: ফ্রি টায়ার দিয়ে শুরু</li>
+            <li>মোট শুরু: $১৫-৫০ এর মধ্যে</li>
+            <li>প্রথম ১০ ইউজার পেলেই লাভজনক হয়ে যায়</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="margin-top: 2rem;">
+        <h3>🚀 SaaS শুরু করার স্টেপ-বাই-স্টেপ</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num" style="background: rgba(0,212,255,0.15); color: var(--accent1);">১</div>
+            <div class="step-content">
+              <h4>সমস্যা খুঁজুন (সপ্তাহ ১-২)</h4>
+              <p>আপনার আশেপাশের ব্যবসায়ীদের সমস্যা কী? ফেসবুক গ্রুপ, রেডিট, টুইটারে দেখুন মানুষ কী চায়। "I wish there was a tool for..." — এই ধরনের পোস্ট খুঁজুন।</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background: rgba(0,212,255,0.15); color: var(--accent1);">২</div>
+            <div class="step-content">
+              <h4>MVP বানান (সপ্তাহ ৩-৮)</h4>
+              <p>সম্পূর্ণ প্রোডাক্ট নয়, শুধু মূল ফিচারগুলো নিয়ে MVP (Minimum Viable Product) তৈরি করুন। ৮০% ফিচার বাদ দিন — মূল সমস্যাটা সমাধান করুন।</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background: rgba(0,212,255,0.15); color: var(--accent1);">৩</div>
+            <div class="step-content">
+              <h4>বিনামূল্যে বিটা লঞ্চ করুন (সপ্তাহ ৯-১২)</h4>
+              <p>প্রথম ১০-২০ জনকে ফ্রিতে ব্যবহার করতে দিন। তাদের ফিডব্যাক নিন। এই স্টেজে আয়ের চিন্তা নেই — শুধু প্রোডাক্ট ভালো করুন।</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background: rgba(0,212,255,0.15); color: var(--accent1);">৪</div>
+            <div class="step-content">
+              <h4>প্রাইসিং যোগ করুন (মাস ৩-৪)</h4>
+              <p>৩ টায়ার প্রাইসিং: Basic ($৯-১৯), Pro ($২৯-৪৯), Business ($৯৯+)। বাংলাদেশি মার্কেটের জন্য টাকায় মূল্য রাখুন। Stripe বা SSLCommerz ইন্টিগ্রেট করুন।</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background: rgba(0,212,255,0.15); color: var(--accent1);">৫</div>
+            <div class="step-content">
+              <h4>গ্রোথ এবং মার্কেটিং (মাস ৫+)</h4>
+              <p>SEO কন্টেন্ট, ফেসবুক গ্রুপ, LinkedIn, Product Hunt লঞ্চ। প্রতিটি নতুন কাস্টমার আপনার MRR বাড়াবে। $১,০০০ MRR = মাসে প্রায় ১ লাখ টাকা।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE: Freelance -->
+<section class="section" id="freelance">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিস্তারিত গাইড — ০২</div>
+    <h2 class="section-title">ফ্রিল্যান্স ডেভেলপমেন্ট</h2>
+    <p class="section-sub">সবচেয়ে দ্রুত আয় শুরু করার পথ</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-header" style="background: linear-gradient(135deg, rgba(124,58,237,0.05), transparent);">
+      <div class="deep-icon icon-purple">💼</div>
+      <div>
+        <div class="deep-title">ফ্রিল্যান্সিং — স্মার্টভাবে শুরু করুন</div>
+        <div class="deep-tagline">শুধু Upwork-Fiverr নয়, Premium Client খুঁজুন</div>
+      </div>
+    </div>
+    <div class="deep-body">
+      <p style="color: var(--text2); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1.5rem;">
+        বেশিরভাগ ডেভেলপার ফ্রিল্যান্সিং শুরু করেন Upwork বা Fiverr দিয়ে এবং রেট কম রাখেন। কিন্তু স্মার্ট ডেভেলপাররা নিজেদের ব্র্যান্ড তৈরি করেন এবং সরাসরি ক্লায়েন্ট খোঁজেন। $১৫/ঘণ্টা না, $৫০-১৫০/ঘণ্টা চার্জ করুন।
+      </p>
+
+      <div class="deep-grid">
+        <div class="deep-box">
+          <h4 style="color: #a78bfa;">🎯 কোন স্পেশালাইজেশন বেছে নেবেন?</h4>
+          <ul>
+            <li>React/Next.js ওয়েব অ্যাপ ডেভেলপমেন্ট</li>
+            <li>Shopify / WooCommerce কাস্টমাইজেশন</li>
+            <li>SaaS MVP Development</li>
+            <li>API ইন্টিগ্রেশন ও অটোমেশন</li>
+            <li>WordPress + WooCommerce হেডলেস</li>
+            <li>No-code + Code হাইব্রিড সলিউশন</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: #a78bfa;">📍 কোথায় ক্লায়েন্ট খুঁজবেন?</h4>
+          <ul>
+            <li>LinkedIn — সরাসরি স্টার্টআপ ফাউন্ডারদের DM</li>
+            <li>Twitter/X — "Looking for developer" সার্চ</li>
+            <li>Reddit — r/forhire, r/entrepreneur</li>
+            <li>Indie Hackers — কমিউনিটি পোস্ট</li>
+            <li>Local Business Groups — Facebook</li>
+            <li>Upwork — প্রথম রিভিউ পেতে</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: #a78bfa;">💡 রেট বাড়ানোর কৌশল</h4>
+          <ul>
+            <li>Generalist নয়, Specialist হন</li>
+            <li>Case Study + Portfolio তৈরি করুন</li>
+            <li>ROI-focused proposal লিখুন</li>
+            <li>ঘণ্টার বদলে প্রজেক্ট প্রাইস নিন</li>
+            <li>Testimonial সংগ্রহ করুন</li>
+            <li>Retainer মডেলে যান (মাসিক চুক্তি)</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: #a78bfa;">📄 প্রফেশনাল প্রপোজাল টেমপ্লেট</h4>
+          <ul>
+            <li>ক্লায়েন্টের সমস্যা নিজের ভাষায় বলুন</li>
+            <li>আপনার সমাধান সংক্ষেপে উপস্থাপন করুন</li>
+            <li>আগের কাজের প্রাসঙ্গিক উদাহরণ দিন</li>
+            <li>স্পষ্ট timeline এবং deliverables লিখুন</li>
+            <li>মূল্য ও পেমেন্ট স্ট্রাকচার উল্লেখ করুন</li>
+            <li>গ্যারান্টি বা রিভিশন পলিসি যোগ করুন</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="border-color: rgba(124,58,237,0.3); background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(167,139,250,0.05));">
+        <h3 style="color: #a78bfa;">💰 ফ্রিল্যান্স থেকে মাসে ৳১ লাখ আয়ের রোডম্যাপ</h3>
+        <p>
+          <strong>মাস ১-২:</strong> প্রথম ৩টি প্রজেক্ট কম রেটে করুন, রিভিউ সংগ্রহ করুন।<br>
+          <strong>মাস ৩-৪:</strong> রেট দ্বিগুণ করুন। LinkedIn প্রোফাইল অপটিমাইজ করুন। দুটি ক্লায়েন্টই যথেষ্ট।<br>
+          <strong>মাস ৫-৬:</strong> Retainer ক্লায়েন্ট খুঁজুন। একটি ৳৫০,০০০/মাস রিটেইনার + দুটি প্রজেক্ট = ৳১+ লাখ।<br>
+          <strong>মাস ৭+:</strong> রেফারেল সিস্টেম তৈরি করুন। সন্তুষ্ট ক্লায়েন্টরাই সেরা মার্কেটিং।
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE: E-commerce -->
+<section class="section" id="ecommerce">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিস্তারিত গাইড — ০৩</div>
+    <h2 class="section-title">ই-কমার্স টুল ও সলিউশন</h2>
+    <p class="section-sub">বাংলাদেশের বিশাল ই-কমার্স মার্কেট আপনার সুযোগ</div>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-header" style="background: linear-gradient(135deg, rgba(245,158,11,0.05), transparent);">
+      <div class="deep-icon icon-amber">🛒</div>
+      <div>
+        <div class="deep-title">ই-কমার্স ইকোসিস্টেম</div>
+        <div class="deep-tagline">ডেভেলপার হিসেবে ই-কমার্সে যে ৪ উপায়ে আয় করবেন</div>
+      </div>
+    </div>
+    <div class="deep-body">
+
+      <div class="deep-grid">
+        <div class="deep-box">
+          <h4 style="color: var(--accent3);">🔧 কাস্টম শপ তৈরি</h4>
+          <ul>
+            <li>স্থানীয় ব্যবসার জন্য কাস্টম ই-কমার্স সাইট</li>
+            <li>Next.js + Stripe/SSL পেমেন্ট ইন্টিগ্রেশন</li>
+            <li>প্রতিটি প্রজেক্ট: ৳৩০,০০০ – ৳১,৫০,০০০</li>
+            <li>Maintenance রিটেইনার: ৳৫,০০০-১৫,০০০/মাস</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent3);">📦 Shopify/WooCommerce Niche</h4>
+          <ul>
+            <li>নির্দিষ্ট ইন্ডাস্ট্রির জন্য থিম তৈরি</li>
+            <li>Envato Marketplace-এ বিক্রি করুন</li>
+            <li>প্রতিটি থিম: $৩৫-৭৯ একক মূল্য</li>
+            <li>মাসে ১০০+ বিক্রি = $৩,৫০০-৭,৯০০</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent3);">🤖 ই-কমার্স অটোমেশন SaaS</h4>
+          <ul>
+            <li>ইনভেন্টরি ম্যানেজমেন্ট টুল</li>
+            <li>অর্ডার ট্র্যাকিং ও SMS নোটিফিকেশন</li>
+            <li>প্রাইস কম্পেরিজন স্ক্র্যাপার</li>
+            <li>সোশ্যাল মিডিয়া প্রোডাক্ট পোস্ট অটোমেশন</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent3);">🇧🇩 বাংলাদেশ স্পেসিফিক সুযোগ</h4>
+          <ul>
+            <li>bKash/Nagad পেমেন্ট ইন্টিগ্রেশন সার্ভিস</li>
+            <li>ফেসবুক শপ থেকে অর্ডার ম্যানেজমেন্ট SaaS</li>
+            <li>Daraz Seller টুল এবং অ্যানালিটিক্স</li>
+            <li>ডেলিভারি ট্র্যাকিং ইন্টিগ্রেশন (Pathao, Steadfast)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="border-color: rgba(245,158,11,0.3); background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.04));">
+        <h3 style="color: var(--accent3);">🎯 বিশেষ টিপস: ফেসবুক F-Commerce মার্কেট</h3>
+        <p>
+          বাংলাদেশে লক্ষাধিক ছোট ব্যবসা Facebook Page থেকে পণ্য বিক্রি করে। তাদের অর্ডার ম্যানেজমেন্ট, ইনভেন্টরি ও ডেলিভারি অনেক অগোছালো। এই সমস্যার সমাধান হিসেবে একটি ছোট SaaS টুল তৈরি করুন — এই মার্কেটে হাজারো সম্ভাব্য কাস্টমার আছে। মাত্র ৳৫০০/মাস সাবস্ক্রিপশনেও ১,০০০ কাস্টমার = ৳৫,০০,০০০/মাস!
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE: Agency -->
+<section class="section" id="agency">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিস্তারিত গাইড — ০৪</div>
+    <h2 class="section-title">মাইক্রো এজেন্সি মডেল</h2>
+    <p class="section-sub">একা কাজ করে এজেন্সি মানের আয়</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-header" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent);">
+      <div class="deep-icon icon-green">🏢</div>
+      <div>
+        <div class="deep-title">সোলো এজেন্সি — স্মার্ট স্ট্রাকচার</div>
+        <div class="deep-tagline">একজন মানুষ, এজেন্সির পরিচয়, লক্ষ টাকার আয়</div>
+      </div>
+    </div>
+    <div class="deep-body">
+      <p style="color: var(--text2); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1.5rem;">
+        মাইক্রো এজেন্সি মানে আপনি একা কাজ করবেন কিন্তু একটি এজেন্সির ব্র্যান্ড নাম ও পরিচয় নিয়ে। বড় কাজ আসলে ফ্রিল্যান্সার সাবকন্ট্রাক্টে দেবেন। আপনি প্রজেক্ট ম্যানেজার ও বিজনেস ডেভেলপার হিসেবে কাজ করবেন।
+      </p>
+
+      <div class="deep-grid">
+        <div class="deep-box">
+          <h4 style="color: var(--accent4);">🏗️ এজেন্সি সেটআপ</h4>
+          <ul>
+            <li>ব্যবসার নাম ও লোগো তৈরি করুন</li>
+            <li>নির্দিষ্ট নিশে ফোকাস করুন (রেস্তোরাঁ, হেলথকেয়ার, এড-টেক)</li>
+            <li>প্যাকেজ প্রাইসিং: Starter/Growth/Enterprise</li>
+            <li>Contract ও NDA টেমপ্লেট রাখুন</li>
+            <li>ট্রেড লাইসেন্স নিন (বিশ্বাসযোগ্যতা বাড়ে)</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent4);">🤝 সাবকন্ট্রাক্টর নেটওয়ার্ক</h4>
+          <ul>
+            <li>UI/UX Designer: Fiverr থেকে ভালো একজন খুঁজুন</li>
+            <li>Content Writer: বাংলা/ইংরেজি দুজন রাখুন</li>
+            <li>SEO Specialist: প্রয়োজনে হায়ার করুন</li>
+            <li>Junior Developer: ছাত্রদের কাজ দিন</li>
+            <li>আপনি মার্জিন রেখে ক্লায়েন্টে বিল করুন</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent4);">📦 সার্ভিস প্যাকেজ উদাহরণ</h4>
+          <ul>
+            <li>🟢 Starter: ল্যান্ডিং পেজ — ৳২৫,০০০</li>
+            <li>🟡 Growth: ফুল ওয়েবসাইট — ৳৭৫,০০০</li>
+            <li>🔴 Enterprise: কাস্টম ওয়েব অ্যাপ — ৳২,০০,০০০+</li>
+            <li>🔵 Monthly: রিটেইনার প্যাকেজ — ৳১৫,০০০/মাস</li>
+            <li>⚡ Rush: ৭২ ঘণ্টায় ডেলিভারি — ৫০% প্রিমিয়াম</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent4);">📣 মার্কেটিং চ্যানেল</h4>
+          <ul>
+            <li>Facebook Business Groups — লোকাল নেটওয়ার্ক</li>
+            <li>LinkedIn — B2B ক্লায়েন্ট</li>
+            <li>Cold Email — নিজের নিশের ব্যবসায়ীদের</li>
+            <li>Google My Business — লোকাল SEO</li>
+            <li>Referral Program — আগের ক্লায়েন্ট</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE: AI Tools -->
+<section class="section" id="aitools">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিস্তারিত গাইড — ০৫</div>
+    <h2 class="section-title">AI-Powered টুল বিল্ডিং</h2>
+    <p class="section-sub">২০২৫-এর সবচেয়ে গরম সুযোগ — এখনই শুরু করুন</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-header" style="background: linear-gradient(135deg, rgba(239,68,68,0.05), transparent);">
+      <div class="deep-icon icon-red">🤖</div>
+      <div>
+        <div class="deep-title">AI টুল বিল্ডার হিসেবে ক্যারিয়ার</div>
+        <div class="deep-tagline">OpenAI, Anthropic API দিয়ে নিশ প্রোডাক্ট বানান</div>
+      </div>
+    </div>
+    <div class="deep-body">
+
+      <div class="deep-grid">
+        <div class="deep-box">
+          <h4 style="color: var(--accent5);">🧠 জনপ্রিয় AI টুল আইডিয়া</h4>
+          <ul>
+            <li>বাংলা কন্টেন্ট রাইটিং AI (ব্লগ, অ্যাড কপি)</li>
+            <li>রেজুমে/CV বিল্ডার AI</li>
+            <li>আইনি দলিল ড্রাফটিং সহকারী (বাংলা)</li>
+            <li>ই-কমার্স প্রোডাক্ট ডেসক্রিপশন জেনারেটর</li>
+            <li>চ্যাটবট ফর ব্যাংকিং / হেলথকেয়ার (বাংলায়)</li>
+            <li>Social Media Content AI Scheduler</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent5);">⚙️ কোন API ব্যবহার করবেন?</h4>
+          <ul>
+            <li><strong>OpenAI GPT-4o:</strong> সবচেয়ে শক্তিশালী, সহজ API</li>
+            <li><strong>Anthropic Claude:</strong> লং-ফর্ম কন্টেন্টের জন্য</li>
+            <li><strong>Groq:</strong> দ্রুত ও সস্তা inference</li>
+            <li><strong>Replicate:</strong> ইমেজ/ভিডিও জেনারেশন</li>
+            <li><strong>ElevenLabs:</strong> Text-to-Speech বাংলায়</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent5);">💸 মনেটাইজেশন মডেল</h4>
+          <ul>
+            <li>Freemium: ফ্রিতে ১০ রিকোয়েস্ট, তারপর পেইড</li>
+            <li>Credit-based: প্যাক কিনুন ($৫-২০)</li>
+            <li>Monthly SaaS: $৯-৪৯/মাস সাবস্ক্রিপশন</li>
+            <li>API Reselling: API কিনে বেশি দামে বিক্রি</li>
+            <li>White-label: কোম্পানির নামে বিক্রি</li>
+          </ul>
+        </div>
+
+        <div class="deep-box">
+          <h4 style="color: var(--accent5);">🛠️ টেক স্ট্যাক</h4>
+          <ul>
+            <li>Next.js + TypeScript (ফ্রন্টএন্ড)</li>
+            <li>OpenAI SDK / Langchain (AI লেয়ার)</li>
+            <li>Vercel AI SDK (স্ট্রিমিং রেসপন্স)</li>
+            <li>Supabase (ডেটাবেস + Auth)</li>
+            <li>Stripe (পেমেন্ট)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="border-color: rgba(239,68,68,0.3); background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02));">
+        <h3 style="color: var(--accent5);">⚡ AI টুল দিয়ে $১,০০০ MRR — ৯০ দিনে</h3>
+        <p>
+          <strong>দিন ১-৩০:</strong> একটি নির্দিষ্ট সমস্যার জন্য AI টুল বানান। যেমন "বাংলা ফেসবুক অ্যাড কপি রাইটার"। MVP লঞ্চ করুন।<br>
+          <strong>দিন ৩১-৬০:</strong> ফেসবুক গ্রুপ, Reddit, Product Hunt-এ শেয়ার করুন। প্রথম ৫০ ফ্রি ইউজার পান। ফিডব্যাক নিন।<br>
+          <strong>দিন ৬১-৯০:</strong> পেইড প্ল্যান লঞ্চ করুন ($৯/মাস)। ১০০ জন পেইড ইউজার = $৯০০ MRR। একটি নিউজলেটার শুরু করুন।
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTMENT GUIDE -->
+<section class="section" id="invest">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">বিনিয়োগ গাইড</div>
+    <h2 class="section-title">কম বিনিয়োগে শুরু করুন</h2>
+    <p class="section-sub">সম্পূর্ণ টুলকিট যা প্রায় বিনামূল্যে পাবেন</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-body" style="padding: 2rem;">
+      <p style="color: var(--text2); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.7;">
+        একটি সফল SaaS বা ফ্রিল্যান্স ব্যবসা শুরু করতে আপনার তেমন বিনিয়োগের দরকার নেই। নিচে সম্পূর্ণ টুলকিট দেওয়া হলো — বেশিরভাগই ফ্রি।
+      </p>
+
+      <div style="overflow-x: auto; border-radius: 12px; border: 1px solid var(--border);">
+        <table class="invest-table">
+          <thead>
+            <tr>
+              <th>টুল / সার্ভিস</th>
+              <th>কাজ</th>
+              <th>মূল্য</th>
+              <th>বিকল্প</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vercel</td>
+              <td>Frontend Hosting</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>Netlify, Cloudflare Pages</td>
+            </tr>
+            <tr>
+              <td>Supabase</td>
+              <td>Database + Auth + Storage</td>
+              <td><span class="free-tag">ফ্রি (500MB)</span></td>
+              <td>PlanetScale, Neon</td>
+            </tr>
+            <tr>
+              <td>Railway</td>
+              <td>Backend Hosting</td>
+              <td><span class="paid-tag">$৫/মাস</span></td>
+              <td>Render (ফ্রি টায়ার আছে)</td>
+            </tr>
+            <tr>
+              <td>Namecheap</td>
+              <td>ডোমেইন</td>
+              <td><span class="paid-tag">$১০-১৫/বছর</span></td>
+              <td>GoDaddy, Porkbun</td>
+            </tr>
+            <tr>
+              <td>GitHub</td>
+              <td>Code Repository</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>GitLab, Bitbucket</td>
+            </tr>
+            <tr>
+              <td>VS Code</td>
+              <td>Code Editor</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>Cursor (AI-powered)</td>
+            </tr>
+            <tr>
+              <td>Figma</td>
+              <td>UI ডিজাইন</td>
+              <td><span class="free-tag">ফ্রি (3 প্রজেক্ট)</span></td>
+              <td>Penpot (ফ্রি + ওপেন সোর্স)</td>
+            </tr>
+            <tr>
+              <td>Stripe</td>
+              <td>Payment (International)</td>
+              <td><span class="free-tag">ফ্রি (% কাটে)</span></td>
+              <td>Lemon Squeezy, Paddle</td>
+            </tr>
+            <tr>
+              <td>SSLCommerz</td>
+              <td>Payment (Bangladesh)</td>
+              <td><span class="free-tag">ফ্রি সেটআপ</span></td>
+              <td>ShurjoPay, Aamarpay</td>
+            </tr>
+            <tr>
+              <td>Resend</td>
+              <td>Email সার্ভিস</td>
+              <td><span class="free-tag">ফ্রি (৩,০০০/মাস)</span></td>
+              <td>SendGrid, Brevo</td>
+            </tr>
+            <tr>
+              <td>Notion</td>
+              <td>প্রজেক্ট ম্যানেজমেন্ট</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>Trello, Linear</td>
+            </tr>
+            <tr>
+              <td>Canva</td>
+              <td>গ্রাফিক্স / মার্কেটিং</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>Adobe Express</td>
+            </tr>
+            <tr>
+              <td>ChatGPT / Claude</td>
+              <td>AI কোডিং সহকারী</td>
+              <td><span class="free-tag">ফ্রি টায়ার</span></td>
+              <td>GitHub Copilot ($১০/মাস)</td>
+            </tr>
+            <tr>
+              <td>Google Analytics</td>
+              <td>ওয়েবসাইট অ্যানালিটিক্স</td>
+              <td><span class="free-tag">ফ্রি</span></td>
+              <td>Plausible, Umami</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="compare-grid" style="margin-top: 2rem;">
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent4);">$০</div>
+          <div class="label">শুরু করতে মিনিমাম বিনিয়োগ</div>
+          <div class="name">পোর্টফোলিও + ফ্রিল্যান্স</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent1);">$১৫</div>
+          <div class="label">SaaS MVP লঞ্চ করতে</div>
+          <div class="name">ডোমেইন + Hosting</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent3);">$৫০</div>
+          <div class="label">সম্পূর্ণ স্ট্যাক রান করতে</div>
+          <div class="name">১ম মাসের মোট খরচ</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent6);">$৫০০</div>
+          <div class="label">প্রথম MRR টার্গেট</div>
+          <div class="name">৩ মাসের মধ্যে সম্ভব</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">১২ মাসের পরিকল্পনা</div>
+    <h2 class="section-title">সাফল্যের রোডম্যাপ</h2>
+    <p class="section-sub">শূন্য থেকে মাসে লক্ষ টাকার ব্যবসা — ধাপে ধাপে</p>
+  </div>
+
+  <div class="deep-section animate-on-scroll">
+    <div class="deep-body">
+      <div class="roadmap">
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot" style="background: var(--accent1);"></div>
+          <div class="roadmap-phase" style="color: var(--accent1);">ফেজ ০১ — মাস ১-২</div>
+          <div class="roadmap-title">ভিত্তি তৈরি ও দক্ষতা শানান</div>
+          <div class="roadmap-desc">
+            আপনার মূল স্ট্যাক (React + Node.js বা Next.js + Supabase) শক্তিশালী করুন। GitHub-এ ৩টি প্রোডাক্ট-মানের প্রজেক্ট পুশ করুন। একটি পোর্টফোলিও ওয়েবসাইট তৈরি করুন। LinkedIn প্রোফাইল অপটিমাইজ করুন। Twitter/X অ্যাকাউন্ট শুরু করুন — প্রতিদিন কোডিং টিপস শেয়ার করুন।
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot" style="background: var(--accent2);"></div>
+          <div class="roadmap-phase" style="color: var(--accent2);">ফেজ ০২ — মাস ৩-৪</div>
+          <div class="roadmap-title">প্রথম ৩ ক্লায়েন্ট ও রেভিনিউ</div>
+          <div class="roadmap-desc">
+            Upwork বা লোকাল নেটওয়ার্কে প্রথম ৩টি প্রজেক্ট সম্পন্ন করুন। কম রেটে কাজ করতে ভয় নেই — রিভিউ সংগ্রহই লক্ষ্য। প্রতিটি প্রজেক্ট শেষে Case Study লিখুন। একটি নিশ বেছে নিন যেখানে আপনি বিশেষজ্ঞ হতে চান।
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot" style="background: var(--accent3);"></div>
+          <div class="roadmap-phase" style="color: var(--accent3);">ফেজ ০৩ — মাস ৫-৬</div>
+          <div class="roadmap-title">SaaS MVP লঞ্চ</div>
+          <div class="roadmap-desc">
+            আপনার বেছে নেওয়া সমস্যার জন্য একটি MVP বানান। প্রথম ২০ জনকে ফ্রিতে ব্যবহার করতে দিন। Product Hunt এ লঞ্চ করুন। ফিডব্যাকের ভিত্তিতে উন্নতি করুন। ফ্রিল্যান্স কাজ চালিয়ে যান — এটি আয়ের নিশ্চয়তা দেবে।
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot" style="background: var(--accent4);"></div>
+          <div class="roadmap-phase" style="color: var(--accent4);">ফেজ ০৪ — মাস ৭-৯</div>
+          <div class="roadmap-title">প্রথম $৫০০ MRR অর্জন</div>
+          <div class="roadmap-desc">
+            SaaS-এ পেইড প্ল্যান চালু করুন। প্রতিটি পেইড ইউজার উদযাপন করুন। Content Marketing শুরু করুন — ব্লগ পোস্ট, YouTube ভিডিও। ফ্রিল্যান্সে রেট বাড়ান — এখন আপনার পোর্টফোলিও শক্তিশালী। লক্ষ্য: ফ্রিল্যান্স থেকে $১,৫০০ + SaaS থেকে $৫০০ = $২,০০০/মাস।
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot" style="background: var(--accent6);"></div>
+          <div class="roadmap-phase" style="color: var(--accent6);">ফেজ ০৫ — মাস ১০-১২</div>
+          <div class="roadmap-title">$৫,০০০+/মাস ও স্কেল</div>
+          <div class="roadmap-desc">
+            SaaS $১,০০০+ MRR এ নিয়ে যান। ফ্রিল্যান্স থেকে Retainer ক্লায়েন্টে যান। AI টুল ব্যবহার করে উৎপাদনশীলতা ৩x বাড়ান। দ্বিতীয় SaaS আইডিয়া রিসার্চ শুরু করুন। বা — একটি SaaS ভালো করে $৫,০০০ MRR এ নিয়ে যান = মাসে ৳৬ লাখ+।
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS SECTION -->
+<section class="section">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">প্রো টিপস</div>
+    <h2 class="section-title">সফলতার গোপন সূত্র</h2>
+    <p class="section-sub">যে ভুলগুলো এড়াবেন এবং যা করলে এগিয়ে যাবেন</p>
+  </div>
+
+  <div class="tips-grid">
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">🎯</span>
+      <div class="tip-title">নিশ ফোকাস করুন</div>
+      <p class="tip-text">সব কিছু করার চেষ্টা করবেন না। "রেস্তোরাঁর জন্য SaaS" বা "ডেন্টিস্টদের ওয়েবসাইট" — নির্দিষ্ট থাকলে মার্কেটিং সহজ হয় এবং রেট বেশি পান।</p>
+    </div>
+
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">🚢</span>
+      <div class="tip-title">পারফেক্ট হওয়ার আগেই শিপ করুন</div>
+      <p class="tip-text">"পরে সব ঠিক করব" — এই চিন্তায় অনেকে কখনো লঞ্চ করে না। ৮০% প্রস্তুত হলেই লঞ্চ করুন। বাকি ২০% ইউজার ফিডব্যাকে ঠিক হবে।</p>
+    </div>
+
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">🤖</span>
+      <div class="tip-title">AI দিয়ে ১০x দ্রুত কাজ করুন</div>
+      <p class="tip-text">Claude, ChatGPT, Cursor ব্যবহার করুন। AI দিয়ে কোড, কন্টেন্ট, ইমেইল — সব দ্রুত করুন। যে ডেভেলপার AI ব্যবহার করে না, সে পিছিয়ে পড়বে।</p>
+    </div>
+
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">📝</span>
+      <div class="tip-title">পাবলিকলি বিল্ড করুন</div>
+      <p class="tip-text">Build in Public — আপনার যাত্রা Twitter/X বা LinkedIn এ শেয়ার করুন। এটি বিনামূল্যে মার্কেটিং এবং আপনার প্রথম ইউজার পাওয়ার সেরা উপায়।</p>
+    </div>
+
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">💰</span>
+      <div class="tip-title">আগে বিক্রি করুন, পরে বানান</div>
+      <p class="tip-text">ল্যান্ডিং পেজ বানান, waitlist খুলুন, আগে পেমেন্ট নিন — তারপর প্রোডাক্ট বানান। এভাবে নিশ্চিত হবেন মানুষ সত্যিই কিনবে।</p>
+    </div>
+
+    <div class="tip-card animate-on-scroll">
+      <span class="tip-emoji">🔄</span>
+      <div class="tip-title">রিটেইনার আয়কে অগ্রাধিকার দিন</div>
+      <p class="tip-text">একবারের আয়ের চেয়ে মাসিক রিটেইনার চুক্তি করুন। ৫টি ক্লায়েন্ট ৳১৫,০০০/মাস = ৳৭৫,০০০ নিশ্চিত আয় — তারপর অতিরিক্ত কাজ করুন।</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON: Best for You -->
+<section class="section">
+  <div class="section-header animate-on-scroll">
+    <div class="section-tag">আমার সুপারিশ</div>
+    <h2 class="section-title">কোনটি আপনার জন্য সেরা?</h2>
+    <p class="section-sub">সোলো বাংলাদেশি ওয়েব ডেভেলপারের জন্য সেরা কম্বিনেশন</div>
+  </div>
+
+  <div class="deep-section animate-on-scroll" style="border-color: rgba(0,212,255,0.2);">
+    <div class="deep-body">
+      <div class="highlight-box">
+        <h3>🏆 সোলো ডেভেলপারের জন্য সেরা কম্বিনেশন স্ট্র্যাটেজি</h3>
+        <p>
+          <strong>শর্ট-টার্ম (০-৬ মাস):</strong> ফ্রিল্যান্সিং দিয়ে শুরু করুন — এটি আপনাকে তাৎক্ষণিক আয় এবং বাস্তব অভিজ্ঞতা দেবে। লক্ষ্য: মাসে $৮০০-১,৫০০।<br><br>
+          <strong>মিড-টার্ম (৩-৯ মাস):</strong> সমান্তরালে একটি ছোট SaaS MVP তৈরি করুন। AI টুল হলে আরও ভালো — কারণ এই মার্কেট এখন সবচেয়ে গরম। ফ্রিল্যান্স আয় থেকে SaaS বিল্ড করুন।<br><br>
+          <strong>লং-টার্ম (৯-১২+ মাস):</strong> SaaS $১,০০০+ MRR হলে ফ্রিল্যান্স কমান, SaaS-এ মনোযোগ দিন। অথবা মাইক্রো-এজেন্সি মডেলে যান — আপনার ব্র্যান্ড আছে, এখন স্কেল করুন।<br><br>
+          <strong>গোল্ডেন ফর্মুলা:</strong> ফ্রিল্যান্স ($১,৫০০) + SaaS ($১,৫০০) = $৩,০০০/মাস = ৳৩.৩ লাখ — মাত্র ১ বছরে।
+        </p>
+      </div>
+
+      <div class="compare-grid" style="margin-top: 1.5rem;">
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent4);">★★★★★</div>
+          <div class="label">সহজে শুরু</div>
+          <div class="name">ফ্রিল্যান্স</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent1);">★★★★★</div>
+          <div class="label">দীর্ঘমেয়াদি আয়</div>
+          <div class="name">SaaS</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent5);">★★★★☆</div>
+          <div class="label">এখনকার সুযোগ</div>
+          <div class="name">AI টুলস</div>
+        </div>
+        <div class="compare-item">
+          <div class="score" style="color: var(--accent3);">★★★★☆</div>
+          <div class="label">লোকাল মার্কেট</div>
+          <div class="name">মাইক্রো এজেন্সি</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="font-size: 1.5rem; margin-bottom: 1rem;">⚡</div>
+  <p style="margin-bottom: 0.5rem;">সোলো ডেভেলপারের সম্পূর্ণ ক্যারিয়ার গাইড</p>
+  <p>তৈরি করা হয়েছে <span>বাংলাদেশি ওয়েব ডেভেলপারদের</span> জন্য • ২০২৫</p>
+  <p style="margin-top: 1rem; font-size: 0.78rem; color: var(--text3);">"আজই শুরু করুন। পরিপূর্ণ কখনো হবে না — কিন্তু শুরু করাটাই সবচেয়ে বড় পদক্ষেপ।"</p>
+</footer>
+
+<script>
+  // Scroll animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Stagger animation for grid items
+  document.querySelectorAll('.careers-grid .career-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.08}s`;
+  });
+
+  document.querySelectorAll('.tips-grid .tip-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.06}s`;
+  });
+</script>
+
+</body>
+</html>
