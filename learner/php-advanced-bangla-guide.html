@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP Advanced মাস্টারক্লাস — বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: #2a2a3e;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --code-bg: #0d0d1a;
+    --danger: #ef4444;
+    --warning: #f97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Tiro Bangla', serif;
+    font-size: 17px;
+    line-height: 1.85;
+    overflow-x: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1e0a4e 0%, var(--bg) 70%);
+    padding: 60px 20px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 30px;
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(50px, 9vw, 110px);
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 40px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 42px;
+    color: var(--accent3);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ===== NAV ===== */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 40px;
+    max-width: 860px;
+    margin: 0 auto 80px;
+    width: 95%;
+  }
+
+  .toc h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 8px;
+  }
+
+  .toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toc a:hover {
+    color: var(--accent2);
+    background: rgba(6,182,212,0.08);
+    transform: translateX(4px);
+  }
+
+  .toc a::before {
+    content: '→';
+    color: var(--accent);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+  }
+
+  /* ===== SECTION ===== */
+  .section {
+    margin-bottom: 80px;
+    scroll-margin-top: 30px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 52px;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .section-title-group h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    line-height: 1.1;
+  }
+
+  .section-title-group .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ===== TOPIC CARD ===== */
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .topic-card:hover {
+    border-color: var(--accent);
+  }
+
+  .topic-card-header {
+    background: var(--surface2);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .topic-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .topic-card-header h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .topic-card-body {
+    padding: 24px;
+  }
+
+  .explanation {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  .explanation strong {
+    color: var(--accent3);
+  }
+
+  /* ===== CODE BLOCK ===== */
+  .code-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .code-header {
+    background: #16161f;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .code-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #ef4444; }
+  .dot-y { background: #f59e0b; }
+  .dot-g { background: #10b981; }
+
+  pre {
+    overflow-x: auto;
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    tab-size: 4;
+  }
+
+  /* Syntax colors */
+  .kw { color: #c084fc; }      /* keywords */
+  .fn { color: #60a5fa; }      /* functions */
+  .str { color: #86efac; }     /* strings */
+  .cm { color: #4b5563; font-style: italic; } /* comments */
+  .num { color: #fb923c; }     /* numbers */
+  .cls { color: #f9a8d4; }     /* classes */
+  .var { color: #e2e8f0; }     /* variables */
+  .op { color: #94a3b8; }      /* operators */
+  .ret { color: #7dd3fc; }     /* return values / types */
+  .deco { color: #fde68a; }    /* decorators/attributes */
+  .const { color: #f59e0b; }   /* constants */
+  .php-tag { color: #7c3aed; } /* php tags */
+
+  /* ===== CALLOUT ===== */
+  .callout {
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+  .callout.info { background: rgba(6,182,212,0.08); border-left: 3px solid var(--accent2); }
+  .callout.warn { background: rgba(245,158,11,0.08); border-left: 3px solid var(--accent3); }
+  .callout.danger { background: rgba(239,68,68,0.08); border-left: 3px solid var(--danger); }
+  .callout.success { background: rgba(16,185,129,0.08); border-left: 3px solid var(--accent4); }
+
+  /* ===== TAG PILLS ===== */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .tag.purple { color: #c084fc; border-color: #c084fc40; background: #c084fc10; }
+  .tag.cyan { color: #67e8f9; border-color: #67e8f940; background: #67e8f910; }
+  .tag.amber { color: #fcd34d; border-color: #fcd34d40; background: #fcd34d10; }
+  .tag.green { color: #6ee7b7; border-color: #6ee7b740; background: #6ee7b710; }
+  .tag.red { color: #fca5a5; border-color: #fca5a540; background: #fca5a510; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  footer span { color: var(--accent3); }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .toc { padding: 20px; }
+    .topic-card-body { padding: 16px; }
+    pre { font-size: 12px; padding: 14px; }
+    .section-num { font-size: 36px; }
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08));
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+
+  .highlight-box p {
+    color: var(--text);
+    font-size: 15.5px;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-badge">🚀 Expert Level · বাংলা গাইড · Crash Course</div>
+  <h1>PHP MASTERY</h1>
+  <p class="hero-sub">শূন্য থেকে ২০ বছরের অভিজ্ঞতার সমতুল্য PHP জ্ঞান — গভীর থেকে গভীরে</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Advanced Topics</div></div>
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Code Examples</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">বাংলায়</div></div>
+  </div>
+</div>
+
+<!-- ===== TOC ===== -->
+<div class="toc">
+  <h2>📋 বিষয়সূচি</h2>
+  <div class="toc-grid">
+    <a href="#s1">PHP Engine ও Zend কীভাবে কাজ করে</a>
+    <a href="#s2">OOP — Advanced Patterns</a>
+    <a href="#s3">PHP 8.x এর নতুন ফিচার</a>
+    <a href="#s4">Design Patterns</a>
+    <a href="#s5">Dependency Injection ও Container</a>
+    <a href="#s6">Generators ও Fibers</a>
+    <a href="#s7">Traits — Advanced ব্যবহার</a>
+    <a href="#s8">Reflection API</a>
+    <a href="#s9">Memory Management</a>
+    <a href="#s10">Async PHP ও ReactPHP</a>
+    <a href="#s11">Database Internals ও Query Optimization</a>
+    <a href="#s12">Security — OWASP Level</a>
+    <a href="#s13">Testing — PHPUnit Advanced</a>
+    <a href="#s14">PHP Extension তৈরি (C)</a>
+    <a href="#s15">Performance Profiling ও Opcache</a>
+  </div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+
+  <!-- ===== SECTION 1 ===== -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title-group">
+        <h2>PHP ENGINE ও ZEND VM কীভাবে কাজ করে</h2>
+        <div class="subtitle">// php internals · zend engine · opcode · jit compiler</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">⚙️</span><h3>PHP কোড থেকে Execution পর্যন্ত — পুরো প্রক্রিয়া</h3></div>
+      <div class="topic-card-body">
+        <p class="explanation">
+          তুমি যখন একটা PHP ফাইল রান করো, তখন ভেতরে কী হয় জানো? Zend Engine মূলত <strong>৪টি ধাপে</strong> কাজ করে:
+          <br><br>
+          ১. <strong>Lexing (Tokenization)</strong> — কোড → Tokens<br>
+          ২. <strong>Parsing</strong> — Tokens → AST (Abstract Syntax Tree)<br>
+          ৩. <strong>Compilation</strong> — AST → Opcodes<br>
+          ৪. <strong>Execution</strong> — Opcodes → Zend VM রান করে
+        </p>
+
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div>PHP 8.0 থেকে JIT (Just-In-Time) compiler যোগ হয়েছে। JIT কিছু Opcode সরাসরি Machine Code-এ কনভার্ট করে — বিশেষত CPU-intensive কাজে ২-৩x পার্ফরম্যান্স বাড়ে।</div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">opcode দেখার উপায় — php_opcodes.php</div>
+          </div>
+          <pre><span class="cm">// php.ini তে এই extension যোগ করো:</span>
+<span class="cm">// extension=opcache</span>
+
+<span class="cm">// CLI দিয়ে opcode দেখো:</span>
+<span class="cm">// php -dvld.active=1 -dvld.execute=0 your_file.php</span>
+
+<span class="cm">// অথবা OPcache built-in function:</span>
+<span class="php-tag">&lt;?php</span>
+<span class="fn">opcache_reset</span>();
+
+<span class="cm">// একটি সহজ function এর opcode বোঝার উদাহরণ:</span>
+<span class="kw">function</span> <span class="fn">add</span>(<span class="var">$a</span>, <span class="var">$b</span>) {
+    <span class="kw">return</span> <span class="var">$a</span> <span class="op">+</span> <span class="var">$b</span>;
+}
+
+<span class="cm">/*
+  উপরের function এর Opcode (simplified):
+  
+  RECV         $a       (parameter receive)
+  RECV         $b
+  ADD          ~0, $a, $b
+  RETURN       ~0
+  RETURN       null
+*/</span>
+
+<span class="cm">// JIT কনফিগারেশন (php.ini):</span>
+<span class="cm">// opcache.enable=1</span>
+<span class="cm">// opcache.jit_buffer_size=100M</span>
+<span class="cm">// opcache.jit=tracing  ← সবচেয়ে ভালো mode</span>
+
+<span class="kw">echo</span> <span class="fn">opcache_get_status</span>()[<span class="str">'jit'</span>][<span class="str">'enabled'</span>] ? <span class="str">"JIT চালু ✓"</span> : <span class="str">"JIT বন্ধ"</span>;</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">Zend Memory Manager — কীভাবে কাজ করে</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+<span class="cm">// PHP এর প্রতিটি value একটি zval struct (C) এ থাকে:
+// typedef struct _zval_struct {
+//     zend_value value;   // actual data
+//     u1 type_info;       // type: IS_LONG, IS_STRING etc
+//     u2 u2;              // extra info
+// } zval;
+</span>
+
+<span class="cm">// Copy-on-Write (COW) বোঝো:</span>
+<span class="var">$a</span> <span class="op">=</span> <span class="str">"Hello World"</span>; <span class="cm">// refcount=1, একটা zval</span>
+<span class="var">$b</span> <span class="op">=</span> <span class="var">$a</span>;           <span class="cm">// refcount=2, একই zval! copy হয়নি</span>
+<span class="var">$b</span> <span class="op">.=</span> <span class="str">" PHP"</span>;      <span class="cm">// এখন copy হবে → refcount=1 each</span>
+
+<span class="cm">// Memory usage দেখো:</span>
+<span class="var">$before</span> <span class="op">=</span> <span class="fn">memory_get_usage</span>();
+<span class="var">$array</span> <span class="op">=</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">100000</span>);
+<span class="kw">echo</span> (<span class="fn">memory_get_usage</span>() <span class="op">-</span> <span class="var">$before</span>) / <span class="num">1024</span> / <span class="num">1024</span> . <span class="str">" MB\n"</span>;
+
+<span class="cm">// Generator দিয়ে memory বাঁচাও (পরে বিস্তারিত):</span>
+<span class="kw">function</span> <span class="fn">lazyRange</span>(<span class="var">$n</span>) {
+    <span class="kw">for</span> (<span class="var">$i</span> <span class="op">=</span> <span class="num">1</span>; <span class="var">$i</span> <span class="op">&lt;=</span> <span class="var">$n</span>; <span class="var">$i</span><span class="op">++</span>) {
+        <span class="kw">yield</span> <span class="var">$i</span>; <span class="cm">// প্রতিবার একটা value, পুরো array নয়</span>
+    }
+}
+<span class="cm">// শুধু কয়েক KB memory ব্যবহার করবে!</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2 ===== -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title-group">
+        <h2>OOP — ADVANCED PATTERNS</h2>
+        <div class="subtitle">// interfaces · abstract · late static binding · magic methods</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🏗️</span><h3>Late Static Binding (LSB) — static:: vs self::</h3></div>
+      <div class="topic-card-body">
+        <p class="explanation">
+          <strong>self::</strong> সবসময় যে class-এ লেখা আছে সেটা refer করে। কিন্তু <strong>static::</strong> runtime-এ actual class টা refer করে। এটা না বুঝলে inheritance-এ বড় bug হয়।
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">late_static_binding.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="kw">class</span> <span class="cls">Base</span> {
+    <span class="kw">public static function</span> <span class="fn">create</span>(): <span class="kw">static</span> {
+        <span class="kw">return new</span> <span class="kw">static</span>(); <span class="cm">// static:: = runtime class</span>
+    }
+
+    <span class="kw">public static function</span> <span class="fn">className</span>(): <span class="ret">string</span> {
+        <span class="kw">return static</span>::<span class="kw">class</span>; <span class="cm">// runtime class name</span>
+    }
+
+    <span class="cm">// self:: problem দেখো:</span>
+    <span class="kw">public static function</span> <span class="fn">badCreate</span>(): <span class="kw">self</span> {
+        <span class="kw">return new</span> <span class="kw">self</span>(); <span class="cm">// সবসময় Base বানাবে!</span>
+    }
+}
+
+<span class="kw">class</span> <span class="cls">Child</span> <span class="kw">extends</span> <span class="cls">Base</span> {
+    <span class="kw">public</span> <span class="ret">string</span> <span class="var">$name</span> <span class="op">=</span> <span class="str">'Child Object'</span>;
+}
+
+<span class="var">$obj</span> <span class="op">=</span> <span class="cls">Child</span>::<span class="fn">create</span>();    <span class="cm">// Child instance ✓</span>
+<span class="var">$bad</span> <span class="op">=</span> <span class="cls">Child</span>::<span class="fn">badCreate</span>(); <span class="cm">// Base instance ✗ (bug!)</span>
+
+<span class="fn">var_dump</span>(<span class="var">$obj</span> <span class="kw">instanceof</span> <span class="cls">Child</span>); <span class="cm">// true</span>
+<span class="fn">var_dump</span>(<span class="var">$bad</span> <span class="kw">instanceof</span> <span class="cls">Child</span>); <span class="cm">// false — bug!</span>
+
+<span class="cm">// Practical: Singleton Pattern with LSB</span>
+<span class="kw">class</span> <span class="cls">Singleton</span> {
+    <span class="kw">private static array</span> <span class="var">$instances</span> <span class="op">=</span> [];
+
+    <span class="kw">final private function</span> <span class="fn">__construct</span>() {}
+
+    <span class="kw">public static function</span> <span class="fn">getInstance</span>(): <span class="kw">static</span> {
+        <span class="var">$class</span> <span class="op">=</span> <span class="kw">static</span>::<span class="kw">class</span>;
+        <span class="kw">if</span> (<span class="op">!</span><span class="fn">isset</span>(<span class="kw">self</span>::<span class="var">$instances</span>[<span class="var">$class</span>])) {
+            <span class="kw">self</span>::<span class="var">$instances</span>[<span class="var">$class</span>] <span class="op">=</span> <span class="kw">new static</span>();
+        }
+        <span class="kw">return self</span>::<span class="var">$instances</span>[<span class="var">$class</span>];
+    }
+}
+
+<span class="kw">class</span> <span class="cls">Database</span> <span class="kw">extends</span> <span class="cls">Singleton</span> {}
+<span class="kw">class</span> <span class="cls">Cache</span>    <span class="kw">extends</span> <span class="cls">Singleton</span> {}
+
+<span class="var">$db1</span> <span class="op">=</span> <span class="cls">Database</span>::<span class="fn">getInstance</span>();
+<span class="var">$db2</span> <span class="op">=</span> <span class="cls">Database</span>::<span class="fn">getInstance</span>();
+<span class="kw">echo</span> <span class="var">$db1</span> <span class="op">===</span> <span class="var">$db2</span> ? <span class="str">"Same instance ✓"</span> : <span class="str">"Different!"</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🎭</span><h3>Magic Methods — গভীর ব্যবহার</h3></div>
+      <div class="topic-card-body">
+        <div class="tags">
+          <span class="tag purple">__get/__set</span>
+          <span class="tag cyan">__call/__callStatic</span>
+          <span class="tag amber">__invoke</span>
+          <span class="tag green">__clone</span>
+          <span class="tag red">__debugInfo</span>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">magic_methods_advanced.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ১. Dynamic Property Access + Validation</span>
+<span class="kw">class</span> <span class="cls">StrictModel</span> {
+    <span class="kw">private array</span> <span class="var">$data</span> <span class="op">=</span> [];
+    <span class="kw">private array</span> <span class="var">$rules</span> <span class="op">=</span> [
+        <span class="str">'age'</span>   <span class="op">=></span> <span class="str">'int'</span>,
+        <span class="str">'email'</span> <span class="op">=></span> <span class="str">'email'</span>,
+        <span class="str">'name'</span>  <span class="op">=></span> <span class="str">'string'</span>,
+    ];
+
+    <span class="kw">public function</span> <span class="fn">__set</span>(<span class="ret">string</span> <span class="var">$name</span>, <span class="var">$value</span>): <span class="ret">void</span> {
+        <span class="kw">if</span> (<span class="op">!</span><span class="fn">array_key_exists</span>(<span class="var">$name</span>, <span class="var">$this</span><span class="op">-></span><span class="var">rules</span>)) {
+            <span class="kw">throw new</span> <span class="cls">\InvalidArgumentException</span>(<span class="str">"Unknown field: <span class="var">$name</span>"</span>);
+        }
+        <span class="var">$this</span><span class="op">-></span><span class="fn">validate</span>(<span class="var">$name</span>, <span class="var">$value</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">data</span>[<span class="var">$name</span>] <span class="op">=</span> <span class="var">$value</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">__get</span>(<span class="ret">string</span> <span class="var">$name</span>): <span class="var">mixed</span> {
+        <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="var">data</span>[<span class="var">$name</span>] <span class="op">??</span> <span class="kw">null</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">__isset</span>(<span class="ret">string</span> <span class="var">$name</span>): <span class="ret">bool</span> {
+        <span class="kw">return</span> <span class="fn">isset</span>(<span class="var">$this</span><span class="op">-></span><span class="var">data</span>[<span class="var">$name</span>]);
+    }
+
+    <span class="kw">private function</span> <span class="fn">validate</span>(<span class="ret">string</span> <span class="var">$field</span>, <span class="var">$value</span>): <span class="ret">void</span> {
+        <span class="kw">match</span>(<span class="var">$this</span><span class="op">-></span><span class="var">rules</span>[<span class="var">$field</span>]) {
+            <span class="str">'int'</span>    <span class="op">=></span> <span class="fn">is_int</span>(<span class="var">$value</span>) <span class="op">||</span> <span class="kw">throw new</span> <span class="cls">\TypeError</span>(<span class="str">"$field must be int"</span>),
+            <span class="str">'email'</span>  <span class="op">=></span> <span class="fn">filter_var</span>(<span class="var">$value</span>, <span class="const">FILTER_VALIDATE_EMAIL</span>) <span class="op">||</span> <span class="kw">throw new</span> <span class="cls">\ValueError</span>(<span class="str">"Invalid email"</span>),
+            <span class="str">'string'</span> <span class="op">=></span> <span class="fn">is_string</span>(<span class="var">$value</span>) <span class="op">||</span> <span class="kw">throw new</span> <span class="cls">\TypeError</span>(<span class="str">"$field must be string"</span>),
+        };
+    }
+}
+
+<span class="var">$user</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">StrictModel</span>();
+<span class="var">$user</span><span class="op">-></span><span class="var">name</span>  <span class="op">=</span> <span class="str">"রাহুল"</span>;
+<span class="var">$user</span><span class="op">-></span><span class="var">email</span> <span class="op">=</span> <span class="str">"rahul@example.com"</span>;
+<span class="var">$user</span><span class="op">-></span><span class="var">age</span>   <span class="op">=</span> <span class="num">25</span>;
+
+<span class="cm">// ২. __invoke — Object কে Function হিসেবে ব্যবহার</span>
+<span class="kw">class</span> <span class="cls">Multiplier</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly int</span> <span class="var">$factor</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">__invoke</span>(<span class="ret">int</span> <span class="var">$value</span>): <span class="ret">int</span> {
+        <span class="kw">return</span> <span class="var">$value</span> <span class="op">*</span> <span class="var">$this</span><span class="op">-></span><span class="var">factor</span>;
+    }
+}
+
+<span class="var">$triple</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Multiplier</span>(<span class="num">3</span>);
+<span class="kw">echo</span> <span class="var">$triple</span>(<span class="num">10</span>); <span class="cm">// 30 — object কে function হিসেবে call</span>
+<span class="kw">echo</span> <span class="fn">array_map</span>(<span class="var">$triple</span>, [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>]); <span class="cm">// [3, 6, 9, 12]</span>
+
+<span class="cm">// ৩. __clone — Deep Copy</span>
+<span class="kw">class</span> <span class="cls">DeepObject</span> {
+    <span class="kw">public</span> <span class="cls">Collection</span> <span class="var">$items</span>;
+
+    <span class="kw">public function</span> <span class="fn">__clone</span>() {
+        <span class="cm">// Object property clone করতে এটা আবশ্যক</span>
+        <span class="var">$this</span><span class="op">-></span><span class="var">items</span> <span class="op">=</span> <span class="kw">clone</span> <span class="var">$this</span><span class="op">-></span><span class="var">items</span>;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3 ===== -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title-group">
+        <h2>PHP 8.x এর GAME-CHANGING ফিচার</h2>
+        <div class="subtitle">// match · named args · nullsafe · enums · readonly · fibers</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">✨</span><h3>PHP 8.0–8.3 এর সব নতুন ফিচার</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">php8_features.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ════════════════════════════════════
+//  1. MATCH Expression (PHP 8.0)
+// ════════════════════════════════════</span>
+<span class="var">$status</span> <span class="op">=</span> <span class="num">404</span>;
+
+<span class="cm">// পুরনো switch (সমস্যা: type coercion, fall-through)</span>
+<span class="var">$message</span> <span class="op">=</span> <span class="kw">match</span>(<span class="var">$status</span>) {
+    <span class="num">200</span>, <span class="num">201</span> <span class="op">=></span> <span class="str">'সফল'</span>,
+    <span class="num">301</span>, <span class="num">302</span> <span class="op">=></span> <span class="str">'Redirect'</span>,
+    <span class="num">404</span>      <span class="op">=></span> <span class="str">'পাওয়া যায়নি'</span>,
+    <span class="num">500</span>      <span class="op">=></span> <span class="str">'Server Error'</span>,
+    <span class="kw">default</span>  <span class="op">=></span> <span class="kw">throw new</span> <span class="cls">\ValueError</span>(<span class="str">"Unknown: <span class="var">$status</span>"</span>)
+};
+
+<span class="cm">// ════════════════════════════════════
+//  2. Named Arguments (PHP 8.0)
+// ════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(
+    <span class="ret">string</span> <span class="var">$name</span>,
+    <span class="ret">int</span> <span class="var">$age</span> <span class="op">=</span> <span class="num">18</span>,
+    <span class="ret">bool</span> <span class="var">$isAdmin</span> <span class="op">=</span> <span class="kw">false</span>,
+    <span class="ret">string</span> <span class="var">$role</span> <span class="op">=</span> <span class="str">'user'</span>
+): <span class="ret">array</span> {
+    <span class="kw">return</span> <span class="fn">compact</span>(<span class="str">'name'</span>, <span class="str">'age'</span>, <span class="str">'isAdmin'</span>, <span class="str">'role'</span>);
+}
+
+<span class="cm">// Named args — শুধু যা দরকার, যেকোনো order-এ</span>
+<span class="var">$admin</span> <span class="op">=</span> <span class="fn">createUser</span>(
+    name: <span class="str">'করিম'</span>,
+    isAdmin: <span class="kw">true</span>,
+    role: <span class="str">'superadmin'</span>
+    <span class="cm">// age ডিফল্ট 18 থাকবে</span>
+);
+
+<span class="cm">// ════════════════════════════════════
+//  3. Nullsafe Operator ?-> (PHP 8.0)
+// ════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cls">Order</span> {
+    <span class="kw">public function</span> <span class="fn">getUser</span>(): ?<span class="cls">User</span> { <span class="kw">return null</span>; }
+}
+<span class="kw">class</span> <span class="cls">User</span> {
+    <span class="kw">public function</span> <span class="fn">getAddress</span>(): ?<span class="cls">Address</span> { <span class="kw">return null</span>; }
+}
+<span class="kw">class</span> <span class="cls">Address</span> {
+    <span class="kw">public</span> <span class="ret">string</span> <span class="var">$city</span> <span class="op">=</span> <span class="str">'ঢাকা'</span>;
+}
+
+<span class="var">$order</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Order</span>();
+
+<span class="cm">// পুরনো পদ্ধতি (verbose)</span>
+<span class="var">$city</span> <span class="op">=</span> <span class="var">$order</span><span class="op">-></span><span class="fn">getUser</span>() !== <span class="kw">null</span>
+    ? (<span class="var">$order</span><span class="op">-></span><span class="fn">getUser</span>()<span class="op">-></span><span class="fn">getAddress</span>() !== <span class="kw">null</span>
+        ? <span class="var">$order</span><span class="op">-></span><span class="fn">getUser</span>()<span class="op">-></span><span class="fn">getAddress</span>()<span class="op">-></span><span class="var">city</span>
+        : <span class="kw">null</span>)
+    : <span class="kw">null</span>;
+
+<span class="cm">// নতুন পদ্ধতি — Nullsafe chain</span>
+<span class="var">$city</span> <span class="op">=</span> <span class="var">$order</span><span class="op">?-></span><span class="fn">getUser</span>()<span class="op">?-></span><span class="fn">getAddress</span>()<span class="op">?-></span><span class="var">city</span>;
+
+<span class="cm">// ════════════════════════════════════
+//  4. Enums (PHP 8.1) — POWERFUL!
+// ════════════════════════════════════</span>
+<span class="kw">enum</span> <span class="cls">Status</span>: <span class="ret">string</span> {
+    <span class="kw">case</span> <span class="const">Active</span>   <span class="op">=</span> <span class="str">'active'</span>;
+    <span class="kw">case</span> <span class="const">Inactive</span> <span class="op">=</span> <span class="str">'inactive'</span>;
+    <span class="kw">case</span> <span class="const">Pending</span>  <span class="op">=</span> <span class="str">'pending'</span>;
+
+    <span class="cm">// Enum-এ method যোগ করা যায়!</span>
+    <span class="kw">public function</span> <span class="fn">label</span>(): <span class="ret">string</span> {
+        <span class="kw">return match</span>(<span class="var">$this</span>) {
+            <span class="cls">Status</span>::<span class="const">Active</span>   <span class="op">=></span> <span class="str">'সক্রিয়'</span>,
+            <span class="cls">Status</span>::<span class="const">Inactive</span> <span class="op">=></span> <span class="str">'নিষ্ক্রিয়'</span>,
+            <span class="cls">Status</span>::<span class="const">Pending</span>  <span class="op">=></span> <span class="str">'অপেক্ষারত'</span>,
+        };
+    }
+
+    <span class="kw">public function</span> <span class="fn">isActive</span>(): <span class="ret">bool</span> {
+        <span class="kw">return</span> <span class="var">$this</span> <span class="op">===</span> <span class="cls">Status</span>::<span class="const">Active</span>;
+    }
+}
+
+<span class="kw">enum</span> <span class="cls">Direction</span> { <span class="cm">// Pure enum (no value)</span>
+    <span class="kw">case</span> <span class="const">North</span>; <span class="kw">case</span> <span class="const">South</span>; <span class="kw">case</span> <span class="const">East</span>; <span class="kw">case</span> <span class="const">West</span>;
+}
+
+<span class="var">$s</span> <span class="op">=</span> <span class="cls">Status</span>::<span class="const">Active</span>;
+<span class="kw">echo</span> <span class="var">$s</span><span class="op">-></span><span class="fn">label</span>();  <span class="cm">// "সক্রিয়"</span>
+<span class="kw">echo</span> <span class="var">$s</span><span class="op">-></span><span class="var">value</span>;  <span class="cm">// "active"</span>
+
+<span class="cm">// DB থেকে enum বানানো:</span>
+<span class="var">$fromDb</span> <span class="op">=</span> <span class="cls">Status</span>::<span class="fn">from</span>(<span class="str">'active'</span>);    <span class="cm">// Status::Active</span>
+<span class="var">$safe</span>   <span class="op">=</span> <span class="cls">Status</span>::<span class="fn">tryFrom</span>(<span class="str">'xyz'</span>);   <span class="cm">// null (exception নয়)</span>
+
+<span class="cm">// ════════════════════════════════════
+//  5. Readonly Properties (PHP 8.1)
+//     & Constructor Promotion
+// ════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cls">Money</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly int</span>    <span class="var">$amount</span>,
+        <span class="kw">public readonly string</span> <span class="var">$currency</span> <span class="op">=</span> <span class="str">'BDT'</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">add</span>(<span class="cls">Money</span> <span class="var">$other</span>): <span class="kw">self</span> {
+        <span class="cm">// readonly তাই new instance return করতে হবে</span>
+        <span class="kw">return new self</span>(<span class="var">$this</span><span class="op">-></span><span class="var">amount</span> <span class="op">+</span> <span class="var">$other</span><span class="op">-></span><span class="var">amount</span>, <span class="var">$this</span><span class="op">-></span><span class="var">currency</span>);
+    }
+}
+
+<span class="var">$price</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Money</span>(<span class="num">1000</span>);
+<span class="var">$tax</span>   <span class="op">=</span> <span class="kw">new</span> <span class="cls">Money</span>(<span class="num">150</span>);
+<span class="var">$total</span> <span class="op">=</span> <span class="var">$price</span><span class="op">-></span><span class="fn">add</span>(<span class="var">$tax</span>); <span class="cm">// Money(1150, 'BDT')</span>
+<span class="cm">// $price->amount = 999; // Error! readonly</span>
+
+<span class="cm">// ════════════════════════════════════
+//  6. Intersection Types (PHP 8.1)
+// ════════════════════════════════════</span>
+<span class="kw">interface</span> <span class="cls">Countable</span> {}
+<span class="kw">interface</span> <span class="cls">Stringable</span> {}
+
+<span class="kw">function</span> <span class="fn">process</span>(<span class="cls">Countable</span><span class="op">&</span><span class="cls">Stringable</span> <span class="var">$input</span>): <span class="ret">void</span> {
+    <span class="cm">// $input অবশ্যই উভয় interface implement করবে</span>
+}
+
+<span class="cm">// ════════════════════════════════════
+//  7. Readonly Classes (PHP 8.2)
+// ════════════════════════════════════</span>
+<span class="kw">readonly class</span> <span class="cls">Point</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public float</span> <span class="var">$x</span>,
+        <span class="kw">public float</span> <span class="var">$y</span>,
+        <span class="kw">public float</span> <span class="var">$z</span> <span class="op">=</span> <span class="num">0.0</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">distanceTo</span>(<span class="cls">Point</span> <span class="var">$other</span>): <span class="ret">float</span> {
+        <span class="kw">return</span> <span class="fn">sqrt</span>(
+            (<span class="var">$this</span><span class="op">-></span><span class="var">x</span> <span class="op">-</span> <span class="var">$other</span><span class="op">-></span><span class="var">x</span>) <span class="op">**</span> <span class="num">2</span> <span class="op">+</span>
+            (<span class="var">$this</span><span class="op">-></span><span class="var">y</span> <span class="op">-</span> <span class="var">$other</span><span class="op">-></span><span class="var">y</span>) <span class="op">**</span> <span class="num">2</span>
+        );
+    }
+}
+
+<span class="cm">// ════════════════════════════════════
+//  8. PHP 8.3 নতুন ফিচার
+// ════════════════════════════════════</span>
+<span class="cm">// Typed Class Constants:</span>
+<span class="kw">class</span> <span class="cls">Config</span> {
+    <span class="kw">const string</span> <span class="const">VERSION</span> <span class="op">=</span> <span class="str">'1.0.0'</span>;
+    <span class="kw">const int</span>    <span class="const">MAX_RETRY</span> <span class="op">=</span> <span class="num">3</span>;
+}
+
+<span class="cm">// json_validate() — parse না করে validate:</span>
+<span class="var">$json</span> <span class="op">=</span> <span class="str">'{"name":"করিম"}'</span>;
+<span class="kw">if</span> (<span class="fn">json_validate</span>(<span class="var">$json</span>)) {
+    <span class="kw">echo</span> <span class="str">"Valid JSON ✓"</span>;
+}
+
+<span class="cm">// array_find() (PHP 8.4 preview):</span>
+<span class="var">$users</span> <span class="op">=</span> [<span class="str">'Ali'</span>, <span class="str">'Rahim'</span>, <span class="str">'Karim'</span>];
+<span class="var">$found</span> <span class="op">=</span> <span class="fn">array_find</span>(<span class="var">$users</span>, <span class="kw">fn</span>(<span class="var">$u</span>) <span class="op">=></span> <span class="fn">str_starts_with</span>(<span class="var">$u</span>, <span class="str">'K'</span>));
+<span class="cm">// 'Karim'</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4 ===== -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title-group">
+        <h2>DESIGN PATTERNS — প্রফেশনাল ব্যবহার</h2>
+        <div class="subtitle">// repository · observer · decorator · command · strategy</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🏛️</span><h3>Repository Pattern + Observer Pattern (Real-world)</h3></div>
+      <div class="topic-card-body">
+        <p class="explanation">Repository Pattern দিয়ে database logic এবং business logic আলাদা রাখো। Observer দিয়ে loose coupling তৈরি করো।</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">repository_observer_pattern.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ═══ Repository Pattern ═══</span>
+
+<span class="kw">interface</span> <span class="cls">UserRepositoryInterface</span> {
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="ret">int</span> <span class="var">$id</span>): ?<span class="cls">UserEntity</span>;
+    <span class="kw">public function</span> <span class="fn">findByEmail</span>(<span class="ret">string</span> <span class="var">$email</span>): ?<span class="cls">UserEntity</span>;
+    <span class="kw">public function</span> <span class="fn">save</span>(<span class="cls">UserEntity</span> <span class="var">$user</span>): <span class="cls">UserEntity</span>;
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="ret">int</span> <span class="var">$id</span>): <span class="ret">void</span>;
+    <span class="kw">public function</span> <span class="fn">findAll</span>(<span class="cls">UserFilter</span> <span class="var">$filter</span>): <span class="ret">array</span>;
+}
+
+<span class="kw">class</span> <span class="cls">MySQLUserRepository</span> <span class="kw">implements</span> <span class="cls">UserRepositoryInterface</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cls">\PDO</span> <span class="var">$pdo</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="ret">int</span> <span class="var">$id</span>): ?<span class="cls">UserEntity</span> {
+        <span class="var">$stmt</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">prepare</span>(
+            <span class="str">'SELECT * FROM users WHERE id = :id LIMIT 1'</span>
+        );
+        <span class="var">$stmt</span><span class="op">-></span><span class="fn">execute</span>([<span class="str">'id'</span> <span class="op">=></span> <span class="var">$id</span>]);
+        <span class="var">$row</span> <span class="op">=</span> <span class="var">$stmt</span><span class="op">-></span><span class="fn">fetch</span>(<span class="cls">\PDO</span>::<span class="const">FETCH_ASSOC</span>);
+        <span class="kw">return</span> <span class="var">$row</span> ? <span class="cls">UserEntity</span>::<span class="fn">fromArray</span>(<span class="var">$row</span>) : <span class="kw">null</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">save</span>(<span class="cls">UserEntity</span> <span class="var">$user</span>): <span class="cls">UserEntity</span> {
+        <span class="kw">if</span> (<span class="var">$user</span><span class="op">-></span><span class="var">id</span> <span class="op">===</span> <span class="kw">null</span>) {
+            <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="fn">insert</span>(<span class="var">$user</span>);
+        }
+        <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="fn">update</span>(<span class="var">$user</span>);
+    }
+
+    <span class="kw">private function</span> <span class="fn">insert</span>(<span class="cls">UserEntity</span> <span class="var">$user</span>): <span class="cls">UserEntity</span> {
+        <span class="var">$stmt</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">prepare</span>(
+            <span class="str">'INSERT INTO users (name, email, created_at) VALUES (:name, :email, NOW())'</span>
+        );
+        <span class="var">$stmt</span><span class="op">-></span><span class="fn">execute</span>([<span class="str">'name'</span> <span class="op">=></span> <span class="var">$user</span><span class="op">-></span><span class="var">name</span>, <span class="str">'email'</span> <span class="op">=></span> <span class="var">$user</span><span class="op">-></span><span class="var">email</span>]);
+        <span class="kw">return</span> <span class="var">$user</span><span class="op">-></span><span class="fn">withId</span>((<span class="ret">int</span>)<span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">lastInsertId</span>());
+    }
+    <span class="cm">// ... findByEmail, delete, findAll, update</span>
+}
+
+<span class="cm">// Testing-এর জন্য InMemory Repository</span>
+<span class="kw">class</span> <span class="cls">InMemoryUserRepository</span> <span class="kw">implements</span> <span class="cls">UserRepositoryInterface</span> {
+    <span class="kw">private array</span> <span class="var">$users</span> <span class="op">=</span> [];
+    <span class="kw">private int</span> <span class="var">$nextId</span> <span class="op">=</span> <span class="num">1</span>;
+
+    <span class="kw">public function</span> <span class="fn">save</span>(<span class="cls">UserEntity</span> <span class="var">$user</span>): <span class="cls">UserEntity</span> {
+        <span class="var">$user</span> <span class="op">=</span> <span class="var">$user</span><span class="op">-></span><span class="fn">withId</span>(<span class="var">$this</span><span class="op">-></span><span class="var">nextId</span><span class="op">++</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">users</span>[<span class="var">$user</span><span class="op">-></span><span class="var">id</span>] <span class="op">=</span> <span class="var">$user</span>;
+        <span class="kw">return</span> <span class="var">$user</span>;
+    }
+    <span class="cm">// real DB ছাড়াই test চালানো যাবে!</span>
+}
+
+<span class="cm">// ═══ Observer Pattern ═══</span>
+
+<span class="kw">interface</span> <span class="cls">EventInterface</span> {
+    <span class="kw">public function</span> <span class="fn">getName</span>(): <span class="ret">string</span>;
+}
+
+<span class="kw">interface</span> <span class="cls">ListenerInterface</span> {
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">EventInterface</span> <span class="var">$event</span>): <span class="ret">void</span>;
+}
+
+<span class="kw">class</span> <span class="cls">EventDispatcher</span> {
+    <span class="kw">private array</span> <span class="var">$listeners</span> <span class="op">=</span> [];
+
+    <span class="kw">public function</span> <span class="fn">listen</span>(<span class="ret">string</span> <span class="var">$event</span>, <span class="cls">ListenerInterface</span><span class="op">|</span><span class="ret">callable</span> <span class="var">$listener</span>): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">listeners</span>[<span class="var">$event</span>][] <span class="op">=</span> <span class="var">$listener</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">dispatch</span>(<span class="cls">EventInterface</span> <span class="var">$event</span>): <span class="ret">void</span> {
+        <span class="var">$name</span> <span class="op">=</span> <span class="var">$event</span><span class="op">-></span><span class="fn">getName</span>();
+        <span class="kw">foreach</span> (<span class="var">$this</span><span class="op">-></span><span class="var">listeners</span>[<span class="var">$name</span>] <span class="op">??</span> [] <span class="kw">as</span> <span class="var">$listener</span>) {
+            <span class="kw">if</span> (<span class="var">$listener</span> <span class="kw">instanceof</span> <span class="cls">ListenerInterface</span>) {
+                <span class="var">$listener</span><span class="op">-></span><span class="fn">handle</span>(<span class="var">$event</span>);
+            } <span class="kw">else</span> {
+                <span class="var">$listener</span>(<span class="var">$event</span>); <span class="cm">// callable</span>
+            }
+        }
+    }
+}
+
+<span class="kw">class</span> <span class="cls">UserRegistered</span> <span class="kw">implements</span> <span class="cls">EventInterface</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">public readonly</span> <span class="cls">UserEntity</span> <span class="var">$user</span>) {}
+    <span class="kw">public function</span> <span class="fn">getName</span>(): <span class="ret">string</span> { <span class="kw">return</span> <span class="str">'user.registered'</span>; }
+}
+
+<span class="kw">class</span> <span class="cls">SendWelcomeEmail</span> <span class="kw">implements</span> <span class="cls">ListenerInterface</span> {
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cls">EventInterface</span> <span class="var">$event</span>): <span class="ret">void</span> {
+        <span class="kw">echo</span> <span class="str">"Email পাঠানো হচ্ছে: {$event->user->email}\n"</span>;
+    }
+}
+
+<span class="cm">// Usage:</span>
+<span class="var">$dispatcher</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">EventDispatcher</span>();
+<span class="var">$dispatcher</span><span class="op">-></span><span class="fn">listen</span>(<span class="str">'user.registered'</span>, <span class="kw">new</span> <span class="cls">SendWelcomeEmail</span>());
+<span class="var">$dispatcher</span><span class="op">-></span><span class="fn">listen</span>(<span class="str">'user.registered'</span>, <span class="kw">fn</span>(<span class="var">$e</span>) <span class="op">=></span> <span class="fn">logActivity</span>(<span class="var">$e</span><span class="op">-></span><span class="var">user</span>));
+<span class="var">$dispatcher</span><span class="op">-></span><span class="fn">dispatch</span>(<span class="kw">new</span> <span class="cls">UserRegistered</span>(<span class="var">$newUser</span>));</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5 ===== -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title-group">
+        <h2>DEPENDENCY INJECTION ও CONTAINER</h2>
+        <div class="subtitle">// PSR-11 · auto-wiring · binding · service provider</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">📦</span><h3>নিজে DI Container বানানো (Auto-wiring সহ)</h3></div>
+      <div class="topic-card-body">
+        <p class="explanation">Laravel, Symfony সবাই DI Container ব্যবহার করে। তুমি নিজে একটা বানালে বুঝবে কীভাবে কাজ করে।</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">di_container.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="kw">class</span> <span class="cls">Container</span> {
+    <span class="kw">private array</span> <span class="var">$bindings</span>  <span class="op">=</span> [];
+    <span class="kw">private array</span> <span class="var">$instances</span> <span class="op">=</span> [];
+    <span class="kw">private array</span> <span class="var">$singletons</span> <span class="op">=</span> [];
+
+    <span class="cm">// Interface → Implementation বাঁধো</span>
+    <span class="kw">public function</span> <span class="fn">bind</span>(<span class="ret">string</span> <span class="var">$abstract</span>, <span class="ret">string</span><span class="op">|</span><span class="ret">callable</span> <span class="var">$concrete</span>): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">bindings</span>[<span class="var">$abstract</span>] <span class="op">=</span> <span class="var">$concrete</span>;
+    }
+
+    <span class="cm">// Singleton binding</span>
+    <span class="kw">public function</span> <span class="fn">singleton</span>(<span class="ret">string</span> <span class="var">$abstract</span>, <span class="ret">string</span><span class="op">|</span><span class="ret">callable</span> <span class="var">$concrete</span>): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="fn">bind</span>(<span class="var">$abstract</span>, <span class="var">$concrete</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">singletons</span>[<span class="var">$abstract</span>] <span class="op">=</span> <span class="kw">true</span>;
+    }
+
+    <span class="cm">// Resolve করো (auto-wiring)</span>
+    <span class="kw">public function</span> <span class="fn">make</span>(<span class="ret">string</span> <span class="var">$abstract</span>): <span class="var">mixed</span> {
+        <span class="cm">// Singleton cache</span>
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$this</span><span class="op">-></span><span class="var">singletons</span>[<span class="var">$abstract</span>], <span class="var">$this</span><span class="op">-></span><span class="var">instances</span>[<span class="var">$abstract</span>])) {
+            <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="var">instances</span>[<span class="var">$abstract</span>];
+        }
+
+        <span class="var">$concrete</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">bindings</span>[<span class="var">$abstract</span>] <span class="op">??</span> <span class="var">$abstract</span>;
+
+        <span class="var">$instance</span> <span class="op">=</span> <span class="kw">is_callable</span>(<span class="var">$concrete</span>)
+            ? <span class="var">$concrete</span>(<span class="var">$this</span>)
+            : <span class="var">$this</span><span class="op">-></span><span class="fn">build</span>(<span class="var">$concrete</span>);
+
+        <span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$this</span><span class="op">-></span><span class="var">singletons</span>[<span class="var">$abstract</span>])) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">instances</span>[<span class="var">$abstract</span>] <span class="op">=</span> <span class="var">$instance</span>;
+        }
+
+        <span class="kw">return</span> <span class="var">$instance</span>;
+    }
+
+    <span class="cm">// Auto-wiring: Reflection দিয়ে dependency inject করো</span>
+    <span class="kw">private function</span> <span class="fn">build</span>(<span class="ret">string</span> <span class="var">$class</span>): <span class="var">mixed</span> {
+        <span class="var">$ref</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\ReflectionClass</span>(<span class="var">$class</span>);
+
+        <span class="kw">if</span> (<span class="op">!</span><span class="var">$ref</span><span class="op">-></span><span class="fn">isInstantiable</span>()) {
+            <span class="kw">throw new</span> <span class="cls">\RuntimeException</span>(<span class="str">"Cannot instantiate: <span class="var">$class</span>"</span>);
+        }
+
+        <span class="var">$constructor</span> <span class="op">=</span> <span class="var">$ref</span><span class="op">-></span><span class="fn">getConstructor</span>();
+        <span class="kw">if</span> (<span class="var">$constructor</span> <span class="op">===</span> <span class="kw">null</span>) {
+            <span class="kw">return new</span> <span class="var">$class</span>();
+        }
+
+        <span class="var">$deps</span> <span class="op">=</span> <span class="fn">array_map</span>(
+            <span class="kw">function</span>(<span class="cls">\ReflectionParameter</span> <span class="var">$param</span>) {
+                <span class="var">$type</span> <span class="op">=</span> <span class="var">$param</span><span class="op">-></span><span class="fn">getType</span>();
+                <span class="kw">if</span> (<span class="var">$type</span> <span class="kw">instanceof</span> <span class="cls">\ReflectionNamedType</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="var">$type</span><span class="op">-></span><span class="fn">isBuiltin</span>()) {
+                    <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="fn">make</span>(<span class="var">$type</span><span class="op">-></span><span class="fn">getName</span>());
+                }
+                <span class="kw">if</span> (<span class="var">$param</span><span class="op">-></span><span class="fn">isDefaultValueAvailable</span>()) {
+                    <span class="kw">return</span> <span class="var">$param</span><span class="op">-></span><span class="fn">getDefaultValue</span>();
+                }
+                <span class="kw">throw new</span> <span class="cls">\RuntimeException</span>(<span class="str">"Cannot resolve: {$param->getName()}"</span>);
+            },
+            <span class="var">$constructor</span><span class="op">-></span><span class="fn">getParameters</span>()
+        );
+
+        <span class="kw">return</span> <span class="var">$ref</span><span class="op">-></span><span class="fn">newInstanceArgs</span>(<span class="var">$deps</span>);
+    }
+}
+
+<span class="cm">// ═══ Usage ═══</span>
+<span class="var">$container</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Container</span>();
+
+<span class="var">$container</span><span class="op">-></span><span class="fn">singleton</span>(<span class="cls">UserRepositoryInterface</span>::<span class="kw">class</span>, <span class="cls">MySQLUserRepository</span>::<span class="kw">class</span>);
+<span class="var">$container</span><span class="op">-></span><span class="fn">singleton</span>(<span class="cls">\PDO</span>::<span class="kw">class</span>, <span class="kw">fn</span>() <span class="op">=></span> <span class="kw">new</span> <span class="cls">\PDO</span>(<span class="str">'mysql:host=localhost;dbname=test'</span>, <span class="str">'root'</span>, <span class="str">''</span>));
+
+<span class="cm">// Auto-wiring: MySQLUserRepository → PDO automatically inject হবে!</span>
+<span class="var">$repo</span> <span class="op">=</span> <span class="var">$container</span><span class="op">-></span><span class="fn">make</span>(<span class="cls">UserRepositoryInterface</span>::<span class="kw">class</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6 ===== -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title-group">
+        <h2>GENERATORS ও FIBERS</h2>
+        <div class="subtitle">// lazy evaluation · coroutines · cooperative multitasking</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">⚡</span><h3>Generators — Lazy Collection ও Coroutine</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">generators_fibers.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ═══ Generator হলো একটি "pausable function" ═══
+
+// ১. বড় file পড়া — memory efficient</span>
+<span class="kw">function</span> <span class="fn">readLargeFile</span>(<span class="ret">string</span> <span class="var">$path</span>): <span class="cls">\Generator</span> {
+    <span class="var">$handle</span> <span class="op">=</span> <span class="fn">fopen</span>(<span class="var">$path</span>, <span class="str">'r'</span>);
+    <span class="kw">try</span> {
+        <span class="kw">while</span> (<span class="op">!</span><span class="fn">feof</span>(<span class="var">$handle</span>)) {
+            <span class="kw">yield</span> <span class="fn">fgets</span>(<span class="var">$handle</span>); <span class="cm">// একটা line, তারপর pause</span>
+        }
+    } <span class="kw">finally</span> {
+        <span class="fn">fclose</span>(<span class="var">$handle</span>);
+    }
+}
+
+<span class="cm">// শুধু কয়েক KB memory, যদিও file ১ GB হয়!</span>
+<span class="kw">foreach</span> (<span class="fn">readLargeFile</span>(<span class="str">'/var/log/nginx/access.log'</span>) <span class="kw">as</span> <span class="var">$line</span>) {
+    <span class="kw">if</span> (<span class="fn">str_contains</span>(<span class="var">$line</span>, <span class="str">'ERROR'</span>)) {
+        <span class="kw">echo</span> <span class="var">$line</span>;
+    }
+}
+
+<span class="cm">// ২. Pipeline দিয়ে data process</span>
+<span class="kw">function</span> <span class="fn">map</span>(<span class="cls">\Generator</span> <span class="var">$gen</span>, <span class="ret">callable</span> <span class="var">$fn</span>): <span class="cls">\Generator</span> {
+    <span class="kw">foreach</span> (<span class="var">$gen</span> <span class="kw">as</span> <span class="var">$key</span> <span class="op">=></span> <span class="var">$value</span>) {
+        <span class="kw">yield</span> <span class="var">$key</span> <span class="op">=></span> <span class="var">$fn</span>(<span class="var">$value</span>);
+    }
+}
+
+<span class="kw">function</span> <span class="fn">filter</span>(<span class="cls">\Generator</span> <span class="var">$gen</span>, <span class="ret">callable</span> <span class="var">$fn</span>): <span class="cls">\Generator</span> {
+    <span class="kw">foreach</span> (<span class="var">$gen</span> <span class="kw">as</span> <span class="var">$key</span> <span class="op">=></span> <span class="var">$value</span>) {
+        <span class="kw">if</span> (<span class="var">$fn</span>(<span class="var">$value</span>)) {
+            <span class="kw">yield</span> <span class="var">$key</span> <span class="op">=></span> <span class="var">$value</span>;
+        }
+    }
+}
+
+<span class="cm">// Pipeline: পুরো array একবারে load না করে step by step</span>
+<span class="var">$pipeline</span> <span class="op">=</span> <span class="fn">filter</span>(
+    <span class="fn">map</span>(
+        <span class="fn">readLargeFile</span>(<span class="str">'data.csv'</span>),
+        <span class="kw">fn</span>(<span class="var">$line</span>) <span class="op">=></span> <span class="fn">str_getcsv</span>(<span class="var">$line</span>)
+    ),
+    <span class="kw">fn</span>(<span class="var">$row</span>) <span class="op">=></span> (<span class="ret">int</span>)<span class="var">$row</span>[<span class="num">2</span>] <span class="op">></span> <span class="num">1000</span> <span class="cm">// amount > 1000</span>
+);
+
+<span class="cm">// ৩. Bidirectional Generator (send/receive)</span>
+<span class="kw">function</span> <span class="fn">accumulator</span>(): <span class="cls">\Generator</span> {
+    <span class="var">$total</span> <span class="op">=</span> <span class="num">0</span>;
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+        <span class="var">$value</span> <span class="op">=</span> <span class="kw">yield</span> <span class="var">$total</span>; <span class="cm">// yield করে total, receive করে value</span>
+        <span class="kw">if</span> (<span class="var">$value</span> <span class="op">===</span> <span class="kw">null</span>) <span class="kw">break</span>;
+        <span class="var">$total</span> <span class="op">+=</span> <span class="var">$value</span>;
+    }
+}
+
+<span class="var">$acc</span> <span class="op">=</span> <span class="fn">accumulator</span>();
+<span class="var">$acc</span><span class="op">-></span><span class="fn">current</span>(); <span class="cm">// initialize</span>
+<span class="var">$acc</span><span class="op">-></span><span class="fn">send</span>(<span class="num">10</span>);   <span class="cm">// total: 10</span>
+<span class="var">$acc</span><span class="op">-></span><span class="fn">send</span>(<span class="num">25</span>);   <span class="cm">// total: 35</span>
+<span class="kw">echo</span> <span class="var">$acc</span><span class="op">-></span><span class="fn">send</span>(<span class="num">5</span>); <span class="cm">// 40</span>
+
+<span class="cm">// ═══ Fibers (PHP 8.1) — Real Coroutine ═══</span>
+<span class="var">$fiber</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\Fiber</span>(<span class="kw">function</span>(): <span class="ret">void</span> {
+    <span class="kw">echo</span> <span class="str">"Fiber শুরু\n"</span>;
+    <span class="var">$value</span> <span class="op">=</span> <span class="cls">\Fiber</span>::<span class="fn">suspend</span>(<span class="str">'প্রথম pause'</span>);
+    <span class="kw">echo</span> <span class="str">"Resume পেলাম: {$value}\n"</span>;
+    <span class="cls">\Fiber</span>::<span class="fn">suspend</span>(<span class="str">'দ্বিতীয় pause'</span>);
+    <span class="kw">echo</span> <span class="str">"Fiber শেষ\n"</span>;
+});
+
+<span class="var">$val1</span> <span class="op">=</span> <span class="var">$fiber</span><span class="op">-></span><span class="fn">start</span>();       <span class="cm">// "Fiber শুরু", val1="প্রথম pause"</span>
+<span class="var">$val2</span> <span class="op">=</span> <span class="var">$fiber</span><span class="op">-></span><span class="fn">resume</span>(<span class="str">'hello'</span>); <span class="cm">// "Resume পেলাম: hello", val2="দ্বিতীয় pause"</span>
+<span class="var">$fiber</span><span class="op">-></span><span class="fn">resume</span>();                <span class="cm">// "Fiber শেষ"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7 ===== -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title-group">
+        <h2>TRAITS — ADVANCED ব্যবহার</h2>
+        <div class="subtitle">// conflict resolution · abstract methods · static traits</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🧩</span><h3>Traits এর সব গভীর ফিচার</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">traits_advanced.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ১. Trait দিয়ে Timestamp behavior যোগ করো</span>
+<span class="kw">trait</span> <span class="cls">HasTimestamps</span> {
+    <span class="kw">private</span> ?\<span class="cls">DateTimeImmutable</span> <span class="var">$createdAt</span> <span class="op">=</span> <span class="kw">null</span>;
+    <span class="kw">private</span> ?\<span class="cls">DateTimeImmutable</span> <span class="var">$updatedAt</span> <span class="op">=</span> <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">touch</span>(): <span class="ret">void</span> {
+        <span class="kw">$now</span> <span class="op">=</span> <span class="kw">new</span> \<span class="cls">DateTimeImmutable</span>();
+        <span class="kw">if</span> (<span class="var">$this</span><span class="op">-></span><span class="var">createdAt</span> <span class="op">===</span> <span class="kw">null</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">createdAt</span> <span class="op">=</span> <span class="kw">$now</span>;
+        }
+        <span class="var">$this</span><span class="op">-></span><span class="var">updatedAt</span> <span class="op">=</span> <span class="kw">$now</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">getCreatedAt</span>(): ?\<span class="cls">DateTimeImmutable</span> { <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="var">createdAt</span>; }
+    <span class="kw">public function</span> <span class="fn">getUpdatedAt</span>(): ?\<span class="cls">DateTimeImmutable</span> { <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="var">updatedAt</span>; }
+}
+
+<span class="cm">// ২. Trait-এ abstract method — class কে বাধ্য করো</span>
+<span class="kw">trait</span> <span class="cls">Serializable</span> {
+    <span class="kw">abstract protected function</span> <span class="fn">getSerializableFields</span>(): <span class="ret">array</span>;
+
+    <span class="kw">public function</span> <span class="fn">toJson</span>(): <span class="ret">string</span> {
+        <span class="var">$data</span> <span class="op">=</span> [];
+        <span class="kw">foreach</span> (<span class="var">$this</span><span class="op">-></span><span class="fn">getSerializableFields</span>() <span class="kw">as</span> <span class="var">$field</span>) {
+            <span class="var">$data</span>[<span class="var">$field</span>] <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">$field</span>;
+        }
+        <span class="kw">return</span> <span class="fn">json_encode</span>(<span class="var">$data</span>, <span class="const">JSON_UNESCAPED_UNICODE</span>);
+    }
+}
+
+<span class="cm">// ৩. Conflict Resolution</span>
+<span class="kw">trait</span> <span class="cls">A</span> {
+    <span class="kw">public function</span> <span class="fn">hello</span>(): <span class="ret">string</span> { <span class="kw">return</span> <span class="str">"A"</span>; }
+    <span class="kw">public function</span> <span class="fn">shared</span>(): <span class="ret">string</span> { <span class="kw">return</span> <span class="str">"A::shared"</span>; }
+}
+
+<span class="kw">trait</span> <span class="cls">B</span> {
+    <span class="kw">public function</span> <span class="fn">world</span>(): <span class="ret">string</span> { <span class="kw">return</span> <span class="str">"B"</span>; }
+    <span class="kw">public function</span> <span class="fn">shared</span>(): <span class="ret">string</span> { <span class="kw">return</span> <span class="str">"B::shared"</span>; }
+}
+
+<span class="kw">class</span> <span class="cls">MyClass</span> {
+    <span class="kw">use</span> <span class="cls">A</span>, <span class="cls">B</span> {
+        <span class="cls">A</span>::<span class="fn">shared</span> <span class="kw">insteadof</span> <span class="cls">B</span>; <span class="cm">// A wins</span>
+        <span class="cls">B</span>::<span class="fn">shared</span> <span class="kw">as</span> <span class="fn">sharedFromB</span>; <span class="cm">// B কে rename করো</span>
+    }
+
+    <span class="kw">use</span> <span class="cls">HasTimestamps</span>;
+    <span class="kw">use</span> <span class="cls">Serializable</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public string</span> <span class="var">$name</span>,
+        <span class="kw">public string</span> <span class="var">$email</span>
+    ) {
+        <span class="var">$this</span><span class="op">-></span><span class="fn">touch</span>();
+    }
+
+    <span class="kw">protected function</span> <span class="fn">getSerializableFields</span>(): <span class="ret">array</span> {
+        <span class="kw">return</span> [<span class="str">'name'</span>, <span class="str">'email'</span>];
+    }
+}
+
+<span class="var">$obj</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">MyClass</span>(<span class="str">'করিম'</span>, <span class="str">'karim@bd.com'</span>);
+<span class="kw">echo</span> <span class="var">$obj</span><span class="op">-></span><span class="fn">toJson</span>();      <span class="cm">// {"name":"করিম","email":"karim@bd.com"}</span>
+<span class="kw">echo</span> <span class="var">$obj</span><span class="op">-></span><span class="fn">shared</span>();     <span class="cm">// "A::shared"</span>
+<span class="kw">echo</span> <span class="var">$obj</span><span class="op">-></span><span class="fn">sharedFromB</span>(); <span class="cm">// "B::shared"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8 ===== -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title-group">
+        <h2>REFLECTION API</h2>
+        <div class="subtitle">// runtime inspection · meta-programming · annotation</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🔍</span><h3>Reflection + PHP 8 Attributes = Powerful Framework</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">reflection_attributes.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// PHP 8 Attributes (Annotations alternative)</span>
+<span class="deco">#[Attribute(\Attribute::TARGET_PROPERTY)]</span>
+<span class="kw">class</span> <span class="cls">Validate</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly string</span> <span class="var">$rule</span>,
+        <span class="kw">public readonly</span> <span class="var">mixed</span>  <span class="var">$value</span> <span class="op">=</span> <span class="kw">null</span>
+    ) {}
+}
+
+<span class="deco">#[Attribute(\Attribute::TARGET_PROPERTY)]</span>
+<span class="kw">class</span> <span class="cls">Column</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly string</span> <span class="var">$name</span>
+    ) {}
+}
+
+<span class="cm">// Model class with Attributes</span>
+<span class="kw">class</span> <span class="cls">UserModel</span> {
+    <span class="deco">#[Column('user_name')]</span>
+    <span class="deco">#[Validate('minLength', 2)]</span>
+    <span class="deco">#[Validate('maxLength', 50)]</span>
+    <span class="kw">public string</span> <span class="var">$name</span> <span class="op">=</span> <span class="str">''</span>;
+
+    <span class="deco">#[Column('email_address')]</span>
+    <span class="deco">#[Validate('email')]</span>
+    <span class="kw">public string</span> <span class="var">$email</span> <span class="op">=</span> <span class="str">''</span>;
+
+    <span class="deco">#[Column('user_age')]</span>
+    <span class="deco">#[Validate('min', 0)]</span>
+    <span class="deco">#[Validate('max', 150)]</span>
+    <span class="kw">public int</span>    <span class="var">$age</span> <span class="op">=</span> <span class="num">0</span>;
+}
+
+<span class="cm">// Reflection-based Validator</span>
+<span class="kw">class</span> <span class="cls">AttributeValidator</span> {
+    <span class="kw">public function</span> <span class="fn">validate</span>(<span class="var">object</span> <span class="var">$model</span>): <span class="ret">array</span> {
+        <span class="var">$errors</span> <span class="op">=</span> [];
+        <span class="var">$ref</span>    <span class="op">=</span> <span class="kw">new</span> \<span class="cls">ReflectionClass</span>(<span class="var">$model</span>);
+
+        <span class="kw">foreach</span> (<span class="var">$ref</span><span class="op">-></span><span class="fn">getProperties</span>() <span class="kw">as</span> <span class="var">$property</span>) {
+            <span class="var">$value</span> <span class="op">=</span> <span class="var">$property</span><span class="op">-></span><span class="fn">getValue</span>(<span class="var">$model</span>);
+            <span class="var">$name</span>  <span class="op">=</span> <span class="var">$property</span><span class="op">-></span><span class="fn">getName</span>();
+
+            <span class="kw">foreach</span> (<span class="var">$property</span><span class="op">-></span><span class="fn">getAttributes</span>(<span class="cls">Validate</span>::<span class="kw">class</span>) <span class="kw">as</span> <span class="var">$attr</span>) {
+                <span class="var">$validate</span> <span class="op">=</span> <span class="var">$attr</span><span class="op">-></span><span class="fn">newInstance</span>();
+                <span class="var">$error</span>    <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="fn">check</span>(<span class="var">$validate</span><span class="op">-></span><span class="var">rule</span>, <span class="var">$value</span>, <span class="var">$validate</span><span class="op">-></span><span class="var">value</span>);
+                <span class="kw">if</span> (<span class="var">$error</span>) <span class="var">$errors</span>[<span class="var">$name</span>][] <span class="op">=</span> <span class="var">$error</span>;
+            }
+        }
+        <span class="kw">return</span> <span class="var">$errors</span>;
+    }
+
+    <span class="kw">private function</span> <span class="fn">check</span>(<span class="ret">string</span> <span class="var">$rule</span>, <span class="var">$value</span>, <span class="var">$param</span>): ?<span class="ret">string</span> {
+        <span class="kw">return match</span>(<span class="var">$rule</span>) {
+            <span class="str">'minLength'</span> <span class="op">=></span> <span class="fn">strlen</span>(<span class="var">$value</span>) <span class="op">&lt;</span> <span class="var">$param</span> ? <span class="str">"Min length {$param}"</span> : <span class="kw">null</span>,
+            <span class="str">'maxLength'</span> <span class="op">=></span> <span class="fn">strlen</span>(<span class="var">$value</span>) <span class="op">></span> <span class="var">$param</span> ? <span class="str">"Max length {$param}"</span> : <span class="kw">null</span>,
+            <span class="str">'email'</span>     <span class="op">=></span> <span class="fn">filter_var</span>(<span class="var">$value</span>, <span class="const">FILTER_VALIDATE_EMAIL</span>) ? <span class="kw">null</span> : <span class="str">"Invalid email"</span>,
+            <span class="str">'min'</span>       <span class="op">=></span> <span class="var">$value</span> <span class="op">&lt;</span> <span class="var">$param</span> ? <span class="str">"Min value {$param}"</span> : <span class="kw">null</span>,
+            <span class="str">'max'</span>       <span class="op">=></span> <span class="var">$value</span> <span class="op">></span> <span class="var">$param</span> ? <span class="str">"Max value {$param}"</span> : <span class="kw">null</span>,
+            <span class="kw">default</span>     <span class="op">=></span> <span class="kw">null</span>,
+        };
+    }
+}
+
+<span class="cm">// Reflection-based ORM mapping</span>
+<span class="kw">class</span> <span class="cls">OrmMapper</span> {
+    <span class="kw">public function</span> <span class="fn">toArray</span>(<span class="var">object</span> <span class="var">$model</span>): <span class="ret">array</span> {
+        <span class="var">$result</span> <span class="op">=</span> [];
+        <span class="var">$ref</span>    <span class="op">=</span> <span class="kw">new</span> \<span class="cls">ReflectionClass</span>(<span class="var">$model</span>);
+
+        <span class="kw">foreach</span> (<span class="var">$ref</span><span class="op">-></span><span class="fn">getProperties</span>() <span class="kw">as</span> <span class="var">$prop</span>) {
+            <span class="var">$attrs</span> <span class="op">=</span> <span class="var">$prop</span><span class="op">-></span><span class="fn">getAttributes</span>(<span class="cls">Column</span>::<span class="kw">class</span>);
+            <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$attrs</span>)) <span class="kw">continue</span>;
+            <span class="var">$colName</span> <span class="op">=</span> <span class="var">$attrs</span>[<span class="num">0</span>]<span class="op">-></span><span class="fn">newInstance</span>()<span class="op">-></span><span class="var">name</span>;
+            <span class="var">$result</span>[<span class="var">$colName</span>] <span class="op">=</span> <span class="var">$prop</span><span class="op">-></span><span class="fn">getValue</span>(<span class="var">$model</span>);
+        }
+        <span class="kw">return</span> <span class="var">$result</span>;
+        <span class="cm">// ['user_name' => ..., 'email_address' => ..., 'user_age' => ...]</span>
+    }
+}
+
+<span class="cm">// Test করো:</span>
+<span class="var">$user</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">UserModel</span>();
+<span class="var">$user</span><span class="op">-></span><span class="var">name</span>  <span class="op">=</span> <span class="str">"ক"</span>; <span class="cm">// too short</span>
+<span class="var">$user</span><span class="op">-></span><span class="var">email</span> <span class="op">=</span> <span class="str">"invalid"</span>;
+
+<span class="var">$validator</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">AttributeValidator</span>();
+<span class="var">$errors</span> <span class="op">=</span> <span class="var">$validator</span><span class="op">-></span><span class="fn">validate</span>(<span class="var">$user</span>);
+<span class="fn">print_r</span>(<span class="var">$errors</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 9 ===== -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div class="section-title-group">
+        <h2>MEMORY MANAGEMENT ও PERFORMANCE</h2>
+        <div class="subtitle">// circular references · gc · spl data structures · benchmarking</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🧠</span><h3>Circular Reference ও Garbage Collection</h3></div>
+      <div class="topic-card-body">
+        <div class="callout warn">
+          <span class="callout-icon">⚠️</span>
+          <div>Circular reference হলে PHP এর reference counting কাজ করে না। এজন্য আলাদা Cycle Garbage Collector আছে।</div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">memory_management.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// Circular Reference — memory leak কারণ</span>
+<span class="kw">class</span> <span class="cls">Node</span> {
+    <span class="kw">public</span> ?<span class="cls">Node</span> <span class="var">$parent</span> <span class="op">=</span> <span class="kw">null</span>;
+    <span class="kw">public</span> ?<span class="cls">Node</span> <span class="var">$child</span>  <span class="op">=</span> <span class="kw">null</span>;
+    <span class="kw">public</span> <span class="ret">string</span> <span class="var">$data</span>   <span class="op">=</span> <span class="str">''</span>;
+}
+
+<span class="var">$parent</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Node</span>();
+<span class="var">$child</span>  <span class="op">=</span> <span class="kw">new</span> <span class="cls">Node</span>();
+
+<span class="var">$parent</span><span class="op">-></span><span class="var">child</span>  <span class="op">=</span> <span class="var">$child</span>;
+<span class="var">$child</span><span class="op">-></span><span class="var">parent</span> <span class="op">=</span> <span class="var">$parent</span>; <span class="cm">// circular!</span>
+
+<span class="cm">// unset করলেও memory free হয় না (refcount > 0)</span>
+<span class="fn">unset</span>(<span class="var">$parent</span>, <span class="var">$child</span>);
+
+<span class="cm">// GC manually চালাও:</span>
+<span class="fn">gc_collect_cycles</span>(); <span class="cm">// circular reference free করে</span>
+
+<span class="cm">// Solution: WeakReference ব্যবহার করো</span>
+<span class="kw">class</span> <span class="cls">BetterNode</span> {
+    <span class="kw">public</span> ?<span class="cls">WeakReference</span> <span class="var">$parent</span> <span class="op">=</span> <span class="kw">null</span>; <span class="cm">// weak!</span>
+    <span class="kw">public</span> ?<span class="cls">BetterNode</span> <span class="var">$child</span>  <span class="op">=</span> <span class="kw">null</span>;
+
+    <span class="kw">public function</span> <span class="fn">setParent</span>(<span class="cls">BetterNode</span> <span class="var">$node</span>): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">parent</span> <span class="op">=</span> <span class="cls">WeakReference</span>::<span class="fn">create</span>(<span class="var">$node</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">getParent</span>(): ?<span class="cls">BetterNode</span> {
+        <span class="kw">return</span> <span class="var">$this</span><span class="op">-></span><span class="var">parent</span><span class="op">?-></span><span class="fn">get</span>(); <span class="cm">// null if GC collected</span>
+    }
+}
+
+<span class="cm">// SplFixedArray — faster than regular array for numeric keys</span>
+<span class="var">$fixed</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\SplFixedArray</span>(<span class="num">1000000</span>);
+<span class="cm">// Regular array এর চেয়ে ~৩x কম memory!</span>
+
+<span class="cm">// SplStack, SplQueue — O(1) operations</span>
+<span class="var">$stack</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\SplStack</span>();
+<span class="var">$stack</span><span class="op">-></span><span class="fn">push</span>(<span class="str">'first'</span>);
+<span class="var">$stack</span><span class="op">-></span><span class="fn">push</span>(<span class="str">'second'</span>);
+<span class="kw">echo</span> <span class="var">$stack</span><span class="op">-></span><span class="fn">pop</span>(); <span class="cm">// 'second' (LIFO)</span>
+
+<span class="var">$queue</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\SplQueue</span>();
+<span class="var">$queue</span><span class="op">-></span><span class="fn">enqueue</span>(<span class="str">'first'</span>);
+<span class="var">$queue</span><span class="op">-></span><span class="fn">enqueue</span>(<span class="str">'second'</span>);
+<span class="kw">echo</span> <span class="var">$queue</span><span class="op">-></span><span class="fn">dequeue</span>(); <span class="cm">// 'first' (FIFO)</span>
+
+<span class="cm">// SplMinHeap — Priority Queue</span>
+<span class="var">$heap</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\SplMinHeap</span>();
+<span class="var">$heap</span><span class="op">-></span><span class="fn">insert</span>(<span class="num">50</span>);
+<span class="var">$heap</span><span class="op">-></span><span class="fn">insert</span>(<span class="num">10</span>);
+<span class="var">$heap</span><span class="op">-></span><span class="fn">insert</span>(<span class="num">30</span>);
+<span class="kw">echo</span> <span class="var">$heap</span><span class="op">-></span><span class="fn">extract</span>(); <span class="cm">// 10 (সবচেয়ে ছোট)</span>
+
+<span class="cm">// Benchmark helper</span>
+<span class="kw">function</span> <span class="fn">benchmark</span>(<span class="ret">string</span> <span class="var">$label</span>, <span class="ret">callable</span> <span class="var">$fn</span>, <span class="ret">int</span> <span class="var">$times</span> <span class="op">=</span> <span class="num">10000</span>): <span class="ret">void</span> {
+    <span class="var">$start</span> <span class="op">=</span> <span class="fn">hrtime</span>(<span class="kw">true</span>);
+    <span class="kw">for</span> (<span class="var">$i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">$i</span> <span class="op">&lt;</span> <span class="var">$times</span>; <span class="var">$i</span><span class="op">++</span>) { <span class="var">$fn</span>(); }
+    <span class="var">$ms</span> <span class="op">=</span> (<span class="fn">hrtime</span>(<span class="kw">true</span>) <span class="op">-</span> <span class="var">$start</span>) / <span class="num">1e6</span>;
+    <span class="kw">echo</span> <span class="fn">sprintf</span>(<span class="str">"%-30s %8.3f ms\n"</span>, <span class="var">$label</span>, <span class="var">$ms</span>);
+}
+
+<span class="fn">benchmark</span>(<span class="str">'array_push'</span>,    <span class="kw">fn</span>() <span class="op">=></span> <span class="fn">array_push</span>(<span class="var">$arr</span>, <span class="num">1</span>));
+<span class="fn">benchmark</span>(<span class="str">'$arr[] = 1'</span>,    <span class="kw">fn</span>() <span class="op">=></span> <span class="var">$arr</span>[] <span class="op">=</span> <span class="num">1</span>);    <span class="cm">// এটা দ্রুত!</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 10 ===== -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-title-group">
+        <h2>ASYNC PHP ও REACTPHP</h2>
+        <div class="subtitle">// event loop · promises · streams · non-blocking I/O</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🔄</span><h3>ReactPHP দিয়ে Non-blocking Server</h3></div>
+      <div class="topic-card-body">
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div>PHP normally synchronous (একটা শেষ হলে পরেরটা)। ReactPHP একটা Event Loop দিয়ে Node.js এর মতো async করে।</div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">async_reactphp.php (composer require react/http)</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+<span class="cm">// composer require react/http react/promise</span>
+
+<span class="kw">use</span> <span class="cls">React\Http\HttpServer</span>;
+<span class="kw">use</span> <span class="cls">React\Http\Message\Response</span>;
+<span class="kw">use</span> <span class="cls">Psr\Http\Message\ServerRequestInterface</span>;
+<span class="kw">use</span> <span class="cls">React\EventLoop\Loop</span>;
+
+<span class="cm">// একটা HTTP server যা হাজার connection handle করতে পারে</span>
+<span class="var">$server</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">HttpServer</span>(<span class="kw">function</span>(<span class="cls">ServerRequestInterface</span> <span class="var">$request</span>) {
+    <span class="var">$path</span> <span class="op">=</span> <span class="var">$request</span><span class="op">-></span><span class="fn">getUri</span>()<span class="op">-></span><span class="fn">getPath</span>();
+
+    <span class="kw">return</span> <span class="kw">match</span>(<span class="var">$path</span>) {
+        <span class="str">'/'</span>      <span class="op">=></span> <span class="kw">new</span> <span class="cls">Response</span>(<span class="num">200</span>, [], <span class="str">'নমস্কার বাংলাদেশ!'</span>),
+        <span class="str">'/health'</span> <span class="op">=></span> <span class="kw">new</span> <span class="cls">Response</span>(<span class="num">200</span>, [<span class="str">'Content-Type'</span> <span class="op">=></span> <span class="str">'application/json'</span>],
+                            <span class="fn">json_encode</span>([<span class="str">'status'</span> <span class="op">=></span> <span class="str">'ok'</span>, <span class="str">'time'</span> <span class="op">=></span> <span class="fn">time</span>()])),
+        <span class="kw">default</span>  <span class="op">=></span> <span class="kw">new</span> <span class="cls">Response</span>(<span class="num">404</span>, [], <span class="str">'পাওয়া যায়নি'</span>)
+    };
+});
+
+<span class="var">$socket</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\React\Socket\SocketServer</span>(<span class="str">'0.0.0.0:8080'</span>);
+<span class="var">$server</span><span class="op">-></span><span class="fn">listen</span>(<span class="var">$socket</span>);
+<span class="kw">echo</span> <span class="str">"Server চলছে: http://localhost:8080\n"</span>;
+<span class="cls">Loop</span>::<span class="fn">run</span>();
+
+<span class="cm">// ═══ Promises ═══</span>
+<span class="kw">use</span> <span class="cls">React\Promise\Promise</span>;
+<span class="kw">use function</span> <span class="cls">React\Async\await</span>;
+<span class="kw">use function</span> <span class="cls">React\Promise\all</span>;
+
+<span class="cm">// Parallel HTTP requests</span>
+<span class="kw">function</span> <span class="fn">fetchMultipleUrls</span>(<span class="ret">array</span> <span class="var">$urls</span>): <span class="ret">array</span> {
+    <span class="var">$browser</span>  <span class="op">=</span> <span class="kw">new</span> <span class="cls">\React\Http\Browser</span>();
+    <span class="var">$promises</span> <span class="op">=</span> <span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="var">$url</span>) <span class="op">=></span> <span class="var">$browser</span><span class="op">-></span><span class="fn">get</span>(<span class="var">$url</span>), <span class="var">$urls</span>);
+    <span class="cm">// সব request একসাথে চলবে, একটার জন্য অন্যটা wait করবে না</span>
+    <span class="kw">return</span> <span class="fn">await</span>(<span class="fn">all</span>(<span class="var">$promises</span>));
+}
+
+<span class="cm">// ═══ Swoole (Extension) — সবচেয়ে Fast Async PHP ═══</span>
+<span class="cm">// extension=swoole</span>
+<span class="var">$server</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">Swoole\HTTP\Server</span>(<span class="str">"0.0.0.0"</span>, <span class="num">9501</span>);
+
+<span class="var">$server</span><span class="op">-></span><span class="fn">on</span>(<span class="str">"request"</span>, <span class="kw">function</span>(<span class="var">$request</span>, <span class="var">$response</span>) {
+    <span class="cm">// Coroutine automatically!</span>
+    <span class="var">$response</span><span class="op">-></span><span class="var">header</span>(<span class="str">"Content-Type"</span>, <span class="str">"text/plain"</span>);
+    <span class="var">$response</span><span class="op">-></span><span class="fn">end</span>(<span class="str">"Hello from Swoole!"</span>);
+});
+
+<span class="var">$server</span><span class="op">-></span><span class="fn">start</span>();</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 11 ===== -->
+  <div class="section" id="s11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-title-group">
+        <h2>DATABASE INTERNALS ও OPTIMIZATION</h2>
+        <div class="subtitle">// PDO · prepared statements · transactions · query optimization</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🗄️</span><h3>Database এর গভীরে — Transaction, Locking, Optimization</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">database_advanced.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ═══ PDO Best Practices ═══</span>
+<span class="kw">class</span> <span class="cls">DatabaseConnection</span> {
+    <span class="kw">private static</span> ?<span class="cls">\PDO</span> <span class="var">$instance</span> <span class="op">=</span> <span class="kw">null</span>;
+
+    <span class="kw">public static function</span> <span class="fn">getInstance</span>(): <span class="cls">\PDO</span> {
+        <span class="kw">if</span> (<span class="var">self</span>::<span class="var">$instance</span> <span class="op">===</span> <span class="kw">null</span>) {
+            <span class="var">self</span>::<span class="var">$instance</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">\PDO</span>(
+                <span class="fn">dsn</span>: <span class="str">'mysql:host=127.0.0.1;dbname=myapp;charset=utf8mb4'</span>,
+                username: <span class="fn">getenv</span>(<span class="str">'DB_USER'</span>),
+                password: <span class="fn">getenv</span>(<span class="str">'DB_PASS'</span>),
+                options: [
+                    <span class="cls">\PDO</span>::<span class="const">ATTR_ERRMODE</span>            <span class="op">=></span> <span class="cls">\PDO</span>::<span class="const">ERRMODE_EXCEPTION</span>,
+                    <span class="cls">\PDO</span>::<span class="const">ATTR_DEFAULT_FETCH_MODE</span>  <span class="op">=></span> <span class="cls">\PDO</span>::<span class="const">FETCH_ASSOC</span>,
+                    <span class="cls">\PDO</span>::<span class="const">ATTR_EMULATE_PREPARES</span>    <span class="op">=></span> <span class="kw">false</span>, <span class="cm">// real prepares</span>
+                    <span class="cls">\PDO</span>::<span class="const">MYSQL_ATTR_INIT_COMMAND</span>  <span class="op">=></span> <span class="str">"SET NAMES utf8mb4"</span>,
+                ]
+            );
+        }
+        <span class="kw">return self</span>::<span class="var">$instance</span>;
+    }
+}
+
+<span class="cm">// ═══ Transaction Manager ═══</span>
+<span class="kw">class</span> <span class="cls">TransactionManager</span> {
+    <span class="kw">private int</span> <span class="var">$depth</span> <span class="op">=</span> <span class="num">0</span>; <span class="cm">// Nested transaction support</span>
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private readonly</span> <span class="cls">\PDO</span> <span class="var">$pdo</span>) {}
+
+    <span class="kw">public function</span> <span class="fn">transaction</span>(<span class="ret">callable</span> <span class="var">$callback</span>): <span class="var">mixed</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="fn">begin</span>();
+        <span class="kw">try</span> {
+            <span class="var">$result</span> <span class="op">=</span> <span class="var">$callback</span>(<span class="var">$this</span><span class="op">-></span><span class="var">pdo</span>);
+            <span class="var">$this</span><span class="op">-></span><span class="fn">commit</span>();
+            <span class="kw">return</span> <span class="var">$result</span>;
+        } <span class="kw">catch</span> (<span class="cls">\Throwable</span> <span class="var">$e</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="fn">rollback</span>();
+            <span class="kw">throw</span> <span class="var">$e</span>;
+        }
+    }
+
+    <span class="kw">private function</span> <span class="fn">begin</span>(): <span class="ret">void</span> {
+        <span class="kw">if</span> (<span class="var">$this</span><span class="op">-></span><span class="var">depth</span> <span class="op">===</span> <span class="num">0</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">beginTransaction</span>();
+        } <span class="kw">else</span> {
+            <span class="cm">// Savepoint for nested transactions</span>
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">exec</span>(<span class="str">"SAVEPOINT sp{$this->depth}"</span>);
+        }
+        <span class="var">$this</span><span class="op">-></span><span class="var">depth</span><span class="op">++</span>;
+    }
+
+    <span class="kw">private function</span> <span class="fn">commit</span>(): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">depth</span><span class="op">--</span>;
+        <span class="kw">if</span> (<span class="var">$this</span><span class="op">-></span><span class="var">depth</span> <span class="op">===</span> <span class="num">0</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">commit</span>();
+        } <span class="kw">else</span> {
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">exec</span>(<span class="str">"RELEASE SAVEPOINT sp{$this->depth}"</span>);
+        }
+    }
+
+    <span class="kw">private function</span> <span class="fn">rollback</span>(): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">depth</span><span class="op">--</span>;
+        <span class="kw">if</span> (<span class="var">$this</span><span class="op">-></span><span class="var">depth</span> <span class="op">===</span> <span class="num">0</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">rollBack</span>();
+        } <span class="kw">else</span> {
+            <span class="var">$this</span><span class="op">-></span><span class="var">pdo</span><span class="op">-></span><span class="fn">exec</span>(<span class="str">"ROLLBACK TO SAVEPOINT sp{$this->depth}"</span>);
+        }
+    }
+}
+
+<span class="cm">// Batch Insert — N+1 সমস্যা সমাধান</span>
+<span class="kw">function</span> <span class="fn">batchInsert</span>(<span class="cls">\PDO</span> <span class="var">$pdo</span>, <span class="ret">string</span> <span class="var">$table</span>, <span class="ret">array</span> <span class="var">$rows</span>): <span class="ret">void</span> {
+    <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$rows</span>)) <span class="kw">return</span>;
+
+    <span class="var">$cols</span>        <span class="op">=</span> <span class="fn">array_keys</span>(<span class="var">$rows</span>[<span class="num">0</span>]);
+    <span class="var">$placeholders</span> <span class="op">=</span> <span class="fn">implode</span>(<span class="str">','</span>, <span class="fn">array_fill</span>(<span class="num">0</span>, <span class="fn">count</span>(<span class="var">$cols</span>), <span class="str">'?'</span>));
+    <span class="var">$colStr</span>      <span class="op">=</span> <span class="fn">implode</span>(<span class="str">','</span>, <span class="var">$cols</span>);
+
+    <span class="cm">// Chunk করো, একবারে সব নয়</span>
+    <span class="kw">foreach</span> (<span class="fn">array_chunk</span>(<span class="var">$rows</span>, <span class="num">500</span>) <span class="kw">as</span> <span class="var">$chunk</span>) {
+        <span class="var">$rowsPlaceholder</span> <span class="op">=</span> <span class="fn">implode</span>(<span class="str">','</span>, <span class="fn">array_fill</span>(<span class="num">0</span>, <span class="fn">count</span>(<span class="var">$chunk</span>), <span class="str">"({$placeholders})"</span>));
+        <span class="var">$sql</span>    <span class="op">=</span> <span class="str">"INSERT INTO {$table} ({$colStr}) VALUES {$rowsPlaceholder}"</span>;
+        <span class="var">$values</span> <span class="op">=</span> <span class="fn">array_merge</span>(...<span class="fn">array_map</span>(<span class="str">'array_values'</span>, <span class="var">$chunk</span>));
+        <span class="var">$pdo</span><span class="op">-></span><span class="fn">prepare</span>(<span class="var">$sql</span>)<span class="op">-></span><span class="fn">execute</span>(<span class="var">$values</span>);
+    }
+}
+
+<span class="cm">// উদাহরণ: 10,000 row একটা query-তে insert (500 করে)</span>
+<span class="var">$users</span> <span class="op">=</span> <span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="var">$i</span>) <span class="op">=></span> [<span class="str">'name'</span> <span class="op">=></span> <span class="str">"User $i"</span>, <span class="str">'email'</span> <span class="op">=></span> <span class="str">"u$i@test.com"</span>], <span class="fn">range</span>(<span class="num">1</span>, <span class="num">10000</span>));
+<span class="fn">batchInsert</span>(<span class="var">$pdo</span>, <span class="str">'users'</span>, <span class="var">$users</span>); <span class="cm">// 10,000 insert → ২০টি query মাত্র!</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 12 ===== -->
+  <div class="section" id="s12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-title-group">
+        <h2>SECURITY — OWASP LEVEL</h2>
+        <div class="subtitle">// SQL injection · XSS · CSRF · timing attacks · cryptography</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🔐</span><h3>Production Security — সব Attack থেকে সুরক্ষা</h3></div>
+      <div class="topic-card-body">
+        <div class="callout danger">
+          <span class="callout-icon">🚨</span>
+          <div>এই section বোঝা না থাকলে তোমার app যেকোনো সময় hack হতে পারে। প্রতিটা point মনোযোগ দিয়ে পড়ো।</div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">security_advanced.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ═══ 1. SQL Injection Prevention ═══</span>
+
+<span class="cm">// ❌ NEVER DO THIS:</span>
+<span class="var">$id</span> <span class="op">=</span> <span class="var">$_GET</span>[<span class="str">'id'</span>];
+<span class="var">$pdo</span><span class="op">-></span><span class="fn">query</span>(<span class="str">"SELECT * FROM users WHERE id = {$id}"</span>); <span class="cm">// SQL Injection!</span>
+
+<span class="cm">// ✓ ALWAYS: Prepared Statements</span>
+<span class="var">$stmt</span> <span class="op">=</span> <span class="var">$pdo</span><span class="op">-></span><span class="fn">prepare</span>(<span class="str">'SELECT * FROM users WHERE id = :id AND status = :status'</span>);
+<span class="var">$stmt</span><span class="op">-></span><span class="fn">execute</span>([<span class="str">'id'</span> <span class="op">=></span> (int)<span class="var">$id</span>, <span class="str">'status'</span> <span class="op">=></span> <span class="str">'active'</span>]);
+
+<span class="cm">// ═══ 2. XSS Prevention ═══</span>
+<span class="kw">function</span> <span class="fn">escape</span>(<span class="ret">string</span> <span class="var">$text</span>): <span class="ret">string</span> {
+    <span class="kw">return</span> <span class="fn">htmlspecialchars</span>(<span class="var">$text</span>, <span class="const">ENT_QUOTES</span> <span class="op">|</span> <span class="const">ENT_HTML5</span>, <span class="str">'UTF-8'</span>);
+}
+
+<span class="cm">// Content Security Policy Header</span>
+<span class="fn">header</span>(<span class="str">"Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . <span class="fn">base64_encode</span>(<span class="fn">random_bytes</span>(16)) . "'"</span>);
+
+<span class="cm">// ═══ 3. CSRF Protection ═══</span>
+<span class="kw">class</span> <span class="cls">CsrfToken</span> {
+    <span class="kw">public static function</span> <span class="fn">generate</span>(): <span class="ret">string</span> {
+        <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$_SESSION</span>[<span class="str">'csrf_token'</span>])) {
+            <span class="var">$_SESSION</span>[<span class="str">'csrf_token'</span>] <span class="op">=</span> <span class="fn">bin2hex</span>(<span class="fn">random_bytes</span>(<span class="num">32</span>));
+        }
+        <span class="kw">return</span> <span class="var">$_SESSION</span>[<span class="str">'csrf_token'</span>];
+    }
+
+    <span class="kw">public static function</span> <span class="fn">verify</span>(<span class="ret">string</span> <span class="var">$token</span>): <span class="ret">bool</span> {
+        <span class="cm">// hash_equals prevents timing attack!</span>
+        <span class="kw">return</span> <span class="fn">hash_equals</span>(<span class="var">$_SESSION</span>[<span class="str">'csrf_token'</span>] <span class="op">??</span> <span class="str">''</span>, <span class="var">$token</span>);
+    }
+}
+
+<span class="cm">// ═══ 4. Password Hashing ═══</span>
+<span class="kw">class</span> <span class="cls">PasswordManager</span> {
+    <span class="kw">public function</span> <span class="fn">hash</span>(<span class="ret">string</span> <span class="var">$password</span>): <span class="ret">string</span> {
+        <span class="cm">// bcrypt automatically সal্ট করে + cost factor</span>
+        <span class="kw">return</span> <span class="fn">password_hash</span>(<span class="var">$password</span>, <span class="const">PASSWORD_ARGON2ID</span>, [
+            <span class="str">'memory_cost'</span> <span class="op">=></span> <span class="num">65536</span>, <span class="cm">// 64 MB</span>
+            <span class="str">'time_cost'</span>   <span class="op">=></span> <span class="num">4</span>,
+            <span class="str">'threads'</span>     <span class="op">=></span> <span class="num">2</span>
+        ]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">verify</span>(<span class="ret">string</span> <span class="var">$password</span>, <span class="ret">string</span> <span class="var">$hash</span>): <span class="ret">bool</span> {
+        <span class="kw">return</span> <span class="fn">password_verify</span>(<span class="var">$password</span>, <span class="var">$hash</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">needsRehash</span>(<span class="ret">string</span> <span class="var">$hash</span>): <span class="ret">bool</span> {
+        <span class="kw">return</span> <span class="fn">password_needs_rehash</span>(<span class="var">$hash</span>, <span class="const">PASSWORD_ARGON2ID</span>);
+    }
+}
+
+<span class="cm">// ❌ NEVER: md5, sha1 for passwords</span>
+<span class="cm">// ✓ ALWAYS: password_hash() with PASSWORD_ARGON2ID</span>
+
+<span class="cm">// ═══ 5. Encryption (না হলে data leak) ═══</span>
+<span class="kw">class</span> <span class="cls">Encryptor</span> {
+    <span class="kw">private const</span> <span class="const">ALGO</span>      <span class="op">=</span> <span class="str">'aes-256-gcm'</span>;
+    <span class="kw">private const</span> <span class="const">IV_LENGTH</span> <span class="op">=</span> <span class="num">12</span>; <span class="cm">// GCM standard</span>
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">private readonly string</span> <span class="var">$key</span>) {
+        <span class="kw">if</span> (<span class="fn">strlen</span>(<span class="var">$key</span>) <span class="op">!==</span> <span class="num">32</span>) {
+            <span class="kw">throw new</span> <span class="cls">\LengthException</span>(<span class="str">'Key must be 32 bytes (256 bits)'</span>);
+        }
+    }
+
+    <span class="kw">public function</span> <span class="fn">encrypt</span>(<span class="ret">string</span> <span class="var">$data</span>): <span class="ret">string</span> {
+        <span class="var">$iv</span>         <span class="op">=</span> <span class="fn">random_bytes</span>(<span class="kw">self</span>::<span class="const">IV_LENGTH</span>);
+        <span class="var">$ciphertext</span> <span class="op">=</span> <span class="fn">openssl_encrypt</span>(<span class="var">$data</span>, <span class="kw">self</span>::<span class="const">ALGO</span>, <span class="var">$this</span><span class="op">-></span><span class="var">key</span>,
+                         <span class="const">OPENSSL_RAW_DATA</span>, <span class="var">$iv</span>, <span class="var">$tag</span>);
+        <span class="kw">return</span> <span class="fn">base64_encode</span>(<span class="var">$iv</span> <span class="op">.</span> <span class="var">$tag</span> <span class="op">.</span> <span class="var">$ciphertext</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">decrypt</span>(<span class="ret">string</span> <span class="var">$encoded</span>): <span class="ret">string</span> {
+        <span class="var">$raw</span>        <span class="op">=</span> <span class="fn">base64_decode</span>(<span class="var">$encoded</span>);
+        <span class="var">$iv</span>         <span class="op">=</span> <span class="fn">substr</span>(<span class="var">$raw</span>, <span class="num">0</span>, <span class="kw">self</span>::<span class="const">IV_LENGTH</span>);
+        <span class="var">$tag</span>        <span class="op">=</span> <span class="fn">substr</span>(<span class="var">$raw</span>, <span class="kw">self</span>::<span class="const">IV_LENGTH</span>, <span class="num">16</span>);
+        <span class="var">$ciphertext</span> <span class="op">=</span> <span class="fn">substr</span>(<span class="var">$raw</span>, <span class="kw">self</span>::<span class="const">IV_LENGTH</span> <span class="op">+</span> <span class="num">16</span>);
+        <span class="kw">return</span> <span class="fn">openssl_decrypt</span>(<span class="var">$ciphertext</span>, <span class="kw">self</span>::<span class="const">ALGO</span>, <span class="var">$this</span><span class="op">-></span><span class="var">key</span>,
+                   <span class="const">OPENSSL_RAW_DATA</span>, <span class="var">$iv</span>, <span class="var">$tag</span>);
+    }
+}
+
+<span class="cm">// ═══ 6. Rate Limiting ═══</span>
+<span class="kw">class</span> <span class="cls">RateLimiter</span> {
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cls">\Redis</span> <span class="var">$redis</span>,
+        <span class="kw">private int</span> <span class="var">$maxAttempts</span> <span class="op">=</span> <span class="num">5</span>,
+        <span class="kw">private int</span> <span class="var">$decaySeconds</span> <span class="op">=</span> <span class="num">60</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">attempt</span>(<span class="ret">string</span> <span class="var">$key</span>): <span class="ret">bool</span> {
+        <span class="var">$hits</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">redis</span><span class="op">-></span><span class="fn">incr</span>(<span class="str">"rl:{$key}"</span>);
+        <span class="kw">if</span> (<span class="var">$hits</span> <span class="op">===</span> <span class="num">1</span>) {
+            <span class="var">$this</span><span class="op">-></span><span class="var">redis</span><span class="op">-></span><span class="fn">expire</span>(<span class="str">"rl:{$key}"</span>, <span class="var">$this</span><span class="op">-></span><span class="var">decaySeconds</span>);
+        }
+        <span class="kw">return</span> <span class="var">$hits</span> <span class="op">&lt;=</span> <span class="var">$this</span><span class="op">-></span><span class="var">maxAttempts</span>;
+    }
+}
+
+<span class="cm">// Login endpoint-এ ব্যবহার:</span>
+<span class="var">$limiter</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">RateLimiter</span>(<span class="var">$redis</span>);
+<span class="kw">if</span> (<span class="op">!</span><span class="var">$limiter</span><span class="op">-></span><span class="fn">attempt</span>(<span class="str">"login:" . <span class="var">$_SERVER</span>[<span class="str">'REMOTE_ADDR'</span>]</span>)) {
+    <span class="fn">http_response_code</span>(<span class="num">429</span>);
+    <span class="kw">die</span>(<span class="fn">json_encode</span>([<span class="str">'error'</span> <span class="op">=></span> <span class="str">'Too many attempts. ৬০ সেকেন্ড পরে চেষ্টা করুন।'</span>]));
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 13 ===== -->
+  <div class="section" id="s13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-title-group">
+        <h2>TESTING — PHPUNIT ADVANCED</h2>
+        <div class="subtitle">// unit · integration · mocks · data providers · coverage</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🧪</span><h3>Professional Testing — Mock, Stub, Data Provider</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">UserServiceTest.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="kw">use</span> <span class="cls">PHPUnit\Framework\TestCase</span>;
+<span class="kw">use</span> <span class="cls">PHPUnit\Framework\Attributes\DataProvider</span>;
+<span class="kw">use</span> <span class="cls">PHPUnit\Framework\Attributes\Test</span>;
+<span class="kw">use</span> <span class="cls">PHPUnit\Framework\Attributes\CoversClass</span>;
+
+<span class="deco">#[CoversClass(UserService::class)]</span>
+<span class="kw">class</span> <span class="cls">UserServiceTest</span> <span class="kw">extends</span> <span class="cls">TestCase</span> {
+
+    <span class="kw">private</span> <span class="cls">UserRepositoryInterface</span> <span class="var">$repo</span>;
+    <span class="kw">private</span> <span class="cls">EventDispatcher</span> <span class="var">$dispatcher</span>;
+    <span class="kw">private</span> <span class="cls">UserService</span> <span class="var">$service</span>;
+
+    <span class="kw">protected function</span> <span class="fn">setUp</span>(): <span class="ret">void</span> {
+        <span class="cm">// Mock তৈরি করো — real DB ছাড়াই!</span>
+        <span class="var">$this</span><span class="op">-></span><span class="var">repo</span>       <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="fn">createMock</span>(<span class="cls">UserRepositoryInterface</span>::<span class="kw">class</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">dispatcher</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="fn">createMock</span>(<span class="cls">EventDispatcher</span>::<span class="kw">class</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">service</span>    <span class="op">=</span> <span class="kw">new</span> <span class="cls">UserService</span>(<span class="var">$this</span><span class="op">-></span><span class="var">repo</span>, <span class="var">$this</span><span class="op">-></span><span class="var">dispatcher</span>);
+    }
+
+    <span class="deco">#[Test]</span>
+    <span class="kw">public function</span> <span class="fn">itCreatesUserAndDispatchesEvent</span>(): <span class="ret">void</span> {
+        <span class="cm">// Arrange</span>
+        <span class="var">$dto</span>      <span class="op">=</span> <span class="kw">new</span> <span class="cls">CreateUserDto</span>(<span class="str">'করিম'</span>, <span class="str">'karim@bd.com'</span>);
+        <span class="var">$expected</span> <span class="op">=</span> <span class="kw">new</span> <span class="cls">UserEntity</span>(<span class="num">1</span>, <span class="str">'করিম'</span>, <span class="str">'karim@bd.com'</span>);
+
+        <span class="var">$this</span><span class="op">-></span><span class="var">repo</span>
+            <span class="op">-></span><span class="fn">expects</span>(<span class="var">$this</span><span class="op">-></span><span class="fn">once</span>()) <span class="cm">// একবার call হবে</span>
+            <span class="op">-></span><span class="fn">method</span>(<span class="str">'save'</span>)
+            <span class="op">-></span><span class="fn">with</span>(<span class="var">$this</span><span class="op">-></span><span class="fn">callback</span>(<span class="kw">fn</span>(<span class="var">$u</span>) <span class="op">=></span> <span class="var">$u</span><span class="op">-></span><span class="var">email</span> <span class="op">===</span> <span class="str">'karim@bd.com'</span>))
+            <span class="op">-></span><span class="fn">willReturn</span>(<span class="var">$expected</span>);
+
+        <span class="var">$this</span><span class="op">-></span><span class="var">dispatcher</span>
+            <span class="op">-></span><span class="fn">expects</span>(<span class="var">$this</span><span class="op">-></span><span class="fn">once</span>())
+            <span class="op">-></span><span class="fn">method</span>(<span class="str">'dispatch'</span>)
+            <span class="op">-></span><span class="fn">with</span>(<span class="var">$this</span><span class="op">-></span><span class="fn">isInstanceOf</span>(<span class="cls">UserRegistered</span>::<span class="kw">class</span>));
+
+        <span class="cm">// Act</span>
+        <span class="var">$user</span> <span class="op">=</span> <span class="var">$this</span><span class="op">-></span><span class="var">service</span><span class="op">-></span><span class="fn">create</span>(<span class="var">$dto</span>);
+
+        <span class="cm">// Assert</span>
+        <span class="var">$this</span><span class="op">-></span><span class="fn">assertSame</span>(<span class="num">1</span>, <span class="var">$user</span><span class="op">-></span><span class="var">id</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="fn">assertSame</span>(<span class="str">'করিম'</span>, <span class="var">$user</span><span class="op">-></span><span class="var">name</span>);
+    }
+
+    <span class="cm">// Data Provider — একই test, অনেক data</span>
+    <span class="kw">public static function</span> <span class="fn">invalidEmailProvider</span>(): <span class="ret">array</span> {
+        <span class="kw">return</span> [
+            <span class="str">'empty string'</span>  <span class="op">=></span> [<span class="str">''</span>],
+            <span class="str">'no @ symbol'</span>   <span class="op">=></span> [<span class="str">'invalid'</span>],
+            <span class="str">'no domain'</span>     <span class="op">=></span> [<span class="str">'user@'</span>],
+            <span class="str">'spaces'</span>        <span class="op">=></span> [<span class="str">'user @test.com'</span>],
+            <span class="str">'unicode hack'</span>  <span class="op">=></span> [<span class="str">"user\x00@test.com"</span>],
+        ];
+    }
+
+    <span class="deco">#[Test]</span>
+    <span class="deco">#[DataProvider('invalidEmailProvider')]</span>
+    <span class="kw">public function</span> <span class="fn">itRejectsInvalidEmail</span>(<span class="ret">string</span> <span class="var">$email</span>): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="fn">expectException</span>(<span class="cls">\InvalidArgumentException</span>::<span class="kw">class</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">service</span><span class="op">-></span><span class="fn">create</span>(<span class="kw">new</span> <span class="cls">CreateUserDto</span>(<span class="str">'Test'</span>, <span class="var">$email</span>));
+    }
+
+    <span class="deco">#[Test]</span>
+    <span class="kw">public function</span> <span class="fn">itThrowsWhenEmailAlreadyExists</span>(): <span class="ret">void</span> {
+        <span class="var">$this</span><span class="op">-></span><span class="var">repo</span>
+            <span class="op">-></span><span class="fn">method</span>(<span class="str">'findByEmail'</span>)
+            <span class="op">-></span><span class="fn">willReturn</span>(<span class="kw">new</span> <span class="cls">UserEntity</span>(<span class="num">99</span>, <span class="str">'existing'</span>, <span class="str">'same@email.com'</span>));
+
+        <span class="var">$this</span><span class="op">-></span><span class="fn">expectException</span>(<span class="cls">DuplicateEmailException</span>::<span class="kw">class</span>);
+        <span class="var">$this</span><span class="op">-></span><span class="var">service</span><span class="op">-></span><span class="fn">create</span>(<span class="kw">new</span> <span class="cls">CreateUserDto</span>(<span class="str">'কেউ'</span>, <span class="str">'same@email.com'</span>));
+    }
+}
+
+<span class="cm">// CLI দিয়ে চালাও:
+// ./vendor/bin/phpunit --coverage-html coverage/
+// coverage report HTML-এ দেখো!</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 14 ===== -->
+  <div class="section" id="s14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-title-group">
+        <h2>OPCACHE ও PERFORMANCE PROFILING</h2>
+        <div class="subtitle">// xdebug · blackfire · opcache tuning · bottleneck finding</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">📊</span><h3>Production Performance Tuning</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">performance.php + php.ini settings</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">/* ════════════════════════════════
+   php.ini — Production Settings
+   ════════════════════════════════
+
+[opcache]
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=20000
+opcache.validate_timestamps=0    ← production-এ বন্ধ (performance)
+opcache.save_comments=1
+opcache.jit=tracing
+opcache.jit_buffer_size=128M
+
+[PHP]
+memory_limit=512M
+max_execution_time=30
+realpath_cache_size=4096K
+realpath_cache_ttl=600
+*/</span>
+
+<span class="cm">// OPcache Status Check</span>
+<span class="kw">function</span> <span class="fn">opcacheReport</span>(): <span class="ret">array</span> {
+    <span class="var">$status</span> <span class="op">=</span> <span class="fn">opcache_get_status</span>();
+    <span class="var">$config</span> <span class="op">=</span> <span class="fn">opcache_get_configuration</span>();
+    <span class="kw">return</span> [
+        <span class="str">'hit_rate'</span>    <span class="op">=></span> <span class="fn">round</span>(<span class="var">$status</span>[<span class="str">'opcache_statistics'</span>][<span class="str">'opcache_hit_rate'</span>], <span class="num">2</span>),
+        <span class="str">'memory_used'</span> <span class="op">=></span> <span class="fn">round</span>(<span class="var">$status</span>[<span class="str">'memory_usage'</span>][<span class="str">'used_memory'</span>] / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">2</span>) . <span class="str">' MB'</span>,
+        <span class="str">'memory_free'</span> <span class="op">=></span> <span class="fn">round</span>(<span class="var">$status</span>[<span class="str">'memory_usage'</span>][<span class="str">'free_memory'</span>] / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">2</span>) . <span class="str">' MB'</span>,
+        <span class="str">'cached_files'</span> <span class="op">=></span> <span class="var">$status</span>[<span class="str">'opcache_statistics'</span>][<span class="str">'num_cached_scripts'</span>],
+        <span class="str">'jit_enabled'</span> <span class="op">=></span> <span class="var">$status</span>[<span class="str">'jit'</span>][<span class="str">'enabled'</span>] <span class="op">??</span> <span class="kw">false</span>,
+    ];
+}
+
+<span class="cm">// Simple Profiler</span>
+<span class="kw">class</span> <span class="cls">Profiler</span> {
+    <span class="kw">private static array</span> <span class="var">$marks</span> <span class="op">=</span> [];
+    <span class="kw">private static array</span> <span class="var">$laps</span>  <span class="op">=</span> [];
+
+    <span class="kw">public static function</span> <span class="fn">mark</span>(<span class="ret">string</span> <span class="var">$label</span>): <span class="ret">void</span> {
+        <span class="kw">self</span>::<span class="var">$marks</span>[<span class="var">$label</span>] <span class="op">=</span> [<span class="fn">hrtime</span>(<span class="kw">true</span>), <span class="fn">memory_get_usage</span>(<span class="kw">true</span>)];
+    }
+
+    <span class="kw">public static function</span> <span class="fn">lap</span>(<span class="ret">string</span> <span class="var">$label</span>): <span class="ret">void</span> {
+        [<span class="var">$startTime</span>, <span class="var">$startMem</span>] <span class="op">=</span> <span class="kw">self</span>::<span class="var">$marks</span>[<span class="var">$label</span>] <span class="op">??</span> [<span class="fn">hrtime</span>(<span class="kw">true</span>), <span class="num">0</span>];
+        <span class="kw">self</span>::<span class="var">$laps</span>[] <span class="op">=</span> [
+            <span class="str">'label'</span>    <span class="op">=></span> <span class="var">$label</span>,
+            <span class="str">'time_ms'</span>  <span class="op">=></span> <span class="fn">round</span>((<span class="fn">hrtime</span>(<span class="kw">true</span>) <span class="op">-</span> <span class="var">$startTime</span>) / <span class="num">1e6</span>, <span class="num">3</span>),
+            <span class="str">'mem_kb'</span>   <span class="op">=></span> <span class="fn">round</span>((<span class="fn">memory_get_usage</span>(<span class="kw">true</span>) <span class="op">-</span> <span class="var">$startMem</span>) / <span class="num">1024</span>, <span class="num">2</span>),
+        ];
+    }
+
+    <span class="kw">public static function</span> <span class="fn">report</span>(): <span class="ret">void</span> {
+        <span class="kw">foreach</span> (<span class="kw">self</span>::<span class="var">$laps</span> <span class="kw">as</span> <span class="var">$lap</span>) {
+            <span class="kw">printf</span>(<span class="str">"%-40s %8.3f ms  %8.2f KB\n"</span>,
+                <span class="var">$lap</span>[<span class="str">'label'</span>], <span class="var">$lap</span>[<span class="str">'time_ms'</span>], <span class="var">$lap</span>[<span class="str">'mem_kb'</span>]);
+        }
+    }
+}
+
+<span class="cm">// ব্যবহার:</span>
+<span class="cls">Profiler</span>::<span class="fn">mark</span>(<span class="str">'database query'</span>);
+<span class="var">$users</span> <span class="op">=</span> <span class="var">$repo</span><span class="op">-></span><span class="fn">findAll</span>(<span class="kw">new</span> <span class="cls">UserFilter</span>());
+<span class="cls">Profiler</span>::<span class="fn">lap</span>(<span class="str">'database query'</span>);
+
+<span class="cls">Profiler</span>::<span class="fn">mark</span>(<span class="str">'data transformation'</span>);
+<span class="var">$result</span> <span class="op">=</span> <span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="var">$u</span>) <span class="op">=></span> <span class="var">$u</span><span class="op">-></span><span class="fn">toArray</span>(), <span class="var">$users</span>);
+<span class="cls">Profiler</span>::<span class="fn">lap</span>(<span class="str">'data transformation'</span>);
+
+<span class="cls">Profiler</span>::<span class="fn">report</span>();
+<span class="cm">/*
+database query                                    12.453 ms    128.00 KB
+data transformation                                0.234 ms      8.00 KB
+*/</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 15 ===== -->
+  <div class="section" id="s15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-title-group">
+        <h2>ADVANCED FUNCTIONAL PHP</h2>
+        <div class="subtitle">// higher-order functions · currying · memoization · pipeline</div>
+      </div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-card-header"><span class="topic-icon">🎯</span><h3>Functional Programming Techniques</h3></div>
+      <div class="topic-card-body">
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="code-label">functional_php.php</div>
+          </div>
+          <pre><span class="php-tag">&lt;?php</span>
+
+<span class="cm">// ১. Currying — function এর আংশিক প্রয়োগ</span>
+<span class="kw">function</span> <span class="fn">curry</span>(<span class="ret">callable</span> <span class="var">$fn</span>): <span class="cls">\Closure</span> {
+    <span class="var">$arity</span> <span class="op">=</span> (<span class="kw">new</span> \<span class="cls">ReflectionFunction</span>(\<span class="cls">Closure</span>::<span class="fn">fromCallable</span>(<span class="var">$fn</span>)))<span class="op">-></span><span class="fn">getNumberOfParameters</span>();
+
+    <span class="var">$accumulator</span> <span class="op">=</span> <span class="kw">function</span>(<span class="ret">array</span> <span class="var">$args</span>) <span class="kw">use</span> (<span class="var">$fn</span>, <span class="var">$arity</span>, &<span class="var">$accumulator</span>): <span class="var">mixed</span> {
+        <span class="kw">if</span> (<span class="fn">count</span>(<span class="var">$args</span>) <span class="op">>=</span> <span class="var">$arity</span>) {
+            <span class="kw">return</span> <span class="var">$fn</span>(...<span class="var">$args</span>);
+        }
+        <span class="kw">return</span> <span class="kw">function</span>() <span class="kw">use</span> (<span class="var">$args</span>, <span class="var">$accumulator</span>) {
+            <span class="kw">return</span> <span class="var">$accumulator</span>(<span class="fn">array_merge</span>(<span class="var">$args</span>, <span class="kw">func_get_args</span>()));
+        };
+    };
+
+    <span class="kw">return</span> <span class="kw">function</span>() <span class="kw">use</span> (<span class="var">$accumulator</span>) {
+        <span class="kw">return</span> <span class="var">$accumulator</span>(<span class="kw">func_get_args</span>());
+    };
+}
+
+<span class="var">$add</span> <span class="op">=</span> <span class="fn">curry</span>(<span class="kw">fn</span>(<span class="var">$a</span>, <span class="var">$b</span>) <span class="op">=></span> <span class="var">$a</span> <span class="op">+</span> <span class="var">$b</span>);
+<span class="var">$add5</span> <span class="op">=</span> <span class="var">$add</span>(<span class="num">5</span>); <span class="cm">// partial application!</span>
+<span class="kw">echo</span> <span class="var">$add5</span>(<span class="num">3</span>); <span class="cm">// 8</span>
+<span class="kw">echo</span> <span class="var">$add5</span>(<span class="num">10</span>); <span class="cm">// 15</span>
+
+<span class="cm">// ২. Memoization — expensive computation cache</span>
+<span class="kw">function</span> <span class="fn">memoize</span>(<span class="ret">callable</span> <span class="var">$fn</span>): <span class="cls">\Closure</span> {
+    <span class="var">$cache</span> <span class="op">=</span> [];
+    <span class="kw">return</span> <span class="kw">function</span>() <span class="kw">use</span> (<span class="var">$fn</span>, &<span class="var">$cache</span>) {
+        <span class="var">$key</span> <span class="op">=</span> <span class="fn">serialize</span>(<span class="kw">func_get_args</span>());
+        <span class="kw">return</span> <span class="var">$cache</span>[<span class="var">$key</span>] <span class="op">??=</span> <span class="var">$fn</span>(...<span class="kw">func_get_args</span>());
+    };
+}
+
+<span class="var">$fibonacci</span> <span class="op">=</span> <span class="fn">memoize</span>(<span class="kw">function</span>(<span class="ret">int</span> <span class="var">$n</span>) <span class="kw">use</span> (&<span class="var">$fibonacci</span>): <span class="ret">int</span> {
+    <span class="kw">return</span> <span class="var">$n</span> <span class="op"><=</span> <span class="num">1</span> ? <span class="var">$n</span> : <span class="var">$fibonacci</span>(<span class="var">$n</span> <span class="op">-</span> <span class="num">1</span>) <span class="op">+</span> <span class="var">$fibonacci</span>(<span class="var">$n</span> <span class="op">-</span> <span class="num">2</span>);
+});
+
+<span class="kw">echo</span> <span class="var">$fibonacci</span>(<span class="num">40</span>); <span class="cm">// instant! (memoized)</span>
+
+<span class="cm">// ৩. Pipeline — data এর মধ্য দিয়ে function chain</span>
+<span class="kw">class</span> <span class="cls">Pipeline</span> {
+    <span class="kw">private array</span> <span class="var">$stages</span> <span class="op">=</span> [];
+
+    <span class="kw">public function</span> <span class="fn">pipe</span>(<span class="ret">callable</span> <span class="var">$stage</span>): <span class="kw">self</span> {
+        <span class="var">$new</span>           <span class="op">=</span> <span class="kw">clone</span> <span class="var">$this</span>;
+        <span class="var">$new</span><span class="op">-></span><span class="var">stages</span>[] <span class="op">=</span> <span class="var">$stage</span>;
+        <span class="kw">return</span> <span class="var">$new</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">process</span>(<span class="var">mixed</span> <span class="var">$payload</span>): <span class="var">mixed</span> {
+        <span class="kw">return</span> <span class="fn">array_reduce</span>(
+            <span class="var">$this</span><span class="op">-></span><span class="var">stages</span>,
+            <span class="kw">fn</span>(<span class="var">$carry</span>, <span class="var">$stage</span>) <span class="op">=></span> <span class="var">$stage</span>(<span class="var">$carry</span>),
+            <span class="var">$payload</span>
+        );
+    }
+}
+
+<span class="var">$result</span> <span class="op">=</span> (<span class="kw">new</span> <span class="cls">Pipeline</span>())
+    <span class="op">-></span><span class="fn">pipe</span>(<span class="kw">fn</span>(<span class="var">$x</span>) <span class="op">=></span> <span class="var">$x</span> <span class="op">*</span> <span class="num">2</span>)
+    <span class="op">-></span><span class="fn">pipe</span>(<span class="kw">fn</span>(<span class="var">$x</span>) <span class="op">=></span> <span class="var">$x</span> <span class="op">+</span> <span class="num">10</span>)
+    <span class="op">-></span><span class="fn">pipe</span>(<span class="kw">fn</span>(<span class="var">$x</span>) <span class="op">=></span> "<span class="str">Result: {$x}"</span>)
+    <span class="op">-></span><span class="fn">process</span>(<span class="num">5</span>);
+<span class="cm">// "Result: 20"</span>
+
+<span class="cm">// ৪. Compose — functions compose করো</span>
+<span class="kw">function</span> <span class="fn">compose</span>(<span class="ret">callable</span> ...<span class="var">$fns</span>): <span class="cls">\Closure</span> {
+    <span class="kw">return</span> <span class="kw">function</span>(<span class="var">$value</span>) <span class="kw">use</span> (<span class="var">$fns</span>) {
+        <span class="kw">return</span> <span class="fn">array_reduce</span>(
+            <span class="fn">array_reverse</span>(<span class="var">$fns</span>),
+            <span class="kw">fn</span>(<span class="var">$v</span>, <span class="var">$f</span>) <span class="op">=></span> <span class="var">$f</span>(<span class="var">$v</span>),
+            <span class="var">$value</span>
+        );
+    };
+}
+
+<span class="var">$transform</span> <span class="op">=</span> <span class="fn">compose</span>(
+    <span class="kw">fn</span>(<span class="var">$s</span>) <span class="op">=></span> <span class="fn">strtoupper</span>(<span class="var">$s</span>),
+    <span class="kw">fn</span>(<span class="var">$s</span>) <span class="op">=></span> <span class="fn">trim</span>(<span class="var">$s</span>),
+    <span class="kw">fn</span>(<span class="var">$s</span>) <span class="op">=></span> <span class="fn">str_replace</span>(<span class="str">'-'</span>, <span class="str">' '</span>, <span class="var">$s</span>)
+);
+<span class="kw">echo</span> <span class="var">$transform</span>(<span class="str">'  hello-world  '</span>); <span class="cm">// "HELLO WORLD"</span></pre>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-icon">🎓</span>
+          <div>
+            <strong>এই গাইডটি শেষ করলে তুমি জানলে:</strong> PHP engine এর ভেতর থেকে শুরু করে production-level security, async programming, advanced OOP patterns, testing এবং performance optimization — এই সব মিলিয়ে তুমি এখন যেকোনো senior developer এর সমতুল্য।
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <p>
+            🚀 <strong>পরবর্তী পদক্ষেপ:</strong> এই সব শেখার পর Laravel/Symfony এর source code পড়ো। দেখো কীভাবে এই সব pattern একসাথে কাজ করে। নিজে একটা mini-framework বানাও — তখন সব কিছু crystal clear হয়ে যাবে।
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>PHP Advanced Mastery — বাংলা গাইড</p>
+  <p>তৈরি করা হয়েছে <span>❤️</span> দিয়ে, শেখার আনন্দের জন্য</p>
+  <p style="margin-top:12px; font-size:12px; opacity:0.5;">PHP 8.3+ · Zend Engine · Modern Patterns · Production Ready</p>
+</footer>
+
+</body>
+</html>
