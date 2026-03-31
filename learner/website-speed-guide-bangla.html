@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ওয়েবসাইট স্পিড অপটিমাইজেশন - সম্পূর্ণ বাংলা গাইড</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e3a5f;
+    --accent: #00d4ff;
+    --accent2: #00ff94;
+    --accent3: #ff6b35;
+    --accent4: #a855f7;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-bright: #f8fafc;
+    --red: #ff4757;
+    --yellow: #ffd32a;
+    --green: #00ff94;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1b2e 50%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,255,148,0.1));
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  header h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  header p {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .score-showcase {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .score-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .score-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .score-dot.green { background: var(--green); color: #000; }
+  .score-dot.yellow { background: var(--yellow); color: #000; }
+  .score-dot.red { background: var(--red); color: #fff; }
+
+  /* ===== NAV ===== */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+
+  .nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-link {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.2);
+  }
+
+  /* ===== SECTIONS ===== */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .section-label .num {
+    background: var(--accent);
+    color: #000;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  h2 {
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+    margin-top: 32px;
+  }
+
+  h4 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+    margin-top: 24px;
+  }
+
+  p { color: var(--text); margin-bottom: 14px; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.3); }
+
+  .card-accent { border-left: 3px solid var(--accent); }
+  .card-green { border-left: 3px solid var(--accent2); }
+  .card-orange { border-left: 3px solid var(--accent3); }
+  .card-purple { border-left: 3px solid var(--accent4); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 700px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ===== CODE BLOCKS ===== */
+  .code-block {
+    background: #060d1a;
+    border: 1px solid #1e3a5f;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .code-header {
+    background: rgba(0,212,255,0.06);
+    border-bottom: 1px solid #1e3a5f;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-dot:nth-child(1) { background: #ff5f57; }
+  .code-dot:nth-child(2) { background: #febc2e; }
+  .code-dot:nth-child(3) { background: #28c840; }
+
+  .code-lang {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #a8d8ea;
+    white-space: pre;
+  }
+
+  pre .comment { color: #4a7c95; font-style: italic; }
+  pre .key { color: #00d4ff; }
+  pre .val { color: #00ff94; }
+  pre .str { color: #ffd32a; }
+  pre .tag { color: #ff6b35; }
+  pre .attr { color: #a855f7; }
+
+  /* ===== INFO BOXES ===== */
+  .info-box {
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .info-box .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+  .info-tip { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); }
+  .info-warn { background: rgba(255,211,42,0.08); border: 1px solid rgba(255,211,42,0.25); }
+  .info-success { background: rgba(0,255,148,0.08); border: 1px solid rgba(0,255,148,0.25); }
+  .info-danger { background: rgba(255,71,87,0.08); border: 1px solid rgba(255,71,87,0.25); }
+
+  /* ===== METRICS ===== */
+  .metric-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  .metric-label { font-size: 13px; color: var(--text-dim); }
+  .metric-green { color: var(--green); }
+  .metric-yellow { color: var(--yellow); }
+  .metric-red { color: var(--red); }
+
+  /* ===== STEPS ===== */
+  .step-list { list-style: none; }
+
+  .step-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(30,58,95,0.3);
+  }
+
+  .step-list li:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ===== CHECKLIST ===== */
+  .checklist { list-style: none; }
+
+  .checklist li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    color: var(--text);
+  }
+
+  .checklist li::before {
+    content: '✓';
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: rgba(0,255,148,0.15);
+    border: 1px solid rgba(0,255,148,0.3);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .compare-table th {
+    background: rgba(0,212,255,0.08);
+    color: var(--accent);
+    font-weight: 600;
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,58,95,0.3);
+    vertical-align: top;
+  }
+
+  .compare-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .badge-green { background: rgba(0,255,148,0.15); color: var(--green); border: 1px solid rgba(0,255,148,0.3); }
+  .badge-red { background: rgba(255,71,87,0.15); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+  .badge-yellow { background: rgba(255,211,42,0.15); color: var(--yellow); border: 1px solid rgba(255,211,42,0.3); }
+  .badge-blue { background: rgba(0,212,255,0.15); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+
+  /* ===== HIGHLIGHT TEXT ===== */
+  .hl-cyan { color: var(--accent); font-weight: 600; }
+  .hl-green { color: var(--accent2); font-weight: 600; }
+  .hl-orange { color: var(--accent3); font-weight: 600; }
+  .hl-purple { color: var(--accent4); font-weight: 600; }
+
+  /* ===== PAGESPEED SCORE ===== */
+  .pagespeed-scores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  @media (max-width: 600px) {
+    .pagespeed-scores { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .ps-score {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .ps-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    border: 3px solid;
+  }
+
+  .ps-circle.green { border-color: var(--green); color: var(--green); }
+  .ps-circle.yellow { border-color: var(--yellow); color: var(--yellow); }
+  .ps-circle.red { border-color: var(--red); color: var(--red); }
+
+  .ps-label { font-size: 12px; color: var(--text-dim); font-weight: 500; }
+
+  /* ===== VPS TABLE ===== */
+  .vps-plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 700px) {
+    .vps-plans { grid-template-columns: 1fr; }
+  }
+
+  .vps-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .vps-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .vps-card.featured { border-color: var(--accent2); }
+
+  .vps-tier {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .vps-traffic {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .vps-spec { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+
+  .vps-features { list-style: none; text-align: left; font-size: 13px; }
+  .vps-features li {
+    padding: 5px 0;
+    color: var(--text);
+    display: flex;
+    gap: 8px;
+  }
+  .vps-features li::before { content: '→'; color: var(--accent2); font-weight: 700; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 50px 20px;
+    text-align: center;
+  }
+
+  footer h3 { color: var(--text-bright); margin-bottom: 12px; font-size: 22px; }
+  footer p { color: var(--text-dim); max-width: 500px; margin: 0 auto 20px; }
+
+  .final-score {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+
+  .final-badge {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,255,148,0.1));
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  /* ===== ANIMATION ===== */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  section { animation: fadeIn 0.5s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-badge">📚 সম্পূর্ণ বাংলা গাইড ২০২৪</div>
+  <h1>ওয়েবসাইট <span>সুপার ফাস্ট</span> করার<br>A-to-Z গাইড</h1>
+  <p>PageSpeed Insights-এ সব A গ্রেড পেতে এবং ওয়েবসাইটকে রকেটের মতো দ্রুত করতে এই গাইড অনুসরণ করুন</p>
+
+  <div class="score-showcase">
+    <div class="score-pill">
+      <div class="score-dot green">95</div>
+      <span>Performance</span>
+    </div>
+    <div class="score-pill">
+      <div class="score-dot green">100</div>
+      <span>Accessibility</span>
+    </div>
+    <div class="score-pill">
+      <div class="score-dot green">100</div>
+      <span>Best Practices</span>
+    </div>
+    <div class="score-pill">
+      <div class="score-dot green">100</div>
+      <span>SEO</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== STICKY NAV ===== -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#why" class="nav-link">কেন স্পিড?</a>
+    <a href="#pagespeed" class="nav-link">PageSpeed</a>
+    <a href="#core-web" class="nav-link">Core Web Vitals</a>
+    <a href="#image" class="nav-link">ইমেজ</a>
+    <a href="#code" class="nav-link">কোড অপটিমাইজ</a>
+    <a href="#server" class="nav-link">সার্ভার/VPS</a>
+    <a href="#cdn" class="nav-link">CDN & Cache</a>
+    <a href="#database" class="nav-link">Database</a>
+    <a href="#traffic" class="nav-link">ট্রাফিক ক্যালকুলেশন</a>
+    <a href="#checklist" class="nav-link">চেকলিস্ট</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ===== SECTION 1: WHY ===== -->
+  <section id="why">
+    <div class="section-label"><span class="num">১</span> কেন গুরুত্বপূর্ণ?</div>
+    <h2>ওয়েবসাইট স্পিড কেন জরুরি?</h2>
+    <p>অনেকেই মনে করেন "সাইট তো চলছে, হলেই হলো।" কিন্তু ব্যাপারটা এত সহজ না। একটি ধীর ওয়েবসাইট আপনার ব্যবসা, SEO এবং ব্যবহারকারীর অভিজ্ঞতা সবকিছু নষ্ট করে দিতে পারে।</p>
+
+    <div class="grid-3">
+      <div class="metric-card">
+        <div class="metric-value metric-red">53%</div>
+        <div class="metric-label">ব্যবহারকারী মোবাইলে ৩ সেকেন্ডের বেশি লোড হলে চলে যায়</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value metric-yellow">1 সেকেন্ড</div>
+        <div class="metric-label">দেরি হলে Conversion Rate ৭% কমে যায়</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value metric-green">0.1s</div>
+        <div class="metric-label">লোড টাইম কমলে রূপান্তর ৮.৪% বাড়ে</div>
+      </div>
+    </div>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">স্পিড কমলে কী কী ক্ষতি হয়?</h3>
+      <div class="grid-2">
+        <div>
+          <h4>🔴 SEO র‌্যাংকিং কমে</h4>
+          <p>Google Page Experience আপডেটের পর থেকে স্পিড সরাসরি SEO র‌্যাংকিং-এ প্রভাব ফেলে। ধীর সাইট মানে নিচের পেজে থাকা।</p>
+        </div>
+        <div>
+          <h4>🔴 বাউন্স রেট বাড়ে</h4>
+          <p>মানুষ অপেক্ষা করতে ভালোবাসে না। সাইট ধীর হলে তারা প্রতিযোগীর কাছে চলে যাবে।</p>
+        </div>
+        <div>
+          <h4>🔴 সার্ভার খরচ বাড়ে</h4>
+          <p>অপটিমাইজড না হলে একই ট্রাফিক সামলাতে বেশি রিসোর্স লাগে, মানে বেশি খরচ।</p>
+        </div>
+        <div>
+          <h4>🔴 Revenue কমে</h4>
+          <p>Amazon গবেষণায় দেখা গেছে ১০০ms বিলম্বে তাদের ১% বিক্রি কমে যায়।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">💡</span>
+      <div><strong>মূল কথা:</strong> বাংলাদেশে বেশিরভাগ মানুষ মোবাইলে ইন্টারনেট ব্যবহার করেন এবং নেটওয়ার্ক সবসময় ভালো থাকে না। তাই ওয়েবসাইট যত দ্রুত, তত বেশি মানুষ আপনার সাইট ব্যবহার করবে।</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: PAGESPEED ===== -->
+  <section id="pagespeed">
+    <div class="section-label"><span class="num">২</span> PageSpeed Insights</div>
+    <h2>PageSpeed Insights কীভাবে ব্যবহার করবেন?</h2>
+    <p><a href="https://pagespeed.web.dev/" target="_blank" style="color:var(--accent)">pagespeed.web.dev</a> হলো Google-এর ফ্রি টুল যা আপনার সাইটের স্পিড পরিমাপ করে এবং কী ঠিক করতে হবে তা বলে দেয়।</p>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">PageSpeed স্কোর কী মানে?</h3>
+      <div class="pagespeed-scores">
+        <div class="ps-score">
+          <div class="ps-circle green">90+</div>
+          <div class="ps-label">🟢 ভালো<br>(A গ্রেড)</div>
+        </div>
+        <div class="ps-score">
+          <div class="ps-circle yellow">50-89</div>
+          <div class="ps-label">🟡 উন্নতি দরকার</div>
+        </div>
+        <div class="ps-score">
+          <div class="ps-circle red">0-49</div>
+          <div class="ps-label">🔴 খারাপ</div>
+        </div>
+        <div class="ps-score">
+          <div class="ps-circle green">100</div>
+          <div class="ps-label">🏆 পারফেক্ট</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>পেজস্পিড ব্যবহারের ধাপ</h3>
+    <ul class="step-list">
+      <li>
+        <div class="step-num">১</div>
+        <div><strong>pagespeed.web.dev খুলুন</strong> — ব্রাউজারে গিয়ে Google PageSpeed Insights লিখে সার্চ করুন বা সরাসরি লিংকে যান।</div>
+      </li>
+      <li>
+        <div class="step-num">২</div>
+        <div><strong>আপনার URL পেস্ট করুন</strong> — টেস্ট করার জন্য আপনার সাইটের URL দিন এবং Analyze বাটনে ক্লিক করুন।</div>
+      </li>
+      <li>
+        <div class="step-num">৩</div>
+        <div><strong>Mobile এবং Desktop আলাদা দেখুন</strong> — উপরে দুটো ট্যাব আছে। মোবাইল স্কোর সাধারণত কম থাকে, এটা ঠিক করা বেশি জরুরি।</div>
+      </li>
+      <li>
+        <div class="step-num">৪</div>
+        <div><strong>Opportunities সেকশন দেখুন</strong> — এখানে কী কী ঠিক করলে কতটা উন্নতি হবে তা দেখানো হয়।</div>
+      </li>
+      <li>
+        <div class="step-num">৫</div>
+        <div><strong>Diagnostics দেখুন</strong> — গভীর সমস্যাগুলো এখানে থাকে। একটা একটা করে সমাধান করুন।</div>
+      </li>
+    </ul>
+
+    <div class="info-box info-warn">
+      <span class="icon">⚠️</span>
+      <div><strong>গুরুত্বপূর্ণ:</strong> PageSpeed শুধু Lab Data দেখায়। Field Data (Real User Data) দেখতে CrUX রিপোর্ট দেখুন। Field Data বেশি গুরুত্বপূর্ণ কারণ এটা আসল ব্যবহারকারীর অভিজ্ঞতা।</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: CORE WEB VITALS ===== -->
+  <section id="core-web">
+    <div class="section-label"><span class="num">৩</span> Core Web Vitals</div>
+    <h2>Core Web Vitals — সবচেয়ে গুরুত্বপূর্ণ মেট্রিক্স</h2>
+    <p>Google ৩টি মেট্রিককে সবচেয়ে বেশি গুরুত্ব দেয়। এগুলোকে বলা হয় Core Web Vitals।</p>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">🎯 LCP — Largest Contentful Paint</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>কী?</strong> পেজের সবচেয়ে বড় এলিমেন্ট (হিরো ইমেজ বা বড় টেক্সট) কতক্ষণে লোড হয়।</p>
+          <p><strong>কেন?</strong> ব্যবহারকারী কতক্ষণে সাইটের মূল কন্টেন্ট দেখতে পায় তা মাপে।</p>
+        </div>
+        <div>
+          <p>🟢 <strong>ভালো:</strong> ২.৫ সেকেন্ডের কম</p>
+          <p>🟡 <strong>উন্নতি দরকার:</strong> ২.৫–৪ সেকেন্ড</p>
+          <p>🔴 <strong>খারাপ:</strong> ৪ সেকেন্ডের বেশি</p>
+        </div>
+      </div>
+      <h4>LCP ঠিক করার উপায়:</h4>
+      <ul class="checklist">
+        <li>হিরো ইমেজ WebP ফরম্যাটে রাখুন</li>
+        <li><code style="color:var(--accent)">&lt;img loading="eager" fetchpriority="high"&gt;</code> ব্যবহার করুন</li>
+        <li>সার্ভার রেসপন্স টাইম (TTFB) কমান</li>
+        <li>CSS-এ critical styles inline করুন</li>
+      </ul>
+    </div>
+
+    <div class="card card-green">
+      <h3 style="margin-top:0">⚡ INP — Interaction to Next Paint (নতুন!)</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>কী?</strong> ব্যবহারকারী ক্লিক/ট্যাপ করার পর পেজ কতক্ষণে সাড়া দেয়।</p>
+          <p><strong>কেন?</strong> সাইট ইন্টারেক্টিভ কিনা তা মাপে। এটি FID-এর জায়গা নিয়েছে।</p>
+        </div>
+        <div>
+          <p>🟢 <strong>ভালো:</strong> ২০০ms-এর কম</p>
+          <p>🟡 <strong>উন্নতি দরকার:</strong> ২০০–৫০০ms</p>
+          <p>🔴 <strong>খারাপ:</strong> ৫০০ms-এর বেশি</p>
+        </div>
+      </div>
+      <h4>INP ঠিক করার উপায়:</h4>
+      <ul class="checklist">
+        <li>Heavy JavaScript Main Thread থেকে সরিয়ে Web Worker-এ দিন</li>
+        <li>Event Handler-এ দীর্ঘ কাজ এড়ান</li>
+        <li>React-এ unnecessary re-render বন্ধ করুন</li>
+        <li>Debounce ও Throttle ব্যবহার করুন</li>
+      </ul>
+    </div>
+
+    <div class="card card-orange">
+      <h3 style="margin-top:0">📐 CLS — Cumulative Layout Shift</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>কী?</strong> পেজ লোডের সময় এলিমেন্টগুলো কতটা নড়াচড়া করে।</p>
+          <p><strong>কেন?</strong> আপনি কিছু ক্লিক করতে গেলে অন্য কিছু ক্লিক হয়ে যায় — এটা CLS-এর কারণে।</p>
+        </div>
+        <div>
+          <p>🟢 <strong>ভালো:</strong> ০.১-এর কম</p>
+          <p>🟡 <strong>উন্নতি দরকার:</strong> ০.১–০.২৫</p>
+          <p>🔴 <strong>খারাপ:</strong> ০.২৫-এর বেশি</p>
+        </div>
+      </div>
+      <h4>CLS ঠিক করার উপায়:</h4>
+      <ul class="checklist">
+        <li>সব ইমেজে width ও height অ্যাট্রিবিউট দিন</li>
+        <li>Ads এবং Embed-এর জন্য নির্দিষ্ট স্থান রাখুন</li>
+        <li>Font লোডিং-এ font-display: swap ব্যবহার করুন</li>
+        <li>Dynamic content উপর থেকে না যোগ করে নিচে যোগ করুন</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: IMAGE ===== -->
+  <section id="image">
+    <div class="section-label"><span class="num">৪</span> ইমেজ অপটিমাইজেশন</div>
+    <h2>ইমেজ অপটিমাইজেশন — সবচেয়ে সহজ উপায়ে বড় উন্নতি</h2>
+    <p>বেশিরভাগ ওয়েবসাইটের ৬০-৮০% সাইজ শুধু ইমেজের কারণে। সঠিকভাবে অপটিমাইজ করলে পেজ সাইজ ৫০-৭০% কমানো সম্ভব।</p>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">ইমেজ ফরম্যাট কোনটা ব্যবহার করবেন?</h3>
+      <table class="compare-table">
+        <tr>
+          <th>ফরম্যাট</th>
+          <th>কখন ব্যবহার করবেন</th>
+          <th>সাইজ</th>
+          <th>সাপোর্ট</th>
+        </tr>
+        <tr>
+          <td><strong class="hl-cyan">WebP</strong></td>
+          <td>ফটো, স্ক্রিনশট, সাধারণ ছবি</td>
+          <td><span class="badge badge-green">সবচেয়ে ছোট</span></td>
+          <td><span class="badge badge-green">৯৫%+ ব্রাউজার</span></td>
+        </tr>
+        <tr>
+          <td><strong class="hl-green">AVIF</strong></td>
+          <td>হাই-কোয়ালিটি ফটো</td>
+          <td><span class="badge badge-green">আরও ছোট</span></td>
+          <td><span class="badge badge-yellow">৮০%+ ব্রাউজার</span></td>
+        </tr>
+        <tr>
+          <td><strong>SVG</strong></td>
+          <td>লোগো, আইকন, ইলাস্ট্রেশন</td>
+          <td><span class="badge badge-green">খুব ছোট</span></td>
+          <td><span class="badge badge-green">সব ব্রাউজার</span></td>
+        </tr>
+        <tr>
+          <td>PNG</td>
+          <td>ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড</td>
+          <td><span class="badge badge-yellow">মাঝামাঝি</span></td>
+          <td><span class="badge badge-green">সব ব্রাউজার</span></td>
+        </tr>
+        <tr>
+          <td>JPEG</td>
+          <td>পুরনো সাপোর্ট দরকার হলে</td>
+          <td><span class="badge badge-red">বড়</span></td>
+          <td><span class="badge badge-green">সব ব্রাউজার</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>সঠিক HTML দিয়ে ইমেজ লোড করুন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">HTML — সেরা প্র্যাকটিস</div>
+      </div>
+      <pre><span class="comment">&lt;!-- ❌ ভুল পদ্ধতি — কখনো এভাবে করবেন না --&gt;</span>
+<span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="str">"photo.jpg"</span> <span class="tag">/&gt;</span>
+
+<span class="comment">&lt;!-- ✅ সঠিক পদ্ধতি — হিরো ইমেজ (Above the fold) --&gt;</span>
+<span class="tag">&lt;img</span>
+  <span class="attr">src</span>=<span class="str">"hero.webp"</span>
+  <span class="attr">alt</span>=<span class="str">"ওয়েবসাইটের মূল ছবি"</span>
+  <span class="attr">width</span>=<span class="str">"1200"</span>
+  <span class="attr">height</span>=<span class="str">"600"</span>
+  <span class="attr">loading</span>=<span class="str">"eager"</span>
+  <span class="attr">fetchpriority</span>=<span class="str">"high"</span>
+  <span class="attr">decoding</span>=<span class="str">"sync"</span>
+<span class="tag">/&gt;</span>
+
+<span class="comment">&lt;!-- ✅ সঠিক পদ্ধতি — নিচের ইমেজ (Below the fold) --&gt;</span>
+<span class="tag">&lt;img</span>
+  <span class="attr">src</span>=<span class="str">"content.webp"</span>
+  <span class="attr">alt</span>=<span class="str">"কন্টেন্টের ছবি"</span>
+  <span class="attr">width</span>=<span class="str">"800"</span>
+  <span class="attr">height</span>=<span class="str">"400"</span>
+  <span class="attr">loading</span>=<span class="str">"lazy"</span>
+  <span class="attr">decoding</span>=<span class="str">"async"</span>
+<span class="tag">/&gt;</span>
+
+<span class="comment">&lt;!-- ✅ আধুনিক পদ্ধতি — AVIF + WebP + JPEG ফলব্যাক --&gt;</span>
+<span class="tag">&lt;picture&gt;</span>
+  <span class="tag">&lt;source</span> <span class="attr">srcset</span>=<span class="str">"photo.avif"</span> <span class="attr">type</span>=<span class="str">"image/avif"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;source</span> <span class="attr">srcset</span>=<span class="str">"photo.webp"</span> <span class="attr">type</span>=<span class="str">"image/webp"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="str">"photo.jpg"</span> <span class="attr">alt</span>=<span class="str">"ছবির বিবরণ"</span> <span class="attr">width</span>=<span class="str">"800"</span> <span class="attr">height</span>=<span class="str">"600"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/picture&gt;</span>
+
+<span class="comment">&lt;!-- ✅ Responsive ইমেজ — বিভিন্ন স্ক্রিনে সঠিক সাইজ --&gt;</span>
+<span class="tag">&lt;img</span>
+  <span class="attr">src</span>=<span class="str">"image-800w.webp"</span>
+  <span class="attr">srcset</span>=<span class="str">"image-400w.webp 400w,
+          image-800w.webp 800w,
+          image-1200w.webp 1200w"</span>
+  <span class="attr">sizes</span>=<span class="str">"(max-width: 600px) 400px,
+         (max-width: 1000px) 800px,
+         1200px"</span>
+  <span class="attr">alt</span>=<span class="str">"রেসপন্সিভ ছবি"</span>
+  <span class="attr">width</span>=<span class="str">"800"</span> <span class="attr">height</span>=<span class="str">"600"</span>
+<span class="tag">/&gt;</span></pre>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">🛠️</span>
+      <div><strong>ফ্রি টুলস:</strong> Squoosh.app (Google), TinyPNG, ImageOptim (Mac), ShortPixel — এগুলো দিয়ে ইমেজ কম্প্রেস করুন। Cloudinary বা ImageKit ব্যবহার করলে অটোমেটিক্যালি সেরা ফরম্যাটে দেবে।</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5: CODE OPTIMIZATION ===== -->
+  <section id="code">
+    <div class="section-label"><span class="num">৫</span> কোড অপটিমাইজেশন</div>
+    <h2>HTML, CSS ও JavaScript অপটিমাইজেশন</h2>
+
+    <h3>CSS অপটিমাইজেশন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">HTML — CSS লোডিং</div>
+      </div>
+      <pre><span class="comment">&lt;!-- ❌ ভুল: সব CSS একসাথে ব্লক করে লোড হয় --&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"stylesheet"</span> <span class="attr">href</span>=<span class="str">"all-styles.css"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+
+<span class="comment">&lt;!-- ✅ সঠিক: Critical CSS inline, বাকি async --&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="comment">&lt;!-- Critical CSS সরাসরি HTML-এ --&gt;</span>
+  <span class="tag">&lt;style&gt;</span>
+    <span class="comment">/* উপরের ভাঁজের জন্য দরকারি CSS এখানে */</span>
+    <span class="key">body</span> { <span class="attr">font-family</span>: <span class="val">sans-serif</span>; <span class="attr">margin</span>: <span class="val">0</span>; }
+    <span class="key">.header</span> { <span class="attr">background</span>: <span class="val">#fff</span>; <span class="attr">padding</span>: <span class="val">20px</span>; }
+  <span class="tag">&lt;/style&gt;</span>
+
+  <span class="comment">&lt;!-- বাকি CSS নন-ব্লকিং ভাবে লোড --&gt;</span>
+  <span class="tag">&lt;link</span>
+    <span class="attr">rel</span>=<span class="str">"preload"</span>
+    <span class="attr">href</span>=<span class="str">"styles.css"</span>
+    <span class="attr">as</span>=<span class="str">"style"</span>
+    <span class="attr">onload</span>=<span class="str">"this.onload=null;this.rel='stylesheet'"</span>
+  <span class="tag">/&gt;</span>
+  <span class="tag">&lt;noscript&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"stylesheet"</span> <span class="attr">href</span>=<span class="str">"styles.css"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/noscript&gt;</span>
+<span class="tag">&lt;/head&gt;</span></pre>
+    </div>
+
+    <h3>JavaScript অপটিমাইজেশন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">HTML — Script লোডিং</div>
+      </div>
+      <pre><span class="comment">&lt;!-- ❌ ভুল: পেজ লোড ব্লক হয়ে যায় --&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"main.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+
+<span class="comment">&lt;!-- ✅ সঠিক: defer ব্যবহার করুন (HTML parse হওয়ার পর চলে) --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"main.js"</span> <span class="attr">defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="comment">&lt;!-- ✅ async: অন্য স্ক্রিপ্টের উপর নির্ভর না করলে --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"analytics.js"</span> <span class="attr">async</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="comment">&lt;!-- ✅ তৃতীয় পক্ষের স্ক্রিপ্ট দেরিতে লোড করুন --&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  <span class="comment">// পেজ ইন্টারেক্টিভ হওয়ার পর Google Analytics লোড করুন</span>
+  window.addEventListener(<span class="str">'load'</span>, () => {
+    setTimeout(() => {
+      const script = document.createElement(<span class="str">'script'</span>);
+      script.src = <span class="str">'https://www.googletagmanager.com/gtag/js?id=GA_ID'</span>;
+      script.async = true;
+      document.head.appendChild(script);
+    }, <span class="val">3000</span>); <span class="comment">// ৩ সেকেন্ড পরে লোড হবে</span>
+  });
+<span class="tag">&lt;/script&gt;</span></pre>
+    </div>
+
+    <h3>Resource Hints — আগে থেকে প্রস্তুত করুন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">HTML — &lt;head&gt; সেকশন</div>
+      </div>
+      <pre><span class="tag">&lt;head&gt;</span>
+  <span class="comment">&lt;!-- DNS আগে থেকে রেজলভ করুন --&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"dns-prefetch"</span> <span class="attr">href</span>=<span class="str">"//fonts.googleapis.com"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"dns-prefetch"</span> <span class="attr">href</span>=<span class="str">"//cdn.example.com"</span> <span class="tag">/&gt;</span>
+
+  <span class="comment">&lt;!-- কানেকশন আগে থেকে তৈরি করুন --&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"preconnect"</span> <span class="attr">href</span>=<span class="str">"https://fonts.googleapis.com"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"preconnect"</span> <span class="attr">href</span>=<span class="str">"https://fonts.gstatic.com"</span> <span class="attr">crossorigin</span> <span class="tag">/&gt;</span>
+
+  <span class="comment">&lt;!-- গুরুত্বপূর্ণ রিসোর্স আগে লোড করুন --&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"preload"</span> <span class="attr">href</span>=<span class="str">"hero.webp"</span> <span class="attr">as</span>=<span class="str">"image"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"preload"</span> <span class="attr">href</span>=<span class="str">"font.woff2"</span> <span class="attr">as</span>=<span class="str">"font"</span> <span class="attr">crossorigin</span> <span class="tag">/&gt;</span>
+
+  <span class="comment">&lt;!-- পরের পেজ আগে থেকে লোড করুন --&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"prefetch"</span> <span class="attr">href</span>=<span class="str">"next-page.html"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/head&gt;</span></pre>
+    </div>
+
+    <h3>Font অপটিমাইজেশন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">CSS — Font লোডিং</div>
+      </div>
+      <pre><span class="comment">/* ✅ সঠিক পদ্ধতি: font-display: swap */</span>
+<span class="key">@font-face</span> {
+  <span class="attr">font-family</span>: <span class="str">'HindSiliguri'</span>;
+  <span class="attr">src</span>: url(<span class="str">'hind-siliguri.woff2'</span>) format(<span class="str">'woff2'</span>);
+  <span class="attr">font-weight</span>: <span class="val">400</span>;
+  <span class="attr">font-style</span>: <span class="val">normal</span>;
+  <span class="attr">font-display</span>: <span class="val">swap</span>; <span class="comment">/* ফ্ল্যাশ এড়িয়ে ফলব্যাক ফন্ট দেখায় */</span>
+}
+
+<span class="comment">/* শুধু দরকারি ওজন লোড করুন */</span>
+<span class="key">@font-face</span> {
+  <span class="attr">font-family</span>: <span class="str">'HindSiliguri'</span>;
+  <span class="attr">src</span>: url(<span class="str">'hind-siliguri-bold.woff2'</span>) format(<span class="str">'woff2'</span>);
+  <span class="attr">font-weight</span>: <span class="val">700</span>;
+  <span class="attr">font-display</span>: <span class="val">swap</span>;
+}
+
+<span class="comment">/* Google Fonts থেকে লোড করলে এভাবে */</span>
+<span class="comment">/* &display=swap যোগ করুন URL-এ */</span>
+<span class="comment">/* https://fonts.googleapis.com/css2?family=Hind+Siliguri&display=swap */</span></pre>
+    </div>
+
+    <div class="info-box info-success">
+      <span class="icon">✅</span>
+      <div><strong>Minification টুলস:</strong> CSS — cssnano, PurgeCSS | JS — Terser, esbuild, SWC | HTML — html-minifier। Webpack বা Vite ব্যবহার করলে এগুলো অটোমেটিক হয়।</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: SERVER / VPS ===== -->
+  <section id="server">
+    <div class="section-label"><span class="num">৬</span> সার্ভার ও VPS অপটিমাইজেশন</div>
+    <h2>সার্ভার কনফিগারেশন — এটা না করলে সব বৃথা!</h2>
+    <p>দুর্দান্ত কোড লিখলেও সার্ভার ঠিকমতো কনফিগার না করলে ওয়েবসাইট দ্রুত হবে না। এই সেকশনে Nginx দিয়ে সবচেয়ে ভালো কনফিগ দেখানো হয়েছে।</p>
+
+    <h3>Nginx — সেরা Performance কনফিগারেশন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">NGINX — nginx.conf</div>
+      </div>
+      <pre><span class="comment"># ===== GZIP কম্প্রেশন =====</span>
+<span class="key">gzip</span> <span class="val">on</span>;
+<span class="key">gzip_vary</span> <span class="val">on</span>;
+<span class="key">gzip_min_length</span> <span class="val">1024</span>;
+<span class="key">gzip_types</span> text/plain text/css application/json
+           application/javascript text/xml application/xml
+           application/xml+rss text/javascript image/svg+xml;
+<span class="key">gzip_comp_level</span> <span class="val">6</span>;
+
+<span class="comment"># ===== Brotli কম্প্রেশন (Gzip থেকেও ভালো) =====</span>
+<span class="key">brotli</span> <span class="val">on</span>;
+<span class="key">brotli_comp_level</span> <span class="val">6</span>;
+<span class="key">brotli_types</span> text/plain text/css application/json
+             application/javascript image/svg+xml;
+
+<span class="comment"># ===== Browser Cache Headers =====</span>
+server {
+  <span class="comment"># Static assets — ১ বছর Cache</span>
+  location ~* \.(css|js|png|jpg|jpeg|webp|avif|woff2|ico)$ {
+    <span class="key">expires</span> <span class="val">1y</span>;
+    add_header <span class="key">Cache-Control</span> <span class="str">"public, immutable"</span>;
+  }
+
+  <span class="comment"># HTML — Cache করবেন না (সবসময় নতুন দরকার)</span>
+  location ~* \.html$ {
+    <span class="key">expires</span> <span class="val">-1</span>;
+    add_header <span class="key">Cache-Control</span> <span class="str">"no-store, no-cache"</span>;
+  }
+
+  <span class="comment"># ===== Keep-Alive কানেকশন =====</span>
+  <span class="key">keepalive_timeout</span> <span class="val">65</span>;
+  <span class="key">keepalive_requests</span> <span class="val">1000</span>;
+
+  <span class="comment"># ===== HTTP/2 চালু করুন =====</span>
+  listen 443 ssl <span class="val">http2</span>;
+  ssl_certificate /path/to/cert.pem;
+  ssl_certificate_key /path/to/key.pem;
+
+  <span class="comment"># ===== Security + Speed Headers =====</span>
+  add_header <span class="key">X-Content-Type-Options</span> <span class="str">"nosniff"</span>;
+  add_header <span class="key">Referrer-Policy</span> <span class="str">"no-referrer-when-downgrade"</span>;
+}</pre>
+    </div>
+
+    <h3>PHP (WordPress) অপটিমাইজেশন</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">PHP-FPM — www.conf</div>
+      </div>
+      <pre><span class="comment"># OPcache চালু করুন — PHP ফাইল cache করে রাখে</span>
+[<span class="key">opcache</span>]
+opcache.enable=<span class="val">1</span>
+opcache.memory_consumption=<span class="val">256</span>     <span class="comment">; ২৫৬MB মেমরি</span>
+opcache.max_accelerated_files=<span class="val">20000</span> <span class="comment">; ফাইল সংখ্যা</span>
+opcache.revalidate_freq=<span class="val">0</span>          <span class="comment">; প্রোডাকশনে ০ সেরা</span>
+opcache.validate_timestamps=<span class="val">0</span>       <span class="comment">; পরিবর্তন চেক বন্ধ</span>
+opcache.save_comments=<span class="val">1</span>
+
+<span class="comment"># PHP-FPM Process Manager</span>
+[<span class="key">www</span>]
+pm = <span class="val">dynamic</span>
+pm.max_children = <span class="val">50</span>     <span class="comment">; সর্বোচ্চ worker</span>
+pm.start_servers = <span class="val">5</span>     <span class="comment">; শুরুতে worker সংখ্যা</span>
+pm.min_spare_servers = <span class="val">5</span>  <span class="comment">; ন্যূনতম idle</span>
+pm.max_spare_servers = <span class="val">35</span> <span class="comment">; সর্বোচ্চ idle</span></pre>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 7: CDN & CACHE ===== -->
+  <section id="cdn">
+    <div class="section-label"><span class="num">৭</span> CDN ও Caching</div>
+    <h2>CDN ও Cache — বিশ্বের যেকোনো জায়গা থেকে দ্রুত</h2>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">CDN কী এবং কেন দরকার?</h3>
+      <p>CDN (Content Delivery Network) হলো বিশ্বজুড়ে ছড়িয়ে থাকা সার্ভারের নেটওয়ার্ক। আপনার সাইটের ফাইল এই সার্ভারগুলোতে কপি হয়ে থাকে। ব্যবহারকারী তার কাছের সার্ভার থেকে ফাইল পায়, তাই দ্রুত লোড হয়।</p>
+      <table class="compare-table">
+        <tr><th>CDN</th><th>ফ্রি প্ল্যান</th><th>বৈশিষ্ট্য</th><th>কার জন্য</th></tr>
+        <tr>
+          <td><strong class="hl-orange">Cloudflare</strong></td>
+          <td><span class="badge badge-green">আছে</span></td>
+          <td>DDoS সুরক্ষা, ফ্রি SSL, Cache</td>
+          <td>সবার জন্য সেরা</td>
+        </tr>
+        <tr>
+          <td><strong>BunnyCDN</strong></td>
+          <td><span class="badge badge-yellow">ট্রায়াল</span></td>
+          <td>সস্তা, দ্রুত, বাংলাদেশ POP</td>
+          <td>বাজেট-সচেতন</td>
+        </tr>
+        <tr>
+          <td><strong>Cloudfront</strong></td>
+          <td><span class="badge badge-yellow">সীমিত</span></td>
+          <td>AWS ইকোসিস্টেম</td>
+          <td>AWS ব্যবহারকারী</td>
+        </tr>
+        <tr>
+          <td><strong>Fastly</strong></td>
+          <td><span class="badge badge-red">নেই</span></td>
+          <td>এন্টারপ্রাইজ গ্রেড</td>
+          <td>বড় কোম্পানি</td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>Redis — Application Level Caching</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">PHP — Redis Cache উদাহরণ</div>
+      </div>
+      <pre><span class="tag">&lt;?php</span>
+<span class="comment">// Redis সংযোগ স্থাপন</span>
+$redis = new Redis();
+$redis->connect(<span class="str">'127.0.0.1'</span>, <span class="val">6379</span>);
+
+<span class="comment">// Cache থেকে ডেটা নেওয়ার চেষ্টা</span>
+$cacheKey = <span class="str">'homepage_data'</span>;
+$cachedData = $redis->get($cacheKey);
+
+if ($cachedData) {
+    <span class="comment">// Cache-এ আছে — সরাসরি দাও (খুব দ্রুত!)</span>
+    $data = json_decode($cachedData, true);
+} else {
+    <span class="comment">// Cache-এ নেই — Database থেকে আনো</span>
+    $data = getDataFromDatabase();
+
+    <span class="comment">// Cache-এ সংরক্ষণ করো (১ ঘণ্টার জন্য)</span>
+    $redis->setex($cacheKey, <span class="val">3600</span>, json_encode($data));
+}
+
+<span class="comment">// WordPress-এ Redis Object Cache plugin ইনস্টল করুন
+// তাহলে WP_Cache সয়ংক্রিয়ভাবে Redis ব্যবহার করবে</span></pre>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">💡</span>
+      <div><strong>WordPress ব্যবহারকারীদের জন্য:</strong> W3 Total Cache বা WP Rocket ব্যবহার করুন। Cloudflare ফ্রিতে ব্যবহার করুন। Redis Object Cache plugin যোগ করুন। এই তিনটি করলেই WordPress অনেক দ্রুত হবে।</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: DATABASE ===== -->
+  <section id="database">
+    <div class="section-label"><span class="num">৮</span> Database অপটিমাইজেশন</div>
+    <h2>Database — ধীর query মানে ধীর ওয়েবসাইট</h2>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">SQL — Query অপটিমাইজেশন</div>
+      </div>
+      <pre><span class="comment">-- ❌ ভুল: SELECT * সবসময় ধীর</span>
+SELECT * FROM products WHERE category_id = 5;
+
+<span class="comment">-- ✅ সঠিক: শুধু দরকারি column নিন</span>
+SELECT id, name, price, image FROM products
+WHERE category_id = 5
+LIMIT 20;
+
+<span class="comment">-- ✅ Index যোগ করুন (অনেক দ্রুত হবে)</span>
+CREATE INDEX idx_products_category
+ON products(category_id);
+
+<span class="comment">-- ✅ Slow Query খুঁজে বের করুন</span>
+SHOW VARIABLES LIKE 'slow_query_log';
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 1; <span class="comment">-- ১ সেকেন্ডের বেশি লাগলে লগ করো</span>
+
+<span class="comment">-- ✅ Query Explain দিয়ে বিশ্লেষণ করুন</span>
+EXPLAIN SELECT id, name FROM products
+WHERE category_id = 5 AND status = 'active';</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">MySQL — my.cnf অপটিমাইজেশন</div>
+      </div>
+      <pre>[<span class="key">mysqld</span>]
+<span class="comment"># InnoDB Buffer Pool — RAM-এ data রাখে (দ্রুততম)</span>
+innodb_buffer_pool_size = <span class="val">1G</span>  <span class="comment">; মোট RAM-এর ৭০-৮০%</span>
+
+<span class="comment"># Query Cache</span>
+query_cache_type = <span class="val">1</span>
+query_cache_size = <span class="val">128M</span>
+
+<span class="comment"># Connection Pool</span>
+max_connections = <span class="val">200</span>
+wait_timeout = <span class="val">28800</span>
+
+<span class="comment"># Log ফাইল সাইজ</span>
+innodb_log_file_size = <span class="val">256M</span></pre>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 9: TRAFFIC CALCULATION ===== -->
+  <section id="traffic">
+    <div class="section-label"><span class="num">৯</span> ট্রাফিক ক্যালকুলেশন</div>
+    <h2>কতটুকু ট্রাফিকের জন্য কত VPS দরকার?</h2>
+    <p>আপনার ওয়েবসাইটের কতজন ভিজিটর আসে তার উপর নির্ভর করে কত বড় সার্ভার দরকার। ভুল হিসাব করলে হয় অতিরিক্ত খরচ, নয়তো সার্ভার ক্র্যাশ।</p>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">📊 ট্রাফিক ক্যালকুলেশন ফর্মুলা</h3>
+      <div class="code-block" style="margin:0">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <div class="code-lang">হিসাব</div>
+        </div>
+        <pre><span class="comment">// প্রতিদিন ১০,০০০ ভিজিটরের জন্য হিসাব:</span>
+
+দৈনিক ভিজিটর: <span class="val">10,000</span>
+প্রতি ভিজিটরে গড় পেজ: <span class="val">3</span>
+মোট দৈনিক রিকোয়েস্ট: <span class="val">30,000</span>
+
+<span class="comment">// পিক আওয়ারে (সাধারণত মোট ট্রাফিকের ২০% ২ ঘণ্টায়)</span>
+পিক আওয়ারে রিকোয়েস্ট: <span class="val">6,000</span> / ১২০ মিনিট = <span class="val">৫০ req/min</span>
+
+<span class="comment">// Concurrent Users (গড় সেশন সময় ৩ মিনিট হলে)</span>
+Concurrent Users: <span class="val">50</span> × <span class="val">3</span> = <span class="val">150 concurrent users</span>
+
+<span class="comment">// VPS RAM দরকার:</span>
+প্রতি PHP প্রসেস ≈ <span class="val">30-50MB</span>
+PHP-FPM workers = <span class="val">50</span>
+মোট PHP RAM: <span class="val">50</span> × <span class="val">40MB</span> = <span class="val">2GB</span>
+MySQL + OS + অন্যান্য: <span class="val">1-2GB</span>
+<span class="comment">// মোট দরকার: ৩-৪GB RAM</span></pre>
+      </div>
+    </div>
+
+    <h3>VPS প্ল্যান সিলেকশন গাইড</h3>
+    <div class="vps-plans">
+      <div class="vps-card">
+        <div class="vps-tier">ছোট সাইট</div>
+        <div class="vps-traffic">১-৫K/দিন</div>
+        <div class="vps-spec">2 vCPU • 2GB RAM • 40GB SSD</div>
+        <ul class="vps-features">
+          <li>ব্লগ বা পোর্টফোলিও</li>
+          <li>WordPress + Cache</li>
+          <li>MySQL + Redis</li>
+          <li>Nginx + PHP-FPM</li>
+        </ul>
+      </div>
+      <div class="vps-card featured">
+        <div class="vps-tier" style="color:var(--accent2)">মাঝারি সাইট ★</div>
+        <div class="vps-traffic">৫-৫০K/দিন</div>
+        <div class="vps-spec">4 vCPU • 4-8GB RAM • 80GB SSD</div>
+        <ul class="vps-features">
+          <li>ই-কমার্স, নিউজ সাইট</li>
+          <li>CDN + Full Cache</li>
+          <li>Redis + Memcached</li>
+          <li>Database অপটিমাইজড</li>
+        </ul>
+      </div>
+      <div class="vps-card">
+        <div class="vps-tier">বড় সাইট</div>
+        <div class="vps-traffic">৫০K+/দিন</div>
+        <div class="vps-spec">8+ vCPU • 16GB+ RAM • 200GB SSD</div>
+        <ul class="vps-features">
+          <li>Load Balancer</li>
+          <li>Separate DB Server</li>
+          <li>Auto Scaling</li>
+          <li>Dedicated CDN</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box info-warn">
+      <span class="icon">⚠️</span>
+      <div><strong>গুরুত্বপূর্ণ:</strong> সবসময় ২০-৩০% এক্সট্রা capacity রাখুন। হঠাৎ viral হলে বা কোনো ইভেন্টে ট্রাফিক spike হলে সার্ভার যেন crash না করে। Cloudflare ব্যবহার করলে প্রায় ৬০-৮০% সার্ভার লোড কমে।</div>
+    </div>
+
+    <h3>সার্ভার মনিটরিং টুলস</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-lang">BASH — সার্ভার স্ট্যাটাস চেক</div>
+      </div>
+      <pre><span class="comment"># CPU ও Memory চেক</span>
+htop
+
+<span class="comment"># Nginx কানেকশন স্ট্যাটাস</span>
+nginx -t && systemctl status nginx
+
+<span class="comment"># রিয়েল-টাইম Nginx লগ দেখুন</span>
+tail -f /var/log/nginx/access.log
+
+<span class="comment"># MySQL Slow Query লগ দেখুন</span>
+tail -f /var/log/mysql/slow.log
+
+<span class="comment"># Disk ব্যবহার চেক</span>
+df -h
+
+<span class="comment"># কোন প্রসেস বেশি রিসোর্স নিচ্ছে</span>
+ps aux --sort=-%cpu | head -20</pre>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 10: FINAL CHECKLIST ===== -->
+  <section id="checklist">
+    <div class="section-label"><span class="num">১০</span> সম্পূর্ণ চেকলিস্ট</div>
+    <h2>PageSpeed A গ্রেড পেতে সম্পূর্ণ চেকলিস্ট</h2>
+
+    <div class="grid-2">
+      <div class="card card-accent">
+        <h3 style="margin-top:0">🖼️ ইমেজ</h3>
+        <ul class="checklist">
+          <li>সব ইমেজ WebP/AVIF ফরম্যাটে রূপান্তর</li>
+          <li>সব ইমেজে width ও height দেওয়া</li>
+          <li>হিরো ইমেজে fetchpriority="high"</li>
+          <li>নিচের ইমেজে loading="lazy"</li>
+          <li>Responsive srcset ব্যবহার</li>
+          <li>সর্বোচ্চ মান বজায় রেখে কম্প্রেশন</li>
+        </ul>
+      </div>
+
+      <div class="card card-green">
+        <h3 style="margin-top:0">💻 কোড</h3>
+        <ul class="checklist">
+          <li>CSS Minify ও Unused CSS সরানো</li>
+          <li>JS Minify ও Tree Shaking</li>
+          <li>Critical CSS inline করা</li>
+          <li>Script defer/async ব্যবহার</li>
+          <li>Resource Hints (preload/prefetch)</li>
+          <li>Third-party scripts defer করা</li>
+        </ul>
+      </div>
+
+      <div class="card card-orange">
+        <h3 style="margin-top:0">🖥️ সার্ভার</h3>
+        <ul class="checklist">
+          <li>HTTPS ও HTTP/2 চালু</li>
+          <li>Gzip/Brotli কম্প্রেশন চালু</li>
+          <li>Browser Cache Headers সেট</li>
+          <li>Keep-Alive কানেকশন চালু</li>
+          <li>PHP OPcache চালু</li>
+          <li>Cloudflare CDN ব্যবহার</li>
+        </ul>
+      </div>
+
+      <div class="card card-purple">
+        <h3 style="margin-top:0">🗄️ Database</h3>
+        <ul class="checklist">
+          <li>প্রতিটি Table-এ Index যোগ</li>
+          <li>Slow Query লগ চালু ও বিশ্লেষণ</li>
+          <li>Redis/Memcached Cache ব্যবহার</li>
+          <li>MySQL Buffer Pool অপটিমাইজ</li>
+          <li>N+1 Query সমস্যা দূর করা</li>
+          <li>নিয়মিত Database Cleanup</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-accent">
+      <h3 style="margin-top:0">🚀 WordPress বিশেষ চেকলিস্ট</h3>
+      <div class="grid-2">
+        <ul class="checklist">
+          <li>LiteSpeed Cache বা WP Rocket ব্যবহার</li>
+          <li>Cloudflare ফ্রি প্ল্যান সেটআপ</li>
+          <li>Redis Object Cache plugin</li>
+          <li>অব্যবহৃত Plugin মুছে ফেলা</li>
+        </ul>
+        <ul class="checklist">
+          <li>Heartbeat API বন্ধ করা</li>
+          <li>Autosave কমানো</li>
+          <li>wp-cron বন্ধ করে Cron Job ব্যবহার</li>
+          <li>Query Monitor দিয়ে সমস্যা খোঁজা</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box info-success">
+      <span class="icon">🏆</span>
+      <div>
+        <strong>লক্ষ্য অর্জনের পর কী করবেন?</strong><br>
+        সব ঠিক করার পর PageSpeed-এ ৯০+ স্কোর পেলে থামবেন না। প্রতি মাসে একবার চেক করুন। নতুন কন্টেন্ট, প্লাগিন বা কোড যোগ করলে আবার পরীক্ষা করুন। WebPageTest.org, GTmetrix.com এবং web.dev/measure/ ব্যবহার করে বিস্তারিত বিশ্লেষণ করুন।
+      </div>
+    </div>
+  </section>
+
+</div><!-- end .container -->
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <h3>🚀 এখনই শুরু করুন!</h3>
+  <p>pagespeed.web.dev-এ যান, আপনার URL টেস্ট করুন, এবং সবচেয়ে বড় Opportunity থেকে ঠিক করা শুরু করুন।</p>
+
+  <div class="final-score">
+    <div class="final-badge">⚡ Performance: 90+</div>
+    <div class="final-badge">♿ Accessibility: 100</div>
+    <div class="final-badge">✅ Best Practices: 100</div>
+    <div class="final-badge">🔍 SEO: 100</div>
+  </div>
+
+  <p style="margin-top:24px;font-size:13px;color:#4a7c95;">
+    এই গাইড অনুসরণ করে যেকোনো ওয়েবসাইটকে রকেটের মতো দ্রুত করা সম্ভব।<br>
+    বাংলাদেশের ডেভেলপারদের জন্য তৈরি • ২০২৪
+  </p>
+</footer>
+
+</body>
+</html>

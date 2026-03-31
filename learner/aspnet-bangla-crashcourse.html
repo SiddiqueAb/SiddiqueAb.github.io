@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASP.NET Crash Course – বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+    --tag: #7c3aed22;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 80px 20px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 0%, #7c3aed33 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, #06b6d422 0%, transparent 50%),
+      linear-gradient(180deg, #0a0e1a 0%, #0d1120 100%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: 
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, #a78bfa 70%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    font-size: 1.25rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .hero-sub span { color: var(--accent2); font-weight: 600; }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 48px;
+  }
+
+  .hero-tags span {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .scroll-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent), #9333ea);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px #7c3aed55;
+  }
+  .scroll-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px #7c3aed88; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center;
+    gap: 6px; overflow-x: auto;
+    padding: 12px 0;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-inner a {
+    white-space: nowrap;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-inner a:hover { color: var(--text); background: var(--surface2); }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* SECTION */
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--tag);
+    border: 1px solid #7c3aed44;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: white;
+  }
+  .section-title .hl { color: var(--accent2); }
+
+  .section-desc {
+    color: #94a3b8;
+    max-width: 700px;
+    margin-bottom: 36px;
+    font-size: 15px;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .card:hover::before { opacity: 1; }
+
+  .card-icon { font-size: 2rem; margin-bottom: 12px; }
+  .card h3 { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #161b27;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dots span:nth-child(1) { background: #ef4444; }
+  .code-dots span:nth-child(2) { background: #f59e0b; }
+  .code-dots span:nth-child(3) { background: #10b981; }
+
+  pre {
+    padding: 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #c9d1d9;
+  }
+
+  .kw { color: #ff7b72; }
+  .type { color: #79c0ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .fn { color: #d2a8ff; }
+  .num { color: #f2cc60; }
+  .attr { color: #ffa657; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 24px;
+    position: relative;
+  }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 40px;
+  }
+
+  .step-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #9333ea);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px #7c3aed44;
+    z-index: 1;
+  }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(180deg, #7c3aed55, transparent);
+    min-height: 40px;
+  }
+
+  .step-body {
+    padding-bottom: 40px;
+    flex: 1;
+  }
+
+  .step-body h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+
+  .step-body p { color: #94a3b8; font-size: 14.5px; margin-bottom: 12px; }
+
+  /* ALERT BOXES */
+  .alert {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+
+  .alert-info {
+    background: #06b6d411;
+    border: 1px solid #06b6d433;
+    color: #7dd3fc;
+  }
+
+  .alert-warn {
+    background: #f59e0b11;
+    border: 1px solid #f59e0b33;
+    color: #fcd34d;
+  }
+
+  .alert-success {
+    background: #10b98111;
+    border: 1px solid #10b98133;
+    color: #6ee7b7;
+  }
+
+  .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    background: var(--surface2);
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #cbd5e1;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  /* INLINE CODE */
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  /* FOLDER TREE */
+  .tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .tree .folder { color: var(--accent3); }
+  .tree .file { color: #94a3b8; }
+  .tree .file.cs { color: #7c3aed; }
+  .tree .file.cshtml { color: var(--accent2); }
+  .tree .file.json { color: var(--green); }
+
+  /* TWO COLS */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.4rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    .section-header { flex-wrap: wrap; }
+  }
+
+  /* TAG PILLS */
+  .pill {
+    display: inline-block;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .pill-purple { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+  .pill-blue { background: #06b6d422; color: #67e8f9; border: 1px solid #06b6d444; }
+  .pill-green { background: #10b98122; color: #6ee7b7; border: 1px solid #10b98144; }
+  .pill-yellow { background: #f59e0b22; color: #fcd34d; border: 1px solid #f59e0b44; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+  footer .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  /* Pulse animation for hero */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .hero .badge { animation: pulse-glow 3s ease-in-out infinite; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* Highlight text */
+  .hl-yellow { color: var(--accent3); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-purple { color: #a78bfa; font-weight: 600; }
+  .hl-blue { color: var(--accent2); font-weight: 600; }
+
+  /* divider */
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* copy btn */
+  .copy-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="badge">🚀 Complete Crash Course</div>
+    <h1>ASP.NET Core<br>বাংলা গাইড</h1>
+    <p class="hero-sub">Microsoft-এর শক্তিশালী <span>Web Framework</span> শিখুন বাংলায়</p>
+    <p class="hero-desc">প্রজেক্ট সেটআপ থেকে শুরু করে MVC, Razor Pages, Entity Framework, Authentication পর্যন্ত সম্পূর্ণ গাইড।</p>
+    <div class="hero-tags">
+      <span>.NET 8</span>
+      <span>C#</span>
+      <span>MVC</span>
+      <span>Entity Framework</span>
+      <span>Razor Pages</span>
+      <span>SQL Server</span>
+      <span>REST API</span>
+    </div>
+    <a href="#setup" class="scroll-btn">শুরু করুন ↓</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#intro">ভূমিকা</a>
+    <a href="#setup">সেটআপ</a>
+    <a href="#project">প্রজেক্ট তৈরি</a>
+    <a href="#structure">ফাইল স্ট্রাকচার</a>
+    <a href="#mvc">MVC</a>
+    <a href="#razor">Razor Syntax</a>
+    <a href="#routing">Routing</a>
+    <a href="#ef">Entity Framework</a>
+    <a href="#crud">CRUD</a>
+    <a href="#api">Web API</a>
+    <a href="#auth">Authentication</a>
+    <a href="#deploy">Deploy</a>
+  </div>
+</nav>
+
+<!-- SECTION 1: INTRO -->
+<section id="intro">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">ASP.NET কী? <span class="hl">কেন শিখবো?</span></h2>
+    </div>
+    <p class="section-desc reveal">ASP.NET Core হলো Microsoft-এর একটি Open-Source, Cross-Platform web framework যা C# দিয়ে Web Application তৈরি করতে ব্যবহৃত হয়।</p>
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>অনেক দ্রুত</h3>
+        <p>TechEmpower Benchmark-এ ASP.NET Core বিশ্বের সবচেয়ে দ্রুত web frameworks-এর মধ্যে একটি। Node.js এবং PHP-এর চেয়ে অনেক বেশি পারফরম্যান্ট।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Cross-Platform</h3>
+        <p>Windows, Linux এবং macOS — তিনটি অপারেটিং সিস্টেমেই চলে। Docker এবং Cloud-এও সহজে deploy করা যায়।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏢</div>
+        <h3>Enterprise-Ready</h3>
+        <p>বড় বড় কোম্পানি যেমন Microsoft, Stack Overflow, Siemens ASP.NET ব্যবহার করে। চাকরির বাজারে এর চাহিদা অনেক বেশি।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Built-in Security</h3>
+        <p>Authentication, Authorization, CSRF Protection, Data Validation — সব কিছু built-in হিসেবে পাওয়া যায়।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛠️</div>
+        <h3>Dependency Injection</h3>
+        <p>Built-in DI Container আছে। Code maintainable এবং testable রাখতে সাহায্য করে।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h3>NuGet Packages</h3>
+        <p>লক্ষ লক্ষ NuGet package পাওয়া যায়। যেকোনো feature সহজেই add করা যায়।</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:16px;font-size:1.1rem;">ASP.NET দিয়ে কী কী বানানো যায়?</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>ধরন</th>
+            <th>কী</th>
+            <th>কখন ব্যবহার</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pill pill-purple">MVC</span></td><td>Model-View-Controller Web App</td><td>Full-stack website তৈরিতে</td></tr>
+          <tr><td><span class="pill pill-blue">Razor Pages</span></td><td>Page-centric Web App</td><td>Simple CRUD app-এ</td></tr>
+          <tr><td><span class="pill pill-green">Web API</span></td><td>RESTful API</td><td>Mobile app বা SPA backend-এ</td></tr>
+          <tr><td><span class="pill pill-yellow">Blazor</span></td><td>Component-based UI (C# দিয়ে)</td><td>JavaScript ছাড়া interactive UI-তে</td></tr>
+          <tr><td><span class="pill pill-purple">SignalR</span></td><td>Real-time Communication</td><td>Chat app, Live dashboard-এ</td></tr>
+          <tr><td><span class="pill pill-blue">gRPC</span></td><td>High-performance RPC</td><td>Microservices communication-এ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: SETUP -->
+<section id="setup">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Environment <span class="hl">সেটআপ</span></h2>
+    </div>
+    <p class="section-desc reveal">কোড লেখা শুরু করার আগে আমাদের কিছু software install করতে হবে।</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-left">
+          <div class="step-num">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h3>.NET SDK ডাউনলোড ও Install করুন</h3>
+          <p><a href="https://dotnet.microsoft.com/download" style="color:var(--accent2)">https://dotnet.microsoft.com/download</a> — এই লিঙ্ক থেকে .NET 8 SDK (Latest) ডাউনলোড করুন। Windows, macOS, Linux তিনটির জন্যই আলাদা installer আছে।</p>
+          <div class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <div>Install হওয়ার পর Terminal/Command Prompt-এ নিচের command লিখে check করুন:</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">CMD / Terminal</span>
+            </div>
+            <pre>dotnet --version
+<span class="cm"># Output আসবে: 8.x.x</span>
+
+dotnet --list-sdks
+<span class="cm"># Install করা সব SDK দেখাবে</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left">
+          <div class="step-num">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h3>Visual Studio বা VS Code Install করুন</h3>
+          <p>দুটি option আছে — যেকোনো একটি বেছে নিন:</p>
+          <div class="two-col">
+            <div class="card" style="border-color:#7c3aed55;">
+              <div class="card-icon">💜</div>
+              <h3>Visual Studio 2022 (Community — ফ্রি)</h3>
+              <p style="margin-bottom:12px;">ASP.NET development-এর জন্য সেরা IDE। সব কিছু built-in আছে। Beginner-দের জন্য recommended।</p>
+              <p>Install করার সময় <strong style="color:white;">"ASP.NET and web development"</strong> workload select করুন।</p>
+            </div>
+            <div class="card" style="border-color:#06b6d455;">
+              <div class="card-icon">🔵</div>
+              <h3>VS Code (Lightweight)</h3>
+              <p style="margin-bottom:12px;">হালকা এবং দ্রুত। C# Dev Kit extension install করতে হবে।</p>
+              <p>Extension: <code>C# Dev Kit</code> by Microsoft ইনস্টল করুন।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left">
+          <div class="step-num">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h3>SQL Server (Database) Setup</h3>
+          <p>Database কাজের জন্য দুটির যেকোনো একটি ব্যবহার করতে পারবেন:</p>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-icon">🗄️</div>
+              <h3>SQL Server Express (ফ্রি)</h3>
+              <p>Microsoft-এর ফ্রি version। Production-এও use করা যায়। Microsoft-এর website থেকে download করুন।</p>
+            </div>
+            <div class="card">
+              <div class="card-icon">🐳</div>
+              <h3>SQLite (Zero Config)</h3>
+              <p>Development-এর জন্য সহজ। কোনো install লাগে না, file-based database। শুরুতে এটাই ব্যবহার করুন।</p>
+            </div>
+          </div>
+          <div class="alert alert-info" style="margin-top:16px;">
+            <span class="alert-icon">💡</span>
+            <div>Database management-এর জন্য <strong>Azure Data Studio</strong> বা <strong>DBeaver</strong> (ফ্রি) ব্যবহার করতে পারেন।</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left">
+          <div class="step-num">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h3>Git Install করুন (Optional কিন্তু Recommended)</h3>
+          <p><a href="https://git-scm.com" style="color:var(--accent2)">https://git-scm.com</a> থেকে Git download করুন। Version control-এর জন্য অপরিহার্য।</p>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">Terminal</span>
+            </div>
+            <pre>git --version
+<span class="cm"># Output: git version 2.x.x</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: PROJECT CREATION -->
+<section id="project">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">প্রথম <span class="hl">Project তৈরি</span></h2>
+    </div>
+    <p class="section-desc reveal">দুটি উপায়ে ASP.NET প্রজেক্ট তৈরি করা যায় — Visual Studio GUI দিয়ে এবং Command Line দিয়ে।</p>
+
+    <h3 style="color:white;margin-bottom:20px;">🖥️ Visual Studio দিয়ে (GUI)</h3>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Visual Studio খুলুন</h3>
+          <p>Visual Studio 2022 open করুন। Start screen-এ <strong style="color:white;">"Create a new project"</strong> ক্লিক করুন।</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Template Select করুন</h3>
+          <p>Search box-এ <code>ASP.NET</code> লিখুন। নিচের templates দেখতে পাবেন:</p>
+          <div class="table-wrap" style="margin-top:12px;">
+            <table>
+              <thead><tr><th>Template</th><th>বিবরণ</th><th>Beginner?</th></tr></thead>
+              <tbody>
+                <tr><td><span class="pill pill-purple">ASP.NET Core Web App (MVC)</span></td><td>Model-View-Controller pattern</td><td>✅ হ্যাঁ</td></tr>
+                <tr><td><span class="pill pill-blue">ASP.NET Core Web App (Razor)</span></td><td>Page-centric approach</td><td>✅ হ্যাঁ</td></tr>
+                <tr><td><span class="pill pill-green">ASP.NET Core Web API</span></td><td>RESTful API</td><td>✅ হ্যাঁ</td></tr>
+                <tr><td><span class="pill pill-yellow">Blazor Web App</span></td><td>C# দিয়ে UI</td><td>⚠️ মধ্যম</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;">আপাতত <hl-blue>ASP.NET Core Web App (Model-View-Controller)</hl-blue> সিলেক্ট করুন।</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Project Configure করুন</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Field</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>Project name</td><td><code>MyFirstApp</code></td></tr>
+                <tr><td>Location</td><td>পছন্দের folder বেছে নিন</td></tr>
+                <tr><td>Solution name</td><td>Automatically fill হয়</td></tr>
+                <tr><td>Framework</td><td><code>.NET 8.0</code> (সর্বশেষ LTS)</td></tr>
+                <tr><td>Authentication type</td><td><code>None</code> (শুরুতে)</td></tr>
+                <tr><td>Configure for HTTPS</td><td>✅ রাখুন</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;">সব ঠিকঠাক হলে <strong style="color:white;">"Create"</strong> বাটনে ক্লিক করুন।</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Run করুন!</h3>
+          <p><code>F5</code> চাপুন বা সবুজ ▶️ বাটনে ক্লিক করুন। Browser-এ <code>https://localhost:xxxx</code> এ App খুলবে।</p>
+          <div class="alert alert-success">
+            <span class="alert-icon">🎉</span>
+            <div>Congratulations! আপনার প্রথম ASP.NET app চলছে!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">⌨️ Command Line দিয়ে (CLI)</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Terminal / CMD</span>
+      </div>
+      <pre><span class="cm"># সব available templates দেখুন</span>
+dotnet new list
+
+<span class="cm"># MVC প্রজেক্ট তৈরি করুন</span>
+dotnet new mvc -n MyFirstApp
+
+<span class="cm"># Folder-এ ঢুকুন</span>
+cd MyFirstApp
+
+<span class="cm"># প্রজেক্ট run করুন</span>
+dotnet run
+
+<span class="cm"># Output:</span>
+<span class="str">Now listening on: https://localhost:5001</span>
+<span class="str">Now listening on: http://localhost:5000</span></pre>
+    </div>
+
+    <div class="alert alert-info reveal">
+      <span class="alert-icon">💡</span>
+      <div><strong>Hot Reload:</strong> Development-এর সময় <code>dotnet watch run</code> ব্যবহার করুন। Code change করলে automatically reload হবে।</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: FILE STRUCTURE -->
+<section id="structure">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Project <span class="hl">File Structure</span></h2>
+    </div>
+    <p class="section-desc reveal">MVC প্রজেক্ট তৈরি হওয়ার পর কোন ফোল্ডারে কী থাকে সেটা জানা অনেক জরুরি।</p>
+
+    <div class="two-col reveal">
+      <div>
+        <div class="tree">
+<span class="folder">📁 MyFirstApp/</span>
+├── <span class="folder">📁 Controllers/</span>
+│   └── <span class="file cs">📄 HomeController.cs</span>
+├── <span class="folder">📁 Models/</span>
+│   └── <span class="file cs">📄 ErrorViewModel.cs</span>
+├── <span class="folder">📁 Views/</span>
+│   ├── <span class="folder">📁 Home/</span>
+│   │   ├── <span class="file cshtml">📄 Index.cshtml</span>
+│   │   └── <span class="file cshtml">📄 Privacy.cshtml</span>
+│   └── <span class="folder">📁 Shared/</span>
+│       ├── <span class="file cshtml">📄 _Layout.cshtml</span>
+│       └── <span class="file cshtml">📄 Error.cshtml</span>
+├── <span class="folder">📁 wwwroot/</span>
+│   ├── <span class="folder">📁 css/</span>
+│   ├── <span class="folder">📁 js/</span>
+│   └── <span class="folder">📁 lib/</span>
+├── <span class="file json">📄 appsettings.json</span>
+├── <span class="file cs">📄 Program.cs</span>
+└── <span class="file cs">📄 MyFirstApp.csproj</span>
+        </div>
+      </div>
+      <div>
+        <div class="card-grid" style="grid-template-columns:1fr;">
+          <div class="card">
+            <h3>📁 Controllers/</h3>
+            <p>HTTP request handle করার logic এখানে থাকে। User যখন URL visit করে, Controller সেটা receive করে।</p>
+          </div>
+          <div class="card">
+            <h3>📁 Models/</h3>
+            <p>Data structure এখানে define করা হয়। Database table-এর মতো class তৈরি হয়।</p>
+          </div>
+          <div class="card">
+            <h3>📁 Views/</h3>
+            <p>HTML template এখানে থাকে। <code>.cshtml</code> file — HTML + C# একসাথে।</p>
+          </div>
+          <div class="card">
+            <h3>📁 wwwroot/</h3>
+            <p>Static files — CSS, JavaScript, Images এখানে রাখতে হয়। Public accessible।</p>
+          </div>
+          <div class="card">
+            <h3>📄 Program.cs</h3>
+            <p>Application-এর entry point। Middleware, Services সব এখানে configure হয়।</p>
+          </div>
+          <div class="card">
+            <h3>📄 appsettings.json</h3>
+            <p>Configuration file। Database connection string, API keys ইত্যাদি এখানে রাখতে হয়।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">Program.cs — Application Startup</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Program.cs</span>
+      </div>
+      <pre><span class="kw">var</span> builder = WebApplication.<span class="fn">CreateBuilder</span>(args);
+
+<span class="cm">// ===== Services Register করুন =====</span>
+builder.Services.<span class="fn">AddControllersWithViews</span>();  <span class="cm">// MVC চালু</span>
+builder.Services.<span class="fn">AddDbContext</span>&lt;<span class="type">AppDbContext</span>&gt;(options =&gt;
+    options.<span class="fn">UseSqlite</span>(builder.Configuration.<span class="fn">GetConnectionString</span>(<span class="str">"Default"</span>)));
+
+<span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+<span class="cm">// ===== Middleware Pipeline =====</span>
+<span class="kw">if</span> (!app.Environment.<span class="fn">IsDevelopment</span>())
+{
+    app.<span class="fn">UseExceptionHandler</span>(<span class="str">"/Home/Error"</span>);
+    app.<span class="fn">UseHsts</span>();
+}
+
+app.<span class="fn">UseHttpsRedirection</span>();   <span class="cm">// HTTP → HTTPS redirect</span>
+app.<span class="fn">UseStaticFiles</span>();       <span class="cm">// wwwroot serve করবে</span>
+app.<span class="fn">UseRouting</span>();           <span class="cm">// URL routing চালু</span>
+app.<span class="fn">UseAuthentication</span>();    <span class="cm">// Login check</span>
+app.<span class="fn">UseAuthorization</span>();     <span class="cm">// Permission check</span>
+
+<span class="cm">// Default Route Pattern</span>
+app.<span class="fn">MapControllerRoute</span>(
+    name: <span class="str">"default"</span>,
+    pattern: <span class="str">"{controller=Home}/{action=Index}/{id?}"</span>);
+
+app.<span class="fn">Run</span>();</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: MVC -->
+<section id="mvc">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">05</span>
+      <h2 class="section-title">MVC Pattern <span class="hl">বিস্তারিত</span></h2>
+    </div>
+    <p class="section-desc reveal">MVC মানে Model-View-Controller। এটি একটি Design Pattern যা code কে তিনটি ভাগে ভাগ করে।</p>
+
+    <div class="alert alert-info reveal">
+      <span class="alert-icon">🔄</span>
+      <div>
+        <strong>Request Flow:</strong> User URL type করে → <strong>Router</strong> সঠিক Controller খোঁজে → <strong>Controller</strong> logic চালায় → <strong>Model</strong> থেকে data নেয় → <strong>View</strong>-এ পাঠায় → Browser-এ HTML পৌঁছায়।
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">Model তৈরি করা</h3>
+    <p style="color:var(--muted);margin-bottom:20px;">Model হলো data-র blueprint। Class দিয়ে তৈরি হয়।</p>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Models/Product.cs</span>
+      </div>
+      <pre><span class="kw">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="kw">namespace</span> MyFirstApp.Models;
+
+<span class="kw">public class</span> <span class="type">Product</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    [<span class="attr">Required</span>(ErrorMessage = <span class="str">"নাম দিতে হবে"</span>)]
+    [<span class="attr">StringLength</span>(<span class="num">100</span>)]
+    <span class="kw">public string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="str">""</span>;
+
+    [<span class="attr">Required</span>(ErrorMessage = <span class="str">"মূল্য দিতে হবে"</span>)]
+    [<span class="attr">Range</span>(<span class="num">1</span>, <span class="num">100000</span>)]
+    <span class="kw">public decimal</span> Price { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public string</span>? Description { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public</span> DateTime CreatedAt { <span class="kw">get</span>; <span class="kw">set</span>; } = DateTime.Now;
+}</pre>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">Controller তৈরি করা</h3>
+    <p style="color:var(--muted);margin-bottom:20px;">Controller HTTP request receive করে এবং response পাঠায়।</p>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Controllers/ProductController.cs</span>
+      </div>
+      <pre><span class="kw">using</span> Microsoft.AspNetCore.Mvc;
+<span class="kw">using</span> MyFirstApp.Models;
+
+<span class="kw">namespace</span> MyFirstApp.Controllers;
+
+<span class="kw">public class</span> <span class="type">ProductController</span> : <span class="type">Controller</span>
+{
+    <span class="cm">// GET: /Product  বা  /Product/Index</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Index</span>()
+    {
+        <span class="cm">// Dummy data — পরে Database থেকে আসবে</span>
+        <span class="kw">var</span> products = <span class="kw">new</span> List&lt;<span class="type">Product</span>&gt;
+        {
+            <span class="kw">new</span>() { Id = <span class="num">1</span>, Name = <span class="str">"স্মার্টফোন"</span>, Price = <span class="num">25000</span> },
+            <span class="kw">new</span>() { Id = <span class="num">2</span>, Name = <span class="str">"ল্যাপটপ"</span>, Price = <span class="num">65000</span> },
+            <span class="kw">new</span>() { Id = <span class="num">3</span>, Name = <span class="str">"হেডফোন"</span>, Price = <span class="num">3500</span> }
+        };
+
+        <span class="kw">return</span> <span class="fn">View</span>(products); <span class="cm">// Views/Product/Index.cshtml এ পাঠাবে</span>
+    }
+
+    <span class="cm">// GET: /Product/Details/5</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Details</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">new</span> <span class="type">Product</span> { Id = id, Name = <span class="str">"Test"</span>, Price = <span class="num">100</span> };
+        <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="fn">NotFound</span>();
+        <span class="kw">return</span> <span class="fn">View</span>(product);
+    }
+
+    <span class="cm">// GET: /Product/Create</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Create</span>() => <span class="fn">View</span>();
+
+    <span class="cm">// POST: /Product/Create</span>
+    [<span class="attr">HttpPost</span>]
+    [<span class="attr">ValidateAntiForgeryToken</span>]
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Create</span>(<span class="type">Product</span> product)
+    {
+        <span class="kw">if</span> (ModelState.IsValid)
+        {
+            <span class="cm">// Database-এ save করব পরে</span>
+            <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="str">"Index"</span>);
+        }
+        <span class="kw">return</span> <span class="fn">View</span>(product); <span class="cm">// Error হলে form আবার দেখাও</span>
+    }
+}</pre>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">View তৈরি করা</h3>
+    <p style="color:var(--muted);margin-bottom:20px;"><code>Views/Product/Index.cshtml</code> — Product list দেখাবে।</p>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Razor — Views/Product/Index.cshtml</span>
+      </div>
+      <pre><span class="attr">@model</span> List&lt;MyFirstApp.Models.Product&gt;
+
+<span class="attr">@{</span>
+    ViewData[<span class="str">"Title"</span>] = <span class="str">"পণ্যের তালিকা"</span>;
+<span class="attr">}</span>
+
+&lt;<span class="kw">h2</span>&gt;সকল পণ্য&lt;/<span class="kw">h2</span>&gt;
+&lt;<span class="kw">a</span> asp-action=<span class="str">"Create"</span> class=<span class="str">"btn btn-primary"</span>&gt;নতুন পণ্য যোগ করুন&lt;/<span class="kw">a</span>&gt;
+
+&lt;<span class="kw">table</span> class=<span class="str">"table"</span>&gt;
+    &lt;<span class="kw">thead</span>&gt;
+        &lt;<span class="kw">tr</span>&gt;
+            &lt;<span class="kw">th</span>&gt;নাম&lt;/<span class="kw">th</span>&gt;
+            &lt;<span class="kw">th</span>&gt;মূল্য&lt;/<span class="kw">th</span>&gt;
+            &lt;<span class="kw">th</span>&gt;Action&lt;/<span class="kw">th</span>&gt;
+        &lt;/<span class="kw">tr</span>&gt;
+    &lt;/<span class="kw">thead</span>&gt;
+    &lt;<span class="kw">tbody</span>&gt;
+        <span class="attr">@foreach</span> (<span class="kw">var</span> product <span class="kw">in</span> Model)
+        {
+            &lt;<span class="kw">tr</span>&gt;
+                &lt;<span class="kw">td</span>&gt;<span class="attr">@product</span>.Name&lt;/<span class="kw">td</span>&gt;
+                &lt;<span class="kw">td</span>&gt;<span class="attr">@product</span>.Price.ToString(<span class="str">"C0"</span>)&lt;/<span class="kw">td</span>&gt;
+                &lt;<span class="kw">td</span>&gt;
+                    &lt;<span class="kw">a</span> asp-action=<span class="str">"Details"</span> asp-route-id=<span class="str">"@product.Id"</span>&gt;বিস্তারিত&lt;/<span class="kw">a</span>&gt;
+                &lt;/<span class="kw">td</span>&gt;
+            &lt;/<span class="kw">tr</span>&gt;
+        }
+    &lt;/<span class="kw">tbody</span>&gt;
+&lt;/<span class="kw">table</span>&gt;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: RAZOR SYNTAX -->
+<section id="razor">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Razor <span class="hl">Syntax</span></h2>
+    </div>
+    <p class="section-desc reveal">Razor হলো ASP.NET-এর templating engine। HTML-এর ভেতরে <code>@</code> দিয়ে C# code লেখা যায়।</p>
+
+    <div class="two-col reveal">
+      <div>
+        <h3 style="color:white;margin-bottom:16px;">মূল Syntax</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Razor Syntax</span>
+          </div>
+          <pre><span class="cm">@* এটা Razor comment *@</span>
+
+<span class="cm">@* Variable দেখানো *@</span>
+&lt;p&gt;<span class="attr">@Model</span>.Name&lt;/p&gt;
+&lt;p&gt;<span class="attr">@DateTime</span>.Now.Year&lt;/p&gt;
+
+<span class="cm">@* C# Block *@</span>
+<span class="attr">@{</span>
+    <span class="kw">var</span> greeting = <span class="str">"স্বাগতম"</span>;
+    <span class="kw">int</span> count = <span class="num">5</span>;
+<span class="attr">}</span>
+
+<span class="cm">@* If-Else *@</span>
+<span class="attr">@if</span> (Model.Price &gt; <span class="num">1000</span>)
+{
+    &lt;<span class="kw">span</span> class=<span class="str">"expensive"</span>&gt;দামি পণ্য&lt;/<span class="kw">span</span>&gt;
+}
+<span class="attr">@else</span>
+{
+    &lt;<span class="kw">span</span>&gt;সাশ্রয়ী&lt;/<span class="kw">span</span>&gt;
+}
+
+<span class="cm">@* Loop *@</span>
+<span class="attr">@foreach</span> (<span class="kw">var</span> item <span class="kw">in</span> Model)
+{
+    &lt;<span class="kw">li</span>&gt;<span class="attr">@item</span>.Name&lt;/<span class="kw">li</span>&gt;
+}
+
+<span class="cm">@* For Loop *@</span>
+<span class="attr">@for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++)
+{
+    &lt;<span class="kw">p</span>&gt;Item <span class="attr">@i</span>&lt;/<span class="kw">p</span>&gt;
+}</pre>
+        </div>
+      </div>
+      <div>
+        <h3 style="color:white;margin-bottom:16px;">Tag Helpers (HTML Helpers-এর পরিবর্তে)</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">Razor — Tag Helpers</span>
+          </div>
+          <pre><span class="cm">@* Form তৈরি *@</span>
+&lt;<span class="kw">form</span> asp-controller=<span class="str">"Product"</span> 
+      asp-action=<span class="str">"Create"</span> 
+      method=<span class="str">"post"</span>&gt;
+
+    &lt;<span class="kw">div</span> class=<span class="str">"mb-3"</span>&gt;
+        &lt;<span class="kw">label</span> asp-for=<span class="str">"Name"</span>&gt;&lt;/<span class="kw">label</span>&gt;
+        &lt;<span class="kw">input</span> asp-for=<span class="str">"Name"</span> class=<span class="str">"form-control"</span>/&gt;
+        &lt;<span class="kw">span</span> asp-validation-for=<span class="str">"Name"</span>&gt;&lt;/<span class="kw">span</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+
+    &lt;<span class="kw">div</span> class=<span class="str">"mb-3"</span>&gt;
+        &lt;<span class="kw">label</span> asp-for=<span class="str">"Price"</span>&gt;&lt;/<span class="kw">label</span>&gt;
+        &lt;<span class="kw">input</span> asp-for=<span class="str">"Price"</span> class=<span class="str">"form-control"</span>/&gt;
+        &lt;<span class="kw">span</span> asp-validation-for=<span class="str">"Price"</span>&gt;&lt;/<span class="kw">span</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+
+    &lt;<span class="kw">button</span> type=<span class="str">"submit"</span>&gt;Save&lt;/<span class="kw">button</span>&gt;
+&lt;/<span class="kw">form</span>&gt;
+
+<span class="cm">@* Link তৈরি *@</span>
+&lt;<span class="kw">a</span> asp-controller=<span class="str">"Home"</span> 
+   asp-action=<span class="str">"Index"</span>&gt;Home&lt;/<span class="kw">a</span>&gt;
+
+&lt;<span class="kw">a</span> asp-controller=<span class="str">"Product"</span>
+   asp-action=<span class="str">"Details"</span>
+   asp-route-id=<span class="str">"@item.Id"</span>&gt;
+   বিস্তারিত
+&lt;/<span class="kw">a</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block reveal" style="margin-top:32px;">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Razor — _Layout.cshtml (Shared Layout)</span>
+      </div>
+      <pre>&lt;!DOCTYPE <span class="kw">html</span>&gt;
+&lt;<span class="kw">html</span>&gt;
+&lt;<span class="kw">head</span>&gt;
+    &lt;<span class="kw">title</span>&gt;<span class="attr">@ViewData</span>[<span class="str">"Title"</span>] - আমার অ্যাপ&lt;/<span class="kw">title</span>&gt;
+    &lt;<span class="kw">link</span> rel=<span class="str">"stylesheet"</span> href=<span class="str">"~/lib/bootstrap/css/bootstrap.min.css"</span>/&gt;
+&lt;/<span class="kw">head</span>&gt;
+&lt;<span class="kw">body</span>&gt;
+    &lt;<span class="kw">nav</span> class=<span class="str">"navbar navbar-dark bg-dark"</span>&gt;
+        &lt;<span class="kw">a</span> class=<span class="str">"navbar-brand"</span> asp-controller=<span class="str">"Home"</span> asp-action=<span class="str">"Index"</span>&gt;আমার শপ&lt;/<span class="kw">a</span>&gt;
+    &lt;/<span class="kw">nav</span>&gt;
+    &lt;<span class="kw">main</span> class=<span class="str">"container mt-4"</span>&gt;
+        <span class="attr">@RenderBody</span>()  <span class="cm">@* এখানে প্রতিটি Page-এর content আসবে *@</span>
+    &lt;/<span class="kw">main</span>&gt;
+    &lt;<span class="kw">script</span> src=<span class="str">"~/lib/jquery/dist/jquery.min.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;
+    <span class="attr">@await RenderSectionAsync</span>(<span class="str">"Scripts"</span>, required: <span class="kw">false</span>)
+&lt;/<span class="kw">body</span>&gt;
+&lt;/<span class="kw">html</span>&gt;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: ROUTING -->
+<section id="routing">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Routing <span class="hl">সিস্টেম</span></h2>
+    </div>
+    <p class="section-desc reveal">URL দেখে কোন Controller-এর কোন Action চলবে সেটা Routing decide করে।</p>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr><th>URL Pattern</th><th>Controller</th><th>Action</th><th>Id</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/</code></td><td>Home</td><td>Index</td><td>—</td></tr>
+          <tr><td><code>/Home</code></td><td>Home</td><td>Index</td><td>—</td></tr>
+          <tr><td><code>/Product</code></td><td>Product</td><td>Index</td><td>—</td></tr>
+          <tr><td><code>/Product/Create</code></td><td>Product</td><td>Create</td><td>—</td></tr>
+          <tr><td><code>/Product/Details/5</code></td><td>Product</td><td>Details</td><td>5</td></tr>
+          <tr><td><code>/Product/Edit/3</code></td><td>Product</td><td>Edit</td><td>3</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color:white;margin:32px 0 20px;">Attribute Routing</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Attribute Routing</span>
+      </div>
+      <pre>[<span class="attr">Route</span>(<span class="str">"products"</span>)]
+<span class="kw">public class</span> <span class="type">ProductController</span> : <span class="type">Controller</span>
+{
+    [<span class="attr">Route</span>(<span class="str">""</span>)]          <span class="cm">// /products</span>
+    [<span class="attr">Route</span>(<span class="str">"list"</span>)]     <span class="cm">// /products/list</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Index</span>() => <span class="fn">View</span>();
+
+    [<span class="attr">Route</span>(<span class="str">"{id:int}"</span>)]  <span class="cm">// /products/5</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Details</span>(<span class="kw">int</span> id) => <span class="fn">View</span>();
+
+    [<span class="attr">HttpGet</span>(<span class="str">"create"</span>)]
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Create</span>() => <span class="fn">View</span>();
+
+    [<span class="attr">HttpPost</span>(<span class="str">"create"</span>)]
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Create</span>(<span class="type">Product</span> p) => <span class="fn">RedirectToAction</span>(<span class="str">"Index"</span>);
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: ENTITY FRAMEWORK -->
+<section id="ef">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Entity Framework <span class="hl">Core</span></h2>
+    </div>
+    <p class="section-desc reveal">Entity Framework Core (EF Core) হলো ORM (Object-Relational Mapper)। C# class দিয়ে database table manage করা যায়।</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>NuGet Packages Install করুন</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">Terminal</span>
+            </div>
+            <pre><span class="cm"># SQLite এর জন্য</span>
+dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+<span class="cm"># SQL Server এর জন্য</span>
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>DbContext তৈরি করুন</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">C# — Data/AppDbContext.cs</span>
+            </div>
+            <pre><span class="kw">using</span> Microsoft.EntityFrameworkCore;
+<span class="kw">using</span> MyFirstApp.Models;
+
+<span class="kw">namespace</span> MyFirstApp.Data;
+
+<span class="kw">public class</span> <span class="type">AppDbContext</span> : <span class="type">DbContext</span>
+{
+    <span class="kw">public</span> <span class="fn">AppDbContext</span>(<span class="type">DbContextOptions</span>&lt;<span class="type">AppDbContext</span>&gt; options)
+        : <span class="kw">base</span>(options) { }
+
+    <span class="cm">// প্রতিটি DbSet একটি Database Table</span>
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Product</span>&gt; Products { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Category</span>&gt; Categories { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Connection String সেট করুন</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">JSON — appsettings.json</span>
+            </div>
+            <pre>{
+  <span class="str">"ConnectionStrings"</span>: {
+    <span class="str">"Default"</span>: <span class="str">"Data Source=myapp.db"</span>
+    <span class="cm">// SQL Server হলে:</span>
+    <span class="cm">// "Default": "Server=(localdb)\\mssqllocaldb;Database=MyApp;Trusted_Connection=True"</span>
+  },
+  <span class="str">"Logging"</span>: { ... }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Program.cs-এ Register করুন</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">C# — Program.cs</span>
+            </div>
+            <pre>builder.Services.<span class="fn">AddDbContext</span>&lt;<span class="type">AppDbContext</span>&gt;(options =>
+    options.<span class="fn">UseSqlite</span>(
+        builder.Configuration.<span class="fn">GetConnectionString</span>(<span class="str">"Default"</span>)
+    ));</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h3>Migration চালান</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-lang">Terminal</span>
+            </div>
+            <pre><span class="cm"># প্রথম Migration তৈরি করুন</span>
+dotnet ef migrations add InitialCreate
+
+<span class="cm"># Database-এ Apply করুন (Table তৈরি হবে)</span>
+dotnet ef database update
+
+<span class="cm"># Migration list দেখুন</span>
+dotnet ef migrations list
+
+<span class="cm"># Database ফাইল myapp.db তৈরি হয়ে যাবে!</span></pre>
+          </div>
+          <div class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <div>এখন আপনার <code>Products</code> এবং <code>Categories</code> table তৈরি হয়ে গেছে!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9: CRUD -->
+<section id="crud">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">09</span>
+      <h2 class="section-title">CRUD <span class="hl">Operations</span></h2>
+    </div>
+    <p class="section-desc reveal">Create, Read, Update, Delete — Database-এর চারটি মূল operation। EF Core দিয়ে খুব সহজে করা যায়।</p>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Controllers/ProductController.cs (Full CRUD)</span>
+      </div>
+      <pre><span class="kw">public class</span> <span class="type">ProductController</span> : <span class="type">Controller</span>
+{
+    <span class="kw">private readonly</span> <span class="type">AppDbContext</span> _db;
+
+    <span class="kw">public</span> <span class="fn">ProductController</span>(<span class="type">AppDbContext</span> db)
+    {
+        _db = db; <span class="cm">// Dependency Injection</span>
+    }
+
+    <span class="cm">// ===== READ: সব পণ্য দেখুন =====</span>
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Index</span>()
+    {
+        <span class="kw">var</span> products = <span class="kw">await</span> _db.Products
+            .<span class="fn">OrderByDescending</span>(p => p.CreatedAt)
+            .<span class="fn">ToListAsync</span>();
+        <span class="kw">return</span> <span class="fn">View</span>(products);
+    }
+
+    <span class="cm">// ===== READ: একটি পণ্য দেখুন =====</span>
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Details</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="fn">NotFound</span>();
+        <span class="kw">return</span> <span class="fn">View</span>(product);
+    }
+
+    <span class="cm">// ===== CREATE =====</span>
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Create</span>() => <span class="fn">View</span>();
+
+    [<span class="attr">HttpPost</span>]
+    [<span class="attr">ValidateAntiForgeryToken</span>]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Create</span>(<span class="type">Product</span> product)
+    {
+        <span class="kw">if</span> (!ModelState.IsValid) <span class="kw">return</span> <span class="fn">View</span>(product);
+
+        _db.Products.<span class="fn">Add</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="kw">nameof</span>(Index));
+    }
+
+    <span class="cm">// ===== UPDATE =====</span>
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Edit</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="fn">NotFound</span>();
+        <span class="kw">return</span> <span class="fn">View</span>(product);
+    }
+
+    [<span class="attr">HttpPost</span>]
+    [<span class="attr">ValidateAntiForgeryToken</span>]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Edit</span>(<span class="kw">int</span> id, <span class="type">Product</span> product)
+    {
+        <span class="kw">if</span> (id != product.Id) <span class="kw">return</span> <span class="fn">BadRequest</span>();
+        <span class="kw">if</span> (!ModelState.IsValid) <span class="kw">return</span> <span class="fn">View</span>(product);
+
+        _db.Products.<span class="fn">Update</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="kw">nameof</span>(Index));
+    }
+
+    <span class="cm">// ===== DELETE =====</span>
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Delete</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="fn">NotFound</span>();
+
+        _db.Products.<span class="fn">Remove</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="kw">nameof</span>(Index));
+    }
+}</pre>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">LINQ Query দিয়ে Search ও Filter</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — LINQ Queries</span>
+      </div>
+      <pre><span class="cm">// Search করুন</span>
+<span class="kw">var</span> results = <span class="kw">await</span> _db.Products
+    .<span class="fn">Where</span>(p => p.Name.<span class="fn">Contains</span>(searchTerm))
+    .<span class="fn">ToListAsync</span>();
+
+<span class="cm">// Price অনুযায়ী Sort</span>
+<span class="kw">var</span> sorted = <span class="kw">await</span> _db.Products
+    .<span class="fn">OrderBy</span>(p => p.Price)
+    .<span class="fn">ToListAsync</span>();
+
+<span class="cm">// Price range filter</span>
+<span class="kw">var</span> filtered = <span class="kw">await</span> _db.Products
+    .<span class="fn">Where</span>(p => p.Price >= <span class="num">1000</span> && p.Price <= <span class="num">50000</span>)
+    .<span class="fn">ToListAsync</span>();
+
+<span class="cm">// Pagination (10টি করে)</span>
+<span class="kw">int</span> page = <span class="num">1</span>, size = <span class="num">10</span>;
+<span class="kw">var</span> paged = <span class="kw">await</span> _db.Products
+    .<span class="fn">Skip</span>((page - <span class="num">1</span>) * size)
+    .<span class="fn">Take</span>(size)
+    .<span class="fn">ToListAsync</span>();
+
+<span class="cm">// Include Related Data (JOIN)</span>
+<span class="kw">var</span> withCategory = <span class="kw">await</span> _db.Products
+    .<span class="fn">Include</span>(p => p.Category)
+    .<span class="fn">ToListAsync</span>();</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 10: WEB API -->
+<section id="api">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Web API <span class="hl">তৈরি করুন</span></h2>
+    </div>
+    <p class="section-desc reveal">RESTful API তৈরি করলে Mobile App বা React/Vue frontend connect করা যায়।</p>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Controllers/Api/ProductApiController.cs</span>
+      </div>
+      <pre>[<span class="attr">ApiController</span>]
+[<span class="attr">Route</span>(<span class="str">"api/[controller]"</span>)]
+<span class="kw">public class</span> <span class="type">ProductsController</span> : <span class="type">ControllerBase</span>
+{
+    <span class="kw">private readonly</span> <span class="type">AppDbContext</span> _db;
+    <span class="kw">public</span> <span class="fn">ProductsController</span>(<span class="type">AppDbContext</span> db) => _db = db;
+
+    <span class="cm">// GET /api/products</span>
+    [<span class="attr">HttpGet</span>]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">ActionResult</span>&lt;IEnumerable&lt;<span class="type">Product</span>&gt;&gt;&gt; <span class="fn">GetAll</span>()
+        => <span class="kw">await</span> _db.Products.<span class="fn">ToListAsync</span>();
+
+    <span class="cm">// GET /api/products/5</span>
+    [<span class="attr">HttpGet</span>(<span class="str">"{id}"</span>)]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">ActionResult</span>&lt;<span class="type">Product</span>&gt;&gt; <span class="fn">GetById</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">return</span> product == <span class="kw">null</span> ? <span class="fn">NotFound</span>() : product;
+    }
+
+    <span class="cm">// POST /api/products</span>
+    [<span class="attr">HttpPost</span>]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">ActionResult</span>&lt;<span class="type">Product</span>&gt;&gt; <span class="fn">Create</span>(<span class="type">Product</span> product)
+    {
+        _db.Products.<span class="fn">Add</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">CreatedAtAction</span>(<span class="kw">nameof</span>(GetById), <span class="kw">new</span> { id = product.Id }, product);
+    }
+
+    <span class="cm">// PUT /api/products/5</span>
+    [<span class="attr">HttpPut</span>(<span class="str">"{id}"</span>)]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Update</span>(<span class="kw">int</span> id, <span class="type">Product</span> product)
+    {
+        <span class="kw">if</span> (id != product.Id) <span class="kw">return</span> <span class="fn">BadRequest</span>();
+        _db.<span class="fn">Entry</span>(product).State = EntityState.Modified;
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">NoContent</span>();
+    }
+
+    <span class="cm">// DELETE /api/products/5</span>
+    [<span class="attr">HttpDelete</span>(<span class="str">"{id}"</span>)]
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; <span class="fn">Delete</span>(<span class="kw">int</span> id)
+    {
+        <span class="kw">var</span> product = <span class="kw">await</span> _db.Products.<span class="fn">FindAsync</span>(id);
+        <span class="kw">if</span> (product == <span class="kw">null</span>) <span class="kw">return</span> <span class="fn">NotFound</span>();
+        _db.Products.<span class="fn">Remove</span>(product);
+        <span class="kw">await</span> _db.<span class="fn">SaveChangesAsync</span>();
+        <span class="kw">return</span> <span class="fn">NoContent</span>();
+    }
+}</pre>
+    </div>
+
+    <div class="alert alert-info reveal">
+      <span class="alert-icon">📚</span>
+      <div><strong>Swagger UI:</strong> API test করার জন্য <code>https://localhost:xxxx/swagger</code> visit করুন। Visual Studio দিয়ে create করলে automatically enable থাকে।</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11: AUTH -->
+<section id="auth">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">11</span>
+      <h2 class="section-title">Authentication <span class="hl">& Authorization</span></h2>
+    </div>
+    <p class="section-desc reveal">Login/Register সিস্টেম তৈরি করা। ASP.NET Identity ব্যবহার করে সহজেই করা যায়।</p>
+
+    <h3 style="color:white;margin-bottom:20px;">Identity Setup করুন</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Terminal — NuGet Packages</span>
+      </div>
+      <pre>dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+dotnet add package Microsoft.AspNetCore.Identity.UI</pre>
+    </div>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — DbContext Update + Program.cs</span>
+      </div>
+      <pre><span class="cm">// DbContext: IdentityDbContext ব্যবহার করুন</span>
+<span class="kw">public class</span> <span class="type">AppDbContext</span> : <span class="type">IdentityDbContext</span>&lt;<span class="type">IdentityUser</span>&gt;
+{
+    <span class="kw">public</span> <span class="fn">AppDbContext</span>(<span class="type">DbContextOptions</span>&lt;<span class="type">AppDbContext</span>&gt; options) : <span class="kw">base</span>(options) {}
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Product</span>&gt; Products { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// Program.cs-এ Add করুন</span>
+builder.Services
+    .<span class="fn">AddDefaultIdentity</span>&lt;<span class="type">IdentityUser</span>&gt;(options => {
+        options.Password.RequireDigit = <span class="kw">true</span>;
+        options.Password.RequiredLength = <span class="num">6</span>;
+        options.SignIn.RequireConfirmedEmail = <span class="kw">false</span>;
+    })
+    .<span class="fn">AddEntityFrameworkStores</span>&lt;<span class="type">AppDbContext</span>&gt;();</pre>
+    </div>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — [Authorize] Attribute ব্যবহার</span>
+      </div>
+      <pre><span class="kw">using</span> Microsoft.AspNetCore.Authorization;
+
+<span class="cm">// শুধু Logged-in User ঢুকতে পারবে</span>
+[<span class="attr">Authorize</span>]
+<span class="kw">public class</span> <span class="type">DashboardController</span> : <span class="type">Controller</span>
+{
+    <span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Index</span>() => <span class="fn">View</span>();
+}
+
+<span class="cm">// শুধু Admin role ঢুকতে পারবে</span>
+[<span class="attr">Authorize</span>(Roles = <span class="str">"Admin"</span>)]
+<span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">AdminPanel</span>() => <span class="fn">View</span>();
+
+<span class="cm">// সবাই ঢুকতে পারবে (Anonymous)</span>
+[<span class="attr">AllowAnonymous</span>]
+<span class="kw">public</span> <span class="type">IActionResult</span> <span class="fn">Login</span>() => <span class="fn">View</span>();</pre>
+    </div>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Terminal — Migration চালান</span>
+      </div>
+      <pre>dotnet ef migrations add AddIdentity
+dotnet ef database update</pre>
+    </div>
+
+    <div class="alert alert-success reveal">
+      <span class="alert-icon">🎉</span>
+      <div>এখন <code>/Identity/Account/Register</code> এবং <code>/Identity/Account/Login</code> route automatically তৈরি হয়ে যাবে!</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 12: DEPLOY -->
+<section id="deploy">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">12</span>
+      <h2 class="section-title">Deployment <span class="hl">গাইড</span></h2>
+    </div>
+    <p class="section-desc reveal">App তৈরি হয়ে গেলে সেটা সবার কাছে পৌঁছে দেওয়ার সময়।</p>
+
+    <div class="two-col reveal">
+      <div class="card" style="border-color:#7c3aed55;">
+        <div class="card-icon">☁️</div>
+        <h3>Azure (Microsoft Cloud)</h3>
+        <p>Visual Studio থেকে directly publish করা যায়। App Service, Azure SQL, Storage সব কিছু integrate করা সহজ। Student-দের জন্য ফ্রি tier আছে।</p>
+      </div>
+      <div class="card" style="border-color:#06b6d455;">
+        <div class="card-icon">🟢</div>
+        <h3>Railway / Render (সহজ ও ফ্রি)</h3>
+        <p>GitHub connect করলে auto-deploy হয়। Beginner-দের জন্য সবচেয়ে সহজ। ফ্রি tier-এ ছোট প্রজেক্ট চলে।</p>
+      </div>
+    </div>
+
+    <h3 style="color:white;margin:32px 0 20px;">Publish করার Command</h3>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Terminal</span>
+      </div>
+      <pre><span class="cm"># Production build তৈরি করুন</span>
+dotnet publish -c Release -o ./publish
+
+<span class="cm"># Docker image তৈরি করুন</span>
+docker build -t myapp .
+docker run -p 8080:80 myapp
+
+<span class="cm"># Azure App Service-এ deploy</span>
+az webapp up --name MyAppName --runtime "DOTNET:8"</pre>
+    </div>
+
+    <div class="code-block reveal">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Dockerfile — Docker Deploy</span>
+      </div>
+      <pre><span class="kw">FROM</span> mcr.microsoft.com/dotnet/aspnet:<span class="num">8.0</span> AS base
+<span class="kw">WORKDIR</span> /app
+<span class="kw">EXPOSE</span> <span class="num">80</span>
+
+<span class="kw">FROM</span> mcr.microsoft.com/dotnet/sdk:<span class="num">8.0</span> AS build
+<span class="kw">WORKDIR</span> /src
+<span class="kw">COPY</span> [<span class="str">"MyFirstApp.csproj"</span>, <span class="str">"."</span>]
+<span class="kw">RUN</span> dotnet restore
+<span class="kw">COPY</span> . .
+<span class="kw">RUN</span> dotnet build -c Release -o /app/build
+
+<span class="kw">FROM</span> build AS publish
+<span class="kw">RUN</span> dotnet publish -c Release -o /app/publish
+
+<span class="kw">FROM</span> base AS final
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> --from=publish /app/publish .
+<span class="kw">ENTRYPOINT</span> [<span class="str">"dotnet"</span>, <span class="str">"MyFirstApp.dll"</span>]</pre>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:white;margin-bottom:20px;">🗺️ পরবর্তী পদক্ষেপ</h3>
+    <div class="card-grid reveal">
+      <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>Unit Testing</h3>
+        <p>xUnit বা NUnit দিয়ে code test লিখুন। TDD practice করুন।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📐</div>
+        <h3>Repository Pattern</h3>
+        <p>Code maintainable রাখতে Repository এবং Unit of Work pattern শিখুন।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <h3>Middleware তৈরি</h3>
+        <p>Custom middleware লিখে logging, error handling করুন।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <h3>Caching</h3>
+        <p>Redis বা In-Memory Cache দিয়ে app-কে আরো দ্রুত করুন।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔑</div>
+        <h3>JWT Authentication</h3>
+        <p>API-এর জন্য JSON Web Token দিয়ে stateless auth implement করুন।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h3>CI/CD Pipeline</h3>
+        <p>GitHub Actions দিয়ে automatic build ও deploy setup করুন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">ASP.NET বাংলা</div>
+  <p>তৈরি করা হয়েছে বাংলাদেশের developers-দের জন্য 🇧🇩</p>
+  <p style="margin-top:8px; font-size:13px;">Microsoft Docs · learn.microsoft.com · docs.microsoft.com/aspnet</p>
+</footer>
+
+<script>
+  // Scroll Reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Copy buttons
+  document.querySelectorAll('.code-block').forEach(block => {
+    const header = block.querySelector('.code-header');
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copy';
+    btn.onclick = () => {
+      const code = block.querySelector('pre').innerText;
+      navigator.clipboard.writeText(code);
+      btn.textContent = '✓ copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    };
+    header.appendChild(btn);
+  });
+</script>
+</body>
+</html>

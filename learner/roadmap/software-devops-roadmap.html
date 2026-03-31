@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Engineer + DevOps Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&family=Hind+Siliguri:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #e8e8f0;
+    --muted: #888899;
+    --dim: #555566;
+
+    --purple: #9d7aff;
+    --purple-bg: rgba(157,122,255,0.08);
+    --purple-border: rgba(157,122,255,0.25);
+
+    --teal: #2de6b4;
+    --teal-bg: rgba(45,230,180,0.08);
+    --teal-border: rgba(45,230,180,0.25);
+
+    --blue: #4fa8ff;
+    --blue-bg: rgba(79,168,255,0.08);
+    --blue-border: rgba(79,168,255,0.25);
+
+    --amber: #ffb547;
+    --amber-bg: rgba(255,181,71,0.08);
+    --amber-border: rgba(255,181,71,0.25);
+
+    --coral: #ff7060;
+    --coral-bg: rgba(255,112,96,0.08);
+    --coral-border: rgba(255,112,96,0.25);
+
+    --green: #5ed47a;
+    --green-bg: rgba(94,212,122,0.08);
+    --green-border: rgba(94,212,122,0.25);
+
+    --pink: #ff80c8;
+    --pink-bg: rgba(255,128,200,0.08);
+    --pink-border: rgba(255,128,200,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -300px; left: -300px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(157,122,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(45,230,180,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--teal);
+    background: var(--teal-bg);
+    border: 1px solid var(--teal-border);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #e8e8f0 30%, #9d7aff 70%, #2de6b4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 16px;
+    font-weight: 300;
+  }
+
+  .timeline-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--amber);
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    padding: 6px 16px;
+    border-radius: 100px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); display: inline-block; }
+
+  /* Phase sections */
+  .phase {
+    margin-bottom: 48px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    transition: border-color 0.3s;
+  }
+  .phase:hover { border-color: var(--border-bright); }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+  }
+
+  .phase-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    flex: 1;
+  }
+
+  .phase-duration {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .phase-body {
+    padding: 28px;
+  }
+
+  /* Tech grid */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .tech-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tech-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-bright);
+  }
+
+  .tech-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .tech-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .phase-detail {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    border-left: 2px solid var(--border-bright);
+    padding-left: 16px;
+  }
+
+  /* Color themes per phase */
+  .p1 .phase-header::before { background: var(--purple); }
+  .p1 .phase-num { color: var(--purple); border-color: var(--purple-border); background: var(--purple-bg); }
+  .p1 .tech-card:hover { border-color: var(--purple-border); }
+  .p1 .phase-title { color: var(--purple); }
+
+  .p2 .phase-header::before { background: var(--teal); }
+  .p2 .phase-num { color: var(--teal); border-color: var(--teal-border); background: var(--teal-bg); }
+  .p2 .tech-card:hover { border-color: var(--teal-border); }
+  .p2 .phase-title { color: var(--teal); }
+
+  .p3 .phase-header::before { background: var(--blue); }
+  .p3 .phase-num { color: var(--blue); border-color: var(--blue-border); background: var(--blue-bg); }
+  .p3 .tech-card:hover { border-color: var(--blue-border); }
+  .p3 .phase-title { color: var(--blue); }
+
+  .p4 .phase-header::before { background: var(--amber); }
+  .p4 .phase-num { color: var(--amber); border-color: var(--amber-border); background: var(--amber-bg); }
+  .p4 .tech-card:hover { border-color: var(--amber-border); }
+  .p4 .phase-title { color: var(--amber); }
+
+  .p5 .phase-header::before { background: var(--coral); }
+  .p5 .phase-num { color: var(--coral); border-color: var(--coral-border); background: var(--coral-bg); }
+  .p5 .tech-card:hover { border-color: var(--coral-border); }
+  .p5 .phase-title { color: var(--coral); }
+
+  .p6 .phase-header::before { background: var(--green); }
+  .p6 .phase-num { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+  .p6 .tech-card:hover { border-color: var(--green-border); }
+  .p6 .phase-title { color: var(--green); }
+
+  .p7 .phase-header::before { background: var(--pink); }
+  .p7 .phase-num { color: var(--pink); border-color: var(--pink-border); background: var(--pink-bg); }
+  .p7 .tech-card:hover { border-color: var(--pink-border); }
+  .p7 .phase-title { color: var(--pink); }
+
+  /* Resources section */
+  .resources {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+  }
+
+  .resources h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: var(--blue);
+  }
+
+  .res-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .res-table th {
+    text-align: left;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .res-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .res-table tr:last-child td { border-bottom: none; }
+  .res-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .res-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--purple-bg);
+    color: var(--purple);
+    border: 1px solid var(--purple-border);
+  }
+
+  /* Career path */
+  .career {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+  }
+
+  .career h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 24px;
+    color: var(--teal);
+  }
+
+  .career-path {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .career-node {
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .career-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    margin: 0 6px;
+  }
+
+  .career-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .career-arrow {
+    color: var(--dim);
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-bottom: 20px;
+  }
+
+  /* Tips section */
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .tip-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .tip-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .tip-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .tip-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Vertical connector between phases */
+  .connector {
+    display: flex;
+    justify-content: center;
+    margin: -8px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .connector::before {
+    content: '';
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--border-bright), var(--border));
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .phase-header { flex-wrap: wrap; gap: 10px; }
+    .career-path { flex-direction: column; align-items: stretch; }
+    .career-arrow { transform: rotate(90deg); margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <header>
+    <div class="badge">Complete Roadmap 2024–2025</div>
+    <h1>Software Engineer<br>+ DevOps Roadmap</h1>
+    <p class="subtitle">একজন Professional Software Engineer ও DevOps Engineer হওয়ার সম্পূর্ণ গাইড — বাংলায়</p>
+    <div class="timeline-badge"><span class="dot"></span> মোট সময়: ১৮–২৪ মাস · প্রতিদিন ৩–৫ ঘণ্টা</div>
+  </header>
+
+  <!-- PHASE 1 -->
+  <div class="phase p1">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 01</span>
+      <span class="phase-title">ভিত্তি — Foundation</span>
+      <span class="phase-duration">৩–৬ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">Computer Science</div>
+          <div class="tech-desc">DSA (Array, LinkedList, Tree, Graph), Big-O Complexity, OS (Process, Thread, Memory)</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Networking Basics</div>
+          <div class="tech-desc">TCP/IP, HTTP/HTTPS, DNS, OSI Model — DevOps-এর জন্য অপরিহার্য</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Git & GitHub</div>
+          <div class="tech-desc">commit, branch, merge, rebase, Pull Request, conflict resolve</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Linux & Terminal</div>
+          <div class="tech-desc">ls, cd, grep, awk, sed, chmod, ssh, process management (ps, kill, top)</div>
+        </div>
+      </div>
+      <p class="phase-detail">এই ভিত্তি ছাড়া উপরের কোনো কিছুই সঠিকভাবে বোঝা যাবে না। Linux প্রতিদিন ব্যবহার করো — WSL2 বা Ubuntu VM ব্যবহার করতে পারো।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 2 -->
+  <div class="phase p2">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 02</span>
+      <span class="phase-title">প্রোগ্রামিং ভাষা</span>
+      <span class="phase-duration">৩–৬ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">Python ⭐</div>
+          <div class="tech-desc">Backend + DevOps automation-এ সবচেয়ে বেশি ব্যবহৃত। OOP, file handling, pip, venv</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">JavaScript / Node.js</div>
+          <div class="tech-desc">Frontend ও Backend দুটোতেই। async/await, Promise, Express.js</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Go (Golang)</div>
+          <div class="tech-desc">Modern DevOps tools (Docker, K8s) এর ভাষা। Fast, compiled, concurrent</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Bash Scripting</div>
+          <div class="tech-desc">Automation-এর জন্য অপরিহার্য। if/else, loops, functions, cron jobs</div>
+        </div>
+      </div>
+      <p class="phase-detail">Python দিয়ে শুরু করো — এটা সবচেয়ে সহজ এবং DevOps-এ সবচেয়ে বেশি কাজে লাগে। তারপর JavaScript শেখো।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 3 -->
+  <div class="phase p3">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 03</span>
+      <span class="phase-title">Web & Backend Development</span>
+      <span class="phase-duration">৪–৮ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">HTML / CSS / React</div>
+          <div class="tech-desc">Frontend basics + React component model, hooks, state management</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">REST API / GraphQL</div>
+          <div class="tech-desc">HTTP methods (GET, POST, PUT, DELETE), JWT Auth, OAuth2, API versioning</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">PostgreSQL / MySQL</div>
+          <div class="tech-desc">Relational DB, SQL queries, indexing, joins, transactions, migrations</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">MongoDB</div>
+          <div class="tech-desc">NoSQL database, documents, collections, aggregation pipeline</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Django / FastAPI</div>
+          <div class="tech-desc">Python backend frameworks — Django (batteries included), FastAPI (async, fast)</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Node.js / Express</div>
+          <div class="tech-desc">JavaScript backend — middleware, routing, ORM (Prisma/Sequelize)</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Redis</div>
+          <div class="tech-desc">In-memory caching, session store, pub/sub messaging, rate limiting</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Spring Boot (Java)</div>
+          <div class="tech-desc">Enterprise-grade backend framework — বড় কোম্পানিতে বেশি ব্যবহৃত</div>
+        </div>
+      </div>
+      <p class="phase-detail">প্রতিটি ফ্রেমওয়ার্ক দিয়ে কমপক্ষে ১টি real project বানাও। GitHub-এ রাখো — এটাই তোমার portfolio।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 4 -->
+  <div class="phase p4">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 04</span>
+      <span class="phase-title">⭐ DevOps Core — সবচেয়ে গুরুত্বপূর্ণ</span>
+      <span class="phase-duration">৪–৮ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">Docker ⭐</div>
+          <div class="tech-desc">Container, Dockerfile, docker build/run, docker-compose, volume, network, registry</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Kubernetes (K8s) ⭐</div>
+          <div class="tech-desc">Pod, Deployment, Service, Ingress, ConfigMap, Secret, HPA, Helm Charts, Namespace</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">GitHub Actions</div>
+          <div class="tech-desc">CI/CD pipeline — auto test, build, deploy on push. YAML workflows, secrets</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Jenkins</div>
+          <div class="tech-desc">Enterprise CI/CD — Jenkinsfile, pipeline stages, agents, plugins</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Terraform ⭐</div>
+          <div class="tech-desc">Infrastructure as Code — init, plan, apply, destroy. AWS resources via code</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Ansible</div>
+          <div class="tech-desc">Configuration management — playbooks, roles, inventory, idempotent automation</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Nginx</div>
+          <div class="tech-desc">Web server, reverse proxy, load balancer, SSL termination, rate limiting</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">GitLab CI / ArgoCD</div>
+          <div class="tech-desc">Alternative CI/CD tools — GitOps approach with ArgoCD for K8s deployments</div>
+        </div>
+      </div>
+      <p class="phase-detail">Docker দিয়ে শুরু করো → তারপর Kubernetes → তারপর CI/CD। Terraform শেখো AWS-এর সাথে। এই চারটা জানলেই DevOps job পাওয়া অনেক সহজ হয়ে যায়।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 5 -->
+  <div class="phase p5">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 05</span>
+      <span class="phase-title">Cloud Platform</span>
+      <span class="phase-duration">৩–৬ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">AWS ⭐</div>
+          <div class="tech-desc">EC2, S3, RDS, Lambda, VPC, IAM, EKS, ECR, CloudFront, Route53, CloudWatch</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Google Cloud (GCP)</div>
+          <div class="tech-desc">GKE, Cloud Run, BigQuery, Cloud Storage, Cloud SQL — alternative to AWS</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Microsoft Azure</div>
+          <div class="tech-desc">AKS, Azure DevOps, Blob Storage — enterprise sector-এ বেশি ব্যবহৃত</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Serverless</div>
+          <div class="tech-desc">AWS Lambda, Cloud Functions — event-driven, pay-per-execution architecture</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">AWS Networking</div>
+          <div class="tech-desc">VPC, Subnet, Security Group, NAT Gateway, Internet Gateway, Route Tables</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">AWS Certification</div>
+          <div class="tech-desc">Cloud Practitioner → Solutions Architect Associate → DevOps Professional</div>
+        </div>
+      </div>
+      <p class="phase-detail">AWS দিয়ে শুরু করো — চাকরির বাজারে সবচেয়ে বেশি demand। AWS Free Tier ব্যবহার করে হাতে-কলমে শেখো। Certification পেলে salary ও সুযোগ দুটোই বাড়ে।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 6 -->
+  <div class="phase p6">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 06</span>
+      <span class="phase-title">Monitoring & Security</span>
+      <span class="phase-duration">২–৪ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">Prometheus</div>
+          <div class="tech-desc">Metrics collection, alerting rules, PromQL queries, exporters</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Grafana</div>
+          <div class="tech-desc">Beautiful dashboards, data source integration, alerting, panels</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">ELK Stack</div>
+          <div class="tech-desc">Elasticsearch (search), Logstash (collect), Kibana (visualize) — log management</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Jaeger / Zipkin</div>
+          <div class="tech-desc">Distributed tracing — microservices-এ request flow track করা</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">DevSecOps</div>
+          <div class="tech-desc">SAST (static analysis), DAST (dynamic), container scanning, dependency audit</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">HashiCorp Vault</div>
+          <div class="tech-desc">Secret management — API keys, passwords, certificates সুরক্ষিত রাখা</div>
+        </div>
+      </div>
+      <p class="phase-detail">Production system monitor না করলে সমস্যা আগে বোঝা যায় না। Prometheus + Grafana combo সবচেয়ে বেশি ব্যবহৃত — এটা দিয়ে শুরু করো।</p>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- PHASE 7 -->
+  <div class="phase p7">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 07</span>
+      <span class="phase-title">Advanced Topics</span>
+      <span class="phase-duration">৩–৬ মাস</span>
+    </div>
+    <div class="phase-body">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-name">Microservices</div>
+          <div class="tech-desc">Design patterns, API Gateway (Kong), service discovery, inter-service communication</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Apache Kafka</div>
+          <div class="tech-desc">Event streaming, topics, producers, consumers, partitions — high throughput systems</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">RabbitMQ</div>
+          <div class="tech-desc">Message queuing, exchanges, routing keys, dead letter queues — task processing</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">System Design</div>
+          <div class="tech-desc">HLD/LLD, CAP theorem, database sharding, caching strategy, rate limiting, CDN</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">GitOps / ArgoCD</div>
+          <div class="tech-desc">Git as single source of truth — declarative Kubernetes deployments, sync policies</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Service Mesh (Istio)</div>
+          <div class="tech-desc">Traffic management, mTLS, circuit breaking, observability between microservices</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Testing Strategy</div>
+          <div class="tech-desc">Unit, Integration, E2E (Playwright/Cypress), Load testing (k6, Locust), TDD</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-name">Platform Engineering</div>
+          <div class="tech-desc">Internal developer platform (IDP), golden paths, self-service infrastructure</div>
+        </div>
+      </div>
+      <p class="phase-detail">এই পর্যায়ে real distributed systems বানাও। System Design interview-এর জন্য Gaurav Sen ও Alex Xu-এর বই পড়ো। এই level-এ পৌঁছালে Senior Engineer হিসেবে গণ্য হবে।</p>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="resources" style="margin-top: 60px;">
+    <h2>📚 শেখার Resources (বেশিরভাগ Free)</h2>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>বিষয়</th>
+          <th>Resource</th>
+          <th>ধরন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Python</td>
+          <td>CS50P (Harvard), freeCodeCamp, Real Python</td>
+          <td><span class="res-tag">Free</span></td>
+        </tr>
+        <tr>
+          <td>Linux</td>
+          <td>The Odin Project, Linux Journey, TryHackMe</td>
+          <td><span class="res-tag">Free</span></td>
+        </tr>
+        <tr>
+          <td>Docker & K8s</td>
+          <td>TechWorld with Nana (YouTube), KodeKloud, Mumshad Mannambeth</td>
+          <td><span class="res-tag">Free/Paid</span></td>
+        </tr>
+        <tr>
+          <td>AWS</td>
+          <td>AWS Free Tier, Adrian Cantrill, Stephane Maarek (Udemy)</td>
+          <td><span class="res-tag">Free/Paid</span></td>
+        </tr>
+        <tr>
+          <td>DevOps Roadmap</td>
+          <td>roadmap.sh/devops — সবচেয়ে ভালো visual guide</td>
+          <td><span class="res-tag">Free</span></td>
+        </tr>
+        <tr>
+          <td>System Design</td>
+          <td>Gaurav Sen (YouTube), "Designing Data-Intensive Applications" (Alex Xu)</td>
+          <td><span class="res-tag">Free/Book</span></td>
+        </tr>
+        <tr>
+          <td>DSA / Algorithms</td>
+          <td>LeetCode, NeetCode.io, Abdul Bari (YouTube)</td>
+          <td><span class="res-tag">Free</span></td>
+        </tr>
+        <tr>
+          <td>Git</td>
+          <td>Pro Git Book (free online), GitHub Skills, Atlassian tutorials</td>
+          <td><span class="res-tag">Free</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Career Path -->
+  <div class="career">
+    <h2>🚀 Career Path</h2>
+    <div class="career-path">
+      <div class="career-node">
+        <div class="career-box" style="border-color: var(--purple-border); color: var(--purple);">Junior Dev</div>
+        <div class="career-label">0–1 বছর</div>
+      </div>
+      <div class="career-arrow">→</div>
+      <div class="career-node">
+        <div class="career-box" style="border-color: var(--teal-border); color: var(--teal);">Mid-Level</div>
+        <div class="career-label">1–3 বছর</div>
+      </div>
+      <div class="career-arrow">→</div>
+      <div class="career-node">
+        <div class="career-box" style="border-color: var(--blue-border); color: var(--blue);">Senior Dev</div>
+        <div class="career-label">3–5 বছর</div>
+      </div>
+      <div class="career-arrow">→</div>
+      <div class="career-node">
+        <div class="career-box" style="border-color: var(--amber-border); color: var(--amber);">DevOps Eng.</div>
+        <div class="career-label">+২ বছর DevOps</div>
+      </div>
+      <div class="career-arrow">→</div>
+      <div class="career-node">
+        <div class="career-box" style="border-color: var(--coral-border); color: var(--coral);">Tech Lead</div>
+        <div class="career-label">৫+ বছর</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips">
+    <div class="tip-card">
+      <span class="tip-icon">💡</span>
+      <div class="tip-title">প্রতিদিন Build করো</div>
+      <div class="tip-text">Tutorial দেখে শেষ করলেই হবে না — নিজে কিছু বানাও। প্রতিটি Phase শেষে একটা real project করো এবং GitHub-এ রাখো।</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🏆</span>
+      <div class="tip-title">Certification নাও</div>
+      <div class="tip-text">AWS Cloud Practitioner → Solutions Architect এই দুটো certification থাকলে চাকরির বাজারে অনেক এগিয়ে থাকবে।</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🤝</span>
+      <div class="tip-title">Open Source Contribute করো</div>
+      <div class="tip-text">GitHub-এ open source projects-এ contribute করো। এটা তোমার profile কে আলাদা করে তোলে।</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">📝</span>
+      <div class="tip-title">Blog লেখো</div>
+      <div class="tip-text">তুমি যা শিখছো সেটা নিয়ে Hashnode বা Dev.to-তে লেখো। এটা networking ও personal brand দুটোই বাড়ায়।</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🌐</span>
+      <div class="tip-title">Remote Job টার্গেট করো</div>
+      <div class="tip-text">AWS + Docker + Python + Kubernetes এই combination দিয়ে Remote job পাওয়া অনেক সহজ হয়ে যায়।</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">⚡</span>
+      <div class="tip-title">Consistency সবচেয়ে গুরুত্বপূর্ণ</div>
+      <div class="tip-text">প্রতিদিন ৩–৫ ঘণ্টা নিয়মিত শিখলে ১৮–২৪ মাসে Professional হওয়া সম্ভব। বিরতি দিলে progress থামে।</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Software Engineer + DevOps Roadmap · বাংলায় · ২০২৪–২০২৫</p>
+    <p style="margin-top: 8px; font-size: 11px;">roadmap.sh/devops · aws.amazon.com/training · kubernetes.io/docs</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React JS বাংলা ক্র্যাশ কোর্স</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #38bdf8;
+    --accent2: #f472b6;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --code-bg: #0d1117;
+    --js-color: #fbbf24;
+    --react-color: #38bdf8;
+    --es6-tag: #a78bfa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 40%, #1a0533 100%);
+    padding: 60px 20px 50px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 50% 50%, rgba(56,189,248,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent2), var(--es6-tag));
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(28px, 6vw, 58px);
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  header p {
+    color: var(--muted);
+    font-size: clamp(14px, 2.5vw, 18px);
+    max-width: 600px;
+    margin: 0 auto 28px;
+  }
+  .header-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tag {
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .tag-react { color: var(--react-color); border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.07); }
+  .tag-js { color: var(--js-color); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+  .tag-es6 { color: var(--es6-tag); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.07); }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  nav::-webkit-scrollbar { height: 3px; }
+  nav::-webkit-scrollbar-track { background: var(--surface); }
+  nav::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+  .nav-inner {
+    display: inline-flex;
+    gap: 0;
+    min-width: max-content;
+  }
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 16px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  nav a .num { font-family: 'Fira Code', monospace; color: var(--accent2); font-size: 11px; }
+
+  /* MAIN */
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 60px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 22px 28px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .section-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    background: rgba(244,114,182,0.1);
+    padding: 3px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(244,114,182,0.2);
+  }
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(17px, 3vw, 22px);
+    font-weight: 700;
+    color: #fff;
+    flex: 1;
+  }
+  .section-body { padding: 28px; }
+
+  /* CONCEPT CARD */
+  .concept {
+    background: rgba(56,189,248,0.05);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .concept p { color: var(--text); font-size: 15px; }
+
+  /* COMPARISON TABLE */
+  .compare-wrap { overflow-x: auto; margin: 20px 0; }
+  .compare-table {
+    width: 100%;
+    min-width: 500px;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .compare-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  .compare-table th.js-col { background: rgba(251,191,36,0.12); color: var(--js-color); }
+  .compare-table th.react-col { background: rgba(56,189,248,0.12); color: var(--react-color); }
+  .compare-table th.desc-col { background: var(--surface2); color: var(--muted); }
+  .compare-table td {
+    padding: 11px 16px;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* CODE BLOCKS */
+  .code-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  @media(max-width: 640px) {
+    .code-split { grid-template-columns: 1fr; }
+  }
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .code-label {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-label.js { background: rgba(251,191,36,0.1); color: var(--js-color); border-bottom: 1px solid rgba(251,191,36,0.2); }
+  .code-label.react { background: rgba(56,189,248,0.1); color: var(--react-color); border-bottom: 1px solid rgba(56,189,248,0.2); }
+  .code-label.es6 { background: rgba(167,139,250,0.1); color: var(--es6-tag); border-bottom: 1px solid rgba(167,139,250,0.2); }
+  .code-label.green { background: rgba(52,211,153,0.1); color: var(--accent3); border-bottom: 1px solid rgba(52,211,153,0.2); }
+  .code-label .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .code-label.js .dot { background: var(--js-color); }
+  .code-label.react .dot { background: var(--react-color); }
+  .code-label.es6 .dot { background: var(--es6-tag); }
+  .code-label.green .dot { background: var(--accent3); }
+  pre {
+    padding: 18px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: #e2e8f0;
+  }
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Syntax highlight */
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .tag-c { color: #f07178; }
+  .attr { color: #ffcb6b; }
+  .jsx { color: #89ddff; }
+  .hook { color: #f472b6; }
+
+  /* INFO CALLOUT */
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout.info { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); }
+  .callout.warn { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); }
+  .callout.tip { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); }
+  .callout.danger { background: rgba(244,114,182,0.08); border: 1px solid rgba(244,114,182,0.25); }
+
+  /* STEP LIST */
+  .steps { margin: 18px 0; }
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Fira Code', monospace;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0a0e1a;
+    margin-top: 2px;
+  }
+  .step p { font-size: 15px; }
+
+  /* LIFECYCLE TABLE */
+  .lifecycle {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .lifecycle-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .lifecycle-card .phase {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .lifecycle-card.mount .phase { color: var(--accent3); }
+  .lifecycle-card.update .phase { color: var(--accent); }
+  .lifecycle-card.unmount .phase { color: var(--accent2); }
+  .lifecycle-card .method {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* HOOK GRID */
+  .hook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .hook-card {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .hook-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .hook-card .hook-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hook);
+    margin-bottom: 6px;
+    color: #f472b6;
+  }
+  .hook-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* SINGLE CODE BLOCK */
+  .single-code { margin: 20px 0; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    z-index: 999;
+    transition: width 0.1s;
+    width: 0%;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+  footer span { color: var(--accent2); }
+
+  /* Inline code */
+  code {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    background: rgba(56,189,248,0.1);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* Back to top */
+  #back-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0a0e1a;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 4px 20px rgba(56,189,248,0.3);
+    z-index: 200;
+    transition: transform 0.2s;
+  }
+  #back-top:hover { transform: scale(1.1); }
+  #back-top.show { display: flex; }
+
+  h3 { font-family: 'Sora', sans-serif; font-size: 17px; color: var(--accent3); margin: 24px 0 10px; }
+  p { margin-bottom: 10px; color: var(--text); font-size: 15px; }
+  ul { margin: 10px 0 10px 22px; }
+  ul li { margin-bottom: 5px; font-size: 14px; color: var(--text); }
+
+  @media(max-width: 480px) {
+    .section-body { padding: 18px; }
+    .section-header { padding: 16px 18px; }
+    pre { font-size: 12px; padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- HEADER -->
+<header>
+  <div class="header-badge">সম্পূর্ণ বাংলায়</div>
+  <h1>React JS ক্র্যাশ কোর্স</h1>
+  <p>ES6+ JavaScript তুলনাসহ — শূন্য থেকে দক্ষ পর্যন্ত সম্পূর্ণ গাইড</p>
+  <div class="header-tags">
+    <span class="tag tag-react">⚛️ React 18</span>
+    <span class="tag tag-js">🟨 JavaScript ES6+</span>
+    <span class="tag tag-es6">✦ Hooks & Components</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#s1"><span class="num">01</span> React কি?</a>
+    <a href="#s2"><span class="num">02</span> ES6 vs React</a>
+    <a href="#s3"><span class="num">03</span> JSX</a>
+    <a href="#s4"><span class="num">04</span> Components</a>
+    <a href="#s5"><span class="num">05</span> Props</a>
+    <a href="#s6"><span class="num">06</span> State & useState</a>
+    <a href="#s7"><span class="num">07</span> useEffect</a>
+    <a href="#s8"><span class="num">08</span> Events</a>
+    <a href="#s9"><span class="num">09</span> Lists & Keys</a>
+    <a href="#s10"><span class="num">10</span> Conditional Render</a>
+    <a href="#s11"><span class="num">11</span> Forms</a>
+    <a href="#s12"><span class="num">12</span> Hooks গাইড</a>
+    <a href="#s13"><span class="num">13</span> Project Setup</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- SECTION 1: React কি -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">React JS কি এবং কেন শিখবো?</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p>React হলো Facebook (Meta) এর তৈরি একটি <strong>JavaScript Library</strong> যা দিয়ে আমরা দ্রুত ও সুন্দর <strong>UI (User Interface)</strong> তৈরি করতে পারি। এটি Component-Based Architecture ব্যবহার করে।</p>
+    </div>
+
+    <h3>🔑 React এর মূল বৈশিষ্ট্য</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><p><strong>Component-Based:</strong> পুরো UI কে ছোট ছোট অংশে ভাগ করা হয় (যেমন: Header, Button, Card)</p></div>
+      <div class="step"><div class="step-num">2</div><p><strong>Virtual DOM:</strong> React একটি Virtual DOM রাখে, শুধু পরিবর্তিত অংশটুকু আপডেট করে — তাই দ্রুত</p></div>
+      <div class="step"><div class="step-num">3</div><p><strong>Unidirectional Data Flow:</strong> Data সবসময় Parent থেকে Child এ যায়</p></div>
+      <div class="step"><div class="step-num">4</div><p><strong>Declarative:</strong> "কিভাবে করবো" না বলে "কি দেখাতে চাই" বলি</p></div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">💡</span>
+      <div><strong>সহজ কথায়:</strong> ধরো তোমার একটা বড় ওয়েবসাইট আছে। React দিয়ে সেটাকে ছোট ছোট Lego ব্লকের মতো তৈরি করা যায়। প্রতিটি Block হলো একটি Component।</div>
+    </div>
+
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <tr>
+          <th class="desc-col">বিষয়</th>
+          <th class="js-col">🟨 Plain JavaScript</th>
+          <th class="react-col">⚛️ React</th>
+        </tr>
+        <tr><td>DOM Update</td><td>নিজে manually করতে হয়</td><td>React নিজেই করে</td></tr>
+        <tr><td>কোড Structure</td><td>Spaghetti code হয়ে যায়</td><td>Clean, Component-based</td></tr>
+        <tr><td>Reusability</td><td>কঠিন</td><td>খুব সহজ</td></tr>
+        <tr><td>State Management</td><td>নিজে track করতে হয়</td><td>useState দিয়ে সহজেই</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: ES6 vs React -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">ES6+ JavaScript — React এর ভিত্তি</span>
+  </div>
+  <div class="section-body">
+    <p>React বোঝার আগে এই ES6 ফিচারগুলো জানা <strong>আবশ্যক</strong>।</p>
+
+    <!-- let/const -->
+    <h3>① let & const (var এর পরিবর্তে)</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>পুরনো JavaScript (var)</div>
+        <pre><span class="cmt">// var এর সমস্যা: Function scoped</span>
+<span class="kw">var</span> name = <span class="str">"রাহিম"</span>;
+<span class="kw">var</span> name = <span class="str">"করিম"</span>; <span class="cmt">// সমস্যা নেই!</span>
+<span class="fn">console</span>.log(name); <span class="cmt">// "করিম"</span>
+
+<span class="kw">for</span> (<span class="kw">var</span> i = <span class="num">0</span>; i &lt; <span class="num">3</span>; i++) {
+  <span class="fn">setTimeout</span>(() =&gt; {
+    <span class="fn">console</span>.log(i); <span class="cmt">// 3,3,3 (bug!)</span>
+  }, <span class="num">100</span>);
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>ES6 (let & const) — React এ এটাই ব্যবহার</div>
+        <pre><span class="cmt">// const — পরিবর্তন করা যাবে না</span>
+<span class="kw">const</span> name = <span class="str">"রাহিম"</span>;
+<span class="cmt">// name = "করিম"; // Error!</span>
+
+<span class="cmt">// let — Block scoped</span>
+<span class="kw">let</span> age = <span class="num">25</span>;
+age = <span class="num">26</span>; <span class="cmt">// ঠিক আছে</span>
+
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">3</span>; i++) {
+  <span class="fn">setTimeout</span>(() =&gt; {
+    <span class="fn">console</span>.log(i); <span class="cmt">// 0,1,2 (সঠিক!)</span>
+  }, <span class="num">100</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- Arrow Functions -->
+    <h3>② Arrow Functions (React এ সবখানে দেখবে)</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>পুরনো Function</div>
+        <pre><span class="kw">function</span> <span class="fn">add</span>(a, b) {
+  <span class="kw">return</span> a + b;
+}
+
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+  <span class="kw">return</span> <span class="str">"হ্যালো " </span>+ name;
+}
+
+<span class="cmt">// this এর সমস্যা</span>
+<span class="kw">const</span> obj = {
+  name: <span class="str">"React"</span>,
+  show: <span class="kw">function</span>() {
+    <span class="fn">setTimeout</span>(<span class="kw">function</span>() {
+      <span class="fn">console</span>.log(<span class="kw">this</span>.name); <span class="cmt">// undefined!</span>
+    }, <span class="num">100</span>);
+  }
+};</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>Arrow Function — React এ এটাই</div>
+        <pre><span class="cmt">// সংক্ষিপ্ত রূপ</span>
+<span class="kw">const</span> <span class="fn">add</span> = (a, b) =&gt; a + b;
+
+<span class="kw">const</span> <span class="fn">greet</span> = <span class="fn">name</span> =&gt; <span class="str">`হ্যালো ${name}`</span>;
+
+<span class="cmt">// this সমস্যা নেই</span>
+<span class="kw">const</span> obj = {
+  name: <span class="str">"React"</span>,
+  show() {
+    <span class="fn">setTimeout</span>(() =&gt; {
+      <span class="fn">console</span>.log(<span class="kw">this</span>.name); <span class="cmt">// "React" ✓</span>
+    }, <span class="num">100</span>);
+  }
+};
+
+<span class="cmt">// React Component এ ব্যবহার</span>
+<span class="kw">const</span> <span class="fn">Button</span> = () =&gt; &lt;<span class="tag-c">button</span>&gt;Click&lt;/<span class="tag-c">button</span>&gt;;</pre>
+      </div>
+    </div>
+
+    <!-- Destructuring -->
+    <h3>③ Destructuring (React Props এ অবশ্যই লাগবে)</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>পুরনো উপায়</div>
+        <pre><span class="kw">const</span> user = { 
+  name: <span class="str">"রাহিম"</span>, 
+  age: <span class="num">25</span>, 
+  city: <span class="str">"ঢাকা"</span> 
+};
+
+<span class="kw">const</span> name = user.name;
+<span class="kw">const</span> age = user.age;
+<span class="kw">const</span> city = user.city;
+
+<span class="cmt">// Array</span>
+<span class="kw">const</span> arr = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>];
+<span class="kw">const</span> first = arr[<span class="num">0</span>];
+<span class="kw">const</span> second = arr[<span class="num">1</span>];</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>ES6 Destructuring</div>
+        <pre><span class="kw">const</span> user = { 
+  name: <span class="str">"রাহিম"</span>, 
+  age: <span class="num">25</span>, 
+  city: <span class="str">"ঢাকা"</span> 
+};
+
+<span class="cmt">// Object Destructuring</span>
+<span class="kw">const</span> { name, age, city } = user;
+
+<span class="cmt">// Array Destructuring — useState এ এটাই!</span>
+<span class="kw">const</span> [first, second] = [<span class="num">10</span>, <span class="num">20</span>];
+
+<span class="cmt">// React useState তে ঠিক এভাবেই:</span>
+<span class="kw">const</span> [<span class="fn">count</span>, <span class="fn">setCount</span>] = <span class="fn">useState</span>(<span class="num">0</span>);</pre>
+      </div>
+    </div>
+
+    <!-- Spread & Rest -->
+    <h3>④ Spread Operator (...) — React State Update এ অপরিহার্য</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>পুরনো উপায়</div>
+        <pre><span class="kw">const</span> user = { name: <span class="str">"রাহিম"</span>, age: <span class="num">25</span> };
+
+<span class="cmt">// Object Copy</span>
+<span class="kw">const</span> newUser = <span class="fn">Object</span>.<span class="fn">assign</span>({}, user);
+newUser.city = <span class="str">"ঢাকা"</span>;
+
+<span class="cmt">// Array Merge</span>
+<span class="kw">const</span> a = [<span class="num">1</span>, <span class="num">2</span>];
+<span class="kw">const</span> b = [<span class="num">3</span>, <span class="num">4</span>];
+<span class="kw">const</span> c = a.concat(b);</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>Spread Operator — React তে এটাই ব্যবহার হয়</div>
+        <pre><span class="kw">const</span> user = { name: <span class="str">"রাহিম"</span>, age: <span class="num">25</span> };
+
+<span class="cmt">// Object Spread — React state update</span>
+<span class="kw">const</span> newUser = { ...user, city: <span class="str">"ঢাকা"</span> };
+
+<span class="cmt">// React তে State Update এভাবে:</span>
+<span class="fn">setUser</span>({ ...<span class="fn">user</span>, age: <span class="num">26</span> }); <span class="cmt">// নতুন object</span>
+
+<span class="cmt">// Array Spread — List state তে</span>
+<span class="kw">const</span> c = [...a, ...b]; <span class="cmt">// [1,2,3,4]</span>
+
+<span class="cmt">// নতুন item যোগ করতে:</span>
+<span class="fn">setItems</span>([...<span class="fn">items</span>, newItem]);</pre>
+      </div>
+    </div>
+
+    <!-- Template Literals -->
+    <h3>⑤ Template Literals & Array Methods</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>Template Literals</div>
+        <pre><span class="kw">const</span> name = <span class="str">"রাহিম"</span>;
+<span class="kw">const</span> age = <span class="num">25</span>;
+
+<span class="cmt">// পুরনো উপায়</span>
+<span class="kw">const</span> msg1 = <span class="str">"নাম: " </span>+ name + <span class="str">", বয়স: " </span>+ age;
+
+<span class="cmt">// Template Literal (backtick ব্যবহার)</span>
+<span class="kw">const</span> msg2 = <span class="str">`নাম: ${name}, বয়স: ${age}`</span>;
+
+<span class="cmt">// Expression ও লেখা যায়</span>
+<span class="kw">const</span> info = <span class="str">`${name} এর বয়স ${age &gt; 18 ? <span class="str">"প্রাপ্তবয়স্ক"</span> : <span class="str">"অপ্রাপ্তবয়স্ক"</span>}`</span>;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>Array Methods — React List Render এ</div>
+        <pre><span class="kw">const</span> numbers = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>];
+
+<span class="cmt">// map — প্রতিটি item transform করে</span>
+<span class="kw">const</span> doubled = numbers.<span class="fn">map</span>(n =&gt; n * <span class="num">2</span>);
+
+<span class="cmt">// filter — শর্তমতো item রাখে</span>
+<span class="kw">const</span> evens = numbers.<span class="fn">filter</span>(n =&gt; n % <span class="num">2</span> === <span class="num">0</span>);
+
+<span class="cmt">// React JSX তে list render:</span>
+<span class="kw">const</span> items = [<span class="str">"আম"</span>, <span class="str">"কাঁঠাল"</span>, <span class="str">"লিচু"</span>];
+<span class="kw">return</span> (
+  &lt;<span class="tag-c">ul</span>&gt;
+    {items.<span class="fn">map</span>((item, i) =&gt; (
+      &lt;<span class="tag-c">li</span> <span class="attr">key</span>={i}&gt;{item}&lt;/<span class="tag-c">li</span>&gt;
+    ))}
+  &lt;/<span class="tag-c">ul</span>&gt;
+);</pre>
+      </div>
+    </div>
+
+    <!-- Modules -->
+    <h3>⑥ ES6 Modules (import/export)</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label es6"><span class="dot"></span>Export (export করা)</div>
+        <pre><span class="cmt">// utils.js ফাইলে</span>
+<span class="kw">export const</span> <span class="fn">add</span> = (a, b) =&gt; a + b;
+<span class="kw">export const</span> PI = <span class="num">3.14</span>;
+
+<span class="cmt">// Default Export</span>
+<span class="kw">const</span> <span class="fn">Calculator</span> = () =&gt; {
+  <span class="kw">return</span> &lt;<span class="tag-c">div</span>&gt;Calculator&lt;/<span class="tag-c">div</span>&gt;;
+};
+<span class="kw">export default</span> Calculator;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Import (import করা)</div>
+        <pre><span class="cmt">// অন্য ফাইলে import</span>
+<span class="kw">import</span> { add, PI } <span class="kw">from</span> <span class="str">'./utils'</span>;
+
+<span class="cmt">// Default import (যেকোনো নাম দেওয়া যায়)</span>
+<span class="kw">import</span> Calc <span class="kw">from</span> <span class="str">'./Calculator'</span>;
+
+<span class="cmt">// React নিজেই এভাবে import করি</span>
+<span class="kw">import</span> React, { useState, useEffect } 
+  <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cmt">// CSS import</span>
+<span class="kw">import</span> <span class="str">'./App.css'</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: JSX -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">JSX — JavaScript এর মধ্যে HTML</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p>JSX মানে <strong>JavaScript XML</strong>। এটি JavaScript এর মধ্যে HTML লেখার একটি বিশেষ সিনট্যাক্স। Browser সরাসরি JSX বোঝে না, Babel এটাকে JavaScript এ convert করে।</p>
+    </div>
+
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>JSX ছাড়া (Babel এর পরে এটাই হয়)</div>
+        <pre><span class="cmt">// এভাবে লিখতে হতো</span>
+<span class="kw">const</span> element = React.<span class="fn">createElement</span>(
+  <span class="str">'h1'</span>,
+  { className: <span class="str">'title'</span> },
+  <span class="str">'হ্যালো বাংলাদেশ'</span>
+);
+
+<span class="cmt">// Nested element</span>
+<span class="kw">const</span> card = React.<span class="fn">createElement</span>(
+  <span class="str">'div'</span>,
+  { className: <span class="str">'card'</span> },
+  React.<span class="fn">createElement</span>(<span class="str">'h2'</span>, <span class="kw">null</span>, <span class="str">'Title'</span>),
+  React.<span class="fn">createElement</span>(<span class="str">'p'</span>, <span class="kw">null</span>, <span class="str">'Content'</span>)
+);</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>JSX দিয়ে (React তে যা লিখি)</div>
+        <pre><span class="cmt">// JSX — পড়তে ও লিখতে সহজ!</span>
+<span class="kw">const</span> element = (
+  &lt;<span class="tag-c">h1</span> <span class="attr">className</span>=<span class="str">"title"</span>&gt;
+    হ্যালো বাংলাদেশ
+  &lt;/<span class="tag-c">h1</span>&gt;
+);
+
+<span class="cmt">// Nested — পড়া সহজ</span>
+<span class="kw">const</span> card = (
+  &lt;<span class="tag-c">div</span> <span class="attr">className</span>=<span class="str">"card"</span>&gt;
+    &lt;<span class="tag-c">h2</span>&gt;Title&lt;/<span class="tag-c">h2</span>&gt;
+    &lt;<span class="tag-c">p</span>&gt;Content&lt;/<span class="tag-c">p</span>&gt;
+  &lt;/<span class="tag-c">div</span>&gt;
+);</pre>
+      </div>
+    </div>
+
+    <h3>⚠️ JSX এর গুরুত্বপূর্ণ নিয়ম</h3>
+    <div class="callout warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>১. class → className</strong><br>
+        HTML: <code>&lt;div class="box"&gt;</code><br>
+        JSX: <code>&lt;div className="box"&gt;</code>
+      </div>
+    </div>
+    <div class="callout warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>২. একটি Root Element থাকতে হবে</strong><br>
+        ভুল: <code>&lt;h1&gt;...&lt;/h1&gt;&lt;p&gt;...&lt;/p&gt;</code><br>
+        সঠিক: <code>&lt;div&gt;&lt;h1&gt;...&lt;/h1&gt;&lt;p&gt;...&lt;/p&gt;&lt;/div&gt;</code> অথবা <code>&lt;&gt;...&lt;/&gt;</code> (Fragment)
+      </div>
+    </div>
+    <div class="callout warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>৩. Self-closing tags বন্ধ করতে হবে</strong><br>
+        HTML: <code>&lt;br&gt;</code>&nbsp;&nbsp;JSX: <code>&lt;br /&gt;</code>
+      </div>
+    </div>
+
+    <h3>JSX এ JavaScript Expression</h3>
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>JSX এ {} দিয়ে JavaScript ব্যবহার</div>
+        <pre><span class="kw">const</span> <span class="fn">App</span> = () =&gt; {
+  <span class="kw">const</span> name = <span class="str">"রাহিম"</span>;
+  <span class="kw">const</span> age = <span class="num">25</span>;
+  <span class="kw">const</span> isLoggedIn = <span class="kw">true</span>;
+  <span class="kw">const</span> items = [<span class="str">"আম"</span>, <span class="str">"কাঁঠাল"</span>, <span class="str">"লিচু"</span>];
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">h1</span>&gt;নাম: {name}&lt;/<span class="tag-c">h1</span>&gt;          {<span class="cmt">/* Variable */</span>}
+      &lt;<span class="tag-c">p</span>&gt;বয়স: {age * <span class="num">2</span>}&lt;/<span class="tag-c">p</span>&gt;           {<span class="cmt">/* Expression */</span>}
+      &lt;<span class="tag-c">p</span>&gt;{isLoggedIn ? <span class="str">"লগইন করা"</span> : <span class="str">"লগআউট"</span>}&lt;/<span class="tag-c">p</span>&gt; {<span class="cmt">/* Ternary */</span>}
+      &lt;<span class="tag-c">ul</span>&gt;
+        {items.<span class="fn">map</span>((item, i) =&gt; (
+          &lt;<span class="tag-c">li</span> <span class="attr">key</span>={i}&gt;{item}&lt;/<span class="tag-c">li</span>&gt;    {<span class="cmt">/* Array map */</span>}
+        ))}
+      &lt;/<span class="tag-c">ul</span>&gt;
+      &lt;<span class="tag-c">img</span> <span class="attr">src</span>=<span class="str">"photo.jpg"</span> <span class="attr">alt</span>=<span class="str">"ছবি"</span> /&gt;  {<span class="cmt">/* Self-closing */</span>}
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: Components -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Components — React এর মূল ভিত্তি</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p>Component হলো React এর একটি <strong>স্বাধীন, পুনর্ব্যবহারযোগ্য UI অংশ</strong>। এটি একটি JavaScript Function যা JSX return করে। Component এর নাম সবসময় <strong>Capital Letter</strong> দিয়ে শুরু হয়।</p>
+    </div>
+
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>Class Component (পুরনো উপায়)</div>
+        <pre><span class="kw">import</span> React, { Component } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cmt">// Class Based Component</span>
+<span class="kw">class</span> <span class="fn">Welcome</span> <span class="kw">extends</span> Component {
+  <span class="fn">constructor</span>(props) {
+    <span class="kw">super</span>(props);
+    <span class="kw">this</span>.state = { count: <span class="num">0</span> };
+  }
+
+  <span class="fn">render</span>() {
+    <span class="kw">return</span> (
+      &lt;<span class="tag-c">div</span>&gt;
+        &lt;<span class="tag-c">h1</span>&gt;হ্যালো {<span class="kw">this</span>.props.name}&lt;/<span class="tag-c">h1</span>&gt;
+        &lt;<span class="tag-c">p</span>&gt;Count: {<span class="kw">this</span>.state.count}&lt;/<span class="tag-c">p</span>&gt;
+      &lt;/<span class="tag-c">div</span>&gt;
+    );
+  }
+}
+<span class="kw">export default</span> Welcome;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Functional Component (আধুনিক, এটাই শেখো)</div>
+        <pre><span class="kw">import</span> { useState } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cmt">// Functional Component — সহজ ও আধুনিক</span>
+<span class="kw">const</span> <span class="fn">Welcome</span> = ({ name }) =&gt; {
+  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">h1</span>&gt;হ্যালো {name}&lt;/<span class="tag-c">h1</span>&gt;
+      &lt;<span class="tag-c">p</span>&gt;Count: {count}&lt;/<span class="tag-c">p</span>&gt;
+      &lt;<span class="tag-c">button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">setCount</span>(count + <span class="num">1</span>)}&gt;
+        বাড়াও
+      &lt;/<span class="tag-c">button</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};
+<span class="kw">export default</span> Welcome;</pre>
+      </div>
+    </div>
+
+    <h3>Component গুলো কিভাবে ব্যবহার করবো</h3>
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>App.js — মূল Component এ অন্য Component ব্যবহার</div>
+        <pre><span class="kw">import</span> Header <span class="kw">from</span> <span class="str">'./Header'</span>;
+<span class="kw">import</span> Card <span class="kw">from</span> <span class="str">'./Card'</span>;
+<span class="kw">import</span> Footer <span class="kw">from</span> <span class="str">'./Footer'</span>;
+
+<span class="kw">const</span> <span class="fn">App</span> = () =&gt; {
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span> <span class="attr">className</span>=<span class="str">"app"</span>&gt;
+      &lt;<span class="tag-c">Header</span> /&gt;                       {<span class="cmt">/* Header Component */</span>}
+      &lt;<span class="tag-c">Card</span> <span class="attr">title</span>=<span class="str">"React শিখুন"</span> /&gt;    {<span class="cmt">/* Props পাঠানো */</span>}
+      &lt;<span class="tag-c">Card</span> <span class="attr">title</span>=<span class="str">"ES6 বুঝুন"</span> /&gt;      {<span class="cmt">/* Reuse! */</span>}
+      &lt;<span class="tag-c">Footer</span> /&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};
+<span class="kw">export default</span> App;</pre>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="icon">✅</span>
+      <div><strong>ভালো অভ্যাস:</strong> একটি Component শুধু একটি কাজ করবে। বড় হয়ে গেলে ছোট Component এ ভাগ করো।</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: Props -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">Props — Component এ Data পাঠানো</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p><strong>Props</strong> (Properties) হলো Parent Component থেকে Child Component এ Data পাঠানোর উপায়। Props সবসময় <strong>Read-only</strong> — Child এটা পরিবর্তন করতে পারে না।</p>
+    </div>
+
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Parent Component (Props পাঠায়)</div>
+        <pre><span class="kw">const</span> <span class="fn">App</span> = () =&gt; {
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">UserCard</span>
+        <span class="attr">name</span>=<span class="str">"রাহিম"</span>
+        <span class="attr">age</span>={<span class="num">25</span>}
+        <span class="attr">city</span>=<span class="str">"ঢাকা"</span>
+        <span class="attr">isActive</span>={<span class="kw">true</span>}
+      /&gt;
+      &lt;<span class="tag-c">UserCard</span>
+        <span class="attr">name</span>=<span class="str">"করিম"</span>
+        <span class="attr">age</span>={<span class="num">30</span>}
+        <span class="attr">city</span>=<span class="str">"চট্টগ্রাম"</span>
+        <span class="attr">isActive</span>={<span class="kw">false</span>}
+      /&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Child Component (Props গ্রহণ করে)</div>
+        <pre><span class="cmt">// উপায় ১: props object</span>
+<span class="kw">const</span> <span class="fn">UserCard</span> = (props) =&gt; {
+  <span class="kw">return</span> &lt;<span class="tag-c">h2</span>&gt;{props.name}&lt;/<span class="tag-c">h2</span>&gt;;
+};
+
+<span class="cmt">// উপায় ২: Destructuring (এটাই ভালো)</span>
+<span class="kw">const</span> <span class="fn">UserCard</span> = ({ name, age, city, isActive }) =&gt; {
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span> <span class="attr">className</span>=<span class="str">`card ${isActive ? <span class="str">'active'</span> : <span class="str">'inactive'</span>}`</span>&gt;
+      &lt;<span class="tag-c">h2</span>&gt;{name}&lt;/<span class="tag-c">h2</span>&gt;
+      &lt;<span class="tag-c">p</span>&gt;বয়স: {age}&lt;/<span class="tag-c">p</span>&gt;
+      &lt;<span class="tag-c">p</span>&gt;শহর: {city}&lt;/<span class="tag-c">p</span>&gt;
+      &lt;<span class="tag-c">span</span>&gt;{isActive ? <span class="str">"✅ সক্রিয়"</span> : <span class="str">"❌ নিষ্ক্রিয়"</span>}&lt;/<span class="tag-c">span</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+
+    <h3>Default Props এবং Children Prop</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Default Props</div>
+        <pre><span class="cmt">// Default value দেওয়া যায়</span>
+<span class="kw">const</span> <span class="fn">Button</span> = ({ 
+  label = <span class="str">"ক্লিক করুন"</span>, 
+  color = <span class="str">"blue"</span>,
+  size = <span class="str">"medium"</span>
+}) =&gt; {
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">button</span> 
+      <span class="attr">style</span>={{ background: color }}
+      <span class="attr">className</span>={<span class="str">`btn btn-${size}`</span>}
+    &gt;
+      {label}
+    &lt;/<span class="tag-c">button</span>&gt;
+  );
+};
+
+<span class="cmt">// ব্যবহার:</span>
+&lt;<span class="tag-c">Button</span> /&gt;  <span class="cmt">// "ক্লিক করুন", blue, medium</span>
+&lt;<span class="tag-c">Button</span> <span class="attr">label</span>=<span class="str">"জমা দিন"</span> <span class="attr">color</span>=<span class="str">"green"</span> /&gt;</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Children Prop (বিশেষ Prop)</div>
+        <pre><span class="cmt">// Card Component — children ধারণ করে</span>
+<span class="kw">const</span> <span class="fn">Card</span> = ({ title, children }) =&gt; {
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span> <span class="attr">className</span>=<span class="str">"card"</span>&gt;
+      &lt;<span class="tag-c">h3</span>&gt;{title}&lt;/<span class="tag-c">h3</span>&gt;
+      &lt;<span class="tag-c">div</span> <span class="attr">className</span>=<span class="str">"content"</span>&gt;
+        {children}  {<span class="cmt">/* যা ভেতরে দেওয়া হবে */</span>}
+      &lt;/<span class="tag-c">div</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};
+
+<span class="cmt">// ব্যবহার:</span>
+&lt;<span class="tag-c">Card</span> <span class="attr">title</span>=<span class="str">"আমার কার্ড"</span>&gt;
+  &lt;<span class="tag-c">p</span>&gt;এটি children এ যাবে&lt;/<span class="tag-c">p</span>&gt;
+  &lt;<span class="tag-c">button</span>&gt;ক্লিক&lt;/<span class="tag-c">button</span>&gt;
+&lt;/<span class="tag-c">Card</span>&gt;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: State -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">State & useState Hook — Dynamic Data</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p><strong>State</strong> হলো Component এর নিজস্ব Data যা পরিবর্তন হলে UI স্বয়ংক্রিয়ভাবে update হয়। <strong>useState</strong> হলো React এর একটি Hook যা Functional Component এ State ব্যবহার করতে দেয়।</p>
+    </div>
+
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>Plain JS তে (React ছাড়া)</div>
+        <pre><span class="cmt">// State নেই — manually update করতে হয়</span>
+<span class="kw">let</span> count = <span class="num">0</span>;
+
+<span class="kw">function</span> <span class="fn">increment</span>() {
+  count++;
+  <span class="cmt">// DOM manually update করতে হবে!</span>
+  document.<span class="fn">getElementById</span>(<span class="str">'count'</span>)
+    .textContent = count;
+}
+
+<span class="cmt">// HTML তে:</span>
+<span class="cmt">// &lt;p id="count"&gt;0&lt;/p&gt;</span>
+<span class="cmt">// &lt;button onclick="increment()"&gt;+&lt;/button&gt;</span>
+<span class="cmt">// কল্পনা করো বড় app এ কতটা কঠিন!</span></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>React useState — স্বয়ংক্রিয় UI Update</div>
+        <pre><span class="kw">import</span> { useState } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> <span class="fn">Counter</span> = () =&gt; {
+  <span class="cmt">// [current value, setter function]</span>
+  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">p</span>&gt;Count: {count}&lt;/<span class="tag-c">p</span>&gt;  {<span class="cmt">/* Auto Update! */</span>}
+      &lt;<span class="tag-c">button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">setCount</span>(count + <span class="num">1</span>)}&gt;+&lt;/<span class="tag-c">button</span>&gt;
+      &lt;<span class="tag-c">button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">setCount</span>(count - <span class="num">1</span>)}&gt;-&lt;/<span class="tag-c">button</span>&gt;
+      &lt;<span class="tag-c">button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">setCount</span>(<span class="num">0</span>)}&gt;Reset&lt;/<span class="tag-c">button</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+
+    <h3>Object State Update — Spread Operator অপরিহার্য</h3>
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Object & Array State</div>
+        <pre><span class="kw">const</span> <span class="fn">UserForm</span> = () =&gt; {
+  <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>({
+    name: <span class="str">""</span>,
+    email: <span class="str">""</span>,
+    age: <span class="num">0</span>
+  });
+
+  <span class="kw">const</span> [items, setItems] = <span class="fn">useState</span>([<span class="str">"আম"</span>, <span class="str">"কাঁঠাল"</span>]);
+
+  <span class="cmt">// ❌ ভুল উপায় — সরাসরি modify করো না!</span>
+  <span class="cmt">// user.name = "রাহিম"; // React জানতে পারবে না!</span>
+
+  <span class="cmt">// ✅ সঠিক উপায় — নতুন Object তৈরি করো</span>
+  <span class="kw">const</span> <span class="fn">handleNameChange</span> = (e) =&gt; {
+    <span class="fn">setUser</span>({ ...user, name: e.target.value }); <span class="cmt">// Spread!</span>
+  };
+
+  <span class="cmt">// Array তে নতুন item যোগ</span>
+  <span class="kw">const</span> <span class="fn">addItem</span> = () =&gt; {
+    <span class="fn">setItems</span>([...items, <span class="str">"লিচু"</span>]); <span class="cmt">// নতুন Array</span>
+  };
+
+  <span class="cmt">// Array থেকে item মুছে ফেলা</span>
+  <span class="kw">const</span> <span class="fn">removeItem</span> = (index) =&gt; {
+    <span class="fn">setItems</span>(items.<span class="fn">filter</span>((_, i) =&gt; i !== index));
+  };
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">input</span> <span class="attr">value</span>={user.name} <span class="attr">onChange</span>={handleNameChange} /&gt;
+      &lt;<span class="tag-c">p</span>&gt;নাম: {user.name}&lt;/<span class="tag-c">p</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+
+    <div class="callout danger">
+      <span class="icon">🚫</span>
+      <div><strong>গুরুত্বপূর্ণ:</strong> State directly mutate করো না! সবসময় setter function (setCount, setUser) ব্যবহার করো। নইলে React re-render করবে না।</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 7: useEffect -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">useEffect — Side Effects পরিচালনা</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p><strong>useEffect</strong> Hook দিয়ে আমরা Component এর <strong>Side Effects</strong> পরিচালনা করি। যেমন: API call, Timer, DOM manipulation, Subscription। এটি Class Component এর lifecycle methods (componentDidMount, componentDidUpdate, componentWillUnmount) এর বিকল্প।</p>
+    </div>
+
+    <div class="lifecycle">
+      <div class="lifecycle-card mount">
+        <div class="phase">Mount (প্রথমবার)</div>
+        <div class="method">componentDidMount</div>
+        <div style="font-size:12px; color: var(--muted); margin-top:6px;">useEffect(() => {}, [])</div>
+      </div>
+      <div class="lifecycle-card update">
+        <div class="phase">Update (পরিবর্তনে)</div>
+        <div class="method">componentDidUpdate</div>
+        <div style="font-size:12px; color: var(--muted); margin-top:6px;">useEffect(() => {}, [dep])</div>
+      </div>
+      <div class="lifecycle-card unmount">
+        <div class="phase">Unmount (সরানোর আগে)</div>
+        <div class="method">componentWillUnmount</div>
+        <div style="font-size:12px; color: var(--muted); margin-top:6px;">useEffect(() => { return () => {} })</div>
+      </div>
+    </div>
+
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>useEffect — ৪ ধরনের ব্যবহার</div>
+        <pre><span class="kw">import</span> { useState, useEffect } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> <span class="fn">DataComponent</span> = ({ userId }) =&gt; {
+  <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="cmt">// ১. প্রতিটি render এর পরে চলে (dependency নেই)</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">console</span>.log(<span class="str">"Component render হলো"</span>);
+  });
+
+  <span class="cmt">// ২. শুধু প্রথমবার চলে (empty array [])</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">console</span>.log(<span class="str">"Component প্রথমবার mount হলো"</span>);
+    <span class="cmt">// API call এখানে করো</span>
+    <span class="fn">fetch</span>(<span class="str">'https://api.example.com/data'</span>)
+      .<span class="fn">then</span>(res =&gt; res.<span class="fn">json</span>())
+      .<span class="fn">then</span>(data =&gt; <span class="fn">setUser</span>(data));
+  }, []); <span class="cmt">// ← empty dependency array</span>
+
+  <span class="cmt">// ৩. userId পরিবর্তন হলে চলে</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">console</span>.log(<span class="str">`User ${userId} এর data লোড করো`</span>);
+    <span class="kw">async function</span> <span class="fn">fetchUser</span>() {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`/api/users/${userId}`</span>);
+      <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
+      <span class="fn">setUser</span>(data);
+    }
+    <span class="fn">fetchUser</span>();
+  }, [userId]); <span class="cmt">// ← userId dependency</span>
+
+  <span class="cmt">// ৪. Cleanup (timer, subscription বন্ধ করা)</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">const</span> timer = <span class="fn">setInterval</span>(() =&gt; {
+      <span class="fn">setCount</span>(c =&gt; c + <span class="num">1</span>);
+    }, <span class="num">1000</span>);
+
+    <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(timer); <span class="cmt">// ← Cleanup!</span>
+  }, []);
+
+  <span class="kw">if</span> (!user) <span class="kw">return</span> &lt;<span class="tag-c">p</span>&gt;লোড হচ্ছে...&lt;/<span class="tag-c">p</span>&gt;;
+  <span class="kw">return</span> &lt;<span class="tag-c">div</span>&gt;&lt;<span class="tag-c">h2</span>&gt;{user.name}&lt;/<span class="tag-c">h2</span>&gt;&lt;/<span class="tag-c">div</span>&gt;;
+};</pre>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="icon">📌</span>
+      <div><strong>মনে রাখো:</strong> <code>[]</code> = শুধু প্রথমবার | <code>[val]</code> = val পরিবর্তে | কোনো array নেই = প্রতিবার render এ</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8: Events -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">Event Handling — ব্যবহারকারীর কার্যক্রম</span>
+  </div>
+  <div class="section-body">
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label js"><span class="dot"></span>Plain JavaScript Events</div>
+        <pre><span class="cmt">// HTML তে:</span>
+<span class="cmt">// &lt;button onclick="handleClick()"&gt;ক্লিক&lt;/button&gt;</span>
+
+<span class="cmt">// JS তে:</span>
+<span class="kw">function</span> <span class="fn">handleClick</span>() {
+  <span class="fn">alert</span>(<span class="str">"ক্লিক হয়েছে!"</span>);
+}
+
+<span class="cmt">// অথবা:</span>
+document
+  .<span class="fn">getElementById</span>(<span class="str">'btn'</span>)
+  .<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="kw">function</span>(e) {
+    <span class="fn">console</span>.log(e.target.value);
+  });</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>React Events (camelCase)</div>
+        <pre><span class="kw">const</span> <span class="fn">EventDemo</span> = () =&gt; {
+  <span class="kw">const</span> <span class="fn">handleClick</span> = (e) =&gt; {
+    e.<span class="fn">preventDefault</span>(); <span class="cmt">// default বন্ধ</span>
+    <span class="fn">console</span>.log(<span class="str">"ক্লিক হয়েছে!"</span>);
+  };
+
+  <span class="kw">const</span> <span class="fn">handleChange</span> = (e) =&gt; {
+    <span class="fn">console</span>.log(e.target.value);
+  };
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      &lt;<span class="tag-c">button</span> <span class="attr">onClick</span>={handleClick}&gt;ক্লিক&lt;/<span class="tag-c">button</span>&gt;
+      &lt;<span class="tag-c">input</span> <span class="attr">onChange</span>={handleChange} /&gt;
+      &lt;<span class="tag-c">input</span> <span class="attr">onFocus</span>={() =&gt; <span class="fn">console</span>.log(<span class="str">"focus"</span>)} /&gt;
+      &lt;<span class="tag-c">div</span> <span class="attr">onMouseOver</span>={() =&gt; <span class="fn">console</span>.log(<span class="str">"hover"</span>)}&gt;
+        Hover করো
+      &lt;/<span class="tag-c">div</span>&gt;
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <tr>
+          <th class="desc-col">Event</th>
+          <th class="js-col">HTML/JS</th>
+          <th class="react-col">React JSX</th>
+        </tr>
+        <tr><td>ক্লিক</td><td><code>onclick</code></td><td><code>onClick</code></td></tr>
+        <tr><td>Input পরিবর্তন</td><td><code>onchange</code></td><td><code>onChange</code></td></tr>
+        <tr><td>Form Submit</td><td><code>onsubmit</code></td><td><code>onSubmit</code></td></tr>
+        <tr><td>Mouse Over</td><td><code>onmouseover</code></td><td><code>onMouseOver</code></td></tr>
+        <tr><td>Key Press</td><td><code>onkeypress</code></td><td><code>onKeyPress</code></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 9: Lists & Keys -->
+<div class="section" id="s9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">Lists & Keys — Array Render করা</span>
+  </div>
+  <div class="section-body">
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>List Rendering — map() দিয়ে</div>
+        <pre><span class="kw">const</span> <span class="fn">StudentList</span> = () =&gt; {
+  <span class="kw">const</span> students = [
+    { id: <span class="num">1</span>, name: <span class="str">"রাহিম"</span>, grade: <span class="str">"A"</span>, city: <span class="str">"ঢাকা"</span> },
+    { id: <span class="num">2</span>, name: <span class="str">"করিম"</span>, grade: <span class="str">"B"</span>, city: <span class="str">"রাজশাহী"</span> },
+    { id: <span class="num">3</span>, name: <span class="str">"রহিমা"</span>, grade: <span class="str">"A+"</span>, city: <span class="str">"চট্টগ্রাম"</span> },
+  ];
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">ul</span>&gt;
+      {students.<span class="fn">map</span>((student) =&gt; (
+        <span class="cmt">{/* key অবশ্যই unique হতে হবে */}</span>
+        &lt;<span class="tag-c">li</span> <span class="attr">key</span>={student.id}&gt;
+          &lt;<span class="tag-c">strong</span>&gt;{student.name}&lt;/<span class="tag-c">strong</span>&gt; — {student.city} — গ্রেড: {student.grade}
+        &lt;/<span class="tag-c">li</span>&gt;
+      ))}
+    &lt;/<span class="tag-c">ul</span>&gt;
+  );
+};
+
+<span class="cmt">// Filter + Map — শুধু A grade</span>
+<span class="kw">const</span> <span class="fn">TopStudents</span> = ({ students }) =&gt; (
+  &lt;<span class="tag-c">ul</span>&gt;
+    {students
+      .<span class="fn">filter</span>(s =&gt; s.grade === <span class="str">"A"</span> || s.grade === <span class="str">"A+"</span>)
+      .<span class="fn">map</span>(s =&gt; &lt;<span class="tag-c">li</span> <span class="attr">key</span>={s.id}&gt;🏆 {s.name}&lt;/<span class="tag-c">li</span>&gt;)
+    }
+  &lt;/<span class="tag-c">ul</span>&gt;
+);</pre>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="icon">⚠️</span>
+      <div><strong>key কেন দরকার?</strong> React key দিয়ে বুঝতে পারে কোন item পরিবর্তিত হয়েছে। key সবসময় unique এবং stable হওয়া উচিত। Array index কে key হিসেবে ব্যবহার avoid করো (যদি list dynamic হয়)।</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 10: Conditional Rendering -->
+<div class="section" id="s10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-title">Conditional Rendering — শর্তসাপেক্ষ UI</span>
+  </div>
+  <div class="section-body">
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>৪ ধরনের Conditional Rendering</div>
+        <pre><span class="kw">const</span> <span class="fn">ConditionalDemo</span> = ({ isLoggedIn, role, score, items }) =&gt; {
+  <span class="cmt">// ১. if-else (জটিল logic এর জন্য)</span>
+  <span class="kw">if</span> (!isLoggedIn) {
+    <span class="kw">return</span> &lt;<span class="tag-c">p</span>&gt;অনুগ্রহ করে লগইন করুন&lt;/<span class="tag-c">p</span>&gt;;
+  }
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">div</span>&gt;
+      {<span class="cmt">/* ২. Ternary Operator — সবচেয়ে বেশি ব্যবহার */</span>}
+      {isLoggedIn
+        ? &lt;<span class="tag-c">p</span>&gt;✅ স্বাগতম!&lt;/<span class="tag-c">p</span>&gt;
+        : &lt;<span class="tag-c">p</span>&gt;❌ লগইন করুন&lt;/<span class="tag-c">p</span>&gt;
+      }
+
+      {<span class="cmt">/* ৩. && Operator — শুধু show/hide */</span>}
+      {role === <span class="str">"admin"</span> &amp;&amp; &lt;<span class="tag-c">button</span>&gt;Admin Panel&lt;/<span class="tag-c">button</span>&gt;}
+      {items.length &gt; <span class="num">0</span> &amp;&amp; &lt;<span class="tag-c">p</span>&gt;{items.length}টি item&lt;/<span class="tag-c">p</span>&gt;}
+
+      {<span class="cmt">/* ৪. Switch-like (অনেক condition) */</span>}
+      {score &gt;= <span class="num">90</span> ? &lt;<span class="tag-c">span</span>&gt;🥇 A+&lt;/<span class="tag-c">span</span>&gt;
+        : score &gt;= <span class="num">80</span> ? &lt;<span class="tag-c">span</span>&gt;🥈 A&lt;/<span class="tag-c">span</span>&gt;
+        : score &gt;= <span class="num">70</span> ? &lt;<span class="tag-c">span</span>&gt;🥉 B&lt;/<span class="tag-c">span</span>&gt;
+        : &lt;<span class="tag-c">span</span>&gt;📚 আরো পড়ো&lt;/<span class="tag-c">span</span>&gt;
+      }
+    &lt;/<span class="tag-c">div</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 11: Forms -->
+<div class="section" id="s11">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <span class="section-title">Forms — Controlled Components</span>
+  </div>
+  <div class="section-body">
+    <div class="concept">
+      <p>React এ Form input এর value State এ রাখা হয় — এটাকে বলে <strong>Controlled Component</strong>। React State সবসময় "single source of truth" হিসেবে কাজ করে।</p>
+    </div>
+
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Complete Form Example</div>
+        <pre><span class="kw">import</span> { useState } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> <span class="fn">RegistrationForm</span> = () =&gt; {
+  <span class="kw">const</span> [formData, setFormData] = <span class="fn">useState</span>({
+    name: <span class="str">""</span>,
+    email: <span class="str">""</span>,
+    password: <span class="str">""</span>,
+    gender: <span class="str">"male"</span>,
+    agree: <span class="kw">false</span>
+  });
+  <span class="kw">const</span> [errors, setErrors] = <span class="fn">useState</span>({});
+
+  <span class="cmt">// একটি handler দিয়ে সব input handle</span>
+  <span class="kw">const</span> <span class="fn">handleChange</span> = (e) =&gt; {
+    <span class="kw">const</span> { name, value, type, checked } = e.target;
+    <span class="fn">setFormData</span>({
+      ...formData,
+      [name]: type === <span class="str">"checkbox"</span> ? checked : value
+    });
+  };
+
+  <span class="kw">const</span> <span class="fn">validate</span> = () =&gt; {
+    <span class="kw">const</span> newErrors = {};
+    <span class="kw">if</span> (!formData.name) newErrors.name = <span class="str">"নাম দিন"</span>;
+    <span class="kw">if</span> (!formData.email) newErrors.email = <span class="str">"ইমেইল দিন"</span>;
+    <span class="kw">if</span> (formData.password.length &lt; <span class="num">6</span>)
+      newErrors.password = <span class="str">"পাসওয়ার্ড ৬ অক্ষরের বেশি"</span>;
+    <span class="kw">return</span> newErrors;
+  };
+
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (e) =&gt; {
+    e.<span class="fn">preventDefault</span>(); <span class="cmt">// page reload বন্ধ!</span>
+    <span class="kw">const</span> newErrors = <span class="fn">validate</span>();
+    <span class="kw">if</span> (<span class="fn">Object</span>.<span class="fn">keys</span>(newErrors).length &gt; <span class="num">0</span>) {
+      <span class="fn">setErrors</span>(newErrors);
+    } <span class="kw">else</span> {
+      <span class="fn">console</span>.log(<span class="str">"Form Data:"</span>, formData);
+      <span class="cmt">// API তে পাঠাও</span>
+    }
+  };
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">form</span> <span class="attr">onSubmit</span>={handleSubmit}&gt;
+      &lt;<span class="tag-c">input</span>
+        <span class="attr">name</span>=<span class="str">"name"</span>
+        <span class="attr">value</span>={formData.name}
+        <span class="attr">onChange</span>={handleChange}
+        <span class="attr">placeholder</span>=<span class="str">"আপনার নাম"</span>
+      /&gt;
+      {errors.name &amp;&amp; &lt;<span class="tag-c">span</span>&gt;{errors.name}&lt;/<span class="tag-c">span</span>&gt;}
+
+      &lt;<span class="tag-c">select</span> <span class="attr">name</span>=<span class="str">"gender"</span> <span class="attr">value</span>={formData.gender} <span class="attr">onChange</span>={handleChange}&gt;
+        &lt;<span class="tag-c">option</span> <span class="attr">value</span>=<span class="str">"male"</span>&gt;পুরুষ&lt;/<span class="tag-c">option</span>&gt;
+        &lt;<span class="tag-c">option</span> <span class="attr">value</span>=<span class="str">"female"</span>&gt;মহিলা&lt;/<span class="tag-c">option</span>&gt;
+      &lt;/<span class="tag-c">select</span>&gt;
+
+      &lt;<span class="tag-c">input</span> <span class="attr">type</span>=<span class="str">"checkbox"</span> <span class="attr">name</span>=<span class="str">"agree"</span> <span class="attr">checked</span>={formData.agree} <span class="attr">onChange</span>={handleChange} /&gt;
+      &lt;<span class="tag-c">button</span> <span class="attr">type</span>=<span class="str">"submit"</span>&gt;রেজিস্ট্রেশন করুন&lt;/<span class="tag-c">button</span>&gt;
+    &lt;/<span class="tag-c">form</span>&gt;
+  );
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 12: Hooks -->
+<div class="section" id="s12">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <span class="section-title">সমস্ত গুরুত্বপূর্ণ Hooks</span>
+  </div>
+  <div class="section-body">
+    <div class="hook-grid">
+      <div class="hook-card">
+        <div class="hook-name">useState()</div>
+        <p>Component এ local state রাখার জন্য। Re-render trigger করে।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useEffect()</div>
+        <p>Side effects পরিচালনা। API call, Timer, Subscription।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useContext()</div>
+        <p>Global state access। Props drilling ছাড়াই deep component এ data।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useRef()</div>
+        <p>DOM element access এবং re-render ছাড়া value store।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useMemo()</div>
+        <p>ভারী calculation cache করে। Performance optimization।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useCallback()</div>
+        <p>Function cache করে। Child re-render রোধ করে।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">useReducer()</div>
+        <p>জটিল state logic। Redux এর ছোট version।</p>
+      </div>
+      <div class="hook-card">
+        <div class="hook-name">Custom Hooks</div>
+        <p>নিজের Hook তৈরি করো। Logic reuse করার সেরা উপায়।</p>
+      </div>
+    </div>
+
+    <h3>useRef — DOM Access</h3>
+    <div class="code-split">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>useRef Example</div>
+        <pre><span class="kw">import</span> { useRef, useEffect } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> <span class="fn">InputFocus</span> = () =&gt; {
+  <span class="kw">const</span> inputRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="cmt">// Page load হলে auto focus</span>
+    inputRef.current.<span class="fn">focus</span>();
+  }, []);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag-c">input</span>
+      <span class="attr">ref</span>={inputRef}
+      <span class="attr">placeholder</span>=<span class="str">"Auto focused!"</span>
+    /&gt;
+  );
+};</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>Custom Hook Example</div>
+        <pre><span class="cmt">// Custom Hook — useFetch</span>
+<span class="kw">const</span> <span class="fn">useFetch</span> = (url) =&gt; {
+  <span class="kw">const</span> [data, setData] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">true</span>);
+  <span class="kw">const</span> [error, setError] = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">fetch</span>(url)
+      .<span class="fn">then</span>(res =&gt; res.<span class="fn">json</span>())
+      .<span class="fn">then</span>(d =&gt; { <span class="fn">setData</span>(d); <span class="fn">setLoading</span>(<span class="kw">false</span>); })
+      .<span class="fn">catch</span>(err =&gt; <span class="fn">setError</span>(err));
+  }, [url]);
+
+  <span class="kw">return</span> { data, loading, error };
+};
+
+<span class="cmt">// যেকোনো Component এ ব্যবহার:</span>
+<span class="kw">const</span> <span class="fn">Users</span> = () =&gt; {
+  <span class="kw">const</span> { data, loading } = <span class="fn">useFetch</span>(
+    <span class="str">'/api/users'</span>
+  );
+  <span class="kw">if</span> (loading) <span class="kw">return</span> &lt;<span class="tag-c">p</span>&gt;লোড...&lt;/<span class="tag-c">p</span>&gt;;
+  <span class="kw">return</span> &lt;<span class="tag-c">p</span>&gt;{data?.length} জন User&lt;/<span class="tag-c">p</span>&gt;;
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 13: Project Setup -->
+<div class="section" id="s13">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <span class="section-title">Project Setup — React শুরু করো এখনই</span>
+  </div>
+  <div class="section-body">
+    <h3>⚡ Vite দিয়ে (সবচেয়ে দ্রুত — ২০২৪ এ এটাই ব্যবহার করো)</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><p>Node.js install করো: <a href="https://nodejs.org" style="color:var(--accent)">nodejs.org</a> থেকে</p></div>
+      <div class="step"><div class="step-num">2</div><p>Terminal এ: <code>npm create vite@latest my-app -- --template react</code></p></div>
+      <div class="step"><div class="step-num">3</div><p><code>cd my-app</code> তারপর <code>npm install</code></p></div>
+      <div class="step"><div class="step-num">4</div><p><code>npm run dev</code> — Browser এ <code>localhost:5173</code> খুলবে</p></div>
+    </div>
+
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label green"><span class="dot"></span>Folder Structure</div>
+        <pre><span class="cmt">my-app/</span>
+├── <span class="fn">src/</span>
+│   ├── <span class="fn">components/</span>      <span class="cmt">← তোমার Components এখানে</span>
+│   │   ├── Header.jsx
+│   │   ├── Card.jsx
+│   │   └── Footer.jsx
+│   ├── <span class="fn">pages/</span>           <span class="cmt">← Page level Components</span>
+│   │   ├── Home.jsx
+│   │   └── About.jsx
+│   ├── <span class="fn">hooks/</span>           <span class="cmt">← Custom Hooks</span>
+│   │   └── useFetch.js
+│   ├── App.jsx          <span class="cmt">← Main Component</span>
+│   └── main.jsx         <span class="cmt">← Entry Point</span>
+├── <span class="fn">public/</span>
+├── index.html
+└── package.json</pre>
+      </div>
+    </div>
+
+    <div class="single-code">
+      <div class="code-block">
+        <div class="code-label react"><span class="dot"></span>main.jsx — Entry Point</div>
+        <pre><span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
+<span class="kw">import</span> <span class="str">'./index.css'</span>;
+
+ReactDOM
+  .<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>))
+  .<span class="fn">render</span>(
+    &lt;<span class="tag-c">React.StrictMode</span>&gt;
+      &lt;<span class="tag-c">App</span> /&gt;
+    &lt;/<span class="tag-c">React.StrictMode</span>&gt;
+  );</pre>
+      </div>
+    </div>
+
+    <h3>📚 পরবর্তী কী শিখবো?</h3>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <tr>
+          <th class="desc-col">স্তর</th>
+          <th class="react-col">বিষয়</th>
+          <th class="js-col">টুল/লাইব্রেরি</th>
+        </tr>
+        <tr><td>Beginner ✅</td><td>Components, Props, State, Hooks</td><td>React, Vite</td></tr>
+        <tr><td>Intermediate</td><td>Context API, Routing</td><td>React Router v6</td></tr>
+        <tr><td>Intermediate</td><td>Global State Management</td><td>Redux Toolkit / Zustand</td></tr>
+        <tr><td>Advanced</td><td>Server-side Rendering</td><td>Next.js</td></tr>
+        <tr><td>Advanced</td><td>API Integration, Auth</td><td>Axios, React Query</td></tr>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <span class="icon">🎯</span>
+      <div><strong>পরামর্শ:</strong> প্রতিটি section পড়ার পর একটি ছোট project তৈরি করো। Counter App → Todo App → Weather App → Full Stack App — এই ক্রমে এগিয়ে যাও।</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  <p>⚛️ React JS বাংলা ক্র্যাশ কোর্স — সম্পূর্ণ <span>ES6+</span> তুলনাসহ</p>
+  <p style="margin-top:8px; font-size:12px;">Components • Props • State • Hooks • Events • Forms • Lists</p>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const prog = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = prog + '%';
+  const btn = document.getElementById('back-top');
+  btn.classList.toggle('show', doc.scrollTop > 300);
+});
+</script>
+</body>
+</html>
