@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel Performance Guide — বাংলা</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #16161f;
+  --surface: #1c1c28;
+  --border: #2a2a3a;
+  --border2: #3a3a50;
+  --text: #e8e8f0;
+  --muted: #8888aa;
+  --dim: #4a4a66;
+  --accent: #7c6aff;
+  --accent2: #a855f7;
+  --green: #22d3a0;
+  --red: #ff5757;
+  --yellow: #fbbf24;
+  --blue: #60a5fa;
+  --pink: #f472b6;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Noto Sans Bengali', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── GRID BG ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 5rem 0 4rem;
+  position: relative;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(124,106,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(124,106,255,0.1);
+  border: 1px solid rgba(124,106,255,0.3);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.hero h1 .line1 { display: block; color: var(--text); }
+.hero h1 .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 50%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 480px;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.htag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  background: var(--surface);
+}
+
+/* ── TABLE OF CONTENTS ── */
+.toc-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.toc-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--pink), var(--blue));
+}
+
+.toc-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.toc-item:hover {
+  border-color: var(--accent);
+  background: rgba(124,106,255,0.08);
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.toc-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  min-width: 18px;
+}
+
+.toc-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SECTION ── */
+.section {
+  margin-bottom: 4rem;
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.section-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.section-meta { flex: 1; }
+
+.section-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.badge-core { background: rgba(255,87,87,0.15); color: var(--red); border: 1px solid rgba(255,87,87,0.3); }
+.badge-adv  { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+.badge-pro  { background: rgba(34,211,160,0.12); color: var(--green); border: 1px solid rgba(34,211,160,0.3); }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+/* ── EXPLAIN BOX ── */
+.explain {
+  background: rgba(124,106,255,0.07);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c0c0d8;
+}
+
+.explain strong { color: var(--text); font-weight: 600; }
+
+/* ── CODE BLOCK ── */
+.code-wrap { margin: 1rem 0; }
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a1a28;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 14px;
+}
+
+.code-filename {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.code-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.code-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.d1 { background: #ff5f57; }
+.d2 { background: #febc2e; }
+.d3 { background: #28c840; }
+
+pre {
+  background: #12121c;
+  border: 1px solid var(--border);
+  border-radius: 0 0 10px 10px;
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.8;
+}
+
+.ck { color: #bd93f9; }   /* keyword */
+.cs { color: #50fa7b; }   /* string */
+.cc { color: #6272a4; font-style: italic; } /* comment */
+.cf { color: #8be9fd; }   /* function */
+.cn { color: #ffb86c; }   /* name/class */
+.cv { color: #ff79c6; }   /* variable */
+.co { color: #f8f8f2; }   /* other */
+.cnum { color: #bd93f9; } /* number */
+.cp { color: #8be9fd; }   /* property */
+
+/* ── COMPARISON GRID ── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 1.25rem 0;
+}
+
+@media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+
+.compare-box { border-radius: 10px; overflow: hidden; }
+
+.compare-label {
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.compare-bad .compare-label { background: rgba(255,87,87,0.15); color: var(--red); }
+.compare-good .compare-label { background: rgba(34,211,160,0.12); color: var(--green); }
+.compare-bad pre, .compare-good pre { border-top: none; border-radius: 0 0 10px 10px; }
+
+/* ── ALERT BOXES ── */
+.alert {
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 1rem 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.alert-success { background: rgba(34,211,160,0.08); border: 1px solid rgba(34,211,160,0.25); color: #a7f3d0; }
+.alert-warn    { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); color: #fde68a; }
+.alert-danger  { background: rgba(255,87,87,0.08); border: 1px solid rgba(255,87,87,0.25); color: #fca5a5; }
+.alert-info    { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.25); color: #bfdbfe; }
+
+.alert strong { color: white; }
+
+/* ── CHECKLIST ── */
+.checklist {
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.checklist li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 5px 0;
+  font-size: 13.5px;
+  color: #c0c0d8;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist li:last-child { border-bottom: none; }
+
+.checklist li::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── FLOW ── */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.flow-box {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.flow-box.accent { border-color: var(--accent); color: var(--accent); background: rgba(124,106,255,0.08); }
+.flow-box.green  { border-color: var(--green);  color: var(--green);  background: rgba(34,211,160,0.08); }
+.flow-box.yellow { border-color: var(--yellow); color: var(--yellow); background: rgba(251,191,36,0.08); }
+
+.flow-arrow { color: var(--dim); font-size: 14px; }
+
+/* ── TAGS ── */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.75rem 0;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  background: var(--bg3);
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  margin: 3rem 0;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+}
+
+/* ── INLINE CODE ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(124,106,255,0.12);
+  color: #a78bfa;
+  padding: 1px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(124,106,255,0.2);
+}
+
+/* ── SUMMARY FLOW ── */
+.summary-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-box::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--pink), var(--blue));
+}
+
+/* ── SECTION ICON COLORS ── */
+.icon-red    { background: rgba(255,87,87,0.12);    border: 1px solid rgba(255,87,87,0.25); }
+.icon-yellow { background: rgba(251,191,36,0.12);   border: 1px solid rgba(251,191,36,0.25); }
+.icon-green  { background: rgba(34,211,160,0.12);   border: 1px solid rgba(34,211,160,0.25); }
+.icon-purple { background: rgba(124,106,255,0.12);  border: 1px solid rgba(124,106,255,0.25); }
+.icon-pink   { background: rgba(244,114,182,0.12);  border: 1px solid rgba(244,114,182,0.25); }
+.icon-blue   { background: rgba(96,165,250,0.12);   border: 1px solid rgba(96,165,250,0.25); }
+
+/* Print */
+@media print {
+  body::before, body::after { display: none; }
+  .toc-item:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Laravel · Performance · বাংলা গাইড</div>
+  <h1>
+    <span class="line1">Laravel Performance</span>
+    <span class="line2">Optimization Guide</span>
+  </h1>
+  <p class="hero-sub">
+    N+1 Query Fix, Redis Caching, Database Indexing, Sanctum API, Multi-tenant Middleware এবং Laravel Horizon — সম্পূর্ণ বাংলায় ব্যাখ্যা ও কোড উদাহরণ সহ।
+  </p>
+  <div class="hero-tags">
+    <span class="htag">PHP 8.x</span>
+    <span class="htag">Laravel 11</span>
+    <span class="htag">Redis</span>
+    <span class="htag">MySQL</span>
+    <span class="htag">Sanctum</span>
+    <span class="htag">Horizon</span>
+  </div>
+</section>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<div class="toc-section">
+  <div class="toc-label">// বিষয়সূচি</div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#s1"><span class="toc-num">01</span><span class="toc-dot" style="background:var(--red)"></span>N+1 Query Fix</a>
+    <a class="toc-item" href="#s2"><span class="toc-num">02</span><span class="toc-dot" style="background:var(--yellow)"></span>Redis Cache</a>
+    <a class="toc-item" href="#s3"><span class="toc-num">03</span><span class="toc-dot" style="background:var(--green)"></span>Database Indexing</a>
+    <a class="toc-item" href="#s4"><span class="toc-num">04</span><span class="toc-dot" style="background:var(--accent)"></span>Sanctum API Auth</a>
+    <a class="toc-item" href="#s5"><span class="toc-num">05</span><span class="toc-dot" style="background:var(--pink)"></span>Multi-tenant Middleware</a>
+    <a class="toc-item" href="#s6"><span class="toc-num">06</span><span class="toc-dot" style="background:var(--blue)"></span>Laravel Horizon Queue</a>
+  </div>
+</div>
+
+
+<!-- ═══════════════ SECTION 1: N+1 ═══════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="section-icon icon-red">🔴</div>
+    <div class="section-meta">
+      <span class="section-badge badge-core">Core Task 01</span>
+      <h2 class="section-title">N+1 Query Problem — Eager Loading দিয়ে Fix</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>N+1 মানে কী?</strong> ধরো তুমি ১০০টি Post দেখাচ্ছ। প্রতিটি Post-এর Author নাম দেখাতে গেলে প্রতিটির জন্য আলাদা query যায় — মানে <strong>১ (posts) + ১০০ (users) = ১০১টি query!</strong> এটাই N+1 সমস্যা। Eager Loading দিয়ে মাত্র ২-৩টি query-তে সব data আনা যায়।
+  </div>
+
+  <div class="compare">
+    <div class="compare-box compare-bad">
+      <div class="compare-label">❌ BAD — N+1 Problem (101 queries)</div>
+      <pre><span class="cc">// PostController.php</span>
+<span class="ck">public function</span> <span class="cf">index</span>()
+{
+  <span class="cc">// শুধু posts load করে — 1 query</span>
+  <span class="cv">$posts</span> = <span class="cn">Post</span>::<span class="cf">all</span>();
+
+  <span class="co">foreach</span> (<span class="cv">$posts</span> <span class="co">as</span> <span class="cv">$post</span>) {
+    <span class="cc">// প্রতিটি post-এ আলাদা query!</span>
+    <span class="co">echo</span> <span class="cv">$post</span>-><span class="cp">user</span>-><span class="cp">name</span>;
+    <span class="cc">// এখানে N বার query হয় 😱</span>
+  }
+  <span class="cc">// মোট: 1 + N = 101 queries!</span>
+}</pre>
+    </div>
+    <div class="compare-box compare-good">
+      <div class="compare-label">✅ GOOD — Eager Loading (3 queries)</div>
+      <pre><span class="cc">// PostController.php</span>
+<span class="ck">public function</span> <span class="cf">index</span>()
+{
+  <span class="cc">// with() দিয়ে একসাথে load করো</span>
+  <span class="cv">$posts</span> = <span class="cn">Post</span>::<span class="cf">with</span>([
+    <span class="cs">'user'</span>,          <span class="cc">// author</span>
+    <span class="cs">'comments.user'</span>, <span class="cc">// nested</span>
+    <span class="cs">'tags'</span>           <span class="cc">// pivot</span>
+  ])-><span class="cf">get</span>();
+  <span class="cc">// মোট: মাত্র 3টি query ✅</span>
+
+  <span class="co">foreach</span> (<span class="cv">$posts</span> <span class="co">as</span> <span class="cv">$post</span>) {
+    <span class="cc">// কোনো extra query নেই!</span>
+    <span class="co">echo</span> <span class="cv">$post</span>-><span class="cp">user</span>-><span class="cp">name</span>;
+  }
+}</pre>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">PostController.php — Pagination + Eager Loading</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="ck">public function</span> <span class="cf">index</span>(<span class="cn">Request</span> <span class="cv">$request</span>)
+{
+  <span class="cv">$posts</span> = <span class="cn">Post</span>::<span class="cf">with</span>([
+    <span class="cs">'user'</span>,
+    <span class="cs">'comments'</span> =&gt; <span class="ck">fn</span>(<span class="cv">$q</span>) =&gt; <span class="cv">$q</span>-><span class="cf">with</span>(<span class="cs">'user'</span>)-><span class="cf">latest</span>()-><span class="cf">limit</span>(<span class="cnum">3</span>),
+    <span class="cs">'tags'</span>
+  ])
+  -><span class="cf">withCount</span>(<span class="cs">'comments'</span>)     <span class="cc">// extra query না করে count নাও</span>
+  -><span class="cf">published</span>()               <span class="cc">// scope</span>
+  -><span class="cf">latest</span>()
+  -><span class="cf">paginate</span>(<span class="cnum">20</span>);
+
+  <span class="ck">return</span> <span class="cn">PostResource</span>::<span class="cf">collection</span>(<span class="cv">$posts</span>);
+}
+
+<span class="cc">// ─── API Resource-এ whenLoaded() ব্যবহার করো ───</span>
+<span class="cc">// PostResource.php</span>
+<span class="ck">public function</span> <span class="cf">toArray</span>(<span class="cv">$request</span>): <span class="cn">array</span>
+{
+  <span class="ck">return</span> [
+    <span class="cs">'id'</span>             =&gt; <span class="cv">$this</span>-><span class="cp">id</span>,
+    <span class="cs">'title'</span>          =&gt; <span class="cv">$this</span>-><span class="cp">title</span>,
+    <span class="cs">'comments_count'</span> =&gt; <span class="cv">$this</span>-><span class="cp">comments_count</span>,
+    <span class="cs">'author'</span>         =&gt; <span class="ck">new</span> <span class="cn">UserResource</span>(<span class="cv">$this</span>-><span class="cf">whenLoaded</span>(<span class="cs">'user'</span>)),
+    <span class="cs">'comments'</span>       =&gt; <span class="cn">CommentResource</span>::<span class="cf">collection</span>(<span class="cv">$this</span>-><span class="cf">whenLoaded</span>(<span class="cs">'comments'</span>)),
+    <span class="cs">'tags'</span>           =&gt; <span class="cn">TagResource</span>::<span class="cf">collection</span>(<span class="cv">$this</span>-><span class="cf">whenLoaded</span>(<span class="cs">'tags'</span>)),
+  ];
+}</pre>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag">with() → Eager Load</span>
+    <span class="tag">load() → Lazy Eager Load</span>
+    <span class="tag">withCount() → Count only</span>
+    <span class="tag">whenLoaded() → Conditional in Resource</span>
+    <span class="tag">select() → Specific columns only</span>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">💡</span>
+    <div><strong>Pro Tip:</strong> <code>php artisan telescope</code> অথবা <code>debugbar</code> দিয়ে query count monitor করো। N+1 সহজেই ধরা পড়বে।</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SECTION 2: REDIS ═══════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="section-icon icon-yellow">🟡</div>
+    <div class="section-meta">
+      <span class="section-badge badge-core">Core Task 02</span>
+      <h2 class="section-title">Redis Cache — ২টি Endpoint-এ Implement</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Cache কেন দরকার?</strong> একই data বারবার database থেকে আনা expensive। Redis-এ একবার store করলে পরের বার microseconds-এ পাওয়া যায়। DB load ৮০% পর্যন্ত কমাতে পারে।
+  </div>
+
+  <div class="flow">
+    <div class="flow-box">Request আসে</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box yellow">Cache চেক</div>
+    <div class="flow-arrow">→ HIT</div>
+    <div class="flow-box green">Redis থেকে Return ⚡</div>
+    <div class="flow-arrow">→ MISS</div>
+    <div class="flow-box">DB Query</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box accent">Redis-এ Store</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">Response</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">.env — Redis Configuration</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cp">CACHE_DRIVER</span>=<span class="cs">redis</span>
+<span class="cp">REDIS_CLIENT</span>=<span class="cs">phpredis</span>
+<span class="cp">REDIS_HOST</span>=<span class="cs">127.0.0.1</span>
+<span class="cp">REDIS_PASSWORD</span>=<span class="cs">null</span>
+<span class="cp">REDIS_PORT</span>=<span class="cs">6379</span>
+<span class="cp">REDIS_DB</span>=<span class="cs">0</span>
+
+<span class="cc"># Install phpredis extension</span>
+<span class="cc"># composer require predis/predis</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">ProductController.php — Endpoint 1: Products List</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="ck">use</span> <span class="cn">Illuminate\Support\Facades\Cache</span>;
+
+<span class="ck">public function</span> <span class="cf">index</span>(<span class="cn">Request</span> <span class="cv">$request</span>)
+{
+  <span class="cc">// page, filter অনুযায়ী unique cache key</span>
+  <span class="cv">$cacheKey</span> = <span class="cs">'products.list.'</span> . <span class="cf">md5</span>(<span class="cv">$request</span>-><span class="cf">fullUrl</span>());
+
+  <span class="cv">$products</span> = <span class="cn">Cache</span>::<span class="cf">remember</span>(
+    <span class="cv">$cacheKey</span>,
+    <span class="cf">now</span>()-><span class="cf">addMinutes</span>(<span class="cnum">60</span>),  <span class="cc">// 60 মিনিট cache</span>
+    <span class="ck">function</span>() <span class="ck">use</span> (<span class="cv">$request</span>) {
+      <span class="ck">return</span> <span class="cn">Product</span>::<span class="cf">with</span>([<span class="cs">'category'</span>, <span class="cs">'images'</span>])
+        -><span class="cf">when</span>(<span class="cv">$request</span>-><span class="cp">category_id</span>, <span class="ck">fn</span>(<span class="cv">$q</span>, <span class="cv">$id</span>) =&gt;
+          <span class="cv">$q</span>-><span class="cf">where</span>(<span class="cs">'category_id'</span>, <span class="cv">$id</span>)
+        )
+        -><span class="cf">active</span>()
+        -><span class="cf">paginate</span>(<span class="cnum">20</span>);
+    }
+  );
+
+  <span class="ck">return</span> <span class="cn">ProductResource</span>::<span class="cf">collection</span>(<span class="cv">$products</span>);
+}
+
+<span class="cc">// Update/Delete হলে cache clear করো!</span>
+<span class="ck">public function</span> <span class="cf">update</span>(<span class="cn">UpdateProductRequest</span> <span class="cv">$request</span>, <span class="cn">Product</span> <span class="cv">$product</span>)
+{
+  <span class="cv">$product</span>-><span class="cf">update</span>(<span class="cv">$request</span>-><span class="cf">validated</span>());
+
+  <span class="cc">// সব product cache bust করো</span>
+  <span class="cn">Cache</span>::<span class="cf">tags</span>([<span class="cs">'products'</span>])-><span class="cf">flush</span>();
+
+  <span class="ck">return</span> <span class="ck">new</span> <span class="cn">ProductResource</span>(<span class="cv">$product</span>);
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">DashboardController.php — Endpoint 2: Stats with Tags</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="ck">public function</span> <span class="cf">stats</span>()
+{
+  <span class="cc">// Cache Tags দিয়ে smart invalidation</span>
+  <span class="ck">return</span> <span class="cn">Cache</span>::<span class="cf">tags</span>([<span class="cs">'dashboard'</span>, <span class="cs">'stats'</span>])
+    -><span class="cf">remember</span>(<span class="cs">'dashboard.stats'</span>, <span class="cf">now</span>()-><span class="cf">addHour</span>(), <span class="ck">function</span>() {
+      <span class="ck">return</span> [
+        <span class="cs">'total_users'</span>     =&gt; <span class="cn">User</span>::<span class="cf">count</span>(),
+        <span class="cs">'total_orders'</span>    =&gt; <span class="cn">Order</span>::<span class="cf">count</span>(),
+        <span class="cs">'revenue_today'</span>   =&gt; <span class="cn">Order</span>::<span class="cf">whereDate</span>(<span class="cs">'created_at'</span>, <span class="cf">today</span>())
+                                    -><span class="cf">sum</span>(<span class="cs">'amount'</span>),
+        <span class="cs">'active_products'</span> =&gt; <span class="cn">Product</span>::<span class="cf">where</span>(<span class="cs">'is_active'</span>, <span class="ck">true</span>)-><span class="cf">count</span>(),
+        <span class="cs">'pending_orders'</span>  =&gt; <span class="cn">Order</span>::<span class="cf">where</span>(<span class="cs">'status'</span>, <span class="cs">'pending'</span>)-><span class="cf">count</span>(),
+        <span class="cs">'cached_at'</span>       =&gt; <span class="cf">now</span>()-><span class="cf">toDateTimeString</span>(),
+      ];
+    });
+}
+
+<span class="cc">// Order তৈরি হলে dashboard stats পুরনো হয়ে যায়</span>
+<span class="cc">// OrderObserver.php</span>
+<span class="ck">public function</span> <span class="cf">created</span>(<span class="cn">Order</span> <span class="cv">$order</span>): <span class="ck">void</span>
+{
+  <span class="cn">Cache</span>::<span class="cf">tags</span>(<span class="cs">'dashboard'</span>)-><span class="cf">flush</span>(); <span class="cc">// সব dashboard cache clear</span>
+}
+
+<span class="cc">// ─── Cache Helper Methods ───</span>
+<span class="cn">Cache</span>::<span class="cf">put</span>(<span class="cs">'key'</span>, <span class="cv">$value</span>, <span class="cnum">3600</span>);      <span class="cc">// store for 1 hour</span>
+<span class="cn">Cache</span>::<span class="cf">get</span>(<span class="cs">'key'</span>, <span class="cs">'default'</span>);          <span class="cc">// get with default</span>
+<span class="cn">Cache</span>::<span class="cf">forget</span>(<span class="cs">'key'</span>);                  <span class="cc">// single key delete</span>
+<span class="cn">Cache</span>::<span class="cf">has</span>(<span class="cs">'key'</span>);                     <span class="cc">// check existence</span>
+<span class="cn">Cache</span>::<span class="cf">forever</span>(<span class="cs">'config'</span>, <span class="cv">$data</span>);       <span class="cc">// no expiry</span></pre>
+  </div>
+
+  <div class="alert alert-success">
+    <span class="alert-icon">💡</span>
+    <div><strong>Cache Key Convention:</strong> <code>model.scope.id.page</code> format ব্যবহার করো। যেমন <code>products.active.cat_5.page_2</code> — এতে specific cache bust করা সহজ।</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SECTION 3: INDEXING ═══════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="section-icon icon-green">🟢</div>
+    <div class="section-meta">
+      <span class="section-badge badge-core">Core Task 03</span>
+      <h2 class="section-title">Slow Queries — Proper Database Indexing</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Index কীভাবে কাজ করে?</strong> Index হলো বইয়ের পেছনের সূচি। সূচি ছাড়া পুরো বই পড়তে হয় (Full Table Scan), সূচি থাকলে সরাসরি পাতায় যাওয়া যায়। ১ মিলিয়ন row-এ index ছাড়া query <strong>~2 সেকেন্ড</strong>, index থাকলে <strong>~2 মিলিসেকেন্ড!</strong>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">MySQL — Slow Query Identify করো</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc">-- Slow query log চালু করো</span>
+<span class="ck">SET GLOBAL</span> slow_query_log = <span class="cs">'ON'</span>;
+<span class="ck">SET GLOBAL</span> long_query_time = <span class="cnum">1</span>; <span class="cc">-- 1 সেকেন্ডের বেশি log হবে</span>
+<span class="ck">SET GLOBAL</span> slow_query_log_file = <span class="cs">'/var/log/mysql/slow.log'</span>;
+
+<span class="cc">-- EXPLAIN দিয়ে query plan দেখো</span>
+<span class="ck">EXPLAIN SELECT</span> * <span class="ck">FROM</span> orders
+<span class="ck">WHERE</span> user_id = <span class="cnum">100</span> <span class="ck">AND</span> status = <span class="cs">'pending'</span>;
+
+<span class="cc">-- Output এ type: ALL মানে Full Table Scan = BAD!</span>
+<span class="cc">-- type: ref বা type: const মানে index ব্যবহার হচ্ছে = GOOD!</span>
+
+<span class="cc">-- Laravel-এ</span>
+<span class="cn">DB</span>::<span class="cf">enableQueryLog</span>();
+<span class="cc">// ... your queries ...</span>
+<span class="cf">dd</span>(<span class="cn">DB</span>::<span class="cf">getQueryLog</span>()); <span class="cc">// সব queries দেখো</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">database/migrations/add_performance_indexes.php</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc">// php artisan make:migration add_performance_indexes</span>
+
+<span class="ck">public function</span> <span class="cf">up</span>(): <span class="ck">void</span>
+{
+  <span class="cc">// ─── orders table ───</span>
+  <span class="cn">Schema</span>::<span class="cf">table</span>(<span class="cs">'orders'</span>, <span class="ck">function</span>(<span class="cn">Blueprint</span> <span class="cv">$table</span>) {
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'user_id'</span>);
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'status'</span>);
+    <span class="cv">$table</span>-><span class="cf">index</span>([<span class="cs">'user_id'</span>, <span class="cs">'status'</span>]); <span class="cc">// Composite — সবচেয়ে কার্যকর</span>
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'created_at'</span>);           <span class="cc">// date range query</span>
+    <span class="cv">$table</span>-><span class="cf">index</span>([<span class="cs">'tenant_id'</span>, <span class="cs">'status'</span>, <span class="cs">'created_at'</span>]); <span class="cc">// 3-column</span>
+  });
+
+  <span class="cc">// ─── posts table ───</span>
+  <span class="cn">Schema</span>::<span class="cf">table</span>(<span class="cs">'posts'</span>, <span class="ck">function</span>(<span class="cn">Blueprint</span> <span class="cv">$table</span>) {
+    <span class="cv">$table</span>-><span class="cf">unique</span>(<span class="cs">'slug'</span>);                    <span class="cc">// unique index</span>
+    <span class="cv">$table</span>-><span class="cf">index</span>([<span class="cs">'is_published'</span>, <span class="cs">'created_at'</span>]); <span class="cc">// blog listing</span>
+    <span class="cv">$table</span>-><span class="cf">fullText</span>([<span class="cs">'title'</span>, <span class="cs">'content'</span>]);   <span class="cc">// FULLTEXT search</span>
+  });
+
+  <span class="cc">// ─── users table ───</span>
+  <span class="cn">Schema</span>::<span class="cf">table</span>(<span class="cs">'users'</span>, <span class="ck">function</span>(<span class="cn">Blueprint</span> <span class="cv">$table</span>) {
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'email'</span>);      <span class="cc">// login lookup</span>
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'tenant_id'</span>);  <span class="cc">// multi-tenant filter</span>
+    <span class="cv">$table</span>-><span class="cf">index</span>(<span class="cs">'created_at'</span>); <span class="cc">// date sort</span>
+  });
+}
+
+<span class="ck">public function</span> <span class="cf">down</span>(): <span class="ck">void</span>
+{
+  <span class="cn">Schema</span>::<span class="cf">table</span>(<span class="cs">'orders'</span>, <span class="ck">fn</span>(<span class="cv">$t</span>) =&gt; <span class="cv">$t</span>-><span class="cf">dropIndex</span>([<span class="cs">'user_id'</span>, <span class="cs">'status'</span>]));
+}</pre>
+  </div>
+
+  <ul class="checklist">
+    <li>WHERE clause-এ যে column ব্যবহার হয় সেখানে index দাও</li>
+    <li>JOIN করার সময় foreign key column-এ index অবশ্যই চাই</li>
+    <li>ORDER BY বা GROUP BY-এর column-এও index দিলে sort fast হয়</li>
+    <li>Unique constraint দরকার হলে unique() ব্যবহার করো (email, slug)</li>
+    <li>Composite index-এ column order গুরুত্বপূর্ণ — highest selectivity আগে</li>
+  </ul>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>সতর্কতা:</strong> বেশি index = INSERT/UPDATE/DELETE slow হয়, কারণ প্রতিটি write-এ index update হয়। Write-heavy table-এ অপ্রয়োজনীয় index দিও না।</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SECTION 4: SANCTUM ═══════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🔐</div>
+    <div class="section-meta">
+      <span class="section-badge badge-adv">Advanced Task 01</span>
+      <h2 class="section-title">Laravel Sanctum — Protected API Route</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Sanctum কী?</strong> Laravel-এর lightweight token-based authentication system। Mobile app বা SPA-র জন্য API token দেয়। প্রতিটি request-এ HTTP header-এ <code>Bearer Token</code> পাঠাতে হয়। Passport-এর মতো heavy OAuth নয় — simple ও fast।
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">Terminal — Installation</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cf">composer</span> require laravel/sanctum
+
+<span class="cf">php</span> artisan vendor:publish \
+  --provider=<span class="cs">"Laravel\Sanctum\SanctumServiceProvider"</span>
+
+<span class="cf">php</span> artisan migrate  <span class="cc"># personal_access_tokens table তৈরি হবে</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">AuthController.php — Login, Register & Logout</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="ck">namespace</span> <span class="cn">App\Http\Controllers\Api</span>;
+
+<span class="ck">class</span> <span class="cn">AuthController</span> <span class="ck">extends</span> <span class="cn">Controller</span>
+{
+  <span class="ck">public function</span> <span class="cf">register</span>(<span class="cn">RegisterRequest</span> <span class="cv">$request</span>)
+  {
+    <span class="cv">$user</span> = <span class="cn">User</span>::<span class="cf">create</span>([
+      <span class="cs">'name'</span>     =&gt; <span class="cv">$request</span>-><span class="cp">name</span>,
+      <span class="cs">'email'</span>    =&gt; <span class="cv">$request</span>-><span class="cp">email</span>,
+      <span class="cs">'password'</span> =&gt; <span class="cn">Hash</span>::<span class="cf">make</span>(<span class="cv">$request</span>-><span class="cp">password</span>),
+    ]);
+
+    <span class="cv">$token</span> = <span class="cv">$user</span>-><span class="cf">createToken</span>(<span class="cs">'mobile-app'</span>, [<span class="cs">'*'</span>])-><span class="cp">plainTextToken</span>;
+
+    <span class="ck">return</span> <span class="cf">response</span>()-><span class="cf">json</span>([
+      <span class="cs">'token'</span> =&gt; <span class="cv">$token</span>,
+      <span class="cs">'user'</span>  =&gt; <span class="ck">new</span> <span class="cn">UserResource</span>(<span class="cv">$user</span>),
+    ], <span class="cnum">201</span>);
+  }
+
+  <span class="ck">public function</span> <span class="cf">login</span>(<span class="cn">LoginRequest</span> <span class="cv">$request</span>)
+  {
+    <span class="ck">if</span> (! <span class="cn">Auth</span>::<span class="cf">attempt</span>(<span class="cv">$request</span>-><span class="cf">only</span>(<span class="cs">'email'</span>, <span class="cs">'password'</span>))) {
+      <span class="ck">throw</span> <span class="cn">ValidationException</span>::<span class="cf">withMessages</span>([
+        <span class="cs">'email'</span> =&gt; [<span class="cs">'Invalid credentials.'</span>],
+      ]);
+    }
+
+    <span class="cv">$user</span>  = <span class="cn">Auth</span>::<span class="cf">user</span>();
+
+    <span class="cc">// আগের সব tokens revoke করো (optional)</span>
+    <span class="cv">$user</span>-><span class="cf">tokens</span>()-><span class="cf">delete</span>();
+
+    <span class="cv">$token</span> = <span class="cv">$user</span>-><span class="cf">createToken</span>(
+      <span class="cs">'api-token'</span>,
+      [<span class="cs">'products:read'</span>, <span class="cs">'orders:write'</span>]  <span class="cc">// abilities/scopes</span>
+    )-><span class="cp">plainTextToken</span>;
+
+    <span class="ck">return</span> <span class="cf">response</span>()-><span class="cf">json</span>([
+      <span class="cs">'token'</span>      =&gt; <span class="cv">$token</span>,
+      <span class="cs">'token_type'</span> =&gt; <span class="cs">'Bearer'</span>,
+      <span class="cs">'user'</span>       =&gt; <span class="ck">new</span> <span class="cn">UserResource</span>(<span class="cv">$user</span>),
+    ]);
+  }
+
+  <span class="ck">public function</span> <span class="cf">logout</span>(<span class="cn">Request</span> <span class="cv">$request</span>)
+  {
+    <span class="cc">// শুধু current token delete করো</span>
+    <span class="cv">$request</span>-><span class="cf">user</span>()-><span class="cf">currentAccessToken</span>()-><span class="cf">delete</span>();
+
+    <span class="ck">return</span> <span class="cf">response</span>()-><span class="cf">json</span>([<span class="cs">'message'</span> =&gt; <span class="cs">'Successfully logged out.'</span>]);
+  }
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">routes/api.php — Public & Protected Routes</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc">// ─── Public Routes ───</span>
+<span class="cn">Route</span>::<span class="cf">post</span>(<span class="cs">'/auth/register'</span>, [<span class="cn">AuthController</span>::<span class="ck">class</span>, <span class="cs">'register'</span>]);
+<span class="cn">Route</span>::<span class="cf">post</span>(<span class="cs">'/auth/login'</span>,    [<span class="cn">AuthController</span>::<span class="ck">class</span>, <span class="cs">'login'</span>]);
+
+<span class="cc">// ─── Protected Routes ───</span>
+<span class="cn">Route</span>::<span class="cf">middleware</span>(<span class="cs">'auth:sanctum'</span>)-><span class="cf">group</span>(<span class="ck">function</span>() {
+  <span class="cn">Route</span>::<span class="cf">get</span>(<span class="cs">'/me'</span>,          <span class="ck">fn</span>(<span class="cn">Request</span> <span class="cv">$r</span>) =&gt; <span class="ck">new</span> <span class="cn">UserResource</span>(<span class="cv">$r</span>-><span class="cf">user</span>()));
+  <span class="cn">Route</span>::<span class="cf">post</span>(<span class="cs">'/auth/logout'</span>, [<span class="cn">AuthController</span>::<span class="ck">class</span>, <span class="cs">'logout'</span>]);
+  <span class="cn">Route</span>::<span class="cf">apiResource</span>(<span class="cs">'products'</span>, <span class="cn">ProductController</span>::<span class="ck">class</span>);
+  <span class="cn">Route</span>::<span class="cf">apiResource</span>(<span class="cs">'orders'</span>,   <span class="cn">OrderController</span>::<span class="ck">class</span>);
+});
+
+<span class="cc">// ─── Request Header ───</span>
+<span class="cc">// Authorization: Bearer 1|abc123xyz...</span>
+<span class="cc">// Accept: application/json</span>
+<span class="cc">// Content-Type: application/json</span></pre>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">🔑</span>
+    <div><strong>Token Abilities:</strong> <code>createToken('name', ['products:read'])</code> দিয়ে specific permission দাও। Controller-এ <code>$request->user()->tokenCan('products:read')</code> দিয়ে check করো।</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SECTION 5: MULTI-TENANT ═══════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="section-icon icon-pink">🏢</div>
+    <div class="section-meta">
+      <span class="section-badge badge-adv">Advanced Task 02</span>
+      <h2 class="section-title">Multi-tenant Middleware — Data Isolation</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Multi-tenancy মানে কী?</strong> একটি application-এ অনেক company (tenant) ব্যবহার করে, কিন্তু প্রত্যেকের data সম্পূর্ণ আলাদা। যেমন Shopify — হাজারো shop, কিন্তু এক codebase। Middleware দিয়ে প্রতিটি request-এ tenant identify করে Global Scope দিয়ে data isolated রাখা হয়।
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Http/Middleware/IdentifyTenant.php</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc">// php artisan make:middleware IdentifyTenant</span>
+
+<span class="ck">namespace</span> <span class="cn">App\Http\Middleware</span>;
+
+<span class="ck">class</span> <span class="cn">IdentifyTenant</span>
+{
+  <span class="ck">public function</span> <span class="cf">handle</span>(<span class="cn">Request</span> <span class="cv">$request</span>, <span class="cn">Closure</span> <span class="cv">$next</span>): <span class="cn">Response</span>
+  {
+    <span class="cc">// Method 1: Subdomain থেকে identify করো</span>
+    <span class="cv">$host</span>   = <span class="cv">$request</span>-><span class="cf">getHost</span>();          <span class="cc">// shop1.myapp.com</span>
+    <span class="cv">$sub</span>    = <span class="cf">explode</span>(<span class="cs">'.'</span>, <span class="cv">$host</span>)[<span class="cnum">0</span>];          <span class="cc">// shop1</span>
+
+    <span class="cc">// Method 2: Header থেকে (API-r জন্য)</span>
+    <span class="cc">// $sub = $request->header('X-Tenant-ID');</span>
+
+    <span class="cv">$tenant</span> = <span class="cn">Cache</span>::<span class="cf">remember</span>(
+      <span class="cs">"tenant.{$sub}"</span>, <span class="cf">now</span>()-><span class="cf">addHour</span>(),
+      <span class="ck">fn</span>() =&gt; <span class="cn">Tenant</span>::<span class="cf">where</span>(<span class="cs">'subdomain'</span>, <span class="cv">$sub</span>)-><span class="cf">first</span>()
+    );
+
+    <span class="ck">if</span> (! <span class="cv">$tenant</span>) {
+      <span class="ck">return</span> <span class="cf">response</span>()-><span class="cf">json</span>([<span class="cs">'error'</span> =&gt; <span class="cs">'Tenant not found.'</span>], <span class="cnum">404</span>);
+    }
+
+    <span class="ck">if</span> (! <span class="cv">$tenant</span>-><span class="cp">is_active</span>) {
+      <span class="ck">return</span> <span class="cf">response</span>()-><span class="cf">json</span>([<span class="cs">'error'</span> =&gt; <span class="cs">'Account suspended.'</span>], <span class="cnum">403</span>);
+    }
+
+    <span class="cc">// App সর্বত্র access করার জন্য bind করো</span>
+    <span class="cf">app</span>()-><span class="cf">instance</span>(<span class="cs">'tenant'</span>, <span class="cv">$tenant</span>);
+    <span class="cn">Config</span>::<span class="cf">set</span>(<span class="cs">'app.tenant_id'</span>, <span class="cv">$tenant</span>-><span class="cp">id</span>);
+
+    <span class="ck">return</span> <span class="cv">$next</span>(<span class="cv">$request</span>);
+  }
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Traits/BelongsToTenant.php — Global Scope দিয়ে Auto Data Isolation</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="ck">trait</span> <span class="cn">BelongsToTenant</span>
+{
+  <span class="ck">public static function</span> <span class="cf">bootBelongsToTenant</span>(): <span class="ck">void</span>
+  {
+    <span class="cc">// প্রতিটি query-তে automatically tenant_id filter যোগ হবে</span>
+    <span class="ck">static</span>::<span class="cf">addGlobalScope</span>(<span class="cs">'tenant'</span>, <span class="ck">function</span>(<span class="cn">Builder</span> <span class="cv">$query</span>) {
+      <span class="ck">if</span> (<span class="cv">$tenantId</span> = <span class="cf">config</span>(<span class="cs">'app.tenant_id'</span>)) {
+        <span class="cv">$query</span>-><span class="cf">where</span>(<span class="cv">$query</span>-><span class="cf">getModel</span>()-><span class="cf">getTable</span>() . <span class="cs">'.tenant_id'</span>, <span class="cv">$tenantId</span>);
+      }
+    });
+
+    <span class="cc">// Create করার সময় tenant_id auto-set হবে</span>
+    <span class="ck">static</span>::<span class="cf">creating</span>(<span class="ck">function</span>(<span class="cv">$model</span>) {
+      <span class="cv">$model</span>-><span class="cp">tenant_id</span> ??= <span class="cf">config</span>(<span class="cs">'app.tenant_id'</span>);
+    });
+  }
+
+  <span class="cc">// Scope bypass করতে হলে</span>
+  <span class="ck">public function</span> <span class="cf">scopeForAllTenants</span>(<span class="cv">$query</span>)
+  {
+    <span class="ck">return</span> <span class="cv">$query</span>-><span class="cf">withoutGlobalScope</span>(<span class="cs">'tenant'</span>);
+  }
+}
+
+<span class="cc">// ─── Model-এ use করো ───</span>
+<span class="ck">class</span> <span class="cn">Product</span> <span class="ck">extends</span> <span class="cn">Model</span>
+{
+  <span class="ck">use</span> <span class="cn">BelongsToTenant</span>;
+  <span class="cc">// ব্যস! এখন Product::all() শুধু current tenant-এর data দেবে</span>
+}
+
+<span class="ck">class</span> <span class="cn">Order</span> <span class="ck">extends</span> <span class="cn">Model</span> { <span class="ck">use</span> <span class="cn">BelongsToTenant</span>; }
+<span class="ck">class</span> <span class="cn">Invoice</span> <span class="ck">extends</span> <span class="cn">Model</span> { <span class="ck">use</span> <span class="cn">BelongsToTenant</span>; }</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">bootstrap/app.php — Middleware Register (Laravel 11)</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cv">$middleware</span>-><span class="cf">alias</span>([
+  <span class="cs">'tenant'</span> =&gt; \<span class="cn">App\Http\Middleware\IdentifyTenant</span>::<span class="ck">class</span>,
+]);
+
+<span class="cc">// routes/api.php-এ use করো</span>
+<span class="cn">Route</span>::<span class="cf">middleware</span>([<span class="cs">'tenant'</span>, <span class="cs">'auth:sanctum'</span>])-><span class="cf">group</span>(<span class="ck">function</span>() {
+  <span class="cn">Route</span>::<span class="cf">apiResource</span>(<span class="cs">'products'</span>, <span class="cn">ProductController</span>::<span class="ck">class</span>);
+  <span class="cn">Route</span>::<span class="cf">apiResource</span>(<span class="cs">'orders'</span>,   <span class="cn">OrderController</span>::<span class="ck">class</span>);
+});</pre>
+  </div>
+
+  <div class="alert alert-success">
+    <span class="alert-icon">🏗️</span>
+    <div><strong>Data Isolation নিশ্চিত:</strong> এখন <code>Product::all()</code> call করলে শুধু current tenant-এর products আসবে। অন্য tenant-এর data automatically filtered। Super admin-এর জন্য <code>withoutGlobalScope('tenant')</code> ব্যবহার করো।</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SECTION 6: HORIZON ═══════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="section-icon icon-blue">📊</div>
+    <div class="section-meta">
+      <span class="section-badge badge-pro">Advanced Task 03</span>
+      <h2 class="section-title">Laravel Horizon — Queue Setup & Monitoring</h2>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Horizon কী?</strong> Laravel Queue-এর জন্য beautiful real-time dashboard। Email পাঠানো, image resize, notification, PDF generate — এগুলো background-এ করার জন্য Queue। Horizon দিয়ে সব monitor, retry এবং scale করা যায়।
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">Terminal — Installation & Setup</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc"># Install করো</span>
+<span class="cf">composer</span> require laravel/horizon
+
+<span class="cc"># Config publish করো</span>
+<span class="cf">php</span> artisan horizon:install
+
+<span class="cc"># .env-এ Redis queue set করো</span>
+<span class="cn">QUEUE_CONNECTION</span>=<span class="cs">redis</span>
+
+<span class="cc"># Horizon চালু করো</span>
+<span class="cf">php</span> artisan horizon
+
+<span class="cc"># Dashboard: http://localhost/horizon</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">config/horizon.php — Workers & Priority Queues</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cs">'environments'</span> =&gt; [
+  <span class="cs">'production'</span> =&gt; [
+    <span class="cs">'supervisor-1'</span> =&gt; [
+      <span class="cs">'connection'</span>      =&gt; <span class="cs">'redis'</span>,
+      <span class="cs">'queue'</span>           =&gt; [<span class="cs">'high'</span>, <span class="cs">'default'</span>, <span class="cs">'low'</span>], <span class="cc">// priority order!</span>
+      <span class="cs">'balance'</span>         =&gt; <span class="cs">'auto'</span>,     <span class="cc">// load অনুযায়ী scale</span>
+      <span class="cs">'minProcesses'</span>    =&gt; <span class="cnum">2</span>,
+      <span class="cs">'maxProcesses'</span>    =&gt; <span class="cnum">20</span>,         <span class="cc">// max workers</span>
+      <span class="cs">'balanceMaxShift'</span> =&gt; <span class="cnum">1</span>,
+      <span class="cs">'balanceCooldown'</span> =&gt; <span class="cnum">3</span>,
+      <span class="cs">'tries'</span>           =&gt; <span class="cnum">3</span>,          <span class="cc">// fail হলে 3 বার retry</span>
+      <span class="cs">'timeout'</span>         =&gt; <span class="cnum">90</span>,         <span class="cc">// seconds</span>
+      <span class="cs">'sleep'</span>           =&gt; <span class="cnum">3</span>,
+    ],
+  ],
+
+  <span class="cs">'local'</span> =&gt; [
+    <span class="cs">'supervisor-1'</span> =&gt; [
+      <span class="cs">'connection'</span>   =&gt; <span class="cs">'redis'</span>,
+      <span class="cs">'queue'</span>        =&gt; [<span class="cs">'high'</span>, <span class="cs">'default'</span>, <span class="cs">'low'</span>],
+      <span class="cs">'balance'</span>      =&gt; <span class="cs">'simple'</span>,
+      <span class="cs">'processes'</span>    =&gt; <span class="cnum">3</span>,
+      <span class="cs">'tries'</span>        =&gt; <span class="cnum">3</span>,
+    ],
+  ],
+],</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Jobs/SendWelcomeEmail.php — Job তৈরি করো</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc">// php artisan make:job SendWelcomeEmail</span>
+
+<span class="ck">class</span> <span class="cn">SendWelcomeEmail</span> <span class="ck">implements</span> <span class="cn">ShouldQueue</span>
+{
+  <span class="ck">use</span> <span class="cn">Dispatchable</span>, <span class="cn">InteractsWithQueue</span>, <span class="cn">Queueable</span>, <span class="cn">SerializesModels</span>;
+
+  <span class="ck">public int</span> <span class="cv">$tries</span>   = <span class="cnum">3</span>;   <span class="cc">// কতবার retry করবে</span>
+  <span class="ck">public int</span> <span class="cv">$timeout</span> = <span class="cnum">60</span>;  <span class="cc">// timeout seconds</span>
+
+  <span class="ck">public function</span> <span class="cf">__construct</span>(<span class="ck">public</span> <span class="cn">User</span> <span class="cv">$user</span>) {}
+
+  <span class="ck">public function</span> <span class="cf">handle</span>(): <span class="ck">void</span>
+  {
+    <span class="cn">Mail</span>::<span class="cf">to</span>(<span class="cv">$this</span>-><span class="cp">user</span>)
+        -><span class="cf">send</span>(<span class="ck">new</span> <span class="cn">WelcomeEmail</span>(<span class="cv">$this</span>-><span class="cp">user</span>));
+  }
+
+  <span class="cc">// Exponential backoff — retry delay বাড়তে থাকবে</span>
+  <span class="ck">public function</span> <span class="cf">backoff</span>(): <span class="cn">array</span>
+  {
+    <span class="ck">return</span> [<span class="cnum">30</span>, <span class="cnum">60</span>, <span class="cnum">300</span>]; <span class="cc">// 30s, 1min, 5min</span>
+  }
+
+  <span class="cc">// সব retry শেষ হলে এটা call হবে</span>
+  <span class="ck">public function</span> <span class="cf">failed</span>(\<span class="cn">Throwable</span> <span class="cv">$e</span>): <span class="ck">void</span>
+  {
+    <span class="cn">Log</span>::<span class="cf">error</span>(<span class="cs">'Welcome email failed'</span>, [
+      <span class="cs">'user_id'</span> =&gt; <span class="cv">$this</span>-><span class="cp">user</span>-><span class="cp">id</span>,
+      <span class="cs">'error'</span>   =&gt; <span class="cv">$e</span>-><span class="cf">getMessage</span>(),
+    ]);
+
+    <span class="cc">// Admin-কে notify করো</span>
+    <span class="cn">Notification</span>::<span class="cf">route</span>(<span class="cs">'mail'</span>, <span class="cs">'admin@app.com'</span>)
+      -><span class="cf">notify</span>(<span class="ck">new</span> <span class="cn">JobFailedNotification</span>(<span class="cv">$this</span>, <span class="cv">$e</span>));
+  }
+}
+
+<span class="cc">// ─── Controller থেকে dispatch করো ───</span>
+<span class="ck">public function</span> <span class="cf">register</span>(<span class="cn">RegisterRequest</span> <span class="cv">$request</span>)
+{
+  <span class="cv">$user</span> = <span class="cn">User</span>::<span class="cf">create</span>(<span class="cv">$request</span>-><span class="cf">validated</span>());
+
+  <span class="cn">SendWelcomeEmail</span>::<span class="cf">dispatch</span>(<span class="cv">$user</span>)       <span class="cc">// queue-এ পাঠাও</span>
+    -><span class="cf">onQueue</span>(<span class="cs">'high'</span>)                      <span class="cc">// high priority queue</span>
+    -><span class="cf">delay</span>(<span class="cf">now</span>()-><span class="cf">addSeconds</span>(<span class="cnum">5</span>));          <span class="cc">// 5 সেকেন্ড পরে process করো</span>
+
+  <span class="cc">// একসাথে অনেক job dispatch (Bus::batch)</span>
+  <span class="cn">Bus</span>::<span class="cf">batch</span>([
+    <span class="ck">new</span> <span class="cn">ProcessImage</span>(<span class="cv">$user</span>),
+    <span class="ck">new</span> <span class="cn">SendSlackNotification</span>(<span class="cv">$user</span>),
+    <span class="ck">new</span> <span class="cn">UpdateSearchIndex</span>(<span class="cv">$user</span>),
+  ])-><span class="cf">dispatch</span>();
+
+  <span class="ck">return</span> <span class="ck">new</span> <span class="cn">UserResource</span>(<span class="cv">$user</span>);
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">Supervisor — Production-এ Horizon daemon করো</span>
+      <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    </div>
+    <pre><span class="cc"># /etc/supervisor/conf.d/horizon.conf</span>
+
+[program:horizon]
+process_name=%(program_name)s
+command=<span class="cf">php</span> /var/www/html/artisan horizon
+autostart=<span class="cs">true</span>
+autorestart=<span class="cs">true</span>
+user=www-data
+redirect_stderr=<span class="cs">true</span>
+stdout_logfile=/var/log/horizon.log
+stopwaitsecs=<span class="cnum">3600</span>
+
+<span class="cc"># চালু করো</span>
+<span class="cf">sudo supervisorctl reread</span>
+<span class="cf">sudo supervisorctl update</span>
+<span class="cf">sudo supervisorctl start horizon</span>
+
+<span class="cc"># Deploy-এর পরে graceful restart</span>
+<span class="cf">php</span> artisan horizon:terminate</pre>
+  </div>
+
+  <ul class="checklist">
+    <li>Throughput — প্রতি মিনিটে কতটি job process হচ্ছে real-time দেখা যায়</li>
+    <li>Runtime — প্রতিটি job-এর average execution time track করা যায়</li>
+    <li>Failed Jobs — কোন jobs fail করেছে, কেন ও retry করার option আছে</li>
+    <li>Queue Metrics — high/default/low queue-এর pending job count</li>
+    <li>Worker Processes — কতগুলো worker active আছে সেটা monitor করা যায়</li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SUMMARY ═══════════════ -->
+<div class="summary-box">
+  <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">🏁 Complete Request Flow</div>
+
+  <div class="flow" style="background: var(--bg3);">
+    <div class="flow-box">HTTP Request</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box yellow">Tenant MW</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box accent">Sanctum Auth</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box yellow">Redis Cache?</div>
+    <div class="flow-arrow">MISS →</div>
+    <div class="flow-box">Eager Load DB</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box accent">Cache Store</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">JSON Response</div>
+  </div>
+
+  <div style="font-family: var(--font-mono); font-size: 11px; color: var(--dim); margin-top: 12px;">
+    Background: Controller → Job Dispatch → Redis Queue → Horizon Worker → Process
+  </div>
+</div>
+
+</div><!-- .page-wrap -->
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer" style="position:relative;z-index:1;">
+  <div class="page-wrap" style="padding-top:0;padding-bottom:2rem;">
+    LARAVEL PERFORMANCE GUIDE &nbsp;·&nbsp; BANGLA &nbsp;·&nbsp; PHP 8.x + LARAVEL 11
+  </div>
+</footer>
+
+</body>
+</html>
