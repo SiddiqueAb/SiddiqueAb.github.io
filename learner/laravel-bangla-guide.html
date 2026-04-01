@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel সম্পূর্ণ গাইড | লোকাল থেকে লাইভ সার্ভার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --yellow: #eab308;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #1a0a2e 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(249,115,22,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.4);
+    color: var(--accent);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(90deg, #f97316, #fb923c, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 30px;
+    font-size: 17px;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* NAV */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+
+  .toc-inner {
+    display: flex;
+    gap: 6px;
+    max-width: 1100px;
+    margin: 0 auto;
+    white-space: nowrap;
+  }
+
+  .toc a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .toc a:hover {
+    color: var(--accent);
+    border-color: rgba(249,115,22,0.3);
+    background: rgba(249,115,22,0.08);
+  }
+
+  /* MAIN */
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 60px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), #c2410c);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-header .icon {
+    font-size: 24px;
+    margin-left: auto;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card p, .card li {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .card ul {
+    padding-left: 20px;
+  }
+
+  .card li {
+    margin-bottom: 4px;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 14px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .code-header .lang {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .code-header .label {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .code-block pre {
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .code-block code {
+    color: #e6edf3;
+  }
+
+  .c-comment { color: #6a737d; }
+  .c-cmd { color: #79c0ff; }
+  .c-str { color: #a5d6ff; }
+  .c-key { color: #f97316; }
+  .c-val { color: #22c55e; }
+  .c-warn { color: #eab308; }
+  .c-php { color: #d2a8ff; }
+  .c-var { color: #ffa657; }
+
+  /* STEP FLOW */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 44px;
+    bottom: -12px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .step-num {
+    width: 38px;
+    height: 38px;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .step-body {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+
+  .step-body h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .step-body p, .step-body li {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ALERT BOXES */
+  .alert {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    border-left: 4px solid;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .alert-body { flex: 1; }
+  .alert-body strong { display: block; margin-bottom: 4px; font-size: 14px; }
+  .alert-body p { font-size: 14px; line-height: 1.7; }
+
+  .alert-warn {
+    background: rgba(234,179,8,0.08);
+    border-color: var(--yellow);
+    color: #fef08a;
+  }
+  .alert-warn p { color: #fef9c3; }
+
+  .alert-danger {
+    background: rgba(239,68,68,0.08);
+    border-color: var(--red);
+    color: #fca5a5;
+  }
+  .alert-danger p { color: #fecaca; }
+
+  .alert-success {
+    background: rgba(34,197,94,0.08);
+    border-color: var(--green);
+    color: #86efac;
+  }
+  .alert-success p { color: #bbf7d0; }
+
+  .alert-info {
+    background: rgba(59,130,246,0.08);
+    border-color: var(--blue);
+    color: #93c5fd;
+  }
+  .alert-info p { color: #bfdbfe; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* COMPARE TABLE */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+
+  .compare-table th {
+    background: var(--surface2);
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 13px;
+  }
+
+  .compare-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+
+  .compare-table tr:hover td {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--accent); border: 1px solid rgba(249,115,22,0.3); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Inline code */
+  code.inline {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #ffa657;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 22px 0 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h3::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .env-key { color: #79c0ff; }
+  .env-val { color: #a5d6ff; }
+  .env-comment { color: #6a737d; font-style: italic; }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(251,146,60,0.04));
+    border: 1px solid rgba(249,115,22,0.25);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+
+  .highlight-box p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🇧🇩 সম্পূর্ণ বাংলা গাইড</div>
+  <h1>Laravel <span>লোকাল থেকে লাইভ সার্ভার</span><br>সম্পূর্ণ গাইড</h1>
+  <p>লোকাল রান, Artisan Server, Asset Build, NPM, Config Cache, Route, View — সব কিছু এক জায়গায়, সহজ বাংলায়</p>
+  <div class="hero-tags">
+    <span class="tag">⚡ Artisan Server</span>
+    <span class="tag">📦 NPM Build</span>
+    <span class="tag">🔧 Config Cache</span>
+    <span class="tag">🚀 Live Deploy</span>
+    <span class="tag">🔒 .env Security</span>
+    <span class="tag">🗄️ Database Setup</span>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#local">🖥️ লোকাল রান</a>
+    <a href="#artisan">⚡ Artisan Server</a>
+    <a href="#without-serve">📂 Without Serve</a>
+    <a href="#assets">🎨 Asset Build</a>
+    <a href="#npm">📦 NPM Build</a>
+    <a href="#cache">🔧 Cache ও Config</a>
+    <a href="#route-view">🛣️ Route & View</a>
+    <a href="#live">🚀 Live Deploy</a>
+    <a href="#env">🔒 ENV Security</a>
+    <a href="#checklist">✅ Checklist</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ========================= SECTION 1: LOCAL RUN ========================= -->
+  <section class="section" id="local">
+    <div class="section-header">
+      <div class="section-num">১</div>
+      <h2>লোকালে Laravel প্রজেক্ট রান করা</h2>
+      <span class="icon">🖥️</span>
+    </div>
+
+    <div class="highlight-box">
+      <p>Laravel লোকালে চালানোর আগে কিছু জিনিস থাকতে হবে — PHP (8.1+), Composer, Node.js/NPM। এই তিনটা ইনস্টল থাকলেই লোকালে যেকোনো Laravel প্রজেক্ট চালানো যায়।</p>
+    </div>
+
+    <h3>প্রথমে প্রজেক্ট ক্লোন বা ডাউনলোড করুন</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># Git থেকে clone করলে</span>
+<span class="c-cmd">git clone</span> <span class="c-str">https://github.com/your-repo/project.git</span>
+<span class="c-cmd">cd</span> project
+
+<span class="c-comment"># অথবা ZIP ডাউনলোড করে extract করুন, তারপর folder-এ যান</span>
+<span class="c-cmd">cd</span> C:/xampp/htdocs/myproject</code></pre>
+    </div>
+
+    <h3>Composer দিয়ে Dependencies ইনস্টল</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># vendor folder তৈরি হবে — সব PHP package ইনস্টল হবে</span>
+<span class="c-cmd">composer install</span>
+
+<span class="c-comment"># Production এ হলে (dev packages বাদ দিয়ে)</span>
+<span class="c-cmd">composer install</span> --no-dev --optimize-autoloader</code></pre>
+    </div>
+
+    <h3>.env ফাইল সেটআপ</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># .env.example থেকে .env কপি করুন</span>
+<span class="c-cmd">cp</span> .env.example .env
+
+<span class="c-comment"># Application Key তৈরি করুন (খুব গুরুত্বপূর্ণ!)</span>
+<span class="c-cmd">php artisan key:generate</span></code></pre>
+    </div>
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-body">
+        <strong>মনে রাখুন!</strong>
+        <p><code class="inline">APP_KEY</code> ছাড়া Laravel কাজ করবে না। প্রতিটা প্রজেক্টে এটা generate করতেই হবে। এই key session ও encryption এর জন্য ব্যবহার হয়।</p>
+      </div>
+    </div>
+
+    <h3>Database সেটআপ</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">env</span>
+        <span class="label">.env ফাইল</span>
+      </div>
+      <pre><code><span class="env-comment"># লোকাল Database Config</span>
+<span class="env-key">DB_CONNECTION</span>=<span class="env-val">mysql</span>
+<span class="env-key">DB_HOST</span>=<span class="env-val">127.0.0.1</span>
+<span class="env-key">DB_PORT</span>=<span class="env-val">3306</span>
+<span class="env-key">DB_DATABASE</span>=<span class="env-val">my_database_name</span>
+<span class="env-key">DB_USERNAME</span>=<span class="env-val">root</span>
+<span class="env-key">DB_PASSWORD</span>=<span class="env-val"></span>         <span class="env-comment"># XAMPP এ সাধারণত খালি</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># Migration চালিয়ে Database table তৈরি করুন</span>
+<span class="c-cmd">php artisan migrate</span>
+
+<span class="c-comment"># Seeder দিয়ে ডেমো ডেটা ভরুন (দরকার হলে)</span>
+<span class="c-cmd">php artisan db:seed</span>
+
+<span class="c-comment"># Migrate + Seed একসাথে</span>
+<span class="c-cmd">php artisan migrate</span> --seed</code></pre>
+    </div>
+
+    <h3>Storage Link তৈরি</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># storage/app/public কে public/storage এ link করে</span>
+<span class="c-cmd">php artisan storage:link</span>
+
+<span class="c-comment"># এটা না করলে upload করা image/file দেখা যাবে না</span></code></pre>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 2: ARTISAN SERVER ========================= -->
+  <section class="section" id="artisan">
+    <div class="section-header">
+      <div class="section-num">২</div>
+      <h2>Artisan Server দিয়ে রান করা</h2>
+      <span class="icon">⚡</span>
+    </div>
+
+    <div class="highlight-box">
+      <p>Artisan Server হলো Laravel এর বিল্ট-ইন PHP development server। XAMPP, WAMP ছাড়াই শুধু PHP দিয়ে প্রজেক্ট চালানো যায়। Development এর জন্য অনেক সুবিধাজনক।</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">✅ সুবিধা</div>
+        <ul>
+          <li>আলাদা Apache/Nginx লাগে না</li>
+          <li>যেকোনো Port এ চালানো যায়</li>
+          <li>Setup খুব সহজ</li>
+          <li>Real-time error দেখা যায়</li>
+          <li>Multiple project আলাদা port এ</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">❌ সীমাবদ্ধতা</div>
+        <ul>
+          <li>শুধু development এর জন্য</li>
+          <li>Production এ ব্যবহার করা উচিত না</li>
+          <li>Performance কম</li>
+          <li>একটা request একসময় handle করে</li>
+          <li>SSL সাপোর্ট নেই</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Basic Commands</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># Default: localhost:8000 এ চালু হবে</span>
+<span class="c-cmd">php artisan serve</span>
+
+<span class="c-comment"># Custom port নির্ধারণ করতে</span>
+<span class="c-cmd">php artisan serve</span> --port=<span class="c-val">8080</span>
+
+<span class="c-comment"># Custom host নির্ধারণ করতে (অন্য device থেকে access করতে)</span>
+<span class="c-cmd">php artisan serve</span> --host=<span class="c-val">0.0.0.0</span> --port=<span class="c-val">8000</span>
+
+<span class="c-comment"># এখন ব্রাউজারে যান: http://localhost:8000</span></code></pre>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <div class="alert-body">
+        <strong>Multiple Project একসাথে চালানো</strong>
+        <p>একাধিক Laravel project চালাতে আলাদা আলাদা terminal খুলুন এবং ভিন্ন ভিন্ন port ব্যবহার করুন। যেমন: <code class="inline">--port=8001</code>, <code class="inline">--port=8002</code></p>
+      </div>
+    </div>
+
+    <h3>Artisan Serve কীভাবে কাজ করে?</h3>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-body">
+          <h4>PHP Built-in Server চালু করে</h4>
+          <p>আসলে <code class="inline">php -S localhost:8000 -t public/</code> কমান্ডটাই চালায়। Laravel এর router.php ফাইল দিয়ে request handle করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-body">
+          <h4>public/ ফোল্ডার Document Root</h4>
+          <p>সব request <code class="inline">public/index.php</code> এর মধ্য দিয়ে যায়। এই ফাইলটাই Laravel এর entry point।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-body">
+          <h4>Request Laravel এ আসে</h4>
+          <p>index.php → bootstrap → Kernel → Router → Controller → Response। এভাবে request process হয়।</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 3: WITHOUT SERVE ========================= -->
+  <section class="section" id="without-serve">
+    <div class="section-header">
+      <div class="section-num">৩</div>
+      <h2>Serve ছাড়া URL/Folder দিয়ে রান (XAMPP/WAMP)</h2>
+      <span class="icon">📂</span>
+    </div>
+
+    <div class="highlight-box">
+      <p>XAMPP বা WAMP ব্যবহার করলে Artisan serve না চালিয়েও প্রজেক্ট চালানো যায়। কিন্তু সঠিক ফোল্ডার structure ও Virtual Host সেটআপ করতে হয়।</p>
+    </div>
+
+    <h3>পদ্ধতি ১: সরাসরি htdocs এ রাখা (সহজ কিন্তু সমস্যা আছে)</h3>
+
+    <div class="card">
+      <div class="card-title">📁 ফোল্ডার Structure</div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="lang">structure</span>
+          <span class="label">XAMPP htdocs</span>
+        </div>
+        <pre><code>C:/xampp/htdocs/
+└── myproject/
+    ├── app/
+    ├── public/          <span class="c-comment">← এটাই আসল web root হওয়া উচিত</span>
+    ├── resources/
+    ├── .env
+    └── ...
+
+<span class="c-comment"># URL হবে: http://localhost/myproject/public/</span>
+<span class="c-comment"># সমস্যা: URL এ /public/ আসে যা ugly দেখায়</span></code></pre>
+      </div>
+    </div>
+
+    <div class="alert alert-danger">
+      <span class="alert-icon">🚫</span>
+      <div class="alert-body">
+        <strong>বড় সমস্যা!</strong>
+        <p>সরাসরি htdocs এ রাখলে যে কেউ <code class="inline">localhost/myproject/.env</code> ব্রাউজ করে .env ফাইল দেখতে পারবে। এটা বিশাল security risk। সঠিক পদ্ধতি হলো Virtual Host বা শুধু public ফোল্ডার expose করা।</p>
+      </div>
+    </div>
+
+    <h3>পদ্ধতি ২: Virtual Host সেটআপ (সঠিক পদ্ধতি)</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">apache config</span>
+        <span class="label">C:/xampp/apache/conf/extra/httpd-vhosts.conf</span>
+      </div>
+      <pre><code><span class="c-key">&lt;VirtualHost</span> <span class="c-val">*:80</span><span class="c-key">&gt;</span>
+    <span class="c-cmd">ServerName</span>    <span class="c-str">myproject.local</span>
+    <span class="c-cmd">DocumentRoot</span>  <span class="c-str">"C:/xampp/htdocs/myproject/public"</span>
+
+    <span class="c-key">&lt;Directory</span> <span class="c-str">"C:/xampp/htdocs/myproject/public"</span><span class="c-key">&gt;</span>
+        <span class="c-cmd">AllowOverride</span> <span class="c-val">All</span>
+        <span class="c-cmd">Require</span> <span class="c-val">all granted</span>
+    <span class="c-key">&lt;/Directory&gt;</span>
+
+    <span class="c-cmd">ErrorLog</span>  <span class="c-str">"logs/myproject-error.log"</span>
+<span class="c-key">&lt;/VirtualHost&gt;</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">hosts file</span>
+        <span class="label">C:/Windows/System32/drivers/etc/hosts (Admin হিসেবে খুলুন)</span>
+      </div>
+      <pre><code><span class="c-val">127.0.0.1</span>    <span class="c-str">myproject.local</span>
+
+<span class="c-comment"># এখন browser এ: http://myproject.local → সরাসরি কাজ করবে!</span></code></pre>
+    </div>
+
+    <h3>পদ্ধতি ৩: .htaccess দিয়ে /public সরিয়ে দেওয়া</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">apache</span>
+        <span class="label">htdocs/myproject/.htaccess (root এ তৈরি করুন)</span>
+      </div>
+      <pre><code><span class="c-key">Options</span> -Indexes
+<span class="c-cmd">RewriteEngine</span> On
+<span class="c-cmd">RewriteRule</span> ^$ public/ [L]
+<span class="c-cmd">RewriteRule</span> (.*) public/$1 [L]
+
+<span class="c-comment"># এখন: http://localhost/myproject/ কাজ করবে</span>
+<span class="c-comment"># /public/ URL এ আসবে না কিন্তু folder টা accessible</span></code></pre>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>পদ্ধতি</th>
+          <th>URL</th>
+          <th>Security</th>
+          <th>Recommended</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>htdocs + /public/</td>
+          <td><code class="inline">localhost/project/public/</code></td>
+          <td><span class="badge badge-red">বিপজ্জনক</span></td>
+          <td><span class="badge badge-red">না</span></td>
+        </tr>
+        <tr>
+          <td>Root .htaccess</td>
+          <td><code class="inline">localhost/project/</code></td>
+          <td><span class="badge badge-orange">মাঝামাঝি</span></td>
+          <td><span class="badge badge-orange">লোকালে ঠিক আছে</span></td>
+        </tr>
+        <tr>
+          <td>Virtual Host</td>
+          <td><code class="inline">myproject.local/</code></td>
+          <td><span class="badge badge-green">নিরাপদ</span></td>
+          <td><span class="badge badge-green">✅ সেরা</span></td>
+        </tr>
+        <tr>
+          <td>Artisan Serve</td>
+          <td><code class="inline">localhost:8000/</code></td>
+          <td><span class="badge badge-green">নিরাপদ</span></td>
+          <td><span class="badge badge-green">✅ Development</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <!-- ========================= SECTION 4: ASSETS ========================= -->
+  <section class="section" id="assets">
+    <div class="section-header">
+      <div class="section-num">৪</div>
+      <h2>Asset Build করা (CSS, JS, Images)</h2>
+      <span class="icon">🎨</span>
+    </div>
+
+    <div class="highlight-box">
+      <p>Laravel এ CSS ও JavaScript resources/ ফোল্ডারে থাকে। এগুলো সরাসরি browser এ কাজ করে না। Vite বা Mix দিয়ে compile করে public/ ফোল্ডারে নিতে হয়।</p>
+    </div>
+
+    <h3>Laravel Asset কীভাবে কাজ করে?</h3>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-body">
+          <h4>Source Files → resources/</h4>
+          <p>CSS: <code class="inline">resources/css/app.css</code><br>JS: <code class="inline">resources/js/app.js</code><br>এখানে আপনি code লেখেন।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-body">
+          <h4>Build Tool Process করে</h4>
+          <p>Vite (আধুনিক) বা Laravel Mix (পুরনো) — SCSS compile, JS bundle, minify সব করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-body">
+          <h4>Output → public/build/ বা public/</h4>
+          <p>Compiled ফাইলগুলো public ফোল্ডারে যায়। Browser এখান থেকে load করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-body">
+          <h4>Blade Template এ @vite দিয়ে Load</h4>
+          <p><code class="inline">@vite(['resources/css/app.css', 'resources/js/app.js'])</code> — এটা সঠিক file path দেয়।</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>vite.config.js বোঝা</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">javascript</span>
+        <span class="label">vite.config.js</span>
+      </div>
+      <pre><code><span class="c-php">import</span> { defineConfig } <span class="c-php">from</span> <span class="c-str">'vite'</span>;
+<span class="c-php">import</span> laravel <span class="c-php">from</span> <span class="c-str">'laravel-vite-plugin'</span>;
+
+<span class="c-php">export default</span> defineConfig({
+    plugins: [
+        laravel({
+            input: [
+                <span class="c-str">'resources/css/app.css'</span>,   <span class="c-comment">// CSS entry point</span>
+                <span class="c-str">'resources/js/app.js'</span>,    <span class="c-comment">// JS entry point</span>
+            ],
+            refresh: <span class="c-val">true</span>,  <span class="c-comment">// Blade change হলে auto reload</span>
+        }),
+    ],
+});</code></pre>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <div class="alert-body">
+        <strong>Blade এ কীভাবে যোগ করবেন?</strong>
+        <p>Layout ফাইলের <code class="inline">&lt;head&gt;</code> ট্যাগের মধ্যে: <code class="inline">@vite(['resources/css/app.css', 'resources/js/app.js'])</code></p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 5: NPM BUILD ========================= -->
+  <section class="section" id="npm">
+    <div class="section-header">
+      <div class="section-num">৫</div>
+      <h2>NPM Build — Development vs Production</h2>
+      <span class="icon">📦</span>
+    </div>
+
+    <h3>প্রথমে NPM Dependencies ইনস্টল করুন</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># node_modules ফোল্ডার তৈরি হবে</span>
+<span class="c-cmd">npm install</span>
+
+<span class="c-comment"># অথবা yarn ব্যবহার করলে</span>
+<span class="c-cmd">yarn install</span></code></pre>
+    </div>
+
+    <h3>Development Mode (Watch)</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># ===== Development Build (Vite) =====</span>
+<span class="c-cmd">npm run dev</span>
+
+<span class="c-comment"># এটা করলে:</span>
+<span class="c-comment"># ✅ Hot Module Replacement (HMR) চালু হয়</span>
+<span class="c-comment"># ✅ CSS/JS change হলে browser auto refresh হয়</span>
+<span class="c-comment"># ✅ Vite dev server port 5173 এ চলে</span>
+<span class="c-comment"># ❌ Files minify হয় না (development তাই)</span>
+<span class="c-comment"># ❌ public/build/ এ কিছু লেখে না সরাসরি</span></code></pre>
+    </div>
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-body">
+        <strong>গুরুত্বপূর্ণ!</strong>
+        <p><code class="inline">npm run dev</code> চালানো অবস্থায় একটা আলাদা Vite server চলে (port 5173)। <code class="inline">php artisan serve</code> ও <code class="inline">npm run dev</code> দুটোই একসাথে চালাতে হবে development এ।</p>
+      </div>
+    </div>
+
+    <h3>Production Build</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># ===== Production Build =====</span>
+<span class="c-cmd">npm run build</span>
+
+<span class="c-comment"># এটা করলে:</span>
+<span class="c-comment"># ✅ public/build/ ফোল্ডারে compiled ফাইল তৈরি হয়</span>
+<span class="c-comment"># ✅ CSS ও JS minify হয় (size অনেক কমে যায়)</span>
+<span class="c-comment"># ✅ Filename এ hash যোগ হয় (cache busting)</span>
+<span class="c-comment"># ✅ public/build/manifest.json তৈরি হয়</span>
+<span class="c-comment"># ✅ Vite server আর দরকার নেই</span>
+
+<span class="c-comment"># Build শেষে এই ফাইলগুলো তৈরি হবে:</span>
+<span class="c-comment"># public/build/assets/app-{hash}.css</span>
+<span class="c-comment"># public/build/assets/app-{hash}.js</span>
+<span class="c-comment"># public/build/manifest.json</span></code></pre>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>বিষয়</th>
+          <th>npm run dev</th>
+          <th>npm run build</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ব্যবহার</td>
+          <td>Development</td>
+          <td>Production/Server</td>
+        </tr>
+        <tr>
+          <td>Minification</td>
+          <td><span class="badge badge-red">না</span></td>
+          <td><span class="badge badge-green">হ্যাঁ</span></td>
+        </tr>
+        <tr>
+          <td>HMR / Hot Reload</td>
+          <td><span class="badge badge-green">হ্যাঁ</span></td>
+          <td><span class="badge badge-red">না</span></td>
+        </tr>
+        <tr>
+          <td>public/build/ তৈরি</td>
+          <td><span class="badge badge-red">না (memory তে)</span></td>
+          <td><span class="badge badge-green">হ্যাঁ</span></td>
+        </tr>
+        <tr>
+          <td>File Size</td>
+          <td>বড় (debug info আছে)</td>
+          <td>ছোট (optimized)</td>
+        </tr>
+        <tr>
+          <td>Server Deploy</td>
+          <td><span class="badge badge-red">কখনো না</span></td>
+          <td><span class="badge badge-green">অবশ্যই</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <!-- ========================= SECTION 6: CACHE ========================= -->
+  <section class="section" id="cache">
+    <div class="section-header">
+      <div class="section-num">৬</div>
+      <h2>Config, Route, View Cache — সব কিছু</h2>
+      <span class="icon">🔧</span>
+    </div>
+
+    <div class="highlight-box">
+      <p>Laravel Cache ব্যবহার করে অনেক কাজ দ্রুত করে। Config, Route, View cache করলে প্রতিটা request এ ফাইল read না করে cache থেকে নেয়, ফলে performance অনেক বাড়ে।</p>
+    </div>
+
+    <h3>Config Cache</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># সব config ফাইল একটা cache ফাইলে merge করে</span>
+<span class="c-cmd">php artisan config:cache</span>
+<span class="c-comment"># ফাইল তৈরি হয়: bootstrap/cache/config.php</span>
+
+<span class="c-comment"># Config cache clear করতে</span>
+<span class="c-cmd">php artisan config:clear</span>
+
+<span class="c-comment"># ⚠️ Cache করার পর .env পড়া যায় না সরাসরি!</span>
+<span class="c-comment"># .env পরিবর্তন করলে config:clear তারপর config:cache দিন</span></code></pre>
+    </div>
+
+    <div class="alert alert-danger">
+      <span class="alert-icon">🚫</span>
+      <div class="alert-body">
+        <strong>Config Cache করার পর .env কাজ করে না!</strong>
+        <p><code class="inline">config:cache</code> দেওয়ার পর code এ <code class="inline">env('APP_KEY')</code> সরাসরি call করলে null পাবেন। সবসময় <code class="inline">config('app.key')</code> ব্যবহার করুন।</p>
+      </div>
+    </div>
+
+    <h3>Route Cache</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># সব route একটা cache ফাইলে compile করে (অনেক দ্রুত হয়)</span>
+<span class="c-cmd">php artisan route:cache</span>
+<span class="c-comment"># ফাইল তৈরি হয়: bootstrap/cache/routes-v7.php</span>
+
+<span class="c-comment"># Route cache clear</span>
+<span class="c-cmd">php artisan route:clear</span>
+
+<span class="c-comment"># Route list দেখতে</span>
+<span class="c-cmd">php artisan route:list</span>
+
+<span class="c-comment"># ⚠️ Route file এ Closure (anonymous function) থাকলে cache হবে না!</span>
+<span class="c-comment"># Controller method ব্যবহার করুন সবসময়</span></code></pre>
+    </div>
+
+    <h3>View Cache</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># সব Blade template pre-compile করে রাখে</span>
+<span class="c-cmd">php artisan view:cache</span>
+<span class="c-comment"># Storage/framework/views/ এ compiled PHP ফাইল তৈরি হয়</span>
+
+<span class="c-comment"># View cache clear</span>
+<span class="c-cmd">php artisan view:clear</span></code></pre>
+    </div>
+
+    <h3>সব কিছু একসাথে — Optimize Command</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Terminal — Server Deploy এর পর এটাই চালান</span>
+      </div>
+      <pre><code><span class="c-comment"># ===== সব Cache একসাথে ===== </span>
+<span class="c-cmd">php artisan optimize</span>
+
+<span class="c-comment"># এটা করে: config:cache + route:cache + view:cache একসাথে</span>
+<span class="c-comment"># Production এ এটাই সবচেয়ে সহজ ও কার্যকর পদ্ধতি</span>
+
+<span class="c-comment"># ===== সব Cache Clear একসাথে =====</span>
+<span class="c-cmd">php artisan optimize:clear</span>
+
+<span class="c-comment"># এটা করে: config:clear + route:clear + view:clear + cache:clear</span>
+
+<span class="c-comment"># ===== Application Cache (Database/Redis/File) =====</span>
+<span class="c-cmd">php artisan cache:clear</span>    <span class="c-comment"># App cache clear</span>
+
+<span class="c-comment"># ===== Autoloader Optimize =====</span>
+<span class="c-cmd">composer dump-autoload</span> --optimize</code></pre>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>কী করে</th>
+          <th>কখন লাগে</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code class="inline">config:cache</code></td>
+          <td>সব config মিলিয়ে একটা ফাইল</td>
+          <td>Deploy পরে</td>
+        </tr>
+        <tr>
+          <td><code class="inline">route:cache</code></td>
+          <td>Route compile করে</td>
+          <td>Deploy পরে</td>
+        </tr>
+        <tr>
+          <td><code class="inline">view:cache</code></td>
+          <td>Blade template compile</td>
+          <td>Deploy পরে</td>
+        </tr>
+        <tr>
+          <td><code class="inline">cache:clear</code></td>
+          <td>App data cache মুছে</td>
+          <td>Bug হলে</td>
+        </tr>
+        <tr>
+          <td><code class="inline">optimize</code></td>
+          <td>সব cache একসাথে</td>
+          <td>Deploy পরে সেরা</td>
+        </tr>
+        <tr>
+          <td><code class="inline">optimize:clear</code></td>
+          <td>সব cache clear</td>
+          <td>Problem হলে</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <!-- ========================= SECTION 7: ROUTE & VIEW ========================= -->
+  <section class="section" id="route-view">
+    <div class="section-header">
+      <div class="section-num">৭</div>
+      <h2>Route ও View কীভাবে কাজ করে</h2>
+      <span class="icon">🛣️</span>
+    </div>
+
+    <h3>Route কীভাবে কাজ করে?</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">php</span>
+        <span class="label">routes/web.php</span>
+      </div>
+      <pre><code><span class="c-comment">// ১. Simple Route — সরাসরি View দেখায়</span>
+<span class="c-php">Route</span>::get(<span class="c-str">'/'</span>, function () {
+    <span class="c-php">return</span> view(<span class="c-str">'welcome'</span>);  <span class="c-comment">// resources/views/welcome.blade.php</span>
+});
+
+<span class="c-comment">// ২. Controller Route — Best Practice</span>
+<span class="c-php">Route</span>::get(<span class="c-str">'/products'</span>, [<span class="c-var">ProductController</span>::class, <span class="c-str">'index'</span>]);
+<span class="c-php">Route</span>::post(<span class="c-str">'/products'</span>, [<span class="c-var">ProductController</span>::class, <span class="c-str">'store'</span>]);
+
+<span class="c-comment">// ৩. Named Route</span>
+<span class="c-php">Route</span>::get(<span class="c-str">'/about'</span>, function () {
+    <span class="c-php">return</span> view(<span class="c-str">'about'</span>);
+})->name(<span class="c-str">'about'</span>);
+<span class="c-comment">// Blade এ: {{ route('about') }} → /about URL দেবে</span>
+
+<span class="c-comment">// ৪. Route Parameter</span>
+<span class="c-php">Route</span>::get(<span class="c-str">'/product/{id}'</span>, [<span class="c-var">ProductController</span>::class, <span class="c-str">'show'</span>]);
+
+<span class="c-comment">// ৫. Resource Route (CRUD সব একসাথে)</span>
+<span class="c-php">Route</span>::resource(<span class="c-str">'products'</span>, <span class="c-var">ProductController</span>::class);
+
+<span class="c-comment">// ৬. Middleware সহ Route</span>
+<span class="c-php">Route</span>::middleware(<span class="c-str">'auth'</span>)->group(function () {
+    <span class="c-php">Route</span>::get(<span class="c-str">'/dashboard'</span>, [<span class="c-var">DashboardController</span>::class, <span class="c-str">'index'</span>]);
+});</code></pre>
+    </div>
+
+    <h3>View (Blade Template) কীভাবে কাজ করে?</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">php</span>
+        <span class="label">resources/views/products/index.blade.php</span>
+      </div>
+      <pre><code><span class="c-comment">{{-- Layout extend করা --}}</span>
+@extends(<span class="c-str">'layouts.app'</span>)
+
+@section(<span class="c-str">'title'</span>, <span class="c-str">'Products'</span>)
+
+@section(<span class="c-str">'content'</span>)
+    <span class="c-comment">{{-- Variable প্রিন্ট (XSS safe) --}}</span>
+    &lt;h1&gt;{{ <span class="c-var">$title</span> }}&lt;/h1&gt;
+
+    <span class="c-comment">{{-- Loop --}}</span>
+    @foreach(<span class="c-var">$products</span> <span class="c-php">as</span> <span class="c-var">$product</span>)
+        &lt;p&gt;{{ <span class="c-var">$product</span>-&gt;name }}&lt;/p&gt;
+    @endforeach
+
+    <span class="c-comment">{{-- Condition --}}</span>
+    @if(<span class="c-var">$products</span>-&gt;isEmpty())
+        &lt;p&gt;কোনো পণ্য নেই&lt;/p&gt;
+    @endif
+
+    <span class="c-comment">{{-- Asset URL --}}</span>
+    &lt;img src="{{ <span class="c-var">asset</span>(<span class="c-str">'images/logo.png'</span>) }}"&gt;
+    
+    <span class="c-comment">{{-- Route URL --}}</span>
+    &lt;a href="{{ route(<span class="c-str">'products.index'</span>) }}"&gt;সব পণ্য&lt;/a&gt;
+@endsection</code></pre>
+    </div>
+
+    <h3>Controller থেকে View এ data পাঠানো</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">php</span>
+        <span class="label">app/Http/Controllers/ProductController.php</span>
+      </div>
+      <pre><code><span class="c-php">public function</span> index()
+{
+    <span class="c-var">$products</span> = <span class="c-php">Product</span>::paginate(10);
+
+    <span class="c-comment">// পদ্ধতি ১: compact()</span>
+    <span class="c-php">return</span> view(<span class="c-str">'products.index'</span>, compact(<span class="c-str">'products'</span>));
+
+    <span class="c-comment">// পদ্ধতি ২: with()</span>
+    <span class="c-php">return</span> view(<span class="c-str">'products.index'</span>)->with(<span class="c-str">'products'</span>, <span class="c-var">$products</span>);
+
+    <span class="c-comment">// পদ্ধতি ৩: array</span>
+    <span class="c-php">return</span> view(<span class="c-str">'products.index'</span>, [<span class="c-str">'products'</span> => <span class="c-var">$products</span>]);
+}</code></pre>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 8: LIVE DEPLOY ========================= -->
+  <section class="section" id="live">
+    <div class="section-header">
+      <div class="section-num">৮</div>
+      <h2>Live Server এ Upload করার পূর্ণ গাইড</h2>
+      <span class="icon">🚀</span>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">📋</span>
+      <div class="alert-body">
+        <strong>আগে নিশ্চিত করুন</strong>
+        <p>Hosting এ PHP 8.1+, MySQL, Composer আছে কিনা দেখুন। cPanel Hosting হলে সবচেয়ে সহজ। VPS হলে Nginx/Apache configure করতে হবে।</p>
+      </div>
+    </div>
+
+    <h3>পদ্ধতি: cPanel Hosting এ Deploy</h3>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-body">
+          <h4>লোকালে Production Build তৈরি করুন</h4>
+          <div class="code-block">
+            <div class="code-header"><span class="lang">bash</span></div>
+            <pre><code><span class="c-cmd">npm run build</span>           <span class="c-comment"># Assets build করুন</span>
+<span class="c-cmd">composer install</span> --no-dev --optimize-autoloader</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-body">
+          <h4>কোন ফাইল Upload করবেন না?</h4>
+          <ul style="color: var(--text-muted); font-size: 14px; padding-left: 18px; margin-top: 8px;">
+            <li><code class="inline">.env</code> — Server এ আলাদা বানাবেন</li>
+            <li><code class="inline">node_modules/</code> — প্রয়োজন নেই</li>
+            <li><code class="inline">.git/</code> — Security risk</li>
+            <li><code class="inline">storage/logs/</code> — লোকাল logs</li>
+            <li><code class="inline">tests/</code> — Production এ লাগে না</li>
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-body">
+          <h4>ফাইল Structure — কোথায় কী রাখবেন?</h4>
+          <div class="code-block">
+            <div class="code-header"><span class="lang">structure</span></div>
+            <pre><code>public_html/           <span class="c-comment">← এটাই web root (cPanel)</span>
+├── index.php          <span class="c-comment">← public/index.php এর সংশোধিত কপি</span>
+├── .htaccess          <span class="c-comment">← public/.htaccess এর কপি</span>
+├── build/             <span class="c-comment">← public/build/ এর সব ফাইল</span>
+├── css/               <span class="c-comment">← public/css/ (যদি থাকে)</span>
+├── js/                <span class="c-comment">← public/js/</span>
+└── images/            <span class="c-comment">← public/images/</span>
+
+laravel/               <span class="c-comment">← public_html এর বাইরে!</span>
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── resources/
+├── routes/
+├── storage/
+├── vendor/
+└── .env               <span class="c-comment">← এখানে, web এর বাইরে!</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-body">
+          <h4>public/index.php সংশোধন করুন</h4>
+          <div class="code-block">
+            <div class="code-header"><span class="lang">php</span><span class="label">public_html/index.php</span></div>
+            <pre><code><span class="c-comment">// এই দুটো path পরিবর্তন করুন:</span>
+
+<span class="c-comment">// আগে ছিল:</span>
+require __DIR__.<span class="c-str">'/../vendor/autoload.php'</span>;
+<span class="c-var">$app</span> = require_once __DIR__.<span class="c-str">'/../bootstrap/app.php'</span>;
+
+<span class="c-comment">// এখন হবে (আপনার server path অনুযায়ী):</span>
+require __DIR__.<span class="c-str">'/../laravel/vendor/autoload.php'</span>;
+<span class="c-var">$app</span> = require_once __DIR__.<span class="c-str">'/../laravel/bootstrap/app.php'</span>;
+
+<span class="c-comment">// cPanel এ পথ হতে পারে:</span>
+require <span class="c-str">'/home/username/laravel/vendor/autoload.php'</span>;
+<span class="c-var">$app</span> = require_once <span class="c-str">'/home/username/laravel/bootstrap/app.php'</span>;</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৫</div>
+        <div class="step-body">
+          <h4>Composer Server এ চালান (SSH থাকলে)</h4>
+          <div class="code-block">
+            <div class="code-header"><span class="lang">bash</span><span class="label">SSH Terminal</span></div>
+            <pre><code><span class="c-cmd">cd</span> ~/laravel
+<span class="c-cmd">composer install</span> --no-dev --optimize-autoloader
+
+<span class="c-comment"># অথবা vendor/ folder ই upload করুন (SSH না থাকলে)</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৬</div>
+        <div class="step-body">
+          <h4>Database Import করুন</h4>
+          <p style="color: var(--text-muted); font-size: 14px;">cPanel এ phpMyAdmin থেকে SQL ফাইল import করুন। অথবা SSH থেকে <code class="inline">php artisan migrate</code> চালান।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৭</div>
+        <div class="step-body">
+          <h4>Server এ Commands চালান</h4>
+          <div class="code-block">
+            <div class="code-header"><span class="lang">bash</span><span class="label">SSH</span></div>
+            <pre><code><span class="c-cmd">php artisan key:generate</span>
+<span class="c-cmd">php artisan storage:link</span>
+<span class="c-cmd">php artisan migrate</span> --force    <span class="c-comment"># Production এ --force লাগে</span>
+<span class="c-cmd">php artisan optimize</span>
+<span class="c-cmd">php artisan queue:restart</span>      <span class="c-comment"># Queue থাকলে</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Permission সেট করুন</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">SSH Terminal</span>
+      </div>
+      <pre><code><span class="c-comment"># storage ও bootstrap/cache এ write permission দিন</span>
+<span class="c-cmd">chmod</span> -R <span class="c-val">775</span> storage bootstrap/cache
+<span class="c-cmd">chown</span> -R www-data:www-data storage bootstrap/cache
+
+<span class="c-comment"># অথবা cPanel File Manager এ 755/775 set করুন</span>
+<span class="c-comment"># storage/ → 775</span>
+<span class="c-comment"># bootstrap/cache/ → 775</span>
+<span class="c-comment"># বাকি সব → 644 (files) / 755 (folders)</span></code></pre>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 9: ENV SECURITY ========================= -->
+  <section class="section" id="env">
+    <div class="section-header">
+      <div class="section-num">৯</div>
+      <h2>Server এ .env — সম্পূর্ণ Security Guide</h2>
+      <span class="icon">🔒</span>
+    </div>
+
+    <div class="alert alert-danger">
+      <span class="alert-icon">🚨</span>
+      <div class="alert-body">
+        <strong>সবচেয়ে বড় ভুল!</strong>
+        <p>.env ফাইল কখনো Git এ commit করবেন না বা public_html এর ভেতরে রাখবেন না। এতে database password, API key সব expose হয়ে যায়।</p>
+      </div>
+    </div>
+
+    <h3>Production .env এর সঠিক Config</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">env</span>
+        <span class="label">.env — Production Server</span>
+      </div>
+      <pre><code><span class="c-comment"># ===== APP CONFIG =====</span>
+<span class="env-key">APP_NAME</span>=<span class="env-val">"My Laravel App"</span>
+<span class="env-key">APP_ENV</span>=<span class="env-val">production</span>              <span class="env-comment"># ← অবশ্যই production!</span>
+<span class="env-key">APP_KEY</span>=<span class="env-val">base64:xxxxxxxxxx...</span>     <span class="env-comment"># ← key:generate দিয়ে বানান</span>
+<span class="env-key">APP_DEBUG</span>=<span class="env-val">false</span>                 <span class="env-comment"># ← অবশ্যই false! Error দেখাবে না</span>
+<span class="env-key">APP_URL</span>=<span class="env-val">https://yourdomain.com</span>   <span class="env-comment"># ← আপনার domain</span>
+
+<span class="c-comment"># ===== DATABASE =====</span>
+<span class="env-key">DB_CONNECTION</span>=<span class="env-val">mysql</span>
+<span class="env-key">DB_HOST</span>=<span class="env-val">127.0.0.1</span>              <span class="env-comment"># বা hosting এর DB host</span>
+<span class="env-key">DB_PORT</span>=<span class="env-val">3306</span>
+<span class="env-key">DB_DATABASE</span>=<span class="env-val">cpanelusername_dbname</span>  <span class="env-comment"># cPanel: username_dbname</span>
+<span class="env-key">DB_USERNAME</span>=<span class="env-val">cpanelusername_dbuser</span>
+<span class="env-key">DB_PASSWORD</span>=<span class="env-val">StrongPassword123!</span>   <span class="env-comment"># শক্তিশালী password</span>
+
+<span class="c-comment"># ===== CACHE / SESSION =====</span>
+<span class="env-key">CACHE_DRIVER</span>=<span class="env-val">file</span>              <span class="env-comment"># Redis না থাকলে file</span>
+<span class="env-key">SESSION_DRIVER</span>=<span class="env-val">file</span>
+<span class="env-key">SESSION_LIFETIME</span>=<span class="env-val">120</span>
+<span class="env-key">QUEUE_CONNECTION</span>=<span class="env-val">database</span>
+
+<span class="c-comment"># ===== MAIL =====</span>
+<span class="env-key">MAIL_MAILER</span>=<span class="env-val">smtp</span>
+<span class="env-key">MAIL_HOST</span>=<span class="env-val">mail.yourdomain.com</span>
+<span class="env-key">MAIL_PORT</span>=<span class="env-val">465</span>
+<span class="env-key">MAIL_USERNAME</span>=<span class="env-val">noreply@yourdomain.com</span>
+<span class="env-key">MAIL_PASSWORD</span>=<span class="env-val">mailpassword</span>
+<span class="env-key">MAIL_ENCRYPTION</span>=<span class="env-val">ssl</span>
+<span class="env-key">MAIL_FROM_ADDRESS</span>=<span class="env-val">noreply@yourdomain.com</span>
+<span class="env-key">MAIL_FROM_NAME</span>=<span class="env-val">"My App"</span>
+
+<span class="c-comment"># ===== LOG =====</span>
+<span class="env-key">LOG_CHANNEL</span>=<span class="env-val">stack</span>
+<span class="env-key">LOG_LEVEL</span>=<span class="env-val">error</span>               <span class="env-comment"># শুধু error log রাখুন</span></code></pre>
+    </div>
+
+    <h3>Production এর জন্য Critical Settings</h3>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔴 APP_DEBUG=false কেন?</div>
+        <p>Debug true থাকলে error এ database password, file path, code সব দেখায়। Hacker এর কাজ সহজ হয়ে যায়। Production এ সবসময় <code class="inline">false</code>।</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🟢 APP_ENV=production কেন?</div>
+        <p>Production mode এ Laravel অনেক optimization করে, error detail লুকায়, cache aggressively ব্যবহার করে। Performance বাড়ে।</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🔑 APP_KEY গুরুত্ব</div>
+        <p>Session, cookie, encrypted data সব এই key দিয়ে encrypt হয়। Key চুরি হলে সব decrypt করা সম্ভব। কখনো public করবেন না।</p>
+      </div>
+      <div class="card">
+        <div class="card-title">📁 .env Location</div>
+        <p>Laravel root এ রাখুন, public_html এর বাইরে। কখনো web দিয়ে access করা যাবে না এমন জায়গায় রাখুন।</p>
+      </div>
+    </div>
+
+    <h3>.gitignore এ .env যোগ আছে কিনা দেখুন</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">gitignore</span>
+        <span class="label">.gitignore</span>
+      </div>
+      <pre><code><span class="c-comment"># এগুলো .gitignore এ থাকতেই হবে:</span>
+.env
+.env.backup
+.env.production
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor</code></pre>
+    </div>
+
+    <h3>.htaccess দিয়ে .env Block করুন (Extra Security)</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">apache</span>
+        <span class="label">public/.htaccess (অতিরিক্ত সুরক্ষা)</span>
+      </div>
+      <pre><code><span class="c-comment"># .env সরাসরি web দিয়ে access হলে block করুন</span>
+<span class="c-key">&lt;Files</span> <span class="c-str">.env</span><span class="c-key">&gt;</span>
+    <span class="c-cmd">Order allow,deny</span>
+    <span class="c-cmd">Deny from all</span>
+<span class="c-key">&lt;/Files&gt;</span>
+
+<span class="c-comment"># Laravel এর default .htaccess (public/ ফোল্ডারে)</span>
+<span class="c-key">&lt;IfModule</span> mod_rewrite.c<span class="c-key">&gt;</span>
+    <span class="c-cmd">RewriteEngine</span> On
+    <span class="c-cmd">RewriteCond</span> %{REQUEST_FILENAME} !-d
+    <span class="c-cmd">RewriteCond</span> %{REQUEST_FILENAME} !-f
+    <span class="c-cmd">RewriteRule</span> ^ index.php [L]
+<span class="c-key">&lt;/IfModule&gt;</span></code></pre>
+    </div>
+
+  </section>
+
+  <!-- ========================= SECTION 10: CHECKLIST ========================= -->
+  <section class="section" id="checklist">
+    <div class="section-header">
+      <div class="section-num">১০</div>
+      <h2>Deploy Checklist — কিছু বাদ যাচ্ছে না তো?</h2>
+      <span class="icon">✅</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📤 Upload এর আগে (লোকালে)</div>
+        <ul>
+          <li>✅ <code class="inline">npm run build</code> করা হয়েছে</li>
+          <li>✅ <code class="inline">composer install --no-dev</code> করা হয়েছে</li>
+          <li>✅ সব feature test করা হয়েছে</li>
+          <li>✅ .env Git এ নেই</li>
+          <li>✅ node_modules upload করব না</li>
+          <li>✅ .git folder upload করব না</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🖥️ Server এ করার পর</div>
+        <ul>
+          <li>✅ .env ফাইল তৈরি করেছি</li>
+          <li>✅ APP_DEBUG=false দিয়েছি</li>
+          <li>✅ APP_ENV=production দিয়েছি</li>
+          <li>✅ Database config দিয়েছি</li>
+          <li>✅ <code class="inline">php artisan key:generate</code> চালিয়েছি</li>
+          <li>✅ <code class="inline">php artisan migrate --force</code> চালিয়েছি</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ Optimization</div>
+        <ul>
+          <li>✅ <code class="inline">php artisan optimize</code> চালিয়েছি</li>
+          <li>✅ <code class="inline">php artisan storage:link</code> চালিয়েছি</li>
+          <li>✅ <code class="inline">composer dump-autoload -o</code> করেছি</li>
+          <li>✅ Storage permission 775 দিয়েছি</li>
+          <li>✅ HTTPS SSL সক্রিয় আছে</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔒 Security Check</div>
+        <ul>
+          <li>✅ .env web থেকে access হচ্ছে না</li>
+          <li>✅ APP_DEBUG false আছে</li>
+          <li>✅ Strong DB password দিয়েছি</li>
+          <li>✅ Log level error দিয়েছি</li>
+          <li>✅ Directory listing বন্ধ আছে</li>
+          <li>✅ HTTPS ব্যবহার করছি</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>সমস্যা হলে কী করবেন?</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span class="label">Troubleshooting Commands</span>
+      </div>
+      <pre><code><span class="c-comment"># ১. সব cache clear করুন</span>
+<span class="c-cmd">php artisan optimize:clear</span>
+
+<span class="c-comment"># ২. Storage permission ঠিক করুন</span>
+<span class="c-cmd">chmod</span> -R <span class="c-val">775</span> storage bootstrap/cache
+
+<span class="c-comment"># ৩. Log দেখুন (শেষ ২০ লাইন)</span>
+<span class="c-cmd">tail</span> -n <span class="c-val">20</span> storage/logs/laravel.log
+
+<span class="c-comment"># ৪. Config reload করুন</span>
+<span class="c-cmd">php artisan config:clear</span>
+<span class="c-cmd">php artisan config:cache</span>
+
+<span class="c-comment"># ৫. Autoloader reload করুন</span>
+<span class="c-cmd">composer dump-autoload</span>
+
+<span class="c-comment"># ৬. Migration status দেখুন</span>
+<span class="c-cmd">php artisan migrate:status</span>
+
+<span class="c-comment"># ৭. সব route দেখুন</span>
+<span class="c-cmd">php artisan route:list</span></code></pre>
+    </div>
+
+    <div class="alert alert-success">
+      <span class="alert-icon">🎉</span>
+      <div class="alert-body">
+        <strong>সব ঠিকঠাক!</strong>
+        <p>এই গাইড অনুসরণ করলে আপনার Laravel প্রজেক্ট লোকালে এবং লাইভ সার্ভারে নিরাপদে ও দ্রুতভাবে চলবে। কোনো সমস্যা হলে প্রথমে log ফাইল চেক করুন — সব সমস্যার সমাধান সেখানেই আছে।</p>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>🇧🇩 Laravel বাংলা গাইড — লোকাল থেকে প্রোডাকশন পর্যন্ত</p>
+  <p style="margin-top: 6px; font-size: 12px;">PHP 8.1+ · Laravel 10/11 · Vite · Composer</p>
+</div>
+
+</body>
+</html>
