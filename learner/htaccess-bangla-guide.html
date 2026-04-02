@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.htaccess সম্পূর্ণ গাইড | Bangla</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1628;
+    --bg3: #151d35;
+    --card: #1a2340;
+    --card2: #1f2a4a;
+    --border: #2a3a6a;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #06b6d4;
+    --green: #10b981;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --pink: #ec4899;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --code-bg: #0d1117;
+    --code-border: #30363d;
+    --heading: #f1f5f9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(79,142,247,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1628 40%, #1a1040 100%);
+    padding: 60px 20px 50px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(79,142,247,0.03) 60deg, transparent 120deg, rgba(124,58,237,0.03) 180deg, transparent 240deg, rgba(6,182,212,0.03) 300deg, transparent 360deg);
+    animation: rotate 30s linear infinite;
+  }
+
+  @keyframes rotate { to { transform: rotate(360deg); } }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(124,58,237,0.2));
+    border: 1px solid rgba(79,142,247,0.4);
+    color: var(--accent);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    color: var(--heading);
+    line-height: 1.3;
+    margin-bottom: 16px;
+    position: relative;
+    background: linear-gradient(135deg, #f1f5f9, #4f8ef7, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text2);
+    max-width: 700px;
+    margin: 0 auto 30px;
+    position: relative;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Table of contents */
+  .toc-section {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .toc-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text2);
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+
+  .toc-item:hover {
+    background: var(--card2);
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateX(4px);
+  }
+
+  .toc-num {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  /* Main content */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 60px;
+    scroll-margin-top: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: linear-gradient(135deg, rgba(79,142,247,0.3), rgba(79,142,247,0.1)); border: 1px solid rgba(79,142,247,0.3); }
+  .icon-purple { background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(124,58,237,0.1)); border: 1px solid rgba(124,58,237,0.3); }
+  .icon-cyan { background: linear-gradient(135deg, rgba(6,182,212,0.3), rgba(6,182,212,0.1)); border: 1px solid rgba(6,182,212,0.3); }
+  .icon-green { background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.1)); border: 1px solid rgba(16,185,129,0.3); }
+  .icon-orange { background: linear-gradient(135deg, rgba(245,158,11,0.3), rgba(245,158,11,0.1)); border: 1px solid rgba(245,158,11,0.3); }
+  .icon-red { background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(239,68,68,0.1)); border: 1px solid rgba(239,68,68,0.3); }
+  .icon-pink { background: linear-gradient(135deg, rgba(236,72,153,0.3), rgba(236,72,153,0.1)); border: 1px solid rgba(236,72,153,0.3); }
+
+  .section-title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.8rem;
+    color: var(--heading);
+    font-weight: 400;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--heading);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card p { color: var(--text2); margin-bottom: 12px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    background: #161b22;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--code-border);
+  }
+
+  .code-filename {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .code-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  .code-lang {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    background: rgba(255,255,255,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #e6edf3;
+  }
+
+  .kw { color: #ff7b72; } /* keywords */
+  .str { color: #a5d6ff; } /* strings */
+  .cm { color: #8b949e; font-style: italic; } /* comments */
+  .fn { color: #d2a8ff; } /* function/directive */
+  .val { color: #79c0ff; } /* values */
+  .num { color: #f8c700; } /* numbers */
+  .op { color: #ffa657; } /* operators */
+
+  /* Info boxes */
+  .info-box {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .info-box.tip { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); }
+  .info-box.warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
+  .info-box.danger { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); }
+  .info-box.info { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.25); }
+
+  .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .info-content { color: var(--text2); font-size: 14.5px; }
+  .info-content strong { color: var(--text); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 10px; border: 1px solid var(--border); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    background: var(--card2);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    color: var(--text2);
+    font-size: 14px;
+    border-bottom: 1px solid rgba(42,58,106,0.5);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  td code, th code {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+
+  /* Tags/badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-blue { background: rgba(79,142,247,0.2); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+  .badge-green { background: rgba(16,185,129,0.2); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-orange { background: rgba(245,158,11,0.2); color: var(--orange); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-red { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Grid layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  @media (max-width: 700px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+  }
+
+  /* File comparison cards */
+  .file-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .file-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(79,142,247,0.15);
+  }
+
+  .file-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .file-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .file-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--heading);
+  }
+
+  .file-server {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .file-card-body { padding: 18px 20px; }
+  .file-card-body p { font-size: 14px; color: var(--text2); margin-bottom: 10px; }
+
+  .file-use-list { list-style: none; }
+  .file-use-list li {
+    font-size: 13.5px;
+    color: var(--text2);
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .file-use-list li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Step list */
+  .step-list { list-style: none; counter-reset: steps; }
+  .step-list li {
+    counter-increment: steps;
+    padding: 14px 0 14px 56px;
+    position: relative;
+    border-bottom: 1px solid rgba(42,58,106,0.4);
+    color: var(--text2);
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 50px 0;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  /* Highlight text */
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl-g { color: var(--green); font-weight: 600; }
+  .hl-o { color: var(--orange); font-weight: 600; }
+  .hl-r { color: var(--red); font-weight: 600; }
+  .hl-p { color: var(--pink); font-weight: 600; }
+  .hl-c { color: var(--accent3); font-weight: 600; }
+
+  /* Sticky nav */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .sticky-nav a {
+    display: inline-block;
+    color: var(--text3);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    margin-right: 4px;
+  }
+
+  .sticky-nav a:hover {
+    background: var(--card);
+    color: var(--accent);
+  }
+
+  /* inline code */
+  p code, li code {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    color: var(--heading);
+    margin: 20px 0 10px;
+    font-weight: 600;
+  }
+
+  ul, ol { padding-left: 20px; }
+  li { color: var(--text2); margin-bottom: 6px; font-size: 15px; }
+
+  /* Animated entry */
+  .section { animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">🚀 সম্পূর্ণ বাংলা গাইড</div>
+  <h1>.htaccess ও সার্ভার কনফিগারেশন ফাইল<br>সম্পূর্ণ মাস্টারক্লাস</h1>
+  <p>Apache, Nginx, PHP, Node.js — সব সার্ভারের গুরুত্বপূর্ণ কনফিগারেশন ফাইল, কখন ব্যবহার করবেন, কীভাবে ব্যবহার করবেন — সব কিছু বিস্তারিত বাংলায়</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">12+</span>
+      <span class="stat-label">ফাইল টাইপ</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">80+</span>
+      <span class="stat-label">কোড উদাহরণ</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">১০০%</span>
+      <span class="stat-label">বাংলায়</span>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky Nav -->
+<nav class="sticky-nav">
+  <a href="#intro">পরিচিতি</a>
+  <a href="#htaccess">`.htaccess`</a>
+  <a href="#redirect">Redirect</a>
+  <a href="#rewrite">Rewrite</a>
+  <a href="#security">Security</a>
+  <a href="#password">Password</a>
+  <a href="#php">PHP</a>
+  <a href="#cache">Cache</a>
+  <a href="#nginx">nginx.conf</a>
+  <a href="#phpini">php.ini</a>
+  <a href="#env">`.env`</a>
+  <a href="#gitignore">`.gitignore`</a>
+  <a href="#robots">robots.txt</a>
+  <a href="#sitemap">sitemap.xml</a>
+  <a href="#other">অন্যান্য</a>
+  <a href="#tips">টিপস</a>
+</nav>
+
+<div class="main">
+
+<!-- ==================== INTRO ==================== -->
+<section class="section" id="intro">
+  <div class="section-header">
+    <div class="section-icon icon-blue">📖</div>
+    <div>
+      <div class="section-title">সার্ভার কনফিগারেশন ফাইল কী?</div>
+      <div class="section-subtitle">Introduction to server configuration files</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>যখন একটি ওয়েবসাইট কোনো সার্ভারে রান করে, তখন সার্ভারকে বলতে হয় — কোন ফাইল দেখাবে, কোন URL-কে কোথায় পাঠাবে, কোন ফাইল লুকানো থাকবে, কে অ্যাক্সেস পাবে ইত্যাদি। এই নির্দেশনাগুলো দেওয়া হয় <span class="hl">কনফিগারেশন ফাইলের</span> মাধ্যমে।</p>
+    <p>এই ফাইলগুলো সাধারণত সাধারণ টেক্সট ফাইল, কিন্তু এগুলোর নির্দিষ্ট নাম এবং নির্দিষ্ট সিনট্যাক্স থাকে। প্রতিটি সার্ভার সফটওয়্যার (Apache, Nginx, PHP ইত্যাদি) তার নিজের কনফিগারেশন ফাইল পড়ে।</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ফাইলের নাম</th>
+          <th>সার্ভার/প্ল্যাটফর্ম</th>
+          <th>মূল কাজ</th>
+          <th>লোকেশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>.htaccess</code></td><td>Apache</td><td>URL redirect, security, password</td><td>যেকোনো ডিরেক্টরি</td></tr>
+        <tr><td><code>nginx.conf</code></td><td>Nginx</td><td>সার্ভার রুল, proxy, SSL</td><td><code>/etc/nginx/</code></td></tr>
+        <tr><td><code>php.ini</code></td><td>PHP</td><td>PHP সেটিংস</td><td>PHP ইন্সটলেশন ফোল্ডার</td></tr>
+        <tr><td><code>.env</code></td><td>সব প্ল্যাটফর্ম</td><td>Environment variables</td><td>প্রজেক্ট রুট</td></tr>
+        <tr><td><code>.gitignore</code></td><td>Git</td><td>ফাইল বাদ দেওয়া</td><td>প্রজেক্ট রুট</td></tr>
+        <tr><td><code>robots.txt</code></td><td>সব ওয়েবসাইট</td><td>Search bot নিয়ন্ত্রণ</td><td>Web root</td></tr>
+        <tr><td><code>sitemap.xml</code></td><td>SEO</td><td>পেজের তালিকা</td><td>Web root</td></tr>
+        <tr><td><code>.htpasswd</code></td><td>Apache</td><td>Password সংরক্ষণ</td><td>সার্ভারের যেকোনো জায়গা</td></tr>
+        <tr><td><code>web.config</code></td><td>IIS (Windows)</td><td>Windows সার্ভার কনফিগ</td><td>Web root</td></tr>
+        <tr><td><code>Dockerfile</code></td><td>Docker</td><td>Container তৈরি</td><td>প্রজেক্ট রুট</td></tr>
+        <tr><td><code>.npmrc</code></td><td>Node.js</td><td>NPM সেটিংস</td><td>প্রজেক্ট রুট</td></tr>
+        <tr><td><code>composer.json</code></td><td>PHP</td><td>PHP dependencies</td><td>প্রজেক্ট রুট</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== HTACCESS INTRO ==================== -->
+<section class="section" id="htaccess">
+  <div class="section-header">
+    <div class="section-icon icon-purple">⚙️</div>
+    <div>
+      <div class="section-title">.htaccess — সম্পূর্ণ গাইড</div>
+      <div class="section-subtitle">Apache Hypertext Access Configuration</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤔 .htaccess কী?</div>
+    <p><span class="hl">.htaccess</span> (Hypertext Access) হলো Apache ওয়েব সার্ভারের একটি বিশেষ কনফিগারেশন ফাইল। এটি ডট (.) দিয়ে শুরু হয় কারণ Linux/Unix সিস্টেমে ডট দিয়ে শুরু হওয়া ফাইলগুলো লুকানো থাকে।</p>
+    <p>এই ফাইলটি একটি ডিরেক্টরিতে রাখলে শুধু সেই ডিরেক্টরি এবং তার সাব-ডিরেক্টরির উপর কাজ করে। মানে আপনি প্রতিটি ফোল্ডারে আলাদা আলাদা নিয়ম বানাতে পারবেন।</p>
+  </div>
+
+  <div class="two-col">
+    <div class="info-box tip">
+      <span class="info-icon">✅</span>
+      <div class="info-content"><strong>কখন .htaccess ব্যবহার করবেন:</strong><br>
+      শেয়ার্ড হোস্টিংয়ে যেখানে মেইন Apache কনফিগ ফাইল edit করার অনুমতি নেই। cPanel ব্যবহারকারীদের জন্য এটিই প্রধান কনফিগ টুল।</div>
+    </div>
+    <div class="info-box warning">
+      <span class="info-icon">⚠️</span>
+      <div class="info-content"><strong>সতর্কতা:</strong><br>
+      .htaccess ফাইল প্রতিটি request-এ পড়া হয়, তাই অনেক বেশি নিয়ম থাকলে সাইট ধীর হতে পারে। সম্ভব হলে মেইন Apache config ব্যবহার করুন।</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename">
+        <span class="code-dot dot-red"></span>
+        <span class="code-dot dot-yellow"></span>
+        <span class="code-dot dot-green"></span>
+        📄 .htaccess — বেসিক স্ট্রাকচার
+      </div>
+      <span class="code-lang">Apache Config</span>
+    </div>
+    <pre><span class="cm"># ===================================</span>
+<span class="cm"># .htaccess ফাইলের বেসিক স্ট্রাকচার</span>
+<span class="cm"># প্রতিটি লাইন একটি নির্দেশনা</span>
+<span class="cm"># # দিয়ে শুরু হওয়া লাইন = comment</span>
+<span class="cm"># ===================================</span>
+
+<span class="cm"># Apache version চেক করুন</span>
+<span class="kw">Options</span> -Indexes
+
+<span class="cm"># Rewrite Engine চালু করুন</span>
+<span class="kw">RewriteEngine</span> On
+
+<span class="cm"># Character encoding সেট করুন</span>
+<span class="kw">AddDefaultCharset</span> <span class="val">UTF-8</span></pre>
+  </div>
+
+  <div class="info-box info">
+    <span class="info-icon">📌</span>
+    <div class="info-content"><strong>ফাইল কোথায় রাখবেন?</strong> আপনার ওয়েবসাইটের <strong>public_html</strong> বা <strong>www</strong> ফোল্ডারে (web root-এ)। WordPress সাইটে এটি wp-config.php এর পাশে থাকে।</div>
+  </div>
+</section>
+
+<!-- ==================== REDIRECT ==================== -->
+<section class="section" id="redirect">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🔀</div>
+    <div>
+      <div class="section-title">Redirect — URL পুনর্নির্দেশনা</div>
+      <div class="section-subtitle">301, 302, 307 redirect সব ধরনের</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Redirect কোড বোঝা</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>কোড</th><th>নাম</th><th>কখন ব্যবহার করবেন</th><th>SEO প্রভাব</th></tr>
+        <tr><td><span class="badge badge-green">301</span></td><td>Permanent</td><td>পুরানো URL চিরতরে বন্ধ হলে</td><td>Link juice ট্রান্সফার হয় ✅</td></tr>
+        <tr><td><span class="badge badge-blue">302</span></td><td>Temporary</td><td>সাময়িকভাবে অন্য জায়গায় পাঠাতে</td><td>Link juice ট্রান্সফার হয় না</td></tr>
+        <tr><td><span class="badge badge-orange">307</span></td><td>Temp (strict)</td><td>Method পরিবর্তন না করে redirect</td><td>302 এর মতো</td></tr>
+        <tr><td><span class="badge badge-red">410</span></td><td>Gone</td><td>পেজ মুছে ফেলা হয়েছে বলাতে</td><td>Search engine cache মুছে</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename">
+        <span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span>
+        .htaccess — সব ধরনের Redirect উদাহরণ
+      </div>
+      <span class="code-lang">Apache Config</span>
+    </div>
+    <pre><span class="cm"># ==============================</span>
+<span class="cm"># ১. সিম্পল 301 Redirect (পুরানো পেজ → নতুন পেজ)</span>
+<span class="cm"># ==============================</span>
+<span class="kw">Redirect</span> <span class="num">301</span> <span class="str">/purano-page.html</span> <span class="val">https://example.com/notun-page</span>
+
+<span class="cm"># ২. সম্পূর্ণ ডোমেইন redirect (www → non-www)</span>
+<span class="kw">RewriteEngine</span> On
+<span class="kw">RewriteCond</span> %{HTTP_HOST} ^www\.<span class="val">example\.com</span>$ [NC]
+<span class="kw">RewriteRule</span> ^(.*)$ <span class="str">https://example.com/$1</span> [R=<span class="num">301</span>,L]
+
+<span class="cm"># ৩. non-www → www তে redirect</span>
+<span class="kw">RewriteCond</span> %{HTTP_HOST} !^www\. [NC]
+<span class="kw">RewriteRule</span> ^(.*)$ <span class="str">https://www.%{HTTP_HOST}/$1</span> [R=<span class="num">301</span>,L]
+
+<span class="cm"># ৪. HTTP → HTTPS redirect (SSL force করা)</span>
+<span class="kw">RewriteEngine</span> On
+<span class="kw">RewriteCond</span> %{HTTPS} off
+<span class="kw">RewriteRule</span> ^(.*)$ <span class="str">https://%{HTTP_HOST}%{REQUEST_URI}</span> [L,R=<span class="num">301</span>]
+
+<span class="cm"># ৫. একটি সম্পূর্ণ ফোল্ডার redirect</span>
+<span class="kw">Redirect</span> <span class="num">301</span> <span class="str">/purano-folder/</span> <span class="val">https://example.com/notun-folder/</span>
+
+<span class="cm"># ৬. Maintenance mode — সব traffic একটি পেজে</span>
+<span class="kw">RewriteEngine</span> On
+<span class="kw">RewriteCond</span> %{REMOTE_ADDR} !^<span class="str">123\.456\.789\.000</span>$  <span class="cm"># আপনার IP বাদে</span>
+<span class="kw">RewriteCond</span> %{REQUEST_URI} !/maintenance\.html$ [NC]
+<span class="kw">RewriteRule</span> ^(.*)$ <span class="str">/maintenance.html</span> [R=<span class="num">302</span>,L]
+
+<span class="cm"># ৭. পুরানো .html extension বাদ দেওয়া</span>
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-f
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-d
+<span class="kw">RewriteRule</span> ^([^\.]+)$ <span class="str">$1.html</span> [NC,L]</pre>
+  </div>
+
+  <div class="info-box tip">
+    <span class="info-icon">💡</span>
+    <div class="info-content"><strong>প্রো টিপ:</strong> <code>RewriteCond</code> হলো শর্ত, <code>RewriteRule</code> হলো কাজ। শর্ত সত্য হলেই কাজটি চলে। <code>[R=301,L]</code> মানে: 301 redirect করো এবং এটাই শেষ নিয়ম (L = Last)।</div>
+  </div>
+</section>
+
+<!-- ==================== REWRITE ==================== -->
+<section class="section" id="rewrite">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🔧</div>
+    <div>
+      <div class="section-title">URL Rewriting — সুন্দর URL তৈরি</div>
+      <div class="section-subtitle">SEO-friendly clean URLs with mod_rewrite</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">URL Rewrite কেন দরকার?</div>
+    <p>ডিফল্টভাবে PHP ওয়েবসাইটে URL হয় এরকম: <code>example.com/page.php?id=5&cat=news</code></p>
+    <p>URL Rewrite দিয়ে এটাকে সুন্দর করা যায়: <code>example.com/news/page-title</code></p>
+    <p>এটি SEO-র জন্য ভালো, ব্যবহারকারীর জন্য বোধগম্য, এবং প্রফেশনাল দেখায়।</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess — URL Rewrite উদাহরণ</div>
+      <span class="code-lang">Apache Config</span>
+    </div>
+    <pre><span class="kw">RewriteEngine</span> On
+
+<span class="cm"># ===============================================</span>
+<span class="cm"># ১. WordPress / Laravel এর জন্য মূল Rewrite</span>
+<span class="cm"># সব request index.php তে পাঠায়</span>
+<span class="cm"># ===============================================</span>
+<span class="kw">RewriteBase</span> /
+<span class="kw">RewriteRule</span> ^index\.php$ - [L]
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-f
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-d
+<span class="kw">RewriteRule</span> . /index.php [L]
+
+<span class="cm"># ===============================================</span>
+<span class="cm"># ২. ?id=5 → /product/5 তে convert করা</span>
+<span class="cm"># পুরানো: example.com/product.php?id=5</span>
+<span class="cm"># নতুন:   example.com/product/5</span>
+<span class="cm"># ===============================================</span>
+<span class="kw">RewriteRule</span> ^product/([0-9]+)/?$ <span class="str">product.php?id=$1</span> [L,QSA]
+
+<span class="cm"># ৩. news/2024/tech-news → news.php?year=2024&slug=tech-news</span>
+<span class="kw">RewriteRule</span> ^news/([0-9]{4})/([a-z0-9-]+)/?$ <span class="str">news.php?year=$1&slug=$2</span> [L,QSA]
+
+<span class="cm"># ৪. URL এর শেষের slash সবসময় যোগ করা</span>
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-f
+<span class="kw">RewriteRule</span> [^/]$ %{REQUEST_URI}/ [R=<span class="num">301</span>,L]
+
+<span class="cm"># ৫. .php extension লুকানো</span>
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-d
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME}.php -f
+<span class="kw">RewriteRule</span> ^(.+)$ <span class="str">$1.php</span> [L,QSA]</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔣 Regex (Regular Expression) সংক্ষিপ্ত রেফারেন্স</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>প্যাটার্ন</th><th>মানে</th><th>উদাহরণ</th></tr>
+        <tr><td><code>.</code></td><td>যেকোনো একটি character</td><td><code>a.c</code> → abc, aXc</td></tr>
+        <tr><td><code>*</code></td><td>আগের character শূন্য বা অনেকবার</td><td><code>go*d</code> → gd, god, good</td></tr>
+        <tr><td><code>+</code></td><td>আগের character এক বা বেশিবার</td><td><code>go+d</code> → god, good</td></tr>
+        <tr><td><code>?</code></td><td>আগের character থাকতে পারে বা নাও পারে</td><td><code>colou?r</code></td></tr>
+        <tr><td><code>^</code></td><td>শুরু</td><td><code>^admin</code> → admin দিয়ে শুরু</td></tr>
+        <tr><td><code>$</code></td><td>শেষ</td><td><code>\.html$</code> → .html দিয়ে শেষ</td></tr>
+        <tr><td><code>([0-9]+)</code></td><td>এক বা বেশি সংখ্যা (capture)</td><td>$1 দিয়ে ব্যবহার করুন</td></tr>
+        <tr><td><code>[a-z]</code></td><td>ছোট হাতের যেকোনো letter</td><td>—</td></tr>
+        <tr><td><code>[NC]</code></td><td>Case insensitive</td><td>—</td></tr>
+        <tr><td><code>[QSA]</code></td><td>Query string append</td><td>?a=1 সহ রাখে</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECURITY ==================== -->
+<section class="section" id="security">
+  <div class="section-header">
+    <div class="section-icon icon-red">🔒</div>
+    <div>
+      <div class="section-title">Security — নিরাপত্তা</div>
+      <div class="section-subtitle">সাইট সুরক্ষিত রাখার সব কৌশল</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess — নিরাপত্তা সেটিংস</div>
+      <span class="code-lang">Apache Security</span>
+    </div>
+    <pre><span class="cm"># ==============================</span>
+<span class="cm"># ১. Directory Listing বন্ধ করুন</span>
+<span class="cm"># (ফোল্ডারের ভেতরের ফাইল দেখা যাবে না)</span>
+<span class="cm"># ==============================</span>
+<span class="kw">Options</span> -Indexes
+
+<span class="cm"># ==============================</span>
+<span class="cm"># ২. গুরুত্বপূর্ণ ফাইল লুকানো / block করা</span>
+<span class="cm"># ==============================</span>
+<span class="kw">&lt;FilesMatch</span> <span class="str">"(\.htaccess|\.htpasswd|\.env|wp-config\.php|config\.php)"</span>&gt;
+    <span class="kw">Require</span> all denied
+<span class="kw">&lt;/FilesMatch&gt;</span>
+
+<span class="cm"># ৩. নির্দিষ্ট IP ব্লক করা</span>
+<span class="kw">Require</span> not ip <span class="val">192.168.1.100</span>
+<span class="kw">Require</span> not ip <span class="val">10.0.0.0/8</span>
+
+<span class="cm"># ৪. শুধু নির্দিষ্ট IP থেকে access দেওয়া (admin পেজ)</span>
+<span class="kw">&lt;Files</span> <span class="str">"admin/*"</span>&gt;
+    <span class="kw">Require</span> ip <span class="val">103.1.2.3</span>
+<span class="kw">&lt;/Files&gt;</span>
+
+<span class="cm"># ==============================</span>
+<span class="cm"># ৫. XSS ও Clickjacking protection</span>
+<span class="cm"># ==============================</span>
+<span class="kw">Header</span> always set X-XSS-Protection <span class="str">"1; mode=block"</span>
+<span class="kw">Header</span> always set X-Frame-Options <span class="str">"SAMEORIGIN"</span>
+<span class="kw">Header</span> always set X-Content-Type-Options <span class="str">"nosniff"</span>
+<span class="kw">Header</span> always set Referrer-Policy <span class="str">"strict-origin-when-cross-origin"</span>
+
+<span class="cm"># ৬. Server signature লুকানো</span>
+<span class="kw">ServerSignature</span> Off
+
+<span class="cm"># ৭. নির্দিষ্ট ফাইল টাইপ upload block</span>
+<span class="kw">&lt;FilesMatch</span> <span class="str">"\.(php|php3|php4|php5|phtml)$"</span>&gt;
+    <span class="kw">Require</span> all denied
+<span class="kw">&lt;/FilesMatch&gt;</span>
+
+<span class="cm"># ৮. Hotlinking বন্ধ করুন (অন্য সাইট আপনার ছবি ব্যবহার করতে পারবে না)</span>
+<span class="kw">RewriteEngine</span> On
+<span class="kw">RewriteCond</span> %{HTTP_REFERER} !^$
+<span class="kw">RewriteCond</span> %{HTTP_REFERER} !^http(s)?://(www\.)?example\.com [NC]
+<span class="kw">RewriteRule</span> \.(jpg|jpeg|png|gif|webp)$ - [NC,F,L]
+
+<span class="cm"># ৯. SQL Injection ও bad bots ব্লক</span>
+<span class="kw">RewriteCond</span> %{QUERY_STRING} (<span class="str">union.*select|insert.*into|delete.*from|drop.*table</span>) [NC,OR]
+<span class="kw">RewriteCond</span> %{HTTP_USER_AGENT} (libwww-perl|wget|curl|nikto|sqlmap) [NC]
+<span class="kw">RewriteRule</span> .* - [F,L]</pre>
+  </div>
+
+  <div class="info-box danger">
+    <span class="info-icon">🚨</span>
+    <div class="info-content"><strong>সতর্কতা:</strong> <code>.htaccess</code> ফাইলে ভুল নিয়ম লিখলে <strong>500 Internal Server Error</strong> আসতে পারে। সবসময় ব্যাকআপ রেখে edit করুন।</div>
+  </div>
+</section>
+
+<!-- ==================== PASSWORD ==================== -->
+<section class="section" id="password">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🔑</div>
+    <div>
+      <div class="section-title">Password Protection — পাসওয়ার্ড সুরক্ষা</div>
+      <div class="section-subtitle">.htpasswd দিয়ে ফোল্ডার লক করুন</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>কোনো ফোল্ডারে ঢোকার আগে username/password চাইতে চাইলে <code>.htaccess</code> এবং <code>.htpasswd</code> একসাথে ব্যবহার করুন। Admin panel, staging site বা development সাইট লুকাতে এটি দারুণ কাজে আসে।</p>
+  </div>
+
+  <div class="two-col">
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess</div>
+      </div>
+      <pre><span class="cm"># ফোল্ডার password protect করা</span>
+<span class="kw">AuthType</span> Basic
+<span class="kw">AuthName</span> <span class="str">"Protected Area"</span>
+<span class="kw">AuthUserFile</span> <span class="val">/home/user/.htpasswd</span>
+<span class="kw">Require</span> valid-user</pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htpasswd</div>
+      </div>
+      <pre><span class="cm"># format: username:encrypted_password</span>
+<span class="fn">admin</span>:<span class="str">$apr1$xyz$hashedpassword123</span>
+<span class="fn">user2</span>:<span class="str">$apr1$abc$anotherhashedpassword</span></pre>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <span class="info-icon">💡</span>
+    <div class="info-content"><strong>Password তৈরি করুন:</strong> Terminal-এ: <code>htpasswd -c /path/.htpasswd username</code> অথবা অনলাইনে: <a href="https://htpasswd.vivario.de" style="color:var(--accent)">htpasswd generator</a> ব্যবহার করুন। Password কখনো plain text রাখবেন না।</div>
+  </div>
+</section>
+
+<!-- ==================== PHP in HTACCESS ==================== -->
+<section class="section" id="php">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🐘</div>
+    <div>
+      <div class="section-title">PHP সেটিংস .htaccess দিয়ে</div>
+      <div class="section-subtitle">php.ini ছাড়াই PHP কনফিগার করুন</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess — PHP সেটিংস</div>
+      <span class="code-lang">PHP via Apache</span>
+    </div>
+    <pre><span class="cm"># ==============================</span>
+<span class="cm"># File upload সাইজ বাড়ানো</span>
+<span class="cm"># ==============================</span>
+<span class="kw">php_value</span> upload_max_filesize <span class="num">64M</span>
+<span class="kw">php_value</span> post_max_size <span class="num">64M</span>
+<span class="kw">php_value</span> max_execution_time <span class="num">300</span>
+<span class="kw">php_value</span> max_input_time <span class="num">300</span>
+<span class="kw">php_value</span> memory_limit <span class="num">256M</span>
+
+<span class="cm"># Error reporting বন্ধ (production সাইটে)</span>
+<span class="kw">php_flag</span> display_errors <span class="val">Off</span>
+<span class="kw">php_flag</span> log_errors <span class="val">On</span>
+<span class="kw">php_value</span> error_log <span class="str">/home/user/logs/php_errors.log</span>
+
+<span class="cm"># Session সেটিংস</span>
+<span class="kw">php_value</span> session.gc_maxlifetime <span class="num">3600</span>
+<span class="kw">php_value</span> session.cookie_lifetime <span class="num">3600</span>
+
+<span class="cm"># Default timezone</span>
+<span class="kw">php_value</span> date.timezone <span class="str">"Asia/Dhaka"</span>
+
+<span class="cm"># PHP version নির্দিষ্ট করা (cPanel)</span>
+<span class="kw">AddHandler</span> application/x-httpd-php82 .php</pre>
+  </div>
+</section>
+
+<!-- ==================== CACHE ==================== -->
+<section class="section" id="cache">
+  <div class="section-header">
+    <div class="section-icon icon-green">⚡</div>
+    <div>
+      <div class="section-title">Caching ও Performance</div>
+      <div class="section-subtitle">সাইট দ্রুত করার .htaccess কৌশল</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess — Speed Optimization</div>
+      <span class="code-lang">Performance</span>
+    </div>
+    <pre><span class="cm"># ==============================</span>
+<span class="cm"># Browser Caching — ফাইল cache করা</span>
+<span class="cm"># ব্রাউজার একবার ডাউনলোড করে রাখবে</span>
+<span class="cm"># ==============================</span>
+<span class="kw">&lt;IfModule</span> mod_expires.c&gt;
+    ExpiresActive On
+    <span class="cm"># ছবি — ১ বছর</span>
+    <span class="kw">ExpiresByType</span> image/jpeg <span class="str">"access plus 1 year"</span>
+    <span class="kw">ExpiresByType</span> image/png <span class="str">"access plus 1 year"</span>
+    <span class="kw">ExpiresByType</span> image/webp <span class="str">"access plus 1 year"</span>
+    <span class="kw">ExpiresByType</span> image/gif <span class="str">"access plus 1 year"</span>
+    <span class="cm"># CSS ও JS — ১ মাস</span>
+    <span class="kw">ExpiresByType</span> text/css <span class="str">"access plus 1 month"</span>
+    <span class="kw">ExpiresByType</span> application/javascript <span class="str">"access plus 1 month"</span>
+    <span class="cm"># Fonts — ১ বছর</span>
+    <span class="kw">ExpiresByType</span> font/woff2 <span class="str">"access plus 1 year"</span>
+    <span class="kw">ExpiresByType</span> application/font-woff <span class="str">"access plus 1 year"</span>
+    <span class="cm"># HTML — ১ দিন</span>
+    <span class="kw">ExpiresByType</span> text/html <span class="str">"access plus 1 day"</span>
+<span class="kw">&lt;/IfModule&gt;</span>
+
+<span class="cm"># ==============================</span>
+<span class="cm"># GZIP Compression — ফাইল ছোট করে পাঠানো</span>
+<span class="cm"># ==============================</span>
+<span class="kw">&lt;IfModule</span> mod_deflate.c&gt;
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+<span class="kw">&lt;/IfModule&gt;</span>
+
+<span class="cm"># ETag বন্ধ করা (optional)</span>
+<span class="kw">Header</span> unset ETag
+<span class="kw">FileETag</span> None</pre>
+  </div>
+
+  <div class="info-box tip">
+    <span class="info-icon">🚀</span>
+    <div class="info-content"><strong>PageSpeed টিপ:</strong> Browser caching + GZIP compression একসাথে ব্যবহার করলে সাইটের লোডটাইম <strong>৫০-৭০%</strong> কমে যেতে পারে। Google PageSpeed Insights দিয়ে টেস্ট করুন।</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .htaccess — Error Pages</div>
+    </div>
+    <pre><span class="cm"># Custom Error Pages</span>
+<span class="kw">ErrorDocument</span> <span class="num">400</span> <span class="str">/errors/400.html</span>
+<span class="kw">ErrorDocument</span> <span class="num">401</span> <span class="str">/errors/401.html</span>
+<span class="kw">ErrorDocument</span> <span class="num">403</span> <span class="str">/errors/403.html</span>
+<span class="kw">ErrorDocument</span> <span class="num">404</span> <span class="str">/errors/404.html</span>
+<span class="kw">ErrorDocument</span> <span class="num">500</span> <span class="str">/errors/500.html</span></pre>
+  </div>
+</section>
+
+<!-- ==================== NGINX ==================== -->
+<section class="section" id="nginx">
+  <div class="section-header">
+    <div class="section-icon icon-green">🟢</div>
+    <div>
+      <div class="section-title">nginx.conf — Nginx সার্ভার</div>
+      <div class="section-subtitle">High-performance web server configuration</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Nginx বনাম Apache</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>বিষয়</th><th>Apache</th><th>Nginx</th></tr>
+        <tr><td>কনফিগ ফাইল</td><td><code>.htaccess</code></td><td><code>nginx.conf</code></td></tr>
+        <tr><td>পারফরমেন্স</td><td>ভালো</td><td>অনেক ভালো (static files)</td></tr>
+        <tr><td>Per-directory config</td><td>✅ .htaccess</td><td>❌ সম্ভব না</td></tr>
+        <tr><td>Memory usage</td><td>বেশি</td><td>কম</td></tr>
+        <tr><td>জনপ্রিয়তা</td><td>পুরানো, বেশি</td><td>নতুন, বাড়ছে</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> nginx.conf — সম্পূর্ণ উদাহরণ</div>
+      <span class="code-lang">Nginx Config</span>
+    </div>
+    <pre><span class="cm"># /etc/nginx/sites-available/example.com</span>
+
+<span class="kw">server</span> {
+    <span class="fn">listen</span> <span class="num">80</span>;
+    <span class="fn">server_name</span> <span class="val">example.com www.example.com</span>;
+
+    <span class="cm"># HTTP → HTTPS redirect</span>
+    <span class="fn">return</span> <span class="num">301</span> <span class="str">https://$host$request_uri</span>;
+}
+
+<span class="kw">server</span> {
+    <span class="fn">listen</span> <span class="num">443</span> ssl http2;
+    <span class="fn">server_name</span> <span class="val">example.com www.example.com</span>;
+
+    <span class="cm"># SSL সার্টিফিকেট</span>
+    <span class="fn">ssl_certificate</span>     /etc/letsencrypt/live/example.com/fullchain.pem;
+    <span class="fn">ssl_certificate_key</span> /etc/letsencrypt/live/example.com/privkey.pem;
+
+    <span class="cm"># Web root</span>
+    <span class="fn">root</span> /var/www/example.com/public;
+    <span class="fn">index</span> index.php index.html;
+
+    <span class="cm"># Laravel / WordPress এর জন্য</span>
+    <span class="kw">location</span> / {
+        <span class="fn">try_files</span> $uri $uri/ /index.php?$query_string;
+    }
+
+    <span class="cm"># PHP-FPM দিয়ে PHP চালানো</span>
+    <span class="kw">location</span> ~ \.php$ {
+        <span class="fn">fastcgi_pass</span> unix:/var/run/php/php8.2-fpm.sock;
+        <span class="fn">fastcgi_index</span> index.php;
+        <span class="fn">include</span> fastcgi_params;
+        <span class="fn">fastcgi_param</span> SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    <span class="cm"># Static files cache</span>
+    <span class="kw">location</span> ~* \.(jpg|jpeg|png|gif|css|js|woff2)$ {
+        <span class="fn">expires</span> 1y;
+        <span class="fn">add_header</span> Cache-Control "public, immutable";
+    }
+
+    <span class="cm"># .htaccess ব্লক</span>
+    <span class="kw">location</span> ~ /\.ht {
+        <span class="fn">deny</span> all;
+    }
+
+    <span class="cm"># Gzip</span>
+    <span class="fn">gzip</span> on;
+    <span class="fn">gzip_types</span> text/plain text/css application/javascript application/json;
+}</pre>
+  </div>
+</section>
+
+<!-- ==================== PHP.INI ==================== -->
+<section class="section" id="phpini">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🐘</div>
+    <div>
+      <div class="section-title">php.ini — PHP কনফিগারেশন ফাইল</div>
+      <div class="section-subtitle">PHP এর মূল সেটিংস ফাইল</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p><code>php.ini</code> হলো PHP-র মূল কনফিগারেশন ফাইল। এটি সার্ভারে PHP ইন্সটল হওয়ার সময় তৈরি হয়। Linux-এ সাধারণত <code>/etc/php/8.x/apache2/php.ini</code> বা <code>/etc/php/8.x/cli/php.ini</code> তে থাকে।</p>
+    <p>শেয়ার্ড হোস্টিংয়ে সরাসরি এডিট করা যায় না, তাই .htaccess দিয়ে অনেক সেটিং পরিবর্তন করতে হয়। VPS বা Dedicated সার্ভারে সরাসরি এডিট করা যায়।</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> php.ini — গুরুত্বপূর্ণ সেটিংস</div>
+      <span class="code-lang">PHP Config</span>
+    </div>
+    <pre><span class="cm">; ===============================</span>
+<span class="cm">; php.ini — গুরুত্বপূর্ণ সেটিংস</span>
+<span class="cm">; ===============================</span>
+
+<span class="cm">; Error handling</span>
+<span class="fn">display_errors</span> = <span class="val">Off</span>      <span class="cm">; Production-এ Off রাখুন</span>
+<span class="fn">log_errors</span> = <span class="val">On</span>
+<span class="fn">error_log</span> = <span class="str">/var/log/php_errors.log</span>
+<span class="fn">error_reporting</span> = <span class="val">E_ALL</span>   <span class="cm">; Development-এ E_ALL</span>
+
+<span class="cm">; File upload সীমা</span>
+<span class="fn">upload_max_filesize</span> = <span class="num">64M</span>
+<span class="fn">post_max_size</span> = <span class="num">64M</span>
+<span class="fn">max_file_uploads</span> = <span class="num">20</span>
+
+<span class="cm">; Execution time</span>
+<span class="fn">max_execution_time</span> = <span class="num">300</span>   <span class="cm">; সেকেন্ডে</span>
+<span class="fn">max_input_time</span> = <span class="num">300</span>
+
+<span class="cm">; Memory</span>
+<span class="fn">memory_limit</span> = <span class="num">256M</span>
+
+<span class="cm">; Timezone (বাংলাদেশের জন্য)</span>
+<span class="fn">date.timezone</span> = <span class="str">Asia/Dhaka</span>
+
+<span class="cm">; Session সেটিংস</span>
+<span class="fn">session.gc_maxlifetime</span> = <span class="num">3600</span>
+<span class="fn">session.cookie_secure</span> = <span class="num">1</span>    <span class="cm">; HTTPS এ</span>
+<span class="fn">session.cookie_httponly</span> = <span class="num">1</span>  <span class="cm">; JS থেকে লুকানো</span>
+
+<span class="cm">; OPcache (PHP speed up)</span>
+<span class="fn">opcache.enable</span> = <span class="num">1</span>
+<span class="fn">opcache.memory_consumption</span> = <span class="num">256</span>
+<span class="fn">opcache.max_accelerated_files</span> = <span class="num">10000</span></pre>
+  </div>
+</section>
+
+<!-- ==================== ENV ==================== -->
+<section class="section" id="env">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🌍</div>
+    <div>
+      <div class="section-title">.env — Environment Variables</div>
+      <div class="section-subtitle">গোপন তথ্য ও পরিবেশ-নির্ভর সেটিংস</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p><code>.env</code> ফাইলে database password, API keys, secret keys ইত্যাদি গোপন তথ্য রাখা হয়। এই ফাইলটি <strong>কখনো Git-এ push করবেন না</strong>। Laravel, Node.js, React, Django সব ফ্রেমওয়ার্কেই এটি ব্যবহার হয়।</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .env — Laravel উদাহরণ</div>
+      <span class="code-lang">Environment</span>
+    </div>
+    <pre><span class="cm"># App সেটিংস</span>
+<span class="fn">APP_NAME</span>=<span class="str">"আমার ওয়েবসাইট"</span>
+<span class="fn">APP_ENV</span>=<span class="val">production</span>   <span class="cm"># local / staging / production</span>
+<span class="fn">APP_KEY</span>=<span class="str">base64:xyzABCdef123...</span>
+<span class="fn">APP_DEBUG</span>=<span class="val">false</span>
+<span class="fn">APP_URL</span>=<span class="str">https://example.com</span>
+
+<span class="cm"># Database</span>
+<span class="fn">DB_CONNECTION</span>=<span class="val">mysql</span>
+<span class="fn">DB_HOST</span>=<span class="str">127.0.0.1</span>
+<span class="fn">DB_PORT</span>=<span class="num">3306</span>
+<span class="fn">DB_DATABASE</span>=<span class="str">my_database</span>
+<span class="fn">DB_USERNAME</span>=<span class="str">my_user</span>
+<span class="fn">DB_PASSWORD</span>=<span class="str">super_secret_password</span>
+
+<span class="cm"># Mail সেটিংস</span>
+<span class="fn">MAIL_MAILER</span>=<span class="val">smtp</span>
+<span class="fn">MAIL_HOST</span>=<span class="str">smtp.gmail.com</span>
+<span class="fn">MAIL_PORT</span>=<span class="num">587</span>
+<span class="fn">MAIL_USERNAME</span>=<span class="str">your@gmail.com</span>
+<span class="fn">MAIL_PASSWORD</span>=<span class="str">app_password_here</span>
+<span class="fn">MAIL_FROM_ADDRESS</span>=<span class="str">your@gmail.com</span>
+
+<span class="cm"># Payment Gateway</span>
+<span class="fn">STRIPE_KEY</span>=<span class="str">pk_live_xxx</span>
+<span class="fn">STRIPE_SECRET</span>=<span class="str">sk_live_xxx</span>
+<span class="fn">SSLCOMMERZ_STORE_ID</span>=<span class="str">your_store_id</span>
+<span class="fn">SSLCOMMERZ_STORE_PASS</span>=<span class="str">your_store_pass</span>
+
+<span class="cm"># AWS / Storage</span>
+<span class="fn">AWS_ACCESS_KEY_ID</span>=<span class="str">AKIA...</span>
+<span class="fn">AWS_SECRET_ACCESS_KEY</span>=<span class="str">secret...</span>
+<span class="fn">AWS_DEFAULT_REGION</span>=<span class="val">ap-south-1</span>
+<span class="fn">AWS_BUCKET</span>=<span class="str">my-bucket</span></pre>
+  </div>
+
+  <div class="info-box danger">
+    <span class="info-icon">🚨</span>
+    <div class="info-content"><strong>গুরুত্বপূর্ণ:</strong> <code>.env</code> সবসময় <code>.gitignore</code> তে যোগ করুন। একটি <code>.env.example</code> ফাইল তৈরি করুন (মান ছাড়া) এবং সেটি GitHub-এ রাখুন যাতে অন্যরা জানে কোন variables দরকার।</div>
+  </div>
+</section>
+
+<!-- ==================== GITIGNORE ==================== -->
+<section class="section" id="gitignore">
+  <div class="section-header">
+    <div class="section-icon icon-pink">🙈</div>
+    <div>
+      <div class="section-title">.gitignore — Git-এ ফাইল বাদ দেওয়া</div>
+      <div class="section-subtitle">কোন ফাইল GitHub-এ যাবে না সেটি বলুন</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> .gitignore — PHP / Laravel প্রজেক্ট</div>
+      <span class="code-lang">Git</span>
+    </div>
+    <pre><span class="cm"># Environment ফাইল (সবচেয়ে গুরুত্বপূর্ণ!)</span>
+<span class="kw">.env</span>
+<span class="kw">.env.*</span>
+<span class="kw">!.env.example</span>   <span class="cm"># .env.example রাখুন</span>
+
+<span class="cm"># Dependencies (npm/composer ইন্সটল করলে আসে)</span>
+<span class="kw">vendor/</span>
+<span class="kw">node_modules/</span>
+
+<span class="cm"># Build files</span>
+<span class="kw">public/build/</span>
+<span class="kw">public/hot</span>
+<span class="kw">dist/</span>
+
+<span class="cm"># Log files</span>
+<span class="kw">*.log</span>
+<span class="kw">storage/logs/</span>
+
+<span class="cm"># Cache</span>
+<span class="kw">storage/framework/cache/</span>
+<span class="kw">storage/framework/sessions/</span>
+<span class="kw">bootstrap/cache/</span>
+<span class="kw">.cache/</span>
+
+<span class="cm"># OS generated files</span>
+<span class="kw">.DS_Store</span>         <span class="cm"># Mac</span>
+<span class="kw">Thumbs.db</span>         <span class="cm"># Windows</span>
+<span class="kw">desktop.ini</span>
+
+<span class="cm"># IDE files</span>
+<span class="kw">.vscode/</span>
+<span class="kw">.idea/</span>
+<span class="kw">*.swp</span>
+
+<span class="cm"># Upload folders</span>
+<span class="kw">storage/app/public/</span>
+<span class="kw">public/uploads/</span>
+
+<span class="cm"># Database dumps</span>
+<span class="kw">*.sql</span>
+<span class="kw">*.sqlite</span></pre>
+  </div>
+</section>
+
+<!-- ==================== ROBOTS ==================== -->
+<section class="section" id="robots">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🤖</div>
+    <div>
+      <div class="section-title">robots.txt — Search Bot নিয়ন্ত্রণ</div>
+      <div class="section-subtitle">Google, Bing কে কী দেখাবেন সেটি বলুন</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p><code>robots.txt</code> ওয়েবসাইটের root-এ রাখা হয়। Google, Bing ইত্যাদি search bot প্রথমেই এই ফাইল পড়ে জানে কোন পেজ crawl করবে আর কোনটা করবে না।</p>
+    <p>URL: <code>https://example.com/robots.txt</code></p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> robots.txt</div>
+    </div>
+    <pre><span class="cm"># সব bot-কে নির্দেশনা</span>
+<span class="fn">User-agent:</span> *
+<span class="kw">Disallow:</span> <span class="str">/admin/</span>        <span class="cm"># admin পেজ লুকাও</span>
+<span class="kw">Disallow:</span> <span class="str">/private/</span>      <span class="cm"># private ফোল্ডার</span>
+<span class="kw">Disallow:</span> <span class="str">/wp-admin/</span>     <span class="cm"># WordPress admin</span>
+<span class="kw">Disallow:</span> <span class="str">/cart/</span>         <span class="cm"># Shopping cart</span>
+<span class="kw">Disallow:</span> <span class="str">/checkout/</span>
+<span class="kw">Disallow:</span> <span class="str">/*.pdf$</span>        <span class="cm"># PDF index করো না</span>
+<span class="kw">Allow:</span> <span class="str">/wp-admin/admin-ajax.php</span>  <span class="cm"># WordPress AJAX allow</span>
+
+<span class="cm"># শুধু Google bot-এর জন্য</span>
+<span class="fn">User-agent:</span> Googlebot
+<span class="kw">Allow:</span> /
+
+<span class="cm"># কোনো একটি bot সম্পূর্ণ ব্লক</span>
+<span class="fn">User-agent:</span> AhrefsBot
+<span class="kw">Disallow:</span> /
+
+<span class="cm"># Sitemap এর লোকেশন</span>
+<span class="fn">Sitemap:</span> <span class="str">https://example.com/sitemap.xml</span></pre>
+  </div>
+
+  <div class="info-box warning">
+    <span class="info-icon">⚠️</span>
+    <div class="info-content"><strong>মনে রাখুন:</strong> robots.txt একটি নির্দেশনা, বাধ্যবাধকতা নয়। খারাপ bots এটি মানে না। সংবেদনশীল তথ্য লুকাতে .htaccess ব্যবহার করুন, robots.txt নয়।</div>
+  </div>
+</section>
+
+<!-- ==================== SITEMAP ==================== -->
+<section class="section" id="sitemap">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🗺️</div>
+    <div>
+      <div class="section-title">sitemap.xml — SEO Site Map</div>
+      <div class="section-subtitle">Search engine-কে সব পেজের তালিকা দিন</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> sitemap.xml</div>
+      <span class="code-lang">XML</span>
+    </div>
+    <pre><span class="kw">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="kw">&lt;urlset</span> <span class="fn">xmlns</span>=<span class="str">"http://www.sitemaps.org/schemas/sitemap/0.9"</span>&gt;
+
+    <span class="cm">&lt;!-- হোম পেজ --&gt;</span>
+    <span class="kw">&lt;url&gt;</span>
+        <span class="fn">&lt;loc&gt;</span>https://example.com/<span class="fn">&lt;/loc&gt;</span>
+        <span class="fn">&lt;lastmod&gt;</span>2024-12-01<span class="fn">&lt;/lastmod&gt;</span>
+        <span class="fn">&lt;changefreq&gt;</span>daily<span class="fn">&lt;/changefreq&gt;</span>  <span class="cm">&lt;!-- কতটুকু পরিবর্তন হয় --&gt;</span>
+        <span class="fn">&lt;priority&gt;</span>1.0<span class="fn">&lt;/priority&gt;</span>    <span class="cm">&lt;!-- গুরুত্ব (0.0 - 1.0) --&gt;</span>
+    <span class="kw">&lt;/url&gt;</span>
+
+    <span class="cm">&lt;!-- About পেজ --&gt;</span>
+    <span class="kw">&lt;url&gt;</span>
+        <span class="fn">&lt;loc&gt;</span>https://example.com/about<span class="fn">&lt;/loc&gt;</span>
+        <span class="fn">&lt;lastmod&gt;</span>2024-11-15<span class="fn">&lt;/lastmod&gt;</span>
+        <span class="fn">&lt;changefreq&gt;</span>monthly<span class="fn">&lt;/changefreq&gt;</span>
+        <span class="fn">&lt;priority&gt;</span>0.8<span class="fn">&lt;/priority&gt;</span>
+    <span class="kw">&lt;/url&gt;</span>
+
+    <span class="cm">&lt;!-- Blog পেজ --&gt;</span>
+    <span class="kw">&lt;url&gt;</span>
+        <span class="fn">&lt;loc&gt;</span>https://example.com/blog/post-title<span class="fn">&lt;/loc&gt;</span>
+        <span class="fn">&lt;lastmod&gt;</span>2024-12-10<span class="fn">&lt;/lastmod&gt;</span>
+        <span class="fn">&lt;changefreq&gt;</span>weekly<span class="fn">&lt;/changefreq&gt;</span>
+        <span class="fn">&lt;priority&gt;</span>0.6<span class="fn">&lt;/priority&gt;</span>
+    <span class="kw">&lt;/url&gt;</span>
+
+<span class="kw">&lt;/urlset&gt;</span></pre>
+  </div>
+
+  <div class="info-box tip">
+    <span class="info-icon">💡</span>
+    <div class="info-content"><strong>changefreq মান:</strong> always, hourly, daily, weekly, monthly, yearly, never। WordPress সাইটে Yoast SEO বা Rank Math plugin দিয়ে auto sitemap তৈরি হয়।</div>
+  </div>
+</section>
+
+<!-- ==================== OTHER FILES ==================== -->
+<section class="section" id="other">
+  <div class="section-header">
+    <div class="section-icon icon-blue">📦</div>
+    <div>
+      <div class="section-title">অন্যান্য গুরুত্বপূর্ণ ফাইল</div>
+      <div class="section-subtitle">web.config, Dockerfile, .npmrc, composer.json এবং আরো</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🪟 web.config — Windows IIS সার্ভার</div>
+    <p>Windows Server-এ IIS ব্যবহার করলে Apache-র .htaccess এর বদলে <code>web.config</code> ব্যবহার করতে হয়।</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> web.config</div>
+        <span class="code-lang">XML / IIS</span>
+      </div>
+      <pre><span class="kw">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="kw">&lt;configuration&gt;</span>
+    <span class="kw">&lt;system.webServer&gt;</span>
+        <span class="cm">&lt;!-- URL Rewrite --&gt;</span>
+        <span class="kw">&lt;rewrite&gt;</span>
+            <span class="kw">&lt;rules&gt;</span>
+                <span class="kw">&lt;rule</span> <span class="fn">name</span>=<span class="str">"Laravel"</span> <span class="fn">stopProcessing</span>=<span class="str">"true"</span>&gt;
+                    <span class="kw">&lt;match</span> <span class="fn">url</span>=<span class="str">"^"</span> /&gt;
+                    <span class="kw">&lt;action</span> <span class="fn">type</span>=<span class="str">"Rewrite"</span> <span class="fn">url</span>=<span class="str">"index.php/{R:0}"</span> /&gt;
+                <span class="kw">&lt;/rule&gt;</span>
+            <span class="kw">&lt;/rules&gt;</span>
+        <span class="kw">&lt;/rewrite&gt;</span>
+
+        <span class="cm">&lt;!-- Security Headers --&gt;</span>
+        <span class="kw">&lt;httpProtocol&gt;</span>
+            <span class="kw">&lt;customHeaders&gt;</span>
+                <span class="kw">&lt;add</span> <span class="fn">name</span>=<span class="str">"X-Frame-Options"</span> <span class="fn">value</span>=<span class="str">"SAMEORIGIN"</span> /&gt;
+                <span class="kw">&lt;add</span> <span class="fn">name</span>=<span class="str">"X-Content-Type-Options"</span> <span class="fn">value</span>=<span class="str">"nosniff"</span> /&gt;
+            <span class="kw">&lt;/customHeaders&gt;</span>
+        <span class="kw">&lt;/httpProtocol&gt;</span>
+    <span class="kw">&lt;/system.webServer&gt;</span>
+<span class="kw">&lt;/configuration&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🐳 Dockerfile — Container তৈরি</div>
+    <p>Docker ব্যবহার করলে <code>Dockerfile</code> দিয়ে আপনার অ্যাপের পরিবেশ তৈরি করা হয়।</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> Dockerfile (PHP/Laravel)</div>
+      </div>
+      <pre><span class="cm"># Base image</span>
+<span class="kw">FROM</span> <span class="val">php:8.2-fpm</span>
+
+<span class="cm"># Extensions ইন্সটল</span>
+<span class="kw">RUN</span> docker-php-ext-install pdo pdo_mysql bcmath
+
+<span class="cm"># Composer ইন্সটল</span>
+<span class="kw">COPY</span> --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+<span class="cm"># Working directory</span>
+<span class="kw">WORKDIR</span> /var/www/html
+
+<span class="cm"># ফাইল copy</span>
+<span class="kw">COPY</span> . .
+
+<span class="cm"># Dependencies ইন্সটল</span>
+<span class="kw">RUN</span> composer install --no-dev --optimize-autoloader
+
+<span class="cm"># Port expose করুন</span>
+<span class="kw">EXPOSE</span> 9000</pre>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">📦 composer.json (PHP)</div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> composer.json</div></div>
+        <pre><span class="op">{</span>
+  <span class="str">"name"</span>: <span class="val">"myapp/project"</span>,
+  <span class="str">"require"</span>: <span class="op">{</span>
+    <span class="str">"php"</span>: <span class="val">"^8.2"</span>,
+    <span class="str">"laravel/framework"</span>: <span class="val">"^11.0"</span>
+  <span class="op">}</span>,
+  <span class="str">"autoload"</span>: <span class="op">{</span>
+    <span class="str">"psr-4"</span>: <span class="op">{</span>
+      <span class="str">"App\\"</span>: <span class="val">"app/"</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+<span class="op">}</span></pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📦 package.json (Node.js)</div>
+      <div class="code-block">
+        <div class="code-header"><div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> package.json</div></div>
+        <pre><span class="op">{</span>
+  <span class="str">"name"</span>: <span class="val">"my-app"</span>,
+  <span class="str">"version"</span>: <span class="val">"1.0.0"</span>,
+  <span class="str">"scripts"</span>: <span class="op">{</span>
+    <span class="str">"dev"</span>: <span class="val">"vite"</span>,
+    <span class="str">"build"</span>: <span class="val">"vite build"</span>,
+    <span class="str">"start"</span>: <span class="val">"node index.js"</span>
+  <span class="op">}</span>,
+  <span class="str">"dependencies"</span>: <span class="op">{</span>
+    <span class="str">"express"</span>: <span class="val">"^4.18"</span>
+  <span class="op">}</span>
+<span class="op">}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ .htaccess vs অন্য ফাইল — কোনটা কখন?</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>কাজ</th><th>ব্যবহার করুন</th></tr>
+        <tr><td>URL redirect / rewrite (Apache)</td><td><code>.htaccess</code></td></tr>
+        <tr><td>URL redirect / rewrite (Nginx)</td><td><code>nginx.conf</code></td></tr>
+        <tr><td>Password protect ফোল্ডার</td><td><code>.htaccess</code> + <code>.htpasswd</code></td></tr>
+        <tr><td>PHP upload সাইজ বাড়ানো (শেয়ার্ড হোস্টিং)</td><td><code>.htaccess</code></td></tr>
+        <tr><td>PHP upload সাইজ বাড়ানো (VPS)</td><td><code>php.ini</code></td></tr>
+        <tr><td>Database/API credentials রাখা</td><td><code>.env</code></td></tr>
+        <tr><td>Git থেকে ফাইল বাদ দেওয়া</td><td><code>.gitignore</code></td></tr>
+        <tr><td>Search engine থেকে পেজ লুকানো</td><td><code>robots.txt</code></td></tr>
+        <tr><td>SEO — পেজের তালিকা</td><td><code>sitemap.xml</code></td></tr>
+        <tr><td>Windows IIS সার্ভার config</td><td><code>web.config</code></td></tr>
+        <tr><td>Docker environment</td><td><code>Dockerfile</code></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TIPS ==================== -->
+<section class="section" id="tips">
+  <div class="section-header">
+    <div class="section-icon icon-orange">💡</div>
+    <div>
+      <div class="section-title">প্রো টিপস ও সাধারণ ভুল</div>
+      <div class="section-subtitle">Expert advice for beginners and pros</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✅ সঠিক অভ্যাস</div>
+    <ul class="step-list">
+      <li><strong>সবসময় ব্যাকআপ নিন</strong> — .htaccess edit করার আগে বর্তমান ফাইলের কপি রাখুন। একটি ভুল নিয়ম পুরো সাইট 500 Error দিতে পারে।</li>
+      <li><strong>.env Git-এ push করবেন না</strong> — কখনো .env ফাইল GitHub বা GitLab-এ আপলোড করবেন না। এতে database password, API key সব প্রকাশ হয়ে যায়।</li>
+      <li><strong>RewriteEngine On সবসময় আগে</strong> — RewriteRule লেখার আগে অবশ্যই <code>RewriteEngine On</code> লিখুন নাহলে কিছুই কাজ করবে না।</li>
+      <li><strong>Production-এ Display Errors Off রাখুন</strong> — php.ini বা .htaccess-এ <code>display_errors = Off</code> রাখুন। Error দেখালে হ্যাকাররা সার্ভারের তথ্য পেয়ে যায়।</li>
+      <li><strong>robots.txt পাবলিক</strong> — robots.txt সবসময় publicly accessible থাকে। এতে গোপন URL লিখবেন না কারণ হ্যাকাররা এটি পড়তে পারে।</li>
+      <li><strong>HTTPS force করুন</strong> — সবসময় HTTP থেকে HTTPS-এ redirect রাখুন। এটি SEO ও নিরাপত্তা উভয়ের জন্যই জরুরি।</li>
+      <li><strong>নিয়মিত অডিট করুন</strong> — মাঝে মাঝে .htaccess চেক করুন পুরানো, অব্যবহৃত নিয়ম মুছে ফেলুন কারণ এটি সাইটের গতি ধীর করে।</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🐛 সাধারণ ভুল ও সমাধান</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>সমস্যা</th><th>কারণ</th><th>সমাধান</th></tr>
+        <tr><td>500 Internal Server Error</td><td>.htaccess-এ syntax ভুল</td><td>ফাইল চেক করুন বা মুছে দিন</td></tr>
+        <tr><td>Redirect Loop</td><td>Redirect নিজেই নিজেকে ডাকছে</td><td>Condition যোগ করুন</td></tr>
+        <tr><td>mod_rewrite কাজ করছে না</td><td>Apache module চালু নেই</td><td><code>a2enmod rewrite</code> চালান</td></tr>
+        <tr><td>.env পড়া যাচ্ছে না</td><td>ফাইল লোকেশন ভুল</td><td>প্রজেক্ট root-এ রাখুন</td></tr>
+        <tr><td>Upload সাইজ বাড়ছে না</td><td>php.ini vs .htaccess conflict</td><td>উভয়ে একই value দিন</td></tr>
+        <tr><td>robots.txt কাজ করছে না</td><td>Syntax ভুল</td><td>Google Search Console দিয়ে test করুন</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🛠️ উপকারী Tools</div>
+    <div class="three-col">
+      <div>
+        <p style="color:var(--accent);font-weight:600;margin-bottom:6px;">Test ও Debug</p>
+        <ul class="file-use-list">
+          <li>htaccess.madewithlove.com — redirect test</li>
+          <li>regex101.com — regex test</li>
+          <li>Google Search Console — robots.txt test</li>
+          <li>PageSpeed Insights — performance</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:var(--green);font-weight:600;margin-bottom:6px;">Generator</p>
+        <ul class="file-use-list">
+          <li>htaccess.io — .htaccess generator</li>
+          <li>toptal.com/developers/gitignore</li>
+          <li>xml-sitemaps.com — sitemap</li>
+          <li>dotenv.org — .env helper</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:var(--orange);font-weight:600;margin-bottom:6px;">Security Check</p>
+        <ul class="file-use-list">
+          <li>securityheaders.com</li>
+          <li>ssllabs.com/ssltest</li>
+          <li>observatory.mozilla.org</li>
+          <li>sucuri.net/tools/sitecheck</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete .htaccess Template -->
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename"><span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span> 🎯 সম্পূর্ণ .htaccess Template (WordPress/PHP)</div>
+      <span class="code-lang">Complete Template</span>
+    </div>
+    <pre><span class="cm"># ================================================</span>
+<span class="cm"># সম্পূর্ণ .htaccess Template</span>
+<span class="cm"># WordPress / PHP সাইটের জন্য</span>
+<span class="cm"># ================================================</span>
+
+<span class="cm"># ১. Directory listing বন্ধ</span>
+<span class="kw">Options</span> -Indexes
+
+<span class="cm"># ২. HTTP → HTTPS redirect</span>
+<span class="kw">RewriteEngine</span> On
+<span class="kw">RewriteCond</span> %{HTTPS} off
+<span class="kw">RewriteRule</span> ^(.*)$ <span class="str">https://%{HTTP_HOST}%{REQUEST_URI}</span> [L,R=<span class="num">301</span>]
+
+<span class="cm"># ৩. www → non-www</span>
+<span class="kw">RewriteCond</span> %{HTTP_HOST} ^www\.(.+)$ [NC]
+<span class="kw">RewriteRule</span> ^ <span class="str">https://%1%{REQUEST_URI}</span> [R=<span class="num">301</span>,L]
+
+<span class="cm"># ৪. WordPress Core Rewrite</span>
+<span class="kw">RewriteBase</span> /
+<span class="kw">RewriteRule</span> ^index\.php$ - [L]
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-f
+<span class="kw">RewriteCond</span> %{REQUEST_FILENAME} !-d
+<span class="kw">RewriteRule</span> . /index.php [L]
+
+<span class="cm"># ৫. গুরুত্বপূর্ণ ফাইল protect</span>
+<span class="kw">&lt;FilesMatch</span> <span class="str">"(\.env|wp-config\.php|\.htpasswd)"</span>&gt;
+    <span class="kw">Require</span> all denied
+<span class="kw">&lt;/FilesMatch&gt;</span>
+
+<span class="cm"># ৬. Security Headers</span>
+<span class="kw">Header</span> always set X-Frame-Options <span class="str">"SAMEORIGIN"</span>
+<span class="kw">Header</span> always set X-XSS-Protection <span class="str">"1; mode=block"</span>
+<span class="kw">Header</span> always set X-Content-Type-Options <span class="str">"nosniff"</span>
+
+<span class="cm"># ৭. PHP সেটিংস</span>
+<span class="kw">php_value</span> upload_max_filesize <span class="num">64M</span>
+<span class="kw">php_value</span> post_max_size <span class="num">64M</span>
+<span class="kw">php_value</span> memory_limit <span class="num">256M</span>
+<span class="kw">php_flag</span> display_errors <span class="val">Off</span>
+
+<span class="cm"># ৮. Browser Caching</span>
+<span class="kw">&lt;IfModule</span> mod_expires.c&gt;
+    ExpiresActive On
+    <span class="kw">ExpiresByType</span> image/jpeg <span class="str">"access plus 1 year"</span>
+    <span class="kw">ExpiresByType</span> text/css <span class="str">"access plus 1 month"</span>
+    <span class="kw">ExpiresByType</span> application/javascript <span class="str">"access plus 1 month"</span>
+<span class="kw">&lt;/IfModule&gt;</span>
+
+<span class="cm"># ৯. GZIP Compression</span>
+<span class="kw">&lt;IfModule</span> mod_deflate.c&gt;
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript
+<span class="kw">&lt;/IfModule&gt;</span>
+
+<span class="cm"># ১০. Custom Error Pages</span>
+<span class="kw">ErrorDocument</span> <span class="num">404</span> <span class="str">/404.html</span>
+<span class="kw">ErrorDocument</span> <span class="num">500</span> <span class="str">/500.html</span></pre>
+  </div>
+</section>
+
+</div><!-- end main -->
+
+<footer>
+  <p style="margin-bottom:8px;color:var(--text2);font-size:15px;">🇧🇩 সম্পূর্ণ বাংলায় তৈরি — .htaccess ও সার্ভার কনফিগারেশন মাস্টারক্লাস</p>
+  <p>Apache · Nginx · PHP · Git · Docker · SEO — সব এক জায়গায়</p>
+</footer>
+
+</div><!-- end wrapper -->
+
+<script>
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

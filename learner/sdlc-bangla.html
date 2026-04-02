@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDLC বাংলায় — সফটওয়্যার ডেভেলপমেন্ট লাইফসাইকেল</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f3ee;
+  --bg2: #efe9e0;
+  --surface: #ffffff;
+  --surface2: #faf7f4;
+  --ink: #1a1208;
+  --ink2: #3d3022;
+  --muted: #8a7660;
+  --accent: #c8410a;
+  --accent2: #e85d1a;
+  --teal: #0a7c6e;
+  --blue: #1a4fa8;
+  --gold: #b5860d;
+  --purple: #6b3fa0;
+  --green: #1a7c3a;
+  --border: rgba(26,18,8,0.1);
+  --border2: rgba(26,18,8,0.06);
+  --shadow: 0 2px 20px rgba(26,18,8,0.08);
+  --shadow-lg: 0 8px 40px rgba(26,18,8,0.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Hind Siliguri',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+
+/* TEXTURE */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='%231a1208' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:999;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(247,243,238,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+.nav-logo{
+  font-family:'Tiro Bangla',serif;
+  font-size:1.05rem;color:var(--accent);font-weight:400;
+  display:flex;align-items:center;gap:10px;
+}
+.nav-logo span{
+  background:var(--accent);color:white;
+  padding:2px 10px;border-radius:4px;
+  font-size:11px;font-family:'Hind Siliguri',sans-serif;font-weight:600;
+}
+.nav-links{display:flex;gap:4px;list-style:none;}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:12.5px;font-weight:500;
+  padding:5px 12px;border-radius:6px;transition:all 0.2s;white-space:nowrap;
+}
+.nav-links a:hover{background:var(--bg2);color:var(--ink);}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,65,10,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(10,124,110,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 90% 80%, rgba(26,79,168,0.05) 0%, transparent 60%);
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  padding:6px 18px;border-radius:100px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:32px;
+  animation:riseUp 0.7s ease both;
+}
+.hero h1{
+  font-family:'Tiro Bangla',serif;
+  font-size:clamp(2.2rem,6vw,4.8rem);
+  font-weight:400;line-height:1.25;
+  margin-bottom:24px;
+  animation:riseUp 0.7s ease 0.1s both;
+  max-width:900px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-desc{
+  font-size:1.05rem;color:var(--muted);
+  max-width:620px;margin:0 auto 48px;
+  animation:riseUp 0.7s ease 0.2s both;
+  line-height:1.9;
+}
+.hero-pills{
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  animation:riseUp 0.7s ease 0.3s both;
+  margin-bottom:60px;
+}
+.pill{
+  background:var(--surface);border:1.5px solid var(--border);
+  padding:8px 20px;border-radius:100px;
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:7px;
+  transition:all 0.25s;cursor:default;
+}
+.pill:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+.hero-scroll{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  animation:riseUp 0.7s ease 0.5s both;
+}
+.scroll-line{
+  width:1px;height:50px;
+  background:linear-gradient(to bottom,var(--accent),transparent);
+  animation:scrollPulse 2s ease infinite;
+}
+
+/* SDLC CYCLE VISUAL */
+.cycle-section{
+  padding:100px 24px;
+  background:var(--surface);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.container{max-width:1140px;margin:0 auto;}
+.section-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-eyebrow::after{
+  content:'';flex:1;height:1px;background:var(--border);max-width:60px;
+}
+.section-title{
+  font-family:'Tiro Bangla',serif;
+  font-size:clamp(1.6rem,3.5vw,2.6rem);
+  font-weight:400;margin-bottom:14px;line-height:1.35;
+}
+.section-desc{
+  color:var(--muted);font-size:1rem;
+  max-width:640px;margin-bottom:60px;line-height:1.85;
+}
+
+/* CYCLE DIAGRAM */
+.cycle-diagram{
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:0;margin-bottom:70px;
+  position:relative;
+}
+.cycle-node{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;z-index:1;
+}
+.cycle-circle{
+  width:90px;height:90px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:26px;
+  border:2px solid transparent;
+  transition:all 0.3s;cursor:pointer;
+  position:relative;
+}
+.cycle-circle:hover{transform:scale(1.1);}
+.cycle-label{
+  font-size:11.5px;font-weight:600;margin-top:10px;
+  text-align:center;max-width:80px;color:var(--ink2);
+  line-height:1.4;
+}
+.cycle-arrow{
+  font-size:22px;color:var(--border);
+  margin:0 4px;align-self:center;
+  padding-bottom:28px;
+}
+.c1{background:#fff0eb;border-color:#f9a87a;color:var(--accent);}
+.c2{background:#ebf3ff;border-color:#93b8f7;color:var(--blue);}
+.c3{background:#ebfaf7;border-color:#80d5c9;color:var(--teal);}
+.c4{background:#fdf5e6;border-color:#e8c96b;color:var(--gold);}
+.c5{background:#f0fff4;border-color:#86efac;color:var(--green);}
+.c6{background:#f5f0ff;border-color:#c4a7f5;color:var(--purple);}
+.c7{background:#fff0eb;border-color:#f9a87a;color:var(--accent);}
+
+/* PHASE SECTIONS */
+.phase-section{
+  padding:90px 24px;
+  border-bottom:1px solid var(--border);
+}
+.phase-section:nth-child(even){background:var(--surface);}
+
+.phase-header{
+  display:flex;align-items:flex-start;gap:24px;
+  margin-bottom:50px;
+}
+.phase-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:4rem;font-weight:600;
+  color:var(--border2);
+  line-height:1;
+  flex-shrink:0;
+  user-select:none;
+}
+.phase-title-block .phase-tag{
+  font-size:11px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.phase-title-block h2{
+  font-family:'Tiro Bangla',serif;
+  font-size:clamp(1.5rem,3vw,2.2rem);
+  font-weight:400;line-height:1.3;margin-bottom:10px;
+}
+.phase-title-block .phase-subtitle{
+  color:var(--muted);font-size:0.95rem;line-height:1.8;
+  max-width:700px;
+}
+
+/* CONTENT GRIDS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr;}
+  .three-col{grid-template-columns:1fr 1fr;}
+  .four-col{grid-template-columns:1fr 1fr;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+}
+@media(max-width:560px){
+  .three-col,.four-col{grid-template-columns:1fr;}
+}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:16px;padding:26px;
+  transition:all 0.25s;
+}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);}
+.card-bg{background:var(--bg);border-color:var(--border2);}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:10px;}
+.card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75;}
+.card ul{padding-left:18px;}
+.card ul li{margin-bottom:4px;}
+.card .icon{font-size:26px;margin-bottom:12px;}
+
+/* INFO BOX */
+.info-box{
+  border-left:3px solid;
+  border-radius:0 12px 12px 0;
+  padding:20px 24px;
+  margin:28px 0;
+  font-size:14px;line-height:1.8;
+}
+.info-box.orange{background:#fff5f0;border-color:var(--accent);}
+.info-box.blue{background:#f0f5ff;border-color:var(--blue);}
+.info-box.green{background:#f0faf5;border-color:var(--green);}
+.info-box.gold{background:#fffbf0;border-color:var(--gold);}
+.info-box.teal{background:#f0faf8;border-color:var(--teal);}
+.info-box strong{display:block;font-size:13px;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;}
+
+/* SOLO vs TEAM */
+.compare-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;border:1.5px solid var(--border);
+  border-radius:18px;overflow:hidden;
+}
+.compare-col{padding:28px;}
+.compare-col:first-child{background:var(--surface);border-right:1px solid var(--border);}
+.compare-col:last-child{background:var(--bg2);}
+.compare-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:22px;padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.compare-header .badge{
+  padding:4px 14px;border-radius:100px;
+  font-size:12px;font-weight:700;letter-spacing:0.5px;
+}
+.badge-solo{background:#fff0eb;color:var(--accent);}
+.badge-team{background:#ebf3ff;color:var(--blue);}
+.compare-header h3{font-size:1.05rem;font-weight:600;}
+.compare-item{
+  display:flex;gap:10px;margin-bottom:14px;
+  font-size:13.5px;color:var(--ink2);line-height:1.6;
+}
+.compare-item .ci{flex-shrink:0;font-size:15px;}
+
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr;}.compare-col:first-child{border-right:none;border-bottom:1px solid var(--border);}}
+
+/* STEP LIST */
+.step-list{counter-reset:steps;list-style:none;}
+.step-list li{
+  counter-increment:steps;
+  display:flex;gap:18px;
+  margin-bottom:22px;
+  font-size:14px;line-height:1.75;
+}
+.step-list li::before{
+  content:counter(steps);
+  min-width:32px;height:32px;border-radius:50%;
+  background:var(--accent);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+  margin-top:2px;
+}
+.step-list li strong{display:block;margin-bottom:4px;color:var(--ink);}
+
+/* CODE BLOCK */
+.code-block{
+  background:#1a1208;color:#e8d5b7;
+  border-radius:12px;padding:22px 24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;line-height:1.7;
+  overflow-x:auto;margin:20px 0;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.code-block .cm{color:#7a6a55;}
+.code-block .ck{color:#f97316;}
+.code-block .cs{color:#86efac;}
+.code-block .cn{color:#93b8f7;}
+
+/* TOOL TABLE */
+.tool-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:20px 0;}
+.tool-table th{
+  background:var(--bg2);padding:12px 16px;
+  text-align:left;font-weight:600;font-size:12px;
+  letter-spacing:0.5px;color:var(--muted);
+  border-bottom:1px solid var(--border);
+}
+.tool-table td{
+  padding:12px 16px;border-bottom:1px solid var(--border2);
+  vertical-align:top;line-height:1.6;color:var(--ink2);
+}
+.tool-table tr:hover td{background:var(--bg2);}
+.tool-tag{
+  display:inline-block;padding:2px 10px;border-radius:100px;
+  font-size:11px;font-weight:600;
+}
+.tt-solo{background:#fff0eb;color:var(--accent);}
+.tt-team{background:#ebf3ff;color:var(--blue);}
+.tt-both{background:#f0faf5;color:var(--green);}
+
+/* HIGHLIGHT STAT */
+.stat-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:16px;margin:40px 0;
+}
+@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr;}}
+.stat-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;padding:22px 20px;text-align:center;
+}
+.stat-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2rem;font-weight:600;
+  color:var(--accent);display:block;margin-bottom:6px;
+}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500;}
+
+/* MODEL TABS */
+.model-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
+.mtab{
+  padding:8px 20px;border-radius:8px;
+  border:1.5px solid var(--border);background:transparent;
+  color:var(--muted);font-family:'Hind Siliguri',sans-serif;
+  font-size:13.5px;cursor:pointer;transition:all 0.2s;font-weight:500;
+}
+.mtab.active{background:var(--ink);color:white;border-color:var(--ink);}
+.mtab:hover:not(.active){border-color:var(--muted);}
+.mcon{display:none;animation:fadeIn 0.3s ease;}
+.mcon.active{display:block;}
+
+/* TIMELINE VERTICAL */
+.vtimeline{position:relative;padding-left:48px;}
+.vtimeline::before{
+  content:'';position:absolute;left:18px;top:8px;bottom:8px;
+  width:2px;background:linear-gradient(to bottom,var(--accent),var(--teal),var(--blue));
+}
+.vt-item{position:relative;margin-bottom:36px;}
+.vt-dot{
+  position:absolute;left:-36px;top:4px;
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid var(--surface);
+  box-shadow:0 0 0 2px var(--accent);
+  background:var(--accent);
+  z-index:1;
+}
+.vt-item:nth-child(2) .vt-dot{background:var(--teal);box-shadow:0 0 0 2px var(--teal);}
+.vt-item:nth-child(3) .vt-dot{background:var(--blue);box-shadow:0 0 0 2px var(--blue);}
+.vt-item:nth-child(4) .vt-dot{background:var(--gold);box-shadow:0 0 0 2px var(--gold);}
+.vt-item:nth-child(5) .vt-dot{background:var(--green);box-shadow:0 0 0 2px var(--green);}
+.vt-item:nth-child(6) .vt-dot{background:var(--purple);box-shadow:0 0 0 2px var(--purple);}
+.vt-title{font-weight:600;margin-bottom:6px;font-size:15px;}
+.vt-body{font-size:13.5px;color:var(--muted);line-height:1.75;}
+
+/* CHECKLIST */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.checklist li{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:13.5px;color:var(--ink2);line-height:1.65;
+}
+.checklist li::before{
+  content:'✓';
+  min-width:22px;height:22px;border-radius:50%;
+  background:var(--green);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.checklist li.warn::before{content:'!';background:var(--gold);}
+.checklist li.x::before{content:'✕';background:#ef4444;}
+
+/* GIT FLOW */
+.git-branch{
+  background:#1a1208;border-radius:12px;padding:24px;
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;
+  color:#e8d5b7;line-height:2;overflow-x:auto;
+  margin:20px 0;
+}
+.gb-main{color:#f97316;}
+.gb-dev{color:#60a5fa;}
+.gb-feat{color:#86efac;}
+.gb-hot{color:#f87171;}
+.gb-rel{color:#fbbf24;}
+
+/* ROLE TABLE */
+.role-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);margin:20px 0;}
+.role-table th{background:var(--ink);color:white;padding:14px 18px;font-size:12.5px;font-weight:600;letter-spacing:0.5px;text-align:left;}
+.role-table td{padding:13px 18px;font-size:13.5px;border-bottom:1px solid var(--border2);vertical-align:top;color:var(--ink2);line-height:1.6;}
+.role-table tr:last-child td{border-bottom:none;}
+.role-table tr:hover td{background:var(--bg2);}
+
+/* BIG QUOTE */
+.big-quote{
+  border-left:4px solid var(--accent);
+  padding:24px 32px;
+  margin:40px 0;
+  background:var(--bg2);
+  border-radius:0 14px 14px 0;
+}
+.big-quote p{
+  font-family:'Tiro Bangla',serif;
+  font-size:1.2rem;line-height:1.75;
+  color:var(--ink2);margin-bottom:10px;
+}
+.big-quote cite{font-size:13px;color:var(--muted);font-style:normal;}
+
+/* AGILE BOARD */
+.agile-board{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:14px;margin:28px 0;
+}
+@media(max-width:700px){.agile-board{grid-template-columns:1fr 1fr;}}
+.ab-col{background:var(--bg2);border-radius:12px;padding:16px;}
+.ab-header{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.ab-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;margin-bottom:8px;
+  font-size:12.5px;color:var(--ink2);line-height:1.5;
+}
+.ab-card .ab-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;margin-top:6px;display:inline-block;}
+
+/* FOOTER */
+footer{
+  padding:80px 24px;
+  background:var(--ink);
+  color:rgba(255,255,255,0.5);
+  text-align:center;
+}
+footer h3{
+  font-family:'Tiro Bangla',serif;
+  font-size:1.8rem;color:white;font-weight:400;margin-bottom:16px;
+}
+footer p{font-size:14px;margin-bottom:8px;line-height:1.8;}
+footer span{color:var(--accent2);}
+
+/* ANIMATIONS */
+@keyframes riseUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes scrollPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:3px;}
+
+/* STICKY SIDE NAV */
+.side-progress{
+  position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  z-index:150;display:flex;flex-direction:column;gap:8px;
+}
+.sp-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border);border:1px solid var(--border);
+  cursor:pointer;transition:all 0.25s;display:block;
+}
+.sp-dot.active{background:var(--accent);width:10px;height:10px;}
+.sp-dot:hover{background:var(--muted);}
+@media(max-width:900px){.side-progress{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- SIDE PROGRESS -->
+<div class="side-progress" id="sideNav">
+  <a class="sp-dot active" href="#hero" title="শুরু"></a>
+  <a class="sp-dot" href="#overview" title="সংক্ষিপ্ত"></a>
+  <a class="sp-dot" href="#planning" title="পরিকল্পনা"></a>
+  <a class="sp-dot" href="#requirements" title="রিকোয়ারমেন্ট"></a>
+  <a class="sp-dot" href="#design" title="ডিজাইন"></a>
+  <a class="sp-dot" href="#development" title="ডেভেলপমেন্ট"></a>
+  <a class="sp-dot" href="#testing" title="টেস্টিং"></a>
+  <a class="sp-dot" href="#deployment" title="ডিপ্লয়মেন্ট"></a>
+  <a class="sp-dot" href="#maintenance" title="রক্ষণাবেক্ষণ"></a>
+  <a class="sp-dot" href="#models" title="মডেল"></a>
+  <a class="sp-dot" href="#team" title="টিম"></a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SDLC <span>বাংলায়</span></div>
+  <ul class="nav-links">
+    <li><a href="#overview">সংক্ষিপ্ত</a></li>
+    <li><a href="#planning">পরিকল্পনা</a></li>
+    <li><a href="#development">ডেভেলপমেন্ট</a></li>
+    <li><a href="#testing">টেস্টিং</a></li>
+    <li><a href="#models">মডেল</a></li>
+    <li><a href="#team">টিম ওয়ার্ক</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">📘 সফটওয়্যার ইঞ্জিনিয়ারিং · সম্পূর্ণ গাইড</div>
+  <h1>সফটওয়্যার ডেভেলপমেন্ট<br><em>লাইফসাইকেল (SDLC)</em><br>সম্পূর্ণ বাংলায়</h1>
+  <p class="hero-desc">একটি সফটওয়্যার কীভাবে জন্ম নেয়, বেড়ে ওঠে এবং টিকে থাকে — আইডিয়া থেকে শুরু করে প্রোডাকশন পর্যন্ত প্রতিটি ধাপ। Solo Developer এবং Team উভয়ের জন্য বিস্তারিত।</p>
+  <div class="hero-pills">
+    <div class="pill">📋 ৭টি মূল ধাপ</div>
+    <div class="pill">👤 Solo Developer গাইড</div>
+    <div class="pill">👥 Team গাইড</div>
+    <div class="pill">⚙️ Agile · Waterfall · Scrum</div>
+    <div class="pill">🛠️ Tools ও Best Practices</div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>স্ক্রোল করুন</span>
+  </div>
+</section>
+
+<!-- ═══════════════ OVERVIEW / CYCLE ═══════════════ -->
+<section class="cycle-section" id="overview">
+  <div class="container">
+    <div class="section-eyebrow">SDLC কী?</div>
+    <h2 class="section-title">সফটওয়্যার ডেভেলপমেন্ট লাইফসাইকেল</h2>
+    <p class="section-desc">SDLC হলো একটি কাঠামোবদ্ধ প্রক্রিয়া যা একটি সফটওয়্যার পণ্য তৈরির প্রতিটি ধাপকে সংজ্ঞায়িত করে। এটি নিশ্চিত করে যে সঠিক সময়ে, সঠিক মানের, সঠিক দামে সফটওয়্যার তৈরি হচ্ছে।</p>
+
+    <!-- CYCLE VISUAL -->
+    <div class="cycle-diagram">
+      <div class="cycle-node">
+        <div class="cycle-circle c1">📋</div>
+        <div class="cycle-label">পরিকল্পনা<br><small style="color:var(--muted);font-size:10px;">Planning</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c2">📝</div>
+        <div class="cycle-label">রিকোয়ারমেন্ট<br><small style="color:var(--muted);font-size:10px;">Requirements</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c3">🎨</div>
+        <div class="cycle-label">ডিজাইন<br><small style="color:var(--muted);font-size:10px;">Design</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c4">💻</div>
+        <div class="cycle-label">ডেভেলপমেন্ট<br><small style="color:var(--muted);font-size:10px;">Development</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c5">🔬</div>
+        <div class="cycle-label">টেস্টিং<br><small style="color:var(--muted);font-size:10px;">Testing</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c6">🚀</div>
+        <div class="cycle-label">ডিপ্লয়মেন্ট<br><small style="color:var(--muted);font-size:10px;">Deployment</small></div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node">
+        <div class="cycle-circle c7">🔧</div>
+        <div class="cycle-label">রক্ষণাবেক্ষণ<br><small style="color:var(--muted);font-size:10px;">Maintenance</small></div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><span class="stat-num">৭</span><div class="stat-label">মূল ধাপ</div></div>
+      <div class="stat-card"><span class="stat-num">৬+</span><div class="stat-label">জনপ্রিয় মডেল</div></div>
+      <div class="stat-card"><span class="stat-num">৬০%</span><div class="stat-label">প্রজেক্ট ব্যর্থ হয় পরিকল্পনার অভাবে</div></div>
+      <div class="stat-card"><span class="stat-num">৩×</span><div class="stat-label">দ্রুততর হয় SDLC মানলে</div></div>
+    </div>
+
+    <div class="info-box orange">
+      <strong>💡 SDLC কেন দরকার?</strong>
+      যে কেউ চাইলে কোড লিখতে পারে। কিন্তু একটি সফটওয়্যার সময়মতো, বাজেটের মধ্যে, এবং ব্যবহারকারীর চাহিদা পূরণ করে তৈরি করতে হলে একটি কাঠামো দরকার। SDLC সেই কাঠামো। এটি ছাড়া সফটওয়্যার প্রজেক্ট অনেকটা নকশা ছাড়া বাড়ি বানানোর মতো — শুরুতে ভালো মনে হলেও, শেষে সব ভেঙে পড়ে।
+    </div>
+
+    <div class="two-col" style="margin-top:48px;">
+      <div>
+        <h3 style="font-family:'Tiro Bangla',serif;font-size:1.3rem;margin-bottom:20px;font-weight:400;">SDLC ছাড়া কী হয়?</h3>
+        <ul class="checklist">
+          <li class="x">কোড লেখার পর বোঝা যায় ভুল জিনিস বানানো হয়েছে</li>
+          <li class="x">সময় ও বাজেট দ্বিগুণ হয়ে যায়</li>
+          <li class="x">টিমের সদস্যরা একে অপরের কাজ বোঝে না</li>
+          <li class="x">Bug ধরা পড়ে production-এ গিয়ে</li>
+          <li class="x">Client বা user অসন্তুষ্ট হন</li>
+          <li class="x">Maintenance করা অসম্ভব হয়ে পড়ে</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family:'Tiro Bangla',serif;font-size:1.3rem;margin-bottom:20px;font-weight:400;">SDLC মানলে কী পাবেন?</h3>
+        <ul class="checklist">
+          <li>স্পষ্ট পরিকল্পনা — কে কী করবে জানে</li>
+          <li>সময়মতো ডেলিভারি সম্ভব হয়</li>
+          <li>কম Bug, বেশি মান</li>
+          <li>Client বা user সন্তুষ্ট থাকেন</li>
+          <li>ভবিষ্যতে নতুন ফিচার যোগ সহজ হয়</li>
+          <li>টিম কাজ করতে পারে কার্যকরভাবে</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 1: PLANNING ═══════════════ -->
+<section class="phase-section" id="planning">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০১</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--accent);">📋 Phase 1 · Planning</div>
+        <h2>পরিকল্পনা পর্যায়</h2>
+        <p class="phase-subtitle">সফটওয়্যার তৈরির সবচেয়ে গুরুত্বপূর্ণ ধাপ। এখানে ঠিক হয় — কী বানাবেন, কেন বানাবেন, কতটুকু সময় লাগবে, কতটাকা লাগবে এবং কতটুকু ঝুঁকি আছে।</p>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:40px;">
+      <div>
+        <h3 style="font-size:1.1rem;margin-bottom:18px;font-weight:600;">পরিকল্পনায় কী কী থাকে?</h3>
+        <div class="vtimeline">
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">সমস্যা সংজ্ঞায়ন (Problem Definition)</div>
+            <div class="vt-body">কী সমস্যা সমাধান করতে চাইছেন? কে ভোগান্তিতে পড়ছে? সমস্যাটা কতটা বড়?</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">সম্ভাব্যতা বিশ্লেষণ (Feasibility Study)</div>
+            <div class="vt-body">এটা কি করা সম্ভব? — প্রযুক্তিগত, আর্থিক, সময়গত এবং আইনগত দিক থেকে।</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">রিসোর্স পরিকল্পনা (Resource Planning)</div>
+            <div class="vt-body">কতজন মানুষ লাগবে? কোন টুলস? কতটা বাজেট? কতদিন?</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">ঝুঁকি বিশ্লেষণ (Risk Analysis)</div>
+            <div class="vt-body">কোন কোন সমস্যা হতে পারে? হলে কী করবেন?</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">প্রজেক্ট চার্টার তৈরি</div>
+            <div class="vt-body">সব সিদ্ধান্ত একটি দলিলে লেখা হয়। এটি হয় প্রজেক্টের সংবিধান।</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box blue">
+          <strong>🎯 পরিকল্পনার লক্ষ্য</strong>
+          "আমরা কি সঠিক জিনিস বানাচ্ছি?" — এই প্রশ্নের উত্তর এখানে ঠিক হয়। পরিকল্পনা ছাড়া কোড লেখা শুরু করলে পরে সব ভেঙে দিতে হবে।
+        </div>
+        <div class="card card-bg" style="margin-top:20px;">
+          <h4>📊 Feasibility Study — ৫ ধরন</h4>
+          <ul class="checklist" style="margin-top:12px;">
+            <li><strong>Technical:</strong> প্রযুক্তিগতভাবে সম্ভব?</li>
+            <li><strong>Economic:</strong> আর্থিকভাবে লাভজনক?</li>
+            <li><strong>Legal:</strong> আইনের বিপরীতে না?</li>
+            <li><strong>Operational:</strong> ব্যবহারকারীরা ব্যবহার করবে?</li>
+            <li><strong>Schedule:</strong> সময়মতো শেষ করা যাবে?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLO vs TEAM -->
+    <h3 style="font-size:1.1rem;margin-bottom:20px;font-weight:600;">Solo Developer বনাম Team — পরিকল্পনা পর্যায়</h3>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-solo">👤 Solo</span>
+          <h3>একা যখন কাজ করবেন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">📓</span><span><strong>Notion বা নোটবুক</strong> — আইডিয়া, ফিচার লিস্ট, সময়সূচি এখানে লিখুন। সব মাথায় রাখবেন না।</span></div>
+        <div class="compare-item"><span class="ci">🗓️</span><span><strong>Weekly Goal সেট করুন</strong> — এই সপ্তাহে কী শেষ হবে তা রবিবার রাতে ঠিক করুন।</span></div>
+        <div class="compare-item"><span class="ci">⏱️</span><span><strong>PERT ফর্মুলা</strong> ব্যবহার করুন। নিজের অনুমানকে ১.৫ দিয়ে গুণ করুন।</span></div>
+        <div class="compare-item"><span class="ci">🎯</span><span><strong>MVP আগে</strong> — ৩টির বেশি মূল ফিচার নিয়ে শুরু করবেন না।</span></div>
+        <div class="compare-item"><span class="ci">💰</span><span><strong>নিজেই Stakeholder</strong> — আপনিই ক্লায়েন্ট, আপনিই ডেভেলপার। নিজেকে প্রশ্ন করুন: "এটা কি আসলে দরকার?"</span></div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-team">👥 Team</span>
+          <h3>টিমে যখন কাজ করবেন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">📋</span><span><strong>Kickoff Meeting</strong> — সবাই একসাথে বসুন। প্রজেক্টের লক্ষ্য, ভূমিকা, সময়সীমা নির্ধারণ করুন।</span></div>
+        <div class="compare-item"><span class="ci">📄</span><span><strong>Project Charter Document</strong> তৈরি করুন। সবার সই নিন। এটি হবে প্রজেক্টের চুক্তি।</span></div>
+        <div class="compare-item"><span class="ci">👔</span><span><strong>PM বা Tech Lead</strong> নির্ধারণ করুন — কে সিদ্ধান্ত নেবে, কে রিপোর্ট করবে।</span></div>
+        <div class="compare-item"><span class="ci">🗂️</span><span><strong>Jira / Trello / Linear</strong> — প্রজেক্ট ম্যানেজমেন্ট টুল সেটআপ করুন।</span></div>
+        <div class="compare-item"><span class="ci">📅</span><span><strong>Sprint Planning</strong> — ২ সপ্তাহের Sprints ঠিক করুন। প্রতিটি Sprint-এর Goal নির্দিষ্ট রাখুন।</span></div>
+      </div>
+    </div>
+
+    <div class="info-box gold" style="margin-top:32px;">
+      <strong>⚠️ সবচেয়ে বড় ভুল</strong>
+      পরিকল্পনা ছাড়াই কোড লেখা শুরু করা। মনে হয় "পরিকল্পনায় সময় নষ্ট" — কিন্তু ভুল পথে দ্রুত গেলে ক্ষতি বেশি। গবেষণা বলে: পরিকল্পনায় ১ ঘণ্টা = development-এ ৪ ঘণ্টা বাঁচায়।
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 2: REQUIREMENTS ═══════════════ -->
+<section class="phase-section" id="requirements">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০২</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--blue);">📝 Phase 2 · Requirements</div>
+        <h2>রিকোয়ারমেন্ট বিশ্লেষণ</h2>
+        <p class="phase-subtitle">ব্যবহারকারীরা ঠিক কী চান? সিস্টেমকে কী কী করতে হবে? সব সংগ্রহ করে দলিলবদ্ধ করার ধাপ। এটি ভুল হলে পুরো প্রজেক্ট ভুল দিকে যায়।</p>
+      </div>
+    </div>
+
+    <div class="three-col" style="margin-bottom:40px;">
+      <div class="card">
+        <div class="icon">🧑‍🤝‍🧑</div>
+        <h4>Functional Requirements</h4>
+        <p>সিস্টেম কী করবে? — লগইন করতে পারবে, অর্ডার দিতে পারবে, রিপোর্ট দেখতে পারবে। এগুলো হলো কার্যকরী চাহিদা।</p>
+        <div style="margin-top:12px;">
+          <div class="code-block" style="font-size:11.5px;padding:14px 16px;">
+<span class="cm">-- উদাহরণ:</span><br>
+✓ User লগইন করতে পারবে<br>
+✓ Product যোগ/বাদ দেওয়া যাবে<br>
+✓ Payment প্রক্রিয়া করা যাবে<br>
+✓ Invoice তৈরি হবে স্বয়ংক্রিয়ভাবে
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">⚡</div>
+        <h4>Non-Functional Requirements</h4>
+        <p>সিস্টেম কেমনভাবে করবে? — কত দ্রুত লোড হবে, কতজন একসাথে ব্যবহার করতে পারবে, নিরাপত্তা কেমন হবে।</p>
+        <div style="margin-top:12px;">
+          <div class="code-block" style="font-size:11.5px;padding:14px 16px;">
+<span class="cm">-- উদাহরণ:</span><br>
+✓ পেজ ২ সেকেন্ডে লোড<br>
+✓ ১০,০০০ user একসাথে<br>
+✓ ৯৯.৯% uptime<br>
+✓ SSL encrypted
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">🚫</div>
+        <h4>Constraints (সীমাবদ্ধতা)</h4>
+        <p>কী করা যাবে না বা কী মেনে চলতে হবে — বাজেট সীমা, সময়সীমা, নির্দিষ্ট প্রযুক্তি ব্যবহার করতে হবে।</p>
+        <div style="margin-top:12px;">
+          <div class="code-block" style="font-size:11.5px;padding:14px 16px;">
+<span class="cm">-- উদাহরণ:</span><br>
+✓ বাজেট: ৫ লক্ষ টাকা<br>
+✓ সময়: ৩ মাস<br>
+✓ শুধু React ব্যবহার করতে হবে<br>
+✓ GDPR মানতে হবে
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.1rem;margin-bottom:20px;font-weight:600;">User Story — ব্যবহারকারীর গল্পে লেখুন রিকোয়ারমেন্ট</h3>
+    <div class="info-box teal">
+      <strong>📖 User Story ফরম্যাট</strong>
+      "একজন [ব্যবহারকারী হিসেবে], আমি চাই [কী করতে], যাতে [কেন / কী সুবিধা পাই]।"<br><br>
+      <strong>উদাহরণ:</strong> "একজন <em>গ্রাহক হিসেবে</em>, আমি চাই <em>আমার অর্ডারের স্ট্যাটাস ট্র্যাক করতে</em>, যাতে <em>ডেলিভারির সময় জানতে পারি।</em>"
+    </div>
+
+    <div class="two-col" style="margin-top:32px;">
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">👤 Solo Developer — রিকোয়ারমেন্ট সংগ্রহ</h3>
+        <ol class="step-list">
+          <li><strong>নিজেই ব্যবহারকারী হন</strong> — আপনি কী সমস্যায় পড়েন? সেটাই সমাধান করুন।</li>
+          <li><strong>৫ জনকে জিজ্ঞাসা করুন</strong> — সম্ভাব্য ব্যবহারকারীদের সাথে ১৫ মিনিট কথা বলুন।</li>
+          <li><strong>Competitor বিশ্লেষণ</strong> — একই ধরনের অ্যাপ কী করছে? কী মিস করছে?</li>
+          <li><strong>Notion-এ লিস্ট করুন</strong> — Feature list: Must have, Nice to have, Future-এ করব।</li>
+        </ol>
+      </div>
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">👥 Team — রিকোয়ারমেন্ট সংগ্রহ</h3>
+        <ol class="step-list">
+          <li><strong>Stakeholder Interview</strong> — ক্লায়েন্ট, শেষ ব্যবহারকারী সবার সাথে মিটিং।</li>
+          <li><strong>Workshop / Brainstorming Session</strong> — সবাই মিলে সাদা বোর্ডে লেখুন।</li>
+          <li><strong>SRS Document তৈরি</strong> — Software Requirements Specification। এটা হবে চুক্তির ভিত্তি।</li>
+          <li><strong>Review ও Sign-off</strong> — ক্লায়েন্ট ও টিম সবাই অনুমোদন দিলে তবেই সামনে যান।</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="info-box orange" style="margin-top:30px;">
+      <strong>🚨 Requirements Creep থেকে সাবধান!</strong>
+      প্রজেক্ট শুরুর পর নতুন ফিচার চাওয়া হয় — এটাকে Scope Creep বলে। Solo হলে নিজেই বলুন "না"। Team হলে Change Request Process রাখুন — নতুন ফিচারের জন্য আলাদা estimation করুন এবং ক্লায়েন্টকে বুঝিয়ে বলুন এর cost।
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 3: DESIGN ═══════════════ -->
+<section class="phase-section" id="design">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০৩</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--teal);">🎨 Phase 3 · Design</div>
+        <h2>সিস্টেম ডিজাইন পর্যায়</h2>
+        <p class="phase-subtitle">রিকোয়ারমেন্ট জানা হলো — এখন পরিকল্পনা করতে হবে সিস্টেম কেমন হবে তার। Architecture, Database, UI — সবকিছুর নকশা এখানে হয়।</p>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:36px;">
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">🏗️ System Architecture Design</h3>
+        <div class="card card-bg">
+          <div class="code-block" style="margin:0;">
+<span class="ck">Client (Browser/App)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓ HTTP Request<br>
+<span class="cs">API Gateway / Load Balancer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+<span class="cn">Backend Server (Node/Django/etc)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+<span class="cm">Database</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">Cache (Redis)</span><br>
+(PostgreSQL)&nbsp;&nbsp;(দ্রুত access)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+<span class="cs">External Services</span><br>
+(Payment, Email, SMS, Storage)
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">🗄️ Database Design মূলনীতি</h3>
+        <ol class="step-list">
+          <li><strong>Entity চিহ্নিত করুন</strong> — কোন কোন "বস্তু" আছে? User, Product, Order, Payment?</li>
+          <li><strong>Relation নির্ধারণ</strong> — One-to-One, One-to-Many, Many-to-Many?</li>
+          <li><strong>Normalization</strong> — ডেটা যাতে duplicate না হয়।</li>
+          <li><strong>ER Diagram আঁকুন</strong> — dbdiagram.io বা Lucidchart দিয়ে।</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🎨 UI/UX Design — ধাপে ধাপে</h3>
+    <div class="four-col" style="margin-bottom:36px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px;margin-bottom:10px;">✏️</div>
+        <h4>Wireframe</h4>
+        <p>কাগজে বা Figma-তে মোটা দাগের স্কেচ। কোথায় কী থাকবে।</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px;margin-bottom:10px;">🖼️</div>
+        <h4>Mockup</h4>
+        <p>রং, ফন্ট, স্পেসিং সহ দেখতে কেমন হবে তার স্ট্যাটিক ছবি।</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px;margin-bottom:10px;">🔄</div>
+        <h4>Prototype</h4>
+        <p>Click করা যায় এমন মডেল। ব্যবহারকারীর কাছে পরীক্ষা করুন।</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px;margin-bottom:10px;">✅</div>
+        <h4>Design Approval</h4>
+        <p>ক্লায়েন্ট বা টিমের অনুমোদন নিয়ে তবেই কোড লেখা শুরু।</p>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-solo">👤 Solo</span>
+          <h3>একা ডিজাইন করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">🖊️</span><span><strong>কাগজে Wireframe</strong> আঁকুন প্রথমে। Tool খোলার আগে হাতে আঁকুন।</span></div>
+        <div class="compare-item"><span class="ci">🎨</span><span><strong>Figma (Free)</strong> — Mockup ও Prototype তৈরি করুন। সহজ টুল।</span></div>
+        <div class="compare-item"><span class="ci">🗄️</span><span><strong>dbdiagram.io</strong> — Database ER Diagram বিনামূল্যে আঁকুন।</span></div>
+        <div class="compare-item"><span class="ci">🧩</span><span><strong>Component-first ভাবুন</strong> — Button, Card, Form — কম্পোনেন্ট আগে ডিজাইন করুন।</span></div>
+        <div class="compare-item"><span class="ci">📐</span><span><strong>Design System</strong> — রঙ, ফন্ট, স্পেসিং একবার ঠিক করুন। বারবার করবেন না।</span></div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-team">👥 Team</span>
+          <h3>টিমে ডিজাইন করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">👤</span><span><strong>UI/UX Designer</strong> আলাদা থাকলে ভালো। না থাকলে একজন Developer ডিজাইন করুন।</span></div>
+        <div class="compare-item"><span class="ci">📋</span><span><strong>Design Review Meeting</strong> — পুরো টিম ডিজাইন দেখুক। Feedback নিন।</span></div>
+        <div class="compare-item"><span class="ci">🔗</span><span><strong>Figma Shared Library</strong> — সব Component এক জায়গায়। Dev ও Designer একই ফাইল দেখে।</span></div>
+        <div class="compare-item"><span class="ci">📝</span><span><strong>Technical Design Document</strong> — API endpoint, database schema, architecture লেখুন।</span></div>
+        <div class="compare-item"><span class="ci">🤝</span><span><strong>Developer Handoff</strong> — Designer থেকে Developer-এ ডিজাইন হস্তান্তরের প্রক্রিয়া।</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 4: DEVELOPMENT ═══════════════ -->
+<section class="phase-section" id="development">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০৪</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--gold);">💻 Phase 4 · Development</div>
+        <h2>ডেভেলপমেন্ট পর্যায়</h2>
+        <p class="phase-subtitle">এখন আসল কাজ শুরু! কোড লেখা, ফিচার তৈরি করা। কিন্তু শুধু কোড লিখলেই হবে না — সঠিকভাবে, সংগঠিতভাবে লিখতে হবে।</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🌿 Git Workflow — কোড ম্যানেজমেন্টের মেরুদণ্ড</h3>
+    <div class="two-col" style="margin-bottom:36px;">
+      <div>
+        <div class="info-box blue">
+          <strong>Git কেন ব্যবহার করবেন?</strong>
+          ভুল হলে আগের অবস্থায় ফিরে যাওয়া যায়। টিমের সবাই একসাথে কাজ করতে পারে কোনো সংঘর্ষ ছাড়া। কে কখন কী পরিবর্তন করেছে সব ইতিহাস থাকে।
+        </div>
+        <div class="git-branch">
+<span class="gb-main">main</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← সবসময় stable<br>
+&nbsp;&nbsp;│<br>
+<span class="gb-dev">develop</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← active development<br>
+&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+<span class="gb-feat">feature/login</span> ← নতুন ফিচার<br>
+<span class="gb-feat">feature/cart</span>&nbsp;&nbsp;← আরেকটি ফিচার<br>
+&nbsp;&nbsp;│<br>
+<span class="gb-rel">release/v1.0</span>&nbsp;&nbsp;← release প্রস্তুত<br>
+&nbsp;&nbsp;│<br>
+<span class="gb-hot">hotfix/bug-01</span> ← জরুরি fix
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:14px;font-size:1rem;">📋 Solo Developer Git Workflow</h4>
+        <div class="code-block">
+<span class="cm"># প্রতিটি ফিচারের জন্য branch</span><br>
+<span class="ck">git</span> <span class="cs">checkout</span> -b feature/user-auth<br><br>
+<span class="cm"># কাজ শেষে commit করুন</span><br>
+<span class="ck">git</span> <span class="cs">add</span> .<br>
+<span class="ck">git</span> <span class="cs">commit</span> -m <span class="cs">"feat: add login form"</span><br><br>
+<span class="cm"># main-এ merge করুন</span><br>
+<span class="ck">git</span> <span class="cs">checkout</span> main<br>
+<span class="ck">git</span> <span class="cs">merge</span> feature/user-auth<br><br>
+<span class="cm"># GitHub-এ push করুন (backup)</span><br>
+<span class="ck">git</span> <span class="cs">push</span> origin main
+        </div>
+        <div class="info-box green" style="margin-top:16px;">
+          <strong>✅ Commit Message Convention</strong>
+          feat: নতুন ফিচার | fix: bug সমাধান | docs: documentation | refactor: কোড পরিষ্কার | test: test যোগ
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">📁 প্রজেক্ট স্ট্রাকচার — সংগঠিতভাবে কোড রাখুন</h3>
+    <div class="two-col" style="margin-bottom:36px;">
+      <div>
+        <h4 style="margin-bottom:12px;font-size:0.95rem;color:var(--muted);">Frontend (React)</h4>
+        <div class="code-block">
+src/<br>
+├── <span class="ck">components/</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># পুনর্ব্যবহারযোগ্য</span><br>
+│&nbsp;&nbsp;&nbsp;├── Button.jsx<br>
+│&nbsp;&nbsp;&nbsp;├── Card.jsx<br>
+│&nbsp;&nbsp;&nbsp;└── Modal.jsx<br>
+├── <span class="cn">pages/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># প্রতিটি পেজ</span><br>
+│&nbsp;&nbsp;&nbsp;├── Home.jsx<br>
+│&nbsp;&nbsp;&nbsp;└── Dashboard.jsx<br>
+├── <span class="cs">hooks/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># custom hooks</span><br>
+├── <span class="cs">services/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># API calls</span><br>
+├── <span class="cs">store/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># state management</span><br>
+└── <span class="cs">utils/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># helper functions</span>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:12px;font-size:0.95rem;color:var(--muted);">Backend (Node.js)</h4>
+        <div class="code-block">
+src/<br>
+├── <span class="ck">routes/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># API endpoints</span><br>
+│&nbsp;&nbsp;&nbsp;├── auth.js<br>
+│&nbsp;&nbsp;&nbsp;└── users.js<br>
+├── <span class="cn">controllers/</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># business logic</span><br>
+├── <span class="cs">models/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># database models</span><br>
+├── <span class="cs">middleware/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># auth, validation</span><br>
+├── <span class="cs">services/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># external APIs</span><br>
+└── <span class="cs">utils/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># helpers</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">👥 Team Development — কীভাবে একসাথে কাজ করবেন</h3>
+    <div class="compare-grid" style="margin-bottom:36px;">
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-solo">👤 Solo</span>
+          <h3>একা ডেভেলপ করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">🎵</span><span><strong>Pomodoro Technique</strong> — ২৫ মিনিট কোডিং, ৫ মিনিট বিরতি।</span></div>
+        <div class="compare-item"><span class="ci">📝</span><span><strong>Daily Log রাখুন</strong> — কী করলেন, কী আটকে আছে, পরের কাজ কী।</span></div>
+        <div class="compare-item"><span class="ci">🤖</span><span><strong>AI সহকারী ব্যবহার করুন</strong> — Cursor, GitHub Copilot — বয়লারপ্লেট দ্রুত করুন।</span></div>
+        <div class="compare-item"><span class="ci">📚</span><span><strong>শুধু যা দরকার শিখুন</strong> — Rabbit hole-এ যাবেন না। Task শেষ করুন আগে।</span></div>
+        <div class="compare-item"><span class="ci">🔄</span><span><strong>প্রতিদিন Deploy করুন</strong> — ছোট ছোট পরিবর্তন push করুন।</span></div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-team">👥 Team</span>
+          <h3>টিমে ডেভেলপ করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">📋</span><span><strong>Daily Standup (15 মিনিট)</strong> — কাল কী করলাম, আজ কী করব, কোথায় আটকে।</span></div>
+        <div class="compare-item"><span class="ci">🔍</span><span><strong>Code Review বাধ্যতামূলক</strong> — কেউ একা merge করবেন না। অন্তত একজনের approval।</span></div>
+        <div class="compare-item"><span class="ci">📏</span><span><strong>Coding Standards</strong> — ESLint, Prettier সেট করুন। সবার code দেখতে একরকম হবে।</span></div>
+        <div class="compare-item"><span class="ci">📌</span><span><strong>Task Assignment স্পষ্ট</strong> — Jira/Linear-এ প্রতিটি task Assigned to কারো।</span></div>
+        <div class="compare-item"><span class="ci">🔀</span><span><strong>Pull Request (PR) Process</strong> — Feature branch → PR → Review → Merge।</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">📐 Code Quality নিশ্চিত করুন</h3>
+    <div class="three-col">
+      <div class="card">
+        <h4>🧹 Clean Code নীতি</h4>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>নামকরণ স্পষ্ট ও অর্থবহ</li>
+          <li>একটি ফাংশন একটি কাজ</li>
+          <li>Comment লিখুন জটিল জায়গায়</li>
+          <li>DRY — Don't Repeat Yourself</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🛡️ Security Best Practices</h4>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>Environment variable ব্যবহার</li>
+          <li>Input validation সব জায়গায়</li>
+          <li>SQL Injection থেকে সুরক্ষা</li>
+          <li>Password সবসময় hash করুন</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>⚡ Performance টিপস</h4>
+        <ul class="checklist" style="margin-top:10px;">
+          <li>Database-এ Index ব্যবহার</li>
+          <li>Image optimize করুন</li>
+          <li>Lazy loading ব্যবহার করুন</li>
+          <li>Cache ব্যবহার করুন</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 5: TESTING ═══════════════ -->
+<section class="phase-section" id="testing">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০৫</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--green);">🔬 Phase 5 · Testing</div>
+        <h2>টেস্টিং ও মান নিয়ন্ত্রণ</h2>
+        <p class="phase-subtitle">সফটওয়্যার কি ঠিকমতো কাজ করছে? ব্যবহারকারী কি সমস্যায় পড়বেন? শিপিং করার আগে সব পরীক্ষা করতে হবে এখানে।</p>
+      </div>
+    </div>
+
+    <div class="big-quote">
+      <p>"Testing করলে bugs পাওয়া যায়। Testing না করলে bugs তৈরি হয় না — বরং hidden থাকে এবং production-এ ধরা পড়ে।"</p>
+      <cite>— Software Engineering নীতি</cite>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">Testing-এর ধরনসমূহ</h3>
+    <table class="tool-table">
+      <thead>
+        <tr>
+          <th>Testing ধরন</th>
+          <th>কী পরীক্ষা করে</th>
+          <th>কে করে</th>
+          <th>উদাহরণ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Unit Testing</strong></td>
+          <td>একটি function বা component একা কাজ করছে কিনা</td>
+          <td>Developer</td>
+          <td>login() ফাংশন সঠিক token দিচ্ছে কিনা</td>
+        </tr>
+        <tr>
+          <td><strong>Integration Testing</strong></td>
+          <td>দুটো module একসাথে কাজ করছে কিনা</td>
+          <td>Developer/QA</td>
+          <td>Login API সঠিক ডেটা ডেটাবেসে save করছে কিনা</td>
+        </tr>
+        <tr>
+          <td><strong>System Testing</strong></td>
+          <td>পুরো সিস্টেম একসাথে কাজ করছে কিনা</td>
+          <td>QA Team</td>
+          <td>User শুরু থেকে শেষ পর্যন্ত কাজ করতে পারছে কিনা</td>
+        </tr>
+        <tr>
+          <td><strong>User Acceptance Testing (UAT)</strong></td>
+          <td>Client বা User সন্তুষ্ট কিনা</td>
+          <td>Client/End User</td>
+          <td>Client নিজে ব্যবহার করে দেখেন</td>
+        </tr>
+        <tr>
+          <td><strong>Performance Testing</strong></td>
+          <td>চাপে সিস্টেম টিকবে কিনা</td>
+          <td>QA/DevOps</td>
+          <td>১০,০০০ user একসাথে ব্যবহার করলে ভাঙবে না</td>
+        </tr>
+        <tr>
+          <td><strong>Security Testing</strong></td>
+          <td>নিরাপত্তা ফাঁকফোকর আছে কিনা</td>
+          <td>Security Expert</td>
+          <td>SQL Injection, XSS attack থেকে সুরক্ষিত কিনা</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="compare-grid" style="margin-top:36px;">
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-solo">👤 Solo</span>
+          <h3>একা Testing করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">🎭</span><span><strong>নিজেই QA হন</strong> — একজন "দুষ্টু ব্যবহারকারী" হিসেবে ভাবুন। সব ভুল input দিন।</span></div>
+        <div class="compare-item"><span class="ci">📋</span><span><strong>Test Checklist</strong> তৈরি করুন — প্রতিটি feature কি কাজ করছে? তালিকা করুন।</span></div>
+        <div class="compare-item"><span class="ci">🔧</span><span><strong>Postman</strong> — API গুলো test করুন। সব endpoint ঠিকমতো কাজ করছে কিনা দেখুন।</span></div>
+        <div class="compare-item"><span class="ci">📱</span><span><strong>বিভিন্ন ডিভাইসে দেখুন</strong> — Mobile, Tablet, Desktop। বিভিন্ন browser-এ।</span></div>
+        <div class="compare-item"><span class="ci">🤝</span><span><strong>Beta Testers খুঁজুন</strong> — ৫-১০ জন বন্ধু বা পরিচিতকে ব্যবহার করতে দিন।</span></div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-header">
+          <span class="badge badge-team">👥 Team</span>
+          <h3>টিমে Testing করুন</h3>
+        </div>
+        <div class="compare-item"><span class="ci">👤</span><span><strong>আলাদা QA Engineer</strong> রাখুন — Developer নিজের code ভালোভাবে test করতে পারেন না।</span></div>
+        <div class="compare-item"><span class="ci">🤖</span><span><strong>Automated Testing</strong> — Jest, Cypress দিয়ে test লিখুন। CI/CD-এ স্বয়ংক্রিয়ভাবে চলবে।</span></div>
+        <div class="compare-item"><span class="ci">🐛</span><span><strong>Bug Tracking</strong> — Jira বা Linear-এ bug লিখুন। Priority দিন: Critical, High, Medium, Low।</span></div>
+        <div class="compare-item"><span class="ci">📊</span><span><strong>Test Coverage রিপোর্ট</strong> — কতটুকু code test করা হয়েছে তা মাপুন।</span></div>
+        <div class="compare-item"><span class="ci">✅</span><span><strong>Definition of Done</strong> — কোন feature কখন "শেষ" হবে তার সংজ্ঞা আগেই ঠিক করুন।</span></div>
+      </div>
+    </div>
+
+    <div class="info-box green" style="margin-top:30px;">
+      <strong>🤖 Automated Testing — কেন শিখবেন?</strong>
+      প্রতিবার নতুন ফিচার যোগ করলে কি পুরোনো সব test ম্যানুয়ালি করবেন? সময় কত লাগবে? Automated test লিখলে একটি command চালালেই সব পরীক্ষা হয়ে যায়। Solo developer-ও Automated testing করা উচিত — এটা দীর্ঘমেয়াদে অনেক সময় বাঁচায়।
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 6: DEPLOYMENT ═══════════════ -->
+<section class="phase-section" id="deployment">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০৬</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--purple);">🚀 Phase 6 · Deployment</div>
+        <h2>ডিপ্লয়মেন্ট ও রিলিজ</h2>
+        <p class="phase-subtitle">সফটওয়্যার তৈরি হয়েছে, test হয়েছে — এখন বিশ্বের সামনে উন্মোচন করার সময়। এটি করতে হবে সতর্কতার সাথে।</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🌊 Deployment Environments</h3>
+    <div class="four-col" style="margin-bottom:36px;">
+      <div class="card" style="border-left:3px solid var(--accent);">
+        <h4>💻 Local</h4>
+        <p>Developer-এর নিজের কম্পিউটার। শুধু developer দেখতে পারে।</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--blue);">
+        <h4>🧪 Development</h4>
+        <p>টিমের সবাই দেখতে পারে। নতুন ফিচার এখানে test হয়।</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--gold);">
+        <h4>🔬 Staging</h4>
+        <p>Production-এর হুবহু কপি। Client final approval দেয় এখানে।</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <h4>🌐 Production</h4>
+        <p>সত্যিকারের ব্যবহারকারীরা ব্যবহার করেন। সবচেয়ে সতর্কতা এখানে।</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">⚙️ CI/CD — স্বয়ংক্রিয় Deployment</h3>
+    <div class="two-col" style="margin-bottom:36px;">
+      <div>
+        <div class="info-box blue">
+          <strong>CI/CD কী?</strong>
+          Continuous Integration / Continuous Deployment। কোড push করলেই স্বয়ংক্রিয়ভাবে test চলে এবং deploy হয়ে যায়। মানুষকে ম্যানুয়ালি কিছু করতে হয় না।
+        </div>
+        <div class="code-block" style="margin-top:16px;">
+<span class="cm"># GitHub Actions উদাহরণ</span><br>
+<span class="ck">name:</span> Deploy to Production<br>
+<span class="ck">on:</span><br>
+&nbsp;&nbsp;<span class="cs">push:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cs">branches:</span> [main]<br><br>
+<span class="ck">jobs:</span><br>
+&nbsp;&nbsp;<span class="cs">deploy:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cn">runs-on:</span> ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cn">steps:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="cs">npm test</span>&nbsp;&nbsp;&nbsp;<span class="cm"># আগে test</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="cs">npm build</span>&nbsp;&nbsp;<span class="cm"># build করো</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="cs">deploy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># তারপর deploy</span>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:16px;font-size:1rem;">📦 Deployment Checklist</h4>
+        <ul class="checklist">
+          <li>সব test pass হয়েছে</li>
+          <li>Environment variables সেট আছে</li>
+          <li>Database backup নেওয়া হয়েছে</li>
+          <li>SSL certificate আছে</li>
+          <li>Domain কানেক্ট আছে</li>
+          <li>Error monitoring সেট আপ (Sentry)</li>
+          <li>Rollback plan আছে</li>
+          <li>Team informed করা হয়েছে</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🛠️ Deployment Platform পরিচিতি</h3>
+    <table class="tool-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>কোন ধরন</th>
+          <th>দাম</th>
+          <th>কার জন্য</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vercel</strong></td>
+          <td>Frontend, Next.js</td>
+          <td>বিনামূল্যে শুরু</td>
+          <td>Solo ও Team উভয়</td>
+        </tr>
+        <tr>
+          <td><strong>Railway</strong></td>
+          <td>Backend, Database</td>
+          <td>$5/মাস থেকে</td>
+          <td>Solo ও ছোট Team</td>
+        </tr>
+        <tr>
+          <td><strong>Render</strong></td>
+          <td>Full Stack</td>
+          <td>বিনামূল্যে tier আছে</td>
+          <td>Solo Developer</td>
+        </tr>
+        <tr>
+          <td><strong>AWS / GCP / Azure</strong></td>
+          <td>সবকিছু</td>
+          <td>ব্যবহার অনুযায়ী</td>
+          <td>বড় Team ও Enterprise</td>
+        </tr>
+        <tr>
+          <td><strong>DigitalOcean</strong></td>
+          <td>VPS, Managed DB</td>
+          <td>$6/মাস থেকে</td>
+          <td>মধ্যম আকারের প্রজেক্ট</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════ PHASE 7: MAINTENANCE ═══════════════ -->
+<section class="phase-section" id="maintenance">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-num">০৭</div>
+      <div class="phase-title-block">
+        <div class="phase-tag" style="color:var(--accent);">🔧 Phase 7 · Maintenance</div>
+        <h2>রক্ষণাবেক্ষণ ও আপডেট</h2>
+        <p class="phase-subtitle">লঞ্চের পরও কাজ শেষ হয় না। বরং এখানে থেকেই আসল দীর্ঘমেয়াদী কাজ শুরু। ব্যবহারকারীর feedback নিন, bug fix করুন, নতুন ফিচার যোগ করুন।</p>
+      </div>
+    </div>
+
+    <div class="three-col" style="margin-bottom:36px;">
+      <div class="card">
+        <div class="icon">🐛</div>
+        <h4>Corrective Maintenance</h4>
+        <p>Bug fix করা। ব্যবহারকারীরা সমস্যা রিপোর্ট করলে সেটা ঠিক করা।</p>
+        <div class="info-box orange" style="margin-top:14px;padding:12px 16px;">
+          <strong style="font-size:11px;">Priority:</strong> Critical bug → ২৪ঘণ্টা | Major → ৭ দিন | Minor → পরের sprint
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">⬆️</div>
+        <h4>Adaptive Maintenance</h4>
+        <p>পরিবেশ পরিবর্তনের সাথে মানিয়ে নেওয়া। নতুন OS, browser, API version সাপোর্ট।</p>
+        <div class="info-box blue" style="margin-top:14px;padding:12px 16px;">
+          <strong style="font-size:11px;">উদাহরণ:</strong> iOS আপডেটে অ্যাপ ভেঙে গেলে fix করা
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">✨</div>
+        <h4>Perfective Maintenance</h4>
+        <p>নতুন ফিচার যোগ করা, performance উন্নত করা, ব্যবহারযোগ্যতা বাড়ানো।</p>
+        <div class="info-box green" style="margin-top:14px;padding:12px 16px;">
+          <strong style="font-size:11px;">চলমান:</strong> User feedback থেকে নতুন ফিচার আইডিয়া নিন
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">📊 Monitoring — সবসময় নজর রাখুন</h3>
+        <ul class="checklist">
+          <li><strong>Uptime Monitor:</strong> Sitecheck, UptimeRobot — সাইট ডাউন হলে alert পাবেন</li>
+          <li><strong>Error Tracking:</strong> Sentry — কোন error হচ্ছে, কোথায়, কতবার</li>
+          <li><strong>Analytics:</strong> Google Analytics / Plausible — ব্যবহারকারী কী করছেন</li>
+          <li><strong>Performance:</strong> Lighthouse — সাইট কত দ্রুত</li>
+          <li><strong>Log Management:</strong> যা ঘটছে তার রেকর্ড রাখুন</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-size:1.05rem;margin-bottom:16px;font-weight:600;">♻️ Maintenance Cycle</h3>
+        <div class="vtimeline">
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">User Feedback সংগ্রহ</div>
+            <div class="vt-body">In-app survey, support ticket, social media — সব চ্যানেলে নজর রাখুন।</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">Backlog Prioritize করুন</div>
+            <div class="vt-body">কোন bug/feature আগে করবেন? Impact vs Effort matrix ব্যবহার করুন।</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">Sprint-এ কাজ নিন</div>
+            <div class="vt-body">Regular release cycle মানুন — প্রতি ২ সপ্তাহে একটি update।</div>
+          </div>
+          <div class="vt-item">
+            <div class="vt-dot"></div>
+            <div class="vt-title">Deploy ও Announce করুন</div>
+            <div class="vt-body">Changelog লিখুন। ব্যবহারকারীদের নতুন ফিচার জানান।</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SDLC MODELS ═══════════════ -->
+<section class="phase-section" id="models" style="background:var(--surface);">
+  <div class="container">
+    <div class="section-eyebrow">SDLC Models</div>
+    <h2 class="section-title">কোন মডেল কখন ব্যবহার করবেন?</h2>
+    <p class="section-desc">SDLC-এর ধাপগুলো একই — কিন্তু সেগুলো কীভাবে সাজাবেন তার বিভিন্ন পদ্ধতি আছে। প্রজেক্টের ধরন বুঝে সঠিক মডেল বেছে নিন।</p>
+
+    <div class="model-tabs">
+      <button class="mtab active" onclick="showModel('waterfall')">Waterfall</button>
+      <button class="mtab" onclick="showModel('agile')">Agile</button>
+      <button class="mtab" onclick="showModel('scrum')">Scrum</button>
+      <button class="mtab" onclick="showModel('kanban')">Kanban</button>
+      <button class="mtab" onclick="showModel('spiral')">Spiral</button>
+      <button class="mtab" onclick="showModel('lean')">Lean MVP</button>
+    </div>
+
+    <!-- WATERFALL -->
+    <div id="model-waterfall" class="mcon active">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">🌊 Waterfall Model</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">একটি ধাপ শেষ না হলে পরেরটিতে যাওয়া যায় না। পানির মতো একদিকে প্রবাহিত হয়।</p>
+          <div class="code-block">
+📋 পরিকল্পনা (সম্পূর্ণ)<br>
+&nbsp;&nbsp;&nbsp;↓<br>
+📝 রিকোয়ারমেন্ট (সম্পূর্ণ)<br>
+&nbsp;&nbsp;&nbsp;↓<br>
+🎨 ডিজাইন (সম্পূর্ণ)<br>
+&nbsp;&nbsp;&nbsp;↓<br>
+💻 ডেভেলপমেন্ট (সম্পূর্ণ)<br>
+&nbsp;&nbsp;&nbsp;↓<br>
+🔬 টেস্টিং (সম্পূর্ণ)<br>
+&nbsp;&nbsp;&nbsp;↓<br>
+🚀 ডিপ্লয়মেন্ট
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <h4>✅ কখন ব্যবহার করবেন</h4>
+            <ul class="checklist" style="margin-top:10px;">
+              <li>রিকোয়ারমেন্ট সম্পূর্ণ স্পষ্ট ও পরিবর্তন হবে না</li>
+              <li>সরকারি বা প্রতিরক্ষা প্রজেক্ট</li>
+              <li>নির্মাণ বা হার্ডওয়্যার প্রজেক্ট</li>
+              <li>Documentation বেশি দরকার</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4 style="color:#ef4444;">❌ সমস্যা</h4>
+            <ul class="checklist" style="margin-top:10px;">
+              <li class="x">পরিবর্তনে অনেক পিছিয়ে যেতে হয়</li>
+              <li class="x">শেষে গিয়ে বড় সমস্যা ধরা পড়ে</li>
+              <li class="x">Client শেষে দেখেন — তখন অনেক দেরি</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGILE -->
+    <div id="model-agile" class="mcon">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">🔄 Agile Methodology</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">ছোট ছোট চক্রে (Iteration/Sprint) কাজ করা। প্রতিটি চক্রে একটি কার্যকরী পণ্য তৈরি হয়। পরিবর্তনকে স্বাগত জানায়।</p>
+          <div class="info-box teal">
+            <strong>Agile Manifesto-এর মূলনীতি</strong>
+            ১. Process-এর চেয়ে মানুষ ও যোগাযোগ গুরুত্বপূর্ণ<br>
+            ২. Documentation-এর চেয়ে কার্যকরী সফটওয়্যার গুরুত্বপূর্ণ<br>
+            ৩. Contract-এর চেয়ে Customer সহযোগিতা গুরুত্বপূর্ণ<br>
+            ৪. পরিকল্পনা অনুসরণের চেয়ে পরিবর্তনে সাড়া দেওয়া গুরুত্বপূর্ণ
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <h4>✅ কখন ব্যবহার করবেন</h4>
+            <ul class="checklist" style="margin-top:10px;">
+              <li>রিকোয়ারমেন্ট পরিবর্তন হতে পারে</li>
+              <li>Startup ও product কোম্পানি</li>
+              <li>Client নিয়মিত feedback দেবেন</li>
+              <li>দ্রুত market-এ যেতে চান</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>🎯 Solo Agile</h4>
+            <p style="font-size:13.5px;color:var(--muted);margin-top:8px;">Solo developer-ও Agile করতে পারেন। প্রতি সপ্তাহ = একটি Sprint। Backlog তৈরি করুন। Weekly Review করুন।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRUM -->
+    <div id="model-scrum" class="mcon">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">🏉 Scrum Framework</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">Agile-এর সবচেয়ে জনপ্রিয় implementation। নির্দিষ্ট ভূমিকা, ceremonies এবং artifacts দিয়ে কাজ করে।</p>
+          <table class="role-table">
+            <thead><tr><th>ভূমিকা</th><th>দায়িত্ব</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Product Owner</strong></td><td>কী বানাবেন ঠিক করেন। Backlog manage করেন।</td></tr>
+              <tr><td><strong>Scrum Master</strong></td><td>প্রক্রিয়া নিশ্চিত করেন। বাধা দূর করেন।</td></tr>
+              <tr><td><strong>Dev Team</strong></td><td>ডিজাইন, কোড, test করেন।</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h4 style="margin-bottom:14px;font-size:1rem;">📅 Scrum Ceremonies</h4>
+          <div class="vtimeline">
+            <div class="vt-item">
+              <div class="vt-dot"></div>
+              <div class="vt-title">Sprint Planning (২-৪ ঘণ্টা)</div>
+              <div class="vt-body">Sprint-এ কী কী কাজ নেওয়া হবে তা ঠিক করা।</div>
+            </div>
+            <div class="vt-item">
+              <div class="vt-dot"></div>
+              <div class="vt-title">Daily Standup (১৫ মিনিট)</div>
+              <div class="vt-body">প্রতিদিন: কাল কী করলাম, আজ কী করব, কোথায় সমস্যা।</div>
+            </div>
+            <div class="vt-item">
+              <div class="vt-dot"></div>
+              <div class="vt-title">Sprint Review (১-২ ঘণ্টা)</div>
+              <div class="vt-body">Stakeholder-দের কাছে Sprint-এর ফলাফল দেখানো।</div>
+            </div>
+            <div class="vt-item">
+              <div class="vt-dot"></div>
+              <div class="vt-title">Retrospective (১ ঘণ্টা)</div>
+              <div class="vt-body">কী ভালো হলো, কী উন্নত করব পরের Sprint-এ।</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KANBAN -->
+    <div id="model-kanban" class="mcon">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">📌 Kanban System</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">Sprint নেই, নির্দিষ্ট সময়সীমা নেই। কাজ আসে, হয়, পরবর্তী কাজে যায়। সহজ এবং flexible। Solo developer-এর জন্য আদর্শ।</p>
+          <div class="info-box gold">
+            <strong>Solo Developer-এর জন্য Kanban</strong>
+            Trello বা Notion board তৈরি করুন। কলাম: Backlog → To Do → Doing → Review → Done। একসাথে ৩-এর বেশি কাজ "Doing"-এ রাখবেন না।
+          </div>
+        </div>
+        <div>
+          <div class="agile-board">
+            <div class="ab-col">
+              <div class="ab-header" style="color:var(--muted);">📋 Backlog</div>
+              <div class="ab-card">Email notification<div><span class="ab-tag" style="background:#fff0eb;color:var(--accent);">Feature</span></div></div>
+              <div class="ab-card">Dark mode<div><span class="ab-tag" style="background:#f0f5ff;color:var(--blue);">UI</span></div></div>
+            </div>
+            <div class="ab-col">
+              <div class="ab-header" style="color:var(--blue);">📌 To Do</div>
+              <div class="ab-card">Payment gateway<div><span class="ab-tag" style="background:#fff0eb;color:var(--accent);">Critical</span></div></div>
+            </div>
+            <div class="ab-col">
+              <div class="ab-header" style="color:var(--gold);">⚡ Doing</div>
+              <div class="ab-card">Login system<div><span class="ab-tag" style="background:#f0faf5;color:var(--green);">In Progress</span></div></div>
+            </div>
+            <div class="ab-col">
+              <div class="ab-header" style="color:var(--green);">✅ Done</div>
+              <div class="ab-card">User profile<div><span class="ab-tag" style="background:#f0faf5;color:var(--green);">Done</span></div></div>
+              <div class="ab-card">Home page<div><span class="ab-tag" style="background:#f0faf5;color:var(--green);">Done</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPIRAL -->
+    <div id="model-spiral" class="mcon">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">🌀 Spiral Model</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">Risk-driven পদ্ধতি। প্রতিটি চক্রে risk বিশ্লেষণ করা হয়। বড় ও জটিল প্রজেক্টের জন্য।</p>
+          <div class="code-block">
+চক্র ১: Prototype তৈরি<br>
+&nbsp;&nbsp;→ Risk বিশ্লেষণ<br>
+&nbsp;&nbsp;→ Client review<br><br>
+চক্র ২: Basic features<br>
+&nbsp;&nbsp;→ Risk বিশ্লেষণ<br>
+&nbsp;&nbsp;→ Client review<br><br>
+চক্র ৩: Full features<br>
+&nbsp;&nbsp;→ Risk বিশ্লেষণ<br>
+&nbsp;&nbsp;→ Final product
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h4>✅ কখন ব্যবহার করবেন</h4>
+            <ul class="checklist" style="margin-top:10px;">
+              <li>বড় ও complex প্রজেক্ট</li>
+              <li>High risk প্রজেক্ট</li>
+              <li>Medical বা Defense software</li>
+              <li>দীর্ঘমেয়াদী প্রজেক্ট</li>
+            </ul>
+          </div>
+          <div class="info-box orange" style="margin-top:16px;">
+            <strong>Solo-র জন্য?</strong>
+            সাধারণত Solo developer Spiral ব্যবহার করেন না। এটি বড় টিম ও বড় বাজেটের জন্য।
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEAN MVP -->
+    <div id="model-lean" class="mcon">
+      <div class="two-col">
+        <div>
+          <h3 style="font-size:1.2rem;margin-bottom:12px;font-weight:600;">🚀 Lean Startup / MVP Approach</h3>
+          <p style="color:var(--muted);margin-bottom:20px;">Solo developer এবং Startup-এর জন্য সেরা। দ্রুত Minimum Viable Product বানান। Real user থেকে feedback নিন। শিখুন ও আবার বানান।</p>
+          <div class="info-box green">
+            <strong>Build → Measure → Learn</strong>
+            সবচেয়ে ছোট কার্যকরী পণ্য বানান → আসল ব্যবহারকারীদের কাছে দিন → তারা কী করছে মাপুন → শিখুন → উন্নত করুন → আবার বানান।
+          </div>
+          <div class="code-block" style="margin-top:16px;">
+আইডিয়া → MVP (২ সপ্তাহ)<br>
+&nbsp;&nbsp;↓<br>
+১০ জন real user → Feedback<br>
+&nbsp;&nbsp;↓<br>
+Pivot বা Improve → v2.0<br>
+&nbsp;&nbsp;↓<br>
+১০০ জন user → আরো Feedback<br>
+&nbsp;&nbsp;↓<br>
+Scale up করুন
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <h4>MVP-তে কী রাখবেন?</h4>
+            <ul class="checklist" style="margin-top:10px;">
+              <li><strong>Must Have:</strong> মূল সমস্যা সমাধান করে এমন ফিচার</li>
+              <li class="warn"><strong>Should Have:</strong> পরের version-এ</li>
+              <li class="x"><strong>Nice to Have:</strong> এখন না</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>⚡ Solo-র জন্য Lean Timeline</h4>
+            <p style="font-size:13.5px;color:var(--muted);margin-top:8px;">সপ্তাহ ১: পরিকল্পনা ও ডিজাইন → সপ্তাহ ২-৩: MVP তৈরি → সপ্তাহ ৪: Testing ও Feedback → সপ্তাহ ৫+: Iterate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ TEAM STRUCTURE ═══════════════ -->
+<section class="phase-section" id="team">
+  <div class="container">
+    <div class="section-eyebrow">👥 Team Dynamics</div>
+    <h2 class="section-title">Solo vs Team — বিস্তারিত তুলনা</h2>
+    <p class="section-desc">আপনি কি একা কাজ করছেন নাকি টিমে? দুটো পদ্ধতির সুবিধা-অসুবিধা এবং best practice জানুন।</p>
+
+    <!-- TEAM ROLES -->
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🧑‍💻 Team Structure — কে কী করেন?</h3>
+    <table class="role-table" style="margin-bottom:40px;">
+      <thead>
+        <tr>
+          <th>ভূমিকা</th>
+          <th>প্রধান দায়িত্ব</th>
+          <th>যা জানতে হয়</th>
+          <th>Solo হলে?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Product Manager</strong></td>
+          <td>কী বানাবেন ঠিক করা, Roadmap তৈরি, Stakeholder ম্যানেজ</td>
+          <td>Market analysis, User research, Strategy</td>
+          <td>আপনিই PM</td>
+        </tr>
+        <tr>
+          <td><strong>UI/UX Designer</strong></td>
+          <td>Wireframe, Mockup, User flow, Design system</td>
+          <td>Figma, User psychology, Accessibility</td>
+          <td>Basic Figma শিখুন</td>
+        </tr>
+        <tr>
+          <td><strong>Frontend Developer</strong></td>
+          <td>যা দেখা যায় তা বানানো — UI, Animations, Responsiveness</td>
+          <td>HTML/CSS/JS, React/Vue, Performance</td>
+          <td>আপনিই Frontend Dev</td>
+        </tr>
+        <tr>
+          <td><strong>Backend Developer</strong></td>
+          <td>API, Database, Business logic, Authentication</td>
+          <td>Node/Python/Java, SQL/NoSQL, Security</td>
+          <td>আপনিই Backend Dev</td>
+        </tr>
+        <tr>
+          <td><strong>DevOps Engineer</strong></td>
+          <td>Server, CI/CD, Deployment, Monitoring</td>
+          <td>AWS/GCP, Docker, Linux, Automation</td>
+          <td>Vercel/Railway ব্যবহার করুন</td>
+        </tr>
+        <tr>
+          <td><strong>QA Engineer</strong></td>
+          <td>Testing, Bug রিপোর্ট, Quality নিশ্চিত করা</td>
+          <td>Test planning, Automation tools, Attention to detail</td>
+          <td>নিজেই test করুন</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- COMMUNICATION -->
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">💬 Team Communication — কার্যকর যোগাযোগ</h3>
+    <div class="three-col" style="margin-bottom:36px;">
+      <div class="card">
+        <div class="icon">📅</div>
+        <h4>Synchronous যোগাযোগ</h4>
+        <p>একই সময়ে কথা বলা। Meeting, Video Call, Standup।</p>
+        <div class="info-box blue" style="margin-top:12px;padding:12px 14px;">
+          <strong style="font-size:11px;">টুলস:</strong> Google Meet, Zoom, Slack Huddle
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">📩</div>
+        <h4>Asynchronous যোগাযোগ</h4>
+        <p>নিজের সময়মতো যোগাযোগ। Message, Email, Comment।</p>
+        <div class="info-box green" style="margin-top:12px;padding:12px 14px;">
+          <strong style="font-size:11px;">টুলস:</strong> Slack, Notion, GitHub Comments
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">📋</div>
+        <h4>Documentation</h4>
+        <p>সব সিদ্ধান্ত, প্রক্রিয়া লেখা থাকুক। মৌখিক কথায় নির্ভর করবেন না।</p>
+        <div class="info-box orange" style="margin-top:12px;padding:12px 14px;">
+          <strong style="font-size:11px;">টুলস:</strong> Notion, Confluence, GitHub Wiki
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS TABLE -->
+    <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🛠️ সম্পূর্ণ টুলস গাইড</h3>
+    <table class="tool-table">
+      <thead>
+        <tr>
+          <th>ক্যাটাগরি</th>
+          <th>টুল</th>
+          <th>ব্যবহার</th>
+          <th>কার জন্য</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Project Management</strong></td><td>Trello, Notion</td><td>সহজ task board</td><td><span class="tool-tag tt-solo">Solo</span></td></tr>
+        <tr><td><strong>Project Management</strong></td><td>Jira, Linear, Asana</td><td>Advanced task + sprint</td><td><span class="tool-tag tt-team">Team</span></td></tr>
+        <tr><td><strong>Version Control</strong></td><td>GitHub, GitLab</td><td>Code storage + collaboration</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>Design</strong></td><td>Figma</td><td>UI/UX design + handoff</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>Communication</strong></td><td>Slack, Discord</td><td>টিম যোগাযোগ</td><td><span class="tool-tag tt-team">Team</span></td></tr>
+        <tr><td><strong>Documentation</strong></td><td>Notion, Confluence</td><td>জ্ঞান সংরক্ষণ</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>API Testing</strong></td><td>Postman, Insomnia</td><td>API endpoint test</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>Monitoring</strong></td><td>Sentry, Datadog</td><td>Error ও performance track</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>CI/CD</strong></td><td>GitHub Actions</td><td>স্বয়ংক্রিয় deploy</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+        <tr><td><strong>Code Quality</strong></td><td>ESLint, Prettier</td><td>কোড স্টাইল নিশ্চিত</td><td><span class="tool-tag tt-both">উভয়</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- FINAL TIPS -->
+    <div style="margin-top:50px;">
+      <h3 style="font-size:1.05rem;margin-bottom:20px;font-weight:600;">🎯 সফল হওয়ার চূড়ান্ত পরামর্শ</h3>
+      <div class="two-col">
+        <div>
+          <h4 style="color:var(--accent);margin-bottom:14px;">👤 Solo Developer হিসেবে</h4>
+          <ul class="checklist">
+            <li>সব কিছু নিজে করার চেষ্টা করুন — Full Stack শিখুন</li>
+            <li>তবে সবকিছু scratch থেকে বানাবেন না। Library ব্যবহার করুন</li>
+            <li>নিয়মিত ছোট ছোট commit করুন — ইতিহাস রাখুন</li>
+            <li>শেষ করুন একটা জিনিস, তারপর পরের কাজ</li>
+            <li>Documentation লিখুন — ৬ মাস পরে নিজেই ভুলে যাবেন</li>
+            <li>অন্য developer-দের সাথে community-তে যোগ দিন</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color:var(--blue);margin-bottom:14px;">👥 Team Member হিসেবে</h4>
+          <ul class="checklist">
+            <li>আগে শুনুন, তারপর কথা বলুন</li>
+            <li>নিজের সমস্যা সময়মতো জানান — লুকাবেন না</li>
+            <li>Code review-কে সমালোচনা মনে করবেন না — শেখার সুযোগ</li>
+            <li>সবার কাজকে সম্মান করুন — কেউ কম গুরুত্বপূর্ণ নয়</li>
+            <li>নিজের কাজ estimate করতে শিখুন — সৎভাবে বলুন</li>
+            <li>টিমের সাফল্য আপনার সাফল্য — ego বাদ দিন</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <h3>সফটওয়্যার তৈরি একটি যাত্রা</h3>
+  <p>SDLC কোনো কঠিন নিয়মের বই নয় — এটি একটি <span>চিন্তার কাঠামো।</span><br>
+  Solo হন বা Team-এ — এই নীতিগুলো মানলে আপনার সফটওয়্যার টিকে থাকবে।</p>
+  <p style="margin-top:20px;font-size:12px;">তৈরি করা হয়েছে বাংলাদেশের <span>ডেভেলপারদের</span> জন্য ❤️</p>
+</footer>
+
+<script>
+function showModel(id) {
+  document.querySelectorAll('.mcon').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('model-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Side nav active state
+const sections = document.querySelectorAll('section[id], .phase-section[id], .cycle-section[id]');
+const dots = document.querySelectorAll('.sp-dot');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      dots.forEach(d => d.classList.remove('active'));
+      const ids = ['hero','overview','planning','requirements','design','development','testing','deployment','maintenance','models','team'];
+      const idx = ids.indexOf(id);
+      if (idx > -1 && dots[idx]) dots[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
