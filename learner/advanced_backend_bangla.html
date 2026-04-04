@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Backend — বাংলা মাস্টারক্লাস</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06080f;
+  --bg2: #090c16;
+  --surface: #0e1220;
+  --surface2: #131829;
+  --border: #1c2238;
+  --border2: #242d48;
+
+  --ms: #00d4aa;        /* microservices - teal */
+  --kafka: #e8501a;     /* kafka - orange-red */
+  --rabbit: #ff6b35;    /* rabbitmq - orange */
+  --sys: #c084fc;       /* system design - purple */
+  --gitops: #f0e130;    /* gitops - yellow */
+  --mesh: #38bdf8;      /* istio - sky */
+  --test: #4ade80;      /* testing - green */
+  --plat: #fb7185;      /* platform - pink */
+
+  --text: #dde3f0;
+  --muted: #6b7799;
+  --dim: #384060;
+
+  --ms-glow: rgba(0,212,170,0.12);
+  --kafka-glow: rgba(232,80,26,0.12);
+  --rabbit-glow: rgba(255,107,53,0.12);
+  --sys-glow: rgba(192,132,252,0.12);
+  --gitops-glow: rgba(240,225,48,0.12);
+  --mesh-glow: rgba(56,189,248,0.12);
+  --test-glow: rgba(74,222,128,0.12);
+  --plat-glow: rgba(251,113,133,0.12);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 15.5px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ─── ANIMATED BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,170,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(192,132,252,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(56,189,248,0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── PROGRESS BAR ─── */
+#prog {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ms), var(--kafka), var(--sys), var(--gitops), var(--mesh), var(--test), var(--plat));
+  z-index: 200;
+  transition: width 0.1s linear;
+  width: 0%;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 150;
+  height: 58px;
+  background: rgba(6,8,15,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.nav-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ms);
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.2rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-links::-webkit-scrollbar { display: none; }
+
+.nav-links a {
+  display: block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  text-decoration: none;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.nav-links a:hover { color: var(--text); background: var(--surface); border-color: var(--border); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 90px 2rem 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,212,170,0.25);
+  background: rgba(0,212,170,0.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ms);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.5s ease both;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.hero h1 em { font-style: normal; color: var(--ms); }
+
+.hero-sub {
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 620px;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.topic-pills {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.pill {
+  padding: 5px 13px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid;
+  cursor: default;
+  transition: transform 0.2s;
+}
+.pill:hover { transform: translateY(-2px); }
+
+.p-ms    { color:var(--ms);    border-color:rgba(0,212,170,0.3);   background:rgba(0,212,170,0.06); }
+.p-kafka { color:var(--kafka); border-color:rgba(232,80,26,0.3);   background:rgba(232,80,26,0.06); }
+.p-mq    { color:var(--rabbit);border-color:rgba(255,107,53,0.3);  background:rgba(255,107,53,0.06);}
+.p-sys   { color:var(--sys);   border-color:rgba(192,132,252,0.3); background:rgba(192,132,252,0.06);}
+.p-git   { color:var(--gitops);border-color:rgba(240,225,48,0.3);  background:rgba(240,225,48,0.06);}
+.p-mesh  { color:var(--mesh);  border-color:rgba(56,189,248,0.3);  background:rgba(56,189,248,0.06);}
+.p-test  { color:var(--test);  border-color:rgba(74,222,128,0.3);  background:rgba(74,222,128,0.06);}
+.p-plat  { color:var(--plat);  border-color:rgba(251,113,133,0.3); background:rgba(251,113,133,0.06);}
+
+.hero-scroll { margin-top: 3.5rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 2px; animation: bounce 2s infinite; }
+
+/* ─── SECTION LAYOUT ─── */
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  max-width: 1120px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── SECTION HEADER ─── */
+.sh {
+  margin-bottom: 3.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.sh-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.08;
+  flex-shrink: 0;
+  margin-top: -0.5rem;
+  user-select: none;
+}
+
+.sh-content {}
+
+.sh-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sh-tag::before { content: '▸'; }
+
+.sh-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+
+.sh-desc {
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 640px;
+}
+
+/* ─── CARDS ─── */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.2rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.6rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  border-radius: 16px 16px 0 0;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+/* color variants */
+.c-ms::after { background: linear-gradient(90deg,var(--ms),transparent); }
+.c-ms:hover  { box-shadow: 0 12px 48px var(--ms-glow); border-color: rgba(0,212,170,0.22); }
+
+.c-kafka::after { background: linear-gradient(90deg,var(--kafka),transparent); }
+.c-kafka:hover  { box-shadow: 0 12px 48px var(--kafka-glow); border-color: rgba(232,80,26,0.22); }
+
+.c-mq::after { background: linear-gradient(90deg,var(--rabbit),transparent); }
+.c-mq:hover  { box-shadow: 0 12px 48px var(--rabbit-glow); border-color: rgba(255,107,53,0.22); }
+
+.c-sys::after { background: linear-gradient(90deg,var(--sys),transparent); }
+.c-sys:hover  { box-shadow: 0 12px 48px var(--sys-glow); border-color: rgba(192,132,252,0.22); }
+
+.c-git::after { background: linear-gradient(90deg,var(--gitops),transparent); }
+.c-git:hover  { box-shadow: 0 12px 48px var(--gitops-glow); border-color: rgba(240,225,48,0.22); }
+
+.c-mesh::after { background: linear-gradient(90deg,var(--mesh),transparent); }
+.c-mesh:hover  { box-shadow: 0 12px 48px var(--mesh-glow); border-color: rgba(56,189,248,0.22); }
+
+.c-test::after { background: linear-gradient(90deg,var(--test),transparent); }
+.c-test:hover  { box-shadow: 0 12px 48px var(--test-glow); border-color: rgba(74,222,128,0.22); }
+
+.c-plat::after { background: linear-gradient(90deg,var(--plat),transparent); }
+.c-plat:hover  { box-shadow: 0 12px 48px var(--plat-glow); border-color: rgba(251,113,133,0.22); }
+
+.card-ico { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+.card-svc { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
+.card-ttl { font-size: 1rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text); font-family: 'Playfair Display', serif; }
+.card p   { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+.svc-ms    { color: var(--ms); }
+.svc-kafka { color: var(--kafka); }
+.svc-mq    { color: var(--rabbit); }
+.svc-sys   { color: var(--sys); }
+.svc-git   { color: var(--gitops); }
+.svc-mesh  { color: var(--mesh); }
+.svc-test  { color: var(--test); }
+.svc-plat  { color: var(--plat); }
+
+/* ─── BULLETS ─── */
+.blist { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.8rem; }
+.blist li { font-size: 0.83rem; color: var(--muted); display: flex; gap: 0.5rem; align-items: flex-start; }
+.blist li::before { content: '›'; flex-shrink: 0; opacity: 0.45; margin-top: 1px; }
+
+/* ─── CODE ─── */
+.code {
+  background: #040609;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.3rem;
+  margin-top: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #8fa3c8;
+  overflow-x: auto;
+  line-height: 1.9;
+}
+.kw  { color: #7c9ef5; }
+.str { color: #98c379; }
+.cm  { color: #3d4f6e; }
+.num { color: #e5c07b; }
+.fn  { color: #61dafb; }
+.op  { color: #c678dd; }
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.flow-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fnode {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.farrow { color: var(--dim); font-size: 1.1rem; flex-shrink: 0; }
+
+/* ─── TIP / ALERT BOXES ─── */
+.tip {
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  margin-top: 1.5rem;
+  font-size: 0.87rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  border: 1px solid;
+  line-height: 1.65;
+}
+
+.tip-ms    { background:rgba(0,212,170,0.05);   border-color:rgba(0,212,170,0.18);   }
+.tip-kafka { background:rgba(232,80,26,0.05);   border-color:rgba(232,80,26,0.18);   }
+.tip-mq    { background:rgba(255,107,53,0.05);  border-color:rgba(255,107,53,0.18);  }
+.tip-sys   { background:rgba(192,132,252,0.05); border-color:rgba(192,132,252,0.18); }
+.tip-git   { background:rgba(240,225,48,0.05);  border-color:rgba(240,225,48,0.18);  }
+.tip-mesh  { background:rgba(56,189,248,0.05);  border-color:rgba(56,189,248,0.18);  }
+.tip-test  { background:rgba(74,222,128,0.05);  border-color:rgba(74,222,128,0.18);  }
+.tip-plat  { background:rgba(251,113,133,0.05); border-color:rgba(251,113,133,0.18); }
+
+.tip-ico { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.tip-body { color: var(--muted); }
+
+/* ─── WIDE CARD ─── */
+.wcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 1.5rem;
+}
+
+.wcard-ttl {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* ─── LAYER STACK ─── */
+.layers { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; }
+
+.layer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  transition: all 0.25s;
+}
+
+.layer:hover { border-color: var(--border2); }
+
+.layer-ms   { border-left-color: var(--ms);    } .layer-ms:hover   { box-shadow: 0 4px 20px var(--ms-glow);    }
+.layer-kafka{ border-left-color: var(--kafka);  } .layer-kafka:hover{ box-shadow: 0 4px 20px var(--kafka-glow);  }
+.layer-mq   { border-left-color: var(--rabbit); } .layer-mq:hover   { box-shadow: 0 4px 20px var(--rabbit-glow); }
+.layer-sys  { border-left-color: var(--sys);    } .layer-sys:hover  { box-shadow: 0 4px 20px var(--sys-glow);    }
+.layer-git  { border-left-color: var(--gitops); } .layer-git:hover  { box-shadow: 0 4px 20px var(--gitops-glow); }
+.layer-mesh { border-left-color: var(--mesh);   } .layer-mesh:hover { box-shadow: 0 4px 20px var(--mesh-glow);   }
+.layer-test { border-left-color: var(--test);   } .layer-test:hover { box-shadow: 0 4px 20px var(--test-glow);   }
+.layer-plat { border-left-color: var(--plat);   } .layer-plat:hover { box-shadow: 0 4px 20px var(--plat-glow);   }
+
+.layer-ico  { font-size: 1.4rem; }
+.layer-name { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; }
+.layer-desc { font-size: 0.83rem; color: var(--muted); margin-top: 0.2rem; }
+.layer-tag  { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--dim); background: var(--bg2); padding: 3px 8px; border-radius: 6px; white-space: nowrap; align-self: flex-start; }
+
+/* ─── COMPARE TABLE ─── */
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 1.5rem; }
+.tbl th { background: var(--surface2); padding: 11px 14px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.tbl td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+.tbl tr:hover td { background: var(--surface2); }
+.tbl td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+
+/* ─── 2-col split ─── */
+.split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1.5rem; }
+@media(max-width:640px){ .split-2 { grid-template-columns: 1fr; } }
+
+.split-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+.split-box-ttl { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.6rem; }
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+}
+
+.dot-pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ms); animation: pulse 1.5s infinite; margin-right: 6px; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+  0%,100%{ transform: translateY(0); opacity: 0.4; }
+  50%    { transform: translateY(7px); opacity: 0.9; }
+}
+@keyframes pulse {
+  0%,100%{ opacity: 1; } 50%{ opacity: 0.3; }
+}
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+@media(max-width:640px){
+  .nav-links { display: none; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .sh { gap: 1rem; }
+  .sh-num { font-size: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">⚙ Advanced Backend</div>
+  <ul class="nav-links">
+    <li><a href="#ms">Microservices</a></li>
+    <li><a href="#kafka">Kafka</a></li>
+    <li><a href="#rabbit">RabbitMQ</a></li>
+    <li><a href="#sysdesign">System Design</a></li>
+    <li><a href="#gitops">GitOps</a></li>
+    <li><a href="#mesh">Istio</a></li>
+    <li><a href="#testing">Testing</a></li>
+    <li><a href="#platform">Platform Eng</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-chip">⚡ বাংলা মাস্টারক্লাস · Advanced Backend</div>
+  <h1>Microservices থেকে<br><em>Platform Engineering</em></h1>
+  <p class="hero-sub">Kafka, RabbitMQ, System Design, GitOps, Istio, Testing — প্রতিটি টপিক গভীরভাবে বাংলায়। Real architecture, real code, real understanding।</p>
+  <div class="topic-pills">
+    <span class="pill p-ms">Microservices</span>
+    <span class="pill p-kafka">Apache Kafka</span>
+    <span class="pill p-mq">RabbitMQ</span>
+    <span class="pill p-sys">System Design</span>
+    <span class="pill p-git">GitOps / ArgoCD</span>
+    <span class="pill p-mesh">Istio Service Mesh</span>
+    <span class="pill p-test">Testing Strategy</span>
+    <span class="pill p-plat">Platform Engineering</span>
+  </div>
+  <div class="hero-scroll">▼ &nbsp; শুরু করো</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     01  MICROSERVICES
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="ms">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--ms)">01</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--ms)">Microservices Architecture</div>
+      <h2 class="sh-title">বড় সিস্টেমকে <span style="color:var(--ms)">ছোট ছোট</span> সার্ভিসে ভাগ করো</h2>
+      <p class="sh-desc">Monolith = একটি বিশাল অ্যাপ। Microservices = প্রতিটি feature আলাদা সার্ভিস, আলাদা deploy, আলাদা scale। Netflix, Amazon, Uber — সবাই এই pattern ব্যবহার করে।</p>
+    </div>
+  </div>
+
+  <!-- Monolith vs Microservices -->
+  <div class="wcard reveal" style="border-color:rgba(0,212,170,0.15);">
+    <div class="wcard-ttl" style="color:var(--ms)">🏗️ Monolith vs Microservices — পার্থক্য</div>
+    <div class="split-2">
+      <div class="split-box" style="border-color:rgba(255,80,80,0.2);">
+        <div class="split-box-ttl" style="color:#ef4444">❌ Monolithic Architecture</div>
+        <ul class="blist">
+          <li>সব কোড একটি codebase-এ</li>
+          <li>একটি জায়গায় bug = পুরো সিস্টেম down</li>
+          <li>একটি ভাষায় সব লিখতে হয়</li>
+          <li>scale করতে হলে পুরোটাই scale করো</li>
+          <li>ছোট টিমে ভালো, বড় হলে nightmare</li>
+        </ul>
+      </div>
+      <div class="split-box" style="border-color:rgba(0,212,170,0.2);">
+        <div class="split-box-ttl" style="color:var(--ms)">✅ Microservices Architecture</div>
+        <ul class="blist">
+          <li>প্রতিটি service আলাদা process</li>
+          <li>একটি service fail = বাকিগুলো চলে</li>
+          <li>প্রতিটি service ভিন্ন ভাষায় লেখা যায়</li>
+          <li>শুধু heavy service-ই scale করো</li>
+          <li>বড় টিমে parallel development সম্ভব</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Design Patterns -->
+  <div class="grid-2 reveal" style="margin-top:1.5rem;">
+    <div class="card c-ms">
+      <span class="card-ico">🚪</span>
+      <span class="card-svc svc-ms">API Gateway Pattern</span>
+      <div class="card-ttl">Kong / AWS API Gateway</div>
+      <p>সব client request একটি জায়গায় আসে। Gateway সেই request সঠিক microservice-এ পাঠায়। Authentication, rate limiting, logging সব gateway-তেই।</p>
+      <ul class="blist">
+        <li>Single entry point — client জানে না ভেতরে কতগুলো service</li>
+        <li>Kong = open-source, plugin-based API Gateway</li>
+        <li>Rate limiting plugin দিয়ে abuse ঠেকাও</li>
+        <li>JWT auth plugin — প্রতি service-এ auth লিখতে হয় না</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Kong-এ route তৈরি করো</span>
+curl -i -X POST http://localhost:8001/services/ \
+  --data <span class="str">"name=user-service"</span> \
+  --data <span class="str">"url=http://user-svc:3000"</span>
+
+curl -i -X POST http://localhost:8001/services/<span class="str">user-service</span>/routes \
+  --data <span class="str">"paths[]=/api/users"</span>
+
+<span class="cm"># Rate limiting plugin যোগ করো</span>
+curl -X POST http://localhost:8001/plugins/ \
+  --data <span class="str">"name=rate-limiting"</span> \
+  --data <span class="str">"config.minute=100"</span>
+      </div>
+    </div>
+
+    <div class="card c-ms">
+      <span class="card-ico">🔍</span>
+      <span class="card-svc svc-ms">Service Discovery</span>
+      <div class="card-ttl">Services কীভাবে একে অপরকে খোঁজে</div>
+      <p>Microservices dynamic environment-এ চলে — IP বদলায়, instances বাড়ে-কমে। Service Discovery হলো সেই directory যেখানে সব service নিজেকে register করে।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Client-side:</strong> client নিজেই registry query করে (Eureka)</li>
+        <li><strong style="color:var(--text)">Server-side:</strong> Load Balancer registry query করে (AWS ALB)</li>
+        <li>Kubernetes-এ DNS-based discovery built-in</li>
+        <li>Consul = popular service registry + health check</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Kubernetes-এ Service Discovery</span>
+<span class="cm"># user-service পাবে এই DNS-এ:</span>
+user-service.default.svc.cluster.local
+
+<span class="cm"># Environment variable-এও পাওয়া যায়</span>
+USER_SERVICE_HOST=10.0.0.5
+USER_SERVICE_PORT=3000
+      </div>
+    </div>
+
+    <div class="card c-ms">
+      <span class="card-ico">📡</span>
+      <span class="card-svc svc-ms">Inter-Service Communication</span>
+      <div class="card-ttl">Services কীভাবে কথা বলে</div>
+      <p>দুটো পদ্ধতি: Synchronous (REST/gRPC) এবং Asynchronous (Kafka/RabbitMQ)। কোনটা কখন ব্যবহার করবে সেটা জানাই architecture-এর মূল দক্ষতা।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">REST:</strong> সহজ, HTTP, stateless — CRUD operation-এ</li>
+        <li><strong style="color:var(--text)">gRPC:</strong> দ্রুত, binary, type-safe — internal service-এ</li>
+        <li><strong style="color:var(--text)">Kafka:</strong> async, event streaming — loosely coupled হতে</li>
+        <li><strong style="color:var(--text)">GraphQL:</strong> flexible query, API aggregation-এ</li>
+      </ul>
+    </div>
+
+    <div class="card c-ms">
+      <span class="card-ico">🏛️</span>
+      <span class="card-svc svc-ms">Design Patterns</span>
+      <div class="card-ttl">Saga, CQRS, Strangler Fig</div>
+      <p>Microservices-এ কিছু পরিচিত সমস্যা আছে — distributed transaction, data consistency, migration। এই patterns সেই সমস্যা সমাধান করে।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Saga Pattern:</strong> distributed transaction → choreography বা orchestration</li>
+        <li><strong style="color:var(--text)">CQRS:</strong> Read ও Write model আলাদা করো performance বাড়াতে</li>
+        <li><strong style="color:var(--text)">Circuit Breaker:</strong> downstream fail হলে fast-fail করো (Resilience4j)</li>
+        <li><strong style="color:var(--text)">Strangler Fig:</strong> পুরনো monolith ধীরে ধীরে microservices-এ migrate করো</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Architecture Flow -->
+  <div class="flow-wrap reveal">
+    <div class="flow-label">Microservices Request Flow — User একটি Order করলে কী হয়</div>
+    <div class="flow">
+      <div class="fnode" style="color:var(--ms);border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.07)">Client App</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--ms);border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.07)">API Gateway<br><small style="opacity:0.6">Kong</small></div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--kafka);border-color:rgba(232,80,26,0.3);background:rgba(232,80,26,0.07)">Order Service</div>
+      <div class="farrow">⇢</div>
+      <div class="fnode" style="color:var(--sys);border-color:rgba(192,132,252,0.3);background:rgba(192,132,252,0.07)">Kafka Event</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:0.8rem;">
+      <div class="farrow" style="transform:rotate(90deg);font-size:1.3rem">↓</div>
+    </div>
+    <div class="flow" style="margin-top:0.3rem;">
+      <div class="fnode" style="color:var(--rabbit);border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.07)">Payment Svc</div>
+      <div class="farrow">+</div>
+      <div class="fnode" style="color:var(--rabbit);border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.07)">Inventory Svc</div>
+      <div class="farrow">+</div>
+      <div class="fnode" style="color:var(--rabbit);border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.07)">Notification Svc</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--test);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.07)">✓ Done</div>
+    </div>
+  </div>
+
+  <div class="tip tip-ms reveal">
+    <span class="tip-ico">⚠️</span>
+    <div class="tip-body"><strong style="color:var(--ms)">কখন Microservices করবে না?</strong> ছোট team (২-৫ জন) এবং নতুন product-এ monolith দিয়ে শুরু করো। Microservices শুধু তখনই প্রয়োজন যখন scale, team size এবং complexity সত্যিই demand করে। Amazon, Netflix-ও monolith দিয়ে শুরু করেছিল।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     02  APACHE KAFKA
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="kafka">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--kafka)">02</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--kafka)">Apache Kafka</div>
+      <h2 class="sh-title">Event Streaming-এর <span style="color:var(--kafka)">রাজা</span></h2>
+      <p class="sh-desc">LinkedIn বানিয়েছিল, এখন সবাই ব্যবহার করে। প্রতিদিন ট্রিলিয়ন event process করতে পারে। Real-time data pipeline এবং event-driven architecture-এর মূল ভিত্তি।</p>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <div class="layers reveal">
+    <div class="layer layer-kafka">
+      <span class="layer-ico">📋</span>
+      <div>
+        <div class="layer-name svc-kafka">Topic</div>
+        <div class="layer-desc">Log ফাইলের মতো। Event গুলো Topic-এ লেখা হয়। যেমন: "order-placed", "payment-done", "user-registered"। Producer লেখে, Consumer পড়ে। Immutable — একবার লিখলে বদলানো যায় না।</div>
+        <div class="code" style="margin-top:0.6rem;">
+<span class="cm"># Topic তৈরি করো</span>
+kafka-topics.sh --create \
+  --topic <span class="str">order-placed</span> \
+  --partitions <span class="num">6</span> \
+  --replication-factor <span class="num">3</span> \
+  --bootstrap-server localhost:9092
+        </div>
+      </div>
+      <span class="layer-tag">Log-based storage</span>
+    </div>
+
+    <div class="layer layer-kafka">
+      <span class="layer-ico">🗂️</span>
+      <div>
+        <div class="layer-name svc-kafka">Partition</div>
+        <div class="layer-desc">Topic-কে ভাগ করা হয় Partition-এ। ৬টি Partition = ৬টি Consumer একসাথে পড়তে পারে। Partition key দিয়ে নির্ধারণ হয় কোন message কোন partition-এ যাবে। একই key = সবসময় একই partition → ordering guarantee।</div>
+        <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <div class="fnode" style="color:var(--kafka);border-color:rgba(232,80,26,0.3);background:rgba(232,80,26,0.06);font-size:0.7rem;">Partition 0<br>msg 0,3,6...</div>
+          <div class="fnode" style="color:var(--kafka);border-color:rgba(232,80,26,0.3);background:rgba(232,80,26,0.06);font-size:0.7rem;">Partition 1<br>msg 1,4,7...</div>
+          <div class="fnode" style="color:var(--kafka);border-color:rgba(232,80,26,0.3);background:rgba(232,80,26,0.06);font-size:0.7rem;">Partition 2<br>msg 2,5,8...</div>
+        </div>
+      </div>
+      <span class="layer-tag">Horizontal scale</span>
+    </div>
+
+    <div class="layer layer-kafka">
+      <span class="layer-ico">📤</span>
+      <div>
+        <div class="layer-name svc-kafka">Producer</div>
+        <div class="layer-desc">Event পাঠায় Topic-এ। Partition key দিয়ে নির্দিষ্ট partition-এ পাঠাতে পারো। acks=all দিলে সব replica লেখার পর confirm আসে — data loss নেই।</div>
+        <div class="code" style="margin-top:0.6rem;">
+<span class="cm"># Python Producer</span>
+<span class="kw">from</span> kafka <span class="kw">import</span> KafkaProducer
+<span class="kw">import</span> json
+
+producer = KafkaProducer(
+    bootstrap_servers=[<span class="str">'localhost:9092'</span>],
+    value_serializer=<span class="kw">lambda</span> v: json.dumps(v).encode()
+)
+
+event = {<span class="str">'order_id'</span>: <span class="str">'ORD-123'</span>, <span class="str">'amount'</span>: <span class="num">500</span>}
+producer.<span class="fn">send</span>(<span class="str">'order-placed'</span>, key=<span class="str">b'ORD-123'</span>, value=event)
+producer.<span class="fn">flush</span>()
+        </div>
+      </div>
+      <span class="layer-tag">Event publisher</span>
+    </div>
+
+    <div class="layer layer-kafka">
+      <span class="layer-ico">📥</span>
+      <div>
+        <div class="layer-name svc-kafka">Consumer & Consumer Group</div>
+        <div class="layer-desc">Topic থেকে event পড়ে। Consumer Group-এ একাধিক consumer থাকতে পারে। Group-এ ৩টি consumer + ৬ partition = প্রতিটি consumer ২টি partition পায়। Offset দিয়ে কোথায় পড়া শেষ হয়েছে মনে রাখে।</div>
+        <div class="code" style="margin-top:0.6rem;">
+<span class="cm"># Python Consumer</span>
+<span class="kw">from</span> kafka <span class="kw">import</span> KafkaConsumer
+
+consumer = KafkaConsumer(
+    <span class="str">'order-placed'</span>,
+    group_id=<span class="str">'payment-service'</span>,
+    bootstrap_servers=[<span class="str">'localhost:9092'</span>],
+    auto_offset_reset=<span class="str">'earliest'</span>
+)
+
+<span class="kw">for</span> msg <span class="kw">in</span> consumer:
+    order = json.loads(msg.value)
+    <span class="fn">process_payment</span>(order)
+        </div>
+      </div>
+      <span class="layer-tag">Offset tracking</span>
+    </div>
+  </div>
+
+  <div class="wcard reveal" style="border-color:rgba(232,80,26,0.15);margin-top:1.5rem;">
+    <div class="wcard-ttl" style="color:var(--kafka)">🚀 Kafka কেন এত দ্রুত? (High Throughput-এর রহস্য)</div>
+    <div class="split-2">
+      <div class="split-box">
+        <div class="split-box-ttl" style="color:var(--kafka)">Sequential Write</div>
+        <p style="font-size:0.83rem;color:var(--muted);">Kafka disk-এ sequential write করে। Random write-এর চেয়ে sequential write ১০০x দ্রুত। HDD-তেও লক্ষ লক্ষ message/second।</p>
+      </div>
+      <div class="split-box">
+        <div class="split-box-ttl" style="color:var(--kafka)">Zero-Copy</div>
+        <p style="font-size:0.83rem;color:var(--muted);">OS-এর sendfile() syscall ব্যবহার করে। Data kernel থেকে সরাসরি network-এ যায়, CPU copy লাগে না।</p>
+      </div>
+      <div class="split-box">
+        <div class="split-box-ttl" style="color:var(--kafka)">Batching</div>
+        <p style="font-size:0.83rem;color:var(--muted);">একসাথে অনেক message batch করে পাঠায়। Network round-trip কমে, throughput বাড়ে।</p>
+      </div>
+      <div class="split-box">
+        <div class="split-box-ttl" style="color:var(--kafka)">Compression</div>
+        <p style="font-size:0.83rem;color:var(--muted);">lz4, snappy, gzip compression। Network bandwidth কম লাগে, faster transfer।</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-kafka reveal">
+    <span class="tip-ico">🎯</span>
+    <div class="tip-body"><strong style="color:var(--kafka)">Kafka কখন ব্যবহার করবে:</strong> ১) High-throughput event streaming (লক্ষ event/sec) ২) Audit log — সব event permanently রাখতে চাই ৩) Multiple consumer — একই event ভিন্ন service process করবে ৪) Event sourcing architecture। <strong style="color:var(--text)">কখন করবে না:</strong> Simple task queue, low volume, request-reply pattern।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03  RABBITMQ
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="rabbit">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--rabbit)">03</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--rabbit)">RabbitMQ</div>
+      <h2 class="sh-title">Message Queue-এর <span style="color:var(--rabbit)">চ্যাম্পিয়ন</span></h2>
+      <p class="sh-desc">AMQP protocol-এর সেরা implementation। Task queue, work distribution, complex routing — এসব কাজে Kafka-র চেয়ে সহজ এবং বেশি উপযুক্ত।</p>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal">
+    <div class="card c-mq">
+      <span class="card-ico">🔀</span>
+      <span class="card-svc svc-mq">Exchange</span>
+      <div class="card-ttl">Message Router</div>
+      <p>Producer সরাসরি Queue-তে পাঠায় না — Exchange-এ পাঠায়। Exchange ঠিক করে message কোন Queue-তে যাবে। চার ধরনের Exchange।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Direct:</strong> Routing key exact match — email.send → email queue</li>
+        <li><strong style="color:var(--text)">Topic:</strong> Wildcard match — *.error → সব error queue-তে</li>
+        <li><strong style="color:var(--text)">Fanout:</strong> সব Queue-তে broadcast — notification পাঠাতে</li>
+        <li><strong style="color:var(--text)">Headers:</strong> Message header দিয়ে route করো</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Python - pika library</span>
+<span class="kw">import</span> pika, json
+
+conn = pika.<span class="fn">BlockingConnection</span>(
+    pika.<span class="fn">ConnectionParameters</span>(<span class="str">'localhost'</span>))
+ch = conn.<span class="fn">channel</span>()
+
+<span class="cm"># Direct exchange declare</span>
+ch.<span class="fn">exchange_declare</span>(
+    exchange=<span class="str">'task_exchange'</span>,
+    exchange_type=<span class="str">'direct'</span>)
+
+<span class="cm"># Message publish</span>
+ch.<span class="fn">basic_publish</span>(
+    exchange=<span class="str">'task_exchange'</span>,
+    routing_key=<span class="str">'email.send'</span>,
+    body=json.<span class="fn">dumps</span>({<span class="str">'to'</span>: <span class="str">'user@email.com'</span>}),
+    properties=pika.BasicProperties(delivery_mode=<span class="num">2</span>))
+      </div>
+    </div>
+
+    <div class="card c-mq">
+      <span class="card-ico">💀</span>
+      <span class="card-svc svc-mq">Dead Letter Queue (DLQ)</span>
+      <div class="card-ttl">Failed Message-এর গন্তব্য</div>
+      <p>Message process করতে fail হলে কোথায় যাবে? Dead Letter Queue-এ। কেন fail হলো সেটা পরে debug করা যায়, message হারায় না।</p>
+      <ul class="blist">
+        <li>Retry limit পার হলে DLQ-তে যায়</li>
+        <li>Message TTL expire হলে DLQ-তে যায়</li>
+        <li>Queue full হলে DLQ-তে যায়</li>
+        <li>Alert সেট করো: DLQ-তে message জমলে notify হও</li>
+      </ul>
+      <div class="code">
+<span class="cm"># DLQ সহ Queue declare করো</span>
+ch.<span class="fn">queue_declare</span>(
+    queue=<span class="str">'email-queue'</span>,
+    durable=<span class="kw">True</span>,
+    arguments={
+        <span class="str">'x-dead-letter-exchange'</span>: <span class="str">'dlx'</span>,
+        <span class="str">'x-dead-letter-routing-key'</span>: <span class="str">'email.failed'</span>,
+        <span class="str">'x-message-ttl'</span>: <span class="num">30000</span>,  <span class="cm"># 30s TTL</span>
+        <span class="str">'x-max-retries'</span>: <span class="num">3</span>
+    })
+      </div>
+    </div>
+  </div>
+
+  <!-- Kafka vs RabbitMQ -->
+  <div class="wcard reveal" style="border-color:rgba(255,107,53,0.15); margin-top:1.5rem;">
+    <div class="wcard-ttl" style="color:var(--rabbit)">⚖️ Kafka vs RabbitMQ — কোনটা কখন?</div>
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>বিষয়</th>
+            <th style="color:var(--kafka)">Apache Kafka</th>
+            <th style="color:var(--rabbit)">RabbitMQ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--text)">ব্যবহারের ক্ষেত্র</td><td>Event streaming, log aggregation</td><td>Task queue, job processing</td></tr>
+          <tr><td style="color:var(--text)">Message retention</td><td>Days/weeks — replay করা যায়</td><td>Processed হলে delete</td></tr>
+          <tr><td style="color:var(--text)">Throughput</td><td>লক্ষ-কোটি message/sec</td><td>হাজার message/sec</td></tr>
+          <tr><td style="color:var(--text)">Routing</td><td>Topic-based, সরল</td><td>Complex routing (exchange)</td></tr>
+          <tr><td style="color:var(--text)">Ordering</td><td>Partition-এর মধ্যে guaranteed</td><td>Queue-এর মধ্যে guaranteed</td></tr>
+          <tr><td style="color:var(--text)">Complexity</td><td>বেশি (Zookeeper/KRaft)</td><td>কম, সহজ setup</td></tr>
+          <tr><td style="color:var(--text)">Ideal for</td><td>Analytics, event sourcing</td><td>Email, SMS, background jobs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tip tip-mq reveal">
+    <span class="tip-ico">💡</span>
+    <div class="tip-body"><strong style="color:var(--rabbit)">বাস্তব উদাহরণ:</strong> ই-কমার্সে — Order place হলে Kafka-তে event যায় (audit, analytics-এর জন্য replay দরকার)। কিন্তু Email পাঠানো, SMS notification — এগুলো RabbitMQ-তে task দাও। একই system-এ দুটোই থাকতে পারে।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     04  SYSTEM DESIGN
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="sysdesign">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--sys)">04</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--sys)">System Design</div>
+      <h2 class="sh-title">বড় সিস্টেম <span style="color:var(--sys)">ডিজাইন</span> করার শিল্প</h2>
+      <p class="sh-desc">HLD (High Level Design) থেকে LLD (Low Level Design), CAP Theorem থেকে Sharding — Interview-এ এবং real life-এ সব জায়গায় এই concept লাগে।</p>
+    </div>
+  </div>
+
+  <!-- CAP Theorem -->
+  <div class="wcard reveal" style="border-color:rgba(192,132,252,0.15);">
+    <div class="wcard-ttl" style="color:var(--sys)">⚖️ CAP Theorem — distributed system-এর সবচেয়ে গুরুত্বপূর্ণ নিয়ম</div>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.2rem;">তিনটির মধ্যে যেকোনো <strong style="color:var(--text)">দুটো</strong> পাবে, তিনটি একসাথে পাওয়া অসম্ভব।</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+      <div class="split-box" style="border-color:rgba(192,132,252,0.25);text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">🔒</div>
+        <div class="split-box-ttl" style="color:var(--sys)">Consistency (C)</div>
+        <p style="font-size:0.82rem;color:var(--muted);">সব node-এ একই data। একটি write হলে সব জায়গায় দেখা যাবে।</p>
+      </div>
+      <div class="split-box" style="border-color:rgba(192,132,252,0.25);text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
+        <div class="split-box-ttl" style="color:var(--sys)">Availability (A)</div>
+        <p style="font-size:0.82rem;color:var(--muted);">সবসময় response পাবে। Node down থাকলেও কেউ না কেউ জবাব দেবে।</p>
+      </div>
+      <div class="split-box" style="border-color:rgba(192,132,252,0.25);text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">🌐</div>
+        <div class="split-box-ttl" style="color:var(--sys)">Partition Tolerance (P)</div>
+        <p style="font-size:0.82rem;color:var(--muted);">Network split হলেও system চলে। Real distributed system-এ P সবসময় থাকতে হবে।</p>
+      </div>
+    </div>
+    <div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:10px;font-size:0.84rem;color:var(--muted);">
+      📌 <strong style="color:var(--text)">তাই বাস্তবে choice হয় CP বা AP:</strong> MySQL, PostgreSQL = CP (consistent, network issue হলে unavailable)। Cassandra, DynamoDB = AP (always available, eventually consistent)।
+    </div>
+  </div>
+
+  <!-- Key Topics Grid -->
+  <div class="grid-2 reveal" style="margin-top:1.5rem;">
+    <div class="card c-sys">
+      <span class="card-ico">🗃️</span>
+      <span class="card-svc svc-sys">Database Sharding</span>
+      <div class="card-ttl">বিশাল Database ভাগ করো</div>
+      <p>একটি database-এ ১ বিলিয়ন row — query slow। Sharding মানে data ভাগ করে আলাদা database-এ রাখা।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Horizontal Sharding:</strong> Row ভাগ করো — User 1-1M → DB1, 1M-2M → DB2</li>
+        <li><strong style="color:var(--text)">Hash Sharding:</strong> user_id % 4 = কোন shard-এ যাবে নির্ধারণ হয়</li>
+        <li><strong style="color:var(--text)">Range Sharding:</strong> Date বা ID range অনুযায়ী ভাগ</li>
+        <li><strong style="color:var(--text)">Hotspot সমস্যা:</strong> একটি shard-এ বেশি load — consistent hashing দিয়ে সমাধান</li>
+      </ul>
+    </div>
+
+    <div class="card c-sys">
+      <span class="card-ico">⚡</span>
+      <span class="card-svc svc-sys">Caching Strategy</span>
+      <div class="card-ttl">Redis দিয়ে ১০০x দ্রুত করো</div>
+      <p>Database hit না করে memory থেকে data দিলে ms-এ response পাবে। Cache কোথায় রাখবে এবং কখন invalidate করবে — সেটাই strategy।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Cache-aside:</strong> Miss হলে DB থেকে নিয়ে cache-এ রাখো (সবচেয়ে প্রচলিত)</li>
+        <li><strong style="color:var(--text)">Write-through:</strong> DB-তে লেখার সাথে সাথে cache update</li>
+        <li><strong style="color:var(--text)">Write-back:</strong> আগে cache, পরে DB — দ্রুত কিন্তু data loss risk</li>
+        <li><strong style="color:var(--text)">TTL:</strong> নির্দিষ্ট সময় পরে cache expire — stale data ঠেকাও</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Cache-aside in Python</span>
+<span class="kw">def</span> <span class="fn">get_user</span>(user_id):
+    cached = redis.<span class="fn">get</span>(f<span class="str">"user:{user_id}"</span>)
+    <span class="kw">if</span> cached: <span class="kw">return</span> json.<span class="fn">loads</span>(cached)
+
+    user = db.<span class="fn">query</span>(<span class="str">"SELECT * FROM users WHERE id=?"</span>, user_id)
+    redis.<span class="fn">setex</span>(f<span class="str">"user:{user_id}"</span>, <span class="num">3600</span>, json.<span class="fn">dumps</span>(user))
+    <span class="kw">return</span> user
+      </div>
+    </div>
+
+    <div class="card c-sys">
+      <span class="card-ico">🚦</span>
+      <span class="card-svc svc-sys">Rate Limiting</span>
+      <div class="card-ttl">API Abuse ঠেকাও</div>
+      <p>একটি client অনেক বেশি request করলে সার্ভার crash করতে পারে। Rate limiting দিয়ে প্রতিটি client-এর request সীমা নির্ধারণ করো।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Token Bucket:</strong> Bucket-এ token জমে, request এলে token খরচ হয় — burst allow</li>
+        <li><strong style="color:var(--text)">Sliding Window:</strong> গত ১ মিনিটে কতটি request — precise</li>
+        <li><strong style="color:var(--text)">Fixed Window:</strong> প্রতি মিনিটে ১০০ request — সহজ কিন্তু edge case আছে</li>
+        <li>Redis দিয়ে distributed rate limiting — সব server এক counter দেখে</li>
+      </ul>
+    </div>
+
+    <div class="card c-sys">
+      <span class="card-ico">🌍</span>
+      <span class="card-svc svc-sys">CDN Strategy</span>
+      <div class="card-ttl">Static Content বিশ্বজুড়ে দ্রুত পৌঁছাও</div>
+      <p>User Bangladesh-এ, server US-এ — latency বেশি। CDN edge server Bangladesh-এর কাছে থাকে, সেখান থেকে serve করে।</p>
+      <ul class="blist">
+        <li>Images, JS, CSS, Video — সব CDN-এ দাও</li>
+        <li>Cache-Control header: max-age=31536000 (1 year)</li>
+        <li>Cache busting: filename-এ hash যোগ করো (main.abc123.js)</li>
+        <li>Origin Shield: CDN miss হলে origin hit কমাও</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- HLD vs LLD -->
+  <div class="wcard reveal" style="border-color:rgba(192,132,252,0.15);margin-top:1.5rem;">
+    <div class="wcard-ttl" style="color:var(--sys)">🏛️ HLD vs LLD — দুই স্তরের Design</div>
+    <div class="split-2">
+      <div class="split-box" style="border-color:rgba(192,132,252,0.2);">
+        <div class="split-box-ttl" style="color:var(--sys)">High Level Design (HLD)</div>
+        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.6rem">Architecture level — boxes and arrows। Interview-এ প্রথমে এটা।</p>
+        <ul class="blist">
+          <li>কোন components থাকবে? (Services, DB, Cache, CDN)</li>
+          <li>Components কীভাবে communicate করবে?</li>
+          <li>Data flow কেমন হবে?</li>
+          <li>Scalability কীভাবে হবে?</li>
+        </ul>
+      </div>
+      <div class="split-box" style="border-color:rgba(192,132,252,0.2);">
+        <div class="split-box-ttl" style="color:var(--sys)">Low Level Design (LLD)</div>
+        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.6rem">Code level — class, method, schema। Interview-এ দ্বিতীয় পর্যায়।</p>
+        <ul class="blist">
+          <li>Database schema কেমন হবে?</li>
+          <li>API endpoints কী কী?</li>
+          <li>Class diagram, design patterns</li>
+          <li>Algorithms এবং data structures</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-sys reveal">
+    <span class="tip-ico">🎯</span>
+    <div class="tip-body"><strong style="color:var(--sys)">System Design Interview Formula:</strong> ১) Requirements clarify করো ২) Capacity estimation করো (QPS, storage) ৩) HLD আঁকো ৪) Deep dive করো specific component-এ ৫) Bottleneck identify করো ও solve করো। "Design URL shortener" জিজ্ঞেস করলে — শুরুতেই জিজ্ঞেস করো "কতটি URL/day? Read-heavy নাকি write-heavy?"</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     05  GITOPS / ARGOCD
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="gitops">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--gitops)">05</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--gitops)">GitOps / ArgoCD</div>
+      <h2 class="sh-title">Git-ই <span style="color:var(--gitops)">সত্যের উৎস</span></h2>
+      <p class="sh-desc">Infrastructure এবং application config সব Git-এ থাকে। Git change হলে automatically cluster-এ apply হয়। Manual kubectl apply করার দিন শেষ।</p>
+    </div>
+  </div>
+
+  <div class="layers reveal">
+    <div class="layer layer-git">
+      <span class="layer-ico">📚</span>
+      <div>
+        <div class="layer-name svc-git">GitOps কী?</div>
+        <div class="layer-desc">Git repository = Single Source of Truth। Kubernetes manifest, Helm chart, Kustomize — সব Git-এ। কেউ cluster-এ manually change করলে GitOps সেটা revert করে দেয়। "Desired state" সবসময় Git-এ লেখা থাকে।</div>
+        <ul class="blist" style="margin-top:0.5rem;">
+          <li>Pull-based deployment — cluster নিজেই Git দেখে change নেয়</li>
+          <li>সব change Git commit → audit trail, rollback সহজ</li>
+          <li>Developer শুধু Git-এ push করে, বাকিটা অটোমেটিক</li>
+        </ul>
+      </div>
+      <span class="layer-tag">Declarative</span>
+    </div>
+
+    <div class="layer layer-git">
+      <span class="layer-ico">🔄</span>
+      <div>
+        <div class="layer-name svc-git">ArgoCD — GitOps Engine</div>
+        <div class="layer-desc">Kubernetes-এর জন্য সবচেয়ে popular GitOps tool। Git repo দেখে, cluster-এর current state দেখে, পার্থক্য থাকলে sync করে। Beautiful UI আছে — কোন app কোথায়, কী status সব দেখা যায়।</div>
+        <div class="code" style="margin-top:0.8rem;">
+<span class="cm"># ArgoCD install করো</span>
+kubectl create namespace argocd
+kubectl apply -n argocd -f \
+  https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+<span class="cm"># Application তৈরি করো</span>
+argocd app create my-app \
+  --repo https://github.com/myorg/my-app-config \
+  --path k8s/overlays/production \
+  --dest-server https://kubernetes.default.svc \
+  --dest-namespace production \
+  --sync-policy automated \
+  --auto-prune \
+  --self-heal
+        </div>
+      </div>
+      <span class="layer-tag">Continuous sync</span>
+    </div>
+
+    <div class="layer layer-git">
+      <span class="layer-ico">🎯</span>
+      <div>
+        <div class="layer-name svc-git">Sync Policies — কীভাবে deploy হবে</div>
+        <div class="layer-desc">ArgoCD তিনটি sync mode সাপোর্ট করে। Automated সবচেয়ে বেশি ব্যবহৃত।</div>
+        <div class="split-2" style="margin-top:0.6rem;">
+          <div class="split-box">
+            <div class="split-box-ttl" style="color:var(--gitops);font-size:0.78rem;">Manual Sync</div>
+            <p style="font-size:0.78rem;color:var(--muted);">UI বা CLI থেকে sync button চাপতে হয়। Production-এ নিরাপদ।</p>
+          </div>
+          <div class="split-box">
+            <div class="split-box-ttl" style="color:var(--gitops);font-size:0.78rem;">Automated Sync</div>
+            <p style="font-size:0.78rem;color:var(--muted);">Git push হলেই automatic deploy। self-heal চালু থাকলে drift ঠিক করে।</p>
+          </div>
+        </div>
+      </div>
+      <span class="layer-tag">Auto-heal</span>
+    </div>
+  </div>
+
+  <!-- GitOps Flow -->
+  <div class="flow-wrap reveal">
+    <div class="flow-label">GitOps Deployment Flow — Code থেকে Production পর্যন্ত</div>
+    <div class="flow">
+      <div class="fnode" style="color:var(--text);border-color:var(--border2);background:var(--surface2)">Developer<br>Code Push</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--gitops);border-color:rgba(240,225,48,0.3);background:rgba(240,225,48,0.07)">GitHub<br>Actions CI</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--gitops);border-color:rgba(240,225,48,0.3);background:rgba(240,225,48,0.07)">Docker Image<br>Build & Push</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--gitops);border-color:rgba(240,225,48,0.3);background:rgba(240,225,48,0.07)">Config Repo<br>image tag update</div>
+    </div>
+    <div style="text-align:center;margin:0.6rem 0;color:var(--dim);font-size:0.85rem;">↓ ArgoCD polls every 3 minutes</div>
+    <div class="flow">
+      <div class="fnode" style="color:var(--mesh);border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.07)">ArgoCD<br>detects diff</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--mesh);border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.07)">Kubernetes<br>cluster sync</div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="color:var(--test);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.07)">✓ Production<br>Updated!</div>
+    </div>
+  </div>
+
+  <div class="tip tip-git reveal">
+    <span class="tip-ico">🌿</span>
+    <div class="tip-body"><strong style="color:var(--gitops)">GitOps Best Practices:</strong> Application code repo এবং config repo আলাদা রাখো। Config repo-তে environment-এর আলাদা branch/folder রাখো (dev, staging, production)। Kustomize বা Helm দিয়ে per-environment customization করো। Secret-এর জন্য Sealed Secrets বা External Secrets Operator ব্যবহার করো — কখনো plain secret Git-এ রাখবে না।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     06  SERVICE MESH / ISTIO
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="mesh">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--mesh)">06</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--mesh)">Service Mesh — Istio</div>
+      <h2 class="sh-title">Microservices-এর মধ্যে <span style="color:var(--mesh)">নিরাপদ যোগাযোগ</span></h2>
+      <p class="sh-desc">Microservices বাড়লে inter-service communication জটিল হয়। Istio এই জটিলতা handle করে — code একটুও না বদলে। Sidecar proxy pattern ব্যবহার করে।</p>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal">
+    <div class="card c-mesh">
+      <span class="card-ico">🔀</span>
+      <span class="card-svc svc-mesh">Traffic Management</span>
+      <div class="card-ttl">কোথায় কতটুকু Traffic যাবে</div>
+      <p>Canary deploy, Blue-Green deploy, Traffic mirroring — code না লিখে YAML দিয়ে করো। নতুন version-এ ১০% traffic পাঠাও, সব ঠিক থাকলে ১০০%।</p>
+      <div class="code">
+<span class="cm"># Canary deployment — 10% নতুন version-এ</span>
+<span class="kw">apiVersion</span>: networking.istio.io/v1alpha3
+<span class="kw">kind</span>: VirtualService
+<span class="kw">spec</span>:
+  hosts: [<span class="str">"user-service"</span>]
+  http:
+  - route:
+    - destination:
+        host: user-service
+        subset: <span class="str">v1</span>
+      weight: <span class="num">90</span>
+    - destination:
+        host: user-service
+        subset: <span class="str">v2</span>
+      weight: <span class="num">10</span>
+      </div>
+    </div>
+
+    <div class="card c-mesh">
+      <span class="card-ico">🔐</span>
+      <span class="card-svc svc-mesh">mTLS (Mutual TLS)</span>
+      <div class="card-ttl">Service-to-Service Encryption</div>
+      <p>সব service-এর মধ্যে encrypted connection। Service A কে নিশ্চিত হতে হবে সে Service B-র সাথে কথা বলছে, অন্য কারো সাথে না। Zero Trust Network।</p>
+      <ul class="blist">
+        <li>Istio automatically certificate generate করে</li>
+        <li>Certificate rotation অটোমেটিক — মেয়াদ শেষ হলে নতুন হয়</li>
+        <li>STRICT mode — শুধু mTLS connection allow</li>
+        <li>অ্যাপ কোড কিছুই জানে না — sidecar handle করে</li>
+      </ul>
+    </div>
+
+    <div class="card c-mesh">
+      <span class="card-ico">⚡</span>
+      <span class="card-svc svc-mesh">Circuit Breaking</span>
+      <div class="card-ttl">Cascade Failure ঠেকাও</div>
+      <p>Service B slow হলে Service A-ও slow হয়, chain reaction-এ সব down হয়। Circuit Breaker এই cascade failure ঠেকায়।</p>
+      <ul class="blist">
+        <li>Closed: সব ঠিক, request যায়</li>
+        <li>Open: বেশি fail হলে circuit break — fast fail</li>
+        <li>Half-Open: কিছু সময় পর test request পাঠায়</li>
+        <li>Fallback response দাও — graceful degradation</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Circuit Breaker config</span>
+<span class="kw">trafficPolicy</span>:
+  outlierDetection:
+    consecutiveErrors: <span class="num">5</span>
+    interval: <span class="str">10s</span>
+    baseEjectionTime: <span class="str">30s</span>
+    maxEjectionPercent: <span class="num">100</span>
+      </div>
+    </div>
+
+    <div class="card c-mesh">
+      <span class="card-ico">📊</span>
+      <span class="card-svc svc-mesh">Observability</span>
+      <div class="card-ttl">সব দেখো, সব জানো</div>
+      <p>Istio automatic metrics, traces, logs generate করে। কোন service slow, কোথায় error, request কোন path দিয়ে গেছে — সব Kiali dashboard-এ দেখো।</p>
+      <ul class="blist">
+        <li>Prometheus metrics — Grafana-তে visualize</li>
+        <li>Jaeger/Zipkin — Distributed tracing</li>
+        <li>Kiali — Service graph, traffic visualization</li>
+        <li>Access log — প্রতিটি request-এর record</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip tip-mesh reveal">
+    <span class="tip-ico">⚠️</span>
+    <div class="tip-body"><strong style="color:var(--mesh)">Istio-র Overhead জানো:</strong> প্রতিটি pod-এ Envoy sidecar inject হয় — CPU ও Memory বেশি লাগে। Small cluster বা simple microservices-এ Istio না নিয়ে শুধু Kubernetes NetworkPolicy + NGINX Ingress যথেষ্ট। Istio নাও যখন ৫০+ microservice, complex traffic management, বা mTLS সত্যিই দরকার।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     07  TESTING STRATEGY
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="testing">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--test)">07</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--test)">Testing Strategy</div>
+      <h2 class="sh-title">Test না করলে <span style="color:var(--test)">Production-এ কান্না</span></h2>
+      <p class="sh-desc">Unit থেকে E2E, Load testing থেকে TDD — একটি সম্পূর্ণ testing strategy ছাড়া confident deployment সম্ভব না। Testing Pyramid জানো।</p>
+    </div>
+  </div>
+
+  <!-- Testing Pyramid -->
+  <div class="wcard reveal" style="border-color:rgba(74,222,128,0.15);">
+    <div class="wcard-ttl" style="color:var(--test)">🔺 Testing Pyramid — কত % কোন ধরনের test</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem;align-items:center;">
+      <div style="width:30%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:0.7rem;text-align:center;">
+        <div style="font-size:0.8rem;font-weight:700;color:#ef4444;">E2E Tests</div>
+        <div style="font-size:0.72rem;color:var(--muted);">~10% — ধীর, ব্যয়বহুল</div>
+      </div>
+      <div style="width:55%;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:0.7rem;text-align:center;">
+        <div style="font-size:0.8rem;font-weight:700;color:#fbbf24;">Integration Tests</div>
+        <div style="font-size:0.72rem;color:var(--muted);">~20% — component মিলিয়ে test</div>
+      </div>
+      <div style="width:80%;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;padding:0.7rem;text-align:center;">
+        <div style="font-size:0.8rem;font-weight:700;color:var(--test);">Unit Tests</div>
+        <div style="font-size:0.72rem;color:var(--muted);">~70% — দ্রুত, সস্তা, বেশি রাখো</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal" style="margin-top:1.5rem;">
+    <div class="card c-test">
+      <span class="card-ico">🔬</span>
+      <span class="card-svc svc-test">Unit Testing</span>
+      <div class="card-ttl">একটি function, একটি test</div>
+      <p>একটি function বা method আলাদাভাবে test করো। External dependency mock করো। দ্রুত চলে, CI-তে সব সময় চালাও।</p>
+      <div class="code">
+<span class="cm"># Jest (Node.js) Unit Test</span>
+<span class="fn">describe</span>(<span class="str">'calculateTotal'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'should apply discount correctly'</span>, () => {
+    <span class="kw">const</span> result = <span class="fn">calculateTotal</span>(<span class="num">1000</span>, <span class="num">10</span>);
+    <span class="fn">expect</span>(result).<span class="fn">toBe</span>(<span class="num">900</span>);
+  });
+
+  <span class="fn">it</span>(<span class="str">'should throw on negative price'</span>, () => {
+    <span class="fn">expect</span>(() => <span class="fn">calculateTotal</span>(-<span class="num">100</span>, <span class="num">0</span>))
+      .<span class="fn">toThrow</span>(<span class="str">'Invalid price'</span>);
+  });
+});
+      </div>
+    </div>
+
+    <div class="card c-test">
+      <span class="card-ico">🔗</span>
+      <span class="card-svc svc-test">Integration Testing</span>
+      <div class="card-ttl">Database, API — মিলিয়ে test করো</div>
+      <p>Service layer + Database একসাথে। Real database ব্যবহার করো (TestContainers দিয়ে Docker-এ)। API endpoint test করো।</p>
+      <div class="code">
+<span class="cm"># Supertest — API Integration Test</span>
+<span class="kw">const</span> request = <span class="fn">require</span>(<span class="str">'supertest'</span>);
+
+<span class="fn">describe</span>(<span class="str">'POST /api/users'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'creates user and returns 201'</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">request</span>(app)
+      .<span class="fn">post</span>(<span class="str">'/api/users'</span>)
+      .<span class="fn">send</span>({ name: <span class="str">'রফিক'</span>, email: <span class="str">'rafiq@bd.com'</span> });
+
+    <span class="fn">expect</span>(res.statusCode).<span class="fn">toBe</span>(<span class="num">201</span>);
+    <span class="fn">expect</span>(res.body.name).<span class="fn">toBe</span>(<span class="str">'রফিক'</span>);
+  });
+});
+      </div>
+    </div>
+
+    <div class="card c-test">
+      <span class="card-ico">🎭</span>
+      <span class="card-svc svc-test">E2E — Playwright / Cypress</span>
+      <div class="card-ttl">Browser দিয়ে পুরো flow test</div>
+      <p>Real browser চালাও, user-এর মতো click করো, form fill করো, result check করো। Playwright সবচেয়ে modern এবং দ্রুত।</p>
+      <div class="code">
+<span class="cm"># Playwright E2E Test</span>
+<span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+
+<span class="fn">test</span>(<span class="str">'user can login and see dashboard'</span>, <span class="kw">async</span> ({ page }) => {
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://myapp.com/login'</span>);
+  <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#email'</span>, <span class="str">'user@test.com'</span>);
+  <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#password'</span>, <span class="str">'pass123'</span>);
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'button[type=submit]'</span>);
+
+  <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'h1'</span>))
+    .<span class="fn">toContainText</span>(<span class="str">'Dashboard'</span>);
+});
+      </div>
+    </div>
+
+    <div class="card c-test">
+      <span class="card-ico">🚀</span>
+      <span class="card-svc svc-test">Load Testing — k6 / Locust</span>
+      <div class="card-ttl">হাজার user একসাথে সামলাতে পারবে?</div>
+      <p>Production যাওয়ার আগে জানো — ১০০০ concurrent user হলে API কত ms response দেয়? কোথায় bottleneck? কত load-এ crash করে?</p>
+      <div class="code">
+<span class="cm">// k6 Load Test Script</span>
+<span class="kw">import</span> http <span class="kw">from</span> <span class="str">'k6/http'</span>;
+<span class="kw">import</span> { check, sleep } <span class="kw">from</span> <span class="str">'k6'</span>;
+
+<span class="kw">export const</span> options = {
+  stages: [
+    { duration: <span class="str">'2m'</span>, target: <span class="num">100</span> },   <span class="cm">// ramp up</span>
+    { duration: <span class="str">'5m'</span>, target: <span class="num">500</span> },   <span class="cm">// hold</span>
+    { duration: <span class="str">'2m'</span>, target: <span class="num">0</span> },     <span class="cm">// ramp down</span>
+  ],
+  thresholds: { http_req_duration: [<span class="str">'p(95)<500'</span>] }
+};
+
+<span class="kw">export default function</span> () {
+  <span class="kw">const</span> res = http.<span class="fn">get</span>(<span class="str">'https://api.myapp.com/products'</span>);
+  <span class="fn">check</span>(res, { <span class="str">'status 200'</span>: r => r.status === <span class="num">200</span> });
+  <span class="fn">sleep</span>(<span class="num">1</span>);
+}
+      </div>
+    </div>
+  </div>
+
+  <!-- TDD -->
+  <div class="wcard reveal" style="border-color:rgba(74,222,128,0.15);margin-top:1.5rem;">
+    <div class="wcard-ttl" style="color:var(--test)">🔴🟢🔵 TDD — Test Driven Development</div>
+    <p style="color:var(--muted);font-size:0.87rem;margin-bottom:1rem">আগে test লেখো, তারপর code। Red-Green-Refactor cycle।</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div class="split-box" style="border-color:rgba(239,68,68,0.3);text-align:center;">
+        <div style="font-size:1.5rem;">🔴</div>
+        <div class="split-box-ttl" style="color:#ef4444;">RED</div>
+        <p style="font-size:0.8rem;color:var(--muted);">প্রথমে failing test লেখো। Feature এখনো নেই, তাই fail হবেই।</p>
+      </div>
+      <div class="split-box" style="border-color:rgba(74,222,128,0.3);text-align:center;">
+        <div style="font-size:1.5rem;">🟢</div>
+        <div class="split-box-ttl" style="color:var(--test);">GREEN</div>
+        <p style="font-size:0.8rem;color:var(--muted);">Minimum code লেখো যাতে test pass হয়। Perfect code না।</p>
+      </div>
+      <div class="split-box" style="border-color:rgba(56,189,248,0.3);text-align:center;">
+        <div style="font-size:1.5rem;">🔵</div>
+        <div class="split-box-ttl" style="color:var(--mesh);">REFACTOR</div>
+        <p style="font-size:0.8rem;color:var(--muted);">Code clean করো। Test green থাকলে refactor নিরাপদ।</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-test reveal">
+    <span class="tip-ico">✅</span>
+    <div class="tip-body"><strong style="color:var(--test)">Testing Coverage লক্ষ্য:</strong> ১০০% coverage অর্থহীন। Critical business logic-এ ৯০%+, API layer-এ ৮০%+, UI component-এ ৭০%+ রাখলেই ভালো। Coverage metric-এর চেয়ে গুরুত্বপূর্ণ হলো সঠিক জায়গায় সঠিক test। একটি ভালো integration test দশটি খারাপ unit test-এর চেয়ে মূল্যবান।</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     08  PLATFORM ENGINEERING
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="section" id="platform">
+  <div class="sh reveal">
+    <div class="sh-num" style="color:var(--plat)">08</div>
+    <div class="sh-content">
+      <div class="sh-tag" style="color:var(--plat)">Platform Engineering</div>
+      <h2 class="sh-title">Developer-দের জন্য <span style="color:var(--plat)">সোনার রাস্তা</span></h2>
+      <p class="sh-desc">DevOps বিবর্তিত হয়ে হয়েছে Platform Engineering। Developer-দের self-service দাও — infrastructure নিজে provision করুক, pipeline নিজে তৈরি করুক।</p>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal">
+    <div class="card c-plat">
+      <span class="card-ico">🏗️</span>
+      <span class="card-svc svc-plat">Internal Developer Platform (IDP)</span>
+      <div class="card-ttl">Developer-দের পোর্টাল</div>
+      <p>Developer নিজেই নতুন service তৈরি করতে পারে, deploy করতে পারে, log দেখতে পারে — Ops team-এর টিকিট না কেটে। Backstage (Spotify) সবচেয়ে popular IDP framework।</p>
+      <ul class="blist">
+        <li>Service Catalog — সব service একজায়গায় discover করো</li>
+        <li>Software Templates — নতুন service template থেকে তৈরি</li>
+        <li>TechDocs — documentation সার্ভিসের পাশে</li>
+        <li>Plugin system — GitHub, PagerDuty, Kubernetes integrate</li>
+      </ul>
+    </div>
+
+    <div class="card c-plat">
+      <span class="card-ico">🛤️</span>
+      <span class="card-svc svc-plat">Golden Path</span>
+      <div class="card-ttl">সেরা পথটা সহজ করো</div>
+      <p>Security, compliance, best practice সব মেনে service তৈরির "approved way"। Developer এই path follow করলে সব ঠিক থাকে। Custom করার freedom আছে, কিন্তু golden path-ই সহজ।</p>
+      <ul class="blist">
+        <li>Cookiecutter / Yeoman template — service boilerplate</li>
+        <li>Pre-configured CI/CD pipeline — commit করলেই deploy</li>
+        <li>Observability built-in — metrics, logs, traces by default</li>
+        <li>Security scanning — image vulnerability, SAST অটোমেটিক</li>
+      </ul>
+      <div class="code">
+<span class="cm"># Backstage template উদাহরণ</span>
+<span class="kw">apiVersion</span>: scaffolder.backstage.io/v1beta3
+<span class="kw">kind</span>: Template
+<span class="kw">metadata</span>:
+  name: nodejs-microservice
+<span class="kw">spec</span>:
+  steps:
+    - <span class="fn">fetch:plain</span>  <span class="cm"># template download</span>
+    - <span class="fn">publish:github</span>  <span class="cm"># repo তৈরি</span>
+    - <span class="fn">catalog:register</span>  <span class="cm"># IDP-তে register</span>
+      </div>
+    </div>
+
+    <div class="card c-plat">
+      <span class="card-ico">🤖</span>
+      <span class="card-svc svc-plat">Self-Service Infrastructure</span>
+      <div class="card-ttl">Infra Provisioning অটোমেটিক</div>
+      <p>Developer নতুন database দরকার? Ops-কে বলো না — form fill করো, Terraform automatically create হয়। Crossplane বা Terraform-এর Service Catalog এই কাজ করে।</p>
+      <ul class="blist">
+        <li>Crossplane — Kubernetes CRD দিয়ে cloud resource manage</li>
+        <li>Terraform modules — approved, tested infra building blocks</li>
+        <li>Policy as Code (OPA) — কে কী provision করতে পারবে</li>
+        <li>Cost visibility — কার resource কত টাকা লাগছে</li>
+      </ul>
+    </div>
+
+    <div class="card c-plat">
+      <span class="card-ico">📏</span>
+      <span class="card-svc svc-plat">Platform Metrics</span>
+      <div class="card-ttl">Platform-এর সাফল্য কীভাবে মাপবে</div>
+      <p>Platform team-এর সফলতা মাপা হয় Developer Productivity দিয়ে। DORA Metrics এর জন্য industry standard।</p>
+      <ul class="blist">
+        <li><strong style="color:var(--text)">Deployment Frequency:</strong> কতবার/দিনে deploy হয়?</li>
+        <li><strong style="color:var(--text)">Lead Time for Changes:</strong> commit থেকে production কত সময়?</li>
+        <li><strong style="color:var(--text)">MTTR:</strong> incident হলে recover করতে কত সময়?</li>
+        <li><strong style="color:var(--text)">Change Failure Rate:</strong> কত % deploy problem সৃষ্টি করে?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Platform Engineering Layers -->
+  <div class="wcard reveal" style="border-color:rgba(251,113,133,0.15);margin-top:1.5rem;">
+    <div class="wcard-ttl" style="color:var(--plat)">🏛️ Platform Engineering Stack — Layer by Layer</div>
+    <div class="layers" style="margin-top:1rem;">
+      <div class="layer layer-plat">
+        <span class="layer-ico">👨‍💻</span>
+        <div>
+          <div class="layer-name svc-plat">Developer Experience Layer</div>
+          <div class="layer-desc">Backstage IDP, CLI tools, VS Code extensions, Documentation। Developer সবচেয়ে বেশি এই layer-এ কাজ করে।</div>
+        </div>
+        <span class="layer-tag">Backstage</span>
+      </div>
+      <div class="layer layer-plat">
+        <span class="layer-ico">🚀</span>
+        <div>
+          <div class="layer-name svc-plat">Delivery Layer</div>
+          <div class="layer-desc">CI/CD pipelines, ArgoCD, GitHub Actions, testing automation। Code production পর্যন্ত পৌঁছানোর পথ।</div>
+        </div>
+        <span class="layer-tag">ArgoCD + GHA</span>
+      </div>
+      <div class="layer layer-plat">
+        <span class="layer-ico">🔍</span>
+        <div>
+          <div class="layer-name svc-plat">Observability Layer</div>
+          <div class="layer-desc">Prometheus, Grafana, Loki, Jaeger। সব service-এর health, performance এক জায়গায় দেখো।</div>
+        </div>
+        <span class="layer-tag">LGTM Stack</span>
+      </div>
+      <div class="layer layer-plat">
+        <span class="layer-ico">☸️</span>
+        <div>
+          <div class="layer-name svc-plat">Orchestration Layer</div>
+          <div class="layer-desc">Kubernetes, Helm, Kustomize, Istio। Container চালাও, scale করো, network manage করো।</div>
+        </div>
+        <span class="layer-tag">Kubernetes</span>
+      </div>
+      <div class="layer layer-plat">
+        <span class="layer-ico">☁️</span>
+        <div>
+          <div class="layer-name svc-plat">Cloud Infrastructure Layer</div>
+          <div class="layer-desc">AWS/GCP/Azure, Terraform, Crossplane। Raw compute, network, storage — সব infra as code।</div>
+        </div>
+        <span class="layer-tag">Terraform</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-plat reveal">
+    <span class="tip-ico">🌟</span>
+    <div class="tip-body"><strong style="color:var(--plat)">Platform Engineering vs DevOps পার্থক্য:</strong> DevOps = Culture + Practices। Platform Engineering = Product mindset দিয়ে internal tools তৈরি। Platform team-এর customer হলো internal developers। তারা developer-দের জন্য product তৈরি করে যা cognitive load কমায়। একটি company-তে ৫০+ developers থাকলে platform team গড়া উচিত।</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="dot-pulse"></span>
+  Microservices · Kafka · RabbitMQ · System Design · GitOps · Istio · Testing · Platform Engineering<br><br>
+  <span style="opacity:0.35">বাংলায় Advanced Backend মাস্টারক্লাস — Claude দ্বারা তৈরি ⚙️</span>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+// Reveal on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 60);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal, .card, .layer, .wcard, .flow-wrap, .tip').forEach(el => {
+  el.classList.add('reveal');
+  io.observe(el);
+});
+</script>
+</body>
+</html>

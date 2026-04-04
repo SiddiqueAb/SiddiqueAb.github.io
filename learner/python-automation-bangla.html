@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Automation - সম্পূর্ণ বাংলা ক্র্যাশ কোর্স</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1629;
+    --bg3: #141c35;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --pink: #ec4899;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --border: rgba(0,212,255,0.15);
+    --card: rgba(15,22,41,0.8);
+    --glow: 0 0 40px rgba(0,212,255,0.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,212,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ========= HERO ========= */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    overflow: hidden;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 100px;
+    padding: 6px 20px;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .hero-title {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    animation: fadeInUp 0.8s ease 0.2s both;
+  }
+
+  .hero-title .line1 { color: #fff; display: block; }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--text2);
+    max-width: 600px;
+    margin: 20px auto 40px;
+    animation: fadeInUp 0.8s ease 0.4s both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeInUp 0.8s ease 0.6s both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  .hero-snake {
+    position: absolute;
+    font-size: 10rem;
+    opacity: 0.04;
+    animation: float 8s ease-in-out infinite;
+    user-select: none;
+  }
+
+  /* ========= NAV ========= */
+  .toc-section {
+    position: relative;
+    z-index: 1;
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 40px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .toc-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: var(--text);
+    backdrop-filter: blur(10px);
+  }
+
+  .toc-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,212,255,0.15);
+  }
+
+  .toc-num {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    color: #fff;
+  }
+
+  .toc-text strong { display: block; font-size: 0.95rem; }
+  .toc-text span { font-size: 0.8rem; color: var(--text2); }
+
+  /* ========= MAIN CONTENT ========= */
+  .main {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .chapter {
+    margin-bottom: 80px;
+    animation: fadeInUp 0.6s ease both;
+  }
+
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chapter-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); }
+  .icon-purple { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); }
+  .icon-green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
+  .icon-orange { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
+  .icon-pink { background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.2); }
+  .icon-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); }
+  .icon-teal { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.2); }
+  .icon-yellow { background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.2); }
+  .icon-indigo { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); }
+  .icon-cyan { background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); }
+
+  .chapter-title {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .chapter-num {
+    font-size: 0.8rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.3); }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p { margin-bottom: 14px; color: var(--text); font-size: 1rem; }
+
+  /* Code blocks */
+  .code-block {
+    background: #020817;
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: rgba(0,212,255,0.05);
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-green { background: #10b981; }
+
+  .code-lang {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .st { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; }
+  .nu { color: #f78c6c; }
+  .bl { color: #00d4ff; }
+  .op { color: #89ddff; }
+  .va { color: #eeffff; }
+  .cl { color: #f59e0b; }
+
+  /* Info boxes */
+  .info-box {
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .info-blue { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); }
+  .info-green { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+  .info-orange { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); }
+  .info-purple { background: rgba(124,58,237,0.06); border: 1px solid rgba(124,58,237,0.2); }
+
+  .info-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .info-content { flex: 1; }
+  .info-title { font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
+  .info-blue .info-title { color: var(--accent); }
+  .info-green .info-title { color: var(--green); }
+  .info-orange .info-title { color: var(--accent3); }
+  .info-purple .info-title { color: #a78bfa; }
+  .info-content p { margin-bottom: 0; font-size: 0.93rem; color: var(--text2); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 14px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: rgba(0,212,255,0.08); color: var(--accent); padding: 14px 18px; text-align: left; font-size: 0.9rem; }
+  td { padding: 12px 18px; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text2); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Lists */
+  ul, ol { padding-left: 20px; margin: 12px 0; }
+  li { margin-bottom: 8px; color: var(--text2); font-size: 0.95rem; }
+  li strong { color: var(--text); }
+
+  /* Step cards */
+  .steps { counter-reset: step; }
+  .step {
+    counter-increment: step;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 20px 20px 70px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .step:hover { border-color: rgba(0,212,255,0.3); }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 20px; top: 20px;
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+  .step-title { font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .step p { color: var(--text2); font-size: 0.9rem; margin: 0; }
+
+  /* Tags */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  .tag {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-green { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .tag-orange { background: rgba(245,158,11,0.1); color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+
+  /* Grid 2 col */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* Mini card */
+  .mini-card {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .mini-title { font-weight: 600; color: #fff; font-size: 0.95rem; margin-bottom: 8px; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 60px 0;
+  }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  footer .footer-logo {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from { opacity:0; transform: translateY(-20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity:0; transform: translateY(30px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(10deg); }
+  }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Highlight */
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-orange { color: var(--accent3); font-weight: 600; }
+  .hl-purple { color: #a78bfa; font-weight: 600; }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    z-index: 1000;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-snake">🐍</span>
+  <div class="hero-badge">ক্র্যাশ কোর্স • বাংলা</div>
+  <h1 class="hero-title">
+    <span class="line1">Python দিয়ে</span>
+    <span class="line2">Automation মাস্টারি</span>
+  </h1>
+  <p class="hero-sub">একদম শুরু থেকে শেষ পর্যন্ত — ফাইল ম্যানেজমেন্ট থেকে ওয়েব স্ক্র্যাপিং, GUI অটোমেশন থেকে API ইন্টিগ্রেশন পর্যন্ত সব কিছু বাংলায়।</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">১০</span><span class="stat-label">অধ্যায়</span></div>
+    <div class="stat"><span class="stat-num">৫০+</span><span class="stat-label">কোড উদাহরণ</span></div>
+    <div class="stat"><span class="stat-num">১০০%</span><span class="stat-label">বাংলায়</span></div>
+    <div class="stat"><span class="stat-num">বিনামূল্যে</span><span class="stat-label">সম্পূর্ণ</span></div>
+  </div>
+</section>
+
+<!-- TABLE OF CONTENTS -->
+<section class="toc-section">
+  <p class="section-label">সূচিপত্র</p>
+  <h2 class="section-title">কোর্সের বিষয়বস্তু</h2>
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-item"><div class="toc-num">১</div><div class="toc-text"><strong>Python Automation কী?</strong><span>পরিচিতি ও প্রস্তুতি</span></div></a>
+    <a href="#ch2" class="toc-item"><div class="toc-num">২</div><div class="toc-text"><strong>ফাইল ও ফোল্ডার অটোমেশন</strong><span>os, shutil, pathlib</span></div></a>
+    <a href="#ch3" class="toc-item"><div class="toc-num">৩</div><div class="toc-text"><strong>ওয়েব স্ক্র্যাপিং</strong><span>requests, BeautifulSoup</span></div></a>
+    <a href="#ch4" class="toc-item"><div class="toc-num">৪</div><div class="toc-text"><strong>Excel ও CSV অটোমেশন</strong><span>openpyxl, pandas</span></div></a>
+    <a href="#ch5" class="toc-item"><div class="toc-num">৫</div><div class="toc-text"><strong>ইমেইল অটোমেশন</strong><span>smtplib, email</span></div></a>
+    <a href="#ch6" class="toc-item"><div class="toc-num">৬</div><div class="toc-text"><strong>GUI অটোমেশন</strong><span>pyautogui, keyboard</span></div></a>
+    <a href="#ch7" class="toc-item"><div class="toc-num">৭</div><div class="toc-text"><strong>Selenium - ব্রাউজার অটোমেশন</strong><span>ওয়েবসাইট কন্ট্রোল</span></div></a>
+    <a href="#ch8" class="toc-item"><div class="toc-num">৮</div><div class="toc-text"><strong>Task Scheduling</strong><span>schedule, cron</span></div></a>
+    <a href="#ch9" class="toc-item"><div class="toc-num">৯</div><div class="toc-text"><strong>API দিয়ে অটোমেশন</strong><span>REST API, requests</span></div></a>
+    <a href="#ch10" class="toc-item"><div class="toc-num">১০</div><div class="toc-text"><strong>রিয়েল প্রজেক্ট</strong><span>৫টি সম্পূর্ণ প্রজেক্ট</span></div></a>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- CHAPTER 1 -->
+  <section class="chapter reveal" id="ch1">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-blue">🐍</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০১</span>
+        <h2 class="chapter-title">Python Automation কী এবং কেন শিখবো?</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💡 Automation কী?</div>
+      <p>Automation মানে হলো এমন কাজ যা মানুষ বারবার করে, সেটা কম্পিউটারকে দিয়ে করানো। Python হলো সবচেয়ে জনপ্রিয় ভাষা যা দিয়ে এই অটোমেশন করা যায়।</p>
+      <p>উদাহরণ: প্রতিদিন সকালে ১০০টা ইমেইল পাঠানো, ১০০০টা ফাইল রিনেম করা, বিভিন্ন ওয়েবসাইট থেকে ডেটা সংগ্রহ করা — এসব কাজ Python দিয়ে কয়েক মিনিটেই করা যায়।</p>
+    </div>
+
+    <div class="grid2">
+      <div class="mini-card">
+        <div class="mini-title">✅ কী কী অটোমেট করা যায়?</div>
+        <ul>
+          <li>ফাইল ও ফোল্ডার ম্যানেজমেন্ট</li>
+          <li>ওয়েবসাইট থেকে ডেটা সংগ্রহ</li>
+          <li>ইমেইল পাঠানো ও গ্রহণ</li>
+          <li>Excel/CSV রিপোর্ট তৈরি</li>
+          <li>ব্রাউজার নিয়ন্ত্রণ</li>
+          <li>টাস্ক শিডিউলিং</li>
+          <li>API থেকে ডেটা আনা</li>
+          <li>WhatsApp/Telegram বট</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <div class="mini-title">🎯 কারা শিখবে?</div>
+        <ul>
+          <li>অফিস কর্মীরা (রিপোর্ট অটোমেশন)</li>
+          <li>ডেভেলপাররা (টুল তৈরি)</li>
+          <li>ডেটা অ্যানালিস্টরা</li>
+          <li>ফ্রিল্যান্সাররা</li>
+          <li>ব্যবসায়ীরা</li>
+          <li>ছাত্রছাত্রীরা</li>
+          <li>যে কেউ সময় বাঁচাতে চান</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box info-green">
+      <span class="info-icon">🚀</span>
+      <div class="info-content">
+        <div class="info-title">Python কেন সেরা?</div>
+        <p>Python পড়া সহজ, লেখা সহজ। হাজারো লাইব্রেরি আছে। বিশ্বের ১ নম্বর জনপ্রিয় ভাষা। শেখার পর আয় করাও সহজ।</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚙️ সেটআপ করুন</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-title">Python ইন্সটল করুন</div>
+          <p>python.org থেকে Python 3.11+ ডাউনলোড করুন। ইন্সটল করার সময় "Add to PATH" টিক দিন।</p>
+        </div>
+        <div class="step">
+          <div class="step-title">VS Code ইন্সটল করুন</div>
+          <p>code.visualstudio.com থেকে VS Code ডাউনলোড করুন। Python extension ইন্সটল করুন।</p>
+        </div>
+        <div class="step">
+          <div class="step-title">pip দিয়ে লাইব্রেরি ইন্সটল</div>
+          <p>Terminal/Command Prompt খুলুন এবং নিচের কমান্ড দিন।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Terminal</span>
+      </div>
+      <pre><span class="cm"># Python ভার্সন চেক করুন</span>
+<span class="va">python --version</span>
+
+<span class="cm"># প্রয়োজনীয় লাইব্রেরি ইন্সটল করুন</span>
+<span class="va">pip install requests beautifulsoup4 selenium</span>
+<span class="va">pip install openpyxl pandas pyautogui</span>
+<span class="va">pip install schedule smtplib pillow</span></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># প্রথম Automation প্রোগ্রাম!</span>
+<span class="kw">import</span> <span class="va">time</span>
+<span class="kw">import</span> <span class="va">datetime</span>
+
+<span class="kw">def</span> <span class="fn">daily_reminder</span>():
+    <span class="va">now</span> <span class="op">=</span> <span class="va">datetime</span>.<span class="fn">datetime.now</span>()
+    <span class="fn">print</span>(<span class="st">f"আজকের তারিখ: {now.strftime('%d/%m/%Y')}"</span>)
+    <span class="fn">print</span>(<span class="st">f"এখন সময়: {now.strftime('%H:%M:%S')}"</span>)
+    <span class="fn">print</span>(<span class="st">"Python Automation শুরু হয়েছে! 🎉"</span>)
+
+<span class="fn">daily_reminder</span>()</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 2 -->
+  <section class="chapter reveal" id="ch2">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-orange">📁</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০২</span>
+        <h2 class="chapter-title">ফাইল ও ফোল্ডার অটোমেশন</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 os মডিউল — ফাইল সিস্টেম কন্ট্রোল</div>
+      <p>Python এর <span class="hl">os</span> মডিউল দিয়ে ফাইল তৈরি, মুছা, নাম বদলানো এবং ফোল্ডার ম্যানেজ করা যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - os মডিউল</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">os</span>
+<span class="kw">import</span> <span class="va">shutil</span>
+
+<span class="cm"># বর্তমান ডিরেক্টরি দেখুন</span>
+<span class="fn">print</span>(<span class="va">os</span>.<span class="fn">getcwd</span>())
+
+<span class="cm"># নতুন ফোল্ডার তৈরি করুন</span>
+<span class="va">os</span>.<span class="fn">makedirs</span>(<span class="st">"আমার_প্রজেক্ট/ডেটা"</span>, <span class="va">exist_ok</span><span class="op">=</span><span class="bl">True</span>)
+
+<span class="cm"># ফোল্ডারের সব ফাইল দেখুন</span>
+<span class="kw">for</span> <span class="va">file</span> <span class="kw">in</span> <span class="va">os</span>.<span class="fn">listdir</span>(<span class="st">"."</span>):
+    <span class="fn">print</span>(<span class="va">file</span>)
+
+<span class="cm"># ফাইল রিনেম করুন</span>
+<span class="va">os</span>.<span class="fn">rename</span>(<span class="st">"পুরানো.txt"</span>, <span class="st">"নতুন.txt"</span>)
+
+<span class="cm"># ফাইল কপি করুন</span>
+<span class="va">shutil</span>.<span class="fn">copy</span>(<span class="st">"source.txt"</span>, <span class="st">"destination.txt"</span>)
+
+<span class="cm"># ফোল্ডার সম্পূর্ণ কপি করুন</span>
+<span class="va">shutil</span>.<span class="fn">copytree</span>(<span class="st">"পুরানো_ফোল্ডার"</span>, <span class="st">"নতুন_ফোল্ডার"</span>)
+
+<span class="cm"># ফাইল মুছুন</span>
+<span class="va">os</span>.<span class="fn">remove</span>(<span class="st">"অপ্রয়োজনীয়.txt"</span>)</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏆 রিয়েল প্রজেক্ট: ফাইল সর্টার</div>
+      <p>ডাউনলোড ফোল্ডারের সব ফাইল স্বয়ংক্রিয়ভাবে ধরন অনুযায়ী সাজাবে।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - ফাইল সর্টার</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">os</span>
+<span class="kw">import</span> <span class="va">shutil</span>
+<span class="kw">from</span> <span class="va">pathlib</span> <span class="kw">import</span> <span class="cl">Path</span>
+
+<span class="cm"># ফাইলের ধরন অনুযায়ী ফোল্ডার</span>
+<span class="va">FOLDER_MAP</span> <span class="op">=</span> {
+    <span class="st">".jpg"</span>: <span class="st">"ছবি"</span>, <span class="st">".png"</span>: <span class="st">"ছবি"</span>, <span class="st">".gif"</span>: <span class="st">"ছবি"</span>,
+    <span class="st">".pdf"</span>: <span class="st">"ডকুমেন্ট"</span>, <span class="st">".docx"</span>: <span class="st">"ডকুমেন্ট"</span>, <span class="st">".txt"</span>: <span class="st">"ডকুমেন্ট"</span>,
+    <span class="st">".mp4"</span>: <span class="st">"ভিডিও"</span>, <span class="st">".avi"</span>: <span class="st">"ভিডিও"</span>, <span class="st">".mkv"</span>: <span class="st">"ভিডিও"</span>,
+    <span class="st">".mp3"</span>: <span class="st">"অডিও"</span>, <span class="st">".wav"</span>: <span class="st">"অডিও"</span>,
+    <span class="st">".zip"</span>: <span class="st">"আর্কাইভ"</span>, <span class="st">".rar"</span>: <span class="st">"আর্কাইভ"</span>,
+    <span class="st">".py"</span>: <span class="st">"কোড"</span>, <span class="st">".js"</span>: <span class="st">"কোড"</span>, <span class="st">".html"</span>: <span class="st">"কোড"</span>,
+}
+
+<span class="kw">def</span> <span class="fn">sort_files</span>(<span class="va">folder</span>):
+    <span class="va">folder_path</span> <span class="op">=</span> <span class="cl">Path</span>(<span class="va">folder</span>)
+    <span class="va">moved</span> <span class="op">=</span> <span class="nu">0</span>
+    
+    <span class="kw">for</span> <span class="va">file</span> <span class="kw">in</span> <span class="va">folder_path</span>.<span class="fn">iterdir</span>():
+        <span class="kw">if</span> <span class="va">file</span>.<span class="fn">is_file</span>():
+            <span class="va">ext</span> <span class="op">=</span> <span class="va">file</span>.<span class="va">suffix</span>.<span class="fn">lower</span>()
+            <span class="va">dest_folder</span> <span class="op">=</span> <span class="va">FOLDER_MAP</span>.<span class="fn">get</span>(<span class="va">ext</span>, <span class="st">"অন্যান্য"</span>)
+            <span class="va">dest_path</span> <span class="op">=</span> <span class="va">folder_path</span> <span class="op">/</span> <span class="va">dest_folder</span>
+            <span class="va">dest_path</span>.<span class="fn">mkdir</span>(<span class="va">exist_ok</span><span class="op">=</span><span class="bl">True</span>)
+            <span class="va">shutil</span>.<span class="fn">move</span>(<span class="fn">str</span>(<span class="va">file</span>), <span class="fn">str</span>(<span class="va">dest_path</span> <span class="op">/</span> <span class="va">file</span>.<span class="va">name</span>))
+            <span class="va">moved</span> <span class="op">+=</span> <span class="nu">1</span>
+    
+    <span class="fn">print</span>(<span class="st">f"✅ {moved}টি ফাইল সাজানো হয়েছে!"</span>)
+
+<span class="cm"># চালান</span>
+<span class="fn">sort_files</span>(<span class="st">"C:/Users/আপনার_নাম/Downloads"</span>)</pre>
+    </div>
+
+    <div class="info-box info-orange">
+      <span class="info-icon">⚠️</span>
+      <div class="info-content">
+        <div class="info-title">সতর্কতা</div>
+        <p>ফাইল মুছার আগে সবসময় backup নিন। os.remove() ব্যবহার করলে ফাইল পুনরুদ্ধার করা যায় না।</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔍 glob দিয়ে ফাইল খোঁজা</div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - glob</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">glob</span>
+
+<span class="cm"># সব .txt ফাইল খুঁজুন</span>
+<span class="va">txt_files</span> <span class="op">=</span> <span class="va">glob</span>.<span class="fn">glob</span>(<span class="st">"*.txt"</span>)
+<span class="fn">print</span>(<span class="st">f"পাওয়া গেছে: {len(txt_files)}টি ফাইল"</span>)
+
+<span class="cm"># সব সাব-ফোল্ডারে খুঁজুন (recursive)</span>
+<span class="va">all_py</span> <span class="op">=</span> <span class="va">glob</span>.<span class="fn">glob</span>(<span class="st">"**/*.py"</span>, <span class="va">recursive</span><span class="op">=</span><span class="bl">True</span>)
+
+<span class="cm"># ফাইলের সাইজ দেখুন</span>
+<span class="kw">for</span> <span class="va">f</span> <span class="kw">in</span> <span class="va">txt_files</span>:
+    <span class="va">size</span> <span class="op">=</span> <span class="va">os</span>.<span class="fn">path.getsize</span>(<span class="va">f</span>)
+    <span class="fn">print</span>(<span class="st">f"{f}: {size} bytes"</span>)</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 3 -->
+  <section class="chapter reveal" id="ch3">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-green">🌐</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৩</span>
+        <h2 class="chapter-title">ওয়েব স্ক্র্যাপিং — ওয়েবসাইট থেকে ডেটা সংগ্রহ</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 Web Scraping কী?</div>
+      <p>ওয়েবসাইট থেকে স্বয়ংক্রিয়ভাবে ডেটা সংগ্রহ করার পদ্ধতিকে Web Scraping বলে। Python এর <span class="hl">requests</span> ও <span class="hl">BeautifulSoup</span> লাইব্রেরি দিয়ে এটা সহজেই করা যায়।</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>লাইব্রেরি</th><th>কাজ</th><th>ইন্সটল</th></tr></thead>
+        <tbody>
+          <tr><td>requests</td><td>ওয়েবসাইটের HTML আনা</td><td>pip install requests</td></tr>
+          <tr><td>BeautifulSoup4</td><td>HTML parse করা</td><td>pip install beautifulsoup4</td></tr>
+          <tr><td>lxml</td><td>দ্রুত HTML parser</td><td>pip install lxml</td></tr>
+          <tr><td>selenium</td><td>JavaScript সাইট স্ক্র্যাপ</td><td>pip install selenium</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Basic Scraping</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">requests</span>
+<span class="kw">from</span> <span class="va">bs4</span> <span class="kw">import</span> <span class="cl">BeautifulSoup</span>
+
+<span class="cm"># ওয়েবসাইটে রিকোয়েস্ট পাঠান</span>
+<span class="va">url</span> <span class="op">=</span> <span class="st">"https://news.bbc.com"</span>
+<span class="va">response</span> <span class="op">=</span> <span class="va">requests</span>.<span class="fn">get</span>(<span class="va">url</span>)
+
+<span class="cm"># স্ট্যাটাস চেক করুন</span>
+<span class="fn">print</span>(<span class="st">f"স্ট্যাটাস: {response.status_code}"</span>)  <span class="cm"># 200 = সফল</span>
+
+<span class="cm"># HTML parse করুন</span>
+<span class="va">soup</span> <span class="op">=</span> <span class="cl">BeautifulSoup</span>(<span class="va">response</span>.<span class="va">text</span>, <span class="st">"html.parser"</span>)
+
+<span class="cm"># title ট্যাগ খুঁজুন</span>
+<span class="va">title</span> <span class="op">=</span> <span class="va">soup</span>.<span class="fn">find</span>(<span class="st">"title"</span>)
+<span class="fn">print</span>(<span class="st">f"পেজ টাইটেল: {title.text}"</span>)
+
+<span class="cm"># সব লিংক খুঁজুন</span>
+<span class="va">links</span> <span class="op">=</span> <span class="va">soup</span>.<span class="fn">find_all</span>(<span class="st">"a"</span>, <span class="va">href</span><span class="op">=</span><span class="bl">True</span>)
+<span class="kw">for</span> <span class="va">link</span> <span class="kw">in</span> <span class="va">links</span>[:<span class="nu">5</span>]:
+    <span class="fn">print</span>(<span class="va">link</span>[<span class="st">"href"</span>], <span class="st">"|"</span>, <span class="va">link</span>.<span class="va">text</span>.<span class="fn">strip</span>())</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - প্রোডাক্ট ডেটা স্ক্র্যাপিং</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">requests</span>
+<span class="kw">from</span> <span class="va">bs4</span> <span class="kw">import</span> <span class="cl">BeautifulSoup</span>
+<span class="kw">import</span> <span class="va">csv</span>
+
+<span class="kw">def</span> <span class="fn">scrape_products</span>(<span class="va">url</span>):
+    <span class="va">headers</span> <span class="op">=</span> {
+        <span class="st">"User-Agent"</span>: <span class="st">"Mozilla/5.0 (Windows NT 10.0; Win64; x64)"</span>
+    }
+    <span class="va">response</span> <span class="op">=</span> <span class="va">requests</span>.<span class="fn">get</span>(<span class="va">url</span>, <span class="va">headers</span><span class="op">=</span><span class="va">headers</span>)
+    <span class="va">soup</span> <span class="op">=</span> <span class="cl">BeautifulSoup</span>(<span class="va">response</span>.<span class="va">text</span>, <span class="st">"html.parser"</span>)
+    
+    <span class="va">products</span> <span class="op">=</span> []
+    
+    <span class="cm"># CSS selector দিয়ে এলিমেন্ট খুঁজুন</span>
+    <span class="kw">for</span> <span class="va">item</span> <span class="kw">in</span> <span class="va">soup</span>.<span class="fn">select</span>(<span class="st">".product-card"</span>):
+        <span class="va">name</span> <span class="op">=</span> <span class="va">item</span>.<span class="fn">select_one</span>(<span class="st">".product-name"</span>).<span class="va">text</span>.<span class="fn">strip</span>()
+        <span class="va">price</span> <span class="op">=</span> <span class="va">item</span>.<span class="fn">select_one</span>(<span class="st">".price"</span>).<span class="va">text</span>.<span class="fn">strip</span>()
+        <span class="va">products</span>.<span class="fn">append</span>({<span class="st">"নাম"</span>: <span class="va">name</span>, <span class="st">"দাম"</span>: <span class="va">price</span>})
+    
+    <span class="cm"># CSV তে সেভ করুন</span>
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"products.csv"</span>, <span class="st">"w"</span>, <span class="va">encoding</span><span class="op">=</span><span class="st">"utf-8"</span>, <span class="va">newline</span><span class="op">=</span><span class="st">""</span>) <span class="kw">as</span> <span class="va">f</span>:
+        <span class="va">writer</span> <span class="op">=</span> <span class="va">csv</span>.<span class="cl">DictWriter</span>(<span class="va">f</span>, <span class="va">fieldnames</span><span class="op">=</span>[<span class="st">"নাম"</span>, <span class="st">"দাম"</span>])
+        <span class="va">writer</span>.<span class="fn">writeheader</span>()
+        <span class="va">writer</span>.<span class="fn">writerows</span>(<span class="va">products</span>)
+    
+    <span class="fn">print</span>(<span class="st">f"✅ {len(products)}টি প্রোডাক্ট সেভ হয়েছে!"</span>)
+    <span class="kw">return</span> <span class="va">products</span></pre>
+    </div>
+
+    <div class="info-box info-blue">
+      <span class="info-icon">💡</span>
+      <div class="info-content">
+        <div class="info-title">BeautifulSoup এর গুরুত্বপূর্ণ মেথড</div>
+        <p><strong>find()</strong> — প্রথম এলিমেন্ট খুঁজে দেয় | <strong>find_all()</strong> — সব এলিমেন্ট তালিকা | <strong>select()</strong> — CSS selector দিয়ে খোঁজা | <strong>.text</strong> — টেক্সট কন্টেন্ট | <strong>["attr"]</strong> — অ্যাট্রিবিউট মান</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 4 -->
+  <section class="chapter reveal" id="ch4">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-green">📊</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৪</span>
+        <h2 class="chapter-title">Excel ও CSV অটোমেশন</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 কেন দরকার?</div>
+      <p>অফিসে প্রতিদিন হাজারো Excel ফাইল তৈরি করতে হয়। Python দিয়ে এটা সেকেন্ডে করা যায়। <span class="hl">openpyxl</span> দিয়ে Excel এবং <span class="hl">pandas</span> দিয়ে বড় ডেটা অ্যানালাইসিস করা যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Excel তৈরি করুন</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">openpyxl</span>
+<span class="kw">from</span> <span class="va">openpyxl.styles</span> <span class="kw">import</span> <span class="cl">Font</span>, <span class="cl">PatternFill</span>, <span class="cl">Alignment</span>
+<span class="kw">from</span> <span class="va">openpyxl.styles</span> <span class="kw">import</span> <span class="cl">Border</span>, <span class="cl">Side</span>
+
+<span class="cm"># নতুন workbook তৈরি করুন</span>
+<span class="va">wb</span> <span class="op">=</span> <span class="va">openpyxl</span>.<span class="cl">Workbook</span>()
+<span class="va">ws</span> <span class="op">=</span> <span class="va">wb</span>.<span class="va">active</span>
+<span class="va">ws</span>.<span class="va">title</span> <span class="op">=</span> <span class="st">"মাসিক রিপোর্ট"</span>
+
+<span class="cm"># হেডার যোগ করুন</span>
+<span class="va">headers</span> <span class="op">=</span> [<span class="st">"নাম"</span>, <span class="st">"বিভাগ"</span>, <span class="st">"বেতন"</span>, <span class="st">"বোনাস"</span>, <span class="st">"মোট"</span>]
+<span class="kw">for</span> <span class="va">col</span>, <span class="va">header</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="va">headers</span>, <span class="nu">1</span>):
+    <span class="va">cell</span> <span class="op">=</span> <span class="va">ws</span>.<span class="fn">cell</span>(<span class="va">row</span><span class="op">=</span><span class="nu">1</span>, <span class="va">column</span><span class="op">=</span><span class="va">col</span>, <span class="va">value</span><span class="op">=</span><span class="va">header</span>)
+    <span class="va">cell</span>.<span class="va">font</span> <span class="op">=</span> <span class="cl">Font</span>(<span class="va">bold</span><span class="op">=</span><span class="bl">True</span>, <span class="va">color</span><span class="op">=</span><span class="st">"FFFFFF"</span>)
+    <span class="va">cell</span>.<span class="va">fill</span> <span class="op">=</span> <span class="cl">PatternFill</span>(<span class="st">"solid"</span>, <span class="va">fgColor</span><span class="op">=</span><span class="st">"1a237e"</span>)
+
+<span class="cm"># ডেটা যোগ করুন</span>
+<span class="va">data</span> <span class="op">=</span> [
+    [<span class="st">"করিম"</span>, <span class="st">"আইটি"</span>, <span class="nu">50000</span>, <span class="nu">5000</span>],
+    [<span class="st">"রহিম"</span>, <span class="st">"মার্কেটিং"</span>, <span class="nu">45000</span>, <span class="nu">4000</span>],
+    [<span class="st">"সুমা"</span>, <span class="st">"একাউন্টস"</span>, <span class="nu">55000</span>, <span class="nu">6000</span>],
+]
+
+<span class="kw">for</span> <span class="va">row_num</span>, <span class="va">row_data</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="va">data</span>, <span class="nu">2</span>):
+    <span class="kw">for</span> <span class="va">col_num</span>, <span class="va">value</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="va">row_data</span>, <span class="nu">1</span>):
+        <span class="va">ws</span>.<span class="fn">cell</span>(<span class="va">row</span><span class="op">=</span><span class="va">row_num</span>, <span class="va">column</span><span class="op">=</span><span class="va">col_num</span>, <span class="va">value</span><span class="op">=</span><span class="va">value</span>)
+    <span class="cm"># মোট ক্যালকুলেট করুন</span>
+    <span class="va">ws</span>.<span class="fn">cell</span>(<span class="va">row</span><span class="op">=</span><span class="va">row_num</span>, <span class="va">column</span><span class="op">=</span><span class="nu">5</span>, <span class="va">value</span><span class="op">=</span><span class="st">f"=C{row_num}+D{row_num}"</span>)
+
+<span class="cm"># কলাম সাইজ ঠিক করুন</span>
+<span class="kw">for</span> <span class="va">col</span> <span class="kw">in</span> <span class="va">ws</span>.<span class="va">columns</span>:
+    <span class="va">ws</span>.<span class="va">column_dimensions</span>[<span class="va">col</span>[<span class="nu">0</span>].<span class="va">column_letter</span>].<span class="va">width</span> <span class="op">=</span> <span class="nu">15</span>
+
+<span class="cm"># সেভ করুন</span>
+<span class="va">wb</span>.<span class="fn">save</span>(<span class="st">"মাসিক_রিপোর্ট.xlsx"</span>)
+<span class="fn">print</span>(<span class="st">"✅ Excel ফাইল তৈরি হয়েছে!"</span>)</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Pandas দিয়ে ডেটা অ্যানালাইসিস</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">pandas</span> <span class="kw">as</span> <span class="va">pd</span>
+
+<span class="cm"># CSV ফাইল পড়ুন</span>
+<span class="va">df</span> <span class="op">=</span> <span class="va">pd</span>.<span class="fn">read_csv</span>(<span class="st">"sales.csv"</span>, <span class="va">encoding</span><span class="op">=</span><span class="st">"utf-8"</span>)
+
+<span class="cm"># প্রথম ৫টি রো দেখুন</span>
+<span class="fn">print</span>(<span class="va">df</span>.<span class="fn">head</span>())
+
+<span class="cm"># বেসিক স্ট্যাটিস্টিক্স</span>
+<span class="fn">print</span>(<span class="va">df</span>.<span class="fn">describe</span>())
+
+<span class="cm"># ফিল্টার করুন</span>
+<span class="va">dhaka_sales</span> <span class="op">=</span> <span class="va">df</span>[<span class="va">df</span>[<span class="st">"শহর"</span>] <span class="op">==</span> <span class="st">"ঢাকা"</span>]
+
+<span class="cm"># গ্রুপ করুন</span>
+<span class="va">city_total</span> <span class="op">=</span> <span class="va">df</span>.<span class="fn">groupby</span>(<span class="st">"শহর"</span>)[<span class="st">"বিক্রয়"</span>].<span class="fn">sum</span>()
+
+<span class="cm"># নতুন কলাম যোগ করুন</span>
+<span class="va">df</span>[<span class="st">"লাভ"</span>] <span class="op">=</span> <span class="va">df</span>[<span class="st">"বিক্রয়"</span>] <span class="op">-</span> <span class="va">df</span>[<span class="st">"খরচ"</span>]
+
+<span class="cm"># Excel এ এক্সপোর্ট করুন</span>
+<span class="va">df</span>.<span class="fn">to_excel</span>(<span class="st">"রিপোর্ট.xlsx"</span>, <span class="va">index</span><span class="op">=</span><span class="bl">False</span>)
+<span class="fn">print</span>(<span class="st">f"মোট রেকর্ড: {len(df)}"</span>)</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 5 -->
+  <section class="chapter reveal" id="ch5">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-pink">📧</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৫</span>
+        <h2 class="chapter-title">ইমেইল অটোমেশন</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 ইমেইল কেন অটোমেট করবো?</div>
+      <p>প্রতিদিন ১০০ জনকে আলাদা ইমেইল পাঠানো, মাসিক রিপোর্ট ইমেইল করা, সাথে PDF/Excel অ্যাটাচমেন্ট — এসব Python দিয়ে মাত্র কয়েক সেকেন্ডে করা যায়।</p>
+    </div>
+
+    <div class="info-box info-orange">
+      <span class="info-icon">⚙️</span>
+      <div class="info-content">
+        <div class="info-title">Gmail সেটআপ করুন</div>
+        <p>Gmail Account → Security → 2-Step Verification চালু করুন → App Passwords → Mail → Other → "Python Script" নাম দিন → পাসওয়ার্ড কপি করুন।</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - ইমেইল পাঠান</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">smtplib</span>
+<span class="kw">from</span> <span class="va">email.mime.multipart</span> <span class="kw">import</span> <span class="cl">MIMEMultipart</span>
+<span class="kw">from</span> <span class="va">email.mime.text</span> <span class="kw">import</span> <span class="cl">MIMEText</span>
+<span class="kw">from</span> <span class="va">email.mime.base</span> <span class="kw">import</span> <span class="cl">MIMEBase</span>
+<span class="kw">from</span> <span class="va">email</span> <span class="kw">import</span> <span class="va">encoders</span>
+
+<span class="kw">def</span> <span class="fn">send_email</span>(<span class="va">to_email</span>, <span class="va">subject</span>, <span class="va">body</span>, <span class="va">attachment</span><span class="op">=</span><span class="bl">None</span>):
+    <span class="va">sender</span> <span class="op">=</span> <span class="st">"আপনার_ইমেইল@gmail.com"</span>
+    <span class="va">password</span> <span class="op">=</span> <span class="st">"আপনার_app_password"</span>
+    
+    <span class="cm"># মেসেজ তৈরি করুন</span>
+    <span class="va">msg</span> <span class="op">=</span> <span class="cl">MIMEMultipart</span>()
+    <span class="va">msg</span>[<span class="st">"From"</span>] <span class="op">=</span> <span class="va">sender</span>
+    <span class="va">msg</span>[<span class="st">"To"</span>] <span class="op">=</span> <span class="va">to_email</span>
+    <span class="va">msg</span>[<span class="st">"Subject"</span>] <span class="op">=</span> <span class="va">subject</span>
+    <span class="va">msg</span>.<span class="fn">attach</span>(<span class="cl">MIMEText</span>(<span class="va">body</span>, <span class="st">"html"</span>, <span class="st">"utf-8"</span>))
+    
+    <span class="cm"># অ্যাটাচমেন্ট যোগ করুন</span>
+    <span class="kw">if</span> <span class="va">attachment</span>:
+        <span class="kw">with</span> <span class="fn">open</span>(<span class="va">attachment</span>, <span class="st">"rb"</span>) <span class="kw">as</span> <span class="va">f</span>:
+            <span class="va">part</span> <span class="op">=</span> <span class="cl">MIMEBase</span>(<span class="st">"application"</span>, <span class="st">"octet-stream"</span>)
+            <span class="va">part</span>.<span class="fn">set_payload</span>(<span class="va">f</span>.<span class="fn">read</span>())
+        <span class="va">encoders</span>.<span class="fn">encode_base64</span>(<span class="va">part</span>)
+        <span class="va">part</span>.<span class="fn">add_header</span>(<span class="st">"Content-Disposition"</span>, <span class="st">f"attachment; filename={attachment}"</span>)
+        <span class="va">msg</span>.<span class="fn">attach</span>(<span class="va">part</span>)
+    
+    <span class="cm"># SMTP দিয়ে পাঠান</span>
+    <span class="kw">with</span> <span class="va">smtplib</span>.<span class="cl">SMTP</span>(<span class="st">"smtp.gmail.com"</span>, <span class="nu">587</span>) <span class="kw">as</span> <span class="va">server</span>:
+        <span class="va">server</span>.<span class="fn">starttls</span>()
+        <span class="va">server</span>.<span class="fn">login</span>(<span class="va">sender</span>, <span class="va">password</span>)
+        <span class="va">server</span>.<span class="fn">sendmail</span>(<span class="va">sender</span>, <span class="va">to_email</span>, <span class="va">msg</span>.<span class="fn">as_string</span>())
+    
+    <span class="fn">print</span>(<span class="st">f"✅ ইমেইল পাঠানো হয়েছে: {to_email}"</span>)
+
+<span class="cm"># ১০০ জনকে ইমেইল পাঠান</span>
+<span class="va">contacts</span> <span class="op">=</span> [
+    {<span class="st">"নাম"</span>: <span class="st">"করিম"</span>, <span class="st">"ইমেইল"</span>: <span class="st">"karim@example.com"</span>},
+    {<span class="st">"নাম"</span>: <span class="st">"রহিম"</span>, <span class="st">"ইমেইল"</span>: <span class="st">"rahim@example.com"</span>},
+]
+
+<span class="kw">for</span> <span class="va">contact</span> <span class="kw">in</span> <span class="va">contacts</span>:
+    <span class="va">html_body</span> <span class="op">=</span> <span class="st">f"""
+    &lt;h2&gt;প্রিয় {contact['নাম']},&lt;/h2&gt;
+    &lt;p&gt;আপনার মাসিক রিপোর্ট পাঠানো হলো।&lt;/p&gt;
+    &lt;p&gt;ধন্যবাদ।&lt;/p&gt;
+    """</span>
+    <span class="fn">send_email</span>(
+        <span class="va">contact</span>[<span class="st">"ইমেইল"</span>],
+        <span class="st">f"মাসিক রিপোর্ট - {contact['নাম']}"</span>,
+        <span class="va">html_body</span>,
+        <span class="va">attachment</span><span class="op">=</span><span class="st">"report.xlsx"</span>
+    )</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 6 -->
+  <section class="chapter reveal" id="ch6">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-purple">🖱️</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৬</span>
+        <h2 class="chapter-title">GUI অটোমেশন — মাউস ও কীবোর্ড কন্ট্রোল</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 pyautogui কী?</div>
+      <p><span class="hl">pyautogui</span> দিয়ে Python স্ক্রিনে যা দেখা যায় তা কন্ট্রোল করতে পারে। মাউস ক্লিক, কীবোর্ড টাইপ, স্ক্রিনশট, স্ক্রল — সব কিছু অটোমেট করা যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - pyautogui</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">pyautogui</span>
+<span class="kw">import</span> <span class="va">time</span>
+
+<span class="cm"># সেফটি নেট — কোণায় মাউস গেলে বন্ধ হবে</span>
+<span class="va">pyautogui</span>.<span class="va">FAILSAFE</span> <span class="op">=</span> <span class="bl">True</span>
+
+<span class="cm"># স্ক্রিনের সাইজ দেখুন</span>
+<span class="fn">print</span>(<span class="va">pyautogui</span>.<span class="fn">size</span>())  <span class="cm"># (1920, 1080)</span>
+
+<span class="cm"># মাউস মুভ করুন</span>
+<span class="va">pyautogui</span>.<span class="fn">moveTo</span>(<span class="nu">500</span>, <span class="nu">300</span>, <span class="va">duration</span><span class="op">=</span><span class="nu">1</span>)
+
+<span class="cm"># ক্লিক করুন</span>
+<span class="va">pyautogui</span>.<span class="fn">click</span>(<span class="nu">500</span>, <span class="nu">300</span>)
+
+<span class="cm"># ডাবল ক্লিক</span>
+<span class="va">pyautogui</span>.<span class="fn">doubleClick</span>(<span class="nu">500</span>, <span class="nu">300</span>)
+
+<span class="cm"># টাইপ করুন</span>
+<span class="va">pyautogui</span>.<span class="fn">typewrite</span>(<span class="st">"Hello World!"</span>, <span class="va">interval</span><span class="op">=</span><span class="nu">0.05</span>)
+
+<span class="cm"># কীবোর্ড শর্টকাট</span>
+<span class="va">pyautogui</span>.<span class="fn">hotkey</span>(<span class="st">"ctrl"</span>, <span class="st">"c"</span>)  <span class="cm"># কপি</span>
+<span class="va">pyautogui</span>.<span class="fn">hotkey</span>(<span class="st">"ctrl"</span>, <span class="st">"v"</span>)  <span class="cm"># পেস্ট</span>
+<span class="va">pyautogui</span>.<span class="fn">hotkey</span>(<span class="st">"ctrl"</span>, <span class="st">"s"</span>)  <span class="cm"># সেভ</span>
+
+<span class="cm"># স্ক্রিনশট নিন</span>
+<span class="va">screenshot</span> <span class="op">=</span> <span class="va">pyautogui</span>.<span class="fn">screenshot</span>()
+<span class="va">screenshot</span>.<span class="fn">save</span>(<span class="st">"screenshot.png"</span>)
+
+<span class="cm"># স্ক্রোল করুন</span>
+<span class="va">pyautogui</span>.<span class="fn">scroll</span>(<span class="op">-</span><span class="nu">3</span>)  <span class="cm"># নিচে স্ক্রোল</span>
+
+<span class="cm"># কোনো ছবি স্ক্রিনে খুঁজুন</span>
+<span class="va">location</span> <span class="op">=</span> <span class="va">pyautogui</span>.<span class="fn">locateOnScreen</span>(<span class="st">"button.png"</span>, <span class="va">confidence</span><span class="op">=</span><span class="nu">0.9</span>)
+<span class="kw">if</span> <span class="va">location</span>:
+    <span class="va">pyautogui</span>.<span class="fn">click</span>(<span class="va">location</span>)</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - ফর্ম Auto-fill</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">pyautogui</span>
+<span class="kw">import</span> <span class="va">time</span>
+<span class="kw">import</span> <span class="va">csv</span>
+
+<span class="kw">def</span> <span class="fn">auto_fill_form</span>(<span class="va">data_file</span>):
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="va">data_file</span>, <span class="va">encoding</span><span class="op">=</span><span class="st">"utf-8"</span>) <span class="kw">as</span> <span class="va">f</span>:
+        <span class="va">reader</span> <span class="op">=</span> <span class="va">csv</span>.<span class="cl">DictReader</span>(<span class="va">f</span>)
+        
+        <span class="kw">for</span> <span class="va">row</span> <span class="kw">in</span> <span class="va">reader</span>:
+            <span class="cm"># নাম ফিল্ডে ক্লিক করুন</span>
+            <span class="va">pyautogui</span>.<span class="fn">click</span>(<span class="nu">400</span>, <span class="nu">200</span>)
+            <span class="va">pyautogui</span>.<span class="fn">typewrite</span>(<span class="va">row</span>[<span class="st">"নাম"</span>])
+            
+            <span class="cm"># পরের ফিল্ডে যান</span>
+            <span class="va">pyautogui</span>.<span class="fn">press</span>(<span class="st">"tab"</span>)
+            <span class="va">pyautogui</span>.<span class="fn">typewrite</span>(<span class="va">row</span>[<span class="st">"ইমেইল"</span>])
+            
+            <span class="cm"># সাবমিট করুন</span>
+            <span class="va">pyautogui</span>.<span class="fn">press</span>(<span class="st">"enter"</span>)
+            <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">2</span>)  <span class="cm"># লোড হওয়ার জন্য অপেক্ষা</span>
+            
+    <span class="fn">print</span>(<span class="st">"✅ সব ফর্ম পূরণ হয়েছে!"</span>)</pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 7 -->
+  <section class="chapter reveal" id="ch7">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-teal">🌍</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৭</span>
+        <h2 class="chapter-title">Selenium — ব্রাউজার অটোমেশন</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 Selenium কী?</div>
+      <p>Selenium দিয়ে Chrome/Firefox ব্রাউজার সম্পূর্ণ নিয়ন্ত্রণ করা যায়। JavaScript দিয়ে তৈরি ওয়েবসাইট স্ক্র্যাপ করা, অটো লগইন, ফর্ম পূরণ — সব সম্ভব।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Terminal - সেটআপ</span>
+      </div>
+      <pre><span class="va">pip install selenium webdriver-manager</span></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Selenium বেসিক</span>
+      </div>
+      <pre><span class="kw">from</span> <span class="va">selenium</span> <span class="kw">import</span> <span class="va">webdriver</span>
+<span class="kw">from</span> <span class="va">selenium.webdriver.common.by</span> <span class="kw">import</span> <span class="cl">By</span>
+<span class="kw">from</span> <span class="va">selenium.webdriver.support.ui</span> <span class="kw">import</span> <span class="cl">WebDriverWait</span>
+<span class="kw">from</span> <span class="va">selenium.webdriver.support</span> <span class="kw">import</span> <span class="va">expected_conditions</span> <span class="kw">as</span> <span class="va">EC</span>
+<span class="kw">from</span> <span class="va">webdriver_manager.chrome</span> <span class="kw">import</span> <span class="cl">ChromeDriverManager</span>
+<span class="kw">import</span> <span class="va">time</span>
+
+<span class="cm"># Chrome চালু করুন</span>
+<span class="va">options</span> <span class="op">=</span> <span class="va">webdriver</span>.<span class="cl">ChromeOptions</span>()
+<span class="va">options</span>.<span class="fn">add_argument</span>(<span class="st">"--headless"</span>)  <span class="cm"># ব্রাউজার না দেখিয়ে চালান</span>
+
+<span class="va">driver</span> <span class="op">=</span> <span class="va">webdriver</span>.<span class="cl">Chrome</span>()
+
+<span class="kw">try</span>:
+    <span class="cm"># ওয়েবসাইটে যান</span>
+    <span class="va">driver</span>.<span class="fn">get</span>(<span class="st">"https://google.com"</span>)
+    
+    <span class="cm"># সার্চ বক্স খুঁজুন</span>
+    <span class="va">search_box</span> <span class="op">=</span> <span class="va">driver</span>.<span class="fn">find_element</span>(<span class="cl">By</span>.<span class="va">NAME</span>, <span class="st">"q"</span>)
+    
+    <span class="cm"># টাইপ করুন</span>
+    <span class="va">search_box</span>.<span class="fn">send_keys</span>(<span class="st">"Python Automation বাংলা"</span>)
+    <span class="va">search_box</span>.<span class="fn">submit</span>()
+    
+    <span class="cm"># লোড হওয়ার জন্য অপেক্ষা</span>
+    <span class="va">wait</span> <span class="op">=</span> <span class="cl">WebDriverWait</span>(<span class="va">driver</span>, <span class="nu">10</span>)
+    <span class="va">results</span> <span class="op">=</span> <span class="va">wait</span>.<span class="fn">until</span>(
+        <span class="va">EC</span>.<span class="fn">presence_of_all_elements_located</span>((<span class="cl">By</span>.<span class="va">CSS_SELECTOR</span>, <span class="st">"h3"</span>))
+    )
+    
+    <span class="cm"># রেজাল্ট প্রিন্ট করুন</span>
+    <span class="kw">for</span> <span class="va">result</span> <span class="kw">in</span> <span class="va">results</span>[:<span class="nu">5</span>]:
+        <span class="fn">print</span>(<span class="va">result</span>.<span class="va">text</span>)
+    
+    <span class="cm"># স্ক্রিনশট নিন</span>
+    <span class="va">driver</span>.<span class="fn">save_screenshot</span>(<span class="st">"google_result.png"</span>)
+
+<span class="kw">finally</span>:
+    <span class="va">driver</span>.<span class="fn">quit</span>()</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - অটো লগইন</span>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">auto_login</span>(<span class="va">driver</span>, <span class="va">url</span>, <span class="va">username</span>, <span class="va">password</span>):
+    <span class="va">driver</span>.<span class="fn">get</span>(<span class="va">url</span>)
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">2</span>)
+    
+    <span class="cm"># ইউজারনেম ফিল্ড</span>
+    <span class="va">user_field</span> <span class="op">=</span> <span class="va">driver</span>.<span class="fn">find_element</span>(<span class="cl">By</span>.<span class="va">ID</span>, <span class="st">"username"</span>)
+    <span class="va">user_field</span>.<span class="fn">clear</span>()
+    <span class="va">user_field</span>.<span class="fn">send_keys</span>(<span class="va">username</span>)
+    
+    <span class="cm"># পাসওয়ার্ড ফিল্ড</span>
+    <span class="va">pass_field</span> <span class="op">=</span> <span class="va">driver</span>.<span class="fn">find_element</span>(<span class="cl">By</span>.<span class="va">ID</span>, <span class="st">"password"</span>)
+    <span class="va">pass_field</span>.<span class="fn">clear</span>()
+    <span class="va">pass_field</span>.<span class="fn">send_keys</span>(<span class="va">password</span>)
+    
+    <span class="cm"># লগইন বাটন ক্লিক</span>
+    <span class="va">driver</span>.<span class="fn">find_element</span>(<span class="cl">By</span>.<span class="va">XPATH</span>, <span class="st">"//button[@type='submit']"</span>).<span class="fn">click</span>()
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">3</span>)
+    
+    <span class="fn">print</span>(<span class="st">"✅ লগইন সফল!"</span>)
+    <span class="kw">return</span> <span class="va">driver</span></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>By মেথড</th><th>উদাহরণ</th><th>কখন ব্যবহার করবেন</th></tr></thead>
+        <tbody>
+          <tr><td>By.ID</td><td>find_element(By.ID, "btn")</td><td>ইউনিক ID থাকলে</td></tr>
+          <tr><td>By.NAME</td><td>find_element(By.NAME, "q")</td><td>ফর্ম ইনপুটের জন্য</td></tr>
+          <tr><td>By.CLASS_NAME</td><td>find_element(By.CLASS_NAME, "btn")</td><td>CSS ক্লাস দিয়ে</td></tr>
+          <tr><td>By.CSS_SELECTOR</td><td>find_element(By.CSS_SELECTOR, ".nav a")</td><td>জটিল সিলেকশন</td></tr>
+          <tr><td>By.XPATH</td><td>find_element(By.XPATH, "//div[@id='x']")</td><td>যেকোনো অবস্থান</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 8 -->
+  <section class="chapter reveal" id="ch8">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-yellow">⏰</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৮</span>
+        <h2 class="chapter-title">Task Scheduling — নির্দিষ্ট সময়ে কাজ চালানো</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 Scheduling কেন দরকার?</div>
+      <p>প্রতিদিন রাত ১২টায় ব্যাকআপ নেওয়া, প্রতি সোমবার সকালে রিপোর্ট পাঠানো, প্রতি ঘন্টায় ডেটা আপডেট করা — এসব কাজ schedule লাইব্রেরি দিয়ে অটোমেট করা যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - schedule লাইব্রেরি</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">schedule</span>
+<span class="kw">import</span> <span class="va">time</span>
+<span class="kw">import</span> <span class="va">datetime</span>
+
+<span class="kw">def</span> <span class="fn">daily_backup</span>():
+    <span class="fn">print</span>(<span class="st">f"📦 ব্যাকআপ শুরু: {datetime.datetime.now()}"</span>)
+    <span class="cm"># আপনার ব্যাকআপ কোড এখানে</span>
+
+<span class="kw">def</span> <span class="fn">weekly_report</span>():
+    <span class="fn">print</span>(<span class="st">"📊 সাপ্তাহিক রিপোর্ট পাঠানো হচ্ছে..."</span>)
+
+<span class="kw">def</span> <span class="fn">hourly_check</span>():
+    <span class="fn">print</span>(<span class="st">"🔍 প্রতি ঘন্টার চেক..."</span>)
+
+<span class="cm"># প্রতিদিন রাত ১১টায়</span>
+<span class="va">schedule</span>.<span class="fn">every</span>().<span class="va">day</span>.<span class="fn">at</span>(<span class="st">"23:00"</span>).<span class="fn">do</span>(<span class="va">daily_backup</span>)
+
+<span class="cm"># প্রতি সোমবার সকাল ৯টায়</span>
+<span class="va">schedule</span>.<span class="fn">every</span>().<span class="va">monday</span>.<span class="fn">at</span>(<span class="st">"09:00"</span>).<span class="fn">do</span>(<span class="va">weekly_report</span>)
+
+<span class="cm"># প্রতি ঘন্টায়</span>
+<span class="va">schedule</span>.<span class="fn">every</span>().<span class="va">hour</span>.<span class="fn">do</span>(<span class="va">hourly_check</span>)
+
+<span class="cm"># প্রতি ৩০ মিনিটে</span>
+<span class="va">schedule</span>.<span class="fn">every</span>(<span class="nu">30</span>).<span class="va">minutes</span>.<span class="fn">do</span>(<span class="va">hourly_check</span>)
+
+<span class="cm"># চালু রাখুন</span>
+<span class="fn">print</span>(<span class="st">"⏰ শিডিউলার চালু হয়েছে..."</span>)
+<span class="kw">while</span> <span class="bl">True</span>:
+    <span class="va">schedule</span>.<span class="fn">run_pending</span>()
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">60</span>)</pre>
+    </div>
+
+    <div class="info-box info-purple">
+      <span class="info-icon">💡</span>
+      <div class="info-content">
+        <div class="info-title">Windows Task Scheduler দিয়ে</div>
+        <p>আরও শক্তিশালী শিডিউলিংয়ের জন্য Windows Task Scheduler বা Linux এর cron job ব্যবহার করুন। এতে কম্পিউটার চালু হলেই স্ক্রিপ্ট অটো রান করবে।</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 9 -->
+  <section class="chapter reveal" id="ch9">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-indigo">🔌</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ০৯</span>
+        <h2 class="chapter-title">API দিয়ে অটোমেশন</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 API কী?</div>
+      <p>API (Application Programming Interface) হলো দুটি সফটওয়্যারের মধ্যে যোগাযোগের মাধ্যম। Weather, Currency, WhatsApp, YouTube — সব কিছুর API আছে।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Weather API</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">requests</span>
+
+<span class="kw">def</span> <span class="fn">get_weather</span>(<span class="va">city</span>):
+    <span class="va">api_key</span> <span class="op">=</span> <span class="st">"আপনার_API_KEY"</span>  <span class="cm"># openweathermap.org থেকে নিন</span>
+    <span class="va">url</span> <span class="op">=</span> <span class="st">f"https://api.openweathermap.org/data/2.5/weather"</span>
+    
+    <span class="va">params</span> <span class="op">=</span> {
+        <span class="st">"q"</span>: <span class="va">city</span>,
+        <span class="st">"appid"</span>: <span class="va">api_key</span>,
+        <span class="st">"units"</span>: <span class="st">"metric"</span>,
+        <span class="st">"lang"</span>: <span class="st">"bn"</span>
+    }
+    
+    <span class="va">response</span> <span class="op">=</span> <span class="va">requests</span>.<span class="fn">get</span>(<span class="va">url</span>, <span class="va">params</span><span class="op">=</span><span class="va">params</span>)
+    <span class="va">data</span> <span class="op">=</span> <span class="va">response</span>.<span class="fn">json</span>()
+    
+    <span class="fn">print</span>(<span class="st">f"🌤️ শহর: {data['name']}"</span>)
+    <span class="fn">print</span>(<span class="st">f"🌡️ তাপমাত্রা: {data['main']['temp']}°C"</span>)
+    <span class="fn">print</span>(<span class="st">f"💧 আর্দ্রতা: {data['main']['humidity']}%"</span>)
+    <span class="fn">print</span>(<span class="st">f"🌬️ বায়ু: {data['weather'][0]['description']}"</span>)
+
+<span class="fn">get_weather</span>(<span class="st">"Dhaka"</span>)</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - Telegram Bot</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">requests</span>
+
+<span class="kw">class</span> <span class="cl">TelegramBot</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="va">self</span>, <span class="va">token</span>):
+        <span class="va">self</span>.<span class="va">token</span> <span class="op">=</span> <span class="va">token</span>
+        <span class="va">self</span>.<span class="va">base_url</span> <span class="op">=</span> <span class="st">f"https://api.telegram.org/bot{token}"</span>
+    
+    <span class="kw">def</span> <span class="fn">send_message</span>(<span class="va">self</span>, <span class="va">chat_id</span>, <span class="va">text</span>):
+        <span class="va">url</span> <span class="op">=</span> <span class="st">f"{self.base_url}/sendMessage"</span>
+        <span class="va">data</span> <span class="op">=</span> {<span class="st">"chat_id"</span>: <span class="va">chat_id</span>, <span class="st">"text"</span>: <span class="va">text</span>}
+        <span class="va">response</span> <span class="op">=</span> <span class="va">requests</span>.<span class="fn">post</span>(<span class="va">url</span>, <span class="va">data</span><span class="op">=</span><span class="va">data</span>)
+        <span class="kw">return</span> <span class="va">response</span>.<span class="fn">json</span>()
+    
+    <span class="kw">def</span> <span class="fn">send_photo</span>(<span class="va">self</span>, <span class="va">chat_id</span>, <span class="va">photo_path</span>):
+        <span class="va">url</span> <span class="op">=</span> <span class="st">f"{self.base_url}/sendPhoto"</span>
+        <span class="kw">with</span> <span class="fn">open</span>(<span class="va">photo_path</span>, <span class="st">"rb"</span>) <span class="kw">as</span> <span class="va">photo</span>:
+            <span class="va">requests</span>.<span class="fn">post</span>(<span class="va">url</span>, <span class="va">data</span><span class="op">=</span>{<span class="st">"chat_id"</span>: <span class="va">chat_id</span>}, 
+                          <span class="va">files</span><span class="op">=</span>{<span class="st">"photo"</span>: <span class="va">photo</span>})
+
+<span class="cm"># ব্যবহার করুন</span>
+<span class="va">bot</span> <span class="op">=</span> <span class="cl">TelegramBot</span>(<span class="st">"আপনার_BOT_TOKEN"</span>)  <span class="cm"># @BotFather থেকে নিন</span>
+<span class="va">bot</span>.<span class="fn">send_message</span>(<span class="st">"আপনার_CHAT_ID"</span>, <span class="st">"🤖 বট চালু হয়েছে! Python Automation!"</span>)</pre>
+    </div>
+
+    <div class="grid2">
+      <div class="mini-card">
+        <div class="mini-title">🆓 বিনামূল্যের API</div>
+        <ul>
+          <li>OpenWeatherMap (আবহাওয়া)</li>
+          <li>ExchangeRate API (টাকার রেট)</li>
+          <li>NewsAPI (সংবাদ)</li>
+          <li>Telegram Bot API</li>
+          <li>GitHub API</li>
+          <li>JSONPlaceholder (টেস্টিং)</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <div class="mini-title">🔑 API Key নিরাপত্তা</div>
+        <ul>
+          <li>.env ফাইলে রাখুন</li>
+          <li>GitHub এ পুশ করবেন না</li>
+          <li>python-dotenv ব্যবহার করুন</li>
+          <li>Environment variable ব্যবহার করুন</li>
+          <li>কখনো কোডে হার্ডকোড না করুন</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CHAPTER 10 -->
+  <section class="chapter reveal" id="ch10">
+    <div class="chapter-header">
+      <div class="chapter-icon icon-cyan">🏆</div>
+      <div>
+        <span class="chapter-num">অধ্যায় ১০</span>
+        <h2 class="chapter-title">৫টি সম্পূর্ণ রিয়েল-ওয়ার্ল্ড প্রজেক্ট</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏗️ প্রজেক্ট ১: স্বয়ংক্রিয় জব অ্যালার্ট সিস্টেম</div>
+      <p>প্রতিদিন চাকরির সাইট স্ক্র্যাপ করবে এবং নতুন চাকরি পেলে ইমেইল/Telegram এ নোটিফিকেশন পাঠাবে।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+        <span class="code-lang">Python - জব অ্যালার্ট সিস্টেম</span>
+      </div>
+      <pre><span class="kw">import</span> <span class="va">requests</span>
+<span class="kw">from</span> <span class="va">bs4</span> <span class="kw">import</span> <span class="cl">BeautifulSoup</span>
+<span class="kw">import</span> <span class="va">json</span>
+<span class="kw">import</span> <span class="va">schedule</span>
+<span class="kw">import</span> <span class="va">time</span>
+
+<span class="kw">class</span> <span class="cl">JobAlertSystem</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="va">self</span>):
+        <span class="va">self</span>.<span class="va">seen_jobs</span> <span class="op">=</span> <span class="fn">set</span>()
+        <span class="va">self</span>.<span class="fn">load_seen_jobs</span>()
+    
+    <span class="kw">def</span> <span class="fn">load_seen_jobs</span>(<span class="va">self</span>):
+        <span class="kw">try</span>:
+            <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"seen_jobs.json"</span>) <span class="kw">as</span> <span class="va">f</span>:
+                <span class="va">self</span>.<span class="va">seen_jobs</span> <span class="op">=</span> <span class="fn">set</span>(<span class="va">json</span>.<span class="fn">load</span>(<span class="va">f</span>))
+        <span class="kw">except</span>:
+            <span class="va">self</span>.<span class="va">seen_jobs</span> <span class="op">=</span> <span class="fn">set</span>()
+    
+    <span class="kw">def</span> <span class="fn">scrape_jobs</span>(<span class="va">self</span>, <span class="va">keyword</span><span class="op">=</span><span class="st">"Python"</span>):
+        <span class="va">jobs</span> <span class="op">=</span> []
+        <span class="cm"># চাকরির সাইট স্ক্র্যাপ করুন</span>
+        <span class="va">url</span> <span class="op">=</span> <span class="st">f"https://bd.linkedin.com/jobs/search/?keywords={keyword}"</span>
+        <span class="va">response</span> <span class="op">=</span> <span class="va">requests</span>.<span class="fn">get</span>(<span class="va">url</span>)
+        <span class="va">soup</span> <span class="op">=</span> <span class="cl">BeautifulSoup</span>(<span class="va">response</span>.<span class="va">text</span>, <span class="st">"html.parser"</span>)
+        
+        <span class="kw">for</span> <span class="va">job</span> <span class="kw">in</span> <span class="va">soup</span>.<span class="fn">select</span>(<span class="st">".job-card-container"</span>):
+            <span class="va">title</span> <span class="op">=</span> <span class="va">job</span>.<span class="fn">select_one</span>(<span class="st">".job-card-list__title"</span>)
+            <span class="va">company</span> <span class="op">=</span> <span class="va">job</span>.<span class="fn">select_one</span>(<span class="st">".job-card-container__company-name"</span>)
+            <span class="va">job_id</span> <span class="op">=</span> <span class="va">job</span>.<span class="fn">get</span>(<span class="st">"data-job-id"</span>)
+            
+            <span class="kw">if</span> <span class="va">job_id</span> <span class="kw">and</span> <span class="va">job_id</span> <span class="kw">not in</span> <span class="va">self</span>.<span class="va">seen_jobs</span>:
+                <span class="va">jobs</span>.<span class="fn">append</span>({
+                    <span class="st">"id"</span>: <span class="va">job_id</span>,
+                    <span class="st">"title"</span>: <span class="va">title</span>.<span class="va">text</span>.<span class="fn">strip</span>() <span class="kw">if</span> <span class="va">title</span> <span class="kw">else</span> <span class="st">""</span>,
+                    <span class="st">"company"</span>: <span class="va">company</span>.<span class="va">text</span>.<span class="fn">strip</span>() <span class="kw">if</span> <span class="va">company</span> <span class="kw">else</span> <span class="st">""</span>
+                })
+                <span class="va">self</span>.<span class="va">seen_jobs</span>.<span class="fn">add</span>(<span class="va">job_id</span>)
+        
+        <span class="kw">return</span> <span class="va">jobs</span>
+    
+    <span class="kw">def</span> <span class="fn">check_and_alert</span>(<span class="va">self</span>):
+        <span class="va">new_jobs</span> <span class="op">=</span> <span class="va">self</span>.<span class="fn">scrape_jobs</span>()
+        <span class="kw">if</span> <span class="va">new_jobs</span>:
+            <span class="fn">print</span>(<span class="st">f"🆕 {len(new_jobs)}টি নতুন চাকরি পাওয়া গেছে!"</span>)
+            <span class="kw">for</span> <span class="va">job</span> <span class="kw">in</span> <span class="va">new_jobs</span>:
+                <span class="fn">print</span>(<span class="st">f"  • {job['title']} @ {job['company']}"</span>)
+            <span class="cm"># এখানে ইমেইল বা Telegram নোটিফিকেশন পাঠান</span>
+
+<span class="cm"># চালান</span>
+<span class="va">alert_system</span> <span class="op">=</span> <span class="cl">JobAlertSystem</span>()
+<span class="va">schedule</span>.<span class="fn">every</span>().<span class="va">day</span>.<span class="fn">at</span>(<span class="st">"09:00"</span>).<span class="fn">do</span>(<span class="va">alert_system</span>.<span class="va">check_and_alert</span>)
+<span class="kw">while</span> <span class="bl">True</span>:
+    <span class="va">schedule</span>.<span class="fn">run_pending</span>()
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">60</span>)</pre>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">🏗️ প্রজেক্ট ২: ছবি ওয়াটারমার্ক টুল</div>
+        <p>একটি ফোল্ডারের সব ছবিতে স্বয়ংক্রিয়ভাবে লোগো ওয়াটারমার্ক যোগ করবে।</p>
+        <div class="tags">
+          <span class="tag tag-blue">Pillow</span>
+          <span class="tag tag-green">os</span>
+          <span class="tag tag-purple">pathlib</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏗️ প্রজেক্ট ৩: YouTube ডাউনলোডার</div>
+        <p>YouTube থেকে ভিডিও এবং প্লেলিস্ট ডাউনলোড করার টুল তৈরি করুন।</p>
+        <div class="tags">
+          <span class="tag tag-blue">yt-dlp</span>
+          <span class="tag tag-green">tkinter</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏗️ প্রজেক্ট ৪: PDF মার্জার ও স্প্লিটার</div>
+        <p>অনেক PDF কে একটিতে মার্জ করা বা একটি PDF কে ভাগ করার টুল।</p>
+        <div class="tags">
+          <span class="tag tag-blue">PyPDF2</span>
+          <span class="tag tag-orange">reportlab</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏗️ প্রজেক্ট ৫: সোশ্যাল মিডিয়া পোস্ট শিডিউলার</div>
+        <p>Facebook, Twitter, Instagram এ নির্দিষ্ট সময়ে পোস্ট শিডিউল করার টুল।</p>
+        <div class="tags">
+          <span class="tag tag-blue">APIs</span>
+          <span class="tag tag-purple">schedule</span>
+          <span class="tag tag-green">json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-green">
+      <span class="info-icon">🎓</span>
+      <div class="info-content">
+        <div class="info-title">পরবর্তী ধাপ কী?</div>
+        <p>এই কোর্স শেষ করার পর <strong>FastAPI</strong> দিয়ে REST API তৈরি, <strong>Django</strong> দিয়ে ওয়েব অ্যাপ, <strong>Machine Learning</strong> ও <strong>Data Science</strong> শিখুন। Python এর দুনিয়া অসীম!</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 সেরা রিসোর্স</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>রিসোর্স</th><th>ধরন</th><th>ভাষা</th></tr></thead>
+          <tbody>
+            <tr><td>docs.python.org</td><td>অফিসিয়াল ডকুমেন্টেশন</td><td>ইংরেজি</td></tr>
+            <tr><td>Automate the Boring Stuff</td><td>বই (বিনামূল্যে)</td><td>ইংরেজি</td></tr>
+            <tr><td>YouTube - Python Bangla</td><td>ভিডিও টিউটোরিয়াল</td><td>বাংলা</td></tr>
+            <tr><td>Real Python</td><td>অনলাইন কোর্স</td><td>ইংরেজি</td></tr>
+            <tr><td>Stack Overflow</td><td>Q&A ফোরাম</td><td>ইংরেজি</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Python Automation বাংলা</div>
+  <p>সম্পূর্ণ বিনামূল্যে • সম্পূর্ণ বাংলায় • সম্পূর্ণ ব্যবহারিক</p>
+  <p style="margin-top: 16px; font-size: 0.8rem; color: #475569;">
+    🐍 Python দিয়ে অটোমেশন শিখুন, সময় বাঁচান, আয় বাড়ান।
+  </p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener("scroll", () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById("progress").style.width = scrolled + "%";
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll(".reveal");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+</script>
+</body>
+</html>

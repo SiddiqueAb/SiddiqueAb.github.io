@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Monitoring & Security — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep:    #060810;
+  --bg-base:    #090c18;
+  --bg-card:    #0d1020;
+  --bg-raised:  #111527;
+  --border:     rgba(255,255,255,0.06);
+  --border-glow:rgba(255,255,255,0.12);
+
+  --prometheus: #e6522c;
+  --grafana:    #f46800;
+  --elk:        #00bfb3;
+  --jaeger:     #60b5f6;
+  --devsecops:  #a855f7;
+  --vault:      #ffd814;
+
+  --text-1: #f0f2f8;
+  --text-2: #8892a4;
+  --text-3: #4a5568;
+
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  --bn:   'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-1);
+  font-family: var(--sans);
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* === NOISE TEXTURE OVERLAY === */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.6;
+}
+
+/* === PROGRESS BAR === */
+#prog {
+  position:fixed;top:0;left:0;height:2px;
+  background:linear-gradient(90deg,var(--prometheus),var(--grafana),var(--elk),var(--jaeger),var(--devsecops),var(--vault));
+  z-index:1000;transition:width .1s;
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* === STICKY NAV === */
+.nav {
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:56px;
+  background:rgba(6,8,16,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand {
+  font-family:var(--bn);font-weight:800;font-size:1rem;
+  background:linear-gradient(90deg,#e6522c,#f46800,#00bfb3,#60b5f6,#a855f7,#ffd814);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-links { display:flex;gap:4px; }
+.nav-links a {
+  padding:4px 10px;border-radius:6px;font-size:.75rem;
+  color:var(--text-2);text-decoration:none;transition:all .2s;
+  font-family:var(--sans);
+}
+.nav-links a:hover { color:#fff;background:rgba(255,255,255,.06); }
+@media(max-width:768px){ .nav-links{display:none;} }
+
+/* === HERO === */
+.hero {
+  position:relative;z-index:1;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;
+  overflow:hidden;
+}
+
+.hero-grid {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+
+.hero-orbs {
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.orb {
+  position:absolute;border-radius:50%;filter:blur(120px);
+  animation:orbFloat 12s ease-in-out infinite;
+}
+.orb1{width:500px;height:500px;background:rgba(230,82,44,.06);top:-10%;left:-10%;animation-delay:0s;}
+.orb2{width:600px;height:600px;background:rgba(0,191,179,.05);top:20%;right:-15%;animation-delay:-4s;}
+.orb3{width:400px;height:400px;background:rgba(168,85,247,.06);bottom:-5%;left:30%;animation-delay:-8s;}
+
+@keyframes orbFloat {
+  0%,100%{transform:translate(0,0);}
+  33%{transform:translate(30px,-40px);}
+  66%{transform:translate(-20px,20px);}
+}
+
+.hero-eyebrow {
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 16px;border-radius:100px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-2);margin-bottom:28px;
+  animation:fadeUp .8s ease both;
+}
+.hero-eyebrow .dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--elk);animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.hero-h1 {
+  font-family:var(--bn);
+  font-size:clamp(2.2rem,5.5vw,4.8rem);
+  font-weight:900;line-height:1.12;
+  margin-bottom:20px;
+  animation:fadeUp .8s ease .15s both;
+}
+.hero-h1 .line-a { color:#fff;display:block; }
+.hero-h1 .line-b {
+  display:block;
+  background:linear-gradient(135deg,#e6522c 0%,#f46800 25%,#00bfb3 50%,#60b5f6 75%,#a855f7 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-sub {
+  font-size:clamp(.95rem,2vw,1.15rem);color:var(--text-2);
+  max-width:580px;margin:0 auto 48px;
+  animation:fadeUp .8s ease .3s both;
+}
+
+.topic-pills {
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  animation:fadeUp .8s ease .45s both;
+  margin-bottom:60px;
+}
+.pill {
+  display:flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:100px;
+  border:1px solid;font-size:.82rem;font-weight:600;
+  font-family:var(--sans);cursor:default;
+  transition:transform .2s,box-shadow .2s;
+}
+.pill:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.pill-p{color:var(--prometheus);border-color:rgba(230,82,44,.3);background:rgba(230,82,44,.08);}
+.pill-g{color:var(--grafana);border-color:rgba(244,104,0,.3);background:rgba(244,104,0,.08);}
+.pill-e{color:var(--elk);border-color:rgba(0,191,179,.3);background:rgba(0,191,179,.08);}
+.pill-j{color:var(--jaeger);border-color:rgba(96,181,246,.3);background:rgba(96,181,246,.08);}
+.pill-d{color:var(--devsecops);border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.08);}
+.pill-v{color:var(--vault);border-color:rgba(255,216,20,.3);background:rgba(255,216,20,.08);}
+
+.hero-stats {
+  display:flex;gap:48px;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp .8s ease .6s both;
+}
+.stat { text-align:center; }
+.stat-n { font-family:var(--bn);font-size:2rem;font-weight:800;color:#fff;display:block; }
+.stat-l { font-size:.78rem;color:var(--text-2); }
+
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(28px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* === LAYOUT === */
+.wrap {
+  position:relative;z-index:1;
+  max-width:1060px;margin:0 auto;padding:0 24px;
+}
+
+/* === CHAPTER === */
+.chapter {
+  padding:100px 0 60px;
+  border-top:1px solid var(--border);
+}
+.chapter:first-child{border-top:none;}
+
+.ch-head {
+  display:flex;align-items:flex-start;gap:24px;
+  margin-bottom:52px;
+}
+.ch-icon {
+  width:64px;height:64px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;flex-shrink:0;
+  border:1px solid;
+}
+.ch-meta { flex:1; }
+.ch-num {
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:6px;display:block;
+}
+.ch-title {
+  font-family:var(--bn);
+  font-size:clamp(1.6rem,3.5vw,2.4rem);
+  font-weight:800;line-height:1.2;color:#fff;
+  margin-bottom:8px;
+}
+.ch-desc { font-size:.95rem;color:var(--text-2);max-width:600px; }
+
+/* chapter color variants */
+.ch-prometheus .ch-icon{color:var(--prometheus);border-color:rgba(230,82,44,.3);background:rgba(230,82,44,.08);}
+.ch-prometheus .ch-num{color:var(--prometheus);}
+.ch-grafana .ch-icon{color:var(--grafana);border-color:rgba(244,104,0,.3);background:rgba(244,104,0,.08);}
+.ch-grafana .ch-num{color:var(--grafana);}
+.ch-elk .ch-icon{color:var(--elk);border-color:rgba(0,191,179,.3);background:rgba(0,191,179,.08);}
+.ch-elk .ch-num{color:var(--elk);}
+.ch-jaeger .ch-icon{color:var(--jaeger);border-color:rgba(96,181,246,.3);background:rgba(96,181,246,.08);}
+.ch-jaeger .ch-num{color:var(--jaeger);}
+.ch-devsecops .ch-icon{color:var(--devsecops);border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.08);}
+.ch-devsecops .ch-num{color:var(--devsecops);}
+.ch-vault .ch-icon{color:var(--vault);border-color:rgba(255,216,20,.3);background:rgba(255,216,20,.08);}
+.ch-vault .ch-num{color:var(--vault);}
+
+/* === CARDS === */
+.card {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:28px 32px;
+  margin-bottom:20px;
+  transition:border-color .25s,transform .25s;
+}
+.card:hover{border-color:var(--border-glow);transform:translateY(-2px);}
+
+.card-title {
+  font-size:1rem;font-weight:700;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;color:#fff;
+}
+
+/* === CODE BLOCK === */
+.code-wrap {
+  background:#04060f;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;overflow:hidden;
+  margin:20px 0;
+  box-shadow:0 4px 32px rgba(0,0,0,.5);
+}
+.code-bar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;
+  background:rgba(255,255,255,.03);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.code-dots{display:flex;gap:6px;}
+.cdot{width:11px;height:11px;border-radius:50%;}
+.cdot-r{background:#ff5f56;} .cdot-y{background:#febc2e;} .cdot-g{background:#27c93f;}
+.code-label {
+  font-family:var(--mono);font-size:.7rem;
+  padding:2px 10px;border-radius:20px;
+  background:rgba(255,255,255,.06);color:var(--text-2);
+}
+pre {
+  padding:22px 24px;overflow-x:auto;
+  font-family:var(--mono);font-size:.82rem;line-height:1.75;
+}
+/* syntax */
+.kw{color:#c792ea;} .fn{color:#82aaff;} .st{color:#c3e88d;}
+.cm{color:#4a5568;font-style:italic;} .nu{color:#f78c6c;}
+.bl{color:#89ddff;} .op{color:#89ddff;} .va{color:#eeffff;}
+.cl{color:#ffcb6b;} .pr{color:#f07178;} .ky{color:#c792ea;}
+
+/* === INFO BOXES === */
+.info {
+  border-radius:14px;padding:18px 22px;
+  display:flex;gap:14px;align-items:flex-start;margin:18px 0;
+}
+.info-i{font-size:1.3rem;flex-shrink:0;margin-top:2px;}
+.info-body .info-t{font-weight:700;font-size:.92rem;margin-bottom:5px;}
+.info-body p{font-size:.88rem;color:var(--text-2);margin:0;line-height:1.7;}
+
+.info-blue{background:rgba(96,181,246,.05);border:1px solid rgba(96,181,246,.2);}
+.info-blue .info-t{color:var(--jaeger);}
+.info-green{background:rgba(0,191,179,.05);border:1px solid rgba(0,191,179,.2);}
+.info-green .info-t{color:var(--elk);}
+.info-orange{background:rgba(230,82,44,.05);border:1px solid rgba(230,82,44,.2);}
+.info-orange .info-t{color:var(--prometheus);}
+.info-purple{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.2);}
+.info-purple .info-t{color:var(--devsecops);}
+.info-yellow{background:rgba(255,216,20,.05);border:1px solid rgba(255,216,20,.2);}
+.info-yellow .info-t{color:var(--vault);}
+
+/* === TABLE === */
+.tbl-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border);margin:18px 0;}
+table{width:100%;border-collapse:collapse;}
+th{
+  background:rgba(255,255,255,.04);color:var(--text-2);
+  padding:13px 18px;text-align:left;font-size:.82rem;
+  letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+}
+td{padding:12px 18px;border-top:1px solid var(--border);font-size:.88rem;color:var(--text-2);vertical-align:top;}
+td strong{color:var(--text-1);}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* === GRID 2/3 === */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr;}}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr;}}
+
+/* === MINI CARD === */
+.mini {
+  background:var(--bg-raised);border:1px solid var(--border);
+  border-radius:14px;padding:20px;
+}
+.mini-t{font-weight:700;font-size:.92rem;color:#fff;margin-bottom:10px;}
+ul{list-style:none;padding:0;}
+li{
+  font-size:.88rem;color:var(--text-2);
+  padding:4px 0;padding-left:16px;position:relative;line-height:1.65;
+}
+li::before{content:'›';position:absolute;left:0;color:var(--text-3);}
+li strong{color:var(--text-1);}
+
+/* === STEP === */
+.steps{counter-reset:s;}
+.step{
+  counter-increment:s;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:14px;padding:18px 18px 18px 66px;
+  margin-bottom:12px;position:relative;
+  transition:border-color .2s;
+}
+.step:hover{border-color:var(--border-glow);}
+.step::before{
+  content:counter(s);
+  position:absolute;left:16px;top:16px;
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.85rem;color:#fff;
+  background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.1);
+}
+.step-t{font-weight:700;color:#fff;margin-bottom:4px;font-size:.92rem;}
+.step p{font-size:.86rem;color:var(--text-2);margin:0;}
+
+/* === ARCH DIAGRAM === */
+.arch {
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:20px;padding:32px;margin:24px 0;
+  text-align:center;overflow-x:auto;
+}
+.arch-title{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:24px;}
+.arch-flow{
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:0;
+}
+.arch-box{
+  background:var(--bg-raised);border:1px solid;
+  border-radius:12px;padding:12px 18px;
+  font-size:.82rem;font-weight:600;white-space:nowrap;
+  font-family:var(--sans);
+}
+.arch-arrow{color:var(--text-3);font-size:1.2rem;padding:0 8px;flex-shrink:0;}
+
+/* === HIGHLIGHT TEXT === */
+.hl{font-weight:700;}
+.hl-p{color:var(--prometheus);}
+.hl-g{color:var(--grafana);}
+.hl-e{color:var(--elk);}
+.hl-j{color:var(--jaeger);}
+.hl-d{color:var(--devsecops);}
+.hl-v{color:var(--vault);}
+.hl-w{color:#fff;}
+
+/* === REVEAL === */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* === BADGE === */
+.badge{
+  display:inline-block;padding:2px 10px;border-radius:6px;
+  font-size:.72rem;font-weight:700;letter-spacing:.04em;
+  font-family:var(--mono);
+}
+.badge-p{background:rgba(230,82,44,.12);color:var(--prometheus);border:1px solid rgba(230,82,44,.25);}
+.badge-g{background:rgba(244,104,0,.12);color:var(--grafana);border:1px solid rgba(244,104,0,.25);}
+.badge-e{background:rgba(0,191,179,.12);color:var(--elk);border:1px solid rgba(0,191,179,.25);}
+.badge-j{background:rgba(96,181,246,.12);color:var(--jaeger);border:1px solid rgba(96,181,246,.25);}
+.badge-d{background:rgba(168,85,247,.12);color:var(--devsecops);border:1px solid rgba(168,85,247,.25);}
+.badge-v{background:rgba(255,216,20,.12);color:var(--vault);border:1px solid rgba(255,216,20,.25);}
+
+/* === DIVIDER === */
+.div{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0;}
+
+/* === FOOTER === */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:60px 24px;
+  border-top:1px solid var(--border);
+}
+.footer-brand{
+  font-family:var(--bn);font-size:1.4rem;font-weight:800;
+  background:linear-gradient(90deg,var(--prometheus),var(--grafana),var(--elk),var(--jaeger),var(--devsecops),var(--vault));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+}
+footer p{font-size:.85rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">DevOps Monitoring বাংলা</div>
+  <div class="nav-links">
+    <a href="#prometheus">Prometheus</a>
+    <a href="#grafana">Grafana</a>
+    <a href="#elk">ELK Stack</a>
+    <a href="#jaeger">Jaeger</a>
+    <a href="#devsecops">DevSecOps</a>
+    <a href="#vault">Vault</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    সম্পূর্ণ বাংলা ক্র্যাশ কোর্স
+  </div>
+
+  <h1 class="hero-h1">
+    <span class="line-a">DevOps Monitoring</span>
+    <span class="line-b">& Security মাস্টারি</span>
+  </h1>
+
+  <p class="hero-sub">
+    Prometheus থেকে HashiCorp Vault — প্রতিটি টুল গভীরভাবে, বাস্তব উদাহরণ সহ, সম্পূর্ণ বাংলায়।
+  </p>
+
+  <div class="topic-pills">
+    <a href="#prometheus" class="pill pill-p">🔥 Prometheus</a>
+    <a href="#grafana" class="pill pill-g">📊 Grafana</a>
+    <a href="#elk" class="pill pill-e">🔍 ELK Stack</a>
+    <a href="#jaeger" class="pill pill-j">🔗 Jaeger / Zipkin</a>
+    <a href="#devsecops" class="pill pill-d">🛡️ DevSecOps</a>
+    <a href="#vault" class="pill pill-v">🔐 HashiCorp Vault</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">৬</span><span class="stat-l">গুরুত্বপূর্ণ টুল</span></div>
+    <div class="stat"><span class="stat-n">৬০+</span><span class="stat-l">কোড উদাহরণ</span></div>
+    <div class="stat"><span class="stat-n">১০০%</span><span class="stat-l">বাংলায়</span></div>
+    <div class="stat"><span class="stat-n">প্রোডাকশন</span><span class="stat-l">রেডি গাইড</span></div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 1: PROMETHEUS -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-prometheus reveal" id="prometheus">
+  <div class="ch-head">
+    <div class="ch-icon">🔥</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০১</span>
+      <h2 class="ch-title">Prometheus</h2>
+      <p class="ch-desc">Metrics collection, alerting rules, PromQL queries, exporters — সব কিছু বাংলায়।</p>
+    </div>
+  </div>
+
+  <!-- What is Prometheus -->
+  <div class="card reveal">
+    <div class="card-title">🎯 Prometheus কী?</div>
+    <p>Prometheus হলো <span class="hl hl-p">open-source monitoring ও alerting system</span> যা SoundCloud তৈরি করেছিল এবং এখন CNCF এর অংশ। এটি time-series ডেটা সংগ্রহ করে এবং PromQL দিয়ে query করা যায়।</p>
+    <p>সহজ ভাষায়: আপনার সার্ভার, অ্যাপ, ডেটাবেজ ঠিকমতো চলছে কিনা — CPU কত%, মেমরি কতটুকু ব্যবহার হচ্ছে, কতগুলো HTTP request আসছে — এসব <strong>metrics</strong> Prometheus সেকেন্ডে সেকেন্ডে ট্র্যাক করে।</p>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch reveal">
+    <div class="arch-title">Prometheus আর্কিটেকচার</div>
+    <div class="arch-flow">
+      <div class="arch-box" style="color:var(--prometheus);border-color:rgba(230,82,44,.3);">আপনার App<br><small style="color:var(--text-2)">/metrics endpoint</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:#fff;border-color:rgba(255,255,255,.15);">Prometheus Server<br><small style="color:var(--text-2)">Scrape & Store</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:var(--jaeger);border-color:rgba(96,181,246,.3);">Alertmanager<br><small style="color:var(--text-2)">Alert পাঠানো</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:var(--grafana);border-color:rgba(244,104,0,.3);">Grafana<br><small style="color:var(--text-2)">Visualization</small></div>
+    </div>
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+      <div class="arch-box" style="font-size:.75rem;color:var(--text-2);border-color:rgba(255,255,255,.1);">Node Exporter</div>
+      <div class="arch-arrow" style="font-size:.9rem;">↑</div>
+      <div class="arch-box" style="font-size:.75rem;color:var(--text-2);border-color:rgba(255,255,255,.1);">MySQL Exporter</div>
+      <div class="arch-arrow" style="font-size:.9rem;">↑</div>
+      <div class="arch-box" style="font-size:.75rem;color:var(--text-2);border-color:rgba(255,255,255,.1);">Blackbox Exporter</div>
+      <div class="arch-arrow" style="font-size:.9rem;">↑</div>
+      <div class="arch-box" style="font-size:.75rem;color:var(--text-2);border-color:rgba(255,255,255,.1);">Custom Exporter</div>
+    </div>
+  </div>
+
+  <!-- Installation -->
+  <div class="card reveal">
+    <div class="card-title">⚙️ Prometheus ইন্সটল ও কনফিগ</div>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">prometheus.yml — মূল কনফিগ ফাইল</span>
+    </div>
+    <pre><span class="cm"># prometheus.yml — Prometheus এর মূল কনফিগ</span>
+
+<span class="kw">global</span>:
+  <span class="pr">scrape_interval</span>: <span class="st">15s</span>       <span class="cm"># প্রতি ১৫ সেকেন্ডে metrics আনবে</span>
+  <span class="pr">evaluation_interval</span>: <span class="st">15s</span>  <span class="cm"># alerting rules চেক করবে</span>
+
+<span class="cm"># Alertmanager এর ঠিকানা</span>
+<span class="kw">alerting</span>:
+  <span class="pr">alertmanagers</span>:
+    - <span class="pr">static_configs</span>:
+        - <span class="pr">targets</span>: [<span class="st">'alertmanager:9093'</span>]
+
+<span class="cm"># Alert rules ফাইল</span>
+<span class="kw">rule_files</span>:
+  - <span class="st">"alert_rules.yml"</span>
+  - <span class="st">"recording_rules.yml"</span>
+
+<span class="cm"># কোন কোন সার্ভিস থেকে metrics আনবে</span>
+<span class="kw">scrape_configs</span>:
+
+  <span class="cm"># Prometheus নিজেই নিজেকে মনিটর করে</span>
+  - <span class="pr">job_name</span>: <span class="st">'prometheus'</span>
+    <span class="pr">static_configs</span>:
+      - <span class="pr">targets</span>: [<span class="st">'localhost:9090'</span>]
+
+  <span class="cm"># Linux সার্ভারের CPU, মেমরি, ডিস্ক মনিটর</span>
+  - <span class="pr">job_name</span>: <span class="st">'node-exporter'</span>
+    <span class="pr">static_configs</span>:
+      - <span class="pr">targets</span>:
+          - <span class="st">'server1:9100'</span>
+          - <span class="st">'server2:9100'</span>
+    <span class="pr">labels</span>:
+      <span class="pr">environment</span>: <span class="st">'production'</span>
+      <span class="pr">team</span>: <span class="st">'backend'</span>
+
+  <span class="cm"># আপনার Node.js / Python app</span>
+  - <span class="pr">job_name</span>: <span class="st">'my-app'</span>
+    <span class="pr">static_configs</span>:
+      - <span class="pr">targets</span>: [<span class="st">'app-server:3000'</span>]
+    <span class="pr">metrics_path</span>: <span class="st">'/metrics'</span>
+
+  <span class="cm"># Service Discovery — Kubernetes</span>
+  - <span class="pr">job_name</span>: <span class="st">'kubernetes-pods'</span>
+    <span class="pr">kubernetes_sd_configs</span>:
+      - <span class="pr">role</span>: <span class="st">pod</span></pre>
+  </div>
+
+  <!-- PromQL -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--prometheus);">📐 PromQL — Prometheus Query Language</div>
+    <p>PromQL দিয়ে metrics থেকে যেকোনো তথ্য বের করা যায়। এটি শেখা Grafana dashboard তৈরির জন্য অপরিহার্য।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">PromQL — বেসিক থেকে অ্যাডভান্সড</span>
+    </div>
+    <pre><span class="cm">## ===== INSTANT VECTOR (এখনকার মান) =====</span>
+
+<span class="cm"># সব HTTP request এর সংখ্যা</span>
+<span class="fn">http_requests_total</span>
+
+<span class="cm"># শুধু status=200 এর request</span>
+<span class="fn">http_requests_total</span>{<span class="pr">status</span>=<span class="st">"200"</span>}
+
+<span class="cm"># production environment এর error request</span>
+<span class="fn">http_requests_total</span>{<span class="pr">env</span>=<span class="st">"prod"</span>, <span class="pr">status</span>=~<span class="st">"5.."</span>}
+
+<span class="cm">## ===== RANGE VECTOR (নির্দিষ্ট সময়ের ডেটা) =====</span>
+
+<span class="cm"># গত ৫ মিনিটের HTTP request ডেটা</span>
+<span class="fn">http_requests_total</span>[<span class="nu">5m</span>]
+
+<span class="cm">## ===== FUNCTIONS (গণনা ও বিশ্লেষণ) =====</span>
+
+<span class="cm"># প্রতি সেকেন্ডে গড় request rate (গত ৫ মিনিট)</span>
+<span class="fn">rate</span>(<span class="fn">http_requests_total</span>[<span class="nu">5m</span>])
+
+<span class="cm"># CPU ব্যবহারের শতাংশ (node exporter)</span>
+<span class="nu">100</span> - (<span class="fn">avg by</span> (<span class="pr">instance</span>) (<span class="fn">irate</span>(<span class="fn">node_cpu_seconds_total</span>{<span class="pr">mode</span>=<span class="st">"idle"</span>}[<span class="nu">5m</span>])) * <span class="nu">100</span>)
+
+<span class="cm"># মেমরি ব্যবহারের শতাংশ</span>
+(<span class="fn">node_memory_MemTotal_bytes</span> - <span class="fn">node_memory_MemAvailable_bytes</span>) / <span class="fn">node_memory_MemTotal_bytes</span> * <span class="nu">100</span>
+
+<span class="cm"># ডিস্ক ব্যবহারের শতাংশ</span>
+(<span class="fn">node_filesystem_size_bytes</span> - <span class="fn">node_filesystem_free_bytes</span>) / <span class="fn">node_filesystem_size_bytes</span> * <span class="nu">100</span>
+
+<span class="cm"># গত ১ ঘন্টায় 99th percentile response time</span>
+<span class="fn">histogram_quantile</span>(<span class="nu">0.99</span>, <span class="fn">rate</span>(<span class="fn">http_request_duration_seconds_bucket</span>[<span class="nu">1h</span>]))
+
+<span class="cm"># কোন instance সবচেয়ে বেশি error করছে</span>
+<span class="fn">topk</span>(<span class="nu">5</span>, <span class="fn">rate</span>(<span class="fn">http_requests_total</span>{<span class="pr">status</span>=~<span class="st">"5.."</span>}[<span class="nu">5m</span>]))
+
+<span class="cm"># সব job এর মোট request</span>
+<span class="fn">sum by</span> (<span class="pr">job</span>) (<span class="fn">rate</span>(<span class="fn">http_requests_total</span>[<span class="nu">5m</span>]))</pre>
+  </div>
+
+  <!-- Alert Rules -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--prometheus);">🚨 Alerting Rules</div>
+    <p>কখন alert পাঠাবে তা নির্ধারণ করে alerting rules। YAML ফরম্যাটে লেখা হয়।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">alert_rules.yml</span>
+    </div>
+    <pre><span class="kw">groups</span>:
+  - <span class="pr">name</span>: <span class="st">server-alerts</span>
+    <span class="pr">rules</span>:
+
+      <span class="cm"># CPU ৮৫% এর বেশি হলে warning</span>
+      - <span class="pr">alert</span>: <span class="cl">HighCPUUsage</span>
+        <span class="pr">expr</span>: <span class="st">cpu_usage_percent > 85</span>
+        <span class="pr">for</span>: <span class="nu">5m</span>         <span class="cm"># ৫ মিনিট ধরে থাকলে তখনই alert</span>
+        <span class="pr">labels</span>:
+          <span class="pr">severity</span>: <span class="st">warning</span>
+        <span class="pr">annotations</span>:
+          <span class="pr">summary</span>: <span class="st">"CPU ব্যবহার বেশি হয়েছে"</span>
+          <span class="pr">description</span>: <span class="st">"{{ $labels.instance }} তে CPU {{ $value }}% ব্যবহার হচ্ছে"</span>
+
+      <span class="cm"># সার্ভার ডাউন হলে critical alert</span>
+      - <span class="pr">alert</span>: <span class="cl">InstanceDown</span>
+        <span class="pr">expr</span>: <span class="st">up == 0</span>
+        <span class="pr">for</span>: <span class="nu">1m</span>
+        <span class="pr">labels</span>:
+          <span class="pr">severity</span>: <span class="st">critical</span>
+        <span class="pr">annotations</span>:
+          <span class="pr">summary</span>: <span class="st">"সার্ভার বন্ধ হয়ে গেছে!"</span>
+          <span class="pr">description</span>: <span class="st">"{{ $labels.job }} / {{ $labels.instance }} down"</span>
+
+      <span class="cm"># মেমরি ৯০% এর বেশি</span>
+      - <span class="pr">alert</span>: <span class="cl">HighMemoryUsage</span>
+        <span class="pr">expr</span>: <span class="fn">node_memory_usage_percent</span> > <span class="nu">90</span>
+        <span class="pr">for</span>: <span class="nu">10m</span>
+        <span class="pr">labels</span>:
+          <span class="pr">severity</span>: <span class="st">critical</span>
+        <span class="pr">annotations</span>:
+          <span class="pr">summary</span>: <span class="st">"মেমরি প্রায় শেষ!"</span>
+
+      <span class="cm"># HTTP error rate ৫% এর বেশি</span>
+      - <span class="pr">alert</span>: <span class="cl">HighErrorRate</span>
+        <span class="pr">expr</span>: |
+          <span class="fn">rate</span>(<span class="fn">http_requests_total</span>{<span class="pr">status</span>=~<span class="st">"5.."</span>}[<span class="nu">5m</span>]) /
+          <span class="fn">rate</span>(<span class="fn">http_requests_total</span>[<span class="nu">5m</span>]) > <span class="nu">0.05</span>
+        <span class="pr">for</span>: <span class="nu">2m</span>
+        <span class="pr">labels</span>:
+          <span class="pr">severity</span>: <span class="st">warning</span>
+        <span class="pr">annotations</span>:
+          <span class="pr">description</span>: <span class="st">"Error rate {{ $value | humanizePercentage }}"</span></pre>
+  </div>
+
+  <!-- Exporters -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--prometheus);">📦 গুরুত্বপূর্ণ Exporters</div>
+    <p>Exporter হলো সেই software যা বিভিন্ন সিস্টেম থেকে metrics সংগ্রহ করে Prometheus এ পাঠায়।</p>
+  </div>
+
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>Exporter</th><th>কাজ</th><th>Port</th><th>Install</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Node Exporter</strong></td><td>Linux CPU, Memory, Disk, Network</td><td>9100</td><td>apt install prometheus-node-exporter</td></tr>
+        <tr><td><strong>MySQL Exporter</strong></td><td>MySQL/MariaDB query stats</td><td>9104</td><td>pip/docker</td></tr>
+        <tr><td><strong>PostgreSQL Exporter</strong></td><td>PostgreSQL metrics</td><td>9187</td><td>docker</td></tr>
+        <tr><td><strong>Redis Exporter</strong></td><td>Redis memory, connections</td><td>9121</td><td>docker</td></tr>
+        <tr><td><strong>Nginx Exporter</strong></td><td>Nginx request stats</td><td>9113</td><td>docker</td></tr>
+        <tr><td><strong>Blackbox Exporter</strong></td><td>HTTP/HTTPS/DNS/TCP endpoint probe</td><td>9115</td><td>docker</td></tr>
+        <tr><td><strong>cAdvisor</strong></td><td>Docker container metrics</td><td>8080</td><td>docker</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Custom Exporter Python -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Python — Custom Metrics Exporter</span>
+    </div>
+    <pre><span class="kw">from</span> <span class="va">prometheus_client</span> <span class="kw">import</span> (
+    <span class="cl">Counter</span>, <span class="cl">Gauge</span>, <span class="cl">Histogram</span>, <span class="cl">Summary</span>,
+    <span class="fn">start_http_server</span>
+)
+<span class="kw">import</span> <span class="va">time</span>, <span class="va">random</span>
+
+<span class="cm"># Counter — শুধু বাড়ে (request count, error count)</span>
+<span class="va">REQUEST_COUNT</span> = <span class="cl">Counter</span>(
+    <span class="st">'app_requests_total'</span>,
+    <span class="st">'মোট HTTP request সংখ্যা'</span>,
+    [<span class="st">'method'</span>, <span class="st">'endpoint'</span>, <span class="st">'status'</span>]
+)
+
+<span class="cm"># Gauge — বাড়তে-কমতে পারে (active users, queue size)</span>
+<span class="va">ACTIVE_USERS</span> = <span class="cl">Gauge</span>(<span class="st">'app_active_users'</span>, <span class="st">'এখন active ব্যবহারকারীর সংখ্যা'</span>)
+
+<span class="cm"># Histogram — response time distribution</span>
+<span class="va">REQUEST_DURATION</span> = <span class="cl">Histogram</span>(
+    <span class="st">'app_request_duration_seconds'</span>,
+    <span class="st">'Request সম্পন্ন হতে সময়'</span>,
+    <span class="va">buckets</span>=[<span class="nu">0.01</span>, <span class="nu">0.05</span>, <span class="nu">0.1</span>, <span class="nu">0.5</span>, <span class="nu">1.0</span>, <span class="nu">5.0</span>]
+)
+
+<span class="cm"># Decorator দিয়ে function track করুন</span>
+<span class="kw">def</span> <span class="fn">track_request</span>(<span class="va">method</span>, <span class="va">endpoint</span>):
+    <span class="kw">def</span> <span class="fn">decorator</span>(<span class="va">func</span>):
+        <span class="kw">def</span> <span class="fn">wrapper</span>(*<span class="va">args</span>, **<span class="va">kwargs</span>):
+            <span class="kw">with</span> <span class="va">REQUEST_DURATION</span>.<span class="fn">time</span>():
+                <span class="va">result</span> = <span class="fn">func</span>(*<span class="va">args</span>, **<span class="va">kwargs</span>)
+            <span class="va">REQUEST_COUNT</span>.<span class="fn">labels</span>(<span class="va">method</span>, <span class="va">endpoint</span>, <span class="st">'200'</span>).<span class="fn">inc</span>()
+            <span class="kw">return</span> <span class="va">result</span>
+        <span class="kw">return</span> <span class="va">wrapper</span>
+    <span class="kw">return</span> <span class="va">decorator</span>
+
+<span class="cm"># :8000/metrics এ expose করুন</span>
+<span class="fn">start_http_server</span>(<span class="nu">8000</span>)
+<span class="fn">print</span>(<span class="st">"✅ Metrics server চালু: http://localhost:8000/metrics"</span>)</pre>
+  </div>
+
+  <div class="info info-orange reveal">
+    <span class="info-i">💡</span>
+    <div class="info-body">
+      <div class="info-t">Alertmanager কনফিগ</div>
+      <p>Alertmanager দিয়ে Slack, PagerDuty, Email, Telegram তে alert পাঠানো যায়। <strong>routing</strong> দিয়ে নির্দিষ্ট team কে নির্দিষ্ট alert পাঠানো যায়। <strong>inhibition</strong> দিয়ে অপ্রয়োজনীয় noise কমানো যায়।</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="div">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 2: GRAFANA -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-grafana reveal" id="grafana">
+  <div class="ch-head">
+    <div class="ch-icon">📊</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০২</span>
+      <h2 class="ch-title">Grafana</h2>
+      <p class="ch-desc">Beautiful dashboards, data source integration, alerting, panels — সম্পূর্ণ গাইড।</p>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title">🎯 Grafana কী?</div>
+    <p>Grafana হলো সবচেয়ে জনপ্রিয় <span class="hl hl-g">open-source visualization platform</span>। Prometheus, Elasticsearch, MySQL, PostgreSQL, InfluxDB সহ ৫০+ data source থেকে ডেটা এনে সুন্দর dashboard তৈরি করা যায়।</p>
+    <p>সহজ কথায়: Prometheus ডেটা সংগ্রহ করে, আর Grafana সেই ডেটাকে সুন্দর গ্রাফ ও chart এ রূপান্তর করে।</p>
+  </div>
+
+  <!-- Key Features -->
+  <div class="g3 reveal">
+    <div class="mini">
+      <div class="mini-t">🖼️ Panel Types</div>
+      <ul>
+        <li><strong>Time series</strong> — লাইন গ্রাফ</li>
+        <li><strong>Gauge</strong> — গোলাকার মিটার</li>
+        <li><strong>Stat</strong> — একক মান</li>
+        <li><strong>Bar chart</strong> — বার গ্রাফ</li>
+        <li><strong>Heatmap</strong> — তাপমানচিত্র</li>
+        <li><strong>Table</strong> — ডেটা টেবিল</li>
+        <li><strong>Logs</strong> — লগ ভিউয়ার</li>
+        <li><strong>Trace</strong> — ডিস্ট্রিবিউটেড ট্রেস</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <div class="mini-t">🔌 Data Sources</div>
+      <ul>
+        <li><strong>Prometheus</strong> (সবচেয়ে জনপ্রিয়)</li>
+        <li><strong>Elasticsearch</strong></li>
+        <li><strong>Loki</strong> (log aggregation)</li>
+        <li><strong>InfluxDB</strong></li>
+        <li><strong>MySQL / PostgreSQL</strong></li>
+        <li><strong>Jaeger / Zipkin</strong></li>
+        <li><strong>CloudWatch</strong> (AWS)</li>
+        <li><strong>Azure Monitor</strong></li>
+      </ul>
+    </div>
+    <div class="mini">
+      <div class="mini-t">⚡ মূল বৈশিষ্ট্য</div>
+      <ul>
+        <li><strong>Live dashboards</strong> — রিয়েল-টাইম</li>
+        <li><strong>Alerting</strong> — নোটিফিকেশন</li>
+        <li><strong>Variables</strong> — ডাইনামিক ফিল্টার</li>
+        <li><strong>Annotations</strong> — ইভেন্ট মার্কার</li>
+        <li><strong>Playlist</strong> — Auto rotate</li>
+        <li><strong>Teams & Roles</strong> — RBAC</li>
+        <li><strong>Plugins</strong> — হাজারো এক্সটেনশন</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Docker Install -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">docker-compose.yml — Prometheus + Grafana Stack</span>
+    </div>
+    <pre><span class="kw">version</span>: <span class="st">'3.8'</span>
+
+<span class="kw">services</span>:
+
+  <span class="pr">prometheus</span>:
+    <span class="pr">image</span>: <span class="st">prom/prometheus:latest</span>
+    <span class="pr">ports</span>:
+      - <span class="st">"9090:9090"</span>
+    <span class="pr">volumes</span>:
+      - <span class="st">./prometheus.yml:/etc/prometheus/prometheus.yml</span>
+      - <span class="st">./alert_rules.yml:/etc/prometheus/alert_rules.yml</span>
+      - <span class="st">prometheus_data:/prometheus</span>
+    <span class="pr">command</span>:
+      - <span class="st">'--config.file=/etc/prometheus/prometheus.yml'</span>
+      - <span class="st">'--storage.tsdb.retention.time=30d'</span>
+    <span class="pr">restart</span>: <span class="st">unless-stopped</span>
+
+  <span class="pr">grafana</span>:
+    <span class="pr">image</span>: <span class="st">grafana/grafana:latest</span>
+    <span class="pr">ports</span>:
+      - <span class="st">"3000:3000"</span>
+    <span class="pr">environment</span>:
+      - <span class="pr">GF_SECURITY_ADMIN_PASSWORD</span>=<span class="st">আপনার_পাসওয়ার্ড</span>
+      - <span class="pr">GF_USERS_ALLOW_SIGN_UP</span>=<span class="st">false</span>
+      - <span class="pr">GF_SMTP_ENABLED</span>=<span class="st">true</span>
+    <span class="pr">volumes</span>:
+      - <span class="st">grafana_data:/var/lib/grafana</span>
+      - <span class="st">./grafana/dashboards:/etc/grafana/dashboards</span>
+    <span class="pr">depends_on</span>:
+      - <span class="st">prometheus</span>
+    <span class="pr">restart</span>: <span class="st">unless-stopped</span>
+
+  <span class="pr">node-exporter</span>:
+    <span class="pr">image</span>: <span class="st">prom/node-exporter:latest</span>
+    <span class="pr">ports</span>:
+      - <span class="st">"9100:9100"</span>
+    <span class="pr">restart</span>: <span class="st">unless-stopped</span>
+
+  <span class="pr">alertmanager</span>:
+    <span class="pr">image</span>: <span class="st">prom/alertmanager:latest</span>
+    <span class="pr">ports</span>:
+      - <span class="st">"9093:9093"</span>
+    <span class="pr">volumes</span>:
+      - <span class="st">./alertmanager.yml:/etc/alertmanager/alertmanager.yml</span>
+
+<span class="kw">volumes</span>:
+  <span class="pr">prometheus_data</span>:
+  <span class="pr">grafana_data</span>:</pre>
+  </div>
+
+  <!-- Grafana Alert -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">alertmanager.yml — Slack + Email Notification</span>
+    </div>
+    <pre><span class="kw">global</span>:
+  <span class="pr">smtp_smarthost</span>: <span class="st">'smtp.gmail.com:587'</span>
+  <span class="pr">smtp_from</span>: <span class="st">'alert@yourcompany.com'</span>
+  <span class="pr">smtp_auth_username</span>: <span class="st">'alert@yourcompany.com'</span>
+  <span class="pr">smtp_auth_password</span>: <span class="st">'app-password'</span>
+  <span class="pr">slack_api_url</span>: <span class="st">'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'</span>
+
+<span class="kw">route</span>:
+  <span class="pr">receiver</span>: <span class="st">'default'</span>
+  <span class="pr">group_wait</span>: <span class="nu">30s</span>
+  <span class="pr">group_interval</span>: <span class="nu">5m</span>
+  <span class="pr">repeat_interval</span>: <span class="nu">4h</span>
+
+  <span class="cm"># critical alert → DevOps team কে সাথে সাথে</span>
+  <span class="pr">routes</span>:
+    - <span class="pr">match</span>:
+        <span class="pr">severity</span>: <span class="st">critical</span>
+      <span class="pr">receiver</span>: <span class="st">'devops-critical'</span>
+      <span class="pr">repeat_interval</span>: <span class="nu">30m</span>
+
+<span class="kw">receivers</span>:
+  - <span class="pr">name</span>: <span class="st">'default'</span>
+    <span class="pr">slack_configs</span>:
+      - <span class="pr">channel</span>: <span class="st">'#alerts'</span>
+        <span class="pr">title</span>: <span class="st">'{{ .GroupLabels.alertname }}'</span>
+        <span class="pr">text</span>: <span class="st">'{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'</span>
+        <span class="pr">color</span>: <span class="st">'{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'</span>
+
+  - <span class="pr">name</span>: <span class="st">'devops-critical'</span>
+    <span class="pr">email_configs</span>:
+      - <span class="pr">to</span>: <span class="st">'devops@yourcompany.com'</span>
+    <span class="pr">slack_configs</span>:
+      - <span class="pr">channel</span>: <span class="st">'#critical-alerts'</span>
+        <span class="pr">title</span>: <span class="st">'🚨 CRITICAL: {{ .GroupLabels.alertname }}'</span></pre>
+  </div>
+
+  <!-- Dashboard as Code -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--grafana);">📋 Dashboard as Code — Grafana API</div>
+    <p>Grafana API দিয়ে programmatically dashboard তৈরি করা যায়। এটি GitOps workflow এ কাজে আসে।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Python — Grafana API দিয়ে Dashboard তৈরি</span>
+    </div>
+    <pre><span class="kw">import</span> <span class="va">requests</span>
+<span class="kw">import</span> <span class="va">json</span>
+
+<span class="va">GRAFANA_URL</span> = <span class="st">"http://localhost:3000"</span>
+<span class="va">API_KEY</span> = <span class="st">"glsa_xxxxxxxxxxxx"</span>  <span class="cm"># Grafana থেকে API key নিন</span>
+
+<span class="va">headers</span> = {
+    <span class="st">"Authorization"</span>: <span class="st">f"Bearer {API_KEY}"</span>,
+    <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>
+}
+
+<span class="cm"># Dashboard JSON structure</span>
+<span class="va">dashboard</span> = {
+    <span class="st">"dashboard"</span>: {
+        <span class="st">"title"</span>: <span class="st">"আমার সার্ভার Dashboard"</span>,
+        <span class="st">"tags"</span>: [<span class="st">"production"</span>, <span class="st">"server"</span>],
+        <span class="st">"panels"</span>: [
+            {
+                <span class="st">"title"</span>: <span class="st">"CPU ব্যবহার"</span>,
+                <span class="st">"type"</span>: <span class="st">"gauge"</span>,
+                <span class="st">"gridPos"</span>: {<span class="st">"x"</span>: <span class="nu">0</span>, <span class="st">"y"</span>: <span class="nu">0</span>, <span class="st">"w"</span>: <span class="nu">8</span>, <span class="st">"h"</span>: <span class="nu">8</span>},
+                <span class="st">"targets"</span>: [{
+                    <span class="st">"expr"</span>: <span class="st">"100 - avg(irate(node_cpu_seconds_total{mode='idle'}[5m])) * 100"</span>,
+                    <span class="st">"legendFormat"</span>: <span class="st">"CPU %"</span>
+                }],
+                <span class="st">"fieldConfig"</span>: {
+                    <span class="st">"defaults"</span>: {
+                        <span class="st">"min"</span>: <span class="nu">0</span>, <span class="st">"max"</span>: <span class="nu">100</span>, <span class="st">"unit"</span>: <span class="st">"percent"</span>,
+                        <span class="st">"thresholds"</span>: {<span class="st">"steps"</span>: [
+                            {<span class="st">"color"</span>: <span class="st">"green"</span>, <span class="st">"value"</span>: <span class="kw">null</span>},
+                            {<span class="st">"color"</span>: <span class="st">"yellow"</span>, <span class="st">"value"</span>: <span class="nu">70</span>},
+                            {<span class="st">"color"</span>: <span class="st">"red"</span>, <span class="st">"value"</span>: <span class="nu">85</span>}
+                        ]}
+                    }
+                }
+            }
+        ]
+    },
+    <span class="st">"overwrite"</span>: <span class="bl">True</span>,
+    <span class="st">"folderId"</span>: <span class="nu">0</span>
+}
+
+<span class="va">response</span> = <span class="va">requests</span>.<span class="fn">post</span>(
+    <span class="st">f"{GRAFANA_URL}/api/dashboards/db"</span>,
+    <span class="va">headers</span>=<span class="va">headers</span>,
+    <span class="va">json</span>=<span class="va">dashboard</span>
+)
+<span class="fn">print</span>(<span class="st">f"✅ Dashboard তৈরি: {response.json()['url']}"</span>)</pre>
+  </div>
+
+  <div class="info info-green reveal">
+    <span class="info-i">🏆</span>
+    <div class="info-body">
+      <div class="info-t">Ready-made Dashboard ব্যবহার করুন</div>
+      <p>grafana.com/grafana/dashboards এ হাজারো তৈরি dashboard আছে। Node Exporter Full (ID: 1860), Docker Containers (ID: 893), Kubernetes Cluster (ID: 6417) — এগুলো import করলেই ব্যবহার করা যায়।</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="div">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 3: ELK STACK -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-elk reveal" id="elk">
+  <div class="ch-head">
+    <div class="ch-icon">🔍</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০৩</span>
+      <h2 class="ch-title">ELK Stack</h2>
+      <p class="ch-desc">Elasticsearch, Logstash, Kibana — সম্পূর্ণ log management সিস্টেম বাংলায়।</p>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title">🎯 ELK Stack কী?</div>
+    <p>ELK হলো তিনটি open-source টুলের সমন্বয়:</p>
+    <ul style="margin:12px 0;padding-left:20px;">
+      <li style="margin-bottom:8px;"><span class="badge badge-e">E</span> <strong style="color:#fff;margin-left:8px;">Elasticsearch</strong> — ডেটা store এবং search engine। লগ JSON format এ সংরক্ষণ করে এবং দ্রুত search করে।</li>
+      <li style="margin-bottom:8px;"><span class="badge badge-e">L</span> <strong style="color:#fff;margin-left:8px;">Logstash</strong> — ডেটা pipeline। বিভিন্ন source থেকে লগ সংগ্রহ করে, process করে, Elasticsearch এ পাঠায়।</li>
+      <li><span class="badge badge-e">K</span> <strong style="color:#fff;margin-left:8px;">Kibana</strong> — ওয়েব UI। Elasticsearch এর ডেটা দেখার ও বিশ্লেষণের interface।</li>
+    </ul>
+    <p style="margin-top:12px;">আধুনিক stack এ <span class="hl hl-e">Beats</span> (lightweight data shipper) এবং <span class="hl hl-e">Elastic Agent</span> ও ব্যবহার হয়।</p>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch reveal">
+    <div class="arch-title">ELK Stack আর্কিটেকচার</div>
+    <div class="arch-flow">
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+        <div class="arch-box" style="color:var(--elk);border-color:rgba(0,191,179,.3);font-size:.75rem;">Filebeat</div>
+        <div class="arch-box" style="color:var(--elk);border-color:rgba(0,191,179,.3);font-size:.75rem;">Metricbeat</div>
+        <div class="arch-box" style="color:var(--elk);border-color:rgba(0,191,179,.3);font-size:.75rem;">Packetbeat</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:#fff;border-color:rgba(255,255,255,.2);">Logstash<br><small style="color:var(--text-2)">Filter & Transform</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:var(--elk);border-color:rgba(0,191,179,.3);">Elasticsearch<br><small style="color:var(--text-2)">Store & Index</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="color:#f7db67;border-color:rgba(247,219,103,.3);">Kibana<br><small style="color:var(--text-2)">Visualize</small></div>
+    </div>
+  </div>
+
+  <!-- Logstash Config -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--elk);">⚙️ Logstash Pipeline কনফিগ</div>
+    <p>Logstash pipeline তিনটি ধাপে কাজ করে: <span class="hl hl-e">Input</span> → <span class="hl hl-e">Filter</span> → <span class="hl hl-e">Output</span></p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">logstash.conf — Nginx লগ Processing</span>
+    </div>
+    <pre><span class="cm"># ========== INPUT: কোথা থেকে লগ আনবে ==========</span>
+<span class="kw">input</span> {
+  <span class="cm"># Filebeat থেকে</span>
+  <span class="fn">beats</span> {
+    <span class="pr">port</span> => <span class="nu">5044</span>
+  }
+
+  <span class="cm"># সরাসরি ফাইল থেকে</span>
+  <span class="fn">file</span> {
+    <span class="pr">path</span> => <span class="st">"/var/log/nginx/access.log"</span>
+    <span class="pr">type</span> => <span class="st">"nginx-access"</span>
+    <span class="pr">start_position</span> => <span class="st">"beginning"</span>
+  }
+
+  <span class="cm"># Syslog থেকে</span>
+  <span class="fn">syslog</span> {
+    <span class="pr">port</span> => <span class="nu">5140</span>
+    <span class="pr">type</span> => <span class="st">"syslog"</span>
+  }
+}
+
+<span class="cm"># ========== FILTER: লগ parse ও transform ==========</span>
+<span class="kw">filter</span> {
+  <span class="kw">if</span> [<span class="va">type</span>] == <span class="st">"nginx-access"</span> {
+
+    <span class="cm"># Grok দিয়ে Nginx লগ parse করুন</span>
+    <span class="fn">grok</span> {
+      <span class="pr">match</span> => {
+        <span class="st">"message"</span> => <span class="st">"%{COMBINEDAPACHELOG}"</span>
+      }
+    }
+
+    <span class="cm"># IP থেকে দেশ বের করুন</span>
+    <span class="fn">geoip</span> {
+      <span class="pr">source</span> => <span class="st">"clientip"</span>
+      <span class="pr">target</span> => <span class="st">"geoip"</span>
+    }
+
+    <span class="cm"># তারিখ parse করুন</span>
+    <span class="fn">date</span> {
+      <span class="pr">match</span> => [<span class="st">"timestamp"</span>, <span class="st">"dd/MMM/yyyy:HH:mm:ss Z"</span>]
+    }
+
+    <span class="cm"># Response time এর ধরন নির্ধারণ করুন</span>
+    <span class="fn">ruby</span> {
+      <span class="pr">code</span> => <span class="st">"
+        rt = event.get('request_time').to_f
+        event.set('response_category',
+          rt < 0.1 ? 'fast' :
+          rt < 1.0 ? 'normal' : 'slow'
+        )
+      "</span>
+    }
+
+    <span class="cm"># অপ্রয়োজনীয় field মুছুন</span>
+    <span class="fn">mutate</span> {
+      <span class="pr">remove_field</span> => [<span class="st">"message"</span>, <span class="st">"@version"</span>]
+      <span class="pr">add_field</span> => { <span class="st">"environment"</span> => <span class="st">"production"</span> }
+    }
+  }
+}
+
+<span class="cm"># ========== OUTPUT: কোথায় পাঠাবে ==========</span>
+<span class="kw">output</span> {
+  <span class="fn">elasticsearch</span> {
+    <span class="pr">hosts</span> => [<span class="st">"http://elasticsearch:9200"</span>]
+    <span class="pr">index</span> => <span class="st">"nginx-logs-%{+YYYY.MM.dd}"</span>
+    <span class="pr">user</span> => <span class="st">"elastic"</span>
+    <span class="pr">password</span> => <span class="st">"পাসওয়ার্ড"</span>
+  }
+
+  <span class="cm"># Debug করার জন্য console এও দেখুন</span>
+  <span class="fn">stdout</span> {
+    <span class="pr">codec</span> => <span class="st">rubydebug</span>
+  }
+}</pre>
+  </div>
+
+  <!-- Elasticsearch API -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Elasticsearch REST API — Query Examples</span>
+    </div>
+    <pre><span class="cm">## ===== INDEX MANAGEMENT =====</span>
+
+<span class="cm"># সব index দেখুন</span>
+<span class="bl">GET</span> <span class="fn">/_cat/indices?v</span>
+
+<span class="cm"># Index তৈরি করুন</span>
+<span class="bl">PUT</span> <span class="fn">/my-logs</span>
+{
+  <span class="st">"settings"</span>: {
+    <span class="st">"number_of_shards"</span>: <span class="nu">3</span>,
+    <span class="st">"number_of_replicas"</span>: <span class="nu">1</span>
+  },
+  <span class="st">"mappings"</span>: {
+    <span class="st">"properties"</span>: {
+      <span class="st">"timestamp"</span>: { <span class="st">"type"</span>: <span class="st">"date"</span> },
+      <span class="st">"level"</span>:     { <span class="st">"type"</span>: <span class="st">"keyword"</span> },
+      <span class="st">"message"</span>:   { <span class="st">"type"</span>: <span class="st">"text"</span> },
+      <span class="st">"service"</span>:   { <span class="st">"type"</span>: <span class="st">"keyword"</span> }
+    }
+  }
+}
+
+<span class="cm">## ===== SEARCH QUERIES =====</span>
+
+<span class="cm"># সব document search</span>
+<span class="bl">GET</span> <span class="fn">/my-logs/_search</span>
+{
+  <span class="st">"query"</span>: { <span class="st">"match_all"</span>: {} },
+  <span class="st">"size"</span>: <span class="nu">100</span>
+}
+
+<span class="cm"># ERROR level এর লগ খুঁজুন</span>
+<span class="bl">GET</span> <span class="fn">/my-logs/_search</span>
+{
+  <span class="st">"query"</span>: {
+    <span class="st">"bool"</span>: {
+      <span class="st">"must"</span>: [
+        { <span class="st">"term"</span>: { <span class="st">"level"</span>: <span class="st">"ERROR"</span> } }
+      ],
+      <span class="st">"filter"</span>: [{
+        <span class="st">"range"</span>: {
+          <span class="st">"timestamp"</span>: {
+            <span class="st">"gte"</span>: <span class="st">"now-1h"</span>,
+            <span class="st">"lte"</span>: <span class="st">"now"</span>
+          }
+        }
+      }]
+    }
+  },
+  <span class="st">"aggs"</span>: {
+    <span class="st">"error_by_service"</span>: {
+      <span class="st">"terms"</span>: { <span class="st">"field"</span>: <span class="st">"service"</span> }
+    }
+  }
+}</pre>
+  </div>
+
+  <!-- Python client -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Python — Elasticsearch Client</span>
+    </div>
+    <pre><span class="kw">from</span> <span class="va">elasticsearch</span> <span class="kw">import</span> <span class="cl">Elasticsearch</span>
+<span class="kw">from</span> <span class="va">datetime</span> <span class="kw">import</span> <span class="va">datetime</span>
+
+<span class="cm"># সংযোগ করুন</span>
+<span class="va">es</span> = <span class="cl">Elasticsearch</span>(
+    [<span class="st">"http://localhost:9200"</span>],
+    <span class="va">basic_auth</span>=(<span class="st">"elastic"</span>, <span class="st">"পাসওয়ার্ড"</span>)
+)
+
+<span class="cm"># লগ পাঠান</span>
+<span class="kw">def</span> <span class="fn">log_event</span>(<span class="va">level</span>, <span class="va">service</span>, <span class="va">message</span>, **<span class="va">kwargs</span>):
+    <span class="va">doc</span> = {
+        <span class="st">"timestamp"</span>: <span class="va">datetime</span>.<span class="fn">utcnow</span>(),
+        <span class="st">"level"</span>: <span class="va">level</span>,
+        <span class="st">"service"</span>: <span class="va">service</span>,
+        <span class="st">"message"</span>: <span class="va">message</span>,
+        **<span class="va">kwargs</span>
+    }
+    <span class="va">es</span>.<span class="fn">index</span>(
+        <span class="va">index</span>=<span class="st">f"app-logs-{datetime.now().strftime('%Y.%m.%d')}"</span>,
+        <span class="va">document</span>=<span class="va">doc</span>
+    )
+
+<span class="cm"># Full-text search করুন</span>
+<span class="kw">def</span> <span class="fn">search_logs</span>(<span class="va">query_text</span>, <span class="va">level</span>=<span class="bl">None</span>):
+    <span class="va">query</span> = {
+        <span class="st">"bool"</span>: {
+            <span class="st">"must"</span>: [{<span class="st">"match"</span>: {<span class="st">"message"</span>: <span class="va">query_text</span>}}]
+        }
+    }
+    <span class="kw">if</span> <span class="va">level</span>:
+        <span class="va">query</span>[<span class="st">"bool"</span>][<span class="st">"filter"</span>] = [{<span class="st">"term"</span>: {<span class="st">"level"</span>: <span class="va">level</span>}}]
+
+    <span class="va">result</span> = <span class="va">es</span>.<span class="fn">search</span>(<span class="va">index</span>=<span class="st">"app-logs-*"</span>, <span class="va">query</span>=<span class="va">query</span>)
+    <span class="kw">for</span> <span class="va">hit</span> <span class="kw">in</span> <span class="va">result</span>[<span class="st">"hits"</span>][<span class="st">"hits"</span>]:
+        <span class="fn">print</span>(<span class="st">f"[{hit['_source']['level']}] {hit['_source']['message']}"</span>)
+
+<span class="cm"># ব্যবহার</span>
+<span class="fn">log_event</span>(<span class="st">"ERROR"</span>, <span class="st">"payment-service"</span>, <span class="st">"Payment failed"</span>, <span class="va">user_id</span>=<span class="st">"123"</span>)
+<span class="fn">search_logs</span>(<span class="st">"payment failed"</span>, <span class="va">level</span>=<span class="st">"ERROR"</span>)</pre>
+  </div>
+
+  <div class="info info-green reveal">
+    <span class="info-i">💡</span>
+    <div class="info-body">
+      <div class="info-t">Kibana এর মূল Feature</div>
+      <p><strong>Discover</strong> — লগ search ও browse | <strong>Visualize</strong> — chart ও graph তৈরি | <strong>Dashboard</strong> — সব visualization একসাথে | <strong>Alerts</strong> — নির্দিষ্ট condition এ notification | <strong>Machine Learning</strong> — anomaly detection | <strong>SIEM</strong> — security event monitoring</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="div">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 4: JAEGER / ZIPKIN -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-jaeger reveal" id="jaeger">
+  <div class="ch-head">
+    <div class="ch-icon">🔗</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০৪</span>
+      <h2 class="ch-title">Jaeger / Zipkin — Distributed Tracing</h2>
+      <p class="ch-desc">Microservices-এ request কোন path দিয়ে যায়, কোথায় সময় লাগে — সম্পূর্ণ বাংলায়।</p>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title">🎯 Distributed Tracing কেন দরকার?</div>
+    <p>Microservices architecture এ একটি user request কয়েকটি service এর মধ্য দিয়ে যায়। কোনো সমস্যা হলে বোঝা কঠিন — কোন service slow করছে বা error দিচ্ছে?</p>
+    <p><span class="hl hl-j">Distributed Tracing</span> হলো সেই পদ্ধতি যা একটি request এর সম্পূর্ণ যাত্রা ট্র্যাক করে। প্রতিটি service এ কতক্ষণ লেগেছে, কী হয়েছে — সব দেখা যায়।</p>
+  </div>
+
+  <!-- Trace Concept -->
+  <div class="arch reveal">
+    <div class="arch-title">একটি Request এর Trace — উদাহরণ</div>
+    <div style="text-align:left;max-width:700px;margin:0 auto;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div class="arch-box" style="color:var(--jaeger);border-color:rgba(96,181,246,.4);min-width:140px;text-align:center;">API Gateway<br><small style="color:var(--text-2)">5ms</small></div>
+        <div style="flex:1;height:2px;background:rgba(96,181,246,.3);position:relative;"><div style="position:absolute;top:-8px;left:50%;color:var(--text-3);font-size:.7rem;">Trace ID: abc123</div></div>
+      </div>
+      <div style="padding-left:30px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="width:2px;height:30px;background:rgba(96,181,246,.2);"></div>
+          <div class="arch-box" style="color:#a78bfa;border-color:rgba(167,139,250,.3);min-width:130px;text-align:center;">Auth Service<br><small style="color:var(--text-2)">12ms</small></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="width:2px;height:30px;background:rgba(96,181,246,.2);"></div>
+          <div class="arch-box" style="color:#34d399;border-color:rgba(52,211,153,.3);min-width:130px;text-align:center;">Product Service<br><small style="color:var(--text-2)">45ms</small></div>
+          <div style="width:2px;height:2px;background:rgba(52,211,153,.3);width:20px;"></div>
+          <div class="arch-box" style="color:#fbbf24;border-color:rgba(251,191,36,.3);font-size:.75rem;">DB Query: 38ms ⚠️</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:2px;height:20px;background:rgba(96,181,246,.2);"></div>
+          <div class="arch-box" style="color:var(--prometheus);border-color:rgba(230,82,44,.3);min-width:130px;text-align:center;">Payment Service<br><small style="color:var(--text-2)">23ms</small></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:10px;font-size:.82rem;color:var(--text-2);">
+        ⚠️ Product Service এর DB Query ৩৮ms নিচ্ছে — এখানে optimization দরকার!
+      </div>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--jaeger);">📐 Jaeger vs Zipkin</div>
+  </div>
+
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>বিষয়</th><th>Jaeger</th><th>Zipkin</th></tr></thead>
+      <tbody>
+        <tr><td><strong>তৈরি করেছে</strong></td><td>Uber (CNCF project)</td><td>Twitter</td></tr>
+        <tr><td><strong>Storage</strong></td><td>Cassandra, Elasticsearch, Badger</td><td>MySQL, Cassandra, Elasticsearch</td></tr>
+        <tr><td><strong>UI</strong></td><td>বেশি feature সম্পন্ন</td><td>সহজ এবং lightweight</td></tr>
+        <tr><td><strong>Protocol</strong></td><td>OpenTelemetry, Jaeger protocol</td><td>Zipkin B3, OpenTelemetry</td></tr>
+        <tr><td><strong>Kubernetes</strong></td><td>Helm chart আছে</td><td>Helm chart আছে</td></tr>
+        <tr><td><strong>কখন ব্যবহার</strong></td><td>Complex microservices, বড় ব্যবস্থা</td><td>সহজ setup, ছোট দল</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- OpenTelemetry -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--jaeger);">🌐 OpenTelemetry — আধুনিক পদ্ধতি</div>
+    <p>OpenTelemetry (OTel) হলো vendor-neutral standard যা দিয়ে traces, metrics, ও logs সংগ্রহ করা যায়। এটি Jaeger, Zipkin, Grafana Tempo সব জায়গায় পাঠানো যায়।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Python — OpenTelemetry + Jaeger Integration</span>
+    </div>
+    <pre><span class="kw">from</span> <span class="va">opentelemetry</span> <span class="kw">import</span> <span class="va">trace</span>
+<span class="kw">from</span> <span class="va">opentelemetry.sdk.trace</span> <span class="kw">import</span> <span class="cl">TracerProvider</span>
+<span class="kw">from</span> <span class="va">opentelemetry.sdk.trace.export</span> <span class="kw">import</span> <span class="cl">BatchSpanProcessor</span>
+<span class="kw">from</span> <span class="va">opentelemetry.exporter.jaeger.thrift</span> <span class="kw">import</span> <span class="cl">JaegerExporter</span>
+<span class="kw">from</span> <span class="va">opentelemetry.sdk.resources</span> <span class="kw">import</span> <span class="cl">SERVICE_NAME</span>, <span class="cl">Resource</span>
+<span class="kw">import</span> <span class="va">time</span>
+
+<span class="cm"># Tracer setup</span>
+<span class="va">jaeger_exporter</span> = <span class="cl">JaegerExporter</span>(
+    <span class="va">agent_host_name</span>=<span class="st">"localhost"</span>,
+    <span class="va">agent_port</span>=<span class="nu">6831</span>,
+)
+
+<span class="va">provider</span> = <span class="cl">TracerProvider</span>(
+    <span class="va">resource</span>=<span class="cl">Resource</span>.<span class="fn">create</span>({<span class="cl">SERVICE_NAME</span>: <span class="st">"payment-service"</span>})
+)
+<span class="va">provider</span>.<span class="fn">add_span_processor</span>(<span class="cl">BatchSpanProcessor</span>(<span class="va">jaeger_exporter</span>))
+<span class="va">trace</span>.<span class="fn">set_tracer_provider</span>(<span class="va">provider</span>)
+
+<span class="va">tracer</span> = <span class="va">trace</span>.<span class="fn">get_tracer</span>(<span class="st">"payment-service"</span>)
+
+<span class="cm"># Tracing ব্যবহার করুন</span>
+<span class="kw">def</span> <span class="fn">process_payment</span>(<span class="va">order_id</span>, <span class="va">amount</span>):
+    <span class="cm"># Parent span তৈরি করুন</span>
+    <span class="kw">with</span> <span class="va">tracer</span>.<span class="fn">start_as_current_span</span>(<span class="st">"process-payment"</span>) <span class="kw">as</span> <span class="va">span</span>:
+        <span class="va">span</span>.<span class="fn">set_attribute</span>(<span class="st">"order.id"</span>, <span class="va">order_id</span>)
+        <span class="va">span</span>.<span class="fn">set_attribute</span>(<span class="st">"payment.amount"</span>, <span class="va">amount</span>)
+
+        <span class="cm"># Child span — ডেটাবেজ অপারেশন</span>
+        <span class="kw">with</span> <span class="va">tracer</span>.<span class="fn">start_as_current_span</span>(<span class="st">"db-query"</span>) <span class="kw">as</span> <span class="va">db_span</span>:
+            <span class="va">db_span</span>.<span class="fn">set_attribute</span>(<span class="st">"db.type"</span>, <span class="st">"postgresql"</span>)
+            <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">0.05</span>)  <span class="cm"># DB query সিমুলেশন</span>
+
+        <span class="cm"># Child span — বাইরের API কল</span>
+        <span class="kw">with</span> <span class="va">tracer</span>.<span class="fn">start_as_current_span</span>(<span class="st">"payment-gateway-api"</span>) <span class="kw">as</span> <span class="va">api_span</span>:
+            <span class="va">api_span</span>.<span class="fn">set_attribute</span>(<span class="st">"http.url"</span>, <span class="st">"https://gateway.example.com/charge"</span>)
+            <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">0.12</span>)  <span class="cm"># API call সিমুলেশন</span>
+
+        <span class="fn">print</span>(<span class="st">f"✅ Payment processed: {order_id}"</span>)
+
+<span class="cm"># চালান</span>
+<span class="fn">process_payment</span>(<span class="st">"order-456"</span>, <span class="nu">1500.00</span>)</pre>
+  </div>
+
+  <!-- Jaeger Docker -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Docker — Jaeger All-in-One চালু করুন</span>
+    </div>
+    <pre><span class="cm"># Jaeger All-in-One (development এর জন্য)</span>
+<span class="va">docker run -d --name jaeger \</span>
+  <span class="va">-e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \</span>
+  <span class="va">-p 5775:5775/udp \</span>
+  <span class="va">-p 6831:6831/udp \</span>
+  <span class="va">-p 6832:6832/udp \</span>
+  <span class="va">-p 5778:5778 \</span>
+  <span class="va">-p 16686:16686 \</span>   <span class="cm"># ← এখানে Jaeger UI আছে</span>
+  <span class="va">-p 14250:14250 \</span>
+  <span class="va">-p 14268:14268 \</span>
+  <span class="va">-p 14269:14269 \</span>
+  <span class="va">-p 9411:9411 \</span>
+  <span class="va">jaegertracing/all-in-one:latest</span>
+
+<span class="cm"># Browser এ যান: http://localhost:16686</span></pre>
+  </div>
+
+  <div class="info info-blue reveal">
+    <span class="info-i">🔑</span>
+    <div class="info-body">
+      <div class="info-t">Key Concepts</div>
+      <p><strong>Trace</strong> — একটি request এর সম্পূর্ণ যাত্রা | <strong>Span</strong> — যাত্রার একটি অংশ (একটি service এর কাজ) | <strong>Trace ID</strong> — সব span কে একত্রিত করার unique ID | <strong>Parent Span</strong> — যে span অন্য span কে call করে | <strong>Baggage</strong> — সব span এ পাঠানো context data</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="div">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 5: DEVSECOPS -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-devsecops reveal" id="devsecops">
+  <div class="ch-head">
+    <div class="ch-icon">🛡️</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০৫</span>
+      <h2 class="ch-title">DevSecOps</h2>
+      <p class="ch-desc">SAST, DAST, container scanning, dependency audit — security কে CI/CD pipeline এ integrate করুন।</p>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title">🎯 DevSecOps কী?</div>
+    <p><span class="hl hl-d">DevSecOps</span> = Development + Security + Operations। এটি একটি philosophy যেখানে security কে software development এর প্রতিটি ধাপে integrate করা হয় — শুধু শেষে নয়।</p>
+    <p>"Shift Left" মানে হলো security testing যত আগে করা যায় তত ভালো। Production এ গিয়ে vulnerability পাওয়া থেকে development এ পাওয়া অনেক সস্তা।</p>
+  </div>
+
+  <!-- DevSecOps Pipeline -->
+  <div class="arch reveal">
+    <div class="arch-title">DevSecOps CI/CD Pipeline</div>
+    <div style="overflow-x:auto;">
+      <div style="display:flex;align-items:center;gap:6px;min-width:700px;justify-content:center;">
+        <div class="arch-box" style="color:var(--devsecops);border-color:rgba(168,85,247,.3);text-align:center;font-size:.78rem;">Code<br>Commit</div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#a78bfa;border-color:rgba(167,139,250,.25);text-align:center;font-size:.78rem;"><strong>SAST</strong><br><small style="color:var(--text-2)">Static Analysis</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#818cf8;border-color:rgba(129,140,248,.25);text-align:center;font-size:.78rem;"><strong>Dep Audit</strong><br><small style="color:var(--text-2)">npm/pip audit</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#60a5fa;border-color:rgba(96,165,250,.25);text-align:center;font-size:.78rem;"><strong>Build</strong><br><small style="color:var(--text-2)">Docker Image</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#34d399;border-color:rgba(52,211,153,.25);text-align:center;font-size:.78rem;"><strong>Container</strong><br><small style="color:var(--text-2)">Trivy Scan</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#f59e0b;border-color:rgba(245,158,11,.25);text-align:center;font-size:.78rem;"><strong>Deploy</strong><br><small style="color:var(--text-2)">Staging</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:var(--prometheus);border-color:rgba(230,82,44,.25);text-align:center;font-size:.78rem;"><strong>DAST</strong><br><small style="color:var(--text-2)">OWASP ZAP</small></div>
+        <div class="arch-arrow" style="font-size:.9rem;">→</div>
+        <div class="arch-box" style="color:#fff;border-color:rgba(255,255,255,.2);text-align:center;font-size:.78rem;">Production</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAST -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--devsecops);">🔬 SAST — Static Application Security Testing</div>
+    <p>Source code না চালিয়েই security vulnerability খোঁজা। CI/CD pipeline এ সহজে integrate করা যায়।</p>
+  </div>
+
+  <div class="g2 reveal">
+    <div class="mini">
+      <div class="mini-t">Python SAST Tools</div>
+      <ul>
+        <li><strong>Bandit</strong> — Python-specific security linter</li>
+        <li><strong>Semgrep</strong> — multi-language, custom rules</li>
+        <li><strong>SonarQube</strong> — enterprise grade</li>
+        <li><strong>PyLint Security</strong> — linting + security</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <div class="mini-t">JavaScript SAST Tools</div>
+      <ul>
+        <li><strong>ESLint Security</strong> — JS linting</li>
+        <li><strong>NodeJsScan</strong> — Node.js specific</li>
+        <li><strong>Semgrep</strong> — JS, TS support</li>
+        <li><strong>Snyk Code</strong> — AI-powered</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Bandit — Python SAST এবং GitHub Actions</span>
+    </div>
+    <pre><span class="cm"># Bandit install ও scan</span>
+<span class="va">pip install bandit</span>
+
+<span class="cm"># পুরো project scan করুন</span>
+<span class="va">bandit -r ./src -f json -o bandit-report.json</span>
+
+<span class="cm"># শুধু HIGH severity দেখুন</span>
+<span class="va">bandit -r ./src -l -i</span>
+
+<span class="cm"># -------- .github/workflows/security.yml --------</span>
+<span class="kw">name</span>: <span class="st">Security Scan</span>
+
+<span class="kw">on</span>: [<span class="st">push</span>, <span class="st">pull_request</span>]
+
+<span class="kw">jobs</span>:
+  <span class="pr">sast-scan</span>:
+    <span class="pr">runs-on</span>: <span class="st">ubuntu-latest</span>
+    <span class="pr">steps</span>:
+      - <span class="pr">uses</span>: <span class="st">actions/checkout@v3</span>
+
+      - <span class="pr">name</span>: <span class="st">Python SAST - Bandit</span>
+        <span class="pr">run</span>: |
+          <span class="st">pip install bandit</span>
+          <span class="st">bandit -r . -f json -o bandit.json || true</span>
+
+      - <span class="pr">name</span>: <span class="st">Semgrep Scan</span>
+        <span class="pr">uses</span>: <span class="st">semgrep/semgrep-action@v1</span>
+        <span class="kw">with</span>:
+          <span class="pr">config</span>: <span class="st">p/python p/owasp-top-ten</span>
+
+      - <span class="pr">name</span>: <span class="st">Dependency Audit</span>
+        <span class="pr">run</span>: |
+          <span class="st">pip install safety</span>
+          <span class="st">safety check --json > safety-report.json</span>
+
+      - <span class="pr">name</span>: <span class="st">Upload Reports</span>
+        <span class="pr">uses</span>: <span class="st">actions/upload-artifact@v3</span>
+        <span class="kw">with</span>:
+          <span class="pr">name</span>: <span class="st">security-reports</span>
+          <span class="pr">path</span>: <span class="st">|
+            bandit.json
+            safety-report.json</span></pre>
+  </div>
+
+  <!-- Container Scanning -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--devsecops);">🐳 Container Scanning — Trivy</div>
+    <p>Trivy দিয়ে Docker image এর OS packages, application libraries, ও configuration vulnerabilities খোঁজা যায়।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Trivy — Container & Code Scanning</span>
+    </div>
+    <pre><span class="cm"># Trivy install (Ubuntu)</span>
+<span class="va">sudo apt install trivy</span>
+
+<span class="cm"># Docker image scan</span>
+<span class="va">trivy image nginx:latest</span>
+
+<span class="cm"># শুধু HIGH ও CRITICAL দেখুন</span>
+<span class="va">trivy image --severity HIGH,CRITICAL nginx:latest</span>
+
+<span class="cm"># JSON output</span>
+<span class="va">trivy image -f json -o results.json myapp:v1.0</span>
+
+<span class="cm"># Filesystem scan (source code)</span>
+<span class="va">trivy fs --scanners secret,vuln ./my-project</span>
+
+<span class="cm"># Secret scan (API key, password খোঁজা)</span>
+<span class="va">trivy fs --scanners secret .</span>
+
+<span class="cm"># Kubernetes cluster scan</span>
+<span class="va">trivy k8s --report summary cluster</span>
+
+<span class="cm"># ---- GitHub Actions এ ----</span>
+<span class="kw">- name</span>: <span class="st">Trivy Container Scan</span>
+  <span class="pr">uses</span>: <span class="st">aquasecurity/trivy-action@master</span>
+  <span class="kw">with</span>:
+    <span class="pr">image-ref</span>: <span class="st">'myapp:${{ github.sha }}'</span>
+    <span class="pr">format</span>: <span class="st">'sarif'</span>
+    <span class="pr">output</span>: <span class="st">'trivy-results.sarif'</span>
+    <span class="pr">severity</span>: <span class="st">'CRITICAL,HIGH'</span>
+    <span class="pr">exit-code</span>: <span class="st">'1'</span>  <span class="cm"># vulnerability পেলে build fail করুন</span></pre>
+  </div>
+
+  <!-- DAST -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--devsecops);">🌐 DAST — Dynamic Application Security Testing</div>
+    <p>চলমান application কে attack করে vulnerability পরীক্ষা। OWASP ZAP সবচেয়ে জনপ্রিয় DAST টুল।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">OWASP ZAP — Automated Security Testing</span>
+    </div>
+    <pre><span class="cm"># ZAP Docker দিয়ে Baseline Scan</span>
+<span class="va">docker run -t owasp/zap2docker-stable zap-baseline.py \</span>
+  <span class="va">-t https://your-staging-app.com \</span>
+  <span class="va">-r zap-report.html</span>
+
+<span class="cm"># Full Scan (বেশি সময় লাগে কিন্তু বেশি thorough)</span>
+<span class="va">docker run -t owasp/zap2docker-stable zap-full-scan.py \</span>
+  <span class="va">-t https://your-app.com \</span>
+  <span class="va">-j -r full-report.html</span>
+
+<span class="cm"># ---- Python দিয়ে ZAP API ব্যবহার ----</span>
+<span class="kw">from</span> <span class="va">zapv2</span> <span class="kw">import</span> <span class="cl">ZAPv2</span>
+<span class="kw">import</span> <span class="va">time</span>
+
+<span class="va">zap</span> = <span class="cl">ZAPv2</span>(<span class="va">apikey</span>=<span class="st">'your-api-key'</span>, <span class="va">proxies</span>={<span class="st">'http'</span>: <span class="st">'http://localhost:8080'</span>})
+<span class="va">target</span> = <span class="st">'https://your-staging-app.com'</span>
+
+<span class="cm"># Spider — সব URL আবিষ্কার করুন</span>
+<span class="va">scan_id</span> = <span class="va">zap</span>.<span class="va">spider</span>.<span class="fn">scan</span>(<span class="va">target</span>)
+<span class="kw">while</span> <span class="fn">int</span>(<span class="va">zap</span>.<span class="va">spider</span>.<span class="fn">status</span>(<span class="va">scan_id</span>)) < <span class="nu">100</span>:
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">5</span>)
+
+<span class="cm"># Active Scan — vulnerability পরীক্ষা</span>
+<span class="va">scan_id</span> = <span class="va">zap</span>.<span class="va">ascan</span>.<span class="fn">scan</span>(<span class="va">target</span>)
+<span class="kw">while</span> <span class="fn">int</span>(<span class="va">zap</span>.<span class="va">ascan</span>.<span class="fn">status</span>(<span class="va">scan_id</span>)) < <span class="nu">100</span>:
+    <span class="va">time</span>.<span class="fn">sleep</span>(<span class="nu">10</span>)
+
+<span class="cm"># Alerts দেখুন</span>
+<span class="va">alerts</span> = <span class="va">zap</span>.<span class="va">core</span>.<span class="fn">alerts</span>(<span class="va">baseurl</span>=<span class="va">target</span>)
+<span class="va">high_risks</span> = [<span class="va">a</span> <span class="kw">for</span> <span class="va">a</span> <span class="kw">in</span> <span class="va">alerts</span> <span class="kw">if</span> <span class="va">a</span>[<span class="st">'risk'</span>] == <span class="st">'High'</span>]
+<span class="fn">print</span>(<span class="st">f"🚨 High Risk Vulnerabilities: {len(high_risks)}"</span>)
+<span class="kw">for</span> <span class="va">alert</span> <span class="kw">in</span> <span class="va">high_risks</span>:
+    <span class="fn">print</span>(<span class="st">f"  • {alert['alert']}: {alert['url']}"</span>)</pre>
+  </div>
+
+  <div class="info info-purple reveal">
+    <span class="info-i">🛡️</span>
+    <div class="info-body">
+      <div class="info-t">Dependency Audit সংক্ষেপে</div>
+      <p><strong>npm audit</strong> — Node.js প্যাকেজ vulnerability চেক | <strong>pip-audit / safety</strong> — Python প্যাকেজ | <strong>OWASP Dependency-Check</strong> — multi-language | <strong>Snyk</strong> — commercial, CI-friendly | <strong>Dependabot</strong> — GitHub auto PR for updates</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="div">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 6: HASHICORP VAULT -->
+<!-- ================================================================ -->
+<div class="wrap">
+<section class="chapter ch-vault reveal" id="vault">
+  <div class="ch-head">
+    <div class="ch-icon">🔐</div>
+    <div class="ch-meta">
+      <span class="ch-num">অধ্যায় ০৬</span>
+      <h2 class="ch-title">HashiCorp Vault</h2>
+      <p class="ch-desc">API keys, passwords, certificates সুরক্ষিত রাখা — সম্পূর্ণ secret management গাইড।</p>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-title">🎯 HashiCorp Vault কী?</div>
+    <p><span class="hl hl-v">HashiCorp Vault</span> হলো centralized secret management system। API keys, database passwords, SSL certificates, SSH keys — এসব sensitive তথ্য নিরাপদে সংরক্ষণ ও বিতরণ করার জন্য ব্যবহার হয়।</p>
+    <p>আপনার কোডে hardcode করা password থাকা <strong style="color:var(--prometheus);">সবচেয়ে বড় security ভুল</strong>। Vault এই সমস্যার সমাধান করে।</p>
+  </div>
+
+  <!-- Why Vault -->
+  <div class="g2 reveal">
+    <div class="mini" style="border-color:rgba(230,82,44,.2);background:rgba(230,82,44,.04);">
+      <div class="mini-t" style="color:var(--prometheus);">❌ ভুল পদ্ধতি</div>
+      <div class="code-wrap" style="margin-top:10px;">
+        <pre style="padding:14px;font-size:.78rem;"><span class="cm"># কোডে সরাসরি password — NEVER করবেন না!</span>
+<span class="va">DB_PASSWORD</span> = <span class="st">"super_secret_123"</span>
+<span class="va">API_KEY</span> = <span class="st">"sk-xxxxxxxxxxxx"</span>
+
+<span class="cm"># .env ফাইলে রাখলে কেউ access পেলেই চুরি</span>
+<span class="va">DATABASE_URL</span> = <span class="st">"postgres://user:pass@db"</span></pre>
+      </div>
+    </div>
+    <div class="mini" style="border-color:rgba(255,216,20,.2);background:rgba(255,216,20,.04);">
+      <div class="mini-t" style="color:var(--vault);">✅ সঠিক পদ্ধতি (Vault)</div>
+      <div class="code-wrap" style="margin-top:10px;">
+        <pre style="padding:14px;font-size:.78rem;"><span class="cm"># Vault থেকে runtime এ নিন</span>
+<span class="kw">import</span> <span class="va">hvac</span>
+
+<span class="va">client</span> = <span class="va">hvac</span>.<span class="cl">Client</span>(<span class="va">url</span>=<span class="st">'https://vault:8200'</span>)
+<span class="va">client</span>.<span class="va">auth</span>.<span class="fn">approle.login</span>(<span class="va">role_id</span>, <span class="va">secret_id</span>)
+
+<span class="va">secret</span> = <span class="va">client</span>.<span class="va">secrets</span>.<span class="va">kv</span>.<span class="fn">read_secret</span>(
+    <span class="va">path</span>=<span class="st">'database/prod'</span>)
+<span class="va">DB_PASS</span> = <span class="va">secret</span>[<span class="st">'data'</span>][<span class="st">'password'</span>]</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Vault Install ও প্রথম সেটআপ</span>
+    </div>
+    <pre><span class="cm"># Docker দিয়ে Vault Development Server</span>
+<span class="va">docker run --cap-add=IPC_LOCK \</span>
+  <span class="va">-e VAULT_DEV_ROOT_TOKEN_ID="myroot" \</span>
+  <span class="va">-p 8200:8200 \</span>
+  <span class="va">hashicorp/vault:latest</span>
+
+<span class="cm"># Environment set করুন</span>
+<span class="kw">export</span> <span class="va">VAULT_ADDR</span>=<span class="st">'http://127.0.0.1:8200'</span>
+<span class="kw">export</span> <span class="va">VAULT_TOKEN</span>=<span class="st">'myroot'</span>
+
+<span class="cm"># Vault status দেখুন</span>
+<span class="va">vault status</span>
+
+<span class="cm"># ======= Secret Engine Enable করুন =======</span>
+
+<span class="cm"># KV (Key-Value) Secret Engine v2</span>
+<span class="va">vault secrets enable -path=secret kv-v2</span>
+
+<span class="cm"># Database Secret Engine</span>
+<span class="va">vault secrets enable database</span>
+
+<span class="cm"># ======= Secret লিখুন =======</span>
+
+<span class="cm"># Database credentials সেভ করুন</span>
+<span class="va">vault kv put secret/database/prod \</span>
+  <span class="va">host="db.example.com" \</span>
+  <span class="va">port="5432" \</span>
+  <span class="va">username="app_user" \</span>
+  <span class="va">password="super_secret_password"</span>
+
+<span class="cm"># API keys সেভ করুন</span>
+<span class="va">vault kv put secret/api-keys \</span>
+  <span class="va">stripe="sk_live_xxxx" \</span>
+  <span class="va">sendgrid="SG.xxxx" \</span>
+  <span class="va">openai="sk-xxxx"</span>
+
+<span class="cm"># পড়ুন</span>
+<span class="va">vault kv get secret/database/prod</span>
+
+<span class="cm"># নির্দিষ্ট field পড়ুন</span>
+<span class="va">vault kv get -field=password secret/database/prod</span></pre>
+  </div>
+
+  <!-- Policies -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--vault);">📋 Vault Policies — কে কী access পাবে</div>
+    <p>HCL (HashiCorp Configuration Language) দিয়ে policy লেখা হয়। Principle of Least Privilege — প্রয়োজনের বেশি access কাউকে দেবেন না।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">app-policy.hcl — Vault Policy</span>
+    </div>
+    <pre><span class="cm"># app-policy.hcl — Production App এর policy</span>
+
+<span class="cm"># শুধু নিজের secret পড়তে পারবে</span>
+<span class="kw">path</span> <span class="st">"secret/data/database/prod"</span> {
+  <span class="pr">capabilities</span> = [<span class="st">"read"</span>]
+}
+
+<span class="kw">path</span> <span class="st">"secret/data/api-keys"</span> {
+  <span class="pr">capabilities</span> = [<span class="st">"read"</span>]
+}
+
+<span class="cm"># নিজের path এ সব কিছু করতে পারবে</span>
+<span class="kw">path</span> <span class="st">"secret/data/myapp/*"</span> {
+  <span class="pr">capabilities</span> = [<span class="st">"create"</span>, <span class="st">"read"</span>, <span class="st">"update"</span>, <span class="st">"delete"</span>]
+}
+
+<span class="cm"># Token নিজে renew করতে পারবে</span>
+<span class="kw">path</span> <span class="st">"auth/token/renew-self"</span> {
+  <span class="pr">capabilities</span> = [<span class="st">"update"</span>]
+}
+
+<span class="cm"># Admin policy — সব কিছু</span>
+<span class="kw">path</span> <span class="st">"*"</span> {
+  <span class="pr">capabilities</span> = [<span class="st">"create"</span>, <span class="st">"read"</span>, <span class="st">"update"</span>, <span class="st">"delete"</span>, <span class="st">"list"</span>]
+}
+
+<span class="cm"># --------- Policy apply করুন ---------</span>
+<span class="va">vault policy write app-policy app-policy.hcl</span>
+<span class="va">vault policy list</span></pre>
+  </div>
+
+  <!-- Python Integration -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Python — Vault Integration (hvac library)</span>
+    </div>
+    <pre><span class="kw">import</span> <span class="va">hvac</span>
+<span class="kw">import</span> <span class="va">os</span>
+<span class="kw">from</span> <span class="va">functools</span> <span class="kw">import</span> <span class="va">lru_cache</span>
+
+<span class="kw">class</span> <span class="cl">VaultClient</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="va">self</span>):
+        <span class="va">self</span>.<span class="va">client</span> = <span class="cl">hvac</span>.<span class="cl">Client</span>(
+            <span class="va">url</span>=<span class="va">os</span>.<span class="fn">getenv</span>(<span class="st">"VAULT_ADDR"</span>, <span class="st">"http://localhost:8200"</span>)
+        )
+        <span class="va">self</span>.<span class="fn">_authenticate</span>()
+
+    <span class="kw">def</span> <span class="fn">_authenticate</span>(<span class="va">self</span>):
+        <span class="cm"># AppRole authentication (production এ)</span>
+        <span class="va">role_id</span> = <span class="va">os</span>.<span class="fn">getenv</span>(<span class="st">"VAULT_ROLE_ID"</span>)
+        <span class="va">secret_id</span> = <span class="va">os</span>.<span class="fn">getenv</span>(<span class="st">"VAULT_SECRET_ID"</span>)
+
+        <span class="kw">if</span> <span class="va">role_id</span> <span class="kw">and</span> <span class="va">secret_id</span>:
+            <span class="va">self</span>.<span class="va">client</span>.<span class="va">auth</span>.<span class="va">approle</span>.<span class="fn">login</span>(
+                <span class="va">role_id</span>=<span class="va">role_id</span>,
+                <span class="va">secret_id</span>=<span class="va">secret_id</span>
+            )
+        <span class="kw">else</span>:
+            <span class="cm"># Development: token দিয়ে</span>
+            <span class="va">self</span>.<span class="va">client</span>.<span class="va">token</span> = <span class="va">os</span>.<span class="fn">getenv</span>(<span class="st">"VAULT_TOKEN"</span>)
+
+    <span class="fn">@lru_cache</span>(<span class="va">maxsize</span>=<span class="nu">128</span>)
+    <span class="kw">def</span> <span class="fn">get_secret</span>(<span class="va">self</span>, <span class="va">path</span>):
+        <span class="cm"># Cache করুন — বারবার Vault call করবেন না</span>
+        <span class="va">response</span> = <span class="va">self</span>.<span class="va">client</span>.<span class="va">secrets</span>.<span class="va">kv</span>.<span class="fn">read_secret_version</span>(
+            <span class="va">path</span>=<span class="va">path</span>
+        )
+        <span class="kw">return</span> <span class="va">response</span>[<span class="st">"data"</span>][<span class="st">"data"</span>]
+
+    <span class="kw">def</span> <span class="fn">get_db_config</span>(<span class="va">self</span>):
+        <span class="va">secret</span> = <span class="va">self</span>.<span class="fn">get_secret</span>(<span class="st">"database/prod"</span>)
+        <span class="kw">return</span> {
+            <span class="st">"host"</span>: <span class="va">secret</span>[<span class="st">"host"</span>],
+            <span class="st">"port"</span>: <span class="va">secret</span>[<span class="st">"port"</span>],
+            <span class="st">"user"</span>: <span class="va">secret</span>[<span class="st">"username"</span>],
+            <span class="st">"password"</span>: <span class="va">secret</span>[<span class="st">"password"</span>]
+        }
+
+<span class="cm"># ব্যবহার</span>
+<span class="va">vault</span> = <span class="cl">VaultClient</span>()
+<span class="va">db_config</span> = <span class="va">vault</span>.<span class="fn">get_db_config</span>()
+<span class="fn">print</span>(<span class="st">f"✅ DB Config loaded securely from Vault!"</span>)</pre>
+  </div>
+
+  <!-- Dynamic Secrets -->
+  <div class="card reveal">
+    <div class="card-title" style="color:var(--vault);">⚡ Dynamic Secrets — Vault এর সেরা Feature</div>
+    <p>Vault আপনার application এর জন্য <strong>on-demand</strong> temporary credentials তৈরি করতে পারে। Database এর জন্য TTL সহ user তৈরি করে, কাজ শেষে revoke করে।</p>
+  </div>
+
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Dynamic Database Credentials</span>
+    </div>
+    <pre><span class="cm"># ======= Database Secret Engine Config =======</span>
+
+<span class="cm"># PostgreSQL connection configure করুন</span>
+<span class="va">vault write database/config/postgresql \</span>
+  <span class="va">plugin_name=postgresql-database-plugin \</span>
+  <span class="va">allowed_roles="app-role" \</span>
+  <span class="va">connection_url="postgresql://{{username}}:{{password}}@db:5432/mydb" \</span>
+  <span class="va">username="vault_admin" \</span>
+  <span class="va">password="admin_password"</span>
+
+<span class="cm"># Role তৈরি করুন (কী permission থাকবে)</span>
+<span class="va">vault write database/roles/app-role \</span>
+  <span class="va">db_name=postgresql \</span>
+  <span class="va">creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \</span>
+  <span class="va">default_ttl="1h" \</span>
+  <span class="va">max_ttl="24h"</span>
+
+<span class="cm"># Dynamic credentials নিন</span>
+<span class="va">vault read database/creds/app-role</span>
+
+<span class="cm"># Output:</span>
+<span class="cm"># Key                Value</span>
+<span class="cm"># lease_id           database/creds/app-role/abc123</span>
+<span class="cm"># lease_duration     1h</span>
+<span class="cm"># username           v-app-ABcDeF  ← auto generated</span>
+<span class="cm"># password           A1b2-CdEf-GhIj  ← auto generated</span>
+
+<span class="cm"># Credentials revoke করুন (কাজ শেষে)</span>
+<span class="va">vault lease revoke database/creds/app-role/abc123</span></pre>
+  </div>
+
+  <!-- Kubernetes Integration -->
+  <div class="code-wrap reveal">
+    <div class="code-bar">
+      <div class="code-dots"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div></div>
+      <span class="code-label">Kubernetes — Vault Agent Injector</span>
+    </div>
+    <pre><span class="cm"># Kubernetes Pod এ Vault secrets inject করুন</span>
+<span class="cm"># (কোনো code change ছাড়াই!)</span>
+
+<span class="kw">apiVersion</span>: <span class="st">apps/v1</span>
+<span class="kw">kind</span>: <span class="st">Deployment</span>
+<span class="kw">metadata</span>:
+  <span class="pr">name</span>: <span class="st">my-app</span>
+<span class="kw">spec</span>:
+  <span class="pr">template</span>:
+    <span class="pr">metadata</span>:
+      <span class="pr">annotations</span>:
+        <span class="cm"># এই annotations গুলো Vault Agent কে বলে কী inject করতে হবে</span>
+        <span class="pr">vault.hashicorp.com/agent-inject</span>: <span class="st">"true"</span>
+        <span class="pr">vault.hashicorp.com/role</span>: <span class="st">"my-app"</span>
+
+        <span class="cm"># /vault/secrets/database.txt এ inject হবে</span>
+        <span class="pr">vault.hashicorp.com/agent-inject-secret-database.txt</span>: <span class="st">"secret/data/database/prod"</span>
+
+        <span class="cm"># Template দিয়ে format করুন</span>
+        <span class="pr">vault.hashicorp.com/agent-inject-template-database.txt</span>: |
+          <span class="st">{{- with secret "secret/data/database/prod" -}}</span>
+          <span class="st">DB_HOST={{ .Data.data.host }}</span>
+          <span class="st">DB_USER={{ .Data.data.username }}</span>
+          <span class="st">DB_PASS={{ .Data.data.password }}</span>
+          <span class="st">{{- end -}}</span>
+    <span class="pr">spec</span>:
+      <span class="pr">serviceAccountName</span>: <span class="st">my-app</span>
+      <span class="pr">containers</span>:
+        - <span class="pr">name</span>: <span class="st">app</span>
+          <span class="pr">image</span>: <span class="st">myapp:latest</span>
+          <span class="cm"># App /vault/secrets/database.txt পড়বে</span></pre>
+  </div>
+
+  <div class="info info-yellow reveal">
+    <span class="info-i">🔑</span>
+    <div class="info-body">
+      <div class="info-t">Vault Best Practices</div>
+      <p><strong>Seal/Unseal</strong> — Vault encrypt করা থাকে, unseal keys ছাড়া কেউ access পাবে না | <strong>Audit Logging</strong> — কে কখন কী access করেছে সব লগ হয় | <strong>Lease & TTL</strong> — সব secret এর মেয়াদ শেষ হয়, permanent access নেই | <strong>Namespaces</strong> — Enterprise: multiple teams isolated রাখুন | <strong>Transit Engine</strong> — application data encrypt/decrypt করুন Vault দিয়ে</p>
+    </div>
+  </div>
+
+  <!-- Final Summary Table -->
+  <div class="card reveal">
+    <div class="card-title" style="color:#fff;">📋 সম্পূর্ণ DevOps Stack — এক নজরে</div>
+  </div>
+
+  <div class="tbl-wrap reveal">
+    <table>
+      <thead><tr><th>টুল</th><th>কাজ</th><th>Port</th><th>কখন দরকার</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--prometheus);">Prometheus</strong></td><td>Metrics সংগ্রহ ও alerting</td><td>9090</td><td>সার্ভার/app performance মনিটর</td></tr>
+        <tr><td><strong style="color:var(--grafana);">Grafana</strong></td><td>Dashboard ও visualization</td><td>3000</td><td>সুন্দর গ্রাফ দেখতে চাইলে</td></tr>
+        <tr><td><strong style="color:var(--elk);">Elasticsearch</strong></td><td>Log storage ও search</td><td>9200</td><td>লগ search করতে হলে</td></tr>
+        <tr><td><strong style="color:var(--elk);">Logstash</strong></td><td>Log collection ও parsing</td><td>5044</td><td>বিভিন্ন source এর লগ process</td></tr>
+        <tr><td><strong style="color:var(--elk);">Kibana</strong></td><td>Log visualization</td><td>5601</td><td>ELK এর UI</td></tr>
+        <tr><td><strong style="color:var(--jaeger);">Jaeger</strong></td><td>Distributed tracing</td><td>16686</td><td>Microservice debugging</td></tr>
+        <tr><td><strong style="color:var(--devsecops);">Trivy</strong></td><td>Container security scan</td><td>CLI</td><td>Docker image vulnerability</td></tr>
+        <tr><td><strong style="color:var(--devsecops);">OWASP ZAP</strong></td><td>Web app security test</td><td>8080</td><td>API/Web DAST testing</td></tr>
+        <tr><td><strong style="color:var(--vault);">HashiCorp Vault</strong></td><td>Secret management</td><td>8200</td><td>সব credentials সুরক্ষিত রাখতে</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">DevOps Monitoring & Security বাংলা</div>
+  <p>Prometheus • Grafana • ELK • Jaeger • DevSecOps • HashiCorp Vault</p>
+  <p style="margin-top:10px;font-size:.78rem;">সম্পূর্ণ বিনামূল্যে • সম্পূর্ণ বাংলায় • প্রোডাকশন-গ্রেড গাইড</p>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const s = document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('prog').style.width = (s / h * 100) + '%';
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

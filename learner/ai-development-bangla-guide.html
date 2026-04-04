@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Development & Laravel Integration — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #05080f;
+  --bg2:       #080d18;
+  --bg3:       #0c1220;
+  --surface:   #0f1829;
+  --surface2:  #141f35;
+  --border:    #1e2d4d;
+  --border2:   #253660;
+
+  --ai:        #00d4ff;
+  --ai2:       #0099cc;
+  --green:     #00e676;
+  --green2:    #00b359;
+  --amber:     #ffab00;
+  --amber2:    #cc8800;
+  --rose:      #ff4081;
+  --rose2:     #cc0055;
+  --violet:    #7c4dff;
+  --violet2:   #5500dd;
+  --teal:      #1de9b6;
+
+  --text:      #dce8f5;
+  --text2:     #7a9cc0;
+  --text3:     #3d5a7a;
+  --heading:   #eef4ff;
+
+  --mono:      'JetBrains Mono', monospace;
+  --body:      'Hind Siliguri', sans-serif;
+  --display:   'Playfair Display', serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.85;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* ─── ANIMATED GRID BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -50vh; left: -50vw;
+  width: 200vw; height: 200vh;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(0,212,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(124,77,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 10%, rgba(0,230,118,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: float 8s ease-in-out infinite;
+}
+.orb1 { width: 400px; height: 400px; background: var(--ai); top: -100px; left: -100px; animation-delay: 0s; }
+.orb2 { width: 300px; height: 300px; background: var(--violet); bottom: -50px; right: -50px; animation-delay: 3s; }
+.orb3 { width: 200px; height: 200px; background: var(--green); top: 50%; left: 60%; animation-delay: 6s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.25);
+  color: var(--ai);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--ai);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 900;
+  color: var(--heading);
+  line-height: 1.15;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.hero h1 .line-ai {
+  display: block;
+  background: linear-gradient(135deg, var(--ai) 0%, var(--violet) 50%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text2);
+  max-width: 680px;
+  margin: 16px auto 40px;
+  line-height: 1.9;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 50px;
+}
+
+.pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.pill-ai  { background: rgba(0,212,255,0.1);  border-color: rgba(0,212,255,0.3);  color: var(--ai); }
+.pill-v   { background: rgba(124,77,255,0.1); border-color: rgba(124,77,255,0.3); color: var(--violet); }
+.pill-g   { background: rgba(0,230,118,0.1);  border-color: rgba(0,230,118,0.3);  color: var(--green); }
+.pill-a   { background: rgba(255,171,0,0.1);  border-color: rgba(255,171,0,0.3);  color: var(--amber); }
+.pill-r   { background: rgba(255,64,129,0.1); border-color: rgba(255,64,129,0.3); color: var(--rose); }
+
+.hero-stats {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hstat { text-align: center; }
+.hstat-n {
+  display: block;
+  font-family: var(--display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--ai), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.hstat-l { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+
+/* ─── NAV ─── */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(5,8,15,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sticky-nav::-webkit-scrollbar { display: none; }
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text3);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 14px 14px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-item:hover { color: var(--ai); border-color: var(--ai); }
+
+/* ─── MAIN ─── */
+.main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ─── SECTION ─── */
+.section { margin-bottom: 80px; scroll-margin-top: 20px; }
+
+.sec-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sec-badge {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.sb-ai     { background: linear-gradient(135deg,rgba(0,212,255,.2),rgba(0,212,255,.05)); border:1px solid rgba(0,212,255,.3); }
+.sb-green  { background: linear-gradient(135deg,rgba(0,230,118,.2),rgba(0,230,118,.05)); border:1px solid rgba(0,230,118,.3); }
+.sb-violet { background: linear-gradient(135deg,rgba(124,77,255,.2),rgba(124,77,255,.05)); border:1px solid rgba(124,77,255,.3); }
+.sb-amber  { background: linear-gradient(135deg,rgba(255,171,0,.2),rgba(255,171,0,.05));  border:1px solid rgba(255,171,0,.3); }
+.sb-rose   { background: linear-gradient(135deg,rgba(255,64,129,.2),rgba(255,64,129,.05)); border:1px solid rgba(255,64,129,.3); }
+.sb-teal   { background: linear-gradient(135deg,rgba(29,233,182,.2),rgba(29,233,182,.05)); border:1px solid rgba(29,233,182,.3); }
+
+.sec-title {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--heading);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.sec-sub { font-size: 13.5px; color: var(--text3); margin-top: 4px; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s;
+}
+.card:hover { border-color: var(--border2); }
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card p { color: var(--text2); margin-bottom: 12px; font-size: 15px; }
+.card p:last-child { margin-bottom: 0; }
+
+/* ─── CODE ─── */
+.code-wrap {
+  background: #020509;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 18px 0;
+  position: relative;
+}
+
+.code-bar {
+  background: #07111e;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.code-dots { display: flex; gap: 6px; }
+.cd { width: 12px; height: 12px; border-radius: 50%; }
+.cd-r { background: #ff5f56; }
+.cd-y { background: #ffbd2e; }
+.cd-g { background: #27c93f; }
+
+.code-fname {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+pre {
+  padding: 22px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #cdd9e5;
+}
+
+/* Syntax */
+.kw  { color: #ff7b72; }  /* keyword */
+.fn  { color: #d2a8ff; }  /* function/class */
+.str { color: #a5d6ff; }  /* string */
+.cm  { color: #4a6174; font-style: italic; }  /* comment */
+.val { color: #79c0ff; }  /* value/variable */
+.num { color: #f0e040; }  /* number */
+.op  { color: #ffa657; }  /* operator/method */
+.prop{ color: #7ee787; }  /* property */
+.tag { color: #ff7b72; }  /* html tag */
+.at  { color: #ffa657; }  /* attribute */
+.t   { color: #1de9b6; }  /* type */
+
+/* ─── TABLES ─── */
+.tbl-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); margin: 18px 0; }
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--surface2);
+  color: var(--ai);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 13px 18px;
+  color: var(--text2);
+  font-size: 14px;
+  border-bottom: 1px solid rgba(30,45,77,0.5);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); }
+td code, th code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.15);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--ai);
+}
+
+/* ─── INFO BOXES ─── */
+.ib {
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.ib-ai     { background: rgba(0,212,255,0.07);  border: 1px solid rgba(0,212,255,0.2); }
+.ib-green  { background: rgba(0,230,118,0.07);  border: 1px solid rgba(0,230,118,0.2); }
+.ib-amber  { background: rgba(255,171,0,0.07);  border: 1px solid rgba(255,171,0,0.2); }
+.ib-rose   { background: rgba(255,64,129,0.07); border: 1px solid rgba(255,64,129,0.2); }
+.ib-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.ib-body { color: var(--text2); font-size: 14.5px; line-height: 1.7; }
+.ib-body strong { color: var(--text); }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.b-free    { background: rgba(0,230,118,0.15);  color: var(--green);  border: 1px solid rgba(0,230,118,0.3); }
+.b-paid    { background: rgba(255,171,0,0.15);  color: var(--amber);  border: 1px solid rgba(255,171,0,0.3); }
+.b-both    { background: rgba(0,212,255,0.15);  color: var(--ai);     border: 1px solid rgba(0,212,255,0.3); }
+.b-popular { background: rgba(255,64,129,0.15); color: var(--rose);   border: 1px solid rgba(255,64,129,0.3); }
+.b-new     { background: rgba(29,233,182,0.15); color: var(--teal);   border: 1px solid rgba(29,233,182,0.3); }
+.b-laravel { background: rgba(255,64,129,0.15); color: #ff6b6b;       border: 1px solid rgba(255,107,107,0.3); }
+
+/* ─── GRID ─── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+@media(max-width:768px) {
+  .g2,.g3,.g4 { grid-template-columns:1fr; }
+  .hero-stats { gap: 24px; }
+}
+
+/* ─── PROVIDER CARDS ─── */
+.provider-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  position: relative;
+}
+.provider-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.pc-head {
+  padding: 22px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.pc-logo {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: white;
+  font-family: var(--mono);
+}
+.pc-name { font-size: 1.1rem; font-weight: 700; color: var(--heading); }
+.pc-tagline { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.pc-body { padding: 18px 22px; }
+.pc-body p { font-size: 13.5px; color: var(--text2); margin-bottom: 10px; }
+
+.feat-list { list-style: none; }
+.feat-list li {
+  font-size: 13px;
+  color: var(--text2);
+  padding: 5px 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.feat-list li::before { content: '✦'; color: var(--ai); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+
+.price-tag {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+}
+.price-tag strong { color: var(--heading); }
+
+/* ─── STEP FLOW ─── */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-step {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+.flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 48px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--border2), transparent);
+}
+.flow-num {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.3), rgba(124,77,255,0.3));
+  border: 1px solid rgba(0,212,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ai);
+  flex-shrink: 0;
+}
+.flow-content { flex: 1; padding-bottom: 30px; }
+.flow-content h4 { font-size: 1rem; font-weight: 700; color: var(--heading); margin-bottom: 8px; }
+.flow-content p { font-size: 14px; color: var(--text2); }
+
+/* ─── COMPARISON ─── */
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media(max-width:600px) { .comp-grid { grid-template-columns:1fr; } }
+
+.comp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.comp-head {
+  padding: 18px 22px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.comp-head.free-h { background: rgba(0,230,118,0.07); color: var(--green); }
+.comp-head.paid-h { background: rgba(255,171,0,0.07); color: var(--amber); }
+.comp-body { padding: 18px 22px; }
+.comp-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(30,45,77,0.4);
+  font-size: 14px;
+  color: var(--text2);
+}
+.comp-row:last-child { border-bottom: none; }
+.comp-row .ck { font-size: 16px; flex-shrink: 0; }
+
+/* ─── TIMELINE ─── */
+.timeline { position: relative; padding-left: 30px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--ai), var(--violet), transparent);
+}
+.tl-item { position: relative; margin-bottom: 28px; }
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 6px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--ai);
+  box-shadow: 0 0 10px var(--ai);
+}
+.tl-item h4 { font-size: 1rem; font-weight: 700; color: var(--heading); margin-bottom: 6px; }
+.tl-item p { font-size: 14px; color: var(--text2); }
+
+/* ─── MINI CARDS ─── */
+.mini-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: all 0.3s;
+}
+.mini-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.mini-card h4 { font-size: 15px; font-weight: 700; color: var(--heading); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.mini-card p { font-size: 13px; color: var(--text2); }
+
+/* ─── HIGHLIGHT TEXT ─── */
+.ha { color: var(--ai);    font-weight: 600; }
+.hg { color: var(--green); font-weight: 600; }
+.hv { color: var(--violet);font-weight: 600; }
+.hr { color: var(--rose);  font-weight: 600; }
+.ho { color: var(--amber); font-weight: 600; }
+.ht { color: var(--teal);  font-weight: 600; }
+
+p code, li code, td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.15);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--ai);
+}
+
+h3 { font-size: 1.15rem; color: var(--heading); font-weight: 700; margin: 22px 0 12px; }
+
+ul, ol { padding-left: 20px; }
+li { color: var(--text2); margin-bottom: 7px; font-size: 14.5px; }
+
+/* ─── USE CASE CARDS ─── */
+.usecase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.usecase:hover { border-color: var(--border2); }
+.usecase::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.uc-ai::before     { background: var(--ai); }
+.uc-green::before  { background: var(--green); }
+.uc-violet::before { background: var(--violet); }
+.uc-amber::before  { background: var(--amber); }
+.uc-rose::before   { background: var(--rose); }
+.uc-teal::before   { background: var(--teal); }
+
+.usecase h4 { font-size: 1rem; font-weight: 700; color: var(--heading); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.usecase p { font-size: 13.5px; color: var(--text2); }
+
+/* ─── DIVIDER ─── */
+.div { height: 1px; background: linear-gradient(90deg,transparent,var(--border),transparent); margin: 60px 0; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 40px 24px;
+  text-align: center;
+}
+footer p { color: var(--text3); font-size: 13.5px; margin-bottom: 8px; }
+footer .foot-title { color: var(--text2); font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+
+/* ─── GLOW EFFECTS ─── */
+.glow-ai     { text-shadow: 0 0 20px rgba(0,212,255,0.5); }
+.glow-green  { text-shadow: 0 0 20px rgba(0,230,118,0.5); }
+
+/* ─── SECTION ENTRY ANIMATION ─── */
+.section { animation: fadeUp 0.6s ease both; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* responsive hero h1 */
+@media(max-width:480px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-sub { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <div class="hero-eyebrow">🤖 সম্পূর্ণ বাংলা গাইড ২০২৫</div>
+
+  <h1>
+    কৃত্রিম বুদ্ধিমত্তা (AI) কীভাবে
+    <span class="line-ai">তৈরি ও ব্যবহার করবেন</span>
+  </h1>
+
+  <p class="hero-sub">
+    AI কী, কীভাবে কাজ করে, ওয়েব অ্যাপে কীভাবে যোগ করবেন,
+    Laravel প্রজেক্টে AI integration — ফ্রি ও পেইড সব অপশন বিস্তারিত বাংলায়।
+  </p>
+
+  <div class="hero-pills">
+    <span class="pill pill-ai">OpenAI / ChatGPT</span>
+    <span class="pill pill-v">Claude / Anthropic</span>
+    <span class="pill pill-g">Gemini / Google</span>
+    <span class="pill pill-a">Laravel Integration</span>
+    <span class="pill pill-r">Free vs Paid</span>
+    <span class="pill pill-ai">Machine Learning</span>
+    <span class="pill pill-g">Ollama (Local AI)</span>
+    <span class="pill pill-v">LangChain</span>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat">
+      <span class="hstat-n">১৫+</span>
+      <div class="hstat-l">AI Provider</div>
+    </div>
+    <div class="hstat">
+      <span class="hstat-n">৫০+</span>
+      <div class="hstat-l">কোড উদাহরণ</div>
+    </div>
+    <div class="hstat">
+      <span class="hstat-n">১০০%</span>
+      <div class="hstat-l">বাংলায়</div>
+    </div>
+    <div class="hstat">
+      <span class="hstat-n">২০২৫</span>
+      <div class="hstat-l">আপডেটেড</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav">
+  <a class="nav-item" href="#what-is-ai">🧠 AI কী</a>
+  <a class="nav-item" href="#types">📊 AI টাইপ</a>
+  <a class="nav-item" href="#providers">🌐 Providers</a>
+  <a class="nav-item" href="#free-vs-paid">💰 Free vs Paid</a>
+  <a class="nav-item" href="#web-integrate">🌍 Web Integration</a>
+  <a class="nav-item" href="#laravel">🔴 Laravel</a>
+  <a class="nav-item" href="#openai-laravel">⚡ OpenAI+Laravel</a>
+  <a class="nav-item" href="#claude-laravel">🤖 Claude+Laravel</a>
+  <a class="nav-item" href="#local-ai">🖥️ Local AI</a>
+  <a class="nav-item" href="#use-cases">💡 Use Cases</a>
+  <a class="nav-item" href="#build-ai">🏗️ নিজে AI বানান</a>
+  <a class="nav-item" href="#tips">🎯 টিপস</a>
+</nav>
+
+<div class="main">
+
+<!-- ═══════════════════ ১. AI কী ═══════════════════ -->
+<section class="section" id="what-is-ai">
+  <div class="sec-head">
+    <div class="sec-badge sb-ai">🧠</div>
+    <div>
+      <div class="sec-title">AI (কৃত্রিম বুদ্ধিমত্তা) আসলে কী?</div>
+      <div class="sec-sub">Artificial Intelligence — মূল ধারণা থেকে শুরু</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p><span class="ha">Artificial Intelligence (AI)</span> হলো কম্পিউটার সিস্টেমকে এমনভাবে তৈরি করা যেন সে মানুষের মতো চিন্তা করতে, শিখতে এবং সমস্যা সমাধান করতে পারে। সহজ ভাষায় — মেশিনকে "বুদ্ধিমান" করে তোলার প্রযুক্তি।</p>
+    <p>আজকের AI মূলত <span class="hg">Large Language Models (LLM)</span> এর উপর ভিত্তি করে — যেগুলো কোটি কোটি টেক্সট পড়ে শিখেছে এবং এখন যেকোনো প্রশ্নের উত্তর দিতে, কোড লিখতে, ছবি বিশ্লেষণ করতে পারে।</p>
+  </div>
+
+  <div class="g3">
+    <div class="usecase uc-ai">
+      <h4>🤖 Generative AI</h4>
+      <p>টেক্সট, ছবি, ভিডিও, কোড তৈরি করে। ChatGPT, Claude, Gemini, Midjourney এই ধরনের।</p>
+    </div>
+    <div class="usecase uc-green">
+      <h4>🔍 Predictive AI</h4>
+      <p>ডেটা দেখে ভবিষ্যৎ অনুমান করে। স্প্যাম ফিল্টার, রেকমেন্ডেশন সিস্টেম এই ধরনের।</p>
+    </div>
+    <div class="usecase uc-violet">
+      <h4>👁️ Computer Vision</h4>
+      <p>ছবি ও ভিডিও বোঝে। মুখ চেনা, বস্তু সনাক্তকরণ, OCR এই ধরনের।</p>
+    </div>
+    <div class="usecase uc-amber">
+      <h4>🗣️ Speech AI</h4>
+      <p>কথা শুনে বোঝে এবং কথা বলতে পারে। Siri, Google Assistant, Whisper এই ধরনের।</p>
+    </div>
+    <div class="usecase uc-rose">
+      <h4>🌐 Translation AI</h4>
+      <p>এক ভাষা থেকে আরেক ভাষায় অনুবাদ করে। Google Translate, DeepL এই ধরনের।</p>
+    </div>
+    <div class="usecase uc-teal">
+      <h4>🎯 Recommendation AI</h4>
+      <p>ব্যবহারকারীর পছন্দ অনুযায়ী সাজেশন দেয়। Netflix, YouTube, Amazon এই ধরনের।</p>
+    </div>
+  </div>
+
+  <div class="ib ib-ai">
+    <span class="ib-icon">💡</span>
+    <div class="ib-body"><strong>ওয়েব ডেভেলপার হিসেবে আপনাকে AI "বানাতে" হবে না!</strong> বেশিরভাগ ক্ষেত্রে আপনি শুধু OpenAI, Claude, Gemini এর মতো ready-made AI-এর API ব্যবহার করবেন। এটাই সহজ, দ্রুত এবং শক্তিশালী।</div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ২. AI কীভাবে কাজ করে ═══════════════════ -->
+<section class="section" id="types">
+  <div class="sec-head">
+    <div class="sec-badge sb-violet">📊</div>
+    <div>
+      <div class="sec-title">AI কীভাবে কাজ করে?</div>
+      <div class="sec-sub">Machine Learning, Deep Learning, LLM — সহজ বাংলায়</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <h4>১. Traditional Programming (পুরানো পদ্ধতি)</h4>
+      <p>মানুষ নিয়ম লেখে → কম্পিউটার সেই নিয়ম মেনে চলে। Input দিলে নির্দিষ্ট Output আসে। কিন্তু নতুন পরিস্থিতিতে কাজ করে না।</p>
+    </div>
+    <div class="tl-item">
+      <h4>২. Machine Learning (শেখার পদ্ধতি)</h4>
+      <p>মানুষ data দেয় → কম্পিউটার নিজেই প্যাটার্ন খোঁজে → নতুন data-তেও কাজ করে। যত বেশি data, তত ভালো শেখা।</p>
+    </div>
+    <div class="tl-item">
+      <h4>৩. Deep Learning (গভীর শেখা)</h4>
+      <p>মানুষের মস্তিষ্কের মতো "Neural Network" ব্যবহার করে। লক্ষ লক্ষ প্যারামিটার দিয়ে জটিল প্যাটার্ন ধরতে পারে।</p>
+    </div>
+    <div class="tl-item">
+      <h4>৪. Large Language Models — LLM (আধুনিক AI)</h4>
+      <p>ইন্টারনেটের কোটি কোটি টেক্সট দিয়ে train করা। "Transformer" আর্কিটেকচার ব্যবহার করে। ChatGPT, Claude, Gemini এই ধরনের।</p>
+    </div>
+    <div class="tl-item">
+      <h4>৫. Multimodal AI (২০২৪-২০২৫)</h4>
+      <p>শুধু টেক্সট নয়, ছবি + টেক্সট + অডিও একসাথে বোঝে। GPT-4o, Claude 3.5, Gemini Ultra এই ধরনের।</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 API কী এবং কেন গুরুত্বপূর্ণ?</div>
+    <p>API (Application Programming Interface) হলো দুটি সফটওয়্যারের মধ্যে যোগাযোগের মাধ্যম। AI কোম্পানিগুলো API দেয় যাতে আপনি তাদের AI-কে আপনার অ্যাপে ব্যবহার করতে পারেন।</p>
+    <p>সহজ উদাহরণ: আপনার Laravel অ্যাপ OpenAI-এর API-কে বলবে <span class="ha">"এই প্রশ্নের উত্তর দাও"</span> → OpenAI উত্তর দিবে → আপনার অ্যাপ সেটা ব্যবহারকারীকে দেখাবে।</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">📡 AI API কীভাবে কাজ করে — সরল উদাহরণ</div>
+      <span class="code-tag">Concept</span>
+    </div>
+    <pre><span class="cm">/*
+ * AI API এর মূল ধারণা
+ * আপনার App → HTTP Request → AI Server → Response → আপনার App
+ */</span>
+
+<span class="cm">// ১. আপনি একটি Request পাঠান</span>
+POST https://api.openai.com/v1/chat/completions
+<span class="prop">Authorization:</span> Bearer <span class="val">YOUR_API_KEY</span>
+<span class="prop">Content-Type:</span> application/json
+
+{
+  <span class="str">"model"</span>: <span class="val">"gpt-4o"</span>,
+  <span class="str">"messages"</span>: [
+    {
+      <span class="str">"role"</span>: <span class="val">"user"</span>,
+      <span class="str">"content"</span>: <span class="val">"বাংলাদেশের রাজধানী কী?"</span>
+    }
+  ]
+}
+
+<span class="cm">// ২. AI একটি Response দেয়</span>
+{
+  <span class="str">"choices"</span>: [{
+    <span class="str">"message"</span>: {
+      <span class="str">"role"</span>: <span class="val">"assistant"</span>,
+      <span class="str">"content"</span>: <span class="val">"বাংলাদেশের রাজধানী ঢাকা।"</span>
+    }
+  }],
+  <span class="str">"usage"</span>: {
+    <span class="str">"prompt_tokens"</span>: <span class="num">15</span>,
+    <span class="str">"completion_tokens"</span>: <span class="num">10</span>,
+    <span class="str">"total_tokens"</span>: <span class="num">25</span>    <span class="cm">// এই token-এর জন্য পয়সা লাগে</span>
+  }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৩. AI PROVIDERS ═══════════════════ -->
+<section class="section" id="providers">
+  <div class="sec-head">
+    <div class="sec-badge sb-green">🌐</div>
+    <div>
+      <div class="sec-title">প্রধান AI Provider সমূহ</div>
+      <div class="sec-sub">কোন কোম্পানির AI কেমন এবং কীভাবে ব্যবহার করবেন</div>
+    </div>
+  </div>
+
+  <div class="g2">
+
+    <!-- OpenAI -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">🟢 OpenAI (ChatGPT)</div>
+          <div class="pc-tagline">সবচেয়ে জনপ্রিয় AI Provider</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-both">API আছে</span>
+          <span class="badge b-popular">জনপ্রিয়</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>OpenAI হলো ChatGPT তৈরিকারী কোম্পানি। তাদের GPT-4o মডেল এখন সবচেয়ে শক্তিশালী AI মডেলগুলোর একটি।</p>
+        <ul class="feat-list">
+          <li>GPT-4o, GPT-4o-mini, GPT-3.5-turbo মডেল</li>
+          <li>টেক্সট, ছবি, অডিও — সব বোঝে</li>
+          <li>DALL-E দিয়ে ছবি তৈরি করা যায়</li>
+          <li>Whisper দিয়ে Speech-to-Text</li>
+          <li>চমৎকার PHP/Laravel লাইব্রেরি আছে</li>
+          <li>সবচেয়ে বেশি documentation ও community</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>ফ্রি:</strong> ChatGPT ওয়েবসাইটে সীমিত |
+          <strong>API:</strong> $0.00015/1K token (mini) থেকে শুরু
+        </div>
+      </div>
+    </div>
+
+    <!-- Anthropic Claude -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">🟣 Anthropic (Claude)</div>
+          <div class="pc-tagline">নিরাপদ ও বুদ্ধিমান AI</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-both">API আছে</span>
+          <span class="badge b-new">ট্রেন্ডিং</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>Claude হলো Anthropic এর AI। কোড লেখা, বিশ্লেষণ ও দীর্ঘ document বোঝার জন্য অসাধারণ।</p>
+        <ul class="feat-list">
+          <li>Claude 3.5 Sonnet, Claude 3 Opus, Haiku</li>
+          <li>২০০,০০০ token context window (বিশাল!)</li>
+          <li>কোড লেখায় GPT-4 এর চেয়ে ভালো মতামত অনেকের</li>
+          <li>নিরাপদ ও ethical AI এর জন্য পরিচিত</li>
+          <li>ছবি বিশ্লেষণ করতে পারে (Vision)</li>
+          <li>Competitive মূল্য</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>ফ্রি:</strong> claude.ai তে সীমিত |
+          <strong>API:</strong> $0.00025/1K token (Haiku) থেকে
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Gemini -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">🔵 Google (Gemini)</div>
+          <div class="pc-tagline">Google-এর AI, সবচেয়ে বেশি ফ্রি</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-free">বেশি ফ্রি</span>
+          <span class="badge b-both">API আছে</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>Google Gemini-এর সবচেয়ে বড় সুবিধা হলো Gemini 1.5 Flash মডেল সম্পূর্ণ ফ্রি — দিনে ১৫০০ request।</p>
+        <ul class="feat-list">
+          <li>Gemini 1.5 Pro, Flash, Ultra মডেল</li>
+          <li>১ মিলিয়ন token context window</li>
+          <li>Gemini Flash — সম্পূর্ণ ফ্রি (দিনে ১৫০০ req)</li>
+          <li>Google Search, YouTube, Drive সাথে integrate</li>
+          <li>Image, Audio, Video বোঝে</li>
+          <li>Google Cloud এর সাথে সহজ integration</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>ফ্রি:</strong> Gemini Flash — দিনে ১৫০০ request ফ্রি! |
+          <strong>Pro:</strong> $3.5/1M token
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta Llama -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">🦙 Meta (Llama)</div>
+          <div class="pc-tagline">Open Source — নিজের সার্ভারে চালান</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-free">Open Source</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>Meta-র Llama মডেল সম্পূর্ণ ফ্রি এবং open source। নিজের সার্ভারে ডাউনলোড করে চালাতে পারবেন — API cost নেই।</p>
+        <ul class="feat-list">
+          <li>Llama 3.1, 3.2, 3.3 মডেল (8B, 70B, 405B)</li>
+          <li>সম্পূর্ণ ফ্রি ও open source</li>
+          <li>Ollama দিয়ে locally চালান</li>
+          <li>Commercial use-এও ফ্রি</li>
+          <li>Privacy-focused — data নিজের কাছে থাকে</li>
+          <li>ভালো GPU দরকার</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>সম্পূর্ণ ফ্রি</strong> — শুধু আপনার server/GPU cost লাগবে
+        </div>
+      </div>
+    </div>
+
+    <!-- Groq -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">⚡ Groq</div>
+          <div class="pc-tagline">সবচেয়ে দ্রুত AI — Ultra-fast inference</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-free">ফ্রি আছে</span>
+          <span class="badge b-new">দ্রুততম</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>Groq হলো custom LPU chip দিয়ে তৈরি সার্ভিস। Llama, Mixtral মডেল অবিশ্বাস্য দ্রুততায় চালায়।</p>
+        <ul class="feat-list">
+          <li>Llama 3.3 70B, Mixtral 8x7B চালায়</li>
+          <li>OpenAI API-এর মতো একই syntax</li>
+          <li>ফ্রি tier — ১৪,৪০০ req/দিন</li>
+          <li>সেকেন্ডে ৫০০+ token output</li>
+          <li>Laravel-এ OpenAI SDK দিয়েই কাজ করে</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>ফ্রি:</strong> ৬০০০ token/মিনিট ফ্রি | <strong>Paid:</strong> অনেক সস্তা
+        </div>
+      </div>
+    </div>
+
+    <!-- Hugging Face -->
+    <div class="provider-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-name">🤗 Hugging Face</div>
+          <div class="pc-tagline">AI মডেলের GitHub — হাজার হাজার মডেল</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge b-free">অনেক ফ্রি</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p>Hugging Face হলো AI মডেলের সবচেয়ে বড় repository। হাজার হাজার free মডেল এখানে আছে।</p>
+        <ul class="feat-list">
+          <li>৫,০০,০০০+ AI মডেল free-তে</li>
+          <li>Text, Image, Audio, Video মডেল</li>
+          <li>Inference API দিয়ে সহজে ব্যবহার</li>
+          <li>নিজের মডেল train করে রাখা যায়</li>
+          <li>বাংলা NLP মডেলও আছে!</li>
+        </ul>
+        <div class="price-tag">
+          💰 <strong>ফ্রি:</strong> সীমিত inference | <strong>Pro:</strong> $9/মাস থেকে
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end g2 -->
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Provider</th>
+          <th>সেরা মডেল</th>
+          <th>ফ্রি টিয়ার</th>
+          <th>বাংলা সমর্থন</th>
+          <th>Laravel SDK</th>
+          <th>সেরা ব্যবহার</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟢 OpenAI</td>
+          <td>GPT-4o</td>
+          <td>সীমিত (ওয়েবসাইটে)</td>
+          <td>✅ চমৎকার</td>
+          <td><code>openai-php/laravel</code></td>
+          <td>সব কাজে, chatbot</td>
+        </tr>
+        <tr>
+          <td>🟣 Claude</td>
+          <td>Sonnet 4.5</td>
+          <td>claude.ai তে</td>
+          <td>✅ ভালো</td>
+          <td><code>anthropic/sdk</code></td>
+          <td>কোড, বিশ্লেষণ</td>
+        </tr>
+        <tr>
+          <td>🔵 Gemini</td>
+          <td>1.5 Flash</td>
+          <td>✅ ১৫০০ req/দিন ফ্রি</td>
+          <td>✅ চমৎকার</td>
+          <td><code>google/generative-ai</code></td>
+          <td>শুরু করতে, ফ্রিতে</td>
+        </tr>
+        <tr>
+          <td>🦙 Llama (Ollama)</td>
+          <td>Llama 3.3 70B</td>
+          <td>✅ সম্পূর্ণ ফ্রি</td>
+          <td>⚠️ মাঝারি</td>
+          <td>HTTP client</td>
+          <td>Private data, no cost</td>
+        </tr>
+        <tr>
+          <td>⚡ Groq</td>
+          <td>Llama 70B</td>
+          <td>✅ ১৪৪০০ req/দিন</td>
+          <td>⚠️ মাঝারি</td>
+          <td>OpenAI SDK ব্যবহার</td>
+          <td>দ্রুত response দরকার</td>
+        </tr>
+        <tr>
+          <td>🤗 HuggingFace</td>
+          <td>হাজারো মডেল</td>
+          <td>✅ অনেক মডেল ফ্রি</td>
+          <td>✅ বাংলা মডেলও আছে</td>
+          <td>HTTP client</td>
+          <td>Specific AI tasks</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৪. FREE VS PAID ═══════════════════ -->
+<section class="section" id="free-vs-paid">
+  <div class="sec-head">
+    <div class="sec-badge sb-amber">💰</div>
+    <div>
+      <div class="sec-title">Free বনাম Paid AI — কোনটা বেছে নেবেন?</div>
+      <div class="sec-sub">বাজেট, প্রজেক্টের ধরন ও প্রয়োজন অনুযায়ী সিদ্ধান্ত নিন</div>
+    </div>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-card">
+      <div class="comp-head free-h">✅ ফ্রি AI Options</div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="ck">🟢</span><div><strong>Google Gemini Flash API</strong> — দিনে ১৫০০ req সম্পূর্ণ ফ্রি। শুরু করার জন্য পারফেক্ট।</div></div>
+        <div class="comp-row"><span class="ck">🟢</span><div><strong>Groq API</strong> — Llama মডেল দিয়ে দিনে ১৪,৪০০ request ফ্রি।</div></div>
+        <div class="comp-row"><span class="ck">🟢</span><div><strong>Ollama (Local)</strong> — নিজের PC/Server-এ চালান। API cost শূন্য।</div></div>
+        <div class="comp-row"><span class="ck">🟢</span><div><strong>Hugging Face</strong> — অনেক মডেল ফ্রিতে test করা যায়।</div></div>
+        <div class="comp-row"><span class="ck">🟢</span><div><strong>OpenAI Free Tier</strong> — নতুন account-এ $5-$18 credit।</div></div>
+        <div class="comp-row"><span class="ck">⚠️</span><div>সীমাবদ্ধতা: rate limit, কম শক্তিশালী মডেল, slow response।</div></div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-head paid-h">💳 Paid AI Options</div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="ck">💰</span><div><strong>OpenAI API</strong> — GPT-4o Mini: $0.15/1M token। Production-ready।</div></div>
+        <div class="comp-row"><span class="ck">💰</span><div><strong>Claude API</strong> — Haiku: $0.25/1M token। কোড লেখায় দারুণ।</div></div>
+        <div class="comp-row"><span class="ck">💰</span><div><strong>Gemini Pro API</strong> — $3.5/1M token। বড় context window।</div></div>
+        <div class="comp-row"><span class="ck">💰</span><div><strong>Azure OpenAI</strong> — Enterprise level। বাংলাদেশ থেকেও নেওয়া যায়।</div></div>
+        <div class="comp-row"><span class="ck">✅</span><div>সুবিধা: unlimited, দ্রুত, শক্তিশালী, SLA guarantee।</div></div>
+        <div class="comp-row"><span class="ck">💡</span><div>ছোট প্রজেক্টে মাসে $5-$20 যথেষ্ট।</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Token হিসাব — আসলে কত টাকা লাগে?</div>
+    <p><span class="ha">Token</span> হলো AI-এর measurement unit। মোটামুটি ১ token = ৪ character বা ৩/৪ শব্দ। "Hello, how are you?" ≈ ৫ token।</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>ব্যবহার</th><th>মডেল</th><th>প্রতি request token</th><th>মাসে cost (১০০০ req)</th></tr>
+        <tr><td>সাধারণ Chatbot</td><td>GPT-4o Mini</td><td>~500 tokens</td><td>~$0.04 (মাত্র ৪ টাকা!)</td></tr>
+        <tr><td>Content Generation</td><td>Claude Haiku</td><td>~2000 tokens</td><td>~$0.25 (২৫ টাকা)</td></tr>
+        <tr><td>Code Assistant</td><td>GPT-4o</td><td>~3000 tokens</td><td>~$4.50 (৪৫০ টাকা)</td></tr>
+        <tr><td>Document Analysis</td><td>Gemini Pro</td><td>~10000 tokens</td><td>~$3.50 (৩৫০ টাকা)</td></tr>
+      </table>
+    </div>
+    <p>বেশিরভাগ ছোট-মাঝারি প্রজেক্টে মাসে <span class="hg">$5-$20 এর বেশি লাগে না</span>। শুরুতে ফ্রি tier দিয়ে শুরু করুন।</p>
+  </div>
+
+  <div class="g3">
+    <div class="mini-card">
+      <h4>🎓 শিক্ষার্থীদের জন্য</h4>
+      <p>Gemini Flash (ফ্রি) বা Groq (ফ্রি) দিয়ে শুরু করুন। Ollama দিয়ে local AI চালান। GitHub Student Pack-এ OpenAI credit পাওয়া যায়।</p>
+    </div>
+    <div class="mini-card">
+      <h4>🚀 Startup-এর জন্য</h4>
+      <p>GPT-4o Mini বা Claude Haiku দিয়ে শুরু করুন। Usage অনুযায়ী pay করুন। বড় হলে enterprise plan নিন।</p>
+    </div>
+    <div class="mini-card">
+      <h4>🏢 Enterprise-এর জন্য</h4>
+      <p>Azure OpenAI বা AWS Bedrock — enterprise SLA, data privacy, compliance নিশ্চিত। বাংলাদেশি কোম্পানিও ব্যবহার করছে।</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৫. WEB INTEGRATION ═══════════════════ -->
+<section class="section" id="web-integrate">
+  <div class="sec-head">
+    <div class="sec-badge sb-teal">🌍</div>
+    <div>
+      <div class="sec-title">ওয়েব অ্যাপে AI যোগ করার উপায়</div>
+      <div class="sec-sub">Frontend থেকে Backend — AI integration এর সব পদ্ধতি</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num">১</div>
+      <div class="flow-content">
+        <h4>Direct API Call (সরাসরি AI API call)</h4>
+        <p>আপনার backend থেকে সরাসরি OpenAI/Claude/Gemini API-তে HTTP request পাঠান। সবচেয়ে সাধারণ পদ্ধতি। Laravel-এ HTTP Facade বা SDK ব্যবহার করুন।</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">২</div>
+      <div class="flow-content">
+        <h4>SDK / Package (লাইব্রেরি ব্যবহার)</h4>
+        <p>প্রতিটি AI কোম্পানির official PHP/Laravel SDK আছে। এগুলো ব্যবহার করলে কম কোড লিখতে হয়, error handling ভালো হয়।</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">৩</div>
+      <div class="flow-content">
+        <h4>Streaming Response (রিয়েলটাইম আউটপুট)</h4>
+        <p>ChatGPT এর মতো টাইপ করতে করতে দেখানো। Server-Sent Events (SSE) বা WebSocket ব্যবহার করে। ব্যবহারকারীর অভিজ্ঞতা অনেক ভালো হয়।</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">৪</div>
+      <div class="flow-content">
+        <h4>RAG — Retrieval Augmented Generation</h4>
+        <p>আপনার নিজের document/database AI-কে দিয়ে উত্তর দেওয়ানো। PDF, Word file বা database থেকে AI উত্তর দেবে। Customer support-এ দারুণ কাজ করে।</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">৫</div>
+      <div class="flow-content">
+        <h4>AI Agents (স্বয়ংক্রিয় কাজ করা AI)</h4>
+        <p>AI নিজে থেকে সিদ্ধান্ত নিয়ে কাজ করে। Email পাঠানো, database query করা, web search করা — সব নিজে করতে পারে। LangChain বা OpenAI Function Calling ব্যবহার করুন।</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🌐 JavaScript Frontend-এ AI Chat (Vanilla JS)</div>
+      <span class="code-tag">Frontend</span>
+    </div>
+    <pre><span class="cm">// ফ্রন্টএন্ড থেকে আপনার Laravel backend-এ request</span>
+<span class="cm">// (কখনো সরাসরি API key ব্রাউজারে expose করবেন না!)</span>
+
+<span class="kw">async function</span> <span class="fn">askAI</span>(userMessage) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/ai/chat'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      <span class="str">'X-CSRF-TOKEN'</span>: document.<span class="fn">querySelector</span>(<span class="str">'meta[name="csrf-token"]'</span>).content
+    },
+    body: <span class="fn">JSON.stringify</span>({ message: userMessage })
+  });
+
+  <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+  <span class="kw">return</span> data.reply;
+}
+
+<span class="cm">// Streaming response (ChatGPT-এর মতো)</span>
+<span class="kw">async function</span> <span class="fn">streamAI</span>(message, outputElement) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/ai/stream'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body: <span class="fn">JSON.stringify</span>({ message })
+  });
+
+  <span class="kw">const</span> reader = response.body.<span class="fn">getReader</span>();
+  <span class="kw">const</span> decoder = <span class="kw">new</span> <span class="fn">TextDecoder</span>();
+
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.<span class="fn">read</span>();
+    <span class="kw">if</span> (done) <span class="kw">break</span>;
+    outputElement.textContent += decoder.<span class="fn">decode</span>(value); <span class="cm">// টাইপ করতে করতে দেখায়</span>
+  }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৬. LARAVEL SETUP ═══════════════════ -->
+<section class="section" id="laravel">
+  <div class="sec-head">
+    <div class="sec-badge sb-rose">🔴</div>
+    <div>
+      <div class="sec-title">Laravel-এ AI Integration — শুরু থেকে</div>
+      <div class="sec-sub">ধাপে ধাপে Laravel project-এ AI যোগ করুন</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 প্রয়োজনীয় জিনিসপত্র</div>
+    <div class="g3">
+      <div style="background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border);">
+        <p style="color:var(--ai);font-weight:700;margin-bottom:8px;">✅ দরকার</p>
+        <ul style="list-style:none;padding:0;">
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">PHP 8.1+ ইন্সটল</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Laravel 10 বা 11</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Composer ইন্সটল</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">AI Provider API Key</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">ইন্টারনেট সংযোগ</li>
+        </ul>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border);">
+        <p style="color:var(--green);font-weight:700;margin-bottom:8px;">🔑 API Key পাওয়ার জায়গা</p>
+        <ul style="list-style:none;padding:0;">
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">OpenAI: platform.openai.com</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Anthropic: console.anthropic.com</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Google: aistudio.google.com</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Groq: console.groq.com</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">HuggingFace: huggingface.co</li>
+        </ul>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border);">
+        <p style="color:var(--amber);font-weight:700;margin-bottom:8px;">⚠️ সতর্কতা</p>
+        <ul style="list-style:none;padding:0;">
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">API key .env-তে রাখুন</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">কখনো GitHub-এ push নয়</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Rate limit মাথায় রাখুন</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">User input sanitize করুন</li>
+          <li style="font-size:13px;color:var(--text2);padding:3px 0;">Billing alert সেট করুন</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">⚙️ .env — AI Provider Keys</div>
+      <span class="code-tag">.env</span>
+    </div>
+    <pre><span class="cm"># ======================================</span>
+<span class="cm"># AI Provider API Keys</span>
+<span class="cm"># শুধু একটি ব্যবহার করলেও হবে</span>
+<span class="cm"># ======================================</span>
+
+<span class="cm"># OpenAI</span>
+<span class="prop">OPENAI_API_KEY</span>=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="prop">OPENAI_MODEL</span>=gpt-4o-mini
+
+<span class="cm"># Anthropic Claude</span>
+<span class="prop">ANTHROPIC_API_KEY</span>=sk-ant-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="prop">ANTHROPIC_MODEL</span>=claude-haiku-4-5-20251001
+
+<span class="cm"># Google Gemini</span>
+<span class="prop">GEMINI_API_KEY</span>=AIzaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="prop">GEMINI_MODEL</span>=gemini-1.5-flash
+
+<span class="cm"># Groq (ফ্রি!)</span>
+<span class="prop">GROQ_API_KEY</span>=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="prop">GROQ_MODEL</span>=llama-3.3-70b-versatile
+
+<span class="cm"># Ollama (Local — সম্পূর্ণ ফ্রি)</span>
+<span class="prop">OLLAMA_BASE_URL</span>=http://localhost:11434
+<span class="prop">OLLAMA_MODEL</span>=llama3.2</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৭. OPENAI + LARAVEL ═══════════════════ -->
+<section class="section" id="openai-laravel">
+  <div class="sec-head">
+    <div class="sec-badge sb-green">⚡</div>
+    <div>
+      <div class="sec-title">OpenAI + Laravel — সম্পূর্ণ Implementation</div>
+      <div class="sec-sub">Installation থেকে Production-ready Chatbot পর্যন্ত</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">📦 Step 1 — Package ইন্সটল করুন</div>
+      <span class="code-tag">Terminal</span>
+    </div>
+    <pre><span class="cm"># OpenAI এর official PHP package</span>
+composer require openai-php/laravel
+
+<span class="cm"># Config file publish করুন</span>
+php artisan vendor:publish --provider="OpenAI\Laravel\ServiceProvider"
+
+<span class="cm"># এরপর config/openai.php ফাইল তৈরি হবে</span>
+<span class="cm"># .env-তে OPENAI_API_KEY যোগ করুন</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🎮 Step 2 — AIController তৈরি করুন</div>
+      <span class="code-tag">PHP / Laravel</span>
+    </div>
+    <pre><span class="cm"><?php
+// app/Http/Controllers/AIController.php</span>
+
+<span class="kw">namespace</span> App\Http\Controllers;
+
+<span class="kw">use</span> Illuminate\Http\Request;
+<span class="kw">use</span> OpenAI\Laravel\Facades\OpenAI;
+
+<span class="kw">class</span> <span class="fn">AIController</span> <span class="kw">extends</span> <span class="fn">Controller</span>
+{
+    <span class="cm">/**
+     * সাধারণ Chat — একটি প্রশ্নের উত্তর দেওয়া
+     */</span>
+    <span class="kw">public function</span> <span class="fn">chat</span>(Request <span class="val">$request</span>)
+    {
+        <span class="val">$request</span>-><span class="op">validate</span>([
+            <span class="str">'message'</span> => <span class="str">'required|string|max:2000'</span>
+        ]);
+
+        <span class="kw">try</span> {
+            <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+                <span class="str">'model'</span>   => <span class="fn">config</span>(<span class="str">'openai.request.model'</span>, <span class="str">'gpt-4o-mini'</span>),
+                <span class="str">'messages'</span> => [
+                    [
+                        <span class="str">'role'</span>    => <span class="str">'system'</span>,
+                        <span class="str">'content'</span> => <span class="str">'তুমি একজন সহায়ক AI assistant। বাংলায় উত্তর দাও।'</span>
+                    ],
+                    [
+                        <span class="str">'role'</span>    => <span class="str">'user'</span>,
+                        <span class="str">'content'</span> => <span class="val">$request</span>->message
+                    ]
+                ],
+                <span class="str">'max_tokens'</span>  => <span class="num">1000</span>,
+                <span class="str">'temperature'</span> => <span class="num">0.7</span>, <span class="cm">// 0 = সঠিক, 1 = creative</span>
+            ]);
+
+            <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+                <span class="str">'success'</span> => <span class="kw">true</span>,
+                <span class="str">'reply'</span>   => <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content,
+                <span class="str">'tokens'</span>  => <span class="val">$response</span>->usage->totalTokens,
+            ]);
+
+        } <span class="kw">catch</span> (\Exception <span class="val">$e</span>) {
+            <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+                <span class="str">'success'</span> => <span class="kw">false</span>,
+                <span class="str">'error'</span>   => <span class="str">'AI সার্ভিস সাময়িক সমস্যায়। আবার চেষ্টা করুন।'</span>
+            ], <span class="num">500</span>);
+        }
+    }
+
+    <span class="cm">/**
+     * Conversation History সহ Chat (Multi-turn)
+     * ব্যবহারকারী আগের কথা মনে রাখে
+     */</span>
+    <span class="kw">public function</span> <span class="fn">conversationChat</span>(Request <span class="val">$request</span>)
+    {
+        <span class="val">$messages</span> = <span class="val">$request</span>-><span class="op">input</span>(<span class="str">'history'</span>, []);
+
+        <span class="cm">// System prompt সবার আগে</span>
+        <span class="val">$systemMessage</span> = [[
+            <span class="str">'role'</span>    => <span class="str">'system'</span>,
+            <span class="str">'content'</span> => <span class="str">'তুমি একটি e-commerce ওয়েবসাইটের customer support AI।
+                          বাংলা ও ইংরেজি দুটোতেই উত্তর দিতে পারো।
+                          সবসময় বিনয়ী থাকো।'</span>
+        ]];
+
+        <span class="val">$allMessages</span> = <span class="fn">array_merge</span>(<span class="val">$systemMessage</span>, <span class="val">$messages</span>);
+
+        <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+            <span class="str">'model'</span>    => <span class="str">'gpt-4o-mini'</span>,
+            <span class="str">'messages'</span> => <span class="val">$allMessages</span>,
+        ]);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+            <span class="str">'reply'</span> => <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content
+        ]);
+    }
+
+    <span class="cm">/**
+     * ছবি বিশ্লেষণ — Vision API
+     * ছবি দেখে বর্ণনা দেওয়া
+     */</span>
+    <span class="kw">public function</span> <span class="fn">analyzeImage</span>(Request <span class="val">$request</span>)
+    {
+        <span class="val">$imageUrl</span> = <span class="val">$request</span>->image_url;
+
+        <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+            <span class="str">'model'</span>    => <span class="str">'gpt-4o'</span>, <span class="cm">// Vision-এর জন্য gpt-4o</span>
+            <span class="str">'messages'</span> => [[
+                <span class="str">'role'</span>    => <span class="str">'user'</span>,
+                <span class="str">'content'</span> => [
+                    [<span class="str">'type'</span> => <span class="str">'text'</span>, <span class="str">'text'</span> => <span class="str">'এই ছবিটি বাংলায় বর্ণনা করো।'</span>],
+                    [<span class="str">'type'</span> => <span class="str">'image_url'</span>, <span class="str">'image_url'</span> => [<span class="str">'url'</span> => <span class="val">$imageUrl</span>]]
+                ]
+            ]]
+        ]);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+            <span class="str">'description'</span> => <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content
+        ]);
+    }
+
+    <span class="cm">/**
+     * Content Generation — Blog Post / Product Description
+     */</span>
+    <span class="kw">public function</span> <span class="fn">generateContent</span>(Request <span class="val">$request</span>)
+    {
+        <span class="val">$topic</span> = <span class="val">$request</span>->topic;
+        <span class="val">$type</span>  = <span class="val">$request</span>->type; <span class="cm">// 'blog', 'product', 'email'</span>
+
+        <span class="val">$prompts</span> = [
+            <span class="str">'blog'</span>    => <span class="str">"'$topic' বিষয়ে ৫০০ শব্দের একটি SEO-friendly বাংলা ব্লগ পোস্ট লেখো।"</span>,
+            <span class="str">'product'</span> => <span class="str">"'$topic' পণ্যের একটি আকর্ষণীয় বাংলা বিবরণ লেখো যা বিক্রি বাড়াবে।"</span>,
+            <span class="str">'email'</span>   => <span class="str">"'$topic' বিষয়ে একটি প্রফেশনাল বাংলা ইমেইল লেখো।"</span>,
+        ];
+
+        <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+            <span class="str">'model'</span>       => <span class="str">'gpt-4o-mini'</span>,
+            <span class="str">'messages'</span>    => [[<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$prompts</span>[<span class="val">$type</span>]]],
+            <span class="str">'max_tokens'</span>  => <span class="num">1500</span>,
+        ]);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+            <span class="str">'content'</span> => <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content
+        ]);
+    }
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🛣️ Step 3 — Routes যোগ করুন</div>
+      <span class="code-tag">routes/api.php</span>
+    </div>
+    <pre><span class="cm"><?php
+// routes/api.php</span>
+
+<span class="kw">use</span> App\Http\Controllers\AIController;
+
+<span class="fn">Route</span>::<span class="op">middleware</span>([<span class="str">'auth:sanctum'</span>, <span class="str">'throttle:60,1'</span>])-><span class="op">group</span>(<span class="kw">function</span> () {
+
+    <span class="cm">// Basic Chat</span>
+    <span class="fn">Route</span>::<span class="op">post</span>(<span class="str">'/ai/chat'</span>, [AIController::<span class="kw">class</span>, <span class="str">'chat'</span>]);
+
+    <span class="cm">// Conversation with history</span>
+    <span class="fn">Route</span>::<span class="op">post</span>(<span class="str">'/ai/conversation'</span>, [AIController::<span class="kw">class</span>, <span class="str">'conversationChat'</span>]);
+
+    <span class="cm">// Image Analysis</span>
+    <span class="fn">Route</span>::<span class="op">post</span>(<span class="str">'/ai/image'</span>, [AIController::<span class="kw">class</span>, <span class="str">'analyzeImage'</span>]);
+
+    <span class="cm">// Content Generation</span>
+    <span class="fn">Route</span>::<span class="op">post</span>(<span class="str">'/ai/generate'</span>, [AIController::<span class="kw">class</span>, <span class="str">'generateContent'</span>]);
+});</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🗄️ Step 4 — Chat History Database-এ সংরক্ষণ</div>
+      <span class="code-tag">Migration + Model</span>
+    </div>
+    <pre><span class="cm"># Migration তৈরি করুন</span>
+php artisan make:migration create_ai_conversations_table
+
+<span class="cm">// database/migrations/xxxx_create_ai_conversations_table.php</span>
+<span class="kw">public function</span> <span class="fn">up</span>()
+{
+    Schema::<span class="op">create</span>(<span class="str">'ai_conversations'</span>, <span class="kw">function</span> (Blueprint <span class="val">$table</span>) {
+        <span class="val">$table</span>-><span class="op">id</span>();
+        <span class="val">$table</span>-><span class="op">foreignId</span>(<span class="str">'user_id'</span>)-><span class="op">constrained</span>()-><span class="op">onDelete</span>(<span class="str">'cascade'</span>);
+        <span class="val">$table</span>-><span class="op">string</span>(<span class="str">'session_id'</span>);
+        <span class="val">$table</span>-><span class="op">string</span>(<span class="str">'role'</span>); <span class="cm">// 'user' অথবা 'assistant'</span>
+        <span class="val">$table</span>-><span class="op">longText</span>(<span class="str">'content'</span>);
+        <span class="val">$table</span>-><span class="op">string</span>(<span class="str">'model'</span>)-><span class="op">nullable</span>();
+        <span class="val">$table</span>-><span class="op">integer</span>(<span class="str">'tokens_used'</span>)-><span class="op">default</span>(<span class="num">0</span>);
+        <span class="val">$table</span>-><span class="op">timestamps</span>();
+    });
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৮. CLAUDE + LARAVEL ═══════════════════ -->
+<section class="section" id="claude-laravel">
+  <div class="sec-head">
+    <div class="sec-badge sb-violet">🤖</div>
+    <div>
+      <div class="sec-title">Claude (Anthropic) + Laravel</div>
+      <div class="sec-sub">Anthropic Claude API — কোড ও বিশ্লেষণে সেরা</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">📦 Installation + Usage</div>
+      <span class="code-tag">PHP / Laravel</span>
+    </div>
+    <pre><span class="cm"># ইন্সটল করুন</span>
+composer require anthropic-php/client
+
+<span class="cm">// app/Services/ClaudeService.php</span>
+<span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> Anthropic;
+
+<span class="kw">class</span> <span class="fn">ClaudeService</span>
+{
+    <span class="kw">private</span> <span class="val">$client</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="val">$this</span>->client = Anthropic::<span class="op">client</span>(<span class="fn">env</span>(<span class="str">'ANTHROPIC_API_KEY'</span>));
+    }
+
+    <span class="cm">/**
+     * সাধারণ Chat
+     */</span>
+    <span class="kw">public function</span> <span class="fn">chat</span>(<span class="t">string</span> <span class="val">$message</span>): <span class="t">string</span>
+    {
+        <span class="val">$message</span> = <span class="val">$this</span>->client->messages()-><span class="op">create</span>([
+            <span class="str">'model'</span>      => <span class="str">'claude-haiku-4-5-20251001'</span>,  <span class="cm">// সবচেয়ে দ্রুত ও সস্তা</span>
+            <span class="str">'max_tokens'</span> => <span class="num">1024</span>,
+            <span class="str">'system'</span>     => <span class="str">'তুমি একজন সহায়ক assistant। সংক্ষেপে উত্তর দাও।'</span>,
+            <span class="str">'messages'</span>   => [
+                [<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$message</span>]
+            ],
+        ]);
+
+        <span class="kw">return</span> <span class="val">$message</span>->content[<span class="num">0</span>]->text;
+    }
+
+    <span class="cm">/**
+     * Code Review — কোড বিশ্লেষণ করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">reviewCode</span>(<span class="t">string</span> <span class="val">$code</span>, <span class="t">string</span> <span class="val">$language</span> = <span class="str">'PHP'</span>): <span class="t">string</span>
+    {
+        <span class="val">$prompt</span> = <span class="str">"নিচের $language কোড review করো এবং বাংলায় বলো:
+        ১. কোনো bug আছে কিনা
+        ২. Security সমস্যা আছে কিনা
+        ৩. কীভাবে improve করা যায়
+
+        ```$language
+        $code
+        ```"</span>;
+
+        <span class="val">$response</span> = <span class="val">$this</span>->client->messages()-><span class="op">create</span>([
+            <span class="str">'model'</span>      => <span class="str">'claude-sonnet-4-6'</span>,  <span class="cm">// কোড বিশ্লেষণে Sonnet ভালো</span>
+            <span class="str">'max_tokens'</span> => <span class="num">2048</span>,
+            <span class="str">'messages'</span>   => [[<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$prompt</span>]],
+        ]);
+
+        <span class="kw">return</span> <span class="val">$response</span>->content[<span class="num">0</span>]->text;
+    }
+
+    <span class="cm">/**
+     * Document Summarization — দীর্ঘ Document সংক্ষেপ করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">summarize</span>(<span class="t">string</span> <span class="val">$document</span>): <span class="t">string</span>
+    {
+        <span class="val">$response</span> = <span class="val">$this</span>->client->messages()-><span class="op">create</span>([
+            <span class="str">'model'</span>      => <span class="str">'claude-haiku-4-5-20251001'</span>,
+            <span class="str">'max_tokens'</span> => <span class="num">500</span>,
+            <span class="str">'messages'</span>   => [[
+                <span class="str">'role'</span>    => <span class="str">'user'</span>,
+                <span class="str">'content'</span> => <span class="str">"এই document-টি ৫টি বুলেট পয়েন্টে বাংলায় সংক্ষেপ করো:\n\n$document"</span>
+            ]],
+        ]);
+
+        <span class="kw">return</span> <span class="val">$response</span>->content[<span class="num">0</span>]->text;
+    }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ৯. GEMINI + LARAVEL (FREE!) ═══════════════════ -->
+<section class="section">
+  <div class="sec-head">
+    <div class="sec-badge sb-teal">🆓</div>
+    <div>
+      <div class="sec-title">Google Gemini + Laravel — সম্পূর্ণ ফ্রি!</div>
+      <div class="sec-sub">দিনে ১৫০০ request ফ্রি — শুরু করার জন্য পারফেক্ট</div>
+    </div>
+  </div>
+
+  <div class="ib ib-green">
+    <span class="ib-icon">🆓</span>
+    <div class="ib-body"><strong>সম্পূর্ণ ফ্রিতে শুরু করুন!</strong> Google Gemini 1.5 Flash API ব্যবহার করলে দিনে ১৫০০ request সম্পূর্ণ ফ্রি। শুরুতে এটি ব্যবহার করুন, পরে paid-এ যান।</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🆓 Gemini API — Laravel HTTP Client দিয়ে (ফ্রি!)</div>
+      <span class="code-tag">PHP / Laravel</span>
+    </div>
+    <pre><span class="cm"><?php
+// app/Services/GeminiService.php</span>
+
+<span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> Illuminate\Support\Facades\Http;
+
+<span class="kw">class</span> <span class="fn">GeminiService</span>
+{
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$apiKey</span>;
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$model</span>;
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$baseUrl</span> = <span class="str">'https://generativelanguage.googleapis.com/v1beta/models'</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="val">$this</span>->apiKey = <span class="fn">config</span>(<span class="str">'services.gemini.api_key'</span>);
+        <span class="val">$this</span>->model  = <span class="fn">config</span>(<span class="str">'services.gemini.model'</span>, <span class="str">'gemini-1.5-flash'</span>);
+    }
+
+    <span class="cm">/**
+     * টেক্সট Generate করা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">generate</span>(<span class="t">string</span> <span class="val">$prompt</span>): <span class="t">string</span>
+    {
+        <span class="val">$url</span> = <span class="str">"{$this->baseUrl}/{$this->model}:generateContent?key={$this->apiKey}"</span>;
+
+        <span class="val">$response</span> = Http::<span class="op">post</span>(<span class="val">$url</span>, [
+            <span class="str">'contents'</span> => [[
+                <span class="str">'parts'</span> => [[<span class="str">'text'</span> => <span class="val">$prompt</span>]]
+            ]],
+            <span class="str">'generationConfig'</span> => [
+                <span class="str">'temperature'</span>     => <span class="num">0.7</span>,
+                <span class="str">'maxOutputTokens'</span> => <span class="num">1000</span>,
+            ]
+        ]);
+
+        <span class="kw">return</span> <span class="val">$response</span>->json(<span class="str">'candidates.0.content.parts.0.text'</span>);
+    }
+
+    <span class="cm">/**
+     * Conversation Chat (history সহ)
+     */</span>
+    <span class="kw">public function</span> <span class="fn">chatWithHistory</span>(<span class="t">array</span> <span class="val">$history</span>, <span class="t">string</span> <span class="val">$newMessage</span>): <span class="t">string</span>
+    {
+        <span class="val">$url</span> = <span class="str">"{$this->baseUrl}/{$this->model}:generateContent?key={$this->apiKey}"</span>;
+
+        <span class="cm">// History format করা</span>
+        <span class="val">$contents</span> = <span class="fn">collect</span>(<span class="val">$history</span>)-><span class="op">map</span>(<span class="kw">fn</span>(<span class="val">$msg</span>) => [
+            <span class="str">'role'</span>  => <span class="val">$msg</span>[<span class="str">'role'</span>] === <span class="str">'assistant'</span> ? <span class="str">'model'</span> : <span class="str">'user'</span>,
+            <span class="str">'parts'</span> => [[<span class="str">'text'</span> => <span class="val">$msg</span>[<span class="str">'content'</span>]]]
+        ])-><span class="op">push</span>([
+            <span class="str">'role'</span>  => <span class="str">'user'</span>,
+            <span class="str">'parts'</span> => [[<span class="str">'text'</span> => <span class="val">$newMessage</span>]]
+        ])-><span class="op">toArray</span>();
+
+        <span class="val">$response</span> = Http::<span class="op">post</span>(<span class="val">$url</span>, [<span class="str">'contents'</span> => <span class="val">$contents</span>]);
+
+        <span class="kw">return</span> <span class="val">$response</span>->json(<span class="str">'candidates.0.content.parts.0.text'</span>);
+    }
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">⚡ Groq API (ফ্রি + দ্রুত) — OpenAI-এর মতো same syntax</div>
+      <span class="code-tag">PHP / Laravel</span>
+    </div>
+    <pre><span class="cm"># Groq, OpenAI-এর মতো same API structure ব্যবহার করে</span>
+<span class="cm"># তাই openai-php package দিয়েই কাজ করে!</span>
+
+composer require openai-php/laravel
+
+<span class="cm">// config/openai.php অথবা সরাসরি call:</span>
+<span class="kw">use</span> OpenAI\Client;
+
+<span class="val">$groq</span> = \OpenAI::<span class="op">factory</span>()
+    -><span class="op">withApiKey</span>(<span class="fn">env</span>(<span class="str">'GROQ_API_KEY'</span>))
+    -><span class="op">withBaseUri</span>(<span class="str">'https://api.groq.com/openai/v1'</span>) <span class="cm">// শুধু URL বদলায়</span>
+    -><span class="op">make</span>();
+
+<span class="val">$response</span> = <span class="val">$groq</span>->chat()-><span class="op">create</span>([
+    <span class="str">'model'</span>    => <span class="str">'llama-3.3-70b-versatile'</span>, <span class="cm">// Groq-এর Llama মডেল</span>
+    <span class="str">'messages'</span> => [
+        [<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="str">'বাংলাদেশের সেরা খাবার কী কী?'</span>]
+    ],
+]);
+
+<span class="kw">echo</span> <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content;
+<span class="cm">// ফ্রিতে দ্রুত উত্তর!</span></pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ১০. LOCAL AI (OLLAMA) ═══════════════════ -->
+<section class="section" id="local-ai">
+  <div class="sec-head">
+    <div class="sec-badge sb-amber">🖥️</div>
+    <div>
+      <div class="sec-title">Local AI — Ollama দিয়ে নিজের PC-তে AI চালান</div>
+      <div class="sec-sub">সম্পূর্ণ ফ্রি, Private, API cost শূন্য</div>
+    </div>
+  </div>
+
+  <div class="ib ib-ai">
+    <span class="ib-icon">🖥️</span>
+    <div class="ib-body"><strong>Ollama</strong> হলো এমন একটি tool যা দিয়ে আপনি Llama, Mistral, Gemma ইত্যাদি open source AI মডেল নিজের computer-এ চালাতে পারবেন। Internet লাগবে না, API cost নেই, data সম্পূর্ণ private।</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🔧 Ollama Setup + Laravel Integration</div>
+      <span class="code-tag">Terminal + PHP</span>
+    </div>
+    <pre><span class="cm"># ─── Step 1: Ollama ইন্সটল করুন ───</span>
+<span class="cm"># Windows: https://ollama.ai থেকে ডাউনলোড করুন</span>
+<span class="cm"># Mac:</span>
+brew install ollama
+
+<span class="cm"># ─── Step 2: AI মডেল ডাউনলোড করুন ───</span>
+ollama pull llama3.2          <span class="cm"># ছোট (2GB) — দ্রুত</span>
+ollama pull llama3.3:70b      <span class="cm"># বড় (40GB) — শক্তিশালী, ভালো GPU দরকার</span>
+ollama pull mistral           <span class="cm"># ভালো balanced মডেল</span>
+ollama pull phi3:mini         <span class="cm"># Microsoft-এর ছোট কিন্তু শক্তিশালী</span>
+
+<span class="cm"># ─── Step 3: চালু করুন ───</span>
+ollama serve    <span class="cm"># localhost:11434 তে API চালু হবে</span>
+ollama run llama3.2   <span class="cm"># chat করুন terminal-এ</span>
+
+<span class="cm"># ─── Laravel-এ Ollama ব্যবহার ───</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🦙 Laravel + Ollama Service</div>
+      <span class="code-tag">PHP / Laravel</span>
+    </div>
+    <pre><span class="cm"><?php
+// app/Services/OllamaService.php</span>
+
+<span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> Illuminate\Support\Facades\Http;
+
+<span class="kw">class</span> <span class="fn">OllamaService</span>
+{
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$baseUrl</span>;
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$model</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="val">$this</span>->baseUrl = <span class="fn">env</span>(<span class="str">'OLLAMA_BASE_URL'</span>, <span class="str">'http://localhost:11434'</span>);
+        <span class="val">$this</span>->model   = <span class="fn">env</span>(<span class="str">'OLLAMA_MODEL'</span>, <span class="str">'llama3.2'</span>);
+    }
+
+    <span class="cm">/**
+     * Simple Chat — API cost শূন্য!
+     */</span>
+    <span class="kw">public function</span> <span class="fn">chat</span>(<span class="t">string</span> <span class="val">$message</span>, <span class="t">string</span> <span class="val">$systemPrompt</span> = <span class="str">''</span>): <span class="t">string</span>
+    {
+        <span class="val">$messages</span> = [];
+
+        <span class="kw">if</span> (<span class="val">$systemPrompt</span>) {
+            <span class="val">$messages</span>[] = [<span class="str">'role'</span> => <span class="str">'system'</span>, <span class="str">'content'</span> => <span class="val">$systemPrompt</span>];
+        }
+
+        <span class="val">$messages</span>[] = [<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$message</span>];
+
+        <span class="val">$response</span> = Http::<span class="op">timeout</span>(<span class="num">120</span>)-><span class="op">post</span>(<span class="str">"{$this->baseUrl}/api/chat"</span>, [
+            <span class="str">'model'</span>    => <span class="val">$this</span>->model,
+            <span class="str">'messages'</span> => <span class="val">$messages</span>,
+            <span class="str">'stream'</span>   => <span class="kw">false</span>,
+        ]);
+
+        <span class="kw">return</span> <span class="val">$response</span>->json(<span class="str">'message.content'</span>);
+    }
+
+    <span class="cm">/**
+     * যেসব মডেল ইন্সটল আছে তার তালিকা
+     */</span>
+    <span class="kw">public function</span> <span class="fn">listModels</span>(): <span class="t">array</span>
+    {
+        <span class="val">$response</span> = Http::<span class="op">get</span>(<span class="str">"{$this->baseUrl}/api/tags"</span>);
+        <span class="kw">return</span> <span class="val">$response</span>->json(<span class="str">'models'</span>, []);
+    }
+}
+
+<span class="cm">// Controller-এ ব্যবহার:</span>
+<span class="kw">use</span> App\Services\OllamaService;
+
+<span class="kw">class</span> <span class="fn">ChatController</span> <span class="kw">extends</span> <span class="fn">Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">chat</span>(Request <span class="val">$request</span>, OllamaService <span class="val">$ollama</span>)
+    {
+        <span class="val">$reply</span> = <span class="val">$ollama</span>-><span class="op">chat</span>(
+            <span class="val">$request</span>->message,
+            <span class="str">'তুমি একটি helpful AI। বাংলায় সংক্ষিপ্ত উত্তর দাও।'</span>
+        );
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([<span class="str">'reply'</span> => <span class="val">$reply</span>]);
+        <span class="cm">// একদম ফ্রি! কোনো API cost নেই!</span>
+    }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ১১. USE CASES ═══════════════════ -->
+<section class="section" id="use-cases">
+  <div class="sec-head">
+    <div class="sec-badge sb-ai">💡</div>
+    <div>
+      <div class="sec-title">AI দিয়ে কী কী বানাবেন?</div>
+      <div class="sec-sub">Real-world use cases — Laravel প্রজেক্টে AI application</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🛒 E-commerce সাইটে AI</div>
+      <p>বাংলাদেশের অনেক e-commerce সাইটে AI যোগ করা যায়।</p>
+      <ul>
+        <li><strong>Product Description Generator:</strong> Product-এর নাম দিলে বিবরণ লিখে দেবে</li>
+        <li><strong>Customer Support Chatbot:</strong> অর্ডার ট্র্যাকিং, রিটার্ন পলিসি প্রশ্ন</li>
+        <li><strong>Product Recommendation:</strong> আপনার পছন্দ বিশ্লেষণ করে সাজেশন</li>
+        <li><strong>Review Summarizer:</strong> ১০০টি review-এর সারসংক্ষেপ</li>
+        <li><strong>Price Comparison AI:</strong> অন্য সাইটের সাথে তুলনা</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏥 স্বাস্থ্যসেবা অ্যাপে AI</div>
+      <p>স্বাস্থ্য বিষয়ক অ্যাপে AI দারুণ কাজে আসে।</p>
+      <ul>
+        <li><strong>Symptom Checker:</strong> লক্ষণ বললে সম্ভাব্য রোগ বলবে</li>
+        <li><strong>Medicine Info:</strong> ওষুধের তথ্য, পার্শ্বপ্রতিক্রিয়া</li>
+        <li><strong>Appointment Booking Bot:</strong> কথোপকথনের মাধ্যমে অ্যাপয়েন্টমেন্ট</li>
+        <li><strong>Medical Report Summary:</strong> জটিল রিপোর্ট সহজ ভাষায়</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 শিক্ষা প্ল্যাটফর্মে AI</div>
+      <p>Online শিক্ষায় AI বিপ্লব আনছে।</p>
+      <ul>
+        <li><strong>AI Tutor:</strong> যেকোনো বিষয়ে প্রশ্ন করো, উত্তর পাও</li>
+        <li><strong>Quiz Generator:</strong> যেকোনো topic থেকে MCQ বানানো</li>
+        <li><strong>Essay Grader:</strong> রচনা মূল্যায়ন ও পরামর্শ</li>
+        <li><strong>Homework Helper:</strong> সমস্যা বুঝিয়ে দেওয়া</li>
+        <li><strong>Translation Tool:</strong> বাংলা ↔ English</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📰 Content & Media তে AI</div>
+      <p>Content creation-এ AI সময় বাঁচায়।</p>
+      <ul>
+        <li><strong>News Summarizer:</strong> দীর্ঘ খবর ৩ লাইনে</li>
+        <li><strong>SEO Content Writer:</strong> Keyword দিলে লেখা তৈরি</li>
+        <li><strong>Social Media Post:</strong> Blog থেকে Facebook/Twitter post</li>
+        <li><strong>Translation:</strong> বাংলা খবর ইংরেজিতে</li>
+        <li><strong>Image Caption:</strong> ছবি দেখে caption লেখা</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏦 Finance & Banking-এ AI</div>
+      <p>আর্থিক সেবায় AI নিরাপত্তা ও সুবিধা বাড়ায়।</p>
+      <ul>
+        <li><strong>Fraud Detection:</strong> সন্দেহজনক লেনদেন চিহ্নিত</li>
+        <li><strong>Loan Eligibility:</strong> AI দিয়ে প্রাথমিক মূল্যায়ন</li>
+        <li><strong>Expense Categorizer:</strong> খরচ স্বয়ংক্রিয়ভাবে ভাগ</li>
+        <li><strong>Customer FAQ Bot:</strong> Banking প্রশ্নের উত্তর</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚗 Logistics & Delivery-তে AI</div>
+      <p>বাংলাদেশের delivery সেক্টরে AI-র বিশাল সুযোগ।</p>
+      <ul>
+        <li><strong>Route Optimization:</strong> সেরা রাস্তা বের করা</li>
+        <li><strong>Address Parser:</strong> অগোছালো ঠিকানা বোঝা</li>
+        <li><strong>Delivery Time Prediction:</strong> কখন পৌঁছাবে</li>
+        <li><strong>Customer Tracking Bot:</strong> WhatsApp-এ update</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Complete Chatbot Example -->
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+      <div class="code-fname">🤖 সম্পূর্ণ Customer Support Chatbot — Laravel + OpenAI</div>
+      <span class="code-tag">Production Ready</span>
+    </div>
+    <pre><span class="cm"><?php
+// app/Http/Controllers/ChatbotController.php</span>
+
+<span class="kw">namespace</span> App\Http\Controllers;
+
+<span class="kw">use</span> Illuminate\Http\Request;
+<span class="kw">use</span> OpenAI\Laravel\Facades\OpenAI;
+<span class="kw">use</span> App\Models\AiConversation;
+<span class="kw">use</span> Illuminate\Support\Str;
+
+<span class="kw">class</span> <span class="fn">ChatbotController</span> <span class="kw">extends</span> <span class="fn">Controller</span>
+{
+    <span class="cm">// আপনার ব্যবসার তথ্য AI-কে দিন</span>
+    <span class="kw">private</span> <span class="t">string</span> <span class="val">$systemPrompt</span> = <span class="str"><<<EOT
+তুমি "রহিম স্টোর"-এর AI customer support assistant।
+আমাদের তথ্য:
+- আমরা Electronics ও Gadgets বিক্রি করি
+- ঢাকায় ডেলিভারি: ১-২ দিন, সারা বাংলাদেশ: ৩-৫ দিন
+- Return Policy: ৭ দিনের মধ্যে
+- Hot Line: 01700-000000
+- সকাল ১০টা থেকে রাত ১০টা পর্যন্ত সেবা
+
+নিয়ম:
+১. সবসময় বাংলায় উত্তর দাও
+২. সংক্ষিপ্ত ও সহায়ক হও
+৩. জানা না থাকলে hotline দাও
+৪. কোনো মূল্য/offer নিশ্চিত না হলে বলবে না
+EOT</span>;
+
+    <span class="kw">public function</span> <span class="fn">chat</span>(Request <span class="val">$request</span>)
+    {
+        <span class="val">$request</span>-><span class="op">validate</span>([
+            <span class="str">'message'</span>    => <span class="str">'required|string|max:500'</span>,
+            <span class="str">'session_id'</span> => <span class="str">'nullable|string'</span>,
+        ]);
+
+        <span class="val">$sessionId</span> = <span class="val">$request</span>->session_id ?? Str::<span class="op">uuid</span>();
+        <span class="val">$userId</span>    = <span class="fn">auth</span>()-><span class="op">id</span>();
+
+        <span class="cm">// ─── আগের কথোপকথন লোড করুন ───</span>
+        <span class="val">$history</span> = AiConversation::
+            <span class="op">where</span>(<span class="str">'session_id'</span>, <span class="val">$sessionId</span>)
+            -><span class="op">orderBy</span>(<span class="str">'created_at'</span>)
+            -><span class="op">take</span>(<span class="num">10</span>) <span class="cm">// শেষ ১০টি message</span>
+            -><span class="op">get</span>()
+            -><span class="op">map</span>(<span class="kw">fn</span>(<span class="val">$m</span>) => [
+                <span class="str">'role'</span>    => <span class="val">$m</span>->role,
+                <span class="str">'content'</span> => <span class="val">$m</span>->content
+            ])-><span class="op">toArray</span>();
+
+        <span class="cm">// ─── OpenAI Call ───</span>
+        <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+            <span class="str">'model'</span>    => <span class="str">'gpt-4o-mini'</span>,
+            <span class="str">'messages'</span> => <span class="fn">array_merge</span>(
+                [[<span class="str">'role'</span> => <span class="str">'system'</span>, <span class="str">'content'</span> => <span class="val">$this</span>->systemPrompt]],
+                <span class="val">$history</span>,
+                [[<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$request</span>->message]]
+            ),
+            <span class="str">'max_tokens'</span>  => <span class="num">300</span>,
+            <span class="str">'temperature'</span> => <span class="num">0.5</span>,
+        ]);
+
+        <span class="val">$aiReply</span> = <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content;
+
+        <span class="cm">// ─── Database-এ সংরক্ষণ ───</span>
+        AiConversation::<span class="op">insert</span>([
+            [<span class="str">'user_id'</span> => <span class="val">$userId</span>, <span class="str">'session_id'</span> => <span class="val">$sessionId</span>,
+             <span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => <span class="val">$request</span>->message,
+             <span class="str">'tokens_used'</span> => <span class="val">$response</span>->usage->promptTokens,
+             <span class="str">'created_at'</span> => <span class="fn">now</span>(), <span class="str">'updated_at'</span> => <span class="fn">now</span>()],
+            [<span class="str">'user_id'</span> => <span class="val">$userId</span>, <span class="str">'session_id'</span> => <span class="val">$sessionId</span>,
+             <span class="str">'role'</span> => <span class="str">'assistant'</span>, <span class="str">'content'</span> => <span class="val">$aiReply</span>,
+             <span class="str">'tokens_used'</span> => <span class="val">$response</span>->usage->completionTokens,
+             <span class="str">'created_at'</span> => <span class="fn">now</span>(), <span class="str">'updated_at'</span> => <span class="fn">now</span>()],
+        ]);
+
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>([
+            <span class="str">'reply'</span>      => <span class="val">$aiReply</span>,
+            <span class="str">'session_id'</span> => <span class="val">$sessionId</span>,
+            <span class="str">'tokens'</span>     => <span class="val">$response</span>->usage->totalTokens,
+        ]);
+    }
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ ১২. AI বানানো ═══════════════════ -->
+<section class="section" id="build-ai">
+  <div class="sec-head">
+    <div class="sec-badge sb-rose">🏗️</div>
+    <div>
+      <div class="sec-title">নিজে AI তৈরি করা — কোথা থেকে শুরু?</div>
+      <div class="sec-sub">Machine Learning থেকে শুরু করে নিজের মডেল train করা পর্যন্ত</div>
+    </div>
+  </div>
+
+  <div class="ib ib-amber">
+    <span class="ib-icon">⚠️</span>
+    <div class="ib-body"><strong>সত্যি কথা:</strong> একটি GPT-4 বা Claude-এর মতো AI তৈরি করতে কোটি কোটি ডলার এবং হাজার হাজার GPU দরকার। কিন্তু <strong>specific task-এর জন্য ছোট AI</strong> — যেমন স্প্যাম ফিল্টার, sentiment analysis, বাংলা NLP — এগুলো আপনি নিজেই তৈরি করতে পারবেন!</div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🎓 শেখার পথ — AI Developer হতে চাইলে</div>
+      <div class="timeline" style="padding-left:24px;">
+        <div class="tl-item">
+          <h4>১. Python শিখুন (৩-৬ মাস)</h4>
+          <p>AI-এর জগতে Python রাজা। Variables, loops, functions, OOP শিখুন।</p>
+        </div>
+        <div class="tl-item">
+          <h4>২. Mathematics (২-৩ মাস)</h4>
+          <p>Linear Algebra, Statistics, Calculus — Khan Academy বা 3Blue1Brown দেখুন।</p>
+        </div>
+        <div class="tl-item">
+          <h4>৩. ML Libraries (৩-৬ মাস)</h4>
+          <p>NumPy, Pandas, Scikit-Learn, TensorFlow বা PyTorch শিখুন।</p>
+        </div>
+        <div class="tl-item">
+          <h4>৪. Projects বানান</h4>
+          <p>Spam detector, Sentiment analyzer, Image classifier — ছোট projects দিয়ে শুরু।</p>
+        </div>
+        <div class="tl-item">
+          <h4>৫. LLM Fine-tuning (Advanced)</h4>
+          <p>Llama, GPT-2 কে নিজের data দিয়ে train করুন। Hugging Face ব্যবহার করুন।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔧 Fine-tuning — নিজের Data দিয়ে AI শেখানো</div>
+      <p>আপনার ব্যবসার নির্দিষ্ট তথ্য দিয়ে AI কে train করাকে <span class="ha">Fine-tuning</span> বলে। যেমন — আপনার কাস্টমার সার্ভিস conversation দিয়ে chatbot train করা।</p>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+          <div class="code-fname">Fine-tuning data format</div>
+          <span class="code-tag">JSON</span>
+        </div>
+        <pre><span class="cm">// OpenAI Fine-tuning এর জন্য data format</span>
+{<span class="str">"messages"</span>: [
+  {<span class="str">"role"</span>: <span class="val">"system"</span>, <span class="str">"content"</span>: <span class="val">"রহিম স্টোরের assistant"</span>},
+  {<span class="str">"role"</span>: <span class="val">"user"</span>, <span class="str">"content"</span>: <span class="val">"পণ্য ফেরত দিতে চাই"</span>},
+  {<span class="str">"role"</span>: <span class="val">"assistant"</span>, <span class="str">"content"</span>: <span class="val">"৭ দিনের মধ্যে ফেরত দেওয়া যাবে..."</span>}
+]}
+<span class="cm">// এরকম ১০০+ example দিয়ে train করুন</span></pre>
+      </div>
+      <ul class="feat-list" style="list-style:none;padding:0;">
+        <li>OpenAI Fine-tuning: ~$10-50 এ নিজের মডেল</li>
+        <li>Hugging Face + Llama: সম্পূর্ণ ফ্রি (GPU দরকার)</li>
+        <li>Google Vertex AI: Enterprise fine-tuning</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🐍 RAG (Retrieval Augmented Generation) — আপনার Document দিয়ে AI</div>
+    <p>RAG হলো সবচেয়ে popular AI technique। আপনার PDF, Word, Database-এর তথ্য দিয়ে AI-কে "জানানো" হয়। Fine-tuning এর চেয়ে সহজ ও সস্তা।</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+        <div class="code-fname">RAG — আপনার Document দিয়ে AI Chatbot (Laravel)</div>
+        <span class="code-tag">PHP / Laravel</span>
+      </div>
+      <pre><span class="cm"><?php
+// RAG এর মূল ধারণা:
+// ১. Document → Chunks → Embeddings → Vector Database-এ সংরক্ষণ
+// ২. User question → Embedding → Similar chunks খোঁজা
+// ৩. Relevant chunks + Question → AI → উত্তর</span>
+
+<span class="cm"># Package ইন্সটল</span>
+composer require openai-php/laravel
+composer require pgvector/pgvector  <span class="cm"># PostgreSQL vector extension</span>
+
+<span class="cm">// Document Embedding তৈরি করা</span>
+<span class="kw">public function</span> <span class="fn">embedDocument</span>(<span class="t">string</span> <span class="val">$text</span>): <span class="t">array</span>
+{
+    <span class="val">$response</span> = <span class="fn">OpenAI</span>::embeddings()-><span class="op">create</span>([
+        <span class="str">'model'</span> => <span class="str">'text-embedding-3-small'</span>,
+        <span class="str">'input'</span> => <span class="val">$text</span>,
+    ]);
+
+    <span class="kw">return</span> <span class="val">$response</span>->embeddings[<span class="num">0</span>]->embedding;
+    <span class="cm">// এই 1536-মাত্রার vector database-এ সংরক্ষণ করুন</span>
+}
+
+<span class="cm">// প্রশ্নের উত্তর খোঁজা</span>
+<span class="kw">public function</span> <span class="fn">answerWithRAG</span>(<span class="t">string</span> <span class="val">$question</span>): <span class="t">string</span>
+{
+    <span class="cm">// ১. প্রশ্নের embedding তৈরি</span>
+    <span class="val">$questionEmbedding</span> = <span class="val">$this</span>-><span class="op">embedDocument</span>(<span class="val">$question</span>);
+
+    <span class="cm">// ২. Similar document chunks খোঁজা (pgvector)</span>
+    <span class="val">$relevantChunks</span> = DB::<span class="op">select</span>(<span class="str">"
+        SELECT content FROM document_chunks
+        ORDER BY embedding <-> ?::vector
+        LIMIT 5
+    "</span>, [json_encode(<span class="val">$questionEmbedding</span>)]);
+
+    <span class="val">$context</span> = <span class="fn">collect</span>(<span class="val">$relevantChunks</span>)->pluck(<span class="str">'content'</span>)-><span class="op">join</span>(<span class="str">"\n\n"</span>);
+
+    <span class="cm">// ৩. Context সহ AI-কে প্রশ্ন করা</span>
+    <span class="val">$response</span> = <span class="fn">OpenAI</span>::chat()-><span class="op">create</span>([
+        <span class="str">'model'</span>    => <span class="str">'gpt-4o-mini'</span>,
+        <span class="str">'messages'</span> => [[
+            <span class="str">'role'</span>    => <span class="str">'system'</span>,
+            <span class="str">'content'</span> => <span class="str">"শুধু নিচের তথ্য ব্যবহার করে বাংলায় উত্তর দাও:\n\n$context"</span>
+        ], [
+            <span class="str">'role'</span>    => <span class="str">'user'</span>,
+            <span class="str">'content'</span> => <span class="val">$question</span>
+        ]]
+    ]);
+
+    <span class="kw">return</span> <span class="val">$response</span>->choices[<span class="num">0</span>]->message->content;
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ১৩. TIPS ═══════════════════ -->
+<section class="section" id="tips">
+  <div class="sec-head">
+    <div class="sec-badge sb-teal">🎯</div>
+    <div>
+      <div class="sec-title">Expert টিপস ও Best Practices</div>
+      <div class="sec-sub">Production-এ AI ব্যবহারে সতর্কতা ও কৌশল</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">✅ সঠিক Prompt লেখার কৌশল</div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+          <div class="code-fname">Prompt Engineering Tips</div>
+        </div>
+        <pre><span class="cm">// ❌ খারাপ Prompt</span>
+<span class="str">"content লেখো"</span>
+
+<span class="cm">// ✅ ভালো Prompt</span>
+<span class="str">"তুমি একজন বাংলাদেশী content writer।
+নিচের পণ্যের জন্য ১৫০ শব্দের একটি
+আকর্ষণীয় বিবরণ লেখো যা:
+- ক্রেতাদের কিনতে উৎসাহিত করবে
+- SEO-friendly হবে
+- বাংলায় লেখা হবে
+
+পণ্য: Samsung Galaxy S24 Ultra"</span>
+
+<span class="cm">// Prompt Engineering কৌশল:</span>
+<span class="cm">// ১. Role দাও: "তুমি একজন ..."</span>
+<span class="cm">// ২. Format বলো: "bullet points-এ"</span>
+<span class="cm">// ৩. Constraint দাও: "১০০ শব্দের মধ্যে"</span>
+<span class="cm">// ৪. Example দাও: "যেমন: ..."</span>
+<span class="cm">// ৫. Language বলো: "বাংলায়"</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔒 Security Best Practices</div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <div class="code-dots"><span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span></div>
+          <div class="code-fname">Laravel AI Security</div>
+        </div>
+        <pre><span class="cm">// ১. Rate Limiting — abuse থেকে বাঁচুন</span>
+<span class="fn">Route</span>::<span class="op">middleware</span>([<span class="str">'throttle:10,1'</span>]) <span class="cm">// ১ মিনিটে ১০ req</span>
+    -><span class="op">post</span>(<span class="str">'/ai/chat'</span>, ...);
+
+<span class="cm">// ২. Input Validation</span>
+<span class="val">$request</span>-><span class="op">validate</span>([
+    <span class="str">'message'</span> => <span class="str">'required|string|max:1000|not_regex:/&lt;script/i'</span>
+]);
+
+<span class="cm">// ৩. Cost Limit — অতিরিক্ত bill থেকে বাঁচুন</span>
+<span class="kw">$userTokensToday</span> = AiConversation::
+    <span class="op">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()->id())
+    -><span class="op">whereDate</span>(<span class="str">'created_at'</span>, <span class="fn">today</span>())
+    -><span class="op">sum</span>(<span class="str">'tokens_used'</span>);
+
+<span class="kw">if</span> (<span class="val">$userTokensToday</span> > <span class="num">10000</span>) { <span class="cm">// দৈনিক limit</span>
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="op">json</span>(
+        [<span class="str">'error'</span> => <span class="str">'দৈনিক সীমা শেষ'</span>], <span class="num">429</span>
+    );
+}
+
+<span class="cm">// ৪. Cache করুন — একই প্রশ্নে AI call কমান</span>
+<span class="val">$cacheKey</span> = <span class="str">'ai_'</span> . md5(<span class="val">$request</span>->message);
+<span class="val">$reply</span> = Cache::<span class="op">remember</span>(<span class="val">$cacheKey</span>, <span class="num">3600</span>, <span class="kw">function</span>() {
+    <span class="kw">return</span> <span class="val">$this</span>-><span class="op">callAI</span>(...);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 সেরা AI Provider বেছে নেওয়ার চেকলিস্ট</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>প্রশ্ন</th><th>উত্তর হ্যাঁ হলে</th><th>Recommendation</th></tr>
+        <tr><td>বাজেট কি খুব কম?</td><td>হ্যাঁ</td><td><span class="badge b-free">Gemini Flash ফ্রি</span> বা Groq ব্যবহার করুন</td></tr>
+        <tr><td>Data কি private রাখতে হবে?</td><td>হ্যাঁ</td><td><span class="badge b-free">Ollama (Local)</span> — data বাইরে যায় না</td></tr>
+        <tr><td>Production, high traffic?</td><td>হ্যাঁ</td><td><span class="badge b-paid">OpenAI GPT-4o Mini</span> বা Claude Haiku</td></tr>
+        <tr><td>Code review/analysis?</td><td>হ্যাঁ</td><td><span class="badge b-paid">Claude Sonnet</span> — কোড বোঝায় সেরা</td></tr>
+        <tr><td>দ্রুত response দরকার?</td><td>হ্যাঁ</td><td><span class="badge b-both">Groq</span> — সবচেয়ে দ্রুত</td></tr>
+        <tr><td>শুধু শেখার জন্য?</td><td>হ্যাঁ</td><td><span class="badge b-free">Gemini Flash</span> বা Ollama — ফ্রিতেই শিখুন</td></tr>
+        <tr><td>বাংলা ভাষায় ভালো AI?</td><td>হ্যাঁ</td><td><span class="badge b-both">GPT-4o বা Gemini</span> — বাংলায় সেরা</td></tr>
+        <tr><td>Long document process?</td><td>হ্যাঁ</td><td><span class="badge b-paid">Claude Sonnet</span> — ২০০K token context</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="mini-card">
+      <h4>📚 শেখার Resources</h4>
+      <ul style="list-style:none;padding:0;">
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">🎓 fast.ai — ML শেখার সেরা</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">📺 Andrej Karpathy — YouTube</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">📖 Hugging Face Course — ফ্রি</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">🇧🇩 Bangla NLP Group — FB</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">📚 deeplearning.ai — Andrew Ng</li>
+      </ul>
+    </div>
+    <div class="mini-card">
+      <h4>🛠️ Useful Tools</h4>
+      <ul style="list-style:none;padding:0;">
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">🔧 LangChain PHP — AI framework</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">📊 Weights & Biases — ML tracking</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">🚀 Vercel AI SDK — JS framework</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">🗄️ Pinecone — Vector database</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">📦 pgvector — PostgreSQL vector</li>
+      </ul>
+    </div>
+    <div class="mini-card">
+      <h4>🚀 শুরু করার প্ল্যান</h4>
+      <ol style="padding-left:18px;">
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">Gemini Flash API key নিন (ফ্রি)</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">Laravel-এ simple chatbot বানান</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">Ollama দিয়ে locally test করুন</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">একটি real project-এ AI যোগ করুন</li>
+        <li style="font-size:13px;color:var(--text2);padding:3px 0;">Production-এ paid API-তে যান</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</div><!-- end main -->
+
+<footer>
+  <p class="foot-title">🇧🇩 AI Development & Laravel Integration — সম্পূর্ণ বাংলা গাইড ২০২৫</p>
+  <p>OpenAI · Claude · Gemini · Ollama · Groq · HuggingFace · Laravel · RAG · Fine-tuning</p>
+  <p style="margin-top:10px;font-size:12px;color:var(--text3);">তৈরি করা হয়েছে বাংলাদেশের ডেভেলপারদের জন্য ❤️</p>
+</footer>
+
+</div><!-- end wrap -->
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ক্লাউড ক্র্যাশ কোর্স — বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --surface: #111520;
+    --surface2: #161b2e;
+    --border: #1e2640;
+    --accent-aws: #FF9900;
+    --accent-gcp: #4285F4;
+    --accent-azure: #0078D4;
+    --accent-serverless: #8B5CF6;
+    --accent-net: #10B981;
+    --text: #e8eaf0;
+    --text-muted: #7a849a;
+    --text-dim: #4a5568;
+    --glow-aws: rgba(255,153,0,0.15);
+    --glow-gcp: rgba(66,133,244,0.15);
+    --glow-azure: rgba(0,120,212,0.15);
+    --glow-sv: rgba(139,92,246,0.15);
+    --glow-net: rgba(16,185,129,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID NOISE BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,13,20,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .nav-logo span { color: var(--accent-aws); }
+
+  .nav-links {
+    display: flex;
+    gap: 0.4rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    border-color: var(--border);
+    background: var(--surface);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 2rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--accent-aws);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+
+  .hero h1 .highlight-aws { color: var(--accent-aws); }
+  .hero h1 .highlight-gcp { color: var(--accent-gcp); }
+  .hero h1 .highlight-azure { color: var(--accent-azure); }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 580px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .hero-badges {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+
+  .badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid;
+  }
+
+  .badge-aws { color: var(--accent-aws); border-color: rgba(255,153,0,0.3); background: rgba(255,153,0,0.08); }
+  .badge-gcp { color: var(--accent-gcp); border-color: rgba(66,133,244,0.3); background: rgba(66,133,244,0.08); }
+  .badge-azure { color: var(--accent-azure); border-color: rgba(0,120,212,0.3); background: rgba(0,120,212,0.08); }
+  .badge-sv { color: var(--accent-serverless); border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.08); }
+  .badge-net { color: var(--accent-net); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+
+  .scroll-hint {
+    margin-top: 3rem;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    animation: bounce 2s infinite;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    max-width: 60px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+
+  .tag-aws { color: var(--accent-aws); }
+  .tag-gcp { color: var(--accent-gcp); }
+  .tag-azure { color: var(--accent-azure); }
+  .tag-sv { color: var(--accent-serverless); }
+  .tag-net { color: var(--accent-net); }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .section-desc {
+    margin-top: 0.8rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 600px;
+  }
+
+  /* ===== CARDS ===== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    cursor: default;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card-aws::before { background: linear-gradient(90deg, var(--accent-aws), transparent); }
+  .card-aws:hover { box-shadow: 0 8px 40px var(--glow-aws); border-color: rgba(255,153,0,0.25); }
+
+  .card-gcp::before { background: linear-gradient(90deg, var(--accent-gcp), transparent); }
+  .card-gcp:hover { box-shadow: 0 8px 40px var(--glow-gcp); border-color: rgba(66,133,244,0.25); }
+
+  .card-azure::before { background: linear-gradient(90deg, var(--accent-azure), transparent); }
+  .card-azure:hover { box-shadow: 0 8px 40px var(--glow-azure); border-color: rgba(0,120,212,0.25); }
+
+  .card-sv::before { background: linear-gradient(90deg, var(--accent-serverless), transparent); }
+  .card-sv:hover { box-shadow: 0 8px 40px var(--glow-sv); border-color: rgba(139,92,246,0.25); }
+
+  .card-net::before { background: linear-gradient(90deg, var(--accent-net), transparent); }
+  .card-net:hover { box-shadow: 0 8px 40px var(--glow-net); border-color: rgba(16,185,129,0.25); }
+
+  .card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .card-service {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+
+  .card p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .card-service.aws { color: var(--accent-aws); }
+  .card-service.gcp { color: var(--accent-gcp); }
+  .card-service.azure { color: var(--accent-azure); }
+  .card-service.sv { color: var(--accent-serverless); }
+  .card-service.net { color: var(--accent-net); }
+
+  /* ===== FEATURE BULLETS ===== */
+  .bullets {
+    margin-top: 0.8rem;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .bullets li {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .bullets li::before {
+    content: '→';
+    flex-shrink: 0;
+    margin-top: 1px;
+    opacity: 0.5;
+  }
+
+  /* ===== CODE BLOCK ===== */
+  .code-block {
+    background: #0d1017;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #a8b3cf;
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+
+  .code-block .kw { color: #7c9ef5; }
+  .code-block .str { color: #98c379; }
+  .code-block .comment { color: #4a5568; }
+  .code-block .num { color: #e5c07b; }
+  .code-block .fn { color: #61dafb; }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ===== ARCHITECTURE DIAGRAM ===== */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .arch-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .arch-node {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .arch-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+  }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+  }
+
+  .compare-table th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table th:first-child { border-radius: 8px 0 0 0; }
+  .compare-table th:last-child { border-radius: 0 8px 0 0; }
+
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+
+  .compare-table tr:hover td { background: var(--surface2); }
+
+  .compare-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ===== TIP BOX ===== */
+  .tip-box {
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    border: 1px solid;
+  }
+
+  .tip-box-aws { background: rgba(255,153,0,0.06); border-color: rgba(255,153,0,0.2); }
+  .tip-box-gcp { background: rgba(66,133,244,0.06); border-color: rgba(66,133,244,0.2); }
+  .tip-box-azure { background: rgba(0,120,212,0.06); border-color: rgba(0,120,212,0.2); }
+  .tip-box-sv { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.2); }
+  .tip-box-net { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.2); }
+
+  .tip-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  .tip-text { color: var(--text-muted); line-height: 1.65; }
+
+  /* ===== BIG FULL CARD ===== */
+  .full-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .full-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  /* ===== NETWORKING VISUAL ===== */
+  .net-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .net-layer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .net-layer::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent-net);
+  }
+
+  .net-layer:hover {
+    border-color: rgba(16,185,129,0.3);
+    box-shadow: 0 4px 20px rgba(16,185,129,0.1);
+  }
+
+  .net-layer-icon { font-size: 1.5rem; }
+
+  .net-layer-info { flex: 1; }
+
+  .net-layer-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-net);
+  }
+
+  .net-layer-desc {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  .net-layer-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    background: var(--bg);
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+
+  /* ===== STICKY PROGRESS ===== */
+  .progress-bar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-aws), var(--accent-gcp), var(--accent-azure), var(--accent-serverless), var(--accent-net));
+    z-index: 99;
+    transition: width 0.1s linear;
+    width: 0%;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent-net);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    margin-right: 6px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .arch-flow { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">☁️ ক্লাউড<span>ক্র্যাশ</span></div>
+  <ul class="nav-links">
+    <li><a href="#aws">AWS</a></li>
+    <li><a href="#gcp">GCP</a></li>
+    <li><a href="#azure">Azure</a></li>
+    <li><a href="#serverless">Serverless</a></li>
+    <li><a href="#networking">Networking</a></li>
+    <li><a href="#compare">তুলনা</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">☁ বাংলায় ক্লাউড কম্পিউটিং ক্র্যাশ কোর্স</p>
+  <h1>
+    <span class="highlight-aws">AWS</span> · <span class="highlight-gcp">GCP</span> · <span class="highlight-azure">Azure</span><br>
+    শিখুন বাংলায়, গভীরভাবে
+  </h1>
+  <p class="hero-sub">
+    EC2 থেকে Kubernetes, Lambda থেকে VPC — ক্লাউডের প্রতিটি টপিক সহজ বাংলায়, বাস্তব উদাহরণসহ।
+  </p>
+  <div class="hero-badges">
+    <span class="badge badge-aws">★ AWS Core</span>
+    <span class="badge badge-gcp">GCP / GKE</span>
+    <span class="badge badge-azure">Azure AKS</span>
+    <span class="badge badge-sv">Serverless</span>
+    <span class="badge badge-net">VPC Networking</span>
+  </div>
+  <div class="scroll-hint">▼ &nbsp; নিচে স্ক্রোল করুন</div>
+</section>
+
+<!-- ===== AWS SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="aws">
+  <div class="section-header">
+    <div class="section-tag tag-aws">01 — Amazon Web Services</div>
+    <h2 class="section-title">AWS — ক্লাউডের <span style="color:var(--accent-aws)">রাজা</span></h2>
+    <p class="section-desc">AWS হলো বিশ্বের সবচেয়ে বড় এবং সবচেয়ে বেশি ব্যবহৃত ক্লাউড প্ল্যাটফর্ম। Amazon তৈরি করেছে এবং ২০০৬ সাল থেকে চলছে।</p>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="card card-aws">
+      <span class="card-icon">🖥️</span>
+      <span class="card-service aws">EC2</span>
+      <div class="card-title">Elastic Compute Cloud</div>
+      <p>ক্লাউডে ভার্চুয়াল সার্ভার। তোমার নিজের কম্পিউটারের মতো, কিন্তু AWS-এর ডেটাসেন্টারে। যেকোনো OS (Linux/Windows), যেকোনো সাইজ।</p>
+      <ul class="bullets">
+        <li>t2.micro = ফ্রি টায়ার, ছোট প্রজেক্টের জন্য</li>
+        <li>m5.xlarge = প্রোডাকশন অ্যাপের জন্য</li>
+        <li>Auto Scaling — ট্রাফিক বাড়লে সার্ভার বাড়াও</li>
+        <li>Load Balancer দিয়ে ট্রাফিক ভাগ করো</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># EC2 instance চালু করো</span>
+aws ec2 run-instances \
+  --image-id <span class="str">ami-0abcdef1234567890</span> \
+  --instance-type <span class="str">t2.micro</span> \
+  --key-name <span class="str">MyKeyPair</span>
+      </div>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🪣</span>
+      <span class="card-service aws">S3</span>
+      <div class="card-title">Simple Storage Service</div>
+      <p>Object storage — যেকোনো ফাইল স্টোর করো। ছবি, ভিডিও, ব্যাকআপ, স্ট্যাটিক ওয়েবসাইট সব। ৯৯.৯৯% durability গ্যারান্টি।</p>
+      <ul class="bullets">
+        <li>Bucket = ফোল্ডারের মতো, globally unique নাম</li>
+        <li>Object = যেকোনো ফাইল, সর্বোচ্চ ৫ TB</li>
+        <li>Static Website Hosting করা যায় সরাসরি</li>
+        <li>Versioning — ফাইলের পুরনো ভার্সন রাখো</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># S3-তে ফাইল আপলোড</span>
+aws s3 cp myfile.pdf \
+  s3://<span class="str">my-bucket</span>/uploads/myfile.pdf
+
+<span class="comment"># Public URL পাবে এভাবে:</span>
+<span class="comment"># https://my-bucket.s3.amazonaws.com/...</span>
+      </div>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🗄️</span>
+      <span class="card-service aws">RDS</span>
+      <div class="card-title">Relational Database Service</div>
+      <p>Managed SQL ডেটাবেস। MySQL, PostgreSQL, Oracle, SQL Server — নিজে install না করে AWS পরিচালনা করে দেয়।</p>
+      <ul class="bullets">
+        <li>Automated backups, patching, failover</li>
+        <li>Multi-AZ = দুটো AZ-তে replica, HA নিশ্চিত</li>
+        <li>Read Replica = Read traffic আলাদা করো</li>
+        <li>Aurora = AWS-এর নিজস্ব, ৫x দ্রুত MySQL</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># RDS instance তৈরি</span>
+aws rds create-db-instance \
+  --db-instance-identifier <span class="str">mydb</span> \
+  --db-instance-class <span class="str">db.t3.micro</span> \
+  --engine <span class="str">mysql</span> \
+  --master-username <span class="str">admin</span> \
+  --master-user-password <span class="str">password</span>
+      </div>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">⚡</span>
+      <span class="card-service aws">Lambda</span>
+      <div class="card-title">Serverless Functions</div>
+      <p>কোড লেখো, সার্ভার ভুলে যাও। Event trigger হলে function চলে, শেষ হলে বন্ধ। শুধু execution time-এর পয়সা দাও।</p>
+      <ul class="bullets">
+        <li>Node.js, Python, Java, Go, Ruby সাপোর্ট</li>
+        <li>Free tier: ১ মিলিয়ন request/মাস</li>
+        <li>API Gateway দিয়ে HTTP endpoint বানাও</li>
+        <li>S3 event, DynamoDB stream দিয়ে trigger</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🌐</span>
+      <span class="card-service aws">VPC</span>
+      <div class="card-title">Virtual Private Cloud</div>
+      <p>তোমার নিজস্ব private network AWS-এ। Resources isolate করো, security নিশ্চিত করো। প্রতিটি AWS account-এ default VPC থাকে।</p>
+      <ul class="bullets">
+        <li>CIDR block দিয়ে IP range নির্ধারণ</li>
+        <li>Public/Private Subnet আলাদা করো</li>
+        <li>Security Group = Firewall rules</li>
+        <li>Peering = দুটো VPC connect করো</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🔐</span>
+      <span class="card-service aws">IAM</span>
+      <div class="card-title">Identity & Access Management</div>
+      <p>কে কী করতে পারবে তা নিয়ন্ত্রণ করো। Users, Groups, Roles, Policies — AWS-এর security-র মূল ভিত্তি।</p>
+      <ul class="bullets">
+        <li>Least Privilege Principle — শুধু দরকারী permission</li>
+        <li>Role = EC2/Lambda নিজেই অন্য সার্ভিস access করতে পারে</li>
+        <li>MFA চালু রাখো root account-এ সবসময়</li>
+        <li>Policy = JSON-এ permission define করা</li>
+      </ul>
+      <div class="code-block">
+<span class="comment">// IAM Policy উদাহরণ</span>
+{
+  <span class="kw">"Effect"</span>: <span class="str">"Allow"</span>,
+  <span class="kw">"Action"</span>: [<span class="str">"s3:GetObject"</span>],
+  <span class="kw">"Resource"</span>: <span class="str">"arn:aws:s3:::my-bucket/*"</span>
+}
+      </div>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🚢</span>
+      <span class="card-service aws">EKS</span>
+      <div class="card-title">Elastic Kubernetes Service</div>
+      <p>AWS-এ Managed Kubernetes। Container orchestration — হাজারো container চালাও, scale করো, manage করো অটোমেটিক।</p>
+      <ul class="bullets">
+        <li>Control Plane AWS manage করে, তুমি শুধু Worker Node</li>
+        <li>Fargate দিয়ে serverless pod চালাও</li>
+        <li>kubectl দিয়ে deploy করো যেকোনো সময়</li>
+        <li>Helm chart দিয়ে application package করো</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">📦</span>
+      <span class="card-service aws">ECR</span>
+      <div class="card-title">Elastic Container Registry</div>
+      <p>Docker image store করার জায়গা। DockerHub-এর মতো, কিন্তু AWS-এর private registry। EKS/ECS-এর সাথে perfectly integrate।</p>
+      <ul class="bullets">
+        <li>docker push করো, ECR-এ রাখো</li>
+        <li>Image scanning — vulnerability চেক করে</li>
+        <li>Lifecycle policy — পুরনো image auto delete</li>
+        <li>Cross-region replication সম্ভব</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">🌍</span>
+      <span class="card-service aws">CloudFront</span>
+      <div class="card-title">CDN — Content Delivery Network</div>
+      <p>বিশ্বের ৪০০+ Edge Location থেকে content serve করো। User-এর কাছের সার্ভার থেকে দেয়, তাই দ্রুত লোড হয়।</p>
+      <ul class="bullets">
+        <li>S3 + CloudFront = blazing fast static site</li>
+        <li>HTTPS সার্টিফিকেট বিনামূল্যে (ACM)</li>
+        <li>DDoS protection built-in (AWS Shield)</li>
+        <li>Cache-Control header দিয়ে TTL set করো</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">📡</span>
+      <span class="card-service aws">Route 53</span>
+      <div class="card-title">DNS Service</div>
+      <p>Domain name management। myapp.com → EC2 IP, এই mapping করে। ৯৯.৯৯% SLA গ্যারান্টি দেওয়া একমাত্র AWS সার্ভিস।</p>
+      <ul class="bullets">
+        <li>A Record, CNAME, MX, TXT — সব ধরনের DNS</li>
+        <li>Health Check — সার্ভার down হলে traffic সরাও</li>
+        <li>Weighted routing — A/B testing-এ কাজে আসে</li>
+        <li>Latency-based routing — কাছের region-এ পাঠাও</li>
+      </ul>
+    </div>
+
+    <div class="card card-aws">
+      <span class="card-icon">📊</span>
+      <span class="card-service aws">CloudWatch</span>
+      <div class="card-title">Monitoring & Observability</div>
+      <p>AWS infrastructure monitor করো। Metrics, Logs, Alarms, Dashboards — সব এক জায়গায়। কিছু wrong হলে alert পাও।</p>
+      <ul class="bullets">
+        <li>CPU, Memory, Network — সব metric দেখো</li>
+        <li>Log Insights — log query করো SQL-এর মতো</li>
+        <li>Alarm — CPU &gt;80% হলে email/SMS পাঠাও</li>
+        <li>EventBridge দিয়ে automated response</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="tip-box tip-box-aws">
+    <span class="tip-icon">💡</span>
+    <div class="tip-text"><strong style="color:var(--accent-aws)">AWS Exam টিপস:</strong> AWS Solutions Architect Associate পরীক্ষার জন্য — EC2, S3, VPC, IAM, RDS এই ৫টি সার্ভিস সবচেয়ে বেশি প্রশ্ন আসে। প্রতিটির Use Case মুখস্থ রাখো।</div>
+  </div>
+
+</section>
+
+<!-- ===== GCP SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="gcp">
+  <div class="section-header">
+    <div class="section-tag tag-gcp">02 — Google Cloud Platform</div>
+    <h2 class="section-title">GCP — Google-এর <span style="color:var(--accent-gcp)">ক্লাউড</span></h2>
+    <p class="section-desc">Google নিজে যেই infrastructure ব্যবহার করে Search, Gmail, YouTube চালাতে — সেটাই তোমাকে দেয় GCP হিসেবে। ML/AI-তে সবচেয়ে এগিয়ে।</p>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="card card-gcp">
+      <span class="card-icon">☸️</span>
+      <span class="card-service gcp">GKE</span>
+      <div class="card-title">Google Kubernetes Engine</div>
+      <p>Kubernetes Google-ই বানিয়েছে, তাই GKE সবচেয়ে mature। Autopilot mode-এ node management-ও Google করে দেয়।</p>
+      <ul class="bullets">
+        <li>Autopilot = node, scaling সব Google manage করে</li>
+        <li>Standard = তুমি নিজে node control করো</li>
+        <li>Workload Identity — pod-কে GCP API access দাও</li>
+        <li>Multi-cluster মানেজমেন্ট Anthos দিয়ে</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># GKE cluster তৈরি</span>
+gcloud container clusters create <span class="str">my-cluster</span> \
+  --zone <span class="str">us-central1-a</span> \
+  --num-nodes <span class="num">3</span>
+
+<span class="comment"># kubectl configure করো</span>
+gcloud container clusters get-credentials <span class="str">my-cluster</span>
+      </div>
+    </div>
+
+    <div class="card card-gcp">
+      <span class="card-icon">🏃</span>
+      <span class="card-service gcp">Cloud Run</span>
+      <div class="card-title">Serverless Containers</div>
+      <p>Docker container চালাও, সার্ভার ম্যানেজ করো না। Request এলে চলে, না থাকলে zero scale হয়। Lambda-র চেয়ে বেশি flexible।</p>
+      <ul class="bullets">
+        <li>যেকোনো ভাষা, যেকোনো framework — container হলেই হয়</li>
+        <li>০ থেকে ১০০০ instance অটো scale</li>
+        <li>HTTPS endpoint automatically পাবে</li>
+        <li>Traffic split — Blue/Green deployment সহজে</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># Cloud Run-এ deploy করো</span>
+gcloud run deploy <span class="str">my-app</span> \
+  --image <span class="str">gcr.io/my-project/my-app</span> \
+  --platform managed \
+  --allow-unauthenticated
+      </div>
+    </div>
+
+    <div class="card card-gcp">
+      <span class="card-icon">📊</span>
+      <span class="card-service gcp">BigQuery</span>
+      <div class="card-title">Serverless Data Warehouse</div>
+      <p>পেটাবাইট ডেটা SQL দিয়ে query করো সেকেন্ডে। Data Analytics-এর জন্য সেরা। কোনো cluster manage করতে হয় না।</p>
+      <ul class="bullets">
+        <li>Standard SQL দিয়ে কোয়েরি করো</li>
+        <li>ML built-in — SQL দিয়েই model train করো</li>
+        <li>Streaming insert — real-time data আসুক</li>
+        <li>Connected Sheets — Excel-এর মতো দেখো</li>
+      </ul>
+    </div>
+
+    <div class="card card-gcp">
+      <span class="card-icon">🗂️</span>
+      <span class="card-service gcp">Cloud Storage</span>
+      <div class="card-title">Object Storage (S3-এর বিকল্প)</div>
+      <p>AWS S3-এর মতো Google-এর object storage। Bucket তৈরি করো, object রাখো। BigQuery-র সাথে নেটিভ integration।</p>
+      <ul class="bullets">
+        <li>Standard, Nearline, Coldline, Archive — ৪ class</li>
+        <li>ব্যবহার কম = পয়সা কম (Coldline সস্তা)</li>
+        <li>Uniform bucket-level access — IAM policy</li>
+        <li>Transfer Service — অন্য cloud থেকে migrate করো</li>
+      </ul>
+    </div>
+
+    <div class="card card-gcp">
+      <span class="card-icon">🗃️</span>
+      <span class="card-service gcp">Cloud SQL</span>
+      <div class="card-title">Managed Relational Database</div>
+      <p>AWS RDS-এর সমতুল্য। MySQL, PostgreSQL, SQL Server — Google manage করে। Automatic backup, failover সব আছে।</p>
+      <ul class="bullets">
+        <li>High Availability — regional failover</li>
+        <li>Read Replica — পৃথক read endpoint</li>
+        <li>Point-in-time recovery</li>
+        <li>Cloud SQL Auth Proxy — secure connection</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="tip-box tip-box-gcp">
+    <span class="tip-icon">🎯</span>
+    <div class="tip-text"><strong style="color:var(--accent-gcp)">কখন GCP বেছে নেবে?</strong> তোমার কাজে Machine Learning, Big Data Analytics, বা Kubernetes-heavy workload থাকলে GCP সেরা পছন্দ। Google-এর global fiber network-এর কারণে latency খুব কম।</div>
+  </div>
+
+</section>
+
+<!-- ===== AZURE SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="azure">
+  <div class="section-header">
+    <div class="section-tag tag-azure">03 — Microsoft Azure</div>
+    <h2 class="section-title">Azure — Enterprise-এর <span style="color:var(--accent-azure)">পছন্দ</span></h2>
+    <p class="section-desc">Microsoft Azure বড় বড় কর্পোরেট প্রতিষ্ঠানে সবচেয়ে বেশি ব্যবহৃত। Active Directory, Office 365, Windows Server-এর সাথে সেরা integration।</p>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="card card-azure">
+      <span class="card-icon">☸️</span>
+      <span class="card-service azure">AKS</span>
+      <div class="card-title">Azure Kubernetes Service</div>
+      <p>Microsoft-এর managed Kubernetes। Azure Active Directory-এর সাথে দারুণ integration। Enterprise-এ সবচেয়ে বেশি চলে।</p>
+      <ul class="bullets">
+        <li>Azure AD integration — company login দিয়ে cluster access</li>
+        <li>KEDA — event-driven autoscaling</li>
+        <li>Azure Monitor + Container Insights</li>
+        <li>Virtual Nodes — Serverless pod via ACI</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># AKS cluster তৈরি</span>
+az aks create \
+  --resource-group <span class="str">MyRG</span> \
+  --name <span class="str">myAKSCluster</span> \
+  --node-count <span class="num">3</span> \
+  --enable-addons monitoring
+
+<span class="comment"># kubeconfig update করো</span>
+az aks get-credentials --name <span class="str">myAKSCluster</span>
+      </div>
+    </div>
+
+    <div class="card card-azure">
+      <span class="card-icon">⚙️</span>
+      <span class="card-service azure">Azure DevOps</span>
+      <div class="card-title">CI/CD Pipeline Platform</div>
+      <p>Code থেকে Deployment পর্যন্ত সব এক জায়গায়। Repos, Pipelines, Boards, Artifacts, Test Plans — সম্পূর্ণ DevOps toolchain।</p>
+      <ul class="bullets">
+        <li>Azure Pipelines — YAML-based CI/CD</li>
+        <li>Azure Repos — Git repository hosting</li>
+        <li>Azure Boards — Scrum/Kanban project management</li>
+        <li>GitHub Actions-এর সাথেও integrate হয়</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># azure-pipelines.yml</span>
+<span class="kw">trigger</span>:
+- main
+<span class="kw">pool</span>:
+  vmImage: <span class="str">'ubuntu-latest'</span>
+<span class="kw">steps</span>:
+- <span class="fn">script</span>: <span class="str">docker build -t myapp .</span>
+- <span class="fn">task</span>: AzureWebAppContainer@1
+      </div>
+    </div>
+
+    <div class="card card-azure">
+      <span class="card-icon">🗃️</span>
+      <span class="card-service azure">Blob Storage</span>
+      <div class="card-title">Object Storage (S3-এর বিকল্প)</div>
+      <p>Azure-এর object storage। Unstructured data রাখো — images, videos, backups, logs। Hot/Cool/Archive তিনটি tier।</p>
+      <ul class="bullets">
+        <li>Hot = বারবার access, বেশি দাম</li>
+        <li>Cool = মাঝেমাঝে access, কম দাম</li>
+        <li>Archive = খুব কম access, সবচেয়ে সস্তা</li>
+        <li>Azure CDN দিয়ে globally distribute করো</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="tip-box tip-box-azure">
+    <span class="tip-icon">🏢</span>
+    <div class="tip-text"><strong style="color:var(--accent-azure)">Azure কেন Enterprise-এ জনপ্রিয়?</strong> কারণ বেশিরভাগ কর্পোরেট Windows + Office 365 + Active Directory চালায়। Azure এসব-এর সাথে seamlessly কাজ করে। Hybrid cloud (on-premise + cloud) সবচেয়ে ভালো Azure-এ।</div>
+  </div>
+
+</section>
+
+<!-- ===== SERVERLESS SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="serverless">
+  <div class="section-header">
+    <div class="section-tag tag-sv">04 — Serverless Architecture</div>
+    <h2 class="section-title">Serverless — সার্ভার <span style="color:var(--accent-serverless)">ভুলে যাও</span></h2>
+    <p class="section-desc">Serverless মানে সার্ভার নেই এমন না — মানে তুমি সার্ভার নিয়ে ভাবো না। Cloud provider সব manage করে, তুমি শুধু কোড লেখো।</p>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="card card-sv">
+      <span class="card-icon">⚡</span>
+      <span class="card-service sv">AWS Lambda</span>
+      <div class="card-title">Function as a Service (FaaS)</div>
+      <p>Event-driven function। HTTP request, S3 upload, DynamoDB change, schedule — যেকোনো event-এ trigger হয়।</p>
+      <ul class="bullets">
+        <li>Cold Start: প্রথম request একটু slow</li>
+        <li>Timeout: সর্বোচ্চ ১৫ মিনিট run করতে পারে</li>
+        <li>Memory: ১২৮ MB থেকে ১০ GB পর্যন্ত</li>
+        <li>Layer দিয়ে shared code/library রাখো</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># Python Lambda Function</span>
+<span class="kw">def</span> <span class="fn">handler</span>(event, context):
+    name = event[<span class="str">'name'</span>]
+    <span class="kw">return</span> {
+        <span class="str">'statusCode'</span>: <span class="num">200</span>,
+        <span class="str">'body'</span>: f<span class="str">'হ্যালো, {name}!'</span>
+    }
+      </div>
+    </div>
+
+    <div class="card card-sv">
+      <span class="card-icon">⚡</span>
+      <span class="card-service sv">Cloud Functions (GCP)</span>
+      <div class="card-title">Google-এর FaaS</div>
+      <p>Lambda-র GCP সমতুল্য। HTTP trigger বা background event। Firebase-এর সাথে দারুণভাবে কাজ করে।</p>
+      <ul class="bullets">
+        <li>Gen 2 = Cloud Run-এর উপর build</li>
+        <li>Firebase Functions = Mobile app backend</li>
+        <li>Pub/Sub trigger = message queue থেকে</li>
+        <li>Concurrency: একটি instance একাধিক request handle করতে পারে</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="full-card" style="border-color: rgba(139,92,246,0.2);">
+    <h3 style="color:var(--accent-serverless)">🏗️ Serverless Architecture — কখন ব্যবহার করবে?</h3>
+
+    <div class="arch-diagram">
+      <div class="arch-title">একটি Serverless API Architecture</div>
+      <div class="arch-flow">
+        <div class="arch-node" style="color:var(--accent-aws);border-color:rgba(255,153,0,0.3);background:rgba(255,153,0,0.08)">Client</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-serverless);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08)">API Gateway</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-serverless);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08)">Lambda</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-aws);border-color:rgba(255,153,0,0.3);background:rgba(255,153,0,0.08)">DynamoDB</div>
+      </div>
+      <br>
+      <div class="arch-flow">
+        <div class="arch-node" style="color:var(--accent-aws);border-color:rgba(255,153,0,0.3);background:rgba(255,153,0,0.08)">S3 Upload</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-serverless);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08)">S3 Event</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-serverless);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08)">Lambda</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="color:var(--accent-gcp);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.08)">Process Image</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div>
+        <div style="color:var(--accent-net);font-size:0.85rem;font-weight:600;margin-bottom:0.5rem">✅ ব্যবহার করো যখন:</div>
+        <ul class="bullets">
+          <li>Unpredictable traffic pattern</li>
+          <li>Event-driven processing</li>
+          <li>Cron jobs / scheduled tasks</li>
+          <li>Startup — কম খরচে শুরু করতে চাইলে</li>
+        </ul>
+      </div>
+      <div>
+        <div style="color:#ef4444;font-size:0.85rem;font-weight:600;margin-bottom:0.5rem">❌ এড়িয়ে যাও যখন:</div>
+        <ul class="bullets">
+          <li>Long-running processes (১৫ মিনিটের বেশি)</li>
+          <li>WebSocket / real-time connection</li>
+          <li>Heavy compute (ML training)</li>
+          <li>Cold start latency critical হলে</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box tip-box-sv">
+    <span class="tip-icon">💰</span>
+    <div class="tip-text"><strong style="color:var(--accent-serverless)">Pay-per-execution মানে কী?</strong> EC2 চালু রাখলে ২৪/৭ পয়সা লাগে। Lambda শুধু function চললে পয়সা লাগে। ১ মিলিয়ন request পর্যন্ত AWS Free tier-এ ফ্রি! Small project-এ Lambda অনেক সস্তা।</div>
+  </div>
+
+</section>
+
+<!-- ===== NETWORKING SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="networking">
+  <div class="section-header">
+    <div class="section-tag tag-net">05 — AWS Networking Deep Dive</div>
+    <h2 class="section-title">VPC Networking — <span style="color:var(--accent-net)">নেটওয়ার্কের</span> ভেতরে</h2>
+    <p class="section-desc">AWS Networking বোঝা মানে তোমার infrastructure কীভাবে internet-এর সাথে কথা বলে সেটা বোঝা। এটা ছাড়া production system বানানো অসম্ভব।</p>
+  </div>
+
+  <!-- VPC Architecture Diagram -->
+  <div class="full-card" style="border-color: rgba(16,185,129,0.2);">
+    <h3 style="color:var(--accent-net)">🗺️ VPC Architecture Overview</h3>
+    <div class="arch-diagram" style="background: var(--bg);">
+      <div class="arch-title">একটি Complete Production VPC Setup</div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+        <!-- Public Subnet -->
+        <div style="border: 1px dashed rgba(16,185,129,0.3); border-radius: 12px; padding: 1rem;">
+          <div style="color:var(--accent-net);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.8rem;letter-spacing:1px;">PUBLIC SUBNET (10.0.1.0/24)</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-net)">🌐</span> Internet Gateway
+            </div>
+            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-net)">⚖️</span> Load Balancer (ALB)
+            </div>
+            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-net)">🔀</span> NAT Gateway
+            </div>
+          </div>
+        </div>
+
+        <!-- Private Subnet -->
+        <div style="border: 1px dashed rgba(139,92,246,0.3); border-radius: 12px; padding: 1rem;">
+          <div style="color:var(--accent-serverless);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.8rem;letter-spacing:1px;">PRIVATE SUBNET (10.0.2.0/24)</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-serverless)">🖥️</span> EC2 Web Servers
+            </div>
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-serverless)">🗄️</span> RDS Database
+            </div>
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:8px 12px;font-size:0.8rem;">
+              <span style="color:var(--accent-serverless)">🚢</span> EKS Nodes
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:1rem;color:var(--text-dim);font-size:0.78rem;font-family:'JetBrains Mono',monospace;">
+        Internet → IGW → Public Subnet → NAT → Private Subnet (outbound only)
+      </div>
+    </div>
+  </div>
+
+  <!-- Networking Components -->
+  <div class="net-layers" style="margin-top: 2rem;">
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🏘️</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">VPC — Virtual Private Cloud</div>
+        <div class="net-layer-desc">তোমার নিজস্ব private data center AWS-এ। একটি IP address range (CIDR) দিয়ে তৈরি। Region-wide — একটি region-এর সব AZ-তে ছড়িয়ে থাকে।</div>
+        <div style="margin-top:0.5rem">
+          <ul class="bullets">
+            <li>CIDR: 10.0.0.0/16 মানে 65,536 টি IP address</li>
+            <li>Default VPC প্রতিটি region-এ আগে থেকেই থাকে</li>
+          </ul>
+        </div>
+      </div>
+      <span class="net-layer-example">10.0.0.0/16</span>
+    </div>
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🔲</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">Subnet — নেটওয়ার্ক ভাগ</div>
+        <div class="net-layer-desc">VPC-কে ছোট ছোট ভাগে ভাগ করা। <strong style="color:#e8eaf0">Public Subnet</strong> = internet থেকে accessible। <strong style="color:#e8eaf0">Private Subnet</strong> = শুধু internal access। প্রতিটি Subnet একটি AZ-তে থাকে।</div>
+        <div style="margin-top:0.5rem">
+          <ul class="bullets">
+            <li>Public Subnet-এ: Load Balancer, Bastion Host, NAT Gateway</li>
+            <li>Private Subnet-এ: App server, Database, EKS nodes</li>
+          </ul>
+        </div>
+      </div>
+      <span class="net-layer-example">10.0.1.0/24</span>
+    </div>
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🛡️</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">Security Group — Firewall</div>
+        <div class="net-layer-desc">Instance-level firewall। Inbound ও Outbound rule define করো। Stateful — inbound allow করলে response automatically allow হয়।</div>
+        <div style="margin-top:0.5rem">
+          <div class="code-block" style="margin-top:0.5rem">
+<span class="comment"># Security Group Rule উদাহরণ</span>
+Inbound: Port <span class="num">80</span> (HTTP) → Anywhere (0.0.0.0/0)
+Inbound: Port <span class="num">443</span> (HTTPS) → Anywhere
+Inbound: Port <span class="num">22</span> (SSH) → My IP only
+Outbound: All traffic → Anywhere (default)
+          </div>
+        </div>
+      </div>
+      <span class="net-layer-example">sg-xxxxxxxx</span>
+    </div>
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🔀</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">NAT Gateway — Private থেকে Internet</div>
+        <div class="net-layer-desc">Private subnet-এর server যখন internet-এ যেতে চায় (software update, API call) তখন NAT Gateway মাধ্যমে যায়। Internet থেকে কিন্তু private server-এ সরাসরি আসতে পারে না।</div>
+        <div style="margin-top:0.5rem">
+          <ul class="bullets">
+            <li>Public subnet-এ রাখতে হয়</li>
+            <li>Elastic IP লাগে (static public IP)</li>
+            <li>Managed service — highly available</li>
+          </ul>
+        </div>
+      </div>
+      <span class="net-layer-example">nat-xxxxxxxx</span>
+    </div>
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🌐</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">Internet Gateway — VPC-র দরজা</div>
+        <div class="net-layer-desc">VPC এবং Internet-এর মধ্যে সংযোগ। IGW ছাড়া কোনো resource internet-এ যেতে বা আসতে পারবে না। VPC-তে attach করতে হয়।</div>
+        <div style="margin-top:0.5rem">
+          <ul class="bullets">
+            <li>Horizontally scaled, redundant, highly available</li>
+            <li>প্রতি VPC-তে একটি মাত্র IGW</li>
+          </ul>
+        </div>
+      </div>
+      <span class="net-layer-example">igw-xxxxxxxx</span>
+    </div>
+
+    <div class="net-layer">
+      <span class="net-layer-icon">🗺️</span>
+      <div class="net-layer-info">
+        <div class="net-layer-name">Route Table — Traffic কোথায় যাবে</div>
+        <div class="net-layer-desc">Traffic routing নির্ধারণ করে। প্রতিটি Subnet একটি Route Table-এর সাথে associated। Public subnet-এ IGW route থাকে, Private subnet-এ NAT route থাকে।</div>
+        <div style="margin-top:0.5rem">
+          <div class="code-block" style="margin-top:0.5rem">
+<span class="comment"># Public Subnet Route Table</span>
+Destination: <span class="num">0.0.0.0/0</span> → Target: igw-xxxxx
+Destination: <span class="num">10.0.0.0/16</span> → Target: local
+
+<span class="comment"># Private Subnet Route Table</span>
+Destination: <span class="num">0.0.0.0/0</span> → Target: nat-xxxxx
+          </div>
+        </div>
+      </div>
+      <span class="net-layer-example">rtb-xxxxxxxx</span>
+    </div>
+
+  </div>
+
+  <div class="tip-box tip-box-net">
+    <span class="tip-icon">🔑</span>
+    <div class="tip-text"><strong style="color:var(--accent-net)">Golden Rule:</strong> Database কখনো Public Subnet-এ রাখবে না। সবসময় Private Subnet-এ। Web server Public-এ, App server Private-এ, Database আরো Private-এ। এটাকে বলে "Defense in Depth"।</div>
+  </div>
+
+</section>
+
+<!-- ===== COMPARISON SECTION ===== -->
+<div class="divider"></div>
+<section class="section" id="compare">
+  <div class="section-header">
+    <div class="section-tag" style="color:#a0aec0">06 — তুলনামূলক বিশ্লেষণ</div>
+    <h2 class="section-title">AWS vs GCP vs Azure — কোনটা <span style="color:#a0aec0">বেছে নেবে?</span></h2>
+  </div>
+
+  <div style="overflow-x: auto;">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>বিষয়</th>
+          <th style="color:var(--accent-aws)">☁ AWS</th>
+          <th style="color:var(--accent-gcp)">☁ GCP</th>
+          <th style="color:var(--accent-azure)">☁ Azure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--text)">Market Share</td>
+          <td>~৩২% — শীর্ষ</td>
+          <td>~১১% — তৃতীয়</td>
+          <td>~২২% — দ্বিতীয়</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">সেরা ক্ষেত্র</td>
+          <td>সবকিছুতেই ভালো</td>
+          <td>ML/AI, Data Analytics</td>
+          <td>Enterprise, Hybrid Cloud</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Kubernetes</td>
+          <td>EKS (solid)</td>
+          <td>GKE (সেরা)</td>
+          <td>AKS (enterprise)</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Serverless</td>
+          <td>Lambda (সবচেয়ে mature)</td>
+          <td>Cloud Run (flexible)</td>
+          <td>Azure Functions</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Object Storage</td>
+          <td>S3</td>
+          <td>Cloud Storage</td>
+          <td>Blob Storage</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Database (SQL)</td>
+          <td>RDS / Aurora</td>
+          <td>Cloud SQL / Spanner</td>
+          <td>Azure SQL / Cosmos DB</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">CDN</td>
+          <td>CloudFront</td>
+          <td>Cloud CDN</td>
+          <td>Azure CDN</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Learning Curve</td>
+          <td>মাঝারি (অনেক service)</td>
+          <td>সহজ (clean UI/API)</td>
+          <td>কঠিন (enterprise জটিলতা)</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Free Tier</td>
+          <td>সবচেয়ে ভালো</td>
+          <td>ভালো ($৩০০ credit)</td>
+          <td>ভালো ($২০০ credit)</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Job Market (BD)</td>
+          <td>সবচেয়ে বেশি চাহিদা</td>
+          <td>বাড়ছে</td>
+          <td>Enterprise-এ চাহিদা আছে</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip-box" style="background:rgba(255,255,255,0.03);border-color:var(--border);margin-top:1.5rem;">
+    <span class="tip-icon">🚀</span>
+    <div class="tip-text">
+      <strong style="color:var(--text)">Roadmap পরামর্শ:</strong> বাংলাদেশে job market-এ AWS সবচেয়ে বেশি demand। শুরু করো AWS দিয়ে — EC2, S3, VPC, IAM ভালো করে শেখো। তারপর AWS Solutions Architect Associate certification নাও। এরপর GCP বা Azure শেখা অনেক সহজ হয়।
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  <span class="live-dot"></span>
+  বাংলায় ক্লাউড ক্র্যাশ কোর্স · AWS · GCP · Azure · Serverless · Networking
+  <br><br>
+  <span style="opacity:0.4">Claude দ্বারা তৈরি — শিখতে থাকো, থামো না ☁️</span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / total) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .net-layer, .full-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

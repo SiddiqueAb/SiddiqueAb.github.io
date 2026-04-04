@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>৭ দিনে ওয়েব অ্যাপ তৈরি করুন</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2235;
+      --accent: #f97316;
+      --accent2: #fb923c;
+      --green: #22d3a5;
+      --blue: #60a5fa;
+      --purple: #c084fc;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(255,255,255,0.07);
+      --glow: rgba(249,115,22,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(249,115,22,0.3);
+      padding: 6px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--accent2);
+      margin-bottom: 28px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Tiro Bangla', serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      animation: fadeDown 0.7s ease 0.1s both;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+      position: relative;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 580px;
+      animation: fadeDown 0.7s ease 0.2s both;
+      margin-bottom: 40px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeDown 0.7s ease 0.3s both;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 13px 30px;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 0 30px rgba(249,115,22,0.35);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(249,115,22,0.5); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 13px 30px;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,14,26,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Tiro Bangla', serif;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* SECTIONS */
+    section { padding: 100px 24px; }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Tiro Bangla', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.35;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin-bottom: 60px;
+    }
+
+    /* TIMELINE - 7 DAYS */
+    .timeline {
+      position: relative;
+      padding-left: 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 40px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--blue), var(--purple), transparent);
+    }
+
+    .day-card {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      margin-bottom: 40px;
+      animation: fadeLeft 0.5s ease both;
+    }
+
+    .day-card:nth-child(1) { animation-delay: 0.05s; }
+    .day-card:nth-child(2) { animation-delay: 0.1s; }
+    .day-card:nth-child(3) { animation-delay: 0.15s; }
+    .day-card:nth-child(4) { animation-delay: 0.2s; }
+    .day-card:nth-child(5) { animation-delay: 0.25s; }
+    .day-card:nth-child(6) { animation-delay: 0.3s; }
+    .day-card:nth-child(7) { animation-delay: 0.35s; }
+
+    .day-num {
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 18px;
+    }
+
+    .day-circle {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .day-circle.orange { background: var(--accent); color: white; box-shadow: 0 0 20px rgba(249,115,22,0.4); }
+    .day-circle.blue { background: var(--blue); color: #0a0e1a; box-shadow: 0 0 20px rgba(96,165,250,0.4); }
+    .day-circle.green { background: var(--green); color: #0a0e1a; box-shadow: 0 0 20px rgba(34,211,165,0.4); }
+    .day-circle.purple { background: var(--purple); color: #0a0e1a; box-shadow: 0 0 20px rgba(192,132,252,0.4); }
+
+    .day-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .day-content:hover { border-color: rgba(249,115,22,0.3); }
+
+    .day-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .day-content:hover::before { opacity: 1; }
+
+    .day-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .day-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .day-tasks {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .day-tasks li {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* TOOLS GRID */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(249,115,22,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .tool-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .tool-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+    .tool-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    .tool-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+    }
+
+    /* DEADLINE CALCULATOR */
+    .calc-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) { .calc-wrapper { grid-template-columns: 1fr; } }
+
+    .calc-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .calc-box h3 {
+      font-family: 'Tiro Bangla', serif;
+      font-size: 1.4rem;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group select option { background: var(--surface2); }
+
+    .calc-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 0 20px rgba(249,115,22,0.3);
+    }
+
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(249,115,22,0.5); }
+
+    .result-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .result-box.show { display: block; animation: fadeDown 0.4s ease; }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .result-item:last-child { border-bottom: none; }
+    .result-item .label { color: var(--muted); }
+    .result-item .value { font-weight: 600; color: var(--accent); }
+    .result-item .value.green { color: var(--green); }
+    .result-item .value.red { color: #f87171; }
+
+    /* FORMULA CARDS */
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .formula-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .formula-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .formula-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--green);
+      font-family: monospace;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .formula-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* TIPS */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .tip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .tip-card strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 6px; }
+
+    /* STACK TABS */
+    .tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; animation: fadeDown 0.3s ease; }
+
+    .stack-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s;
+    }
+
+    .stack-card:hover { border-color: rgba(249,115,22,0.3); transform: translateY(-2px); }
+
+    .stack-icon { font-size: 28px; flex-shrink: 0; }
+
+    .stack-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .stack-card p { font-size: 12px; color: var(--muted); }
+
+    /* ANIMATIONS */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .timeline::before { left: 30px; }
+      .day-card { grid-template-columns: 60px 1fr; gap: 14px; }
+      .day-circle { width: 38px; height: 38px; font-size: 12px; }
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 60px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer span { color: var(--accent); }
+
+    /* PROGRESS METER */
+    .progress-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 40px;
+    }
+
+    .progress-section h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .progress-item { margin-bottom: 18px; }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s ease;
+    }
+
+    /* MISTAKE SECTION */
+    .mistake-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .mistake-card {
+      background: var(--surface);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .mistake-card .icon { font-size: 24px; margin-bottom: 10px; }
+    .mistake-card h4 { font-size: 15px; font-weight: 600; color: #f87171; margin-bottom: 8px; }
+    .mistake-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .mistake-card .fix { margin-top: 10px; color: var(--green); font-size: 13px; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">⚡ ওয়েব ডেভ গাইড</div>
+    <ul class="nav-links">
+      <li><a href="#roadmap">রোডম্যাপ</a></li>
+      <li><a href="#stack">টেক স্ট্যাক</a></li>
+      <li><a href="#deadline">ডেডলাইন</a></li>
+      <li><a href="#tips">টিপস</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">🚀 বাংলায় শিখুন · ৭ দিনে তৈরি করুন</div>
+    <h1>৭ দিনে একটি সম্পূর্ণ<br><span>ওয়েব অ্যাপ্লিকেশন</span> তৈরি করুন</h1>
+    <p>দ্রুত প্রোডাক্ট বানানোর কৌশল, ডেডলাইন হিসাব করার ফর্মুলা এবং প্রফেশনাল সফট স্কিল — সবকিছু এক জায়গায়।</p>
+    <div class="hero-cta">
+      <a href="#roadmap" class="btn-primary">রোডম্যাপ দেখুন →</a>
+      <a href="#deadline" class="btn-ghost">ডেডলাইন ক্যালকুলেটর</a>
+    </div>
+  </div>
+
+  <!-- 7-DAY ROADMAP -->
+  <section id="roadmap">
+    <div class="container">
+      <div class="section-tag">📅 ৭ দিনের পরিকল্পনা</div>
+      <h2 class="section-title">দিন-অনুযায়ী কর্মপরিকল্পনা</h2>
+      <p class="section-desc">প্রতিটি দিনের কাজ ঠিক রাখলে মাত্র ১ সপ্তাহে একটি কার্যকরী MVP (Minimum Viable Product) তৈরি সম্ভব।</p>
+
+      <div class="timeline">
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle orange">১</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০১ · সোমবার</div>
+            <div class="day-title">🧠 পরিকল্পনা ও ডিজাইন</div>
+            <ul class="day-tasks">
+              <li>আইডিয়া ফাইনাল করুন</li>
+              <li>ফিচার লিস্ট তৈরি</li>
+              <li>Figma বা কাগজে wireframe</li>
+              <li>ডেটাবেস স্কিমা ডিজাইন</li>
+              <li>প্রযুক্তি নির্বাচন</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle blue">২</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০২ · মঙ্গলবার</div>
+            <div class="day-title">⚙️ প্রজেক্ট সেটআপ ও ব্যাকএন্ড</div>
+            <ul class="day-tasks">
+              <li>GitHub রেপো তৈরি</li>
+              <li>ফোল্ডার স্ট্রাকচার</li>
+              <li>ডেটাবেস কানেকশন</li>
+              <li>Authentication (Login/Register)</li>
+              <li>মূল API এন্ডপয়েন্ট</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle green">৩</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০৩ · বুধবার</div>
+            <div class="day-title">🎨 ফ্রন্টএন্ড UI তৈরি</div>
+            <ul class="day-tasks">
+              <li>কম্পোনেন্ট স্ট্রাকচার</li>
+              <li>হোম পেজ ও নেভিগেশন</li>
+              <li>লগইন/রেজিস্ট্রেশন UI</li>
+              <li>মূল ড্যাশবোর্ড পেজ</li>
+              <li>রেসপনসিভ ডিজাইন</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle purple">৪</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০৪ · বৃহস্পতিবার</div>
+            <div class="day-title">🔗 ফ্রন্টএন্ড-ব্যাকএন্ড কানেক্ট</div>
+            <ul class="day-tasks">
+              <li>API ইন্টিগ্রেশন</li>
+              <li>State Management</li>
+              <li>CRUD অপারেশন</li>
+              <li>Error Handling</li>
+              <li>Loading States</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle orange">৫</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০৫ · শুক্রবার</div>
+            <div class="day-title">✨ অতিরিক্ত ফিচার ও পলিশ</div>
+            <ul class="day-tasks">
+              <li>সেকেন্ডারি ফিচার যোগ</li>
+              <li>UI ইম্প্রুভমেন্ট</li>
+              <li>Validation যোগ</li>
+              <li>Notification/Toast</li>
+              <li>Performance চেক</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle blue">৬</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০৬ · শনিবার</div>
+            <div class="day-title">🐛 টেস্টিং ও বাগ ফিক্স</div>
+            <ul class="day-tasks">
+              <li>Manual Testing</li>
+              <li>বাগ লিস্ট তৈরি ও ফিক্স</li>
+              <li>Cross-browser চেক</li>
+              <li>Mobile চেক</li>
+              <li>Security রিভিউ</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="day-card">
+          <div class="day-num">
+            <div class="day-circle green">৭</div>
+          </div>
+          <div class="day-content">
+            <div class="day-label">দিন ০৭ · রবিবার</div>
+            <div class="day-title">🚀 ডিপ্লয়মেন্ট ও লঞ্চ!</div>
+            <ul class="day-tasks">
+              <li>Vercel/Railway ডিপ্লয়</li>
+              <li>Domain কানেক্ট</li>
+              <li>Environment Variables</li>
+              <li>README লেখা</li>
+              <li>🎉 লঞ্চ!</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="stack" style="background: linear-gradient(to bottom, transparent, rgba(249,115,22,0.03), transparent);">
+    <div class="container">
+      <div class="section-tag">🛠️ টেকনোলজি</div>
+      <h2 class="section-title">কোন টেক স্ট্যাক বেছে নেবেন?</h2>
+      <p class="section-desc">দ্রুত ডেভেলপমেন্টের জন্য সবচেয়ে জনপ্রিয় এবং শেখা-সহজ স্ট্যাকগুলো।</p>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('fullstack')">Full Stack</button>
+        <button class="tab-btn" onclick="showTab('backend')">ব্যাকএন্ড</button>
+        <button class="tab-btn" onclick="showTab('frontend')">ফ্রন্টএন্ড</button>
+        <button class="tab-btn" onclick="showTab('deploy')">ডিপ্লয়মেন্ট</button>
+      </div>
+
+      <div id="fullstack" class="tab-content active">
+        <div class="stack-card"><div class="stack-icon">⚡</div><div><h4>Next.js + PostgreSQL</h4><p>সবচেয়ে দ্রুত ফুলস্ট্যাক অপশন। একই কোডবেসে ফ্রন্ট ও ব্যাক।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🔥</div><div><h4>React + Node.js + MongoDB</h4><p>MERN স্ট্যাক। জাভাস্ক্রিপ্ট জানলেই যথেষ্ট।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🐍</div><div><h4>Django + React</h4><p>Python ব্যাকএন্ড। দ্রুত Admin Panel পাবেন ফ্রিতে।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🌊</div><div><h4>Supabase + React</h4><p>Backend-as-a-Service। ডেটাবেস ও Auth রেডিমেড।</p></div></div>
+      </div>
+
+      <div id="backend" class="tab-content">
+        <div class="stack-card"><div class="stack-icon">🟢</div><div><h4>Node.js + Express</h4><p>দ্রুত REST API বানানোর জন্য সেরা।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🐍</div><div><h4>FastAPI (Python)</h4><p>Auto documentation। অনেক দ্রুত।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">☁️</div><div><h4>Firebase Functions</h4><p>Serverless। Deploy ঝামেলা নেই।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🔷</div><div><h4>Prisma ORM</h4><p>Database সহজে manage করুন।</p></div></div>
+      </div>
+
+      <div id="frontend" class="tab-content">
+        <div class="stack-card"><div class="stack-icon">⚛️</div><div><h4>React + Vite</h4><p>সবচেয়ে দ্রুত ডেভেলপমেন্ট অভিজ্ঞতা।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">💚</div><div><h4>Vue.js</h4><p>শিখতে সহজ। দ্রুত প্রোটোটাইপ।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🎨</div><div><h4>Tailwind CSS</h4><p>ডিজাইন দ্রুত করুন, CSS কম লিখুন।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🧩</div><div><h4>shadcn/ui</h4><p>রেডিমেড কম্পোনেন্ট লাইব্রেরি।</p></div></div>
+      </div>
+
+      <div id="deploy" class="tab-content">
+        <div class="stack-card"><div class="stack-icon">▲</div><div><h4>Vercel</h4><p>ফ্রন্টএন্ড ও Next.js এর জন্য সেরা। বিনামূল্যে।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🚂</div><div><h4>Railway</h4><p>ব্যাকএন্ড ও ডেটাবেস ডিপ্লয়ের জন্য সহজ।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🌊</div><div><h4>DigitalOcean</h4><p>নিজস্ব VPS কম দামে।</p></div></div>
+        <div class="stack-card"><div class="stack-icon">🛡️</div><div><h4>Cloudflare</h4><p>CDN ও DNS ফ্রিতে।</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEADLINE SECTION -->
+  <section id="deadline">
+    <div class="container">
+      <div class="section-tag">⏰ সফট স্কিল</div>
+      <h2 class="section-title">ডেডলাইন হিসাব করার ফর্মুলা</h2>
+      <p class="section-desc">প্রফেশনাল ডেভেলপাররা যেভাবে সময়ের হিসাব করেন — সেই পদ্ধতিগুলো শিখুন।</p>
+
+      <!-- FORMULAS -->
+      <div class="formula-grid" style="margin-bottom: 50px;">
+        <div class="formula-card">
+          <h4>📐 PERT ফর্মুলা (সবচেয়ে নির্ভরযোগ্য)</h4>
+          <div class="formula-box">
+            E = (O + 4M + P) / 6<br><br>
+            O = আশাবাদী সময় (Best Case)<br>
+            M = সম্ভাব্য সময় (Most Likely)<br>
+            P = হতাশাবাদী সময় (Worst Case)
+          </div>
+          <p>উদাহরণ: লগইন ফিচার — O=2 দিন, M=4 দিন, P=8 দিন<br>
+          E = (2 + 4×4 + 8) / 6 = <strong style="color: var(--green);">4.33 দিন</strong></p>
+        </div>
+
+        <div class="formula-card">
+          <h4>📊 প্যাডিং ফর্মুলা (বাস্তবসম্মত)</h4>
+          <div class="formula-box">
+            মোট সময় = অনুমান × ১.৫<br><br>
+            (সিনিয়র ডেভেলপার হলে × ১.২)<br>
+            (নতুন প্রযুক্তি হলে × ২.০)
+          </div>
+          <p>আপনি ভাবছেন ৫ দিন লাগবে? আসলে লাগবে ৭-৮ দিন। সবসময় বাফার রাখুন।</p>
+        </div>
+
+        <div class="formula-card">
+          <h4>🎯 Velocity পদ্ধতি (টিমের জন্য)</h4>
+          <div class="formula-box">
+            Deadline = মোট কাজের পয়েন্ট<br>
+                      ÷ প্রতিদিনের গতি (Velocity)<br><br>
+            গতি = গত সপ্তাহের কাজ ÷ দিনসংখ্যা
+          </div>
+          <p>প্রতিটি কাজকে ১-৫ পয়েন্টে মাপুন। আগের পারফরম্যান্স থেকে গতি বের করুন।</p>
+        </div>
+
+        <div class="formula-card">
+          <h4>⚡ MoSCoW পদ্ধতি (ফিচার প্রায়োরিটি)</h4>
+          <div class="formula-box">
+            Must Have → প্রথমে করুন<br>
+            Should Have → সময় থাকলে<br>
+            Could Have → পরের ভার্সনে<br>
+            Won't Have → বাদ দিন এখন
+          </div>
+          <p>সব ফিচার একসাথে না করে গুরুত্ব অনুযায়ী ভাগ করুন। MVP-তে শুধু Must Have রাখুন।</p>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE CALCULATOR -->
+      <div class="calc-wrapper">
+        <div class="calc-box">
+          <h3>🧮 PERT ডেডলাইন ক্যালকুলেটর</h3>
+
+          <div class="form-group">
+            <label>কাজের নাম</label>
+            <input type="text" id="taskName" placeholder="যেমন: লগইন সিস্টেম তৈরি">
+          </div>
+
+          <div class="form-group">
+            <label>আশাবাদী সময় — Best Case (দিনে)</label>
+            <input type="number" id="optimistic" placeholder="যেমন: ২" min="0.5" step="0.5">
+          </div>
+
+          <div class="form-group">
+            <label>সম্ভাব্য সময় — Most Likely (দিনে)</label>
+            <input type="number" id="mostLikely" placeholder="যেমন: ৪" min="0.5" step="0.5">
+          </div>
+
+          <div class="form-group">
+            <label>হতাশাবাদী সময় — Worst Case (দিনে)</label>
+            <input type="number" id="pessimistic" placeholder="যেমন: ৮" min="0.5" step="0.5">
+          </div>
+
+          <div class="form-group">
+            <label>কাজ শুরুর তারিখ</label>
+            <input type="date" id="startDate">
+          </div>
+
+          <div class="form-group">
+            <label>সপ্তাহে কতদিন কাজ করবেন?</label>
+            <select id="workDays">
+              <option value="5">৫ দিন (সোম-শুক্র)</option>
+              <option value="6">৬ দিন (সোম-শনি)</option>
+              <option value="7">৭ দিন (প্রতিদিন)</option>
+            </select>
+          </div>
+
+          <button class="calc-btn" onclick="calculateDeadline()">ডেডলাইন হিসাব করুন ⚡</button>
+
+          <div class="result-box" id="resultBox">
+            <div class="result-item">
+              <span class="label">কাজের নাম</span>
+              <span class="value" id="res-task">—</span>
+            </div>
+            <div class="result-item">
+              <span class="label">PERT অনুমান</span>
+              <span class="value" id="res-pert">—</span>
+            </div>
+            <div class="result-item">
+              <span class="label">বাফারসহ সময়</span>
+              <span class="value" id="res-buffer">—</span>
+            </div>
+            <div class="result-item">
+              <span class="label">অনুমানিত শেষ তারিখ</span>
+              <span class="value green" id="res-deadline">—</span>
+            </div>
+            <div class="result-item">
+              <span class="label">রিস্ক লেভেল</span>
+              <span class="value" id="res-risk">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- TIPS FOR DEADLINE -->
+          <div class="progress-section">
+            <h3>📊 ৭ দিনের কাজের অগ্রগতি টেমপ্লেট</h3>
+            <div class="progress-item">
+              <div class="progress-label"><span>পরিকল্পনা ও ডিজাইন</span><span>১৪%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 14%; background: var(--accent);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>ব্যাকএন্ড সেটআপ</span><span>২৯%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 29%; background: var(--blue);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>ফ্রন্টএন্ড UI</span><span>৪৩%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 43%; background: var(--green);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>ইন্টিগ্রেশন</span><span>৫৭%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 57%; background: var(--purple);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>অতিরিক্ত ফিচার</span><span>৭১%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 71%; background: var(--accent);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>টেস্টিং ও বাগ ফিক্স</span><span>৮৬%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 86%; background: var(--blue);"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>ডিপ্লয়মেন্ট ও লঞ্চ</span><span>১০০%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: var(--green);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMON MISTAKES -->
+  <section style="padding-top: 0;">
+    <div class="container">
+      <div class="section-tag">⚠️ সতর্কতা</div>
+      <h2 class="section-title">সাধারণ ভুলগুলো এড়িয়ে চলুন</h2>
+      <p class="section-desc">বেশিরভাগ প্রজেক্ট ফেল হয় এই কারণগুলোর জন্য।</p>
+      <div class="mistake-grid">
+        <div class="mistake-card">
+          <div class="icon">💭</div>
+          <h4>Scope Creep</h4>
+          <p>শুরুতে পরিকল্পনার বাইরে নতুন ফিচার যোগ করা। এতে ডেডলাইন মিস হয়।</p>
+          <div class="fix">✅ সমাধান: MVP-তে শুধু মূল ফিচার রাখুন। বাকি পরে।</div>
+        </div>
+        <div class="mistake-card">
+          <div class="icon">⏱️</div>
+          <h4>Under-estimation</h4>
+          <p>"এটা তো ২ ঘণ্টার কাজ" — কিন্তু আসলে লাগে ২ দিন। এই ভুল সবাই করে।</p>
+          <div class="fix">✅ সমাধান: PERT ফর্মুলা ব্যবহার করুন। বাফার রাখুন।</div>
+        </div>
+        <div class="mistake-card">
+          <div class="icon">🚫</div>
+          <h4>পরিকল্পনা ছাড়া কোডিং</h4>
+          <p>সরাসরি কোড লেখা শুরু। পরে বুঝবেন স্ট্রাকচার ভুল হয়ে গেছে।</p>
+          <div class="fix">✅ সমাধান: প্রথম দিন শুধু পরিকল্পনায় কাটান।</div>
+        </div>
+        <div class="mistake-card">
+          <div class="icon">🔁</div>
+          <h4>Perfectionism</h4>
+          <p>সবকিছু perfect না হওয়া পর্যন্ত launch করবেন না — এই মানসিকতা।</p>
+          <div class="fix">✅ সমাধান: "Done is better than perfect" — আগে লঞ্চ করুন।</div>
+        </div>
+        <div class="mistake-card">
+          <div class="icon">📚</div>
+          <h4>নতুন জিনিস একসাথে শেখা</h4>
+          <p>প্রজেক্ট করতে করতে নতুন ভাষা/ফ্রেমওয়ার্ক শেখা শুরু।</p>
+          <div class="fix">✅ সমাধান: যা জানেন তা দিয়েই শুরু করুন। পরে আপগ্রেড।</div>
+        </div>
+        <div class="mistake-card">
+          <div class="icon">🙈</div>
+          <h4>Testing বাদ দেওয়া</h4>
+          <p>সময় বাঁচাতে testing skip করা। পরে production-এ সমস্যা।</p>
+          <div class="fix">✅ সমাধান: ৬ নম্বর দিন শুধু testing-এর জন্য রাখুন।</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRO TIPS -->
+  <section id="tips" style="padding-top: 0;">
+    <div class="container">
+      <div class="section-tag">💡 প্রো টিপস</div>
+      <h2 class="section-title">দ্রুত কাজের গোপন কৌশল</h2>
+      <p class="section-desc">অভিজ্ঞ ডেভেলপারদের ব্যবহৃত পদ্ধতিগুলো।</p>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <strong>🎯 Time Blocking</strong>
+          প্রতিদিন ব্লক করুন: সকাল ৯-১২ কোডিং, ১২-১ বিরতি, ১-৫ কোডিং। ফোন সাইলেন্ট রাখুন।
+        </div>
+        <div class="tip-card">
+          <strong>🧩 Boilerplate ব্যবহার করুন</strong>
+          প্রতিবার শূন্য থেকে শুরু নয়। Next.js starter, shadcn/ui template ব্যবহার করুন।
+        </div>
+        <div class="tip-card">
+          <strong>🤖 AI দিয়ে দ্রুত করুন</strong>
+          ChatGPT বা Cursor দিয়ে boilerplate, CRUD, validation দ্রুত তৈরি করুন।
+        </div>
+        <div class="tip-card">
+          <strong>📝 Daily Standup (নিজের সাথে)</strong>
+          প্রতিদিন লিখুন: কাল কী করলাম, আজ কী করব, কোন সমস্যা আছে।
+        </div>
+        <div class="tip-card">
+          <strong>🔀 Feature Branch ব্যবহার</strong>
+          প্রতিটি ফিচারের জন্য আলাদা Git branch। main branch সবসময় stable রাখুন।
+        </div>
+        <div class="tip-card">
+          <strong>☁️ প্রথম দিন থেকে Deploy</strong>
+          শুরুতেই Vercel-এ deploy করুন। development করুন live URL-এ।
+        </div>
+        <div class="tip-card">
+          <strong>🎨 Design System আগে</strong>
+          রঙ, ফন্ট, spacing আগেই ঠিক করুন। প্রতিটি কম্পোনেন্টে পুনরাবৃত্তি করবেন না।
+        </div>
+        <div class="tip-card">
+          <strong>📊 Trello/Notion ব্যবহার করুন</strong>
+          কাজের লিস্ট তৈরি করুন। To Do → Doing → Done কলামে সাজান।
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>তৈরি করা হয়েছে বাংলাদেশের ডেভেলপারদের জন্য ❤️ · <span>৭ দিনে তৈরি করুন আপনার স্বপ্নের অ্যাপ</span></p>
+    <p style="margin-top: 8px; font-size: 12px; color: #475569;">প্রতিটি বড় প্রডাক্ট একদিন একটি ছোট MVP থেকে শুরু হয়েছিল।</p>
+  </footer>
+
+  <script>
+    // Tab switching
+    function showTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Set today's date
+    document.getElementById('startDate').valueAsDate = new Date();
+
+    // PERT Calculator
+    function calculateDeadline() {
+      const name = document.getElementById('taskName').value || 'আপনার কাজ';
+      const O = parseFloat(document.getElementById('optimistic').value);
+      const M = parseFloat(document.getElementById('mostLikely').value);
+      const P = parseFloat(document.getElementById('pessimistic').value);
+      const startDate = document.getElementById('startDate').value;
+      const workDays = parseInt(document.getElementById('workDays').value);
+
+      if (!O || !M || !P || !startDate) {
+        alert('অনুগ্রহ করে সব তথ্য পূরণ করুন।');
+        return;
+      }
+
+      if (O > M || M > P) {
+        alert('সময়ের ক্রম ঠিক করুন: আশাবাদী ≤ সম্ভাব্য ≤ হতাশাবাদী');
+        return;
+      }
+
+      const pert = (O + 4 * M + P) / 6;
+      const buffer = pert * 1.5;
+      const variance = ((P - O) / 6) ** 2;
+      const stdDev = Math.sqrt(variance);
+
+      // Calculate end date
+      const start = new Date(startDate);
+      let workDaysCount = Math.ceil(buffer);
+      let current = new Date(start);
+      let daysAdded = 0;
+
+      while (daysAdded < workDaysCount) {
+        current.setDate(current.getDate() + 1);
+        const day = current.getDay();
+        if (workDays === 5 && (day === 0 || day === 6)) continue;
+        if (workDays === 6 && day === 0) continue;
+        daysAdded++;
+      }
+
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      const deadlineStr = current.toLocaleDateString('bn-BD', options);
+
+      // Risk level
+      let risk, riskColor;
+      if (stdDev < 1) { risk = '🟢 কম রিস্ক'; riskColor = 'green'; }
+      else if (stdDev < 2) { risk = '🟡 মাঝারি রিস্ক'; riskColor = 'value'; }
+      else { risk = '🔴 উচ্চ রিস্ক — বাফার বাড়ান!'; riskColor = 'red'; }
+
+      document.getElementById('res-task').textContent = name;
+      document.getElementById('res-pert').textContent = pert.toFixed(1) + ' দিন';
+      document.getElementById('res-buffer').textContent = buffer.toFixed(1) + ' দিন (৫০% বাফারসহ)';
+      document.getElementById('res-deadline').textContent = deadlineStr;
+
+      const riskEl = document.getElementById('res-risk');
+      riskEl.textContent = risk;
+      riskEl.className = 'value ' + riskColor;
+
+      const box = document.getElementById('resultBox');
+      box.classList.remove('show');
+      setTimeout(() => box.classList.add('show'), 10);
+    }
+  </script>
+
+</body>
+</html>

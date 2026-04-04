@@ -9,57 +9,109 @@
 
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0f1117;
-      color: #e2e8f0;
+      background: #ffffff;
+      color: #1a1a1a;
       min-height: 100vh;
       padding: 2rem 1rem;
     }
 
     header {
-      max-width: 860px;
-      margin: 0 auto 2.5rem;
+      max-width: 900px;
+      margin: 0 auto 2rem;
       text-align: center;
     }
 
     header h1 {
       font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 700;
-      background: linear-gradient(135deg, #6366f1, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #000000;
       margin-bottom: .5rem;
     }
 
     header p {
-      color: #94a3b8;
+      color: #666666;
       font-size: .95rem;
     }
 
+    .search-container {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    #search-box {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #cccccc;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1a1a1a;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    #search-box:focus {
+      outline: none;
+      border-color: #333333;
+      box-shadow: 0 0 8px rgba(51, 51, 51, .15);
+    }
+
+    #search-box::placeholder {
+      color: #999999;
+    }
+
+    .search-stats {
+      padding: 0.8rem 1rem;
+      background: #f5f5f5;
+      border: 2px solid #cccccc;
+      border-radius: 8px;
+      color: #666666;
+      font-weight: 600;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+
     #course-list {
-      max-width: 860px;
+      max-width: 900px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
     }
 
     .card {
-      background: #1e2130;
-      border: 1px solid #2d3148;
-      border-radius: 12px;
+      background: #f9f9f9;
+      border: 2px solid #dddddd;
+      border-radius: 10px;
       padding: 1.4rem 1.6rem;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
+      transition: border-color .2s, transform .2s, box-shadow .2s, background .2s;
       text-decoration: none;
       display: flex;
       flex-direction: column;
       gap: .6rem;
+      position: relative;
     }
 
     .card:hover {
-      border-color: #6366f1;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(99, 102, 241, .2);
+      border-color: #333333;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+      background: #ffffff;
+    }
+
+    .card.hidden {
+      display: none;
+    }
+
+    .card-serial {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #999999;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
     }
 
     .card-icon {
@@ -70,13 +122,13 @@
     .card-title {
       font-size: 1rem;
       font-weight: 600;
-      color: #e2e8f0;
+      color: #1a1a1a;
       line-height: 1.35;
     }
 
     .card-sub {
       font-size: .78rem;
-      color: #64748b;
+      color: #888888;
       font-family: monospace;
       white-space: nowrap;
       overflow: hidden;
@@ -85,37 +137,58 @@
 
     /* skeleton loader */
     .skeleton {
-      background: #1e2130;
-      border: 1px solid #2d3148;
-      border-radius: 12px;
+      background: #e8e8e8;
+      border: 2px solid #dddddd;
+      border-radius: 10px;
       padding: 1.4rem 1.6rem;
-      height: 110px;
+      height: 120px;
       animation: pulse 1.4s ease-in-out infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50%       { opacity: .4; }
+      50%       { opacity: .5; }
     }
 
     #error-msg {
-      max-width: 860px;
+      max-width: 900px;
       margin: 0 auto;
-      background: #2a1a1a;
-      border: 1px solid #7f1d1d;
+      background: #f5f5f5;
+      border: 2px solid #999999;
       border-radius: 10px;
       padding: 1.2rem 1.5rem;
-      color: #fca5a5;
+      color: #333333;
       display: none;
+      font-weight: 600;
+    }
+
+    .no-results {
+      grid-column: 1/-1;
+      text-align: center;
+      color: #999999;
+      padding: 2rem;
+      font-size: 1.1rem;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>&#128218; Learner Hub</h1>
+    <h1>📚 Learner Hub</h1>
     <p>All courses &amp; guides — auto-indexed from this folder</p>
   </header>
+
+  <div class="search-container">
+    <input 
+      type="text" 
+      id="search-box" 
+      placeholder="🔍 Search courses by name or number..." 
+      autocomplete="off"
+    />
+    <div class="search-stats">
+      <span id="stats-text">All</span>
+    </div>
+  </div>
 
   <div id="error-msg"></div>
   <div id="course-list">
@@ -129,6 +202,8 @@
     const REPO   = 'SiddiqueAb/SiddiqueAb.github.io';
     const FOLDER = 'learner';
     const API    = `https://api.github.com/repos/${REPO}/contents/${FOLDER}`;
+
+    let allPages = []; // store all pages globally
 
     // Map of keyword fragments → emoji icons
     const ICONS = [
@@ -165,6 +240,65 @@
         .replace(/\b\w/g, c => c.toUpperCase());
     }
 
+    function renderCards(pages) {
+      const listEl = document.getElementById('course-list');
+      listEl.innerHTML = '';
+
+      if (pages.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.textContent = 'No courses found. Try a different search.';
+        listEl.appendChild(noResults);
+        return;
+      }
+
+      for (let i = 0; i < pages.length; i++) {
+        const file = pages[i];
+        const title = toTitle(file.name);
+        const icon  = pickIcon(file.name);
+        const serial = i + 1;
+
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href      = file.name;
+        a.innerHTML = `
+          <span class="card-serial">#${serial.toString().padStart(2, '0')}</span>
+          <span class="card-icon">${icon}</span>
+          <span class="card-title">${title}</span>
+          <span class="card-sub">${file.name}</span>
+        `;
+        listEl.appendChild(a);
+      }
+    }
+
+    function updateStats(count, total) {
+      const statsEl = document.getElementById('stats-text');
+      statsEl.textContent = `${count} / ${total}`;
+    }
+
+    function filterCourses() {
+      const searchInput = document.getElementById('search-box').value.toLowerCase().trim();
+      
+      if (!searchInput) {
+        renderCards(allPages);
+        updateStats(allPages.length, allPages.length);
+        return;
+      }
+
+      const filtered = allPages.filter(file => {
+        const title = toTitle(file.name).toLowerCase();
+        const filename = file.name.toLowerCase();
+        const serialNum = (allPages.indexOf(file) + 1).toString().padStart(2, '0');
+        
+        return title.includes(searchInput) || 
+               filename.includes(searchInput) || 
+               serialNum.includes(searchInput);
+      });
+
+      renderCards(filtered);
+      updateStats(filtered.length, allPages.length);
+    }
+
     async function loadCourses() {
       const listEl  = document.getElementById('course-list');
       const errorEl = document.getElementById('error-msg');
@@ -174,35 +308,24 @@
         if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
         const items = await res.json();
 
-        const pages = items.filter(
+        allPages = items.filter(
           f => f.type === 'file' &&
                /\.html?$/i.test(f.name) &&
                f.name.toLowerCase() !== 'index.html'
         );
 
-        listEl.innerHTML = '';
-
-        if (pages.length === 0) {
-          listEl.innerHTML = '<p style="color:#64748b;grid-column:1/-1;text-align:center">No pages found yet.</p>';
+        if (allPages.length === 0) {
+          listEl.innerHTML = '<p class="no-results">No pages found yet.</p>';
           return;
         }
 
-        for (const file of pages) {
-          const title = toTitle(file.name);
-          const icon  = pickIcon(file.name);
+        renderCards(allPages);
+        updateStats(allPages.length, allPages.length);
 
-          const a = document.createElement('a');
-          a.className = 'card';
-          a.href      = file.name;
-          a.innerHTML = `
-            <span class="card-icon">${icon}</span>
-            <span class="card-title">${title}</span>
-            <span class="card-sub">${file.name}</span>
-          `;
-          listEl.appendChild(a);
-        }
+        // Add search event listener
+        document.getElementById('search-box').addEventListener('input', filterCourses);
+
       } catch (err) {
-        // fallback: try fetching directory listing via relative path trick
         listEl.innerHTML = '';
         errorEl.style.display = 'block';
         errorEl.textContent   = `Could not load file list automatically: ${err.message}. ` +
