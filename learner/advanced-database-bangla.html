@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Database Design — বাংলা ক্র্যাশ কোর্স</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0c10;
+  --paper: #0d1117;
+  --surface: #161b22;
+  --raised: #1c2330;
+  --border: #21303f;
+  --border2: #2d4057;
+  --amber: #f0a500;
+  --amber-dim: rgba(240,165,0,0.12);
+  --amber-glow: rgba(240,165,0,0.25);
+  --teal: #00bfa5;
+  --teal-dim: rgba(0,191,165,0.1);
+  --rose: #ff4d6d;
+  --rose-dim: rgba(255,77,109,0.1);
+  --sky: #38bdf8;
+  --sky-dim: rgba(56,189,248,0.1);
+  --lime: #84cc16;
+  --lime-dim: rgba(132,204,22,0.1);
+  --violet: #a78bfa;
+  --violet-dim: rgba(167,139,250,0.1);
+  --text: #cdd9e5;
+  --text2: #8b9eb0;
+  --text3: #4a6070;
+  --text4: #2d4057;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 15.5px;
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* GRID */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(240,165,0,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,165,0,0.025) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── HERO ── */
+.hero {
+  position:relative;
+  z-index:10;
+  min-height:420px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 24px 60px;
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+
+.hero-glow {
+  position:absolute;
+  top:-120px; left:50%;
+  transform:translateX(-50%);
+  width:900px; height:500px;
+  background: radial-gradient(ellipse at center,
+    rgba(240,165,0,0.12) 0%,
+    rgba(0,191,165,0.05) 40%,
+    transparent 70%);
+  pointer-events:none;
+  animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,100%{opacity:.7; transform:translateX(-50%) scale(1);}
+  50%{opacity:1; transform:translateX(-50%) scale(1.08);}
+}
+
+.hero-tag {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--amber-dim);
+  border:1px solid rgba(240,165,0,0.35);
+  border-radius:50px;
+  padding:5px 18px;
+  font-size:.78rem;
+  color:var(--amber);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+  animation: tag-in .6s ease forwards;
+}
+
+@keyframes tag-in {
+  from{opacity:0;transform:translateY(-10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.hero h1 {
+  font-family:'Noto Serif Bengali', serif;
+  font-size:clamp(2.1rem,5.5vw,4rem);
+  font-weight:700;
+  line-height:1.25;
+  background: linear-gradient(135deg, var(--amber) 0%, #fff8e1 50%, var(--teal) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:18px;
+  animation: title-in .8s .1s ease both;
+}
+
+@keyframes title-in {
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.hero-sub {
+  color:var(--text2);
+  font-size:1.05rem;
+  max-width:680px;
+  margin:0 auto 36px;
+  animation: title-in .8s .2s ease both;
+}
+
+.hero-pills {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  animation: title-in .8s .3s ease both;
+}
+
+.pill {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:6px 16px;
+  font-size:.8rem;
+  color:var(--text2);
+  font-family:'JetBrains Mono', monospace;
+  transition:all .25s;
+}
+.pill:hover{border-color:var(--amber);color:var(--amber);}
+
+/* ── NAV ── */
+nav {
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(10,12,16,.97);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  overflow-x:auto;
+  white-space:nowrap;
+  gap:2px;
+  scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none;}
+
+.nav-section {
+  font-size:.7rem;
+  color:var(--text4);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  padding:16px 12px 16px 4px;
+  flex-shrink:0;
+  border-right:1px solid var(--border);
+  margin-right:4px;
+}
+
+nav a {
+  display:block;
+  padding:14px 14px;
+  color:var(--text3);
+  text-decoration:none;
+  font-size:.8rem;
+  font-weight:500;
+  transition:all .2s;
+  border-bottom:2px solid transparent;
+  flex-shrink:0;
+}
+nav a:hover{color:var(--amber);border-bottom-color:var(--amber);}
+
+/* ── LAYOUT ── */
+.wrapper {
+  position:relative;
+  z-index:1;
+  max-width:1120px;
+  margin:0 auto;
+  padding:50px 24px 100px;
+}
+
+/* ── SECTION ── */
+.section {margin-bottom:80px;}
+
+.sh {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:32px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+
+.sn {
+  font-family:'JetBrains Mono', monospace;
+  font-size:.7rem;
+  color:var(--amber);
+  background:var(--amber-dim);
+  border:1px solid rgba(240,165,0,.3);
+  padding:3px 10px;
+  border-radius:4px;
+}
+
+.si{font-size:1.6rem;}
+
+h2 {
+  font-family:'Noto Serif Bengali', serif;
+  font-size:1.75rem;
+  color:var(--text);
+  flex:1;
+}
+
+h3 {
+  font-family:'Hind Siliguri', sans-serif;
+  font-size:1.15rem;
+  color:var(--teal);
+  margin:28px 0 12px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+h3::before{content:'▸';color:var(--amber);font-size:.8rem;}
+
+h4 {
+  font-size:.95rem;
+  color:var(--amber);
+  margin:18px 0 8px;
+  font-weight:600;
+}
+
+p{color:var(--text2);margin-bottom:14px;font-size:.96rem;}
+
+strong{color:var(--text);font-weight:600;}
+
+/* ── CARDS ── */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin:20px 0;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0;}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0;}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color .25s, transform .25s, box-shadow .25s;
+}
+.card::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:2px;
+  background:linear-gradient(90deg, var(--amber), var(--teal));
+  opacity:0;
+  transition:opacity .25s;
+}
+.card:hover{
+  border-color:var(--border2);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+.card:hover::after{opacity:1;}
+
+.card-amber{border-color:rgba(240,165,0,.25);background:linear-gradient(135deg,var(--amber-dim),var(--surface));}
+.card-teal{border-color:rgba(0,191,165,.25);background:linear-gradient(135deg,var(--teal-dim),var(--surface));}
+.card-rose{border-color:rgba(255,77,109,.25);background:linear-gradient(135deg,var(--rose-dim),var(--surface));}
+.card-sky{border-color:rgba(56,189,248,.25);background:linear-gradient(135deg,var(--sky-dim),var(--surface));}
+.card-lime{border-color:rgba(132,204,22,.25);background:linear-gradient(135deg,var(--lime-dim),var(--surface));}
+.card-violet{border-color:rgba(167,139,250,.25);background:linear-gradient(135deg,var(--violet-dim),var(--surface));}
+
+/* ── CODE ── */
+.code-wrap{
+  background:#060a0f;
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+  margin:18px 0;
+}
+.code-top{
+  background:var(--raised);
+  padding:9px 18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid var(--border);
+}
+.dots{display:flex;gap:5px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dr{background:#ff5f57;}.dy{background:#febc2e;}.dg{background:#28c840;}
+.ctag{
+  margin-left:auto;
+  font-family:'JetBrains Mono', monospace;
+  font-size:.7rem;
+  color:var(--text3);
+  background:var(--surface);
+  padding:2px 10px;
+  border-radius:4px;
+  border:1px solid var(--border);
+}
+pre{
+  padding:20px 22px;
+  overflow-x:auto;
+  font-family:'JetBrains Mono', monospace;
+  font-size:.8rem;
+  line-height:1.75;
+  color:#aac8e4;
+}
+
+/* Syntax colors */
+.kw{color:#c792ea;}
+.fn{color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.cm{color:#4a6070;font-style:italic;}
+.type{color:#ffcb6b;}
+.op{color:#89ddff;}
+.pu{color:#89ddff;}
+.var{color:#eeffff;}
+.attr{color:#f07178;}
+
+/* ── TERMINAL ── */
+.term{
+  background:#020805;
+  border:1px solid #1a3520;
+  border-radius:10px;
+  overflow:hidden;
+  margin:18px 0;
+}
+.term-top{
+  background:#071510;
+  padding:9px 18px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border-bottom:1px solid #1a3520;
+}
+.term-title{font-family:'JetBrains Mono', monospace;font-size:.72rem;color:#3a7a50;}
+.term pre{color:#00e676;padding:18px 22px;font-size:.8rem;}
+.pr{color:#2e7d45;}
+.cm2{color:#1a4a28;font-style:italic;}
+.out{color:#8ab4cc;}
+.warn{color:#f0a500;}
+.err{color:#ff4d6d;}
+
+/* ── HIGHLIGHT / WARNING ── */
+.hl-box{
+  background:linear-gradient(135deg,rgba(240,165,0,.07),rgba(0,191,165,.06));
+  border:1px solid rgba(240,165,0,.25);
+  border-left:3px solid var(--amber);
+  border-radius:8px;
+  padding:18px 22px;
+  margin:18px 0;
+  font-size:.94rem;
+  color:var(--text2);
+}
+.hl-box strong{color:var(--amber);}
+
+.warn-box{
+  background:rgba(255,77,109,.07);
+  border:1px solid rgba(255,77,109,.3);
+  border-left:3px solid var(--rose);
+  border-radius:8px;
+  padding:18px 22px;
+  margin:18px 0;
+  color:var(--text2);
+  font-size:.94rem;
+}
+.warn-box strong{color:var(--rose);}
+
+.info-box{
+  background:rgba(56,189,248,.07);
+  border:1px solid rgba(56,189,248,.25);
+  border-left:3px solid var(--sky);
+  border-radius:8px;
+  padding:18px 22px;
+  margin:18px 0;
+  color:var(--text2);
+  font-size:.94rem;
+}
+.info-box strong{color:var(--sky);}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:480px;}
+th{
+  background:var(--raised);
+  color:var(--amber);
+  padding:11px 16px;
+  text-align:left;
+  border:1px solid var(--border);
+  font-weight:600;
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+td{
+  padding:10px 16px;
+  border:1px solid var(--border);
+  color:var(--text2);
+  background:var(--surface);
+  vertical-align:top;
+}
+tr:hover td{background:var(--raised);}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.73rem;font-family:'JetBrains Mono',monospace;font-weight:500;}
+.ba{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(240,165,0,.3);}
+.bt{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(0,191,165,.3);}
+.br{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(255,77,109,.3);}
+.bs{background:var(--sky-dim);color:var(--sky);border:1px solid rgba(56,189,248,.3);}
+.bv{background:var(--violet-dim);color:var(--violet);border:1px solid rgba(167,139,250,.3);}
+.bl{background:var(--lime-dim);color:var(--lime);border:1px solid rgba(132,204,22,.3);}
+
+/* ── STEPS ── */
+.steps{margin:18px 0;}
+.step{display:flex;gap:18px;margin-bottom:22px;align-items:flex-start;}
+.sn2{
+  min-width:34px;height:34px;
+  background:linear-gradient(135deg,var(--amber),var(--teal));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:.82rem;color:#000;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.sc h4{margin-top:0;}
+
+/* ── ER DIAGRAM ── */
+.er-wrap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:28px;
+  margin:20px 0;
+  overflow-x:auto;
+}
+.er-table{
+  display:inline-block;
+  background:var(--raised);
+  border:2px solid var(--border2);
+  border-radius:8px;
+  overflow:hidden;
+  min-width:200px;
+  margin:8px;
+  vertical-align:top;
+  font-size:.82rem;
+}
+.er-thead{
+  background:var(--amber-dim);
+  border-bottom:2px solid rgba(240,165,0,.3);
+  padding:10px 16px;
+  font-weight:700;
+  color:var(--amber);
+  font-family:'JetBrains Mono',monospace;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.er-row{
+  padding:7px 16px;
+  border-bottom:1px solid var(--border);
+  color:var(--text2);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.er-row:last-child{border-bottom:none;}
+.pk{color:var(--amber);font-size:.7rem;font-family:'JetBrains Mono',monospace;}
+.fk{color:var(--sky);font-size:.7rem;font-family:'JetBrains Mono',monospace;}
+.col-type{color:var(--text3);font-size:.72rem;font-family:'JetBrains Mono',monospace;margin-left:auto;}
+
+.er-rel{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.4rem;
+  color:var(--teal);
+  margin:8px 4px;
+  vertical-align:middle;
+}
+
+/* ── INDEX VISUAL ── */
+.index-vis{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+  margin:16px 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;
+}
+.btree-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;}
+.btree-node{
+  background:var(--raised);
+  border:1px solid var(--border2);
+  border-radius:5px;
+  padding:5px 12px;
+  color:var(--amber);
+  font-size:.75rem;
+  transition:all .2s;
+}
+.btree-node:hover{background:var(--amber-dim);border-color:var(--amber);}
+.btree-node.root{background:var(--amber-dim);border-color:var(--amber);}
+.btree-node.match{background:rgba(0,191,165,.2);border-color:var(--teal);color:var(--teal);}
+
+/* ── PERF METER ── */
+.perf-bar{display:flex;align-items:center;gap:12px;margin:8px 0;}
+.perf-label{min-width:200px;font-size:.82rem;color:var(--text2);}
+.perf-track{flex:1;height:12px;background:var(--raised);border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.perf-fill{height:100%;border-radius:6px;transition:width 1s ease;}
+.pf-amber{background:linear-gradient(90deg,var(--amber),#ffd700);}
+.pf-teal{background:linear-gradient(90deg,var(--teal),#00e5d0);}
+.pf-rose{background:linear-gradient(90deg,var(--rose),#ff8fa0);}
+.pf-sky{background:linear-gradient(90deg,var(--sky),#7dd3fc);}
+.pf-lime{background:linear-gradient(90deg,var(--lime),#bef264);}
+.perf-val{min-width:42px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text3);}
+
+/* ── LIST ── */
+ul.ul{padding-left:18px;margin:10px 0;}
+ul.ul li{color:var(--text2);margin:7px 0;font-size:.94rem;}
+ul.ul li::marker{color:var(--amber);}
+ol.ol{padding-left:18px;margin:10px 0;}
+ol.ol li{color:var(--text2);margin:7px 0;font-size:.94rem;}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:50px 0;}
+
+/* ── INLINE CODE ── */
+ic{display:inline;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.2);padding:1px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--amber);}
+
+/* ── TOC ── */
+.toc{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:28px 32px;
+  margin-bottom:55px;
+}
+.toc-title{
+  font-family:'Noto Serif Bengali',serif;
+  font-size:1.1rem;
+  color:var(--amber);
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 24px;}
+.toc a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--text3);
+  text-decoration:none;
+  font-size:.88rem;
+  padding:5px 0;
+  transition:color .2s;
+  border-bottom:1px solid transparent;
+}
+.toc a:hover{color:var(--amber);}
+.toc a .tn{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text4);min-width:28px;}
+
+/* ── SECURITY RING ── */
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px;margin:20px 0;}
+.sec-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px 16px;
+  text-align:center;
+  transition:all .25s;
+}
+.sec-card:hover{border-color:rgba(0,191,165,.4);transform:translateY(-3px);background:var(--teal-dim);}
+.sec-icon{font-size:1.8rem;margin-bottom:8px;}
+.sec-title{font-weight:600;color:var(--text);font-size:.88rem;margin-bottom:4px;}
+.sec-desc{font-size:.76rem;color:var(--text3);}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:40px 24px;
+  border-top:1px solid var(--border);
+  color:var(--text3);font-size:.82rem;
+}
+footer span{color:var(--amber);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--amber);}
+
+@media(max-width:600px){
+  h2{font-size:1.3rem;}
+  .hero h1{font-size:1.9rem;}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">🗄️ সম্পূর্ণ বাংলা গাইড</div>
+  <h1>Advanced Database Design<br>ক্র্যাশ কোর্স</h1>
+  <p class="hero-sub">MySQL থেকে শুরু করে Enterprise-grade Architecture — ডিজাইন, অপ্টিমাইজেশন, নিরাপত্তা ও Scaling সবকিছু বাংলায়</p>
+  <div class="hero-pills">
+    <span class="pill">MySQL</span>
+    <span class="pill">PostgreSQL</span>
+    <span class="pill">Redis</span>
+    <span class="pill">MongoDB</span>
+    <span class="pill">Normalization</span>
+    <span class="pill">Indexing</span>
+    <span class="pill">Replication</span>
+    <span class="pill">Sharding</span>
+    <span class="pill">Security</span>
+    <span class="pill">Query Optimization</span>
+  </div>
+</header>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav>
+  <span class="nav-section">Basics</span>
+  <a href="#fundamentals">মৌলিক ধারণা</a>
+  <a href="#normalization">Normalization</a>
+  <a href="#er">ER Diagram</a>
+  <span class="nav-section">MySQL</span>
+  <a href="#mysql-adv">Advanced MySQL</a>
+  <a href="#indexing">Indexing</a>
+  <a href="#transactions">Transactions</a>
+  <a href="#stored">Stored Proc</a>
+  <span class="nav-section">Performance</span>
+  <a href="#query-opt">Query Opt</a>
+  <a href="#partitioning">Partitioning</a>
+  <a href="#replication">Replication</a>
+  <a href="#sharding">Sharding</a>
+  <span class="nav-section">Advanced</span>
+  <a href="#nosql">NoSQL</a>
+  <a href="#security">Security</a>
+  <a href="#backup">Backup</a>
+  <a href="#monitoring">Monitoring</a>
+</nav>
+
+<!-- ══════════════════ WRAPPER ══════════════════ -->
+<div class="wrapper">
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">📋 বিষয়সূচি — সম্পূর্ণ কোর্স</div>
+  <div class="toc-grid">
+    <a href="#fundamentals"><span class="tn">01</span>Database মৌলিক ধারণা ও RDBMS</a>
+    <a href="#normalization"><span class="tn">02</span>Normalization — 1NF থেকে BCNF</a>
+    <a href="#er"><span class="tn">03</span>ER Diagram ও Schema Design</a>
+    <a href="#mysql-adv"><span class="tn">04</span>Advanced MySQL — Data Types, Joins</a>
+    <a href="#indexing"><span class="tn">05</span>Indexing — B-Tree, Composite, Full-text</a>
+    <a href="#transactions"><span class="tn">06</span>Transactions ও ACID Properties</a>
+    <a href="#stored"><span class="tn">07</span>Stored Procedure, Function, Trigger</a>
+    <a href="#query-opt"><span class="tn">08</span>Query Optimization ও EXPLAIN</a>
+    <a href="#partitioning"><span class="tn">09</span>Table Partitioning</a>
+    <a href="#replication"><span class="tn">10</span>Master-Slave Replication</a>
+    <a href="#sharding"><span class="tn">11</span>Database Sharding</a>
+    <a href="#nosql"><span class="tn">12</span>NoSQL — Redis, MongoDB সংযুক্তি</a>
+    <a href="#security"><span class="tn">13</span>Database Security সম্পূর্ণ গাইড</a>
+    <a href="#backup"><span class="tn">14</span>Backup ও Disaster Recovery</a>
+    <a href="#monitoring"><span class="tn">15</span>Monitoring ও Performance Tuning</a>
+  </div>
+</div>
+
+<!-- ══════ 01: FUNDAMENTALS ══════ -->
+<section class="section" id="fundamentals">
+  <div class="sh">
+    <span class="sn">01</span>
+    <span class="si">🧱</span>
+    <h2>Database মৌলিক ধারণা ও RDBMS</h2>
+  </div>
+
+  <p>Database হলো সংগঠিতভাবে তথ্য সংরক্ষণের পদ্ধতি। <strong>RDBMS (Relational Database Management System)</strong> হলো সেই ব্যবস্থা যেখানে তথ্য Table আকারে এবং Relation দিয়ে সংযুক্ত থাকে।</p>
+
+  <div class="grid3">
+    <div class="card card-amber">
+      <h4>📊 Table (সারণি)</h4>
+      <p>Row (রেকর্ড) ও Column (ক্ষেত্র) দিয়ে তৈরি কাঠামো। প্রতিটি table একটি entity বোঝায়।</p>
+    </div>
+    <div class="card card-teal">
+      <h4>🔑 Primary Key</h4>
+      <p>প্রতিটি রেকর্ডকে <strong>uniquely</strong> চিহ্নিত করে। Null বা Duplicate হতে পারে না।</p>
+    </div>
+    <div class="card card-sky">
+      <h4>🔗 Foreign Key</h4>
+      <p>অন্য table-এর Primary Key-কে refer করে। দুটি table-এর মধ্যে সম্পর্ক তৈরি করে।</p>
+    </div>
+  </div>
+
+  <h3>MySQL ইনস্টল ও প্রথম সেটআপ</h3>
+  <div class="term">
+    <div class="term-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="term-title">Terminal — Ubuntu/Debian</span></div>
+    <pre><span class="pr">$</span> sudo apt update && sudo apt install mysql-server -y
+<span class="out">✓ MySQL 8.0 installed</span>
+
+<span class="pr">$</span> sudo systemctl start mysql
+<span class="pr">$</span> sudo systemctl enable mysql
+<span class="out">✓ MySQL চলছে ও auto-start সক্রিয়</span>
+
+<span class="pr">$</span> sudo mysql_secure_installation
+<span class="out">→ Root password সেট করুন
+→ Anonymous user মুছুন: Y
+→ Remote root login বন্ধ: Y
+→ Test database মুছুন: Y</span>
+
+<span class="pr">$</span> mysql -u root -p
+<span class="out">mysql></span></pre>
+  </div>
+
+  <h3>Database ও User তৈরি</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL</span></div>
+    <pre><span class="cm">-- নতুন Database তৈরি</span>
+<span class="kw">CREATE DATABASE</span> ecommerce_db
+  <span class="kw">CHARACTER SET</span> utf8mb4
+  <span class="kw">COLLATE</span> utf8mb4_unicode_ci;
+
+<span class="cm">-- নতুন User তৈরি (root ব্যবহার করবেন না!)</span>
+<span class="kw">CREATE USER</span> <span class="str">'app_user'</span>@<span class="str">'localhost'</span>
+  <span class="kw">IDENTIFIED BY</span> <span class="str">'Strong@Pass#2024'</span>;
+
+<span class="cm">-- User-কে Permission দেওয়া</span>
+<span class="kw">GRANT SELECT, INSERT, UPDATE, DELETE</span>
+  <span class="kw">ON</span> ecommerce_db.<span class="op">*</span>
+  <span class="kw">TO</span> <span class="str">'app_user'</span>@<span class="str">'localhost'</span>;
+
+<span class="kw">FLUSH PRIVILEGES</span>;
+
+<span class="cm">-- Database ব্যবহার শুরু</span>
+<span class="kw">USE</span> ecommerce_db;</pre>
+  </div>
+
+  <h3>Data Types — সঠিক ধরন বেছে নিন</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Category</th><th>Data Type</th><th>ব্যবহার</th><th>আকার</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ba">Integer</span></td><td><ic>TINYINT, SMALLINT, INT, BIGINT</ic></td><td>সংখ্যা, ID, বয়স</td><td>1–8 byte</td></tr>
+        <tr><td><span class="bt">Decimal</span></td><td><ic>DECIMAL(10,2)</ic></td><td>টাকা, মূল্য (সঠিক)</td><td>পরিবর্তনশীল</td></tr>
+        <tr><td><span class="bs">Float</span></td><td><ic>FLOAT, DOUBLE</ic></td><td>বৈজ্ঞানিক মান (approximate)</td><td>4–8 byte</td></tr>
+        <tr><td><span class="bv">String</span></td><td><ic>VARCHAR(255), CHAR(n)</ic></td><td>নাম, ঠিকানা, ইমেইল</td><td>পরিবর্তনশীল</td></tr>
+        <tr><td><span class="bv">Text</span></td><td><ic>TEXT, MEDIUMTEXT, LONGTEXT</ic></td><td>বিবরণ, ব্লগ পোস্ট</td><td>65KB–4GB</td></tr>
+        <tr><td><span class="bl">Date</span></td><td><ic>DATE, DATETIME, TIMESTAMP</ic></td><td>তারিখ, সময়</td><td>3–8 byte</td></tr>
+        <tr><td><span class="ba">JSON</span></td><td><ic>JSON</ic></td><td>নমনীয় কাঠামো</td><td>পরিবর্তনশীল</td></tr>
+        <tr><td><span class="br">Enum</span></td><td><ic>ENUM('A','B','C')</ic></td><td>নির্দিষ্ট মানের তালিকা</td><td>1–2 byte</td></tr>
+        <tr><td><span class="bs">Binary</span></td><td><ic>BLOB, MEDIUMBLOB</ic></td><td>ছবি, ফাইল (এড়িয়ে চলুন)</td><td>65KB–16MB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn-box"><strong>⚠️ টিপস:</strong> টাকার হিসাবে সবসময় <ic>DECIMAL</ic> ব্যবহার করুন, <ic>FLOAT</ic> বা <ic>DOUBLE</ic> নয় — কারণ floating point এ rounding error হয়।</div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 02: NORMALIZATION ══════ -->
+<section class="section" id="normalization">
+  <div class="sh"><span class="sn">02</span><span class="si">📐</span><h2>Normalization — ১NF থেকে BCNF</h2></div>
+
+  <p>Normalization হলো Database-কে এমনভাবে সাজানো যাতে <strong>তথ্যের পুনরাবৃত্তি (Redundancy)</strong> কমে এবং <strong>Anomaly</strong> (ভুল সমস্যা) না হয়।</p>
+
+  <div class="hl-box"><strong>Anomaly তিন ধরনের:</strong> Insert Anomaly (নতুন তথ্য যোগে সমস্যা), Update Anomaly (একটি পরিবর্তন করলে সব জায়গায় করতে হয়), Delete Anomaly (মুছলে অন্য তথ্যও হারিয়ে যায়)।</div>
+
+  <h3>1NF — প্রথম স্বাভাবিক রূপ</h3>
+  <p><strong>নিয়ম:</strong> প্রতিটি Column-এ একটি মাত্র মান থাকবে। কোনো Repeating Group থাকবে না।</p>
+
+  <div class="grid2">
+    <div class="card card-rose">
+      <h4>❌ 1NF ভাঙছে</h4>
+      <div class="tw"><table>
+        <thead><tr><th>OrderID</th><th>Products</th></tr></thead>
+        <tbody>
+          <tr><td>101</td><td>চাল, ডাল, তেল</td></tr>
+          <tr><td>102</td><td>আটা, চিনি</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.82rem;color:var(--rose);">Products column-এ একাধিক মান আছে!</p>
+    </div>
+    <div class="card card-lime">
+      <h4>✅ 1NF সঠিক</h4>
+      <div class="tw"><table>
+        <thead><tr><th>OrderID</th><th>Product</th></tr></thead>
+        <tbody>
+          <tr><td>101</td><td>চাল</td></tr>
+          <tr><td>101</td><td>ডাল</td></tr>
+          <tr><td>101</td><td>তেল</td></tr>
+          <tr><td>102</td><td>আটা</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <h3>2NF — দ্বিতীয় স্বাভাবিক রূপ</h3>
+  <p><strong>নিয়ম:</strong> 1NF হতে হবে এবং প্রতিটি non-key column সম্পূর্ণ Primary Key-এর উপর নির্ভরশীল হতে হবে (Partial Dependency নেই)।</p>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — 2NF প্রয়োগ</span></div>
+    <pre><span class="cm">-- ❌ 2NF ভাঙছে: CustomerName শুধু CustomerID-এর উপর নির্ভরশীল</span>
+<span class="cm">-- OrderItems(OrderID, ProductID, Qty, CustomerName, ProductName)</span>
+
+<span class="cm">-- ✅ সমাধান: আলাদা table ভাগ করুন</span>
+<span class="kw">CREATE TABLE</span> orders (
+  order_id    <span class="type">INT</span> <span class="kw">PRIMARY KEY</span> <span class="kw">AUTO_INCREMENT</span>,
+  customer_id <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  created_at  <span class="type">DATETIME</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+);
+
+<span class="kw">CREATE TABLE</span> order_items (
+  id         <span class="type">INT</span> <span class="kw">PRIMARY KEY</span> <span class="kw">AUTO_INCREMENT</span>,
+  order_id   <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  product_id <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  quantity   <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  price      <span class="type">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>,
+  <span class="kw">FOREIGN KEY</span> (order_id)   <span class="kw">REFERENCES</span> orders(order_id),
+  <span class="kw">FOREIGN KEY</span> (product_id) <span class="kw">REFERENCES</span> products(product_id)
+);</pre>
+  </div>
+
+  <h3>3NF — তৃতীয় স্বাভাবিক রূপ</h3>
+  <p><strong>নিয়ম:</strong> 2NF হতে হবে এবং কোনো non-key column অন্য non-key column-এর উপর নির্ভরশীল হতে পারবে না (Transitive Dependency নেই)।</p>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — 3NF সমাধান</span></div>
+    <pre><span class="cm">-- ❌ Employee(EmpID, DeptID, DeptName)
+-- DeptName → DeptID → EmpID (Transitive Dependency!)</span>
+
+<span class="cm">-- ✅ সমাধান: Department আলাদা করুন</span>
+<span class="kw">CREATE TABLE</span> departments (
+  dept_id   <span class="type">INT</span> <span class="kw">PRIMARY KEY</span>,
+  dept_name <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  location  <span class="type">VARCHAR</span>(<span class="num">100</span>)
+);
+
+<span class="kw">CREATE TABLE</span> employees (
+  emp_id   <span class="type">INT</span> <span class="kw">PRIMARY KEY</span> <span class="kw">AUTO_INCREMENT</span>,
+  name     <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  email    <span class="type">VARCHAR</span>(<span class="num">150</span>) <span class="kw">UNIQUE NOT NULL</span>,
+  dept_id  <span class="type">INT</span>,
+  salary   <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>),
+  <span class="kw">FOREIGN KEY</span> (dept_id) <span class="kw">REFERENCES</span> departments(dept_id)
+);</pre>
+  </div>
+
+  <h3>BCNF — Boyce-Codd Normal Form</h3>
+  <div class="card card-violet">
+    <h4>🎯 BCNF নিয়ম</h4>
+    <p>3NF-এর কঠোর সংস্করণ। প্রতিটি determinant অবশ্যই candidate key হতে হবে। ব্যবহারিকভাবে 3NF পর্যন্ত পৌঁছালেই বেশিরভাগ সমস্যা সমাধান হয়।</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Normal Form</th><th>মূল নিয়ম</th><th>কী দূর হয়</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ba">1NF</span></td><td>Atomic values, কোনো repeating group নেই</td><td>Multi-valued column</td></tr>
+        <tr><td><span class="bt">2NF</span></td><td>1NF + কোনো Partial Dependency নেই</td><td>আংশিক নির্ভরতা</td></tr>
+        <tr><td><span class="bs">3NF</span></td><td>2NF + কোনো Transitive Dependency নেই</td><td>পরোক্ষ নির্ভরতা</td></tr>
+        <tr><td><span class="bv">BCNF</span></td><td>3NF + প্রতিটি determinant candidate key</td><td>বিশেষ anomaly</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 03: ER DIAGRAM ══════ -->
+<section class="section" id="er">
+  <div class="sh"><span class="sn">03</span><span class="si">🗺️</span><h2>ER Diagram ও Schema Design</h2></div>
+
+  <p>ER Diagram (Entity-Relationship Diagram) হলো Database-এর ভিজ্যুয়াল নকশা। Coding শুরু করার আগে এটি তৈরি করা অপরিহার্য।</p>
+
+  <h3>E-commerce Database Schema</h3>
+  <div class="er-wrap">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;">
+
+      <div class="er-table">
+        <div class="er-thead">👤 users</div>
+        <div class="er-row"><span class="pk">PK</span> user_id <span class="col-type">INT</span></div>
+        <div class="er-row">name <span class="col-type">VARCHAR(100)</span></div>
+        <div class="er-row">email <span class="col-type">VARCHAR(150)</span></div>
+        <div class="er-row">password_hash <span class="col-type">VARCHAR(255)</span></div>
+        <div class="er-row">phone <span class="col-type">VARCHAR(20)</span></div>
+        <div class="er-row">role <span class="col-type">ENUM</span></div>
+        <div class="er-row">created_at <span class="col-type">DATETIME</span></div>
+      </div>
+
+      <div class="er-rel">→</div>
+
+      <div class="er-table">
+        <div class="er-thead">📦 orders</div>
+        <div class="er-row"><span class="pk">PK</span> order_id <span class="col-type">INT</span></div>
+        <div class="er-row"><span class="fk">FK</span> user_id <span class="col-type">INT</span></div>
+        <div class="er-row">total_amount <span class="col-type">DECIMAL</span></div>
+        <div class="er-row">status <span class="col-type">ENUM</span></div>
+        <div class="er-row">shipping_addr <span class="col-type">TEXT</span></div>
+        <div class="er-row">created_at <span class="col-type">DATETIME</span></div>
+      </div>
+
+      <div class="er-rel">→</div>
+
+      <div class="er-table">
+        <div class="er-thead">🛒 order_items</div>
+        <div class="er-row"><span class="pk">PK</span> item_id <span class="col-type">INT</span></div>
+        <div class="er-row"><span class="fk">FK</span> order_id <span class="col-type">INT</span></div>
+        <div class="er-row"><span class="fk">FK</span> product_id <span class="col-type">INT</span></div>
+        <div class="er-row">quantity <span class="col-type">INT</span></div>
+        <div class="er-row">unit_price <span class="col-type">DECIMAL</span></div>
+      </div>
+
+      <div class="er-rel">←</div>
+
+      <div class="er-table">
+        <div class="er-thead">🏷️ products</div>
+        <div class="er-row"><span class="pk">PK</span> product_id <span class="col-type">INT</span></div>
+        <div class="er-row"><span class="fk">FK</span> category_id <span class="col-type">INT</span></div>
+        <div class="er-row">name <span class="col-type">VARCHAR(200)</span></div>
+        <div class="er-row">description <span class="col-type">TEXT</span></div>
+        <div class="er-row">price <span class="col-type">DECIMAL</span></div>
+        <div class="er-row">stock <span class="col-type">INT</span></div>
+        <div class="er-row">sku <span class="col-type">VARCHAR(50)</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <h3>সম্পূর্ণ Schema তৈরি</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — ecommerce_db</span></div>
+    <pre><span class="cm">-- ১. Categories Table</span>
+<span class="kw">CREATE TABLE</span> categories (
+  category_id   <span class="type">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  name          <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  parent_id     <span class="type">INT</span> <span class="kw">DEFAULT NULL</span>,       <span class="cm">-- Self-referencing (Sub-category)</span>
+  slug          <span class="type">VARCHAR</span>(<span class="num">120</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  created_at    <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (parent_id) <span class="kw">REFERENCES</span> categories(category_id)
+    <span class="kw">ON DELETE SET NULL</span>
+) <span class="kw">ENGINE</span>=InnoDB;
+
+<span class="cm">-- ২. Users Table</span>
+<span class="kw">CREATE TABLE</span> users (
+  user_id       <span class="type">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  name          <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  email         <span class="type">VARCHAR</span>(<span class="num">150</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  password_hash <span class="type">VARCHAR</span>(<span class="num">255</span>) <span class="kw">NOT NULL</span>,
+  phone         <span class="type">VARCHAR</span>(<span class="num">20</span>),
+  role          <span class="type">ENUM</span>(<span class="str">'customer'</span>,<span class="str">'admin'</span>,<span class="str">'vendor'</span>) <span class="kw">DEFAULT</span> <span class="str">'customer'</span>,
+  is_verified   <span class="type">TINYINT</span>(<span class="num">1</span>) <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  created_at    <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  updated_at    <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span> <span class="kw">ON UPDATE</span> <span class="fn">CURRENT_TIMESTAMP</span>
+) <span class="kw">ENGINE</span>=InnoDB;
+
+<span class="cm">-- ৩. Products Table</span>
+<span class="kw">CREATE TABLE</span> products (
+  product_id    <span class="type">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  category_id   <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  name          <span class="type">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+  slug          <span class="type">VARCHAR</span>(<span class="num">220</span>) <span class="kw">UNIQUE NOT NULL</span>,
+  description   <span class="type">TEXT</span>,
+  price         <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>,
+  sale_price    <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>),
+  stock         <span class="type">INT</span> <span class="kw">NOT NULL DEFAULT</span> <span class="num">0</span>,
+  sku           <span class="type">VARCHAR</span>(<span class="num">50</span>) <span class="kw">UNIQUE</span>,
+  weight_kg     <span class="type">DECIMAL</span>(<span class="num">6</span>,<span class="num">3</span>),
+  attributes    <span class="type">JSON</span>,               <span class="cm">-- {"color":"red","size":"XL"}</span>
+  is_active     <span class="type">TINYINT</span>(<span class="num">1</span>) <span class="kw">DEFAULT</span> <span class="num">1</span>,
+  created_at    <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (category_id) <span class="kw">REFERENCES</span> categories(category_id)
+) <span class="kw">ENGINE</span>=InnoDB;
+
+<span class="cm">-- ৪. Orders Table</span>
+<span class="kw">CREATE TABLE</span> orders (
+  order_id      <span class="type">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  user_id       <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  total_amount  <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>,
+  discount      <span class="type">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  status        <span class="type">ENUM</span>(<span class="str">'pending'</span>,<span class="str">'processing'</span>,<span class="str">'shipped'</span>,<span class="str">'delivered'</span>,<span class="str">'cancelled'</span>)
+                <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
+  payment_method <span class="type">VARCHAR</span>(<span class="num">50</span>),
+  shipping_address <span class="type">JSON</span>,           <span class="cm">-- ঠিকানা JSON হিসেবে</span>
+  notes         <span class="type">TEXT</span>,
+  created_at    <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>,
+  <span class="kw">FOREIGN KEY</span> (user_id) <span class="kw">REFERENCES</span> users(user_id)
+    <span class="kw">ON DELETE RESTRICT</span>
+) <span class="kw">ENGINE</span>=InnoDB;
+
+<span class="cm">-- ৫. Order Items</span>
+<span class="kw">CREATE TABLE</span> order_items (
+  item_id       <span class="type">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  order_id      <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  product_id    <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  quantity      <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  unit_price    <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>) <span class="kw">NOT NULL</span>, <span class="cm">-- অর্ডারের সময়ের মূল্য</span>
+  <span class="kw">FOREIGN KEY</span> (order_id)   <span class="kw">REFERENCES</span> orders(order_id)   <span class="kw">ON DELETE CASCADE</span>,
+  <span class="kw">FOREIGN KEY</span> (product_id) <span class="kw">REFERENCES</span> products(product_id) <span class="kw">ON DELETE RESTRICT</span>
+) <span class="kw">ENGINE</span>=InnoDB;</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 04: ADVANCED MYSQL ══════ -->
+<section class="section" id="mysql-adv">
+  <div class="sh"><span class="sn">04</span><span class="si">⚡</span><h2>Advanced MySQL — Joins, Subqueries, Window Functions</h2></div>
+
+  <h3>সব ধরনের JOIN</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Joins</span></div>
+    <pre><span class="cm">-- INNER JOIN: দুটো table-এ মিলে যাওয়া রেকর্ড</span>
+<span class="kw">SELECT</span> u.name, o.order_id, o.total_amount
+<span class="kw">FROM</span> users u
+<span class="kw">INNER JOIN</span> orders o <span class="kw">ON</span> u.user_id = o.user_id;
+
+<span class="cm">-- LEFT JOIN: সব user দেখাবে, order না থাকলেও</span>
+<span class="kw">SELECT</span> u.name, <span class="fn">COUNT</span>(o.order_id) <span class="kw">AS</span> total_orders
+<span class="kw">FROM</span> users u
+<span class="kw">LEFT JOIN</span> orders o <span class="kw">ON</span> u.user_id = o.user_id
+<span class="kw">GROUP BY</span> u.user_id;
+
+<span class="cm">-- MULTI-TABLE JOIN: তিনটি table একসাথে</span>
+<span class="kw">SELECT</span>
+  u.name     <span class="kw">AS</span> customer,
+  p.name     <span class="kw">AS</span> product,
+  oi.quantity,
+  oi.unit_price,
+  (oi.quantity * oi.unit_price) <span class="kw">AS</span> subtotal
+<span class="kw">FROM</span> users u
+<span class="kw">JOIN</span> orders o       <span class="kw">ON</span> u.user_id   = o.user_id
+<span class="kw">JOIN</span> order_items oi <span class="kw">ON</span> o.order_id  = oi.order_id
+<span class="kw">JOIN</span> products p     <span class="kw">ON</span> oi.product_id = p.product_id
+<span class="kw">WHERE</span> o.status = <span class="str">'delivered'</span>
+<span class="kw">ORDER BY</span> o.created_at <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <h3>Subquery ও CTE (Common Table Expression)</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — CTE & Subquery</span></div>
+    <pre><span class="cm">-- CTE: জটিল query-কে সহজে পড়া যায়</span>
+<span class="kw">WITH</span> top_customers <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">SUM</span>(total_amount) <span class="kw">AS</span> lifetime_value,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> order_count
+  <span class="kw">FROM</span> orders
+  <span class="kw">WHERE</span> status <span class="op">!=</span> <span class="str">'cancelled'</span>
+  <span class="kw">GROUP BY</span> user_id
+  <span class="kw">HAVING</span> lifetime_value <span class="op">></span> <span class="num">10000</span>
+),
+ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    tc.*,
+    u.name, u.email,
+    <span class="fn">RANK</span>() <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> lifetime_value <span class="kw">DESC</span>) <span class="kw">AS</span> rank_pos
+  <span class="kw">FROM</span> top_customers tc
+  <span class="kw">JOIN</span> users u <span class="kw">ON</span> tc.user_id = u.user_id
+)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> ranked <span class="kw">WHERE</span> rank_pos <span class="op">&lt;=</span> <span class="num">10</span>;
+
+<span class="cm">-- Correlated Subquery: প্রতিটি product-এর সর্বোচ্চ বিক্রির দিন</span>
+<span class="kw">SELECT</span>
+  p.name,
+  p.price,
+  (
+    <span class="kw">SELECT</span> <span class="fn">SUM</span>(oi.quantity)
+    <span class="kw">FROM</span> order_items oi
+    <span class="kw">WHERE</span> oi.product_id = p.product_id
+  ) <span class="kw">AS</span> total_sold
+<span class="kw">FROM</span> products p
+<span class="kw">ORDER BY</span> total_sold <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;</pre>
+  </div>
+
+  <h3>Window Functions — উন্নত বিশ্লেষণ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Window Functions</span></div>
+    <pre><span class="cm">-- ROW_NUMBER, RANK, DENSE_RANK</span>
+<span class="kw">SELECT</span>
+  name,
+  salary,
+  dept_id,
+  <span class="fn">ROW_NUMBER</span>()  <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> row_num,
+  <span class="fn">RANK</span>()        <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> rnk,
+  <span class="fn">DENSE_RANK</span>()  <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> dense_rnk
+<span class="kw">FROM</span> employees;
+
+<span class="cm">-- Running Total (চলমান যোগফল)</span>
+<span class="kw">SELECT</span>
+  order_id,
+  total_amount,
+  <span class="fn">SUM</span>(total_amount) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> created_at
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>
+  ) <span class="kw">AS</span> running_total
+<span class="kw">FROM</span> orders;
+
+<span class="cm">-- LAG/LEAD: আগের/পরের রেকর্ড তুলনা</span>
+<span class="kw">SELECT</span>
+  DATE(<span class="fn">created_at</span>) <span class="kw">AS</span> sale_date,
+  <span class="fn">SUM</span>(total_amount) <span class="kw">AS</span> daily_sales,
+  <span class="fn">LAG</span>(<span class="fn">SUM</span>(total_amount)) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> DATE(created_at)) <span class="kw">AS</span> prev_day,
+  <span class="fn">SUM</span>(total_amount) - <span class="fn">LAG</span>(<span class="fn">SUM</span>(total_amount)) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> DATE(created_at))
+    <span class="kw">AS</span> growth
+<span class="kw">FROM</span> orders
+<span class="kw">GROUP BY</span> DATE(created_at);</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 05: INDEXING ══════ -->
+<section class="section" id="indexing">
+  <div class="sh"><span class="sn">05</span><span class="si">🔍</span><h2>Indexing — B-Tree, Composite, Full-text</h2></div>
+
+  <p>Index হলো Database-এর "বইয়ের সূচি"। সঠিক Index ছাড়া বড় Table-এ Query অনেক ধীর হয়।</p>
+
+  <h3>B-Tree Index — কীভাবে কাজ করে</h3>
+  <div class="index-vis">
+    <div style="text-align:center;font-size:.75rem;color:var(--text3);margin-bottom:12px;">B-Tree Index Structure (email column)</div>
+    <div class="btree-row">
+      <div class="btree-node root">M</div>
+    </div>
+    <div class="btree-row">
+      <div class="btree-node">D</div>
+      <div class="btree-node">T</div>
+    </div>
+    <div class="btree-row">
+      <div class="btree-node">A</div>
+      <div class="btree-node">G</div>
+      <div class="btree-node">O</div>
+      <div class="btree-node match">R ✓</div>
+      <div class="btree-node">W</div>
+      <div class="btree-node">Z</div>
+    </div>
+    <div style="text-align:center;font-size:.72rem;color:var(--teal);margin-top:10px;">3 steps-এ "R" খোঁজা গেছে — Full table scan ছাড়া! ⚡</div>
+  </div>
+
+  <h3>Index তৈরির নিয়ম</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Indexes</span></div>
+    <pre><span class="cm">-- সাধারণ Index</span>
+<span class="kw">CREATE INDEX</span> idx_user_email <span class="kw">ON</span> users(email);
+
+<span class="cm">-- Composite Index (যৌথ): column-এর ক্রম গুরুত্বপূর্ণ!</span>
+<span class="cm">-- Rule: WHERE clause-এর ক্রম অনুযায়ী column সাজান</span>
+<span class="kw">CREATE INDEX</span> idx_order_user_status <span class="kw">ON</span> orders(user_id, status, created_at);
+
+<span class="cm">-- Unique Index</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_product_sku <span class="kw">ON</span> products(sku);
+
+<span class="cm">-- Full-text Index: বাংলা/ইংরেজি text search-এর জন্য</span>
+<span class="kw">CREATE FULLTEXT INDEX</span> idx_product_search <span class="kw">ON</span> products(name, description);
+
+<span class="cm">-- Full-text search ব্যবহার</span>
+<span class="kw">SELECT</span> product_id, name, price,
+  <span class="fn">MATCH</span>(name, description) <span class="kw">AGAINST</span>(<span class="str">'wireless headphone'</span> <span class="kw">IN BOOLEAN MODE</span>) <span class="kw">AS</span> relevance
+<span class="kw">FROM</span> products
+<span class="kw">WHERE MATCH</span>(name, description) <span class="kw">AGAINST</span>(<span class="str">'wireless headphone'</span> <span class="kw">IN BOOLEAN MODE</span>)
+<span class="kw">ORDER BY</span> relevance <span class="kw">DESC</span>;
+
+<span class="cm">-- JSON Column-এ Index (MySQL 8+)</span>
+<span class="kw">ALTER TABLE</span> products <span class="kw">ADD COLUMN</span>
+  color <span class="type">VARCHAR</span>(<span class="num">50</span>) <span class="kw">GENERATED ALWAYS AS</span> (attributes->><span class="str">'$.color'</span>) <span class="kw">STORED</span>;
+<span class="kw">CREATE INDEX</span> idx_product_color <span class="kw">ON</span> products(color);
+
+<span class="cm">-- বিদ্যমান Index দেখা</span>
+<span class="kw">SHOW INDEX FROM</span> products;
+<span class="kw">SHOW INDEX FROM</span> orders;</pre>
+  </div>
+
+  <h3>Index Performance তুলনা</h3>
+  <div class="card" style="padding:24px;">
+    <h4>Query Response Time (১০ মিলিয়ন রেকর্ড)</h4>
+    <div class="perf-bar"><span class="perf-label">Index ছাড়া (Full Scan)</span><div class="perf-track"><div class="perf-fill pf-rose" style="width:100%"></div></div><span class="perf-val">8.4s</span></div>
+    <div class="perf-bar"><span class="perf-label">Single Column Index</span><div class="perf-track"><div class="perf-fill pf-amber" style="width:30%"></div></div><span class="perf-val">0.9s</span></div>
+    <div class="perf-bar"><span class="perf-label">Composite Index</span><div class="perf-track"><div class="perf-fill pf-teal" style="width:8%"></div></div><span class="perf-val">0.04s</span></div>
+    <div class="perf-bar"><span class="perf-label">Covering Index</span><div class="perf-track"><div class="perf-fill pf-lime" style="width:4%"></div></div><span class="perf-val">0.02s</span></div>
+  </div>
+
+  <div class="warn-box"><strong>⚠️ Index-এর অপকারিতা:</strong> প্রতিটি INSERT/UPDATE/DELETE-এ Index আপডেট হয়, তাই লেখার গতি কমে। শুধু যে column-এ বারবার WHERE/JOIN/ORDER BY করা হয় সেখানে Index দিন। প্রতিটি table-এ ৫-৬টির বেশি Index এড়িয়ে চলুন।</div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 06: TRANSACTIONS ══════ -->
+<section class="section" id="transactions">
+  <div class="sh"><span class="sn">06</span><span class="si">🔒</span><h2>Transactions ও ACID Properties</h2></div>
+
+  <p>Transaction হলো এক বা একাধিক SQL statement-এর সমষ্টি যা একসাথে সফল হয় অথবা একসাথে ব্যর্থ হয়।</p>
+
+  <div class="grid4">
+    <div class="card card-amber"><h4>A — Atomicity</h4><p>সবকিছু হবে অথবা কিছুই হবে না।</p></div>
+    <div class="card card-teal"><h4>C — Consistency</h4><p>Database সবসময় valid state-এ থাকবে।</p></div>
+    <div class="card card-sky"><h4>I — Isolation</h4><p>একটি Transaction অন্যটিকে প্রভাবিত করবে না।</p></div>
+    <div class="card card-lime"><h4>D — Durability</h4><p>Commit হলে তথ্য স্থায়ীভাবে সংরক্ষিত হবে।</p></div>
+  </div>
+
+  <h3>Bank Transfer — Transaction উদাহরণ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Transaction</span></div>
+    <pre><span class="cm">-- ব্যাংক Transfer: রহিম → করিম = ৫০০০ টাকা</span>
+<span class="kw">START TRANSACTION</span>;
+
+<span class="kw">BEGIN</span>;
+
+  <span class="cm">-- রহিমের account থেকে কাটা</span>
+  <span class="kw">UPDATE</span> accounts
+  <span class="kw">SET</span> balance = balance - <span class="num">5000</span>
+  <span class="kw">WHERE</span> account_id = <span class="num">1001</span> <span class="kw">AND</span> balance >= <span class="num">5000</span>;
+
+  <span class="cm">-- Row affected কিনা চেক</span>
+  <span class="kw">IF</span> ROW_COUNT() = <span class="num">0</span> <span class="kw">THEN</span>
+    <span class="fn">SIGNAL SQLSTATE</span> <span class="str">'45000'</span>
+    <span class="kw">SET</span> MESSAGE_TEXT = <span class="str">'ব্যালেন্স যথেষ্ট নেই'</span>;
+  <span class="kw">END IF</span>;
+
+  <span class="cm">-- করিমের account-এ যোগ করা</span>
+  <span class="kw">UPDATE</span> accounts
+  <span class="kw">SET</span> balance = balance + <span class="num">5000</span>
+  <span class="kw">WHERE</span> account_id = <span class="num">1002</span>;
+
+  <span class="cm">-- লেনদেনের রেকর্ড রাখা</span>
+  <span class="kw">INSERT INTO</span> transactions (from_acc, to_acc, amount, txn_type)
+  <span class="kw">VALUES</span> (<span class="num">1001</span>, <span class="num">1002</span>, <span class="num">5000</span>, <span class="str">'transfer'</span>);
+
+<span class="kw">COMMIT</span>; <span class="cm">-- সব সফল হলে স্থায়ী করুন</span>
+
+<span class="cm">-- Error হলে সব ফিরিয়ে দিন</span>
+<span class="cm">-- ROLLBACK;</span></pre>
+  </div>
+
+  <h3>Isolation Levels — বিচ্ছিন্নতার স্তর</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Level</th><th>Dirty Read</th><th>Non-repeatable Read</th><th>Phantom Read</th><th>Performance</th></tr></thead>
+    <tbody>
+      <tr><td><ic>READ UNCOMMITTED</ic></td><td><span class="br">হয়</span></td><td><span class="br">হয়</span></td><td><span class="br">হয়</span></td><td><span class="bl">দ্রুততম</span></td></tr>
+      <tr><td><ic>READ COMMITTED</ic></td><td><span class="bl">হয় না</span></td><td><span class="br">হয়</span></td><td><span class="br">হয়</span></td><td><span class="bt">দ্রুত</span></td></tr>
+      <tr><td><ic>REPEATABLE READ</ic> (default)</td><td><span class="bl">হয় না</span></td><td><span class="bl">হয় না</span></td><td><span class="br">হয়</span></td><td><span class="ba">মাঝারি</span></td></tr>
+      <tr><td><ic>SERIALIZABLE</ic></td><td><span class="bl">হয় না</span></td><td><span class="bl">হয় না</span></td><td><span class="bl">হয় না</span></td><td><span class="br">ধীরতম</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Isolation Level</span></div>
+    <pre><span class="cm">-- Session-এর জন্য Isolation Level পরিবর্তন</span>
+<span class="kw">SET SESSION TRANSACTION ISOLATION LEVEL</span> READ COMMITTED;
+
+<span class="cm">-- Pessimistic Locking: অন্যরা পড়তেও পারবে না</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+<span class="kw">WHERE</span> product_id = <span class="num">5</span>
+<span class="kw">FOR UPDATE</span>; <span class="cm">-- Row lock করা হলো</span>
+
+<span class="cm">-- Optimistic Locking: version column দিয়ে</span>
+<span class="kw">UPDATE</span> products
+<span class="kw">SET</span> stock = stock - <span class="num">1</span>, version = version + <span class="num">1</span>
+<span class="kw">WHERE</span> product_id = <span class="num">5</span> <span class="kw">AND</span> version = <span class="num">3</span>; <span class="cm">-- version মিলতে হবে</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 07: STORED PROCEDURES ══════ -->
+<section class="section" id="stored">
+  <div class="sh"><span class="sn">07</span><span class="si">🛠️</span><h2>Stored Procedure, Function ও Trigger</h2></div>
+
+  <h3>Stored Procedure</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Stored Procedure</span></div>
+    <pre><span class="kw">DELIMITER</span> $$
+
+<span class="kw">CREATE PROCEDURE</span> <span class="fn">PlaceOrder</span>(
+  <span class="kw">IN</span>  p_user_id    <span class="type">INT</span>,
+  <span class="kw">IN</span>  p_product_id <span class="type">INT</span>,
+  <span class="kw">IN</span>  p_quantity   <span class="type">INT</span>,
+  <span class="kw">OUT</span> p_order_id   <span class="type">INT</span>,
+  <span class="kw">OUT</span> p_message    <span class="type">VARCHAR</span>(<span class="num">200</span>)
+)
+<span class="kw">BEGIN</span>
+  <span class="kw">DECLARE</span> v_stock      <span class="type">INT</span>;
+  <span class="kw">DECLARE</span> v_price      <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>);
+  <span class="kw">DECLARE</span> v_total      <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>);
+  <span class="kw">DECLARE EXIT HANDLER FOR SQLEXCEPTION</span>
+  <span class="kw">BEGIN</span>
+    <span class="kw">ROLLBACK</span>;
+    <span class="kw">SET</span> p_message = <span class="str">'ত্রুটি ঘটেছে, অর্ডার বাতিল'</span>;
+  <span class="kw">END</span>;
+
+  <span class="cm">-- Stock ও price চেক</span>
+  <span class="kw">SELECT</span> stock, price <span class="kw">INTO</span> v_stock, v_price
+  <span class="kw">FROM</span> products <span class="kw">WHERE</span> product_id = p_product_id <span class="kw">FOR UPDATE</span>;
+
+  <span class="kw">IF</span> v_stock < p_quantity <span class="kw">THEN</span>
+    <span class="kw">SET</span> p_message = <span class="str">'পর্যাপ্ত stock নেই'</span>;
+    <span class="kw">LEAVE</span> proc_label;
+  <span class="kw">END IF</span>;
+
+  <span class="kw">SET</span> v_total = v_price * p_quantity;
+
+  <span class="kw">START TRANSACTION</span>;
+
+  <span class="cm">-- Order তৈরি</span>
+  <span class="kw">INSERT INTO</span> orders (user_id, total_amount, status)
+  <span class="kw">VALUES</span> (p_user_id, v_total, <span class="str">'pending'</span>);
+  <span class="kw">SET</span> p_order_id = <span class="fn">LAST_INSERT_ID</span>();
+
+  <span class="cm">-- Order item যোগ</span>
+  <span class="kw">INSERT INTO</span> order_items (order_id, product_id, quantity, unit_price)
+  <span class="kw">VALUES</span> (p_order_id, p_product_id, p_quantity, v_price);
+
+  <span class="cm">-- Stock কমানো</span>
+  <span class="kw">UPDATE</span> products <span class="kw">SET</span> stock = stock - p_quantity
+  <span class="kw">WHERE</span> product_id = p_product_id;
+
+  <span class="kw">COMMIT</span>;
+  <span class="kw">SET</span> p_message = <span class="str">'অর্ডার সফলভাবে তৈরি হয়েছে'</span>;
+<span class="kw">END</span>$$
+
+<span class="kw">DELIMITER</span> ;
+
+<span class="cm">-- Procedure চালানো</span>
+<span class="kw">CALL</span> <span class="fn">PlaceOrder</span>(<span class="num">1</span>, <span class="num">5</span>, <span class="num">2</span>, @order_id, @msg);
+<span class="kw">SELECT</span> @order_id, @msg;</pre>
+  </div>
+
+  <h3>Trigger — স্বয়ংক্রিয় কাজ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Triggers</span></div>
+    <pre><span class="kw">DELIMITER</span> $$
+
+<span class="cm">-- Stock শূন্য হলে স্বয়ংক্রিয় সতর্কতা</span>
+<span class="kw">CREATE TRIGGER</span> trg_low_stock
+<span class="kw">AFTER UPDATE ON</span> products
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+  <span class="kw">IF</span> NEW.stock < <span class="num">10</span> <span class="kw">AND</span> OLD.stock >= <span class="num">10</span> <span class="kw">THEN</span>
+    <span class="kw">INSERT INTO</span> alerts (product_id, alert_type, message, created_at)
+    <span class="kw">VALUES</span> (NEW.product_id, <span class="str">'LOW_STOCK'</span>,
+      <span class="fn">CONCAT</span>(<span class="str">'Stock কম: '</span>, NEW.name, <span class="str">' = '</span>, NEW.stock),
+      <span class="fn">NOW</span>());
+  <span class="kw">END IF</span>;
+<span class="kw">END</span>$$
+
+<span class="cm">-- Audit Log: কে কখন কী পরিবর্তন করেছে</span>
+<span class="kw">CREATE TRIGGER</span> trg_price_audit
+<span class="kw">BEFORE UPDATE ON</span> products
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+  <span class="kw">IF</span> OLD.price <> NEW.price <span class="kw">THEN</span>
+    <span class="kw">INSERT INTO</span> price_audit_log
+      (product_id, old_price, new_price, changed_at)
+    <span class="kw">VALUES</span>
+      (OLD.product_id, OLD.price, NEW.price, <span class="fn">NOW</span>());
+  <span class="kw">END IF</span>;
+<span class="kw">END</span>$$
+
+<span class="kw">DELIMITER</span> ;</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 08: QUERY OPTIMIZATION ══════ -->
+<section class="section" id="query-opt">
+  <div class="sh"><span class="sn">08</span><span class="si">⚡</span><h2>Query Optimization ও EXPLAIN বিশ্লেষণ</h2></div>
+
+  <p>ধীর Query Application-কে ভেঙে দেয়। <strong>EXPLAIN</strong> দিয়ে বুঝুন MySQL কীভাবে Query চালাচ্ছে।</p>
+
+  <h3>EXPLAIN দিয়ে Query বিশ্লেষণ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — EXPLAIN ANALYZE</span></div>
+    <pre><span class="cm">-- Query বিশ্লেষণ করা</span>
+<span class="kw">EXPLAIN FORMAT</span>=JSON
+<span class="kw">SELECT</span> u.name, <span class="fn">COUNT</span>(o.order_id) <span class="kw">AS</span> orders
+<span class="kw">FROM</span> users u
+<span class="kw">JOIN</span> orders o <span class="kw">ON</span> u.user_id = o.user_id
+<span class="kw">WHERE</span> o.status = <span class="str">'delivered'</span>
+<span class="kw">GROUP BY</span> u.user_id\G
+
+<span class="cm">-- গুরুত্বপূর্ণ column-এর অর্থ:
+-- type: ALL = ভয়ানক (Full scan), ref/range = ভালো, const = সেরা
+-- rows: কতটি row scan করা হচ্ছে — কম হওয়া ভালো
+-- key: কোন index ব্যবহার হচ্ছে — NULL হলে কোনো index নেই
+-- Extra: Using filesort / Using temporary = সমস্যা আছে</span></pre>
+  </div>
+
+  <h3>Common Query সমস্যা ও সমাধান</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Optimization Examples</span></div>
+    <pre><span class="cm">-- ❌ সমস্যা ১: Function-এ Index কাজ করে না</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> orders <span class="kw">WHERE</span> <span class="fn">YEAR</span>(created_at) = <span class="num">2024</span>;
+
+<span class="cm">-- ✅ সমাধান: Range use করুন</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> created_at <span class="kw">BETWEEN</span> <span class="str">'2024-01-01'</span> <span class="kw">AND</span> <span class="str">'2024-12-31 23:59:59'</span>;
+
+<span class="cm">-- ❌ সমস্যা ২: SELECT * (অপ্রয়োজনীয় column)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users;
+
+<span class="cm">-- ✅ সমাধান: শুধু দরকারি column</span>
+<span class="kw">SELECT</span> user_id, name, email <span class="kw">FROM</span> users;
+
+<span class="cm">-- ❌ সমস্যা ৩: N+1 Query সমস্যা</span>
+<span class="cm">-- Loop-এ প্রতিটি user-এর জন্য আলাদা query</span>
+
+<span class="cm">-- ✅ সমাধান: একটি JOIN Query</span>
+<span class="kw">SELECT</span> u.user_id, u.name, <span class="fn">GROUP_CONCAT</span>(o.order_id) <span class="kw">AS</span> order_ids
+<span class="kw">FROM</span> users u
+<span class="kw">LEFT JOIN</span> orders o <span class="kw">ON</span> u.user_id = o.user_id
+<span class="kw">GROUP BY</span> u.user_id;
+
+<span class="cm">-- ❌ সমস্যা ৪: LIKE-এ wildcard শুরুতে</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products <span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'%phone%'</span>;
+
+<span class="cm">-- ✅ সমাধান: Full-text Index ব্যবহার করুন</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+<span class="kw">WHERE MATCH</span>(name) <span class="kw">AGAINST</span>(<span class="str">'phone'</span> <span class="kw">IN BOOLEAN MODE</span>);
+
+<span class="cm">-- ✅ Covering Index: index থেকেই সব data পাওয়া</span>
+<span class="kw">CREATE INDEX</span> idx_cover <span class="kw">ON</span> orders(user_id, status, total_amount, created_at);
+<span class="cm">-- এই query-তে table আর touch করতে হবে না:</span>
+<span class="kw">SELECT</span> total_amount, created_at
+<span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> user_id = <span class="num">1</span> <span class="kw">AND</span> status = <span class="str">'delivered'</span>;</pre>
+  </div>
+
+  <h3>MySQL Configuration অপ্টিমাইজেশন</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">/etc/mysql/mysql.conf.d/mysqld.cnf</span></div>
+    <pre><span class="cm"># InnoDB Buffer Pool: RAM-এর ৭০-৮০% দিন</span>
+innodb_buffer_pool_size = <span class="num">4G</span>
+innodb_buffer_pool_instances = <span class="num">4</span>
+
+<span class="cm"># Log File Size</span>
+innodb_log_file_size = <span class="num">512M</span>
+innodb_log_buffer_size = <span class="num">64M</span>
+
+<span class="cm"># Connection</span>
+max_connections = <span class="num">500</span>
+thread_cache_size = <span class="num">50</span>
+
+<span class="cm"># Query Cache (MySQL 8-এ নেই)</span>
+query_cache_type = <span class="num">0</span>
+
+<span class="cm"># Slow Query Log</span>
+slow_query_log = <span class="num">1</span>
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = <span class="num">1</span>   <span class="cm"># ১ সেকেন্ডের বেশি হলে log করো</span>
+
+<span class="cm"># Sort ও Temp Table</span>
+sort_buffer_size = <span class="num">4M</span>
+tmp_table_size = <span class="num">64M</span>
+max_heap_table_size = <span class="num">64M</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 09: PARTITIONING ══════ -->
+<section class="section" id="partitioning">
+  <div class="sh"><span class="sn">09</span><span class="si">✂️</span><h2>Table Partitioning — বড় Table ভাগ করা</h2></div>
+
+  <p>কোটি কোটি Row-এর table-কে ছোট ছোট অংশে ভাগ করলে Query অনেক দ্রুত হয়।</p>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Partitioning</span></div>
+    <pre><span class="cm">-- RANGE Partitioning: তারিখ অনুযায়ী ভাগ</span>
+<span class="kw">CREATE TABLE</span> orders_partitioned (
+  order_id     <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  user_id      <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  total_amount <span class="type">DECIMAL</span>(<span class="num">12</span>,<span class="num">2</span>),
+  created_at   <span class="type">DATETIME</span> <span class="kw">NOT NULL</span>,
+  <span class="kw">PRIMARY KEY</span> (order_id, created_at)
+)
+<span class="kw">PARTITION BY RANGE</span> (<span class="fn">YEAR</span>(created_at)) (
+  <span class="kw">PARTITION</span> p2022 <span class="kw">VALUES LESS THAN</span> (<span class="num">2023</span>),
+  <span class="kw">PARTITION</span> p2023 <span class="kw">VALUES LESS THAN</span> (<span class="num">2024</span>),
+  <span class="kw">PARTITION</span> p2024 <span class="kw">VALUES LESS THAN</span> (<span class="num">2025</span>),
+  <span class="kw">PARTITION</span> p2025 <span class="kw">VALUES LESS THAN</span> (<span class="num">2026</span>),
+  <span class="kw">PARTITION</span> pFuture <span class="kw">VALUES LESS THAN MAXVALUE</span>
+);
+
+<span class="cm">-- LIST Partitioning: নির্দিষ্ট মান অনুযায়ী</span>
+<span class="kw">CREATE TABLE</span> users_by_region (
+  user_id <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  region  <span class="type">INT</span> <span class="kw">NOT NULL</span>,  <span class="cm">-- 1=ঢাকা, 2=চট্টগ্রাম, 3=সিলেট</span>
+  name    <span class="type">VARCHAR</span>(<span class="num">100</span>),
+  <span class="kw">PRIMARY KEY</span> (user_id, region)
+)
+<span class="kw">PARTITION BY LIST</span>(region) (
+  <span class="kw">PARTITION</span> p_dhaka      <span class="kw">VALUES IN</span> (<span class="num">1</span>),
+  <span class="kw">PARTITION</span> p_chittagong <span class="kw">VALUES IN</span> (<span class="num">2</span>),
+  <span class="kw">PARTITION</span> p_sylhet     <span class="kw">VALUES IN</span> (<span class="num">3</span>),
+  <span class="kw">PARTITION</span> p_others     <span class="kw">VALUES IN</span> (<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>)
+);
+
+<span class="cm">-- HASH Partitioning: সমানভাবে ভাগ</span>
+<span class="kw">CREATE TABLE</span> sessions (
+  session_id <span class="type">VARCHAR</span>(<span class="num">64</span>) <span class="kw">NOT NULL</span>,
+  user_id    <span class="type">INT</span> <span class="kw">NOT NULL</span>,
+  data       <span class="type">JSON</span>,
+  <span class="kw">PRIMARY KEY</span> (session_id, user_id)
+)
+<span class="kw">PARTITION BY HASH</span>(user_id)
+<span class="kw">PARTITIONS</span> <span class="num">8</span>;
+
+<span class="cm">-- Partition-এর তথ্য দেখুন</span>
+<span class="kw">SELECT</span>
+  partition_name,
+  table_rows,
+  data_length/<span class="num">1024</span>/<span class="num">1024</span> <span class="kw">AS</span> data_mb
+<span class="kw">FROM</span> information_schema.PARTITIONS
+<span class="kw">WHERE</span> table_name = <span class="str">'orders_partitioned'</span>;
+
+<span class="cm">-- পুরনো Partition মুছুন (আর্কাইভ)</span>
+<span class="kw">ALTER TABLE</span> orders_partitioned <span class="kw">DROP PARTITION</span> p2022;</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 10: REPLICATION ══════ -->
+<section class="section" id="replication">
+  <div class="sh"><span class="sn">10</span><span class="si">🔄</span><h2>Master-Slave Replication</h2></div>
+
+  <p>Replication মানে এক Server-এর ডেটা অন্য Server-এ স্বয়ংক্রিয়ভাবে কপি হওয়া। Read performance বাড়ানো ও Backup-এর জন্য ব্যবহার করা হয়।</p>
+
+  <div class="grid2">
+    <div class="card card-amber">
+      <h4>📝 Master Server</h4>
+      <ul class="ul">
+        <li>সব Write (INSERT/UPDATE/DELETE) এখানে</li>
+        <li>Binary Log তৈরি করে</li>
+        <li>Production App এখানে লেখে</li>
+      </ul>
+    </div>
+    <div class="card card-teal">
+      <h4>📖 Slave Server(s)</h4>
+      <ul class="ul">
+        <li>শুধু Read (SELECT) করে</li>
+        <li>Master থেকে Replicate করে</li>
+        <li>Report ও Analytics এখানে</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Master সেটআপ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">/etc/mysql/mysql.conf.d/mysqld.cnf — Master</span></div>
+    <pre>[mysqld]
+server-id = <span class="num">1</span>                    <span class="cm"># প্রতিটি server-এ unique</span>
+log_bin = /var/log/mysql/mysql-bin.log
+binlog_do_db = ecommerce_db       <span class="cm"># কোন DB Replicate হবে</span>
+binlog_format = ROW               <span class="cm"># ROW সবচেয়ে নিরাপদ</span>
+expire_logs_days = <span class="num">7</span>             <span class="cm"># পুরনো log মুছুন</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Master-এ Replication User তৈরি</span></div>
+    <pre><span class="cm">-- Master-এ Replication User তৈরি</span>
+<span class="kw">CREATE USER</span> <span class="str">'replication_user'</span>@<span class="str">'192.168.1.%'</span>
+  <span class="kw">IDENTIFIED WITH</span> mysql_native_password
+  <span class="kw">BY</span> <span class="str">'Repl!cation#Pass2024'</span>;
+
+<span class="kw">GRANT REPLICATION SLAVE ON</span> *.* <span class="kw">TO</span> <span class="str">'replication_user'</span>@<span class="str">'192.168.1.%'</span>;
+<span class="kw">FLUSH PRIVILEGES</span>;
+
+<span class="cm">-- Master status দেখুন (Slave-এ লাগবে)</span>
+<span class="kw">SHOW MASTER STATUS</span>\G
+<span class="cm">-- File: mysql-bin.000003
+-- Position: 1543</span></pre>
+  </div>
+
+  <h3>Slave সেটআপ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Slave Configuration</span></div>
+    <pre><span class="cm">-- Slave-এ Master সংযোগ</span>
+<span class="kw">CHANGE MASTER TO</span>
+  MASTER_HOST = <span class="str">'192.168.1.10'</span>,
+  MASTER_USER = <span class="str">'replication_user'</span>,
+  MASTER_PASSWORD = <span class="str">'Repl!cation#Pass2024'</span>,
+  MASTER_LOG_FILE = <span class="str">'mysql-bin.000003'</span>,
+  MASTER_LOG_POS = <span class="num">1543</span>,
+  MASTER_SSL = <span class="num">1</span>;       <span class="cm">-- SSL দিয়ে নিরাপদ সংযোগ</span>
+
+<span class="kw">START SLAVE</span>;
+
+<span class="cm">-- Replication status চেক</span>
+<span class="kw">SHOW SLAVE STATUS</span>\G
+<span class="cm">-- Slave_IO_Running: Yes
+-- Slave_SQL_Running: Yes
+-- Seconds_Behind_Master: 0  ← আদর্শ</span></pre>
+  </div>
+
+  <h3>Node.js-এ Read/Write বিভাজন</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">JavaScript — Connection Pool</span></div>
+    <pre><span class="kw">const</span> mysql <span class="op">=</span> <span class="fn">require</span>(<span class="str">'mysql2/promise'</span>);
+
+<span class="cm">// Write — Master</span>
+<span class="kw">const</span> masterPool <span class="op">=</span> mysql.<span class="fn">createPool</span>({
+  host: <span class="str">'192.168.1.10'</span>,
+  user: <span class="str">'app_user'</span>, password: <span class="str">'pass'</span>, database: <span class="str">'ecommerce_db'</span>,
+  connectionLimit: <span class="num">20</span>, waitForConnections: <span class="kw">true</span>
+});
+
+<span class="cm">// Read — Slave(s)</span>
+<span class="kw">const</span> slavePool <span class="op">=</span> mysql.<span class="fn">createPool</span>({
+  host: <span class="str">'192.168.1.11'</span>,
+  user: <span class="str">'app_user'</span>, password: <span class="str">'pass'</span>, database: <span class="str">'ecommerce_db'</span>,
+  connectionLimit: <span class="num">50</span>, waitForConnections: <span class="kw">true</span>
+});
+
+<span class="cm">// Read → Slave, Write → Master</span>
+<span class="kw">async function</span> <span class="fn">getUser</span>(userId) {
+  <span class="kw">const</span> [rows] <span class="op">=</span> <span class="kw">await</span> slavePool.<span class="fn">query</span>(
+    <span class="str">'SELECT * FROM users WHERE user_id = ?'</span>, [userId]
+  );
+  <span class="kw">return</span> rows[<span class="num">0</span>];
+}
+
+<span class="kw">async function</span> <span class="fn">createUser</span>(data) {
+  <span class="kw">const</span> [result] <span class="op">=</span> <span class="kw">await</span> masterPool.<span class="fn">query</span>(
+    <span class="str">'INSERT INTO users SET ?'</span>, [data]
+  );
+  <span class="kw">return</span> result.insertId;
+}</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 11: SHARDING ══════ -->
+<section class="section" id="sharding">
+  <div class="sh"><span class="sn">11</span><span class="si">🔀</span><h2>Database Sharding — Horizontal Scaling</h2></div>
+
+  <p>Sharding মানে একটি বড় Database-কে ছোট ছোট টুকরায় ভাগ করে একাধিক Server-এ রাখা। Replication-এ সব server-এ একই data থাকে, Sharding-এ আলাদা আলাদা data থাকে।</p>
+
+  <div class="card card-amber">
+    <h4>📌 কখন Sharding দরকার?</h4>
+    <ul class="ul">
+      <li>Single server-এ আর write scale হচ্ছে না</li>
+      <li>Table-এ ১ বিলিয়নের বেশি Row</li>
+      <li>RAM-এ Index ধরছে না</li>
+      <li>প্রতিদিন কোটি কোটি নতুন রেকর্ড</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">JavaScript — Sharding Logic</span></div>
+    <pre><span class="kw">const</span> shards <span class="op">=</span> [
+  mysql.<span class="fn">createPool</span>({ host: <span class="str">'shard-01.db'</span>, database: <span class="str">'ecom_shard_0'</span> }),
+  mysql.<span class="fn">createPool</span>({ host: <span class="str">'shard-02.db'</span>, database: <span class="str">'ecom_shard_1'</span> }),
+  mysql.<span class="fn">createPool</span>({ host: <span class="str">'shard-03.db'</span>, database: <span class="str">'ecom_shard_2'</span> }),
+  mysql.<span class="fn">createPool</span>({ host: <span class="str">'shard-04.db'</span>, database: <span class="str">'ecom_shard_3'</span> }),
+];
+
+<span class="cm">// Hash-based Sharding: user_id দিয়ে কোন shard?</span>
+<span class="kw">function</span> <span class="fn">getShard</span>(userId) {
+  <span class="kw">return</span> shards[userId <span class="op">%</span> shards.length];
+}
+
+<span class="kw">async function</span> <span class="fn">getUserOrders</span>(userId) {
+  <span class="kw">const</span> shard <span class="op">=</span> <span class="fn">getShard</span>(userId);
+  <span class="kw">const</span> [rows] <span class="op">=</span> <span class="kw">await</span> shard.<span class="fn">query</span>(
+    <span class="str">'SELECT * FROM orders WHERE user_id = ?'</span>, [userId]
+  );
+  <span class="kw">return</span> rows;
+}
+
+<span class="cm">// Cross-shard query: সব shard থেকে aggregate</span>
+<span class="kw">async function</span> <span class="fn">getTotalRevenue</span>() {
+  <span class="kw">const</span> promises <span class="op">=</span> shards.<span class="fn">map</span>(shard =>
+    shard.<span class="fn">query</span>(<span class="str">'SELECT SUM(total_amount) AS rev FROM orders'</span>)
+  );
+  <span class="kw">const</span> results <span class="op">=</span> <span class="kw">await</span> Promise.<span class="fn">all</span>(promises);
+  <span class="kw">return</span> results.<span class="fn">reduce</span>((sum, [rows]) => sum <span class="op">+</span> (rows[<span class="num">0</span>].rev <span class="op">||</span> <span class="num">0</span>), <span class="num">0</span>);
+}</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 12: NOSQL ══════ -->
+<section class="section" id="nosql">
+  <div class="sh"><span class="sn">12</span><span class="si">🍃</span><h2>NoSQL — Redis ও MongoDB সংযুক্তি</h2></div>
+
+  <h3>Redis — Cache Layer (দ্রুত তথ্য)</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">JavaScript — Redis Cache</span></div>
+    <pre><span class="kw">const</span> redis <span class="op">=</span> <span class="fn">require</span>(<span class="str">'ioredis'</span>);
+<span class="kw">const</span> client <span class="op">=</span> <span class="kw">new</span> redis({ host: <span class="str">'127.0.0.1'</span>, port: <span class="num">6379</span> });
+
+<span class="cm">// Cache-Aside Pattern: MySQL-এর সামনে Redis</span>
+<span class="kw">async function</span> <span class="fn">getProduct</span>(productId) {
+  <span class="kw">const</span> cacheKey <span class="op">=</span> <span class="str">`product:${productId}`</span>;
+
+  <span class="cm">// ১. Redis-এ আছে কিনা দেখুন</span>
+  <span class="kw">const</span> cached <span class="op">=</span> <span class="kw">await</span> client.<span class="fn">get</span>(cacheKey);
+  <span class="kw">if</span> (cached) {
+    <span class="fn">console.log</span>(<span class="str">'⚡ Cache hit!'</span>);
+    <span class="kw">return</span> <span class="fn">JSON.parse</span>(cached);
+  }
+
+  <span class="cm">// ২. MySQL থেকে আনুন</span>
+  <span class="fn">console.log</span>(<span class="str">'🐌 DB hit'</span>);
+  <span class="kw">const</span> [rows] <span class="op">=</span> <span class="kw">await</span> db.<span class="fn">query</span>(
+    <span class="str">'SELECT * FROM products WHERE product_id = ?'</span>, [productId]
+  );
+
+  <span class="cm">// ৩. Redis-এ রাখুন (TTL: ১ ঘণ্টা)</span>
+  <span class="kw">await</span> client.<span class="fn">setex</span>(cacheKey, <span class="num">3600</span>, <span class="fn">JSON.stringify</span>(rows[<span class="num">0</span>]));
+  <span class="kw">return</span> rows[<span class="num">0</span>];
+}
+
+<span class="cm">// Session Management</span>
+<span class="kw">async function</span> <span class="fn">setUserSession</span>(userId, sessionData) {
+  <span class="kw">await</span> client.<span class="fn">setex</span>(
+    <span class="str">`session:${userId}`</span>,
+    <span class="num">86400</span>,  <span class="cm">// ২৪ ঘণ্টা</span>
+    <span class="fn">JSON.stringify</span>(sessionData)
+  );
+}
+
+<span class="cm">// Rate Limiting: ১ মিনিটে সর্বোচ্চ ১০০ request</span>
+<span class="kw">async function</span> <span class="fn">checkRateLimit</span>(ip) {
+  <span class="kw">const</span> key <span class="op">=</span> <span class="str">`ratelimit:${ip}`</span>;
+  <span class="kw">const</span> count <span class="op">=</span> <span class="kw">await</span> client.<span class="fn">incr</span>(key);
+  <span class="kw">if</span> (count === <span class="num">1</span>) <span class="kw">await</span> client.<span class="fn">expire</span>(key, <span class="num">60</span>);
+  <span class="kw">return</span> count <span class="op"><=</span> <span class="num">100</span>;
+}</pre>
+  </div>
+
+  <h3>Redis Data Structures</h3>
+  <div class="term">
+    <div class="term-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="term-title">Redis CLI</span></div>
+    <pre><span class="cm2"># String</span>
+<span class="pr">></span> SET user:1:name "রহিম করিম"   EX 3600
+<span class="out">OK</span>
+
+<span class="cm2"># Hash: অনেক field একসাথে</span>
+<span class="pr">></span> HSET product:5 name "Phone" price "25000" stock "50"
+<span class="pr">></span> HGETALL product:5
+<span class="out">name: Phone, price: 25000, stock: 50</span>
+
+<span class="cm2"># Sorted Set: Leaderboard</span>
+<span class="pr">></span> ZADD leaderboard 5000 "রহিম" 8000 "করিম" 3000 "সুমন"
+<span class="pr">></span> ZREVRANGE leaderboard 0 2 WITHSCORES
+<span class="out">করিম 8000, রহিম 5000, সুমন 3000</span>
+
+<span class="cm2"># List: Queue</span>
+<span class="pr">></span> LPUSH email_queue "welcome:user1" "reset:user2"
+<span class="pr">></span> RPOP email_queue
+<span class="out">"welcome:user1"</span>
+
+<span class="cm2"># Pub/Sub: Real-time notification</span>
+<span class="pr">></span> PUBLISH order_updates "order:1001:shipped"</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 13: SECURITY ══════ -->
+<section class="section" id="security">
+  <div class="sh"><span class="sn">13</span><span class="si">🛡️</span><h2>Database Security — সম্পূর্ণ গাইড</h2></div>
+
+  <div class="sec-grid">
+    <div class="sec-card"><div class="sec-icon">🔐</div><div class="sec-title">Encryption at Rest</div><div class="sec-desc">Stored data এনক্রিপ্ট করা</div></div>
+    <div class="sec-card"><div class="sec-icon">🔒</div><div class="sec-title">TLS in Transit</div><div class="sec-desc">Network-এ এনক্রিপ্টেড</div></div>
+    <div class="sec-card"><div class="sec-icon">👤</div><div class="sec-title">Least Privilege</div><div class="sec-desc">ন্যূনতম permission</div></div>
+    <div class="sec-card"><div class="sec-icon">🛡️</div><div class="sec-title">SQL Injection</div><div class="sec-desc">Prepared Statement</div></div>
+    <div class="sec-card"><div class="sec-icon">📋</div><div class="sec-title">Audit Logging</div><div class="sec-desc">সব কাজের রেকর্ড</div></div>
+    <div class="sec-card"><div class="sec-icon">🔥</div><div class="sec-title">Firewall</div><div class="sec-desc">শুধু APP থেকে access</div></div>
+    <div class="sec-card"><div class="sec-icon">🔄</div><div class="sec-title">Regular Backup</div><div class="sec-desc">নিয়মিত ব্যাকআপ</div></div>
+    <div class="sec-card"><div class="sec-icon">🔑</div><div class="sec-title">Password Policy</div><div class="sec-desc">শক্তিশালী password</div></div>
+  </div>
+
+  <h3>SQL Injection আটকানো</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">JavaScript — Prepared Statement</span></div>
+    <pre><span class="cm">// ❌ সবচেয়ে বিপজ্জনক — SQL Injection সম্ভব!</span>
+<span class="kw">const</span> query <span class="op">=</span> <span class="str">`SELECT * FROM users WHERE email = '${userInput}'`</span>;
+<span class="cm">// Hacker input: ' OR '1'='1
+// ফলে: SELECT * FROM users WHERE email = '' OR '1'='1'
+// → সব user-এর তথ্য লিক!</span>
+
+<span class="cm">// ✅ Prepared Statement — সবসময় এটি ব্যবহার করুন</span>
+<span class="kw">const</span> [rows] <span class="op">=</span> <span class="kw">await</span> db.<span class="fn">execute</span>(
+  <span class="str">'SELECT user_id, name, email FROM users WHERE email = ? AND is_active = 1'</span>,
+  [userInput]  <span class="cm">// MySQL নিজেই sanitize করে</span>
+);
+
+<span class="cm">// ✅ Password hashing — bcrypt দিয়ে</span>
+<span class="kw">const</span> bcrypt <span class="op">=</span> <span class="fn">require</span>(<span class="str">'bcrypt'</span>);
+
+<span class="kw">async function</span> <span class="fn">hashPassword</span>(plainText) {
+  <span class="kw">const</span> saltRounds <span class="op">=</span> <span class="num">12</span>; <span class="cm">// যত বেশি, তত ধীর কিন্তু নিরাপদ</span>
+  <span class="kw">return await</span> bcrypt.<span class="fn">hash</span>(plainText, saltRounds);
+}
+
+<span class="kw">async function</span> <span class="fn">verifyPassword</span>(plainText, hash) {
+  <span class="kw">return await</span> bcrypt.<span class="fn">compare</span>(plainText, hash);
+}
+
+<span class="cm">// ✅ Sensitive data এনক্রিপ্ট করা</span>
+<span class="kw">const</span> crypto <span class="op">=</span> <span class="fn">require</span>(<span class="str">'crypto'</span>);
+<span class="kw">const</span> algorithm <span class="op">=</span> <span class="str">'aes-256-gcm'</span>;
+<span class="kw">const</span> key <span class="op">=</span> Buffer.<span class="fn">from</span>(process.env.DB_ENCRYPTION_KEY, <span class="str">'hex'</span>);
+
+<span class="kw">function</span> <span class="fn">encrypt</span>(text) {
+  <span class="kw">const</span> iv <span class="op">=</span> crypto.<span class="fn">randomBytes</span>(<span class="num">16</span>);
+  <span class="kw">const</span> cipher <span class="op">=</span> crypto.<span class="fn">createCipheriv</span>(algorithm, key, iv);
+  <span class="kw">let</span> encrypted <span class="op">=</span> cipher.<span class="fn">update</span>(text, <span class="str">'utf8'</span>, <span class="str">'hex'</span>);
+  encrypted <span class="op">+=</span> cipher.<span class="fn">final</span>(<span class="str">'hex'</span>);
+  <span class="kw">const</span> tag <span class="op">=</span> cipher.<span class="fn">getAuthTag</span>();
+  <span class="kw">return</span> iv.toString(<span class="str">'hex'</span>) <span class="op">+</span> <span class="str">':'</span> <span class="op">+</span> tag.toString(<span class="str">'hex'</span>) <span class="op">+</span> <span class="str">':'</span> <span class="op">+</span> encrypted;
+}</pre>
+  </div>
+
+  <h3>MySQL SSL সংযোগ বাধ্যতামূলক করা</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — SSL Enforcement</span></div>
+    <pre><span class="cm">-- User-কে SSL বাধ্য করা</span>
+<span class="kw">ALTER USER</span> <span class="str">'app_user'</span>@<span class="str">'%'</span> <span class="kw">REQUIRE SSL</span>;
+
+<span class="cm">-- SSL Certificate যাচাই বাধ্য করা</span>
+<span class="kw">ALTER USER</span> <span class="str">'app_user'</span>@<span class="str">'%'</span>
+  <span class="kw">REQUIRE X509</span>;
+
+<span class="cm">-- SSL Status দেখুন</span>
+<span class="kw">SHOW VARIABLES LIKE</span> <span class="str">'%ssl%'</span>;
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'Ssl_cipher'</span>;</pre>
+  </div>
+
+  <h3>Audit Log সেটআপ</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Audit Table & Log</span></div>
+    <pre><span class="cm">-- Audit Log Table</span>
+<span class="kw">CREATE TABLE</span> audit_logs (
+  log_id      <span class="type">BIGINT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  table_name  <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  record_id   <span class="type">INT</span>,
+  action      <span class="type">ENUM</span>(<span class="str">'INSERT'</span>,<span class="str">'UPDATE'</span>,<span class="str">'DELETE'</span>) <span class="kw">NOT NULL</span>,
+  old_values  <span class="type">JSON</span>,
+  new_values  <span class="type">JSON</span>,
+  user_id     <span class="type">INT</span>,
+  ip_address  <span class="type">VARCHAR</span>(<span class="num">45</span>),
+  user_agent  <span class="type">TEXT</span>,
+  created_at  <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+) <span class="kw">ENGINE</span>=InnoDB;
+
+<span class="cm">-- User পরিবর্তনের Audit Trigger</span>
+<span class="kw">CREATE TRIGGER</span> trg_users_audit
+<span class="kw">AFTER UPDATE ON</span> users
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+  <span class="kw">INSERT INTO</span> audit_logs (table_name, record_id, action, old_values, new_values)
+  <span class="kw">VALUES</span> (
+    <span class="str">'users'</span>, OLD.user_id, <span class="str">'UPDATE'</span>,
+    <span class="fn">JSON_OBJECT</span>(<span class="str">'email'</span>, OLD.email, <span class="str">'role'</span>, OLD.role),
+    <span class="fn">JSON_OBJECT</span>(<span class="str">'email'</span>, NEW.email, <span class="str">'role'</span>, NEW.role)
+  );
+<span class="kw">END</span>;</pre>
+  </div>
+
+  <h3>Database Firewall — UFW দিয়ে</h3>
+  <div class="term">
+    <div class="term-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="term-title">Terminal — Security Hardening</span></div>
+    <pre><span class="cm2"># MySQL-এর default port পরিবর্তন করুন</span>
+<span class="pr">$</span> sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+<span class="out">port = 33066  # 3306 থেকে পরিবর্তন</span>
+
+<span class="cm2"># শুধু App Server-এর IP থেকে অ্যাক্সেস দিন</span>
+<span class="pr">$</span> sudo ufw deny 3306
+<span class="pr">$</span> sudo ufw allow from 192.168.1.5 to any port 33066
+<span class="out">Rule added ✓</span>
+
+<span class="cm2"># Public Internet থেকে বন্ধ করুন</span>
+<span class="pr">$</span> sudo ufw deny from any to any port 33066
+<span class="pr">$</span> sudo ufw enable
+
+<span class="cm2"># MySQL-এ Remote Root login বন্ধ করুন</span>
+<span class="pr">$</span> mysql -u root -p
+<span class="out">mysql></span> DELETE FROM mysql.user WHERE User='root' AND Host != 'localhost';
+<span class="out">mysql></span> FLUSH PRIVILEGES;</pre>
+  </div>
+
+  <div class="warn-box"><strong>⚠️ গুরুত্বপূর্ণ নিরাপত্তা চেকলিস্ট:</strong> Root user শুধু localhost থেকে। প্রতিটি Application-এর আলাদা DB User। Production-এ Debug mode বন্ধ। Error message-এ DB details দেখাবেন না। নিয়মিত Security Patch আপডেট করুন।</div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 14: BACKUP ══════ -->
+<section class="section" id="backup">
+  <div class="sh"><span class="sn">14</span><span class="si">💾</span><h2>Backup ও Disaster Recovery</h2></div>
+
+  <h3>mysqldump — সহজ Backup</h3>
+  <div class="term">
+    <div class="term-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="term-title">Terminal — Backup Commands</span></div>
+    <pre><span class="cm2"># সম্পূর্ণ Database Backup</span>
+<span class="pr">$</span> mysqldump -u root -p \
+  --single-transaction \
+  --routines \
+  --triggers \
+  --events \
+  ecommerce_db > backup_$(date +%Y%m%d_%H%M%S).sql
+<span class="out">✓ backup_20241215_030000.sql (245MB)</span>
+
+<span class="cm2"># Compressed Backup (gzip)</span>
+<span class="pr">$</span> mysqldump -u root -p ecommerce_db | gzip > backup.sql.gz
+<span class="out">✓ backup.sql.gz (32MB) — ৮৭% কম আকার!</span>
+
+<span class="cm2"># Restore করা</span>
+<span class="pr">$</span> mysql -u root -p ecommerce_db < backup_20241215_030000.sql
+<span class="out">✓ Restore সম্পন্ন</span>
+
+<span class="cm2"># শুধু Structure (data ছাড়া)</span>
+<span class="pr">$</span> mysqldump -u root -p --no-data ecommerce_db > structure_only.sql
+
+<span class="cm2"># শুধু একটি Table</span>
+<span class="pr">$</span> mysqldump -u root -p ecommerce_db orders > orders_backup.sql</pre>
+  </div>
+
+  <h3>Automated Backup Script</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">Bash — auto-backup.sh</span></div>
+    <pre><span class="kw">#!/bin/bash</span>
+<span class="cm"># স্বয়ংক্রিয় Backup Script</span>
+
+DB_USER=<span class="str">"backup_user"</span>
+DB_PASS=<span class="str">"BackupPass123"</span>
+DB_NAME=<span class="str">"ecommerce_db"</span>
+BACKUP_DIR=<span class="str">"/var/backups/mysql"</span>
+S3_BUCKET=<span class="str">"s3://my-db-backups"</span>
+RETENTION_DAYS=<span class="num">30</span>
+
+DATE=$(<span class="fn">date</span> +%Y%m%d_%H%M%S)
+FILE=<span class="str">"${BACKUP_DIR}/${DB_NAME}_${DATE}.sql.gz"</span>
+
+<span class="cm"># Backup তৈরি</span>
+<span class="fn">echo</span> <span class="str">"🔄 Backup শুরু: $DATE"</span>
+<span class="fn">mysqldump</span> -u<span class="str">"$DB_USER"</span> -p<span class="str">"$DB_PASS"</span> \
+  --single-transaction --routines --triggers \
+  <span class="str">"$DB_NAME"</span> | <span class="fn">gzip</span> > <span class="str">"$FILE"</span>
+
+<span class="kw">if</span> [ $? -eq <span class="num">0</span> ]; then
+  <span class="fn">echo</span> <span class="str">"✅ Backup সফল: $FILE"</span>
+
+  <span class="cm"># AWS S3-এ আপলোড</span>
+  <span class="fn">aws</span> s3 cp <span class="str">"$FILE"</span> <span class="str">"$S3_BUCKET/"</span>
+
+  <span class="cm"># পুরনো Backup মুছুন</span>
+  <span class="fn">find</span> <span class="str">"$BACKUP_DIR"</span> -name <span class="str">"*.sql.gz"</span> -mtime +<span class="str">"$RETENTION_DAYS"</span> -delete
+  <span class="fn">echo</span> <span class="str">"🗑️ ${RETENTION_DAYS} দিনের বেশি পুরনো backup মুছে ফেলা হয়েছে"</span>
+<span class="kw">else</span>
+  <span class="fn">echo</span> <span class="str">"❌ Backup ব্যর্থ! Alert পাঠাচ্ছি..."</span>
+  <span class="cm"># Email/Slack alert পাঠান</span>
+<span class="kw">fi</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">Cron — প্রতিদিন রাত ৩টায় Backup</span></div>
+    <pre><span class="cm"># crontab -e</span>
+<span class="str">0 3 * * *</span> /usr/local/bin/auto-backup.sh >> /var/log/db-backup.log <span class="num">2</span>&<span class="num">1</span>
+<span class="cm"># প্রতি ঘণ্টায় incremental backup:</span>
+<span class="str">0 * * * *</span> /usr/local/bin/incremental-backup.sh</pre>
+  </div>
+
+  <h3>Point-in-Time Recovery (PITR)</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Binary Log দিয়ে PITR</span></div>
+    <pre><span class="cm">-- Binary Log চালু করুন (my.cnf)</span>
+<span class="cm">-- log_bin = /var/log/mysql/mysql-bin.log</span>
+
+<span class="cm">-- বিপর্যয়ের আগ পর্যন্ত Restore করুন</span>
+<span class="cm">-- ধরুন রাত ৩টায় backup আছে, সকাল ১০টায় ভুল DELETE হয়েছে</span>
+
+<span class="cm">-- ১. Backup Restore করুন</span>
+<span class="cm">-- mysql ecommerce_db < backup_20241215_030000.sql</span>
+
+<span class="cm">-- ২. Binary Log থেকে ৩টা থেকে ৯:৫৯ পর্যন্ত apply করুন</span>
+<span class="cm">-- mysqlbinlog --start-datetime="2024-12-15 03:00:00" \</span>
+<span class="cm">--             --stop-datetime="2024-12-15 09:59:00" \</span>
+<span class="cm">--             /var/log/mysql/mysql-bin.* | mysql ecommerce_db</span>
+<span class="cm">-- ✅ ভুল DELETE-এর আগে পর্যন্ত পুনরুদ্ধার সম্পন্ন!</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ══════ 15: MONITORING ══════ -->
+<section class="section" id="monitoring">
+  <div class="sh"><span class="sn">15</span><span class="si">📊</span><h2>Monitoring ও Performance Tuning</h2></div>
+
+  <h3>গুরুত্বপূর্ণ MySQL Metrics</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Monitoring Queries</span></div>
+    <pre><span class="cm">-- Connection ব্যবহার</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'Threads_connected'</span>;
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'Max_used_connections'</span>;
+
+<span class="cm">-- Query Performance</span>
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'Slow_queries'</span>;
+<span class="kw">SHOW STATUS LIKE</span> <span class="str">'Queries'</span>;
+
+<span class="cm">-- Cache Hit Rate (InnoDB Buffer Pool)</span>
+<span class="kw">SELECT</span>
+  <span class="fn">FORMAT</span>(
+    (<span class="num">1</span> - (
+      <span class="fn">VARIABLE_VALUE</span> / (<span class="kw">SELECT</span> <span class="fn">VARIABLE_VALUE</span>
+        <span class="kw">FROM</span> performance_schema.global_status
+        <span class="kw">WHERE</span> VARIABLE_NAME = <span class="str">'Innodb_buffer_pool_read_requests'</span>)
+    )) * <span class="num">100</span>, <span class="num">2</span>
+  ) <span class="kw">AS</span> hit_rate_percent
+<span class="kw">FROM</span> performance_schema.global_status
+<span class="kw">WHERE</span> VARIABLE_NAME = <span class="str">'Innodb_buffer_pool_reads'</span>;
+<span class="cm">-- ৯৫%+ হলে ভালো, কম হলে Buffer Pool বাড়ান</span>
+
+<span class="cm">-- এখন চলমান Query দেখুন</span>
+<span class="kw">SHOW FULL PROCESSLIST</span>;
+
+<span class="cm">-- সবচেয়ে ধীর Query খুঁজুন</span>
+<span class="kw">SELECT</span>
+  digest_text,
+  count_star <span class="kw">AS</span> call_count,
+  <span class="fn">ROUND</span>(avg_timer_wait/<span class="num">1000000000</span>, <span class="num">3</span>) <span class="kw">AS</span> avg_seconds,
+  <span class="fn">ROUND</span>(sum_timer_wait/<span class="num">1000000000</span>, <span class="num">3</span>) <span class="kw">AS</span> total_seconds
+<span class="kw">FROM</span> performance_schema.events_statements_summary_by_digest
+<span class="kw">ORDER BY</span> sum_timer_wait <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="cm">-- Table-এর আকার দেখুন</span>
+<span class="kw">SELECT</span>
+  table_name,
+  <span class="fn">ROUND</span>(data_length/<span class="num">1024</span>/<span class="num">1024</span>, <span class="num">2</span>) <span class="kw">AS</span> data_mb,
+  <span class="fn">ROUND</span>(index_length/<span class="num">1024</span>/<span class="num">1024</span>, <span class="num">2</span>) <span class="kw">AS</span> index_mb,
+  table_rows
+<span class="kw">FROM</span> information_schema.TABLES
+<span class="kw">WHERE</span> table_schema = <span class="str">'ecommerce_db'</span>
+<span class="kw">ORDER BY</span> data_length <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <h3>Prometheus + Grafana দিয়ে Monitoring</h3>
+  <div class="term">
+    <div class="term-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="term-title">Terminal — MySQL Exporter</span></div>
+    <pre><span class="cm2"># MySQL Exporter ইনস্টল (Prometheus-এর জন্য)</span>
+<span class="pr">$</span> docker run -d \
+  --name mysql_exporter \
+  -p 9104:9104 \
+  -e DATA_SOURCE_NAME="exporter_user:pass@(localhost:3306)/" \
+  prom/mysqld-exporter
+
+<span class="cm2"># Grafana Dashboard ID: 7362 (MySQL Overview)</span>
+<span class="cm2"># এই dashboard-এ দেখা যাবে:</span>
+<span class="out">✓ QPS (Queries Per Second)
+✓ Connections Active
+✓ InnoDB Buffer Pool Hit Rate
+✓ Slow Queries / sec
+✓ Replication Lag</span></pre>
+  </div>
+
+  <h3>Database Migration — Production-safe পদ্ধতি</h3>
+  <div class="code-wrap">
+    <div class="code-top"><div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div><span class="ctag">SQL — Zero-downtime Migration</span></div>
+    <pre><span class="cm">-- ✅ Online DDL: Table Lock ছাড়া Column যোগ (MySQL 8+)</span>
+<span class="kw">ALTER TABLE</span> orders
+  <span class="kw">ADD COLUMN</span> coupon_code <span class="type">VARCHAR</span>(<span class="num">50</span>) <span class="kw">DEFAULT NULL</span>,
+  <span class="kw">ALGORITHM</span>=INPLACE,   <span class="cm">-- Table copy করে না</span>
+  <span class="kw">LOCK</span>=NONE;           <span class="cm">-- Read/Write চলতে থাকে</span>
+
+<span class="cm">-- ✅ pt-online-schema-change (Percona Tool)</span>
+<span class="cm">-- কোটি রেকর্ডেও Table lock ছাড়া Schema পরিবর্তন</span>
+<span class="cm">-- $ pt-online-schema-change --alter "ADD INDEX idx_status(status)" \</span>
+<span class="cm">-- D=ecommerce_db,t=orders --execute</span>
+
+<span class="cm">-- Migration Version Table (Flyway/Liquibase ধরনের)</span>
+<span class="kw">CREATE TABLE</span> schema_migrations (
+  version     <span class="type">VARCHAR</span>(<span class="num">20</span>) <span class="kw">PRIMARY KEY</span>,
+  description <span class="type">TEXT</span>,
+  applied_at  <span class="type">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+);
+
+<span class="kw">INSERT INTO</span> schema_migrations (version, description)
+<span class="kw">VALUES</span> (<span class="str">'001'</span>, <span class="str">'Initial schema'</span>),
+       (<span class="str">'002'</span>, <span class="str">'Add coupon to orders'</span>),
+       (<span class="str">'003'</span>, <span class="str">'Add index on product.slug'</span>);</pre>
+  </div>
+
+  <h3>Performance Checklist</h3>
+  <div class="card card-teal">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <h4>✅ করবেন</h4>
+        <ul class="ul">
+          <li>WHERE column-এ Index দিন</li>
+          <li>Prepared Statement ব্যবহার করুন</li>
+          <li>Connection Pool ব্যবহার করুন</li>
+          <li>Slow Query Log চালু রাখুন</li>
+          <li>নিয়মিত ANALYZE TABLE চালান</li>
+          <li>Buffer Pool ৭০% RAM-এ রাখুন</li>
+          <li>Pagination-এ LIMIT/OFFSET ব্যবহার করুন</li>
+        </ul>
+      </div>
+      <div>
+        <h4>❌ করবেন না</h4>
+        <ul class="ul">
+          <li>SELECT * ব্যবহার করবেন না</li>
+          <li>Loop-এ Query করবেন না (N+1)</li>
+          <li>Index column-এ Function ব্যবহার করবেন না</li>
+          <li>Root দিয়ে App চালাবেন না</li>
+          <li>Transaction দীর্ঘ করবেন না</li>
+          <li>OFFSET লক্ষাধিক করবেন না</li>
+          <li>Backup ছাড়া Migration করবেন না</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrapper -->
+
+<footer>
+  <p>🗄️ Advanced Database Design ক্র্যাশ কোর্স — MySQL ও Beyond</p>
+  <p style="margin-top:10px;">তৈরি করা হয়েছে <span>❤️</span> দিয়ে — বাংলাদেশের ডেভেলপারদের জন্য 🇧🇩</p>
+</footer>
+
+</body>
+</html>
