@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySQL ডেটা টাইপ ও স্টোরেজ ক্যালকুলেশন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #f78166;
+    --accent3: #3fb950;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #cdd9e5;
+    --yellow: #e3b341;
+    --red: #f85149;
+    --green: #3fb950;
+    --purple: #d2a8ff;
+    --orange: #ffa657;
+    --cyan: #76e3ea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 50px 20px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(88,166,255,0.08) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+  }
+
+  header .badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  header h1 {
+    font-size: clamp(28px, 5vw, 50px);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  header h1 span { color: var(--accent); }
+
+  header p {
+    color: var(--text2);
+    font-size: 17px;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    color: var(--text2);
+    text-decoration: none;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  nav a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* SECTION */
+  section {
+    margin-bottom: 60px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-header h2 span { color: var(--accent); }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .tag-num { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid var(--green); }
+  .tag-str { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid var(--accent); }
+  .tag-date { background: rgba(255,166,87,0.15); color: var(--orange); border: 1px solid var(--orange); }
+  .tag-bool { background: rgba(210,168,255,0.15); color: var(--purple); border: 1px solid var(--purple); }
+  .tag-json { background: rgba(247,129,102,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+  .tag-blob { background: rgba(118,227,234,0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+
+  .card p { color: var(--text3); margin-bottom: 12px; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead {
+    background: var(--bg3);
+  }
+
+  thead th {
+    padding: 14px 16px;
+    text-align: left;
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody tr:hover { background: var(--bg3); }
+
+  tbody td {
+    padding: 12px 16px;
+    color: var(--text3);
+    vertical-align: top;
+  }
+
+  tbody td:first-child {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .storage-val {
+    font-family: 'Fira Code', monospace;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 14px 0;
+    position: relative;
+  }
+
+  .code-block .label {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 11px;
+    color: var(--text2);
+    font-family: 'Hind Siliguri', sans-serif;
+  }
+
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .num { color: #79c0ff; }
+  .cmt { color: #8b949e; font-style: italic; }
+  .type { color: #ffa657; }
+  .op { color: #e6edf3; }
+  .tbl { color: #3fb950; }
+
+  /* INFO BOX */
+  .info-box {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .info-box.tip { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); }
+  .info-box.warn { background: rgba(255,166,87,0.1); border: 1px solid rgba(255,166,87,0.3); }
+  .info-box.note { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); }
+  .info-box.danger { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); }
+
+  .info-box .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .info-box .content { flex: 1; }
+  .info-box .content strong { display: block; margin-bottom: 4px; }
+  .info-box.tip strong { color: var(--green); }
+  .info-box.warn strong { color: var(--orange); }
+  .info-box.note strong { color: var(--accent); }
+  .info-box.danger strong { color: var(--red); }
+  .info-box p { color: var(--text3); font-size: 14px; margin: 0; }
+
+  /* CALCULATOR */
+  .calc-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+  }
+
+  .calc-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .calc-field label {
+    display: block;
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .calc-field input, .calc-field select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s;
+  }
+
+  .calc-field input:focus, .calc-field select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .calc-field select option { background: var(--bg3); }
+
+  .calc-btn {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .calc-btn:hover {
+    background: #79c0ff;
+    transform: translateY(-1px);
+  }
+
+  .calc-result {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: none;
+  }
+
+  .calc-result.show { display: block; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .result-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .result-item .val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'Fira Code', monospace;
+  }
+
+  .result-item .lbl {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* GRID CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  .type-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .type-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .type-card .ct-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .type-card .ct-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .type-card .ct-size {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--green);
+    background: rgba(63,185,80,0.1);
+    border: 1px solid rgba(63,185,80,0.3);
+    padding: 3px 8px;
+    border-radius: 5px;
+  }
+
+  .type-card .ct-desc {
+    color: var(--text3);
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .type-card .ct-use {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .type-card .ct-use strong { color: var(--orange); }
+
+  .type-card .ct-range {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--yellow);
+  }
+
+  /* DECISION TREE */
+  .decision-tree {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .dt-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--border);
+    align-items: flex-start;
+  }
+
+  .dt-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .dt-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .dt-content h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .dt-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dt-opt {
+    padding: 4px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* COMPARISON TABLE */
+  .comparison-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .badge-good { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-bad { background: rgba(248,81,73,0.15); color: var(--red); }
+  .badge-ok { background: rgba(255,166,87,0.15); color: var(--orange); }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr 1fr; }
+    nav a { padding: 12px 14px; font-size: 13px; }
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">📘 সম্পূর্ণ গাইড</div>
+  <h1>MySQL <span>ডেটা টাইপ</span> ও স্টোরেজ</h1>
+  <p>প্রতিটি ডেটা টাইপ কখন, কোথায় ব্যবহার করবেন — বাংলায় বিস্তারিত ব্যাখ্যা</p>
+</header>
+
+<nav>
+  <a href="#numeric">🔢 সংখ্যা</a>
+  <a href="#string">📝 স্ট্রিং</a>
+  <a href="#datetime">📅 তারিখ/সময়</a>
+  <a href="#other">🔗 অন্যান্য</a>
+  <a href="#storage">💾 স্টোরেজ</a>
+  <a href="#calculator">🧮 ক্যালকুলেটর</a>
+  <a href="#decision">✅ কোনটা বেছে নেবেন</a>
+  <a href="#examples">💡 উদাহরণ</a>
+</nav>
+
+<main>
+
+  <!-- ===== NUMERIC ===== -->
+  <section id="numeric">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(63,185,80,0.15);">🔢</div>
+      <h2><span>Numeric</span> ডেটা টাইপ (সংখ্যা)</h2>
+    </div>
+
+    <div class="info-box note">
+      <div class="icon">ℹ️</div>
+      <div class="content">
+        <strong>কখন Numeric ব্যবহার করবেন?</strong>
+        <p>যেকোনো সংখ্যা — বয়স, পরিমাণ, মূল্য, গণনা, আইডি — এই ধরনের ডেটার জন্য Numeric টাইপ ব্যবহার করুন।</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ডেটা টাইপ</th>
+            <th>স্টোরেজ</th>
+            <th>রেঞ্জ (Signed)</th>
+            <th>রেঞ্জ (Unsigned)</th>
+            <th>ব্যবহার</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TINYINT</td>
+            <td><span class="storage-val">1 Byte</span></td>
+            <td>-128 থেকে 127</td>
+            <td>0 থেকে 255</td>
+            <td>বয়স, রেটিং (1-5), ছোট কাউন্টার</td>
+          </tr>
+          <tr>
+            <td>SMALLINT</td>
+            <td><span class="storage-val">2 Bytes</span></td>
+            <td>-32,768 থেকে 32,767</td>
+            <td>0 থেকে 65,535</td>
+            <td>বছর, পোস্টাল কোড, স্টক পরিমাণ</td>
+          </tr>
+          <tr>
+            <td>MEDIUMINT</td>
+            <td><span class="storage-val">3 Bytes</span></td>
+            <td>-8,388,608 থেকে 8,388,607</td>
+            <td>0 থেকে 16,777,215</td>
+            <td>মাঝারি কাউন্টার, জনসংখ্যা</td>
+          </tr>
+          <tr>
+            <td>INT</td>
+            <td><span class="storage-val">4 Bytes</span></td>
+            <td>-2.1B থেকে 2.1B</td>
+            <td>0 থেকে 4.29B</td>
+            <td>প্রাইমারি কী, অর্ডার আইডি, সাধারণ সংখ্যা</td>
+          </tr>
+          <tr>
+            <td>BIGINT</td>
+            <td><span class="storage-val">8 Bytes</span></td>
+            <td>±9.2 কোয়াড্রিলিয়ন</td>
+            <td>0 থেকে 18.4 কোয়াড্রিলিয়ন</td>
+            <td>Twitter ID, বড় ট্রানজেকশন, সোশ্যাল মিডিয়া</td>
+          </tr>
+          <tr>
+            <td>FLOAT</td>
+            <td><span class="storage-val">4 Bytes</span></td>
+            <td>±3.4×10³⁸ (7 দশমিক)</td>
+            <td>—</td>
+            <td>বৈজ্ঞানিক পরিমাপ, গড়, তাপমাত্রা</td>
+          </tr>
+          <tr>
+            <td>DOUBLE</td>
+            <td><span class="storage-val">8 Bytes</span></td>
+            <td>±1.7×10³⁰⁸ (15 দশমিক)</td>
+            <td>—</td>
+            <td>উচ্চ নির্ভুলতার গণনা, জিওগ্রাফিক কোঅর্ডিনেট</td>
+          </tr>
+          <tr>
+            <td>DECIMAL(p,s)</td>
+            <td><span class="storage-val">প্রতি 9 digit = 4 Bytes</span></td>
+            <td>নির্ভুল দশমিক (65 ডিজিট পর্যন্ত)</td>
+            <td>—</td>
+            <td>টাকা, মূল্য, ট্যাক্স — কখনো ভুল হওয়া যাবে না</td>
+          </tr>
+          <tr>
+            <td>BOOLEAN</td>
+            <td><span class="storage-val">1 Byte</span></td>
+            <td>0 বা 1</td>
+            <td>—</td>
+            <td>সক্রিয়/নিষ্ক্রিয়, হ্যাঁ/না, পাস/ফেইল</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards-grid">
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">TINYINT</div>
+          <div class="ct-size">1 Byte</div>
+        </div>
+        <div class="ct-desc">সবচেয়ে ছোট পূর্ণসংখ্যা। যেখানে মান সীমিত ও ছোট।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> বয়স, স্টার রেটিং, সক্রিয় স্ট্যাটাস, মাস নম্বর</div>
+        <div class="ct-range">UNSIGNED: 0–255 | SIGNED: -128–127</div>
+      </div>
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">INT</div>
+          <div class="ct-size">4 Bytes</div>
+        </div>
+        <div class="ct-desc">সবচেয়ে পরিচিত ও ব্যবহৃত সংখ্যা টাইপ। PRIMARY KEY এর ডিফল্ট পছন্দ।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> ID, পণ্যের পরিমাণ, ভোটের সংখ্যা, অর্ডার নম্বর</div>
+        <div class="ct-range">UNSIGNED: 0–4,294,967,295</div>
+      </div>
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">DECIMAL(10,2)</div>
+          <div class="ct-size">নির্ভুল</div>
+        </div>
+        <div class="ct-desc">100% নির্ভুল দশমিক সংখ্যা। আর্থিক লেনদেনের জন্য অপরিহার্য।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> মূল্য, বেতন, ট্যাক্স, ব্যালেন্স — টাকার হিসাব সবসময় DECIMAL</div>
+        <div class="ct-range">DECIMAL(10,2) → 99999999.99 পর্যন্ত</div>
+      </div>
+    </div>
+
+    <div class="info-box danger">
+      <div class="icon">⚠️</div>
+      <div class="content">
+        <strong>টাকার হিসাবে FLOAT/DOUBLE ব্যবহার করবেন না!</strong>
+        <p>FLOAT এবং DOUBLE এ rounding error হয়। উদাহরণ: 0.1 + 0.2 = 0.30000000000000004 হতে পারে! সবসময় <code style="color:var(--orange)">DECIMAL</code> ব্যবহার করুন।</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="label">SQL উদাহরণ</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">products</span> (
+  id          <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,
+  name        <span class="type">VARCHAR(100)</span> <span class="kw">NOT NULL</span>,
+  quantity    <span class="type">SMALLINT UNSIGNED</span> <span class="kw">DEFAULT</span> <span class="num">0</span>,   <span class="cmt">-- স্টক পরিমাণ</span>
+  price       <span class="type">DECIMAL(10,2)</span> <span class="kw">NOT NULL</span>,          <span class="cmt">-- টাকার মূল্য ✓</span>
+  rating      <span class="type">TINYINT UNSIGNED</span>,                   <span class="cmt">-- 1-5 রেটিং</span>
+  is_active   <span class="type">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="num">TRUE</span>,             <span class="cmt">-- হ্যাঁ/না</span>
+  views       <span class="type">BIGINT UNSIGNED</span> <span class="kw">DEFAULT</span> <span class="num">0</span>,         <span class="cmt">-- ভিউ কাউন্টার</span>
+  temperature <span class="type">FLOAT</span>                               <span class="cmt">-- তাপমাত্রা (নির্ভুলতা লাগে না)</span>
+);
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== STRING ===== -->
+  <section id="string">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(88,166,255,0.15);">📝</div>
+      <h2><span>String</span> ডেটা টাইপ (টেক্সট)</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ডেটা টাইপ</th>
+            <th>সর্বোচ্চ আকার</th>
+            <th>স্টোরেজ পদ্ধতি</th>
+            <th>কখন ব্যবহার করবেন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CHAR(n)</td>
+            <td>255 char</td>
+            <td><span class="storage-val">n Bytes (স্থির)</span></td>
+            <td>নির্দিষ্ট দৈর্ঘ্যের ডেটা: দেশ কোড, OTP, লিঙ্গ</td>
+          </tr>
+          <tr>
+            <td>VARCHAR(n)</td>
+            <td>65,535 char</td>
+            <td><span class="storage-val">দৈর্ঘ্য + 1-2 Bytes</span></td>
+            <td>পরিবর্তনশীল টেক্সট: নাম, ইমেইল, শিরোনাম</td>
+          </tr>
+          <tr>
+            <td>TINYTEXT</td>
+            <td>255 char</td>
+            <td><span class="storage-val">দৈর্ঘ্য + 1 Byte</span></td>
+            <td>ছোট বিবরণ, সংক্ষিপ্ত মন্তব্য</td>
+          </tr>
+          <tr>
+            <td>TEXT</td>
+            <td>65,535 char</td>
+            <td><span class="storage-val">দৈর্ঘ্য + 2 Bytes</span></td>
+            <td>ব্লগ পোস্ট, পণ্যের বিবরণ, মন্তব্য</td>
+          </tr>
+          <tr>
+            <td>MEDIUMTEXT</td>
+            <td>16 MB</td>
+            <td><span class="storage-val">দৈর্ঘ্য + 3 Bytes</span></td>
+            <td>বড় আর্টিকেল, HTML কন্টেন্ট</td>
+          </tr>
+          <tr>
+            <td>LONGTEXT</td>
+            <td>4 GB</td>
+            <td><span class="storage-val">দৈর্ঘ্য + 4 Bytes</span></td>
+            <td>বই, লগ ফাইল, বিশাল ডকুমেন্ট</td>
+          </tr>
+          <tr>
+            <td>ENUM</td>
+            <td>65,535 অপশন</td>
+            <td><span class="storage-val">1-2 Bytes</span></td>
+            <td>নির্দিষ্ট তালিকা: লিঙ্গ, স্ট্যাটাস, বিভাগ</td>
+          </tr>
+          <tr>
+            <td>SET</td>
+            <td>64 সদস্য</td>
+            <td><span class="storage-val">1-8 Bytes</span></td>
+            <td>একাধিক মান নির্বাচন: ট্যাগ, অনুমতি</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box tip">
+      <div class="icon">💡</div>
+      <div class="content">
+        <strong>CHAR বনাম VARCHAR — কোনটা বেছে নেবেন?</strong>
+        <p><strong style="color:var(--accent)">CHAR(n)</strong> ব্যবহার করুন যখন ডেটার দৈর্ঘ্য সবসময় একই থাকে (যেমন: দেশ কোড 'BD', OTP '123456')। কারণ এটি দ্রুত। <strong style="color:var(--accent)">VARCHAR(n)</strong> ব্যবহার করুন যখন দৈর্ঘ্য পরিবর্তন হয় — এটি স্থান সাশ্রয় করে।</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="label">SQL উদাহরণ</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">users</span> (
+  id           <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,
+  username     <span class="type">VARCHAR(50)</span>    <span class="kw">NOT NULL UNIQUE</span>,     <span class="cmt">-- পরিবর্তনশীল দৈর্ঘ্য</span>
+  email        <span class="type">VARCHAR(150)</span>   <span class="kw">NOT NULL UNIQUE</span>,     <span class="cmt">-- ইমেইল সর্বোচ্চ ~150</span>
+  phone        <span class="type">CHAR(11)</span>       <span class="kw">NOT NULL</span>,            <span class="cmt">-- সবসময় 11 সংখ্যা</span>
+  country_code <span class="type">CHAR(2)</span>        <span class="kw">DEFAULT</span> <span class="str">'BD'</span>,        <span class="cmt">-- সবসময় 2 অক্ষর</span>
+  gender       <span class="type">ENUM('male','female','other')</span>,              <span class="cmt">-- নির্দিষ্ট তালিকা</span>
+  bio          <span class="type">TEXT</span>,                                         <span class="cmt">-- দীর্ঘ বায়ো</span>
+  full_article <span class="type">MEDIUMTEXT</span>,                                   <span class="cmt">-- বড় আর্টিকেল</span>
+  status       <span class="type">ENUM('active','inactive','banned')</span> <span class="kw">DEFAULT</span> <span class="str">'active'</span>
+);
+    </div>
+
+    <div class="info-box warn">
+      <div class="icon">🔍</div>
+      <div class="content">
+        <strong>INDEX এ TEXT ব্যবহার সীমিত!</strong>
+        <p>TEXT কলামে সরাসরি INDEX দেওয়া যায় না। পরিবর্তে prefix index ব্যবহার করুন: <code style="color:var(--orange)">INDEX (bio(100))</code> — প্রথম 100 অক্ষর ইনডেক্স করবে।</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== DATETIME ===== -->
+  <section id="datetime">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,166,87,0.15);">📅</div>
+      <h2><span>Date/Time</span> ডেটা টাইপ (তারিখ ও সময়)</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ডেটা টাইপ</th>
+            <th>স্টোরেজ</th>
+            <th>ফরম্যাট</th>
+            <th>রেঞ্জ</th>
+            <th>ব্যবহার</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DATE</td>
+            <td><span class="storage-val">3 Bytes</span></td>
+            <td>YYYY-MM-DD</td>
+            <td>1000-01-01 থেকে 9999-12-31</td>
+            <td>জন্মতারিখ, ছুটির তারিখ, ডেডলাইন</td>
+          </tr>
+          <tr>
+            <td>TIME</td>
+            <td><span class="storage-val">3 Bytes</span></td>
+            <td>HH:MM:SS</td>
+            <td>-838:59:59 থেকে 838:59:59</td>
+            <td>ব্যবসার সময়, শিডিউল, সময়কাল</td>
+          </tr>
+          <tr>
+            <td>DATETIME</td>
+            <td><span class="storage-val">8 Bytes</span></td>
+            <td>YYYY-MM-DD HH:MM:SS</td>
+            <td>1000 থেকে 9999 সাল</td>
+            <td>অর্ডারের সময়, লগইন সময়, সাধারণ টাইমস্ট্যাম্প</td>
+          </tr>
+          <tr>
+            <td>TIMESTAMP</td>
+            <td><span class="storage-val">4 Bytes</span></td>
+            <td>YYYY-MM-DD HH:MM:SS</td>
+            <td>1970-01-01 থেকে 2038-01-19</td>
+            <td>created_at, updated_at — auto update সুবিধা আছে</td>
+          </tr>
+          <tr>
+            <td>YEAR</td>
+            <td><span class="storage-val">1 Byte</span></td>
+            <td>YYYY</td>
+            <td>1901 থেকে 2155</td>
+            <td>নির্মাণ বছর, স্নাতক সাল</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards-grid">
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">TIMESTAMP</div>
+          <div class="ct-size">4 Bytes</div>
+        </div>
+        <div class="ct-desc">Timezone সচেতন। রেকর্ড তৈরি ও আপডেটের সময় স্বয়ংক্রিয়ভাবে সেট হয়।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> created_at, updated_at, last_login</div>
+        <div class="ct-range">⚠️ সীমা: 2038 সাল পর্যন্ত (Y2K38 সমস্যা)</div>
+      </div>
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">DATETIME</div>
+          <div class="ct-size">8 Bytes</div>
+        </div>
+        <div class="ct-desc">২০৩৮ সালের পরের তারিখের জন্য। Timezone সরাসরি সংরক্ষণ করে না।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> ভবিষ্যতের অ্যাপয়েন্টমেন্ট, ঐতিহাসিক ডেটা</div>
+        <div class="ct-range">রেঞ্জ: 1000-01-01 থেকে 9999-12-31</div>
+      </div>
+      <div class="type-card">
+        <div class="ct-head">
+          <div class="ct-name">DATE</div>
+          <div class="ct-size">3 Bytes</div>
+        </div>
+        <div class="ct-desc">শুধু তারিখ, সময় ছাড়া। সময়ের দরকার না থাকলে এটি বেশি সাশ্রয়ী।</div>
+        <div class="ct-use"><strong>✔ ব্যবহার করুন:</strong> জন্মতারিখ, অর্থ-বছর, ছুটির তালিকা</div>
+        <div class="ct-range">DATETIME এর চেয়ে 5 Bytes সাশ্রয়!</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="label">SQL উদাহরণ</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">orders</span> (
+  id            <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,
+  user_id       <span class="type">INT UNSIGNED</span>    <span class="kw">NOT NULL</span>,
+  birth_date    <span class="type">DATE</span>,                           <span class="cmt">-- শুধু তারিখ, 3 bytes</span>
+  delivery_at   <span class="type">DATETIME</span>,                       <span class="cmt">-- নির্দিষ্ট ডেলিভারি সময়</span>
+  grad_year     <span class="type">YEAR</span>,                           <span class="cmt">-- শুধু বছর, 1 byte</span>
+  created_at    <span class="type">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,       <span class="cmt">-- স্বয়ং সেট</span>
+  updated_at    <span class="type">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>
+                           <span class="kw">ON UPDATE</span> <span class="fn">CURRENT_TIMESTAMP</span>   <span class="cmt">-- স্বয়ং আপডেট</span>
+);
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== OTHER ===== -->
+  <section id="other">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(118,227,234,0.15);">🔗</div>
+      <h2><span>অন্যান্য</span> ডেটা টাইপ</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ডেটা টাইপ</th>
+            <th>স্টোরেজ</th>
+            <th>বর্ণনা</th>
+            <th>ব্যবহার</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TINYBLOB</td>
+            <td><span class="storage-val">255 Bytes + 1</span></td>
+            <td>ছোট বাইনারি ডেটা</td>
+            <td>ছোট ছবি থাম্বনেইল (সুপারিশ করা হয় না)</td>
+          </tr>
+          <tr>
+            <td>BLOB</td>
+            <td><span class="storage-val">64 KB + 2</span></td>
+            <td>মাঝারি বাইনারি</td>
+            <td>ডকুমেন্ট, অডিও ক্লিপ</td>
+          </tr>
+          <tr>
+            <td>MEDIUMBLOB</td>
+            <td><span class="storage-val">16 MB + 3</span></td>
+            <td>বড় বাইনারি</td>
+            <td>ছবি, পিডিএফ</td>
+          </tr>
+          <tr>
+            <td>LONGBLOB</td>
+            <td><span class="storage-val">4 GB + 4</span></td>
+            <td>বিশাল বাইনারি</td>
+            <td>ভিডিও (ফাইল সিস্টেমই ভালো)</td>
+          </tr>
+          <tr>
+            <td>JSON</td>
+            <td><span class="storage-val">পরিবর্তনশীল</span></td>
+            <td>JSON ফরম্যাট</td>
+            <td>নমনীয় স্কিমা, মেটাডেটা, কনফিগ</td>
+          </tr>
+          <tr>
+            <td>UUID / CHAR(36)</td>
+            <td><span class="storage-val">36 Bytes</span></td>
+            <td>ইউনিক আইডি</td>
+            <td>ডিস্ট্রিবিউটেড সিস্টেম, পাবলিক API</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box warn">
+      <div class="icon">📁</div>
+      <div class="content">
+        <strong>ডাটাবেজে ছবি/ফাইল সংরক্ষণ করবেন না!</strong>
+        <p>BLOB এ ছবি/ভিডিও রাখলে ডাটাবেজ ধীর হয়ে যায় এবং ব্যাকআপ বিশাল হয়। পরিবর্তে ফাইল ফোল্ডার বা AWS S3 তে রাখুন এবং ডাটাবেজে শুধু পাথ/URL সংরক্ষণ করুন।</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="label">JSON ডেটা টাইপ উদাহরণ</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">user_settings</span> (
+  id       <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,
+  user_id  <span class="type">INT UNSIGNED</span> <span class="kw">NOT NULL</span>,
+  prefs    <span class="type">JSON</span>,                     <span class="cmt">-- নমনীয় সেটিংস</span>
+  avatar   <span class="type">VARCHAR(255)</span>             <span class="cmt">-- ছবির URL (BLOB নয়!) ✓</span>
+);
+
+<span class="cmt">-- JSON কলামে ডেটা ইনসার্ট</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">user_settings</span> (user_id, prefs) <span class="kw">VALUES</span> (
+  <span class="num">1</span>, <span class="str">'{"theme":"dark","lang":"bn","notifications":true}'</span>
+);
+
+<span class="cmt">-- JSON থেকে নির্দিষ্ট মান বের করুন</span>
+<span class="kw">SELECT</span> <span class="fn">JSON_EXTRACT</span>(prefs, <span class="str">'$.theme'</span>) <span class="kw">AS</span> theme <span class="kw">FROM</span> <span class="tbl">user_settings</span>;
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== STORAGE CALC ===== -->
+  <section id="storage">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(247,129,102,0.15);">💾</div>
+      <h2><span>স্টোরেজ</span> গণনা — কীভাবে হিসাব করবেন</h2>
+    </div>
+
+    <div class="info-box note">
+      <div class="icon">📐</div>
+      <div class="content">
+        <strong>মূল সূত্র:</strong>
+        <p>একটি রো'র মোট আকার = সব কলামের আকারের যোগফল + ওভারহেড (≈ 20-60 Bytes প্রতি রো)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏪 একটি ই-কমার্স টেবিলের স্টোরেজ উদাহরণ</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>কলাম</th>
+              <th>ডেটা টাইপ</th>
+              <th>প্রতি রো আকার</th>
+              <th>ব্যাখ্যা</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>INT UNSIGNED</td>
+              <td><span class="storage-val">4 Bytes</span></td>
+              <td>সর্বদা 4 Bytes</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>VARCHAR(100)</td>
+              <td><span class="storage-val">দৈর্ঘ্য + 2 Bytes</span></td>
+              <td>"Samsung TV" = 10+2 = 12 Bytes</td>
+            </tr>
+            <tr>
+              <td>price</td>
+              <td>DECIMAL(10,2)</td>
+              <td><span class="storage-val">5 Bytes</span></td>
+              <td>10 ডিজিটের DECIMAL</td>
+            </tr>
+            <tr>
+              <td>quantity</td>
+              <td>SMALLINT UNSIGNED</td>
+              <td><span class="storage-val">2 Bytes</span></td>
+              <td>সর্বদা 2 Bytes</td>
+            </tr>
+            <tr>
+              <td>category</td>
+              <td>ENUM (10 অপশন)</td>
+              <td><span class="storage-val">1 Byte</span></td>
+              <td>≤255 অপশন = 1 Byte</td>
+            </tr>
+            <tr>
+              <td>description</td>
+              <td>TEXT</td>
+              <td><span class="storage-val">দৈর্ঘ্য + 2 Bytes</span></td>
+              <td>"বাংলাদেশে তৈরি…" = পরিবর্তনশীল</td>
+            </tr>
+            <tr>
+              <td>created_at</td>
+              <td>TIMESTAMP</td>
+              <td><span class="storage-val">4 Bytes</span></td>
+              <td>সর্বদা 4 Bytes</td>
+            </tr>
+            <tr style="background:rgba(88,166,255,0.05);">
+              <td><strong>মোট (গড়)</strong></td>
+              <td></td>
+              <td><span class="storage-val">~200 Bytes/রো</span></td>
+              <td>ওভারহেড সহ আনুমানিক</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <span class="label">স্টোরেজ হিসাব</span>
+<span class="cmt">-- ১০ লক্ষ পণ্য থাকলে:</span>
+<span class="num">1,000,000</span> রো × <span class="num">200</span> Bytes = <span class="num">200,000,000</span> Bytes
+                              = <span class="num">200</span> MB (মোটামুটি)
+
+<span class="cmt">-- ১ কোটি রেকর্ড:</span>
+<span class="num">10,000,000</span> × <span class="num">200</span> = <span class="num">2</span> GB শুধু ডেটা
+(+ INDEX আলাদা স্থান নেয়)
+
+<span class="cmt">-- MySQL এ টেবিলের আকার দেখুন:</span>
+<span class="kw">SELECT</span>
+  table_name,
+  <span class="fn">ROUND</span>((data_length + index_length) / <span class="num">1024</span> / <span class="num">1024</span>, <span class="num">2</span>) <span class="kw">AS</span> <span class="str">'Size (MB)'</span>
+<span class="kw">FROM</span> information_schema.tables
+<span class="kw">WHERE</span> table_schema = <span class="str">'আপনার_ডাটাবেজের_নাম'</span>
+<span class="kw">ORDER BY</span> (data_length + index_length) <span class="kw">DESC</span>;
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 VARCHAR এর স্টোরেজ গণনা</div>
+      <p>VARCHAR এর আকার নির্ভর করে আসল ডেটার উপর, সর্বোচ্চ সীমার উপর নয়।</p>
+      <div class="code-block">
+<span class="cmt">-- VARCHAR(255) তে 'Rahim' সংরক্ষণ করলে:</span>
+<span class="str">'Rahim'</span> = <span class="num">5</span> অক্ষর × <span class="num">1</span> Byte + <span class="num">1</span> Byte (দৈর্ঘ্য) = <span class="num">6</span> Bytes
+
+<span class="cmt">-- VARCHAR(255) তে 'মোহাম্মদ রহিম' (UTF-8) সংরক্ষণ করলে:</span>
+<span class="str">'মোহাম্মদ রহিম'</span> = <span class="num">13</span> অক্ষর × <span class="num">3</span> Bytes (UTF-8) + <span class="num">1</span> Byte = <span class="num">40</span> Bytes
+
+<span class="cmt">-- CHAR(10) তে 'BD' সংরক্ষণ করলে:</span>
+<span class="str">'BD'</span> সবসময় = <span class="num">10</span> Bytes (বাকি 8 স্পেস দিয়ে পূরণ)
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== CALCULATOR ===== -->
+  <section id="calculator">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(88,166,255,0.15);">🧮</div>
+      <h2><span>স্টোরেজ</span> ক্যালকুলেটর</h2>
+    </div>
+
+    <div class="calc-wrap">
+      <div class="calc-title">🧮 টেবিল স্টোরেজ অনুমান করুন</div>
+
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>মোট রো (রেকর্ড) সংখ্যা</label>
+          <input type="number" id="rowCount" placeholder="যেমন: 1000000" value="1000000">
+        </div>
+        <div class="calc-field">
+          <label>গড় রো আকার (Bytes)</label>
+          <input type="number" id="rowSize" placeholder="যেমন: 200" value="200">
+        </div>
+        <div class="calc-field">
+          <label>INDEX এর আনুমানিক সংখ্যা</label>
+          <input type="number" id="indexCount" placeholder="যেমন: 3" value="3">
+        </div>
+        <div class="calc-field">
+          <label>INDEX প্রতি আকার (Bytes)</label>
+          <input type="number" id="indexSize" placeholder="যেমন: 20" value="20">
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">
+        ⚡ হিসাব করুন
+      </button>
+
+      <div class="calc-result" id="calcResult">
+        <div style="color:var(--text2);font-size:14px;margin-bottom:4px;">আপনার টেবিলের আনুমানিক আকার:</div>
+        <div class="result-grid">
+          <div class="result-item">
+            <div class="val" id="resBytes">—</div>
+            <div class="lbl">মোট Bytes</div>
+          </div>
+          <div class="result-item">
+            <div class="val" id="resKB">—</div>
+            <div class="lbl">Kilobytes (KB)</div>
+          </div>
+          <div class="result-item">
+            <div class="val" id="resMB">—</div>
+            <div class="lbl">Megabytes (MB)</div>
+          </div>
+          <div class="result-item">
+            <div class="val" id="resGB">—</div>
+            <div class="lbl">Gigabytes (GB)</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:var(--bg2);border-radius:8px;">
+          <div style="color:var(--text2);font-size:13px;" id="resNote"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== DECISION ===== -->
+  <section id="decision">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(210,168,255,0.15);">✅</div>
+      <h2><span>কোন টাইপ</span> কখন বেছে নেবেন?</h2>
+    </div>
+
+    <div class="decision-tree">
+
+      <div class="dt-step">
+        <div class="dt-num" style="background:rgba(63,185,80,0.15);color:var(--green);">১</div>
+        <div class="dt-content">
+          <h4>📌 সংখ্যা সংরক্ষণ করতে চান?</h4>
+          <div class="dt-options">
+            <span class="dt-opt" style="background:rgba(63,185,80,0.15);color:var(--green);">টাকা/মূল্য → DECIMAL(10,2)</span>
+            <span class="dt-opt" style="background:rgba(88,166,255,0.15);color:var(--accent);">ID/গণনা → INT / BIGINT</span>
+            <span class="dt-opt" style="background:rgba(255,166,87,0.15);color:var(--orange);">ছোট সংখ্যা → TINYINT/SMALLINT</span>
+            <span class="dt-opt" style="background:rgba(210,168,255,0.15);color:var(--purple);">দশমিক (অনির্ভুল) → FLOAT/DOUBLE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dt-step">
+        <div class="dt-num" style="background:rgba(88,166,255,0.15);color:var(--accent);">২</div>
+        <div class="dt-content">
+          <h4>📝 টেক্সট সংরক্ষণ করতে চান?</h4>
+          <div class="dt-options">
+            <span class="dt-opt" style="background:rgba(88,166,255,0.15);color:var(--accent);">নির্দিষ্ট দৈর্ঘ্য → CHAR(n)</span>
+            <span class="dt-opt" style="background:rgba(63,185,80,0.15);color:var(--green);">পরিবর্তনশীল (≤255) → VARCHAR</span>
+            <span class="dt-opt" style="background:rgba(255,166,87,0.15);color:var(--orange);">দীর্ঘ লেখা → TEXT/MEDIUMTEXT</span>
+            <span class="dt-opt" style="background:rgba(210,168,255,0.15);color:var(--purple);">নির্দিষ্ট তালিকা → ENUM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dt-step">
+        <div class="dt-num" style="background:rgba(255,166,87,0.15);color:var(--orange);">৩</div>
+        <div class="dt-content">
+          <h4>📅 তারিখ/সময় সংরক্ষণ করতে চান?</h4>
+          <div class="dt-options">
+            <span class="dt-opt" style="background:rgba(255,166,87,0.15);color:var(--orange);">শুধু তারিখ → DATE</span>
+            <span class="dt-opt" style="background:rgba(63,185,80,0.15);color:var(--green);">তারিখ+সময় (2038 পরে) → DATETIME</span>
+            <span class="dt-opt" style="background:rgba(88,166,255,0.15);color:var(--accent);">Auto-update দরকার → TIMESTAMP</span>
+            <span class="dt-opt" style="background:rgba(210,168,255,0.15);color:var(--purple);">শুধু বছর → YEAR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dt-step">
+        <div class="dt-num" style="background:rgba(118,227,234,0.15);color:var(--cyan);">৪</div>
+        <div class="dt-content">
+          <h4>🔗 বিশেষ ডেটা সংরক্ষণ করতে চান?</h4>
+          <div class="dt-options">
+            <span class="dt-opt" style="background:rgba(118,227,234,0.15);color:var(--cyan);">নমনীয় স্কিমা → JSON</span>
+            <span class="dt-opt" style="background:rgba(247,129,102,0.15);color:var(--accent2);">হ্যাঁ/না → BOOLEAN (TINYINT(1))</span>
+            <span class="dt-opt" style="background:rgba(63,185,80,0.15);color:var(--green);">ডিস্ট্রিবিউটেড ID → CHAR(36) UUID</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- COMPARISON -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-title">⚡ CHAR বনাম VARCHAR — তুলনা</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>বৈশিষ্ট্য</th>
+              <th>CHAR(n)</th>
+              <th>VARCHAR(n)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>স্টোরেজ</td>
+              <td>সবসময় n Bytes</td>
+              <td>আসল দৈর্ঘ্য + 1-2 Bytes</td>
+            </tr>
+            <tr>
+              <td>গতি</td>
+              <td><span class="comparison-badge badge-good">✓ দ্রুততর</span></td>
+              <td><span class="comparison-badge badge-ok">~ মাঝারি</span></td>
+            </tr>
+            <tr>
+              <td>স্থান</td>
+              <td><span class="comparison-badge badge-bad">✗ বেশি নষ্ট</span></td>
+              <td><span class="comparison-badge badge-good">✓ সাশ্রয়ী</span></td>
+            </tr>
+            <tr>
+              <td>উপযুক্ত</td>
+              <td>নির্দিষ্ট দৈর্ঘ্য (OTP, কোড)</td>
+              <td>পরিবর্তনশীল (নাম, ইমেইল)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== EXAMPLES ===== -->
+  <section id="examples">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(63,185,80,0.15);">💡</div>
+      <h2>বাস্তব <span>উদাহরণ</span> — সম্পূর্ণ স্কিমা</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛒 ই-কমার্স ডাটাবেজ স্কিমা</div>
+      <div class="code-block">
+        <span class="label">সম্পূর্ণ উদাহরণ</span>
+<span class="cmt">-- ব্যবহারকারী টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">users</span> (
+  id           <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,  <span class="cmt">-- 4B</span>
+  name         <span class="type">VARCHAR(100)</span>   <span class="kw">NOT NULL</span>,                <span class="cmt">-- পরিবর্তনশীল</span>
+  email        <span class="type">VARCHAR(150)</span>   <span class="kw">NOT NULL UNIQUE</span>,         <span class="cmt">-- সর্বোচ্চ ~100 char</span>
+  phone        <span class="type">CHAR(11)</span>,                                      <span class="cmt">-- সবসময় 11 সংখ্যা</span>
+  password     <span class="type">CHAR(60)</span>       <span class="kw">NOT NULL</span>,                <span class="cmt">-- bcrypt hash সবসময় 60</span>
+  dob          <span class="type">DATE</span>,                                          <span class="cmt">-- জন্মতারিখ 3B</span>
+  gender       <span class="type">ENUM('male','female','other')</span>,                  <span class="cmt">-- 1B</span>
+  balance      <span class="type">DECIMAL(12,2)</span>  <span class="kw">DEFAULT</span> <span class="num">0.00</span>,              <span class="cmt">-- ওয়ালেট টাকা</span>
+  is_verified  <span class="type">BOOLEAN</span>        <span class="kw">DEFAULT FALSE</span>,               <span class="cmt">-- 1B</span>
+  created_at   <span class="type">TIMESTAMP</span>      <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>    <span class="cmt">-- 4B</span>
+);
+
+<span class="cmt">-- পণ্য টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">products</span> (
+  id           <span class="type">INT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,
+  name         <span class="type">VARCHAR(200)</span>   <span class="kw">NOT NULL</span>,
+  slug         <span class="type">VARCHAR(220)</span>   <span class="kw">NOT NULL UNIQUE</span>,         <span class="cmt">-- URL-friendly</span>
+  price        <span class="type">DECIMAL(10,2)</span>  <span class="kw">NOT NULL</span>,               <span class="cmt">-- কখনো FLOAT নয়!</span>
+  discount     <span class="type">TINYINT UNSIGNED DEFAULT</span> <span class="num">0</span>,               <span class="cmt">-- 0-100% 1B</span>
+  stock        <span class="type">SMALLINT UNSIGNED DEFAULT</span> <span class="num">0</span>,             <span class="cmt">-- স্টক 2B</span>
+  weight       <span class="type">DECIMAL(8,3)</span>,                            <span class="cmt">-- কেজিতে ওজন</span>
+  description  <span class="type">TEXT</span>,                                    <span class="cmt">-- দীর্ঘ বিবরণ</span>
+  meta         <span class="type">JSON</span>,                                    <span class="cmt">-- নমনীয় অ্যাট্রিবিউট</span>
+  views        <span class="type">INT UNSIGNED DEFAULT</span> <span class="num">0</span>,                  <span class="cmt">-- ভিউ কাউন্টার 4B</span>
+  created_at   <span class="type">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+  updated_at   <span class="type">TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>
+);
+
+<span class="cmt">-- অর্ডার টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">orders</span> (
+  id           <span class="type">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,  <span class="cmt">-- বড় কাউন্টার 8B</span>
+  user_id      <span class="type">INT UNSIGNED</span>   <span class="kw">NOT NULL</span>,
+  total        <span class="type">DECIMAL(12,2)</span>  <span class="kw">NOT NULL</span>,
+  status       <span class="type">ENUM('pending','paid','shipped','done','cancelled') DEFAULT</span> <span class="str">'pending'</span>,
+  address      <span class="type">TEXT</span>           <span class="kw">NOT NULL</span>,
+  delivered_at <span class="type">DATETIME</span>,                                   <span class="cmt">-- ভবিষ্যত তারিখ</span>
+  created_at   <span class="type">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>
+);
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📱 সোশ্যাল মিডিয়া স্কিমা</div>
+      <div class="code-block">
+<span class="kw">CREATE TABLE</span> <span class="tbl">posts</span> (
+  id          <span class="type">BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</span>,  <span class="cmt">-- Twitter-like বড় ID</span>
+  user_id     <span class="type">INT UNSIGNED</span>  <span class="kw">NOT NULL</span>,
+  content     <span class="type">VARCHAR(500)</span>  <span class="kw">NOT NULL</span>,                   <span class="cmt">-- টুইটের মতো</span>
+  media_url   <span class="type">VARCHAR(500)</span>,                                <span class="cmt">-- ছবির URL (BLOB নয়)</span>
+  likes       <span class="type">INT UNSIGNED</span>  <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  shares      <span class="type">INT UNSIGNED</span>  <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  is_public   <span class="type">BOOLEAN</span>       <span class="kw">DEFAULT</span> <span class="num">TRUE</span>,
+  created_at  <span class="type">TIMESTAMP</span>     <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>
+);
+
+<span class="cmt">-- স্টোরেজ হিসাব: গড় পোস্ট ~300 Bytes</span>
+<span class="cmt">-- ১০ কোটি পোস্ট = 100M × 300 = 30 GB ডেটা</span>
+<span class="cmt">-- + INDEX ≈ আরো 10-15 GB</span>
+<span class="cmt">-- মোট আনুমানিক: ~45 GB</span>
+      </div>
+    </div>
+
+    <div class="info-box tip">
+      <div class="icon">🏆</div>
+      <div class="content">
+        <strong>সেরা অনুশীলন (Best Practices)</strong>
+        <p>
+          ১. সবসময় ক্ষুদ্রতম উপযুক্ত টাইপ ব্যবহার করুন<br>
+          ২. টাকার হিসাবে সবসময় DECIMAL, কখনো FLOAT নয়<br>
+          ৩. NULL অনুমতি দেওয়ার আগে ভাবুন — NOT NULL দ্রুততর<br>
+          ৪. VARCHAR(255) ডিফল্ট না করে প্রকৃত প্রয়োজন অনুযায়ী সেট করুন<br>
+          ৫. created_at/updated_at এ সবসময় TIMESTAMP ব্যবহার করুন<br>
+          ৬. BLOB এ ফাইল না রেখে পাথ/URL সংরক্ষণ করুন
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  তৈরি করা হয়েছে <span>MySQL</span> শিক্ষার্থীদের জন্য বাংলায় | ডেটা টাইপ ও স্টোরেজ গাইড
+</footer>
+
+<script>
+function calculate() {
+  const rows = parseFloat(document.getElementById('rowCount').value) || 0;
+  const rowSize = parseFloat(document.getElementById('rowSize').value) || 0;
+  const indexCount = parseFloat(document.getElementById('indexCount').value) || 0;
+  const indexSize = parseFloat(document.getElementById('indexSize').value) || 0;
+
+  const overhead = 30; // ~30 bytes per row overhead
+  const dataBytes = rows * (rowSize + overhead);
+  const indexBytes = rows * indexCount * indexSize;
+  const totalBytes = dataBytes + indexBytes;
+
+  const totalKB = totalBytes / 1024;
+  const totalMB = totalKB / 1024;
+  const totalGB = totalMB / 1024;
+
+  document.getElementById('resBytes').textContent = formatNum(totalBytes);
+  document.getElementById('resKB').textContent = formatNum(Math.round(totalKB));
+  document.getElementById('resMB').textContent = totalMB.toFixed(2);
+  document.getElementById('resGB').textContent = totalGB.toFixed(4);
+
+  let note = `📊 ${formatNum(rows)} রো × (${rowSize} + ${overhead} overhead) Bytes = ডেটা অংশ। `;
+  if (indexCount > 0) {
+    note += `${indexCount}টি INDEX মিলিয়ে মোট ${formatNum(Math.round(indexBytes / 1024 / 1024))} MB অতিরিক্ত। `;
+  }
+  if (totalGB >= 1) {
+    note += `⚠️ ডেটাবেজ পার্টিশনিং বা আর্কাইভিং বিবেচনা করুন।`;
+  } else if (totalMB >= 100) {
+    note += `✅ সাধারণ মাইগ্রেশন কৌশল যথেষ্ট।`;
+  } else {
+    note += `✅ স্টোরেজ স্বাস্থ্যকর পরিসরে আছে।`;
+  }
+
+  document.getElementById('resNote').textContent = note;
+  document.getElementById('calcResult').classList.add('show');
+}
+
+function formatNum(n) {
+  return n.toLocaleString('bn-BD');
+}
+</script>
+
+</body>
+</html>
