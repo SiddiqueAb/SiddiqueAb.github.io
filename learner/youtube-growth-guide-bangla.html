@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube চ্যানেল গ্রোথ গাইড — সম্পূর্ণ বাংলা</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red: #ff0000;
+  --red2: #cc0000;
+  --red-soft: #ff4444;
+  --red-glow: rgba(255,0,0,0.15);
+  --dark: #0a0a0a;
+  --dark2: #111111;
+  --dark3: #1a1a1a;
+  --dark4: #222222;
+  --border: #2a2a2a;
+  --border2: #333333;
+  --text: #f0f0f0;
+  --text2: #aaaaaa;
+  --text3: #cccccc;
+  --gold: #ffd700;
+  --gold2: #ffaa00;
+  --green: #00e676;
+  --blue: #4fc3f7;
+  --purple: #ce93d8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 60px 24px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255,0,0,0.12) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.hero-lines {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,0,0,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+
+.yt-logo-big {
+  width: 90px;
+  height: 64px;
+  background: var(--red);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  box-shadow: 0 0 60px rgba(255,0,0,0.5), 0 0 120px rgba(255,0,0,0.2);
+  animation: pulse-logo 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+  0%, 100% { box-shadow: 0 0 60px rgba(255,0,0,0.5), 0 0 120px rgba(255,0,0,0.2); }
+  50% { box-shadow: 0 0 80px rgba(255,0,0,0.8), 0 0 160px rgba(255,0,0,0.35); }
+}
+
+.yt-logo-big::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 14px 0 14px 28px;
+  border-color: transparent transparent transparent white;
+  margin-left: 6px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,0,0,0.1);
+  border: 1px solid rgba(255,0,0,0.3);
+  color: var(--red-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 6px 20px;
+  border-radius: 30px;
+  margin-bottom: 24px;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+.hero h1 {
+  font-family: 'Tiro Bangla', serif;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.hero h1 span.red { color: var(--red); }
+.hero h1 span.gold { color: var(--gold); }
+
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text2);
+  max-width: 600px;
+  margin: 0 auto 36px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+
+.hero-stat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 14px 24px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.hero-stat .n {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
+}
+
+.hero-stat .l {
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+/* Nav dots */
+.chapter-nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-chip {
+  background: var(--dark3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+.nav-chip:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text2);
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ===== MAIN LAYOUT ===== */
+.main { max-width: 1100px; margin: 0 auto; padding: 0 24px 100px; }
+
+/* Chapter headers */
+.chapter {
+  margin-top: 80px;
+  margin-bottom: 36px;
+}
+
+.chapter-label {
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chapter-label::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--red);
+}
+
+.chapter h2 {
+  font-family: 'Tiro Bangla', serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.chapter .ch-desc {
+  color: var(--text2);
+  font-size: 0.95rem;
+  margin-top: 8px;
+  max-width: 700px;
+}
+
+/* ===== CARDS ===== */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+
+.card {
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover {
+  border-color: rgba(255,0,0,0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(255,0,0,0.1);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+.card p {
+  font-size: 0.88rem;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.card.highlight {
+  background: linear-gradient(135deg, rgba(255,0,0,0.08), rgba(255,0,0,0.02));
+  border-color: rgba(255,0,0,0.25);
+}
+
+.card.gold-card {
+  background: linear-gradient(135deg, rgba(255,215,0,0.06), rgba(255,170,0,0.02));
+  border-color: rgba(255,215,0,0.2);
+}
+
+.card.gold-card::before {
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.card.gold-card:hover {
+  border-color: rgba(255,215,0,0.4);
+  box-shadow: 0 8px 32px rgba(255,215,0,0.08);
+}
+
+/* ===== TIP BOXES ===== */
+.tip-box {
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  border-left: 3px solid;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-box .tip-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+.tip-box .tip-content { flex: 1; }
+.tip-box strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+
+.tip-box.red { background: rgba(255,0,0,0.06); border-color: var(--red); }
+.tip-box.red strong { color: var(--red); }
+.tip-box.gold { background: rgba(255,215,0,0.06); border-color: var(--gold); }
+.tip-box.gold strong { color: var(--gold); }
+.tip-box.green { background: rgba(0,230,118,0.06); border-color: var(--green); }
+.tip-box.green strong { color: var(--green); }
+.tip-box.blue { background: rgba(79,195,247,0.06); border-color: var(--blue); }
+.tip-box.blue strong { color: var(--blue); }
+.tip-box.purple { background: rgba(206,147,216,0.06); border-color: var(--purple); }
+.tip-box.purple strong { color: var(--purple); }
+
+/* ===== STEPS ===== */
+.steps { display: flex; flex-direction: column; gap: 16px; }
+
+.step {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+
+.step:hover { border-color: rgba(255,0,0,0.3); }
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+  color: white;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+.step-body h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.step-body p { font-size: 0.88rem; color: var(--text2); line-height: 1.7; }
+
+/* ===== TIMELINE / SCHEDULE ===== */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--dark2);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin: 16px 0;
+}
+
+.schedule-table th {
+  background: rgba(255,0,0,0.1);
+  color: var(--red-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+}
+
+.schedule-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(42,42,42,0.5);
+  color: var(--text3);
+  font-size: 0.88rem;
+  vertical-align: middle;
+}
+
+.schedule-table tr:last-child td { border-bottom: none; }
+.schedule-table tr:hover td { background: rgba(255,0,0,0.03); }
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+.badge.best { background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.3); color: var(--green); }
+.badge.good { background: rgba(79,195,247,0.15); border: 1px solid rgba(79,195,247,0.3); color: var(--blue); }
+.badge.ok { background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.3); color: var(--gold); }
+.badge.bad { background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.3); color: var(--red-soft); }
+
+/* ===== CHECKLIST ===== */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.checklist li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text3);
+  line-height: 1.6;
+}
+.checklist li::before {
+  content: '✓';
+  width: 22px;
+  height: 22px;
+  background: rgba(0,230,118,0.15);
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ===== BIG STAT BLOCKS ===== */
+.stat-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.stat-block {
+  background: var(--dark3);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+}
+
+.stat-block .big { font-size: 2rem; font-weight: 700; color: var(--red); display: block; line-height: 1; }
+.stat-block .mid { font-size: 0.85rem; color: var(--text2); margin-top: 6px; line-height: 1.4; }
+
+/* ===== HIGHLIGHT PANEL ===== */
+.panel {
+  background: linear-gradient(135deg, rgba(255,0,0,0.08) 0%, rgba(0,0,0,0) 60%);
+  border: 1px solid rgba(255,0,0,0.2);
+  border-radius: 16px;
+  padding: 28px;
+  margin: 20px 0;
+}
+
+.panel.dark-panel {
+  background: var(--dark3);
+  border-color: var(--border2);
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  margin: 60px 0;
+}
+
+/* ===== FORMULA BLOCK ===== */
+.formula {
+  background: var(--dark3);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--blue);
+  margin: 12px 0;
+  line-height: 1.8;
+}
+
+.formula .comment { color: var(--text2); font-style: italic; font-family: 'Hind Siliguri', sans-serif; }
+
+/* ===== MILESTONE ===== */
+.milestones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.milestone {
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.milestone:hover { border-color: rgba(255,215,0,0.4); transform: translateY(-2px); }
+
+.milestone::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ms-color, var(--red));
+}
+
+.milestone .ms-num { font-size: 1.4rem; font-weight: 700; color: var(--ms-color, var(--red)); display: block; }
+.milestone .ms-title { font-size: 0.9rem; font-weight: 600; color: var(--text); margin: 4px 0; }
+.milestone .ms-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+.milestone .ms-badge { font-size: 0.7rem; font-weight: 700; color: var(--ms-color, var(--red)); margin-top: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ===== ALGORITHM BOX ===== */
+.algo-box {
+  background: var(--dark2);
+  border: 2px solid var(--red);
+  border-radius: 16px;
+  padding: 28px;
+  margin: 20px 0;
+  position: relative;
+}
+
+.algo-box::before {
+  content: 'ALGORITHM';
+  position: absolute;
+  top: -1px; left: 20px;
+  background: var(--red);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 3px 12px;
+  border-radius: 0 0 8px 8px;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* ===== DO / DON'T ===== */
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.do-box, .dont-box {
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid;
+}
+
+.do-box {
+  background: rgba(0,230,118,0.05);
+  border-color: rgba(0,230,118,0.2);
+}
+
+.dont-box {
+  background: rgba(255,0,0,0.05);
+  border-color: rgba(255,0,0,0.2);
+}
+
+.do-box h4 { color: var(--green); margin-bottom: 10px; font-size: 0.95rem; }
+.dont-box h4 { color: var(--red-soft); margin-bottom: 10px; font-size: 0.95rem; }
+
+.do-box ul, .dont-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.do-box li, .dont-box li { font-size: 0.85rem; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+.do-box li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.dont-box li::before { content: '✗'; color: var(--red-soft); font-weight: 700; flex-shrink: 0; }
+
+/* ===== BACK TO TOP ===== */
+#top-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  text-decoration: none;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+#top-btn.show { opacity: 1; transform: translateY(0); }
+#top-btn:hover { background: var(--red2); transform: translateY(-3px) scale(1.05); }
+
+/* ===== PROGRESS METER ===== */
+.progress-bar { background: var(--border2); border-radius: 20px; height: 8px; overflow: hidden; margin: 6px 0 2px; }
+.progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--red), var(--red-soft)); }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .do-dont { grid-template-columns: 1fr; }
+  .hero-stat .n { font-size: 1.4rem; }
+  .chapter h2 { font-size: 1.6rem; }
+  .step { flex-direction: column; }
+  .step-num { width: 36px; height: 36px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="yt-logo-big"></div>
+    <div class="hero-badge">সম্পূর্ণ বাংলা গাইড ২০২৫</div>
+    <h1>YouTube চ্যানেল<br><span class="red">গ্রোথ</span> এর <span class="gold">সম্পূর্ণ</span> গাইড</h1>
+    <p class="hero-sub">শূন্য থেকে শুরু করে লক্ষাধিক সাবস্ক্রাইবার পর্যন্ত — কখন পোস্ট করবেন, কী পোস্ট করবেন, কীভাবে ভিউ ও সাবস্ক্রাইবার বাড়াবেন সব কিছু এক জায়গায়</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="n">১০</span><span class="l">অধ্যায়</span></div>
+      <div class="hero-stat"><span class="n">৫০+</span><span class="l">টিপস</span></div>
+      <div class="hero-stat"><span class="n">১০০%</span><span class="l">বাংলায়</span></div>
+      <div class="hero-stat"><span class="n">২০২৫</span><span class="l">আপডেটেড</span></div>
+    </div>
+
+    <div class="chapter-nav">
+      <a href="#setup" class="nav-chip">📺 চ্যানেল সেটআপ</a>
+      <a href="#content" class="nav-chip">🎬 কন্টেন্ট স্ট্র্যাটেজি</a>
+      <a href="#timing" class="nav-chip">⏰ পোস্টের সময়</a>
+      <a href="#seo" class="nav-chip">🔍 YouTube SEO</a>
+      <a href="#thumbnail" class="nav-chip">🖼️ থাম্বনেইল</a>
+      <a href="#subscribers" class="nav-chip">👥 সাবস্ক্রাইবার</a>
+      <a href="#algorithm" class="nav-chip">🤖 অ্যালগরিদম</a>
+      <a href="#monetize" class="nav-chip">💰 মনিটাইজেশন</a>
+      <a href="#analytics" class="nav-chip">📊 অ্যানালিটিক্স</a>
+      <a href="#mistakes" class="nav-chip">❌ ভুল এড়ানো</a>
+    </div>
+  </div>
+  <div class="scroll-hint">▼ নিচে স্ক্রোল করুন</div>
+</section>
+
+<div class="main">
+
+<!-- ===== CHAPTER 1: CHANNEL SETUP ===== -->
+<div class="chapter" id="setup">
+  <div class="chapter-label">অধ্যায় ০১</div>
+  <h2>📺 চ্যানেল সেটআপ করুন সঠিকভাবে</h2>
+  <p class="ch-desc">শুরুতেই ভিত্তি মজবুত না হলে পরে সব পরিশ্রম বৃথা যাবে। সঠিক সেটআপ আপনার চ্যানেলকে প্রফেশনাল করে তোলে।</p>
+</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">১</div>
+    <div class="step-body">
+      <h4>নিশ (Niche) বেছে নিন</h4>
+      <p>একটি নির্দিষ্ট বিষয়ে চ্যানেল খুলুন। সব বিষয়ে ভিডিও করলে অ্যালগরিদম আপনার চ্যানেল কাউকে দেখাবে না। যেমন: শুধু রান্না, শুধু গেমিং, শুধু টেক রিভিউ — এরকম একটি নির্দিষ্ট বিষয় বেছে নিন যেটিতে আপনার আগ্রহ ও জ্ঞান দুটোই আছে।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">২</div>
+    <div class="step-body">
+      <h4>চ্যানেলের নাম ও ব্র্যান্ডিং</h4>
+      <p>সহজ, মনে রাখার মতো এবং আপনার বিষয়ের সাথে সম্পর্কিত নাম বেছে নিন। চ্যানেল আর্ট (ব্যানার), প্রোফাইল ছবি, ওয়াটারমার্ক — এগুলো প্রফেশনালভাবে তৈরি করুন। ২৫৬০×১৪৪০ পিক্সেল ব্যানার সাইজ।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৩</div>
+    <div class="step-body">
+      <h4>About সেকশন পূর্ণ করুন</h4>
+      <p>চ্যানেলের বিবরণে মূল কীওয়ার্ড ব্যবহার করুন। কী ধরনের ভিডিও করেন, কখন আপলোড করেন — এটি স্পষ্টভাবে লিখুন। প্রথম ১৫০ অক্ষর সার্চে দেখায়, তাই সেটি গুরুত্বপূর্ণ।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৪</div>
+    <div class="step-body">
+      <h4>চ্যানেল ট্রেলার ভিডিও যোগ করুন</h4>
+      <p>৩০-৬০ সেকেন্ডের একটি ট্রেলার ভিডিও আপলোড করুন যেখানে আপনার চ্যানেল সম্পর্কে বলবেন। নতুন দর্শকরা এটি প্রথমে দেখে। এই ভিডিওটি হবে আপনার চ্যানেলের "মুখপাত্র"।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৫</div>
+    <div class="step-body">
+      <h4>সোশ্যাল লিংক ও ওয়েবসাইট যোগ করুন</h4>
+      <p>Facebook, Instagram, Twitter/X প্রোফাইল লিংক যোগ করুন। এটি দর্শকদের আপনাকে খুঁজে পেতে সাহায্য করে এবং চ্যানেলকে বিশ্বাসযোগ্য করে তোলে।</p>
+    </div>
+  </div>
+</div>
+
+<div class="tip-box gold" style="margin-top:20px">
+  <span class="tip-icon">⭐</span>
+  <div class="tip-content">
+    <strong>প্রো টিপ: প্রথম ১০টি ভিডিও</strong>
+    চ্যানেল খোলার পরে প্রথমেই ১০টি ভিডিও আপলোড করুন। এটি দর্শকদের দেখায় যে আপনি সিরিয়াস এবং YouTube-কে বোঝায় যে আপনার চ্যানেলে কন্টেন্ট আছে। খালি চ্যানেলে কেউ সাবস্ক্রাইব করে না।
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2: CONTENT STRATEGY ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="content">
+  <div class="chapter-label">অধ্যায় ০২</div>
+  <h2>🎬 কন্টেন্ট স্ট্র্যাটেজি — কী বানাবেন</h2>
+  <p class="ch-desc">সঠিক ধরনের ভিডিও বানানো মানে অ্যালগরিদমের সাথে কাজ করা, তার বিরুদ্ধে নয়।</p>
+</div>
+
+<div class="grid-3">
+  <div class="card highlight">
+    <span class="card-icon">🔥</span>
+    <h3>ট্রেন্ডিং টপিক</h3>
+    <p>Google Trends, YouTube-এর অনুসন্ধান বার — এগুলোতে দেখুন মানুষ কী খুঁজছে। ট্রেন্ডিং বিষয়ে ভিডিও বানালে দ্রুত ভিউ আসে। তবে আপনার নিশের সাথে মিল থাকতে হবে।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">🌿</span>
+    <h3>এভারগ্রিন কন্টেন্ট</h3>
+    <p>এমন ভিডিও বানান যেগুলো বছরের পর বছর প্রাসঙ্গিক থাকবে। যেমন: "কীভাবে রান্না শিখবেন", "English শেখার টিপস" — এগুলো দীর্ঘদিন ভিউ আনতে থাকে।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">📚</span>
+    <h3>সিরিজ ভিডিও</h3>
+    <p>একটি বড় বিষয়কে পর্বে ভাগ করুন। দর্শক একটি পর্ব দেখলে বাকিগুলোও দেখতে চাইবে। এটি ওয়াচ টাইম ও রিটার্ন ভিজিটর বাড়ায়।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">💬</span>
+    <h3>প্রশ্নোত্তর ভিডিও</h3>
+    <p>দর্শকদের কমেন্টের প্রশ্ন নিয়ে ভিডিও বানান। এটি কমিউনিটি তৈরি করে এবং দর্শকরা মূল্যবান অনুভব করেন। এনগেজমেন্ট বাড়ে।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">🆚</span>
+    <h3>তুলনামূলক ভিডিও</h3>
+    <p>"A বনাম B" ধরনের ভিডিও দর্শকরা অনেক খোঁজে। যেমন: "iPhone বনাম Samsung", "এই দুই পণ্যের মধ্যে কোনটি ভালো" — এই ধরনের ভিডিওতে সার্চ ভলিউম বেশি।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">🎭</span>
+    <h3>চ্যালেঞ্জ ও রিঅ্যাকশন</h3>
+    <p>ট্রেন্ডিং চ্যালেঞ্জে অংশ নিন বা পপুলার ভিডিওতে রিঅ্যাক্ট করুন (ফেয়ার ইউজ মেনে)। শেয়ারযোগ্য কন্টেন্ট ভাইরাল হওয়ার সম্ভাবনা বেশি।</p>
+  </div>
+</div>
+
+<div class="tip-box blue" style="margin-top:20px">
+  <span class="tip-icon">💡</span>
+  <div class="tip-content">
+    <strong>৭০-২০-১০ ফর্মুলা</strong>
+    ৭০% ভিডিও হবে প্রমাণিত ও নির্ভরযোগ্য বিষয়ে যেগুলো আপনার দর্শকরা পছন্দ করে। ২০% হবে নতুন বিষয়ে পরীক্ষামূলক। ১০% হবে সম্পূর্ণ নতুন ধারণা বা ঝুঁকিপূর্ণ কন্টেন্ট। এই অনুপাতে চ্যানেল স্থিতিশীল থাকে এবং বৃদ্ধিও পায়।
+  </div>
+</div>
+
+<div style="margin-top:24px">
+  <h3 style="color:var(--text);margin-bottom:14px;font-size:1.05rem">🎯 ভিডিওর আদর্শ দৈর্ঘ্য</h3>
+  <div class="schedule-table" style="border-radius:12px">
+    <table class="schedule-table" style="width:100%;border:none">
+      <tr>
+        <th>ভিডিও ধরন</th>
+        <th>আদর্শ দৈর্ঘ্য</th>
+        <th>কারণ</th>
+        <th>মান</th>
+      </tr>
+      <tr>
+        <td>YouTube Shorts</td>
+        <td>১৫–৬০ সেকেন্ড</td>
+        <td>দ্রুত গ্রোথ, নতুন দর্শক</td>
+        <td><span class="badge best">সেরা</span></td>
+      </tr>
+      <tr>
+        <td>টিউটোরিয়াল / How-to</td>
+        <td>৭–১৫ মিনিট</td>
+        <td>ওয়াচ টাইম বেশি, SEO ভালো</td>
+        <td><span class="badge best">সেরা</span></td>
+      </tr>
+      <tr>
+        <td>ভ্লগ / Lifestyle</td>
+        <td>১০–২০ মিনিট</td>
+        <td>দর্শক সংযুক্ত থাকে</td>
+        <td><span class="badge good">ভালো</span></td>
+      </tr>
+      <tr>
+        <td>রিভিউ ভিডিও</td>
+        <td>৮–১২ মিনিট</td>
+        <td>সিদ্ধান্ত নিতে সাহায্য করে</td>
+        <td><span class="badge good">ভালো</span></td>
+      </tr>
+      <tr>
+        <td>ডকুমেন্টারি / Long-form</td>
+        <td>২০–৪০ মিনিট</td>
+        <td>গভীর বিষয়ে অনেক ওয়াচ টাইম</td>
+        <td><span class="badge ok">মাঝারি</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3: TIMING ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="timing">
+  <div class="chapter-label">অধ্যায় ০৩</div>
+  <h2>⏰ কখন পোস্ট করবেন — সঠিক সময়সূচি</h2>
+  <p class="ch-desc">সঠিক সময়ে পোস্ট করলে প্রথম ঘণ্টায় বেশি ভিউ আসে, যা অ্যালগরিদমে ভিডিও বুস্ট করে।</p>
+</div>
+
+<div class="algo-box">
+  <h3 style="color:var(--red);margin-bottom:12px;font-size:1.05rem">📊 বাংলাদেশ/ভারতের জন্য সেরা পোস্টিং সময়</h3>
+  <div class="schedule-table" style="border-radius:8px">
+    <table class="schedule-table" style="width:100%;border:none">
+      <tr>
+        <th>দিন</th>
+        <th>সেরা সময় (BST)</th>
+        <th>কেন ভালো</th>
+        <th>মান</th>
+      </tr>
+      <tr>
+        <td>শুক্রবার</td>
+        <td>বিকেল ৪টা – রাত ৮টা</td>
+        <td>সাপ্তাহিক ছুটির আগে, মানুষ অ্যাক্টিভ থাকে</td>
+        <td><span class="badge best">সেরা</span></td>
+      </tr>
+      <tr>
+        <td>শনিবার</td>
+        <td>সকাল ১০টা – দুপুর ২টা</td>
+        <td>ছুটির দিন, দর্শক সময় পায়</td>
+        <td><span class="badge best">সেরা</span></td>
+      </tr>
+      <tr>
+        <td>রবিবার</td>
+        <td>বিকেল ৩টা – সন্ধ্যা ৭টা</td>
+        <td>ছুটির দিন, সন্ধ্যায় স্ক্রিন টাইম বেশি</td>
+        <td><span class="badge good">ভালো</span></td>
+      </tr>
+      <tr>
+        <td>বুধবার</td>
+        <td>সন্ধ্যা ৬টা – রাত ৯টা</td>
+        <td>সপ্তাহের মাঝে অ্যাক্টিভিটি ভালো</td>
+        <td><span class="badge good">ভালো</span></td>
+      </tr>
+      <tr>
+        <td>মঙ্গল–বৃহস্পতিবার</td>
+        <td>সন্ধ্যা ৭টা – রাত ৯টা</td>
+        <td>কাজ শেষে মানুষ YouTube দেখে</td>
+        <td><span class="badge ok">মাঝারি</span></td>
+      </tr>
+      <tr>
+        <td>সোমবার</td>
+        <td>সন্ধ্যা ৬টা – রাত ৮টা</td>
+        <td>সপ্তাহ শুরু, কম এনগেজমেন্ট</td>
+        <td><span class="badge bad">কম ভালো</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top:20px">
+  <div class="card">
+    <span class="card-icon">📅</span>
+    <h3>পোস্টিং ফ্রিকোয়েন্সি</h3>
+    <p style="margin-bottom:10px">চ্যানেলের ধরন অনুযায়ী কতটুকু পোস্ট করবেন:</p>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+      <li style="font-size:0.85rem;color:var(--text2)"><strong style="color:var(--green)">নতুন চ্যানেল:</strong> সপ্তাহে ৩–৫টি ভিডিও (Shorts সহ)</li>
+      <li style="font-size:0.85rem;color:var(--text2)"><strong style="color:var(--blue)">বড় চ্যানেল:</strong> সপ্তাহে ১–২টি লম্বা ভিডিও + ৩–৫টি Shorts</li>
+      <li style="font-size:0.85rem;color:var(--text2)"><strong style="color:var(--gold)">সর্বনিম্ন:</strong> সপ্তাহে অন্তত ১টি ভিডিও</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="card-icon">🗓️</span>
+    <h3>কন্টেন্ট ক্যালেন্ডার বানান</h3>
+    <p>প্রতি মাসের শুরুতে পুরো মাসের ভিডিওর পরিকল্পনা করুন। কোন দিন কোন বিষয়ে ভিডিও — এটি লিখে রাখুন। নিয়মিত পোস্ট করা হলো সাফল্যের সবচেয়ে বড় রহস্য। বিরতি দিলে চ্যানেল মরে যায়।</p>
+  </div>
+</div>
+
+<div class="tip-box red">
+  <span class="tip-icon">🚨</span>
+  <div class="tip-content">
+    <strong>সবচেয়ে গুরুত্বপূর্ণ নিয়ম</strong>
+    পোস্ট করার পর প্রথম ৪৮ ঘণ্টা সবচেয়ে গুরুত্বপূর্ণ। এই সময়ে যত বেশি ক্লিক, ওয়াচ টাইম ও কমেন্ট পাবেন, অ্যালগরিদম তত বেশি মানুষের কাছে ভিডিও ছড়িয়ে দেবে। তাই পোস্ট করার পরই সোশ্যাল মিডিয়ায় শেয়ার করুন।
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4: SEO ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="seo">
+  <div class="chapter-label">অধ্যায় ০৪</div>
+  <h2>🔍 YouTube SEO — সার্চে প্রথমে আসুন</h2>
+  <p class="ch-desc">YouTube হলো বিশ্বের দ্বিতীয় বড় সার্চ ইঞ্জিন। সঠিক SEO ছাড়া ভালো ভিডিওও কেউ খুঁজে পাবে না।</p>
+</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">১</div>
+    <div class="step-body">
+      <h4>কীওয়ার্ড রিসার্চ করুন</h4>
+      <p>YouTube-এর সার্চ বারে আপনার বিষয় লিখলে নিচে যে সাজেশন আসে — এগুলোই মানুষ খুঁজছে। TubeBuddy, VidIQ, বা Google Keyword Planner ব্যবহার করে কম প্রতিযোগিতা কিন্তু ভালো সার্চ ভলিউমের কীওয়ার্ড বেছে নিন।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">২</div>
+    <div class="step-body">
+      <h4>শিরোনাম (Title) অপ্টিমাইজ করুন</h4>
+      <p>শিরোনামে প্রধান কীওয়ার্ড শুরুতে রাখুন। ৬০ অক্ষরের মধ্যে রাখুন। আকর্ষণীয় এবং কৌতূহলী করুন। সংখ্যা ব্যবহার করুন: "৫টি উপায়", "২০২৫ সালের সেরা..."</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৩</div>
+    <div class="step-body">
+      <h4>বিবরণ (Description) পূর্ণ করুন</h4>
+      <p>প্রথম ২-৩ লাইনে মূল কীওয়ার্ড ব্যবহার করুন কারণ এটাই দেখা যায়। পুরো বিবরণ ৩০০-৫০০ শব্দের হলে ভালো। টাইমস্ট্যাম্প, লিংক, সোশ্যাল মিডিয়া — সব যোগ করুন।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৪</div>
+    <div class="step-body">
+      <h4>ট্যাগ ব্যবহার করুন সঠিকভাবে</h4>
+      <p>প্রথম ট্যাগে হুবহু কীওয়ার্ড দিন। তারপর দীর্ঘ কীওয়ার্ড (long-tail), তারপর সাধারণ কীওয়ার্ড। ৮-১৫টি ট্যাগ যথেষ্ট। অপ্রাসঙ্গিক ট্যাগ দিলে শাস্তি পেতে পারেন।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৫</div>
+    <div class="step-body">
+      <h4>সাবটাইটেল / ক্যাপশন যোগ করুন</h4>
+      <p>ভিডিওতে সাবটাইটেল যোগ করুন। YouTube এটি পড়ে কন্টেন্ট বোঝে এবং আরও ভালো র‍্যাংক দেয়। এছাড়া শ্রবণ প্রতিবন্ধী দর্শকরাও উপকৃত হন।</p>
+    </div>
+  </div>
+</div>
+
+<div class="formula">
+  <div class="comment"># আদর্শ ভিডিও শিরোনামের ফর্মুলা:</div>
+  [মূল কীওয়ার্ড] + [সুবিধা বা ফলাফল] + [সংখ্যা বা বছর]
+  <br><br>
+  <div class="comment"># উদাহরণ:</div>
+  ❌ ভুল: "আমার রান্নার ভিডিও"
+  ✅ সঠিক: "বাড়িতে রেস্টুরেন্টের মতো বিরিয়ানি রান্না — ৫টি সহজ ধাপ (২০২৫)"
+</div>
+
+<!-- ===== CHAPTER 5: THUMBNAIL ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="thumbnail">
+  <div class="chapter-label">অধ্যায় ০৫</div>
+  <h2>🖼️ থাম্বনেইল — ক্লিকের চাবিকাঠি</h2>
+  <p class="ch-desc">থাম্বনেইল হলো ভিডিওর মুখ। ৯০% দর্শক থাম্বনেইল দেখেই সিদ্ধান্ত নেন ভিডিও দেখবেন কিনা।</p>
+</div>
+
+<div class="grid-2">
+  <div class="card highlight">
+    <span class="card-icon">✅</span>
+    <h3>সেরা থাম্বনেইলের বৈশিষ্ট্য</h3>
+    <ul class="checklist" style="margin-top:10px">
+      <li>উজ্জ্বল, কনট্রাস্ট রঙ ব্যবহার করুন</li>
+      <li>মুখের ক্লোজ-আপ ছবি (আবেগ প্রকাশ করে)</li>
+      <li>বড় ও পড়ার মতো টেক্সট (৩-৫ শব্দ)</li>
+      <li>সাইজ: ১২৮০×৭২০ পিক্সেল (১৬:৯ রেশিও)</li>
+      <li>ফাইল সাইজ ২ MB-এর কম রাখুন</li>
+      <li>ব্র্যান্ডের রঙ ও ফন্ট একই রাখুন</li>
+      <li>মোবাইলে কেমন দেখায় চেক করুন</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="card-icon">🛠️</span>
+    <h3>থাম্বনেইল বানানোর টুলস</h3>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px">
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--text)">Canva</strong> — সহজ ড্র্যাগ-ড্রপ, বিনামূল্যে টেমপ্লেট আছে। নতুনদের জন্য সেরা।</li>
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--text)">Adobe Photoshop</strong> — প্রফেশনাল মানের থাম্বনেইল বানানো যায়।</li>
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--text)">Snapseed / PicsArt</strong> — মোবাইলে থাম্বনেইল এডিটিং।</li>
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--text)">Remove.bg</strong> — ব্যাকগ্রাউন্ড রিমুভ করতে বিনামূল্যে।</li>
+    </ul>
+  </div>
+</div>
+
+<div class="do-dont" style="margin-top:16px">
+  <div class="do-box">
+    <h4>✅ করুন</h4>
+    <ul>
+      <li>একটি থিম বজায় রাখুন সব থাম্বনেইলে</li>
+      <li>মানুষের মুখের অভিব্যক্তি দেখান</li>
+      <li>সংখ্যা ও শব্দ মিশিয়ে লিখুন</li>
+      <li>A/B টেস্টিং করুন কোনটি বেশি ক্লিক পায়</li>
+      <li>হলুদ, কমলা, লাল — উজ্জ্বল রঙ ব্যবহার করুন</li>
+    </ul>
+  </div>
+  <div class="dont-box">
+    <h4>❌ করবেন না</h4>
+    <ul>
+      <li>ক্লিকবেইট থাম্বনেইল — দর্শক হারাবেন</li>
+      <li>বেশি টেক্সট — অপঠনযোগ্য হয়</li>
+      <li>ঝাপসা বা কম রেজোলিউশনের ছবি</li>
+      <li>অটো-জেনারেটেড থাম্বনেইল ব্যবহার</li>
+      <li>প্রতিটি ভিডিওতে ভিন্ন স্টাইল</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6: SUBSCRIBERS ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="subscribers">
+  <div class="chapter-label">অধ্যায় ০৬</div>
+  <h2>👥 সাবস্ক্রাইবার ও ফলোয়ার বাড়ানো</h2>
+  <p class="ch-desc">সাবস্ক্রাইবার কিনবেন না — এটি চ্যানেল ডেড করে দেয়। আসল সাবস্ক্রাইবার জৈব (organic) উপায়ে বাড়ান।</p>
+</div>
+
+<div class="stat-blocks">
+  <div class="stat-block"><span class="big">১০০</span><span class="mid">কাস্টম URL পেতে হলে</span></div>
+  <div class="stat-block"><span class="big">৫০০</span><span class="mid">কমিউনিটি পোস্ট পেতে</span></div>
+  <div class="stat-block"><span class="big">১,০০০</span><span class="mid">মনিটাইজেশনের জন্য</span></div>
+  <div class="stat-block"><span class="big">১০,০০০</span><span class="mid">সিলভার বাটন পেতে</span></div>
+</div>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">১</div>
+    <div class="step-body">
+      <h4>CTA (Call to Action) দিন প্রতিটি ভিডিওতে</h4>
+      <p>ভিডিওর শুরুতে এবং শেষে সরাসরি বলুন "সাবস্ক্রাইব করুন"। শুধু বললেই হবে না — কেন সাবস্ক্রাইব করবেন সেটাও বলুন। "প্রতি সপ্তাহে নতুন ভিডিও পেতে বেলের বাটন টিপুন।"</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">২</div>
+    <div class="step-body">
+      <h4>End Screen এবং Card ব্যবহার করুন</h4>
+      <p>ভিডিওর শেষ ২০ সেকেন্ডে End Screen যোগ করুন। এখানে অন্য ভিডিও, প্লেলিস্ট এবং সাবস্ক্রাইব বাটন দেখানো যায়। Card ব্যবহার করে ভিডিওর মাঝেও দর্শককে অন্য কন্টেন্টে নিয়ে যান।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৩</div>
+    <div class="step-body">
+      <h4>সোশ্যাল মিডিয়ায় ক্রস-প্রমোশন</h4>
+      <p>Facebook, Instagram, TikTok, WhatsApp গ্রুপে ভিডিওর ছোট ক্লিপ শেয়ার করুন এবং YouTube চ্যানেলে পাঠান। প্রতিটি প্ল্যাটফর্মে প্রোফাইলে YouTube লিংক রাখুন।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৪</div>
+    <div class="step-body">
+      <h4>কমিউনিটি তৈরি করুন</h4>
+      <p>প্রতিটি কমেন্টের জবাব দিন। পিন করা কমেন্ট রাখুন যেখানে দর্শকদের প্রশ্ন করতে বলুন। কমিউনিটি পোস্টে পোল দিন। দর্শক যখন মূল্যবান অনুভব করেন, তখনই তারা সাবস্ক্রাইব করেন।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৫</div>
+    <div class="step-body">
+      <h4>কোলাবরেশন (Collaboration) করুন</h4>
+      <p>আপনার মতো একই নিশের অন্য YouTuber-দের সাথে কোলাব করুন। তাদের চ্যানেলের দর্শকরা আপনাকেও চিনবে। একে বলে "চ্যানেল ক্রস-পলিনেশন।" এটি সবচেয়ে দ্রুত সাবস্ক্রাইবার বাড়ানোর উপায়।</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">৬</div>
+    <div class="step-body">
+      <h4>Shorts দিয়ে নতুন দর্শক আনুন</h4>
+      <p>YouTube Shorts-এ ভিডিও আপলোড করলে নতুন দর্শকের কাছে পৌঁছানো যায়। Shorts-এর দর্শকদের লং-ফর্ম ভিডিওতে নিয়ে আসার চেষ্টা করুন। এটি সাবস্ক্রাইবার বাড়ানোর সবচেয়ে কার্যকর কৌশল এখন।</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 7: ALGORITHM ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="algorithm">
+  <div class="chapter-label">অধ্যায় ০৭</div>
+  <h2>🤖 YouTube অ্যালগরিদম বোঝুন</h2>
+  <p class="ch-desc">অ্যালগরিদম বোঝা মানে আপনি খেলার নিয়ম জানেন। নিয়ম জানলে জেতা সহজ।</p>
+</div>
+
+<div class="algo-box">
+  <h3 style="color:var(--text);margin-bottom:16px">YouTube কী দেখে ভিডিও প্রমোট করে?</h3>
+  <div class="grid-2">
+    <div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">CTR (ক্লিক-থ্রু রেট)</span><span style="font-size:0.85rem;color:var(--red)">অত্যন্ত গুরুত্বপূর্ণ</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">থাম্বনেইল দেখে কত % মানুষ ক্লিক করে। ৪-১০% CTR ভালো।</p>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">Watch Time (ওয়াচ টাইম)</span><span style="font-size:0.85rem;color:var(--red)">অত্যন্ত গুরুত্বপূর্ণ</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">কতক্ষণ দেখে। ৫০%+ ওয়াচ টাইম পাওয়া লক্ষ্য রাখুন।</p>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">Audience Retention</span><span style="font-size:0.85rem;color:var(--gold)">গুরুত্বপূর্ণ</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">দর্শক কোথায় ছেড়ে যাচ্ছে সেটি Analytics-এ দেখুন।</p>
+      </div>
+    </div>
+    <div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">Likes / Comments</span><span style="font-size:0.85rem;color:var(--gold)">গুরুত্বপূর্ণ</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">এনগেজমেন্ট সিগন্যাল। কমেন্ট লাইকের চেয়ে বেশি মূল্যবান।</p>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">Shares</span><span style="font-size:0.85rem;color:var(--blue)">মাঝারি</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,var(--blue),#79c0ff)"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">শেয়ার হলে নতুন দর্শকের কাছে পৌঁছায়।</p>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.85rem;color:var(--text3)">পোস্টিং ধারাবাহিকতা</span><span style="font-size:0.85rem;color:var(--blue)">মাঝারি</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,var(--blue),#79c0ff)"></div></div>
+        <p style="font-size:0.78rem;color:var(--text2);margin-top:2px">নিয়মিত পোস্ট করলে অ্যালগরিদম প্রাধান্য দেয়।</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tip-box green" style="margin-top:16px">
+  <span class="tip-icon">🎯</span>
+  <div class="tip-content">
+    <strong>ভিডিওর প্রথম ৩০ সেকেন্ড সবচেয়ে গুরুত্বপূর্ণ</strong>
+    ভিডিওর শুরুতেই দর্শককে ধরে রাখুন। শুরুতে বলুন "এই ভিডিওতে আপনি শিখবেন..." — এটি retention বাড়ায়। ভূমিকা দীর্ঘ করবেন না। সরাসরি মূল বিষয়ে আসুন।
+  </div>
+</div>
+
+<div class="grid-3" style="margin-top:20px">
+  <div class="card">
+    <span class="card-icon">📌</span>
+    <h3>প্লেলিস্ট তৈরি করুন</h3>
+    <p>একই বিষয়ের ভিডিও প্লেলিস্টে সাজান। দর্শক একটি দেখলে অটো-প্লেতে পরেরটি দেখে। এটি ওয়াচ টাইম ব্যাপকভাবে বাড়ায়।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">🔗</span>
+    <h3>চ্যাপ্টার যোগ করুন</h3>
+    <p>ভিডিওর Description-এ টাইমস্ট্যাম্প দিন। দর্শক সহজে প্রয়োজনীয় অংশে যেতে পারে। এটি retention উন্নত করে।</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">💬</span>
+    <h3>কমেন্ট পিন করুন</h3>
+    <p>আপলোডের সাথে সাথে নিজেই একটি প্রশ্ন কমেন্ট করে পিন করুন। দর্শক এতে উত্তর দেয় — কমেন্ট এনগেজমেন্ট বাড়ে।</p>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 8: MONETIZATION ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="monetize">
+  <div class="chapter-label">অধ্যায় ০৮</div>
+  <h2>💰 মনিটাইজেশন — আয় করুন</h2>
+  <p class="ch-desc">YouTube থেকে আয় করার অনেক উপায় আছে। AdSense শুধু একটি পথ।</p>
+</div>
+
+<div class="milestones">
+  <div class="milestone" style="--ms-color:var(--green)">
+    <span class="ms-num">YPP</span>
+    <div class="ms-title">YouTube Partner Program</div>
+    <div class="ms-desc">১,০০০ সাব + ৪,০০০ ঘণ্টা ওয়াচ টাইম (বা ১০M Shorts views) প্রয়োজন।</div>
+    <span class="ms-badge">AdSense যোগ্যতা</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--blue)">
+    <span class="ms-num">স্পনসর</span>
+    <div class="ms-title">ব্র্যান্ড ডিল</div>
+    <div class="ms-desc">১০,০০০+ সাব হলে কোম্পানিগুলো যোগাযোগ করে। নির্দিষ্ট নিশে ছোট চ্যানেলেও স্পনসর পাওয়া যায়।</div>
+    <span class="ms-badge">AdSense-এর চেয়ে বেশি আয়</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--gold)">
+    <span class="ms-num">অ্যাফিলিয়েট</span>
+    <div class="ms-title">Affiliate Marketing</div>
+    <div class="ms-desc">পণ্যের লিংক Description-এ দিন। কেউ কিনলে কমিশন পাবেন। Daraz, Amazon, Digistore24।</div>
+    <span class="ms-badge">সাব ছাড়াই আয়</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--purple)">
+    <span class="ms-num">ডিজিটাল</span>
+    <div class="ms-title">নিজের পণ্য বিক্রি</div>
+    <div class="ms-desc">কোর্স, ই-বুক, প্রিন্টেবল — নিজের ডিজিটাল পণ্য বানিয়ে বিক্রি করুন।</div>
+    <span class="ms-badge">সর্বোচ্চ লাভ</span>
+  </div>
+</div>
+
+<div class="tip-box gold">
+  <span class="tip-icon">💡</span>
+  <div class="tip-content">
+    <strong>বাংলাদেশে AdSense CPM রেট</strong>
+    বাংলাদেশ ও ভারতে AdSense CPM সাধারণত $০.৫০–$২.০০। তাই AdSense-এর উপর সম্পূর্ণ নির্ভর না করে স্পনসরশিপ ও অ্যাফিলিয়েট মার্কেটিং-এ মনোযোগ দিন। এই দুটো পথে অনেক বেশি আয় সম্ভব।
+  </div>
+</div>
+
+<!-- ===== CHAPTER 9: ANALYTICS ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="analytics">
+  <div class="chapter-label">অধ্যায় ০৯</div>
+  <h2>📊 Analytics — ডেটা দিয়ে সিদ্ধান্ত নিন</h2>
+  <p class="ch-desc">সফল YouTuber-রা অনুমানে নয়, ডেটায় কাজ করেন। YouTube Studio আপনার সেরা বন্ধু।</p>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <span class="card-icon">📈</span>
+    <h3>সবচেয়ে গুরুত্বপূর্ণ মেট্রিক্স</h3>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px">
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--red)">CTR —</strong> থাম্বনেইল ও শিরোনাম কতটা কার্যকর। ৪%+ লক্ষ্য।</li>
+      <li style="font-size:0.87rem;color:var(--text2)"><strong style="color:var(--red)">Average View Duration —</strong> গড় কতক্ষণ দেখে। যত বেশি তত ভালো।</li>
+      <li style="font-size:0.87rem;color:var(--gold)">Impressions — YouTube কতবার আপনার থাম্বনেইল দেখিয়েছে।</li>
+      <li style="font-size:0.87rem;color:var(--gold)">Traffic Source — দর্শক কোথা থেকে আসছে (সার্চ, Shorts, সুপারিশ)।</li>
+      <li style="font-size:0.87rem;color:var(--blue)">Subscriber Growth — কোন ভিডিও সবচেয়ে বেশি সাব এনেছে।</li>
+      <li style="font-size:0.87rem;color:var(--blue)">Audience Demographics — কোন বয়সের, কোন দেশের দর্শক।</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="card-icon">🔄</span>
+    <h3>সাপ্তাহিক Analytics রুটিন</h3>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <li style="font-size:0.87rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">সোমবার:</span>আগের সপ্তাহের পারফরম্যান্স রিভিউ করুন</li>
+      <li style="font-size:0.87rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">বুধবার:</span>কোন ভিডিও ভালো চলছে সেটি বিশ্লেষণ করুন</li>
+      <li style="font-size:0.87rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">শুক্রবার:</span>পরের সপ্তাহের কন্টেন্ট পরিকল্পনা করুন</li>
+      <li style="font-size:0.87rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">মাসে ১বার:</span>সার্বিক গ্রোথ ট্র্যাক করুন</li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:20px">
+  <h3 style="font-size:1rem;margin-bottom:12px;color:var(--text)">🎯 Analytics থেকে কন্টেন্ট সিদ্ধান্ত নিন</h3>
+  <div class="formula">
+    <div class="comment"># কোন ভিডিও সফল সেটি বুঝুন:</div>
+    ✅ CTR ৫%+ এবং Watch Time ৫০%+ → এই ধরনের আরও ভিডিও বানান<br>
+    ⚠️ CTR ভালো কিন্তু Watch Time কম → কন্টেন্ট উন্নত করুন<br>
+    ❌ CTR কম এবং Watch Time কম → থাম্বনেইল + শিরোনাম পরিবর্তন করুন
+  </div>
+</div>
+
+<!-- ===== CHAPTER 10: MISTAKES ===== -->
+<div class="divider"></div>
+
+<div class="chapter" id="mistakes">
+  <div class="chapter-label">অধ্যায় ১০</div>
+  <h2>❌ এই ভুলগুলো করবেন না</h2>
+  <p class="ch-desc">নতুন YouTuber-দের সবচেয়ে বড় ভুল হলো ধৈর্য হারানো। কিন্তু কিছু প্রযুক্তিগত ভুলও আছে যা চ্যানেলকে মেরে ফেলে।</p>
+</div>
+
+<div class="grid-2">
+  <div class="card highlight">
+    <span class="card-icon">🚫</span>
+    <h3>কন্টেন্ট ভুল</h3>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>ক্লিকবেইট শিরোনাম দিয়ে অন্য কন্টেন্ট দেওয়া</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>দীর্ঘ, বিরক্তিকর ভূমিকা (intro)</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>নিশ বদলে ফেলা বারবার</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>কপিরাইট ভিডিও ব্যবহার করা</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>ঝাপসা বা খারাপ অডিও মানের ভিডিও</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="card-icon">⚠️</span>
+    <h3>স্ট্র্যাটেজিক ভুল</h3>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>সাবস্ক্রাইবার কেনা — চ্যানেল ধ্বংস হয়</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>অনিয়মিত পোস্ট করা বা হঠাৎ বন্ধ করা</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>Analytics না দেখে অনুমানে কাজ করা</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>কমেন্টের জবাব না দেওয়া</li>
+      <li style="font-size:0.85rem;color:var(--text2);display:flex;gap:8px"><span style="color:var(--red);flex-shrink:0">✗</span>শুধু AdSense-এর উপর নির্ভর করা</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== GROWTH ROADMAP ===== -->
+<div class="divider"></div>
+
+<div class="chapter">
+  <div class="chapter-label">বোনাস</div>
+  <h2>🗺️ গ্রোথ রোডম্যাপ — ধাপে ধাপে</h2>
+</div>
+
+<div class="milestones">
+  <div class="milestone" style="--ms-color:#888888">
+    <span class="ms-num">মাস ১-৩</span>
+    <div class="ms-title">ভিত্তি তৈরি</div>
+    <div class="ms-desc">২০-৩০টি ভিডিও আপলোড করুন। SEO শিখুন। Analytics বুঝুন। ফলাফলের জন্য ধৈর্য ধরুন।</div>
+    <span class="ms-badge">০ → ১০০ সাবস্ক্রাইবার</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--green)">
+    <span class="ms-num">মাস ৪-৬</span>
+    <div class="ms-title">মোমেন্টাম</div>
+    <div class="ms-desc">কী কাজ করছে বুঝুন। সেই ধরনের আরও কন্টেন্ট বানান। কোলাব শুরু করুন।</div>
+    <span class="ms-badge">১০০ → ১,০০০ সাবস্ক্রাইবার</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--blue)">
+    <span class="ms-num">মাস ৬-১২</span>
+    <div class="ms-title">ত্বরণ</div>
+    <div class="ms-desc">মনিটাইজেশন শুরু। Shorts স্ট্র্যাটেজি যোগ করুন। ব্র্যান্ড ডিল খুঁজুন।</div>
+    <span class="ms-badge">১,০০০ → ১০,০০০</span>
+  </div>
+  <div class="milestone" style="--ms-color:var(--gold)">
+    <span class="ms-num">বছর ২+</span>
+    <div class="ms-title">স্কেলিং</div>
+    <div class="ms-desc">টিম তৈরি করুন। একাধিক আয়ের উৎস। কমিউনিটি মেম্বারশিপ।</div>
+    <span class="ms-badge">১০,০০০+ → লক্ষাধিক</span>
+  </div>
+</div>
+
+<!-- Final CTA -->
+<div style="text-align:center;margin-top:60px;padding:40px;background:linear-gradient(135deg,rgba(255,0,0,0.1),rgba(255,0,0,0.02));border:1px solid rgba(255,0,0,0.2);border-radius:20px">
+  <div class="yt-logo-big" style="margin:0 auto 20px"></div>
+  <h2 style="font-family:'Tiro Bangla',serif;font-size:1.8rem;font-weight:400;margin-bottom:12px">এখনই শুরু করুন!</h2>
+  <p style="color:var(--text2);max-width:500px;margin:0 auto;font-size:0.95rem">সেরা সময় হলো আজকে। কাল থেকে শুরু মানে কখনো শুরু না। প্রথম ভিডিও নিখুঁত না হলেও চলবে — শুরু করলেই উন্নতি হবে। <strong style="color:var(--text)">সাফল্য ধৈর্য ও ধারাবাহিকতার পুরস্কার।</strong></p>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:40px 0 10px;margin-top:40px;border-top:1px solid var(--border)">
+  <p style="color:var(--text2);font-size:0.82rem">YouTube চ্যানেল গ্রোথ গাইড ২০২৫ — সম্পূর্ণ বাংলায়</p>
+</div>
+
+</div><!-- /main -->
+
+<!-- Back to top -->
+<a href="#top" id="top-btn" title="উপরে যান">↑</a>
+
+<script>
+// Back to top button
+const topBtn = document.getElementById('top-btn');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) topBtn.classList.add('show');
+  else topBtn.classList.remove('show');
+});
+
+// Smooth entrance animation for cards
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.style.opacity = '1';
+      el.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card, .step, .milestone, .tip-box').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
