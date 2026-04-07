@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript & ES6 — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #09080f;
+  --bg2:      #0e0c18;
+  --bg3:      #13111f;
+  --card:     #110f1e;
+  --card2:    #18162a;
+  --border:   #211e35;
+  --border2:  #2d2848;
+
+  --y:   #f5c542;   /* yellow — JS color */
+  --y2:  #ffe082;
+  --v:   #9d6cff;   /* violet */
+  --v2:  #c4a3ff;
+  --g:   #23d18b;   /* green */
+  --r:   #ff5f7e;   /* red */
+  --b:   #38bdf8;   /* blue */
+  --o:   #fb923c;   /* orange */
+  --p:   #f472b6;   /* pink */
+
+  --text:  #ede9ff;
+  --text2: #9d97c0;
+  --text3: #5c5680;
+
+  --glow-y: 0 0 30px rgba(245,197,66,0.18);
+  --glow-v: 0 0 30px rgba(157,108,255,0.2);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.6;
+}
+
+/* ── JS logo watermark ── */
+.js-watermark {
+  position: fixed;
+  top: 50%;
+  right: -80px;
+  transform: translateY(-50%);
+  font-family: 'Syne', sans-serif;
+  font-size: 22rem;
+  font-weight: 800;
+  color: rgba(245,197,66,0.025);
+  pointer-events: none;
+  z-index: 0;
+  line-height: 1;
+  letter-spacing: -10px;
+}
+
+/* ── Gradient blobs ── */
+.blob {
+  position:fixed; border-radius:50%;
+  filter:blur(100px); pointer-events:none; z-index:0;
+}
+.blob1{width:600px;height:600px;background:rgba(245,197,66,0.05);top:-200px;left:-200px;animation:blob-drift 12s ease-in-out infinite;}
+.blob2{width:400px;height:400px;background:rgba(157,108,255,0.07);bottom:0;right:-100px;animation:blob-drift 9s ease-in-out infinite reverse;}
+.blob3{width:300px;height:300px;background:rgba(35,209,139,0.05);top:40%;left:30%;animation:blob-drift 15s ease-in-out infinite;}
+@keyframes blob-drift{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-40px);}}
+
+/* ── HERO ── */
+.hero {
+  position:relative;z-index:1;
+  padding: 90px 24px 70px;
+  text-align:center;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(245,197,66,0.04) 0%, transparent 70%);
+}
+
+.hero-pill {
+  display:inline-flex;align-items:center;gap:8px;
+  background: rgba(245,197,66,0.1);
+  border: 1px solid rgba(245,197,66,0.3);
+  color: var(--y);
+  padding: 6px 18px;
+  border-radius:999px;
+  font-size:13px;font-weight:600;
+  margin-bottom:28px;
+  letter-spacing:.8px;
+}
+
+.hero-title {
+  font-family:'Syne',sans-serif;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-2px;
+  margin-bottom:20px;
+}
+
+.hero-title .js-badge {
+  display:inline-block;
+  background: var(--y);
+  color:#000;
+  padding:2px 14px;
+  border-radius:6px;
+  font-size:.65em;
+  vertical-align:middle;
+  margin-right:10px;
+  letter-spacing:1px;
+}
+
+.hero-title .grad {
+  background: linear-gradient(135deg, var(--y) 0%, var(--v) 60%, var(--p) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-sub {
+  font-size:1.1rem;color:var(--text2);
+  max-width:620px;margin:0 auto 44px;line-height:1.7;
+}
+
+.hero-stats {
+  display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+}
+
+.stat { text-align:center; }
+.stat-n { font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--y); }
+.stat-l { font-size:.78rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px; }
+
+/* ── SIDEBAR NAV (sticky) ── */
+.layout {
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns: 240px 1fr;
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 20px;
+  gap:40px;
+}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+
+.sidebar {
+  position:sticky;
+  top:24px;
+  height:fit-content;
+  align-self:start;
+  padding: 24px 0;
+}
+
+.nav-title {
+  font-size:.7rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);margin-bottom:12px;padding:0 12px;
+}
+
+.nav-link {
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:8px;
+  color:var(--text3);text-decoration:none;
+  font-size:.85rem;transition:all .2s;
+  border-left:2px solid transparent;
+}
+
+.nav-link:hover, .nav-link.active {
+  color:var(--y);background:rgba(245,197,66,0.07);
+  border-left-color:var(--y);
+}
+
+.nav-link .dot {
+  width:6px;height:6px;border-radius:50%;
+  background:currentColor;flex-shrink:0;
+}
+
+/* ── MAIN CONTENT ── */
+.main { padding: 48px 0 100px; }
+
+/* ── Section headers ── */
+.s-head {
+  display:flex;align-items:flex-start;gap:16px;
+  margin:70px 0 28px;
+  padding-top:20px;
+}
+
+.s-icon {
+  min-width:52px;height:52px;
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
+
+.ic-y  {background:rgba(245,197,66,0.12);border:1px solid rgba(245,197,66,0.25);}
+.ic-v  {background:rgba(157,108,255,0.12);border:1px solid rgba(157,108,255,0.25);}
+.ic-g  {background:rgba(35,209,139,0.12);border:1px solid rgba(35,209,139,0.25);}
+.ic-b  {background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);}
+.ic-r  {background:rgba(255,95,126,0.12);border:1px solid rgba(255,95,126,0.25);}
+.ic-o  {background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.25);}
+.ic-p  {background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.25);}
+
+.s-title {
+  font-family:'Syne',sans-serif;
+  font-size:1.65rem;font-weight:800;
+  color:var(--text);line-height:1.2;
+}
+.s-title small {
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;font-weight:400;
+  color:var(--text3);margin-top:3px;letter-spacing:.5px;
+}
+
+/* ── Cards ── */
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  margin-bottom:20px;
+  overflow:hidden;
+  transition:border-color .25s, box-shadow .25s, transform .2s;
+}
+.card:hover{transform:translateY(-2px);}
+.card.y-card:hover{border-color:rgba(245,197,66,.3);box-shadow:var(--glow-y);}
+.card.v-card:hover{border-color:rgba(157,108,255,.35);box-shadow:var(--glow-v);}
+.card.g-card:hover{border-color:rgba(35,209,139,.3);box-shadow:0 0 28px rgba(35,209,139,.12);}
+.card.b-card:hover{border-color:rgba(56,189,248,.3);box-shadow:0 0 28px rgba(56,189,248,.12);}
+.card.r-card:hover{border-color:rgba(255,95,126,.3);}
+.card.o-card:hover{border-color:rgba(251,146,60,.3);}
+
+.card-head {
+  padding:20px 22px 16px;
+  display:flex;align-items:flex-start;gap:14px;
+  border-bottom:1px solid var(--border);
+}
+
+.c-emoji{font-size:1.9rem;flex-shrink:0;margin-top:2px;}
+.c-meta{flex:1;}
+
+.c-name {
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.1rem;font-weight:600;margin-bottom:3px;
+}
+.c-name.cy  {color:var(--y);}
+.c-name.cv  {color:var(--v2);}
+.c-name.cg  {color:var(--g);}
+.c-name.cb  {color:var(--b);}
+.c-name.cr  {color:var(--r);}
+.c-name.co  {color:var(--o);}
+.c-name.cp  {color:var(--p);}
+
+.c-sub{font-size:.85rem;color:var(--text3);font-style:italic;}
+
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.badge{font-size:10.5px;padding:3px 10px;border-radius:999px;font-weight:600;letter-spacing:.3px;}
+.b-must{background:rgba(255,95,126,.15);color:#ffb3c0;border:1px solid rgba(255,95,126,.3);}
+.b-es6 {background:rgba(245,197,66,.12);color:#ffe082;border:1px solid rgba(245,197,66,.3);}
+.b-new {background:rgba(35,209,139,.12);color:#86efac;border:1px solid rgba(35,209,139,.3);}
+.b-fw  {background:rgba(157,108,255,.12);color:#c4a3ff;border:1px solid rgba(157,108,255,.3);}
+.b-tip {background:rgba(56,189,248,.1) ;color:#7dd3fc;border:1px solid rgba(56,189,248,.25);}
+.b-adv {background:rgba(251,146,60,.12);color:#fed7aa;border:1px solid rgba(251,146,60,.3);}
+
+.card-body{padding:20px 22px;}
+
+.desc{font-size:.95rem;color:var(--text2);line-height:1.85;margin-bottom:14px;}
+
+/* ── Code block ── */
+.cb {
+  background:#060511;
+  border:1px solid var(--border2);
+  border-radius:12px;overflow:hidden;
+  margin:14px 0;
+  position:relative;
+}
+
+.cb-bar {
+  padding:9px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+  font-size:11.5px;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+}
+
+.dots{display:flex;gap:5px;margin-right:4px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;}
+.dots span:nth-child(2){background:#febc2e;}
+.dots span:nth-child(3){background:#28c840;}
+
+.cb pre {
+  padding:18px 20px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;line-height:1.9;
+  color:#8b85c0;
+  overflow-x:auto;
+}
+
+/* token colours */
+.kw  {color:#c084fc;}   /* keyword: const let var */
+.fn  {color:#60d394;}   /* function name */
+.str {color:#f5c542;opacity:.9;}  /* string */
+.num {color:#fb923c;}   /* number */
+.cm  {color:#3d3761;font-style:italic;}  /* comment */
+.cl  {color:#38bdf8;}   /* class */
+.op  {color:#e2e8f0;}   /* operator */
+.ar  {color:#f472b6;}   /* arrow */
+.obj {color:#c084fc;}   /* object key */
+
+/* ── 2-col info grid ── */
+.ig {
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;
+}
+@media(max-width:600px){.ig{grid-template-columns:1fr;}}
+
+.ib {
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;
+}
+.ib-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.ib-text{font-size:.86rem;color:var(--text2);line-height:1.6;}
+
+/* ── tip / warning boxes ── */
+.tip{border-radius:10px;padding:12px 16px;margin:12px 0;display:flex;gap:10px;font-size:.87rem;line-height:1.7;}
+.tip-y{background:rgba(245,197,66,.07);border:1px solid rgba(245,197,66,.2);color:#fde68a;}
+.tip-r{background:rgba(255,95,126,.07);border:1px solid rgba(255,95,126,.2);color:#fca5a5;}
+.tip-g{background:rgba(35,209,139,.07);border:1px solid rgba(35,209,139,.2);color:#86efac;}
+.tip-b{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);color:#93c5fd;}
+.tip-v{background:rgba(157,108,255,.07);border:1px solid rgba(157,108,255,.2);color:#c4a3ff;}
+.tip i{font-size:1.1rem;flex-shrink:0;margin-top:1px;font-style:normal;}
+
+/* ── bullet list ── */
+.ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.ul li{font-size:.88rem;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.ul li::before{content:'›';color:var(--g);flex-shrink:0;font-size:1.1rem;line-height:1.5;}
+
+/* ── comparison table ── */
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin:14px 0;}
+table{width:100%;border-collapse:collapse;font-size:.84rem;}
+thead{background:var(--bg3);}
+th{padding:11px 14px;text-align:left;color:var(--text3);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:1px;border-bottom:1px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(33,30,53,.5);color:var(--text2);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(245,197,66,.025);}
+td:first-child{font-family:'JetBrains Mono',monospace;color:var(--y);font-size:.79rem;}
+td .good{color:var(--g);}td .bad{color:var(--r);}td .ok{color:var(--o);}
+
+/* ── Framework cards ── */
+.fw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:8px;}
+
+.fw-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:14px;padding:20px;transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.fw-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--fw-glow,transparent);opacity:0;transition:opacity .3s;
+}
+.fw-card:hover::before{opacity:1;}
+.fw-card:hover{transform:translateY(-3px);}
+
+.fw-card[data-fw="react"]   {--fw-glow:linear-gradient(135deg,rgba(97,218,251,.05) 0%,transparent 60%);}
+.fw-card[data-fw="vue"]     {--fw-glow:linear-gradient(135deg,rgba(66,184,131,.06) 0%,transparent 60%);}
+.fw-card[data-fw="next"]    {--fw-glow:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);}
+.fw-card[data-fw="nuxt"]    {--fw-glow:linear-gradient(135deg,rgba(0,220,130,.06) 0%,transparent 60%);}
+.fw-card[data-fw="angular"] {--fw-glow:linear-gradient(135deg,rgba(221,0,49,.06) 0%,transparent 60%);}
+.fw-card[data-fw="svelte"]  {--fw-glow:linear-gradient(135deg,rgba(255,62,0,.06) 0%,transparent 60%);}
+.fw-card[data-fw="node"]    {--fw-glow:linear-gradient(135deg,rgba(104,159,56,.06) 0%,transparent 60%);}
+.fw-card[data-fw="express"] {--fw-glow:linear-gradient(135deg,rgba(245,197,66,.05) 0%,transparent 60%);}
+
+.fw-logo{font-size:2.2rem;margin-bottom:10px;}
+.fw-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:4px;}
+.fw-tag{font-size:.78rem;color:var(--text3);margin-bottom:10px;}
+
+.fw-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.fw-pill{font-size:.7rem;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.05);color:var(--text3);border:1px solid var(--border2);}
+
+.fw-desc{font-size:.83rem;color:var(--text2);line-height:1.6;}
+
+.fw-badge{
+  position:absolute;top:12px;right:12px;
+  font-size:.65rem;padding:2px 8px;border-radius:99px;font-weight:600;
+}
+.pop{background:rgba(245,197,66,.12);color:var(--y);border:1px solid rgba(245,197,66,.2);}
+.full{background:rgba(157,108,255,.12);color:var(--v2);border:1px solid rgba(157,108,255,.2);}
+.back{background:rgba(35,209,139,.12);color:var(--g);border:1px solid rgba(35,209,139,.2);}
+.meta{background:rgba(56,189,248,.1);color:var(--b);border:1px solid rgba(56,189,248,.2);}
+
+/* ── Concept chips ── */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.chip{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:6px 12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;color:var(--text2);transition:all .2s;cursor:default;
+}
+.chip:hover{border-color:var(--y);color:var(--y);background:rgba(245,197,66,.06);}
+
+/* ── Progress bar ── */
+.diff-bar{margin:10px 0 4px;}
+.diff-label{font-size:.78rem;color:var(--text3);margin-bottom:4px;display:flex;justify-content:space-between;}
+.bar-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.bar-easy{background:linear-gradient(90deg,var(--g),#86efac);}
+.bar-mid {background:linear-gradient(90deg,var(--y),var(--o));}
+.bar-hard{background:linear-gradient(90deg,var(--o),var(--r));}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:24px;}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--y),var(--v),var(--g));border-radius:1px;}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-dot{position:absolute;left:-21px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--y);border:2px solid var(--bg);flex-shrink:0;}
+.tl-title{font-weight:600;color:var(--y);font-size:.95rem;margin-bottom:3px;}
+.tl-body{font-size:.86rem;color:var(--text2);line-height:1.65;}
+
+/* ── divider ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:50px 0;}
+
+/* ── scroll reveal ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.on{opacity:1;transform:translateY(0);}
+
+/* ── footer ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:44px 20px;
+  border-top:1px solid var(--border);
+  color:var(--text3);font-size:.83rem;
+}
+footer strong{color:var(--y);}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(245,197,66,.3);}
+
+code{
+  font-family:'JetBrains Mono',monospace;
+  background:rgba(245,197,66,.08);border:1px solid rgba(245,197,66,.15);
+  border-radius:4px;padding:1px 6px;font-size:.83em;color:var(--y);
+}
+
+/* ── Sticky chapter nav dots ── */
+.chapter-nav{
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;z-index:100;
+}
+@media(max-width:1100px){.chapter-nav{display:none;}}
+.cn-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border2);cursor:pointer;transition:all .3s;
+  position:relative;
+}
+.cn-dot:hover,.cn-dot.on{background:var(--y);transform:scale(1.4);}
+.cn-dot::after{
+  content:attr(data-label);
+  position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--text2);font-size:.72rem;white-space:nowrap;
+  padding:4px 8px;border-radius:6px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.cn-dot:hover::after{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<div class="js-watermark">JS</div>
+
+<!-- Chapter nav dots -->
+<div class="chapter-nav" id="chapterNav"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero" id="top">
+  <div class="hero-pill">⚡ JavaScript + ES6 · বাংলায় সম্পূর্ণ গাইড</div>
+  <h1 class="hero-title">
+    <span class="js-badge">JS</span>
+    <span class="grad">JavaScript Crash Course</span>
+  </h1>
+  <p class="hero-sub">
+    মূল ভিত্তি থেকে ES6+ আধুনিক সিনট্যাক্স, Framework পরিচিতি এবং প্রতিদিনের কাজে সবচেয়ে বেশি ব্যবহৃত সব কিছু — সম্পূর্ণ বাংলায়
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">১২+</div><div class="stat-l">বিষয়</div></div>
+    <div class="stat"><div class="stat-n">ES6+</div><div class="stat-l">আধুনিক JS</div></div>
+    <div class="stat"><div class="stat-n">৮টি</div><div class="stat-l">Framework</div></div>
+    <div class="stat"><div class="stat-n">১০০%</div><div class="stat-l">বাংলায়</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ LAYOUT ═══════════════ -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="nav-title">📋 বিষয়সূচি</div>
+    <a class="nav-link" href="#basics"><span class="dot"></span>মূল ভিত্তি</a>
+    <a class="nav-link" href="#variables"><span class="dot"></span>Variable & Scope</a>
+    <a class="nav-link" href="#es6-features"><span class="dot"></span>ES6+ Features</a>
+    <a class="nav-link" href="#functions"><span class="dot"></span>Function & Arrow</a>
+    <a class="nav-link" href="#destructuring"><span class="dot"></span>Destructuring</a>
+    <a class="nav-link" href="#spread-rest"><span class="dot"></span>Spread & Rest</a>
+    <a class="nav-link" href="#async"><span class="dot"></span>Async / Promise</a>
+    <a class="nav-link" href="#array-methods"><span class="dot"></span>Array Methods</a>
+    <a class="nav-link" href="#objects"><span class="dot"></span>Object & Class</a>
+    <a class="nav-link" href="#modules"><span class="dot"></span>Modules (import/export)</a>
+    <a class="nav-link" href="#dom"><span class="dot"></span>DOM Manipulation</a>
+    <a class="nav-link" href="#common-patterns"><span class="dot"></span>Common Patterns</a>
+    <a class="nav-link" href="#frameworks"><span class="dot"></span>Framework গাইড</a>
+    <a class="nav-link" href="#tooling"><span class="dot"></span>Tools & Ecosystem</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ══ 1. BASICS ══ -->
+    <section id="basics" data-chapter="মূল ভিত্তি">
+      <div class="s-head reveal">
+        <div class="s-icon ic-y">🧱</div>
+        <div>
+          <div class="s-title">JavaScript কী এবং কীভাবে কাজ করে?<small>Basics · Runtime · Engine</small></div>
+        </div>
+      </div>
+
+      <div class="card y-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🌐</div>
+          <div class="c-meta">
+            <div class="c-name cy">JavaScript — ওয়েবের একমাত্র programming ভাষা</div>
+            <div class="c-sub">Browser + Server (Node.js) দুই জায়গাতেই চলে</div>
+            <div class="badges"><span class="badge b-must">অবশ্যই জানুন</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="desc">JavaScript হলো ব্রাউজারের ভেতরে চলার একমাত্র প্রোগ্রামিং ভাষা। HTML দিয়ে কাঠামো, CSS দিয়ে ডিজাইন, আর JavaScript দিয়ে "প্রাণ" দেওয়া হয়। Button click করলে কী হবে, ফর্ম submit করলে data কোথায় যাবে — এসব JavaScript করে।</p>
+          <div class="ig">
+            <div class="ib">
+              <div class="ib-label">🔧 কোথায় চলে</div>
+              <div class="ib-text">Browser (Chrome V8, Firefox SpiderMonkey) এবং Server (Node.js) — একই ভাষা দুই জায়গায়</div>
+            </div>
+            <div class="ib">
+              <div class="ib-label">⚡ কীভাবে চলে</div>
+              <div class="ib-text">Interpreted + JIT Compiled। Code line by line পড়ে এবং V8 engine-এ machine code-এ পরিণত হয়</div>
+            </div>
+          </div>
+          <div class="tip tip-y"><i>💡</i><span>JavaScript <strong>weakly typed</strong> ভাষা — variable-এর type runtime-এ ঠিক হয়। <code>let x = 5</code> — x পরে string-ও হতে পারে! TypeScript ব্যবহার করলে type-safe হওয়া যায়।</span></div>
+        </div>
+      </div>
+
+      <div class="card y-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">⚙️</div>
+          <div class="c-meta">
+            <div class="c-name cy">JavaScript Engine কীভাবে কাজ করে</div>
+            <div class="c-sub">Call Stack · Heap · Event Loop · Callback Queue</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="ig">
+            <div class="ib">
+              <div class="ib-label">📚 Call Stack</div>
+              <div class="ib-text">JS <strong>single-threaded</strong> — একসময়ে একটাই কাজ করে। Function call হলে stack-এ যায়, শেষ হলে বেরিয়ে আসে।</div>
+            </div>
+            <div class="ib">
+              <div class="ib-label">🔄 Event Loop</div>
+              <div class="ib-text">Stack খালি হলে Callback Queue থেকে পরের কাজ নেয়। এভাবেই Async কাজ করে।</div>
+            </div>
+            <div class="ib">
+              <div class="ib-label">🗂️ Heap</div>
+              <div class="ib-text">Object ও array-র memory এখানে থাকে (unstructured)।</div>
+            </div>
+            <div class="ib">
+              <div class="ib-label">📬 Callback Queue</div>
+              <div class="ib-text">setTimeout, fetch-এর callback এখানে অপেক্ষা করে Stack খালি হওয়ার জন্য।</div>
+            </div>
+          </div>
+          <div class="tip tip-v"><i>🧠</i><span>JS single-threaded হওয়ায় <strong>blocking code</strong> লেখা বিপজ্জনক। <code>while(true){}</code> লিখলে পুরো browser আটকে যাবে! তাই Async/Await ব্যবহার করুন।</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 2. VARIABLES ══ -->
+    <section id="variables" data-chapter="Variable">
+      <div class="s-head reveal">
+        <div class="s-icon ic-y">📦</div>
+        <div><div class="s-title">Variable, Scope ও Hoisting<small>var · let · const · scope · hoisting</small></div></div>
+      </div>
+
+      <div class="card y-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">📦</div>
+          <div class="c-meta">
+            <div class="c-name cy">var vs let vs const — পার্থক্য বোঝা</div>
+            <div class="c-sub">ES6-তে var বাদ দিয়ে let ও const এলো</div>
+            <div class="badges"><span class="badge b-must">সবচেয়ে গুরুত্বপূর্ণ</span><span class="badge b-es6">ES6</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>বৈশিষ্ট্য</th><th>var (পুরনো)</th><th>let (ES6)</th><th>const (ES6)</th></tr></thead>
+              <tbody>
+                <tr><td>Scope</td><td><span class="bad">Function scope</span></td><td><span class="good">Block scope {}</span></td><td><span class="good">Block scope {}</span></td></tr>
+                <tr><td>Re-declare করা যায়?</td><td><span class="bad">হ্যাঁ ✓ (বিপজ্জনক)</span></td><td><span class="good">না ✗</span></td><td><span class="good">না ✗</span></td></tr>
+                <tr><td>Re-assign করা যায়?</td><td><span class="ok">হ্যাঁ</span></td><td><span class="ok">হ্যাঁ</span></td><td><span class="bad">না (primitive)</span></td></tr>
+                <tr><td>Hoisting</td><td><span class="bad">undefined হয়ে হয়</span></td><td><span class="ok">হয় কিন্তু TDZ</span></td><td><span class="ok">হয় কিন্তু TDZ</span></td></tr>
+                <tr><td>ব্যবহার করুন?</td><td><span class="bad">❌ না</span></td><td><span class="good">✅ হ্যাঁ (পরিবর্তনীয়)</span></td><td><span class="good">✅ হ্যাঁ (স্থির মান)</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>variables.js</div>
+            <pre>
+<span class="cm">// ❌ পুরনো — var ব্যবহার করবেন না</span>
+<span class="kw">var</span> name <span class="op">=</span> <span class="str">"রাহিম"</span>;
+<span class="kw">var</span> name <span class="op">=</span> <span class="str">"করিম"</span>; <span class="cm">// একই নামে আবার declare — কোনো error নেই!</span>
+
+<span class="cm">// ✅ let — যে মান পরে বদলাতে হবে</span>
+<span class="kw">let</span> score <span class="op">=</span> <span class="num">0</span>;
+score <span class="op">=</span> <span class="num">10</span>;      <span class="cm">// ঠিক আছে</span>
+<span class="cm">// let score = 20; // ❌ Error: Already declared</span>
+
+<span class="cm">// ✅ const — যে মান কখনো বদলাবে না</span>
+<span class="kw">const</span> PI <span class="op">=</span> <span class="num">3.14159</span>;
+<span class="cm">// PI = 3; // ❌ TypeError: Assignment to constant</span>
+
+<span class="cm">// ⚠️ const object-এর property বদলানো যায়!</span>
+<span class="kw">const</span> user <span class="op">=</span> { name: <span class="str">"আলী"</span>, age: <span class="num">25</span> };
+user.age <span class="op">=</span> <span class="num">26</span>; <span class="cm">// ✅ এটা কাজ করে (object reference অপরিবর্তিত)</span>
+<span class="cm">// user = {}; // ❌ কিন্তু এটা হবে না</span>
+
+<span class="cm">// Block Scope দেখুন</span>
+{
+  <span class="kw">let</span> blockVar <span class="op">=</span> <span class="str">"শুধু এই block-এ আছি"</span>;
+}
+<span class="cm">// console.log(blockVar); // ❌ ReferenceError</span>
+</pre>
+          </div>
+          <div class="tip tip-r"><i>🚨</i><span><strong>Hoisting:</strong> <code>var</code> declaration উপরে উঠে যায় কিন্তু value undefined থাকে — এটাই সবচেয়ে বড় bug-এর কারণ। <code>let</code>/<code>const</code>-এ Temporal Dead Zone (TDZ) আছে — declare-এর আগে access করলে ReferenceError।</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 3. ES6 FEATURES ══ -->
+    <section id="es6-features" data-chapter="ES6+">
+      <div class="s-head reveal">
+        <div class="s-icon ic-v">✨</div>
+        <div><div class="s-title">ES6+ এর সেরা Features<small>Template Literals · Optional Chaining · Nullish Coalescing</small></div></div>
+      </div>
+
+      <div class="card v-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">📝</div>
+          <div class="c-meta">
+            <div class="c-name cv">Template Literals (Template Strings)</div>
+            <div class="c-sub">Backtick ব্যবহার করে string-এ variable ঢোকানো</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">সবসময় ব্যবহার করুন</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="desc">পুরনো পদ্ধতিতে string জোড়া দিতে <code>+</code> ব্যবহার করতে হতো। Template Literal দিয়ে backtick (<code>`</code>) ও <code>${}</code> ব্যবহার করে অনেক সহজে লেখা যায়।</p>
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>template-literals.js</div>
+            <pre>
+<span class="kw">const</span> name <span class="op">=</span> <span class="str">"সাকিব"</span>;
+<span class="kw">const</span> age  <span class="op">=</span> <span class="num">28</span>;
+
+<span class="cm">// ❌ পুরনো পদ্ধতি</span>
+<span class="kw">const</span> msg1 <span class="op">=</span> <span class="str">"আমার নাম "</span> <span class="op">+</span> name <span class="op">+</span> <span class="str">", বয়স "</span> <span class="op">+</span> age <span class="op">+</span> <span class="str">" বছর"</span>;
+
+<span class="cm">// ✅ Template Literal — অনেক সহজ!</span>
+<span class="kw">const</span> msg2 <span class="op">=</span> <span class="str">`আমার নাম ${name}, বয়স ${age} বছর`</span>;
+
+<span class="cm">// Expression-ও লেখা যায়!</span>
+<span class="kw">const</span> price <span class="op">=</span> <span class="num">500</span>;
+<span class="kw">const</span> vat   <span class="op">=</span> <span class="str">`মোট: ৳${price <span class="op">*</span> <span class="num">1.15</span>} (ভ্যাটসহ)`</span>;
+
+<span class="cm">// Multi-line string (সরাসরি লেখা যায়!)</span>
+<span class="kw">const</span> html <span class="op">=</span> <span class="str">`
+  &lt;div class="card"&gt;
+    &lt;h2&gt;${name}&lt;/h2&gt;
+    &lt;p&gt;বয়স: ${age}&lt;/p&gt;
+  &lt;/div&gt;
+`</span>;
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card v-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🔗</div>
+          <div class="c-meta">
+            <div class="c-name cv">Optional Chaining (?.) ও Nullish Coalescing (??)</div>
+            <div class="c-sub">undefined/null error থেকে মুক্তি</div>
+            <div class="badges"><span class="badge b-es6">ES2020</span><span class="badge b-must">প্রতিদিন লাগে</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>optional-chaining.js</div>
+            <pre>
+<span class="kw">const</span> user <span class="op">=</span> {
+  name: <span class="str">"তানিয়া"</span>,
+  address: {
+    city: <span class="str">"ঢাকা"</span>
+  }
+};
+
+<span class="cm">// ❌ পুরনো — crash করবে যদি address না থাকে</span>
+<span class="kw">const</span> zip1 <span class="op">=</span> user.address.zip; <span class="cm">// undefined (ঠিক আছে এক্ষেত্রে)</span>
+<span class="kw">const</span> ph1  <span class="op">=</span> user.phone.home;  <span class="cm">// 💥 TypeError: Cannot read 'home'</span>
+
+<span class="cm">// ✅ Optional Chaining (?.) — crash করবে না, undefined দেবে</span>
+<span class="kw">const</span> ph2  <span class="op">=</span> user<span class="op">?.</span>phone<span class="op">?.</span>home;      <span class="cm">// undefined ✅</span>
+<span class="kw">const</span> city <span class="op">=</span> user<span class="op">?.</span>address<span class="op">?.</span>city;   <span class="cm">// "ঢাকা"</span>
+
+<span class="cm">// ✅ Nullish Coalescing (??) — null/undefined হলে default দেও</span>
+<span class="kw">const</span> phone <span class="op">=</span> user<span class="op">?.</span>phone <span class="op">??</span> <span class="str">"নম্বর নেই"</span>;  <span class="cm">// "নম্বর নেই"</span>
+<span class="kw">const</span> name  <span class="op">=</span> user<span class="op">?.</span>name  <span class="op">??</span> <span class="str">"অজ্ঞাত"</span>;      <span class="cm">// "তানিয়া"</span>
+
+<span class="cm">// ?? vs || পার্থক্য (গুরুত্বপূর্ণ!)</span>
+<span class="kw">const</span> count <span class="op">=</span> <span class="num">0</span>;
+console.log(count <span class="op">||</span> <span class="str">"default"</span>);  <span class="cm">// "default" ← 0 falsy তাই!</span>
+console.log(count <span class="op">??</span> <span class="str">"default"</span>);  <span class="cm">// 0 ← শুধু null/undefined-এ default দেয়</span>
+</pre>
+          </div>
+          <div class="tip tip-g"><i>✅</i><span><code>??</code> শুধু <code>null</code> ও <code>undefined</code>-এর ক্ষেত্রে default দেয়। কিন্তু <code>||</code> সব falsy মান (0, "", false)-এর ক্ষেত্রে default দেয়। টাকার পরিমাণ বা সংখ্যা নিয়ে কাজ করলে সবসময় <code>??</code> ব্যবহার করুন।</span></div>
+        </div>
+      </div>
+
+      <div class="card v-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🔁</div>
+          <div class="c-meta">
+            <div class="c-name cv">for...of ও for...in</div>
+            <div class="c-sub">Array ও Object loop করার আধুনিক পদ্ধতি</div>
+            <div class="badges"><span class="badge b-es6">ES6</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>loops.js</div>
+            <pre>
+<span class="kw">const</span> fruits <span class="op">=</span> [<span class="str">"আম"</span>, <span class="str">"কাঁঠাল"</span>, <span class="str">"লিচু"</span>];
+
+<span class="cm">// for...of — Array-র প্রতিটি value</span>
+<span class="kw">for</span> (<span class="kw">const</span> fruit <span class="kw">of</span> fruits) {
+  console.log(fruit); <span class="cm">// আম, কাঁঠাল, লিচু</span>
+}
+
+<span class="cm">// for...in — Object-র প্রতিটি key</span>
+<span class="kw">const</span> person <span class="op">=</span> { name: <span class="str">"রিমা"</span>, age: <span class="num">22</span>, city: <span class="str">"চট্টগ্রাম"</span> };
+<span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">in</span> person) {
+  console.log(<span class="str">`${key}: ${person[key]}`</span>); <span class="cm">// name: রিমা, age: 22...</span>
+}
+
+<span class="cm">// forEach — Array-র সাথে সবচেয়ে বেশি ব্যবহার</span>
+fruits.forEach((fruit, index) <span class="ar">=&gt;</span> {
+  console.log(<span class="str">`${index + 1}. ${fruit}`</span>);
+});
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 4. FUNCTIONS ══ -->
+    <section id="functions" data-chapter="Functions">
+      <div class="s-head reveal">
+        <div class="s-icon ic-g">⚡</div>
+        <div><div class="s-title">Function ও Arrow Function<small>declaration · expression · arrow · default params · IIFE</small></div></div>
+      </div>
+
+      <div class="card g-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🏹</div>
+          <div class="c-meta">
+            <div class="c-name cg">Arrow Function ( => )</div>
+            <div class="c-sub">ES6-এর সবচেয়ে জনপ্রিয় সংযোজন</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">প্রতিদিন ব্যবহার</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="desc">Arrow function হলো function লেখার সংক্ষিপ্ত রূপ। কিন্তু শুধু ছোট নয় — <code>this</code> binding-ও আলাদা।</p>
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>arrow-functions.js</div>
+            <pre>
+<span class="cm">// ১. সাধারণ function</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) {
+  <span class="kw">return</span> a <span class="op">+</span> b;
+}
+
+<span class="cm">// ২. Arrow function (একই কাজ)</span>
+<span class="kw">const</span> <span class="fn">add</span> <span class="op">=</span> (a, b) <span class="ar">=&gt;</span> {
+  <span class="kw">return</span> a <span class="op">+</span> b;
+};
+
+<span class="cm">// ৩. Single expression — return ও {} বাদ দেওয়া যায়</span>
+<span class="kw">const</span> <span class="fn">add</span> <span class="op">=</span> (a, b) <span class="ar">=&gt;</span> a <span class="op">+</span> b;
+
+<span class="cm">// ৪. একটাই parameter — () বাদ দেওয়া যায়</span>
+<span class="kw">const</span> <span class="fn">double</span> <span class="op">=</span> n <span class="ar">=&gt;</span> n <span class="op">*</span> <span class="num">2</span>;
+
+<span class="cm">// ৫. Parameter নেই</span>
+<span class="kw">const</span> <span class="fn">greet</span> <span class="op">=</span> () <span class="ar">=&gt;</span> <span class="str">"আস-সালামু আলাইকুম!"</span>;
+
+<span class="cm">// ৬. Object return করতে () দিতে হবে</span>
+<span class="kw">const</span> <span class="fn">getUser</span> <span class="op">=</span> (name) <span class="ar">=&gt;</span> ({ name, role: <span class="str">"admin"</span> });
+
+<span class="cm">// Default Parameter — ES6</span>
+<span class="kw">const</span> <span class="fn">greetUser</span> <span class="op">=</span> (name <span class="op">=</span> <span class="str">"বন্ধু"</span>) <span class="ar">=&gt;</span> <span class="str">`স্বাগতম, ${name}!`</span>;
+<span class="fn">greetUser</span>();           <span class="cm">// "স্বাগতম, বন্ধু!"</span>
+<span class="fn">greetUser</span>(<span class="str">"মিম"</span>);    <span class="cm">// "স্বাগতম, মিম!"</span>
+</pre>
+          </div>
+          <div class="tip tip-r"><i>⚠️</i><span>Arrow function-এর নিজের <code>this</code> নেই! Parent scope-এর <code>this</code> inherit করে। তাই Object method ও Event Listener-এ সাবধানে ব্যবহার করুন।</span></div>
+        </div>
+      </div>
+
+      <div class="card g-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🎭</div>
+          <div class="c-meta">
+            <div class="c-name cg">Higher Order Function ও Closure</div>
+            <div class="c-sub">function-এর ভেতরে function — JavaScript-এর শক্তি</div>
+            <div class="badges"><span class="badge b-adv">গুরুত্বপূর্ণ concept</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>closure.js</div>
+            <pre>
+<span class="cm">// Higher Order Function — function নিতে বা return করতে পারে</span>
+<span class="kw">function</span> <span class="fn">applyDiscount</span>(discountFn) {
+  <span class="kw">return</span> (price) <span class="ar">=&gt;</span> discountFn(price);
+}
+<span class="kw">const</span> tenPercent <span class="op">=</span> price <span class="ar">=&gt;</span> price <span class="op">*</span> <span class="num">0.9</span>;
+<span class="kw">const</span> applyTen   <span class="op">=</span> <span class="fn">applyDiscount</span>(tenPercent);
+console.log(<span class="fn">applyTen</span>(<span class="num">1000</span>)); <span class="cm">// 900</span>
+
+<span class="cm">// Closure — inner function বাইরের variable মনে রাখে</span>
+<span class="kw">function</span> <span class="fn">counter</span>() {
+  <span class="kw">let</span> count <span class="op">=</span> <span class="num">0</span>;         <span class="cm">// এই variable বাইরে দেখা যায় না</span>
+  <span class="kw">return</span> {
+    increment: () <span class="ar">=&gt;</span> <span class="op">++</span>count,
+    decrement: () <span class="ar">=&gt;</span> <span class="op">--</span>count,
+    value:     () <span class="ar">=&gt;</span> count,
+  };
+}
+<span class="kw">const</span> c <span class="op">=</span> <span class="fn">counter</span>();
+c.increment(); c.increment();
+console.log(c.value()); <span class="cm">// 2</span>
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 5. DESTRUCTURING ══ -->
+    <section id="destructuring" data-chapter="Destructuring">
+      <div class="s-head reveal">
+        <div class="s-icon ic-b">🎯</div>
+        <div><div class="s-title">Destructuring<small>Array · Object · Nested · Alias · Default</small></div></div>
+      </div>
+
+      <div class="card b-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🎯</div>
+          <div class="c-meta">
+            <div class="c-name cb">Destructuring — Array ও Object থেকে সহজে data বের করা</div>
+            <div class="c-sub">প্রতিদিনের React, API response কাজে অপরিহার্য</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">React-এ প্রতিদিন</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>destructuring.js</div>
+            <pre>
+<span class="cm">// ━━ ARRAY DESTRUCTURING ━━</span>
+<span class="kw">const</span> colors <span class="op">=</span> [<span class="str">"লাল"</span>, <span class="str">"সবুজ"</span>, <span class="str">"নীল"</span>];
+
+<span class="cm">// ❌ পুরনো পদ্ধতি</span>
+<span class="kw">const</span> first  <span class="op">=</span> colors[<span class="num">0</span>];
+<span class="kw">const</span> second <span class="op">=</span> colors[<span class="num">1</span>];
+
+<span class="cm">// ✅ Destructuring</span>
+<span class="kw">const</span> [first, second, third] <span class="op">=</span> colors;
+
+<span class="cm">// Skip করা যায়</span>
+<span class="kw">const</span> [, , blue] <span class="op">=</span> colors;  <span class="cm">// শুধু "নীল"</span>
+
+<span class="cm">// Default value</span>
+<span class="kw">const</span> [a, b, c, d <span class="op">=</span> <span class="str">"বেগুনি"</span>] <span class="op">=</span> colors;
+
+<span class="cm">// Variable swap (সহজে!)</span>
+<span class="kw">let</span> x <span class="op">=</span> <span class="num">1</span>, y <span class="op">=</span> <span class="num">2</span>;
+[x, y] <span class="op">=</span> [y, x]; <span class="cm">// x=2, y=1</span>
+
+<span class="cm">// ━━ OBJECT DESTRUCTURING ━━</span>
+<span class="kw">const</span> student <span class="op">=</span> {
+  name: <span class="str">"নাফিসা"</span>, age: <span class="num">20</span>,
+  dept: <span class="str">"CSE"</span>, gpa: <span class="num">3.8</span>
+};
+
+<span class="cm">// ✅ Object Destructuring</span>
+<span class="kw">const</span> { name, age, dept } <span class="op">=</span> student;
+
+<span class="cm">// Alias (নতুন নামে নেওয়া)</span>
+<span class="kw">const</span> { name: studentName, gpa: cgpa } <span class="op">=</span> student;
+
+<span class="cm">// Default value</span>
+<span class="kw">const</span> { name: n, roll <span class="op">=</span> <span class="str">"N/A"</span> } <span class="op">=</span> student;
+
+<span class="cm">// Nested Destructuring</span>
+<span class="kw">const</span> { address: { city, zip } } <span class="op">=</span> {
+  address: { city: <span class="str">"ঢাকা"</span>, zip: <span class="str">"1207"</span> }
+};
+
+<span class="cm">// Function parameter-এ destructuring (React-এ props এভাবেই নেওয়া হয়)</span>
+<span class="kw">const</span> <span class="fn">UserCard</span> <span class="op">=</span> ({ name, age, dept <span class="op">=</span> <span class="str">"Unknown"</span> }) <span class="ar">=&gt;</span> {
+  console.log(<span class="str">`${name}, ${age}, ${dept}`</span>);
+};
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 6. SPREAD & REST ══ -->
+    <section id="spread-rest" data-chapter="Spread & Rest">
+      <div class="s-head reveal">
+        <div class="s-icon ic-o">🌊</div>
+        <div><div class="s-title">Spread (...) ও Rest (...) Operator<small>copy · merge · gather</small></div></div>
+      </div>
+
+      <div class="card o-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🌊</div>
+          <div class="c-meta">
+            <div class="c-name co">Spread ও Rest — তিনটি বিন্দু (...)...</div>
+            <div class="c-sub">দেখতে একই, কাজ ভিন্ন — context বুঝে ব্যবহার করুন</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">React state-এ প্রতিদিন</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>spread-rest.js</div>
+            <pre>
+<span class="cm">// ━━ SPREAD — ছড়িয়ে দেওয়া ━━</span>
+
+<span class="cm">// Array copy (deep নয়, shallow)</span>
+<span class="kw">const</span> arr1 <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>];
+<span class="kw">const</span> arr2 <span class="op">=</span> [...arr1];         <span class="cm">// নতুন copy</span>
+<span class="kw">const</span> arr3 <span class="op">=</span> [...arr1, <span class="num">4</span>, <span class="num">5</span>];  <span class="cm">// merge করা</span>
+
+<span class="cm">// Object copy ও merge</span>
+<span class="kw">const</span> defaults <span class="op">=</span> { theme: <span class="str">"dark"</span>, lang: <span class="str">"bn"</span> };
+<span class="kw">const</span> userPref  <span class="op">=</span> { lang: <span class="str">"en"</span>, fontSize: <span class="num">16</span> };
+
+<span class="cm">// merge — পরেরটা আগেরটাকে override করে</span>
+<span class="kw">const</span> settings <span class="op">=</span> { ...defaults, ...userPref };
+<span class="cm">// { theme: "dark", lang: "en", fontSize: 16 }</span>
+
+<span class="cm">// React state update এভাবেই হয়</span>
+<span class="kw">const</span> <span class="fn">updateUser</span> <span class="op">=</span> (prev, changes) <span class="ar">=&gt;</span> ({ ...prev, ...changes });
+
+<span class="cm">// Function call-এ array spread</span>
+<span class="kw">const</span> nums <span class="op">=</span> [<span class="num">5</span>, <span class="num">3</span>, <span class="num">8</span>, <span class="num">1</span>];
+console.log(Math.max(...nums)); <span class="cm">// 8</span>
+
+<span class="cm">// ━━ REST — গুছিয়ে নেওয়া ━━</span>
+
+<span class="cm">// Function-এ যেকোনো সংখ্যক argument</span>
+<span class="kw">const</span> <span class="fn">sum</span> <span class="op">=</span> (...numbers) <span class="ar">=&gt;</span>
+  numbers.reduce((acc, n) <span class="ar">=&gt;</span> acc <span class="op">+</span> n, <span class="num">0</span>);
+
+<span class="fn">sum</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>); <span class="cm">// 15</span>
+
+<span class="cm">// Destructuring-এ বাকিগুলো নেওয়া</span>
+<span class="kw">const</span> [head, ...tail] <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>];
+<span class="cm">// head = 10, tail = [20, 30, 40]</span>
+
+<span class="kw">const</span> { name, ...rest } <span class="op">=</span> { name: <span class="str">"আরিফ"</span>, age: <span class="num">25</span>, city: <span class="str">"ময়মনসিংহ"</span> };
+<span class="cm">// name = "আরিফ", rest = { age: 25, city: "ময়মনসিংহ" }</span>
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 7. ASYNC ══ -->
+    <section id="async" data-chapter="Async / Await">
+      <div class="s-head reveal">
+        <div class="s-icon ic-r">⏳</div>
+        <div><div class="s-title">Async Programming — Promise ও Async/Await<small>callback · promise · async/await · fetch · error handling</small></div></div>
+      </div>
+
+      <div class="card r-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🤝</div>
+          <div class="c-meta">
+            <div class="c-name cr">Promise — ভবিষ্যতের মান</div>
+            <div class="c-sub">Callback Hell থেকে মুক্তি দিয়েছে Promise</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">API call-এ অবশ্যই</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="desc">JavaScript single-threaded হওয়ায় server থেকে data আনা, ফাইল পড়া — এসব কাজ Async। Promise হলো "আমি কাজটা করব, শেষ হলে result দেব" — এই চুক্তি।</p>
+          <div class="ig">
+            <div class="ib">
+              <div class="ib-label">✅ pending → fulfilled</div>
+              <div class="ib-text">কাজ সফল হলে <code>.then()</code> চলে। result পাওয়া যায়।</div>
+            </div>
+            <div class="ib">
+              <div class="ib-label">❌ pending → rejected</div>
+              <div class="ib-text">কাজ ব্যর্থ হলে <code>.catch()</code> চলে। error পাওয়া যায়।</div>
+            </div>
+          </div>
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>async-await.js</div>
+            <pre>
+<span class="cm">// ━━ Promise Chain ━━</span>
+fetch(<span class="str">"https://api.example.com/users"</span>)
+  .then(response <span class="ar">=&gt;</span> response.json())
+  .then(data <span class="ar">=&gt;</span> console.log(data))
+  .catch(err <span class="ar">=&gt;</span> console.error(<span class="str">"Error:"</span>, err))
+  .finally(() <span class="ar">=&gt;</span> console.log(<span class="str">"শেষ হয়েছে"</span>));
+
+<span class="cm">// ━━ Async/Await — অনেক সহজ (সবচেয়ে আধুনিক পদ্ধতি) ━━</span>
+<span class="kw">const</span> <span class="fn">fetchUsers</span> <span class="op">=</span> <span class="kw">async</span> () <span class="ar">=&gt;</span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> response <span class="op">=</span> <span class="kw">await</span> fetch(<span class="str">"https://api.example.com/users"</span>);
+
+    <span class="kw">if</span> (!response.ok) {
+      <span class="kw">throw new</span> Error(<span class="str">`HTTP error: ${response.status}`</span>);
+    }
+
+    <span class="kw">const</span> data <span class="op">=</span> <span class="kw">await</span> response.json();
+    console.log(data);
+    <span class="kw">return</span> data;
+
+  } <span class="kw">catch</span> (error) {
+    console.error(<span class="str">"কিছু একটা ভুল হয়েছে:"</span>, error.message);
+  }
+};
+
+<span class="cm">// ━━ Parallel — একসাথে অনেক request ━━</span>
+<span class="kw">const</span> <span class="fn">loadAll</span> <span class="op">=</span> <span class="kw">async</span> () <span class="ar">=&gt;</span> {
+  <span class="kw">const</span> [users, posts, comments] <span class="op">=</span> <span class="kw">await</span> Promise.all([
+    fetch(<span class="str">"/api/users"</span>).then(r <span class="ar">=&gt;</span> r.json()),
+    fetch(<span class="str">"/api/posts"</span>).then(r <span class="ar">=&gt;</span> r.json()),
+    fetch(<span class="str">"/api/comments"</span>).then(r <span class="ar">=&gt;</span> r.json()),
+  ]);
+  <span class="cm">// তিনটা একসাথে চলে — দ্রুত!</span>
+};
+</pre>
+          </div>
+          <div class="tip tip-b"><i>💡</i><span><code>Promise.all()</code> সব শেষ হওয়া পর্যন্ত অপেক্ষা করে। একটাও fail করলে সবই fail। আলাদা আলাদা result চাইলে <code>Promise.allSettled()</code> ব্যবহার করুন।</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 8. ARRAY METHODS ══ -->
+    <section id="array-methods" data-chapter="Array Methods">
+      <div class="s-head reveal">
+        <div class="s-icon ic-g">🔧</div>
+        <div><div class="s-title">Array Methods — সবচেয়ে বেশি ব্যবহৃত<small>map · filter · reduce · find · some · every · flat</small></div></div>
+      </div>
+
+      <div class="card g-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🗺️</div>
+          <div class="c-meta">
+            <div class="c-name cg">map, filter, reduce — Functional Array Methods</div>
+            <div class="c-sub">Original array পরিবর্তন না করে নতুন array তৈরি</div>
+            <div class="badges"><span class="badge b-must">সবচেয়ে বেশি ব্যবহার</span><span class="badge b-fw">React JSX-এ অবশ্যই</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>array-methods.js</div>
+            <pre>
+<span class="kw">const</span> products <span class="op">=</span> [
+  { name: <span class="str">"শার্ট"</span>,   price: <span class="num">500</span>,  inStock: <span class="kw">true</span>  },
+  { name: <span class="str">"প্যান্ট"</span>, price: <span class="num">1200</span>, inStock: <span class="kw">false</span> },
+  { name: <span class="str">"জুতা"</span>,   price: <span class="num">2500</span>, inStock: <span class="kw">true</span>  },
+  { name: <span class="str">"ব্যাগ"</span>,   price: <span class="num">800</span>,  inStock: <span class="kw">true</span>  },
+];
+
+<span class="cm">// ━━ map — প্রতিটি element রূপান্তর করে নতুন array ━━</span>
+<span class="kw">const</span> names  <span class="op">=</span> products.map(p <span class="ar">=&gt;</span> p.name);
+<span class="cm">// ["শার্ট", "প্যান্ট", "জুতা", "ব্যাগ"]</span>
+
+<span class="kw">const</span> withVat <span class="op">=</span> products.map(p <span class="ar">=&gt;</span> ({
+  ...p, price: p.price <span class="op">*</span> <span class="num">1.15</span>
+})); <span class="cm">// ভ্যাটসহ নতুন array</span>
+
+<span class="cm">// ━━ filter — শর্ত মেনে চলে এমন element রাখে ━━</span>
+<span class="kw">const</span> available <span class="op">=</span> products.filter(p <span class="ar">=&gt;</span> p.inStock);
+<span class="kw">const</span> affordable <span class="op">=</span> products.filter(p <span class="ar">=&gt;</span> p.price <span class="op">&lt;</span> <span class="num">1000</span>);
+
+<span class="cm">// ━━ reduce — সব element একটা মানে নিয়ে আসে ━━</span>
+<span class="kw">const</span> totalPrice <span class="op">=</span> products.reduce(
+  (sum, p) <span class="ar">=&gt;</span> sum <span class="op">+</span> p.price, <span class="num">0</span>
+); <span class="cm">// 5000</span>
+
+<span class="cm">// ━━ find — প্রথম match করা element ━━</span>
+<span class="kw">const</span> shoe <span class="op">=</span> products.find(p <span class="ar">=&gt;</span> p.name <span class="op">===</span> <span class="str">"জুতা"</span>);
+
+<span class="cm">// ━━ some / every ━━</span>
+<span class="kw">const</span> anyAvailable  <span class="op">=</span> products.some(p <span class="ar">=&gt;</span> p.inStock);   <span class="cm">// true</span>
+<span class="kw">const</span> allAvailable  <span class="op">=</span> products.every(p <span class="ar">=&gt;</span> p.inStock);  <span class="cm">// false</span>
+
+<span class="cm">// ━━ Chaining — একসাথে অনেক method ━━</span>
+<span class="kw">const</span> result <span class="op">=</span> products
+  .filter(p <span class="ar">=&gt;</span> p.inStock)           <span class="cm">// available পণ্য</span>
+  .map(p <span class="ar">=&gt;</span> ({ ...p, price: p.price <span class="op">*</span> <span class="num">0.9</span> }))  <span class="cm">// 10% ছাড়</span>
+  .sort((a, b) <span class="ar">=&gt;</span> a.price <span class="op">-</span> b.price);  <span class="cm">// দাম অনুযায়ী sort</span>
+</pre>
+          </div>
+          <div class="tbl-wrap" style="margin-top:14px">
+            <table>
+              <thead><tr><th>Method</th><th>Returns</th><th>Original পরিবর্তন?</th><th>কী কাজ</th></tr></thead>
+              <tbody>
+                <tr><td>map()</td><td>নতুন Array</td><td><span class="good">না</span></td><td>প্রতিটি element transform করে</td></tr>
+                <tr><td>filter()</td><td>নতুন Array</td><td><span class="good">না</span></td><td>শর্ত মেনে চলা element রাখে</td></tr>
+                <tr><td>reduce()</td><td>যেকোনো মান</td><td><span class="good">না</span></td><td>সব element মিলিয়ে একটা মান</td></tr>
+                <tr><td>find()</td><td>Element বা undefined</td><td><span class="good">না</span></td><td>প্রথম match করা element</td></tr>
+                <tr><td>findIndex()</td><td>Index বা -1</td><td><span class="good">না</span></td><td>প্রথম match করা element-এর index</td></tr>
+                <tr><td>some()</td><td>Boolean</td><td><span class="good">না</span></td><td>যেকোনো একটা শর্ত মানে?</td></tr>
+                <tr><td>every()</td><td>Boolean</td><td><span class="good">না</span></td><td>সবাই শর্ত মানে?</td></tr>
+                <tr><td>flat()</td><td>নতুন Array</td><td><span class="good">না</span></td><td>Nested array সমতল করে</td></tr>
+                <tr><td>includes()</td><td>Boolean</td><td><span class="good">না</span></td><td>কোনো value আছে কিনা</td></tr>
+                <tr><td>splice()</td><td>Removed items</td><td><span class="bad">হ্যাঁ</span></td><td>Element add/remove করে</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 9. OBJECTS & CLASS ══ -->
+    <section id="objects" data-chapter="Object & Class">
+      <div class="s-head reveal">
+        <div class="s-icon ic-v">🏛️</div>
+        <div><div class="s-title">Object ও Class — ES6 OOP<small>shorthand · computed · class · inheritance · static</small></div></div>
+      </div>
+
+      <div class="card v-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🏛️</div>
+          <div class="c-meta">
+            <div class="c-name cv">ES6 Class ও Object Shorthand</div>
+            <div class="c-sub">OOP লেখার আধুনিক পদ্ধতি</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-adv">OOP Concept</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>class-oop.js</div>
+            <pre>
+<span class="cm">// Object Shorthand</span>
+<span class="kw">const</span> name <span class="op">=</span> <span class="str">"কমল"</span>, age <span class="op">=</span> <span class="num">30</span>;
+<span class="cm">// ❌ পুরনো: { name: name, age: age }</span>
+<span class="kw">const</span> user <span class="op">=</span> { name, age }; <span class="cm">// ✅ shorthand</span>
+
+<span class="cm">// Method shorthand</span>
+<span class="kw">const</span> obj <span class="op">=</span> {
+  <span class="cm">// ❌ পুরনো: greet: function() {}</span>
+  <span class="fn">greet</span>() { <span class="kw">return</span> <span class="str">"হ্যালো!"</span>; }
+};
+
+<span class="cm">// Computed property name</span>
+<span class="kw">const</span> key <span class="op">=</span> <span class="str">"dynamicKey"</span>;
+<span class="kw">const</span> data <span class="op">=</span> { [key]: <span class="str">"value"</span> }; <span class="cm">// { dynamicKey: "value" }</span>
+
+<span class="cm">// ━━ CLASS ━━</span>
+<span class="kw">class</span> <span class="cl">Animal</span> {
+  <span class="cm">// Private field (ES2022) — বাইরে access নেই</span>
+  #name;
+
+  <span class="fn">constructor</span>(name, sound) {
+    <span class="kw">this</span>.#name <span class="op">=</span> name;
+    <span class="kw">this</span>.sound <span class="op">=</span> sound;
+  }
+
+  <span class="fn">speak</span>() {
+    <span class="kw">return</span> <span class="str">`${this.#name} বলে: ${this.sound}!`</span>;
+  }
+
+  <span class="kw">get</span> <span class="fn">name</span>() { <span class="kw">return</span> <span class="kw">this</span>.#name; }
+
+  <span class="kw">static</span> <span class="fn">create</span>(name, sound) {
+    <span class="kw">return new</span> <span class="cl">Animal</span>(name, sound);
+  }
+}
+
+<span class="cm">// Inheritance</span>
+<span class="kw">class</span> <span class="cl">Dog</span> <span class="kw">extends</span> <span class="cl">Animal</span> {
+  <span class="fn">constructor</span>(name) {
+    <span class="kw">super</span>(name, <span class="str">"ঘেউ ঘেউ"</span>); <span class="cm">// Parent constructor call</span>
+    <span class="kw">this</span>.type <span class="op">=</span> <span class="str">"dog"</span>;
+  }
+
+  <span class="fn">fetch</span>() { <span class="kw">return</span> <span class="str">`${this.name} বল এনে দিল!`</span>; }
+}
+
+<span class="kw">const</span> tommy <span class="op">=</span> <span class="kw">new</span> <span class="cl">Dog</span>(<span class="str">"টমি"</span>);
+console.log(tommy.speak());   <span class="cm">// টমি বলে: ঘেউ ঘেউ!</span>
+console.log(tommy.fetch());   <span class="cm">// টমি বল এনে দিল!</span>
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 10. MODULES ══ -->
+    <section id="modules" data-chapter="Modules">
+      <div class="s-head reveal">
+        <div class="s-icon ic-b">📦</div>
+        <div><div class="s-title">Modules — import ও export<small>named · default · re-export · dynamic import</small></div></div>
+      </div>
+
+      <div class="card b-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">📦</div>
+          <div class="c-meta">
+            <div class="c-name cb">ES6 Modules — কোড ভাগ করে রাখার পদ্ধতি</div>
+            <div class="c-sub">React, Vue সব framework module system ব্যবহার করে</div>
+            <div class="badges"><span class="badge b-es6">ES6</span><span class="badge b-must">Framework-এ অবশ্যই</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>math.js — export করা</div>
+            <pre>
+<span class="cm">// Named export — একটি ফাইল থেকে অনেক কিছু</span>
+<span class="kw">export const</span> PI <span class="op">=</span> <span class="num">3.14159</span>;
+<span class="kw">export const</span> <span class="fn">add</span>      <span class="op">=</span> (a, b) <span class="ar">=&gt;</span> a <span class="op">+</span> b;
+<span class="kw">export const</span> <span class="fn">multiply</span> <span class="op">=</span> (a, b) <span class="ar">=&gt;</span> a <span class="op">*</span> b;
+
+<span class="cm">// Default export — একটি ফাইলে মাত্র একটি</span>
+<span class="kw">export default class</span> <span class="cl">Calculator</span> {
+  <span class="fn">add</span>(a, b) { <span class="kw">return</span> a <span class="op">+</span> b; }
+}
+</pre>
+          </div>
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>app.js — import করা</div>
+            <pre>
+<span class="cm">// Named import</span>
+<span class="kw">import</span> { PI, add, multiply } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// Alias দিয়ে import</span>
+<span class="kw">import</span> { add <span class="kw">as</span> sum } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// সব কিছু একসাথে</span>
+<span class="kw">import</span> * <span class="kw">as</span> MathUtils <span class="kw">from</span> <span class="str">"./math.js"</span>;
+MathUtils.add(<span class="num">2</span>, <span class="num">3</span>);
+
+<span class="cm">// Default import (যেকোনো নামে নেওয়া যায়)</span>
+<span class="kw">import</span> Calc <span class="kw">from</span> <span class="str">"./math.js"</span>;
+<span class="kw">import</span> MyCalculator <span class="kw">from</span> <span class="str">"./math.js"</span>; <span class="cm">// একই জিনিস</span>
+
+<span class="cm">// Default + Named একসাথে</span>
+<span class="kw">import</span> Calc, { PI, add } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+
+<span class="cm">// Dynamic import — প্রয়োজনে load করে</span>
+<span class="kw">const</span> { add: dynamicAdd } <span class="op">=</span> <span class="kw">await import</span>(<span class="str">"./math.js"</span>);
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 11. DOM ══ -->
+    <section id="dom" data-chapter="DOM">
+      <div class="s-head reveal">
+        <div class="s-icon ic-o">🎨</div>
+        <div><div class="s-title">DOM Manipulation — ব্রাউজারের সাথে কথা বলা<small>querySelector · events · createElement · classList</small></div></div>
+      </div>
+
+      <div class="card o-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">🎨</div>
+          <div class="c-meta">
+            <div class="c-name co">DOM API — HTML element control করা</div>
+            <div class="c-sub">Vanilla JS-এ সবচেয়ে বেশি ব্যবহৃত DOM methods</div>
+            <div class="badges"><span class="badge b-must">অবশ্যই জানুন</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>dom.js</div>
+            <pre>
+<span class="cm">// ━━ ELEMENT SELECT করা ━━</span>
+<span class="kw">const</span> btn   <span class="op">=</span> document.querySelector(<span class="str">"#myBtn"</span>);     <span class="cm">// ID</span>
+<span class="kw">const</span> items <span class="op">=</span> document.querySelectorAll(<span class="str">".item"</span>);   <span class="cm">// Class সব</span>
+<span class="kw">const</span> h1    <span class="op">=</span> document.querySelector(<span class="str">"h1"</span>);        <span class="cm">// Tag</span>
+
+<span class="cm">// ━━ CONTENT পরিবর্তন ━━</span>
+h1.textContent <span class="op">=</span> <span class="str">"নতুন শিরোনাম"</span>;   <span class="cm">// text (safe)</span>
+h1.innerHTML   <span class="op">=</span> <span class="str">"&lt;em&gt;HTML&lt;/em&gt;"</span>; <span class="cm">// HTML (⚠️ XSS সতর্ক)</span>
+
+<span class="cm">// ━━ ATTRIBUTE ━━</span>
+btn.setAttribute(<span class="str">"disabled"</span>, <span class="str">""</span>);
+btn.getAttribute(<span class="str">"id"</span>);
+btn.removeAttribute(<span class="str">"disabled"</span>);
+
+<span class="cm">// ━━ CSS CLASS ━━</span>
+btn.classList.add(<span class="str">"active"</span>);
+btn.classList.remove(<span class="str">"hidden"</span>);
+btn.classList.toggle(<span class="str">"dark"</span>);     <span class="cm">// থাকলে সরাও, না থাকলে যোগ করো</span>
+btn.classList.contains(<span class="str">"active"</span>); <span class="cm">// true/false</span>
+
+<span class="cm">// ━━ STYLE ━━</span>
+btn.style.backgroundColor <span class="op">=</span> <span class="str">"#f5c542"</span>;
+btn.style.display <span class="op">=</span> <span class="str">"none"</span>;
+
+<span class="cm">// ━━ EVENTS ━━</span>
+btn.addEventListener(<span class="str">"click"</span>, (event) <span class="ar">=&gt;</span> {
+  event.preventDefault(); <span class="cm">// form submit, link follow বন্ধ</span>
+  console.log(<span class="str">"ক্লিক হয়েছে!"</span>, event.target);
+});
+
+<span class="cm">// ━━ ELEMENT তৈরি ও যোগ করা ━━</span>
+<span class="kw">const</span> li <span class="op">=</span> document.createElement(<span class="str">"li"</span>);
+li.textContent <span class="op">=</span> <span class="str">"নতুন আইটেম"</span>;
+li.classList.add(<span class="str">"item"</span>);
+document.querySelector(<span class="str">"ul"</span>).appendChild(li);
+
+<span class="cm">// ━━ Event Delegation (efficient) ━━</span>
+document.querySelector(<span class="str">"ul"</span>).addEventListener(<span class="str">"click"</span>, (e) <span class="ar">=&gt;</span> {
+  <span class="kw">if</span> (e.target.matches(<span class="str">"li"</span>)) {
+    console.log(<span class="str">"List item clicked:"</span>, e.target.textContent);
+  }
+});
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 12. COMMON PATTERNS ══ -->
+    <section id="common-patterns" data-chapter="Patterns">
+      <div class="s-head reveal">
+        <div class="s-icon ic-p">🧩</div>
+        <div><div class="s-title">Common Patterns — প্রতিদিনের কোডে সবচেয়ে বেশি লাগে<small>debounce · localStorage · date · regex · error handling</small></div></div>
+      </div>
+
+      <div class="card reveal" style="border-color:rgba(244,114,182,.2)">
+        <div class="card-head">
+          <div class="c-emoji">🧩</div>
+          <div class="c-meta">
+            <div class="c-name cp">সবচেয়ে বেশি ব্যবহৃত Patterns</div>
+            <div class="c-sub">Real project-এ প্রতিদিন এই কোডগুলো লাগে</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>common-patterns.js</div>
+            <pre>
+<span class="cm">// ━━ 1. DEBOUNCE — Search input-এ অপরিহার্য ━━</span>
+<span class="kw">const</span> <span class="fn">debounce</span> <span class="op">=</span> (fn, delay) <span class="ar">=&gt;</span> {
+  <span class="kw">let</span> timer;
+  <span class="kw">return</span> (...args) <span class="ar">=&gt;</span> {
+    clearTimeout(timer);
+    timer <span class="op">=</span> setTimeout(() <span class="ar">=&gt;</span> fn(...args), delay);
+  };
+};
+
+<span class="kw">const</span> searchInput <span class="op">=</span> document.querySelector(<span class="str">"#search"</span>);
+searchInput.addEventListener(<span class="str">"input"</span>, <span class="fn">debounce</span>((e) <span class="ar">=&gt;</span> {
+  <span class="fn">fetchSearchResults</span>(e.target.value); <span class="cm">// ৩০০ms পরে call হবে</span>
+}, <span class="num">300</span>));
+
+<span class="cm">// ━━ 2. LOCAL STORAGE — Data সংরক্ষণ ━━</span>
+<span class="kw">const</span> storage <span class="op">=</span> {
+  set: (key, val) <span class="ar">=&gt;</span> localStorage.setItem(key, JSON.stringify(val)),
+  get: (key) <span class="ar">=&gt;</span> {
+    <span class="kw">const</span> item <span class="op">=</span> localStorage.getItem(key);
+    <span class="kw">return</span> item ? JSON.parse(item) : <span class="kw">null</span>;
+  },
+  remove: (key) <span class="ar">=&gt;</span> localStorage.removeItem(key),
+};
+
+storage.set(<span class="str">"user"</span>, { name: <span class="str">"আলী"</span>, token: <span class="str">"abc123"</span> });
+<span class="kw">const</span> user <span class="op">=</span> storage.get(<span class="str">"user"</span>);
+
+<span class="cm">// ━━ 3. DATE FORMATTING — বাংলাদেশে সময় দেখানো ━━</span>
+<span class="kw">const</span> <span class="fn">formatDate</span> <span class="op">=</span> (date) <span class="ar">=&gt;</span>
+  <span class="kw">new</span> Intl.DateTimeFormat(<span class="str">"bn-BD"</span>, {
+    year: <span class="str">"numeric"</span>, month: <span class="str">"long"</span>, day: <span class="str">"numeric"</span>,
+  }).format(<span class="kw">new</span> Date(date));
+
+<span class="fn">formatDate</span>(<span class="str">"2024-12-25"</span>); <span class="cm">// "২৫ ডিসেম্বর ২০২৪"</span>
+
+<span class="cm">// ━━ 4. DEEP COPY — Object copy-র সঠিক পদ্ধতি ━━</span>
+<span class="kw">const</span> obj  <span class="op">=</span> { a: <span class="num">1</span>, b: { c: <span class="num">2</span> } };
+<span class="kw">const</span> copy <span class="op">=</span> JSON.parse(JSON.stringify(obj));    <span class="cm">// simple deep copy</span>
+<span class="kw">const</span> copy2 <span class="op">=</span> structuredClone(obj);               <span class="cm">// আধুনিক পদ্ধতি</span>
+
+<span class="cm">// ━━ 5. UNIQUE ARRAY — duplicate সরানো ━━</span>
+<span class="kw">const</span> nums    <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">4</span>];
+<span class="kw">const</span> unique  <span class="op">=</span> [...<span class="kw">new</span> Set(nums)]; <span class="cm">// [1, 2, 3, 4]</span>
+
+<span class="cm">// ━━ 6. GROUP BY (ES2024) ━━</span>
+<span class="kw">const</span> items <span class="op">=</span> [
+  { name: <span class="str">"শার্ট"</span>, type: <span class="str">"পোশাক"</span> },
+  { name: <span class="str">"বই"</span>,   type: <span class="str">"শিক্ষা"</span> },
+  { name: <span class="str">"প্যান্ট"</span>, type: <span class="str">"পোশাক"</span> },
+];
+<span class="kw">const</span> grouped <span class="op">=</span> Object.groupBy(items, item <span class="ar">=&gt;</span> item.type);
+
+<span class="cm">// ━━ 7. REGEX — সাধারণ ব্যবহার ━━</span>
+<span class="kw">const</span> emailRegex <span class="op">=</span> /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+<span class="kw">const</span> phoneRegex <span class="op">=</span> /^01[3-9]\d{8}$/; <span class="cm">// বাংলাদেশের মোবাইল</span>
+
+<span class="kw">const</span> <span class="fn">isValidEmail</span> <span class="op">=</span> (email) <span class="ar">=&gt;</span> emailRegex.test(email);
+<span class="kw">const</span> <span class="fn">isValidPhone</span> <span class="op">=</span> (phone) <span class="ar">=&gt;</span> phoneRegex.test(phone);
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 13. FRAMEWORKS ══ -->
+    <section id="frameworks" data-chapter="Frameworks">
+      <div class="s-head reveal">
+        <div class="s-icon ic-v">🚀</div>
+        <div><div class="s-title">JavaScript Framework গাইড<small>React · Vue · Next.js · Nuxt · Angular · Svelte · Node.js · Express</small></div></div>
+      </div>
+
+      <div class="card v-card reveal">
+        <div class="card-body" style="padding-top:16px">
+          <p class="desc" style="margin-bottom:20px">Framework হলো pre-built কাঠামো যা দিয়ে দ্রুত এবং সংগঠিতভাবে application বানানো যায়। প্রতিটির আলাদা ব্যবহার ক্ষেত্র আছে।</p>
+
+          <div class="fw-grid">
+
+            <div class="fw-card" data-fw="react">
+              <span class="fw-badge pop">সবচেয়ে জনপ্রিয়</span>
+              <div class="fw-logo">⚛️</div>
+              <div class="fw-name" style="color:#61dafb">React</div>
+              <div class="fw-tag">Meta (Facebook) — UI Library</div>
+              <div class="fw-pills">
+                <span class="fw-pill">Component-based</span>
+                <span class="fw-pill">Virtual DOM</span>
+                <span class="fw-pill">JSX</span>
+                <span class="fw-pill">Hooks</span>
+              </div>
+              <div class="fw-desc">ব্যবহারযোগ্য UI component তৈরির সেরা library। শুধু UI layer — routing, state management আলাদা লাইব্রেরি লাগে। Job market-এ সবচেয়ে বেশি চাহিদা।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--o)">মাঝারি</span></div>
+                <div class="bar-track"><div class="bar-fill bar-mid" style="width:55%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="vue">
+              <span class="fw-badge" style="background:rgba(66,184,131,.12);color:#42b883;border-color:rgba(66,184,131,.2)">সহজ শুরু</span>
+              <div class="fw-logo">💚</div>
+              <div class="fw-name" style="color:#42b883">Vue.js</div>
+              <div class="fw-tag">Evan You — Progressive Framework</div>
+              <div class="fw-pills">
+                <span class="fw-pill">Single File Component</span>
+                <span class="fw-pill">Reactivity</span>
+                <span class="fw-pill">Options/Composition API</span>
+              </div>
+              <div class="fw-desc">শিখতে সহজ, ডকুমেন্টেশন চমৎকার। HTML-CSS-JS একটা .vue ফাইলে। Laravel-এর সাথে অনেক ভালো মানায়।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--g)">সহজ</span></div>
+                <div class="bar-track"><div class="bar-fill bar-easy" style="width:35%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="next">
+              <span class="fw-badge meta">Meta Framework</span>
+              <div class="fw-logo">▲</div>
+              <div class="fw-name" style="color:#fff">Next.js</div>
+              <div class="fw-tag">Vercel — React-এর উপর তৈরি</div>
+              <div class="fw-pills">
+                <span class="fw-pill">SSR / SSG</span>
+                <span class="fw-pill">App Router</span>
+                <span class="fw-pill">API Routes</span>
+                <span class="fw-pill">Full-stack</span>
+              </div>
+              <div class="fw-desc">React জানলে Next.js শিখুন। SEO-friendly পেজ, Server Components, API endpoint সব এক জায়গায়। Production-grade app-এর জন্য।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--o)">মাঝারি-কঠিন</span></div>
+                <div class="bar-track"><div class="bar-fill bar-mid" style="width:65%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="nuxt">
+              <span class="fw-badge" style="background:rgba(0,220,130,.1);color:#00dc82;border-color:rgba(0,220,130,.2)">Vue-based</span>
+              <div class="fw-logo">💚</div>
+              <div class="fw-name" style="color:#00dc82">Nuxt.js</div>
+              <div class="fw-tag">Vue-এর Next.js সমতুল্য</div>
+              <div class="fw-pills">
+                <span class="fw-pill">SSR / SSG</span>
+                <span class="fw-pill">Auto-routing</span>
+                <span class="fw-pill">Full-stack</span>
+              </div>
+              <div class="fw-desc">Vue-এর সাথে Next.js-এর মতো Meta Framework। File-based routing, auto-imports, SSR সব একসাথে।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--o)">মাঝারি</span></div>
+                <div class="bar-track"><div class="bar-fill bar-mid" style="width:55%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="angular">
+              <span class="fw-badge full">Full Framework</span>
+              <div class="fw-logo">🔴</div>
+              <div class="fw-name" style="color:#dd0031">Angular</div>
+              <div class="fw-tag">Google — Enterprise Framework</div>
+              <div class="fw-pills">
+                <span class="fw-pill">TypeScript</span>
+                <span class="fw-pill">Dependency Injection</span>
+                <span class="fw-pill">RxJS</span>
+                <span class="fw-pill">Opinionated</span>
+              </div>
+              <div class="fw-desc">সব কিছু built-in — routing, state, HTTP, form। TypeScript বাধ্যতামূলক। বড় enterprise project-এর জন্য উপযুক্ত।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--r)">কঠিন</span></div>
+                <div class="bar-track"><div class="bar-fill bar-hard" style="width:80%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="svelte">
+              <span class="fw-badge" style="background:rgba(255,62,0,.1);color:#ff3e00;border-color:rgba(255,62,0,.2)">No Virtual DOM</span>
+              <div class="fw-logo">🟠</div>
+              <div class="fw-name" style="color:#ff3e00">Svelte</div>
+              <div class="fw-tag">Rich Harris — Compiler-based</div>
+              <div class="fw-pills">
+                <span class="fw-pill">Compile-time</span>
+                <span class="fw-pill">No Runtime</span>
+                <span class="fw-pill">Minimal boilerplate</span>
+              </div>
+              <div class="fw-desc">Virtual DOM নেই — compile করে vanilla JS বানায়। খুব দ্রুত, কম code। শিখতেও সহজ। SvelteKit হলো এর Meta Framework।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--g)">সহজ</span></div>
+                <div class="bar-track"><div class="bar-fill bar-easy" style="width:30%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="node">
+              <span class="fw-badge back">Backend</span>
+              <div class="fw-logo">🟢</div>
+              <div class="fw-name" style="color:#68a063">Node.js</div>
+              <div class="fw-tag">Ryan Dahl — Server-side JS Runtime</div>
+              <div class="fw-pills">
+                <span class="fw-pill">V8 Engine</span>
+                <span class="fw-pill">npm ecosystem</span>
+                <span class="fw-pill">Event-driven</span>
+                <span class="fw-pill">Non-blocking I/O</span>
+              </div>
+              <div class="fw-desc">JavaScript Server-এ চালানোর runtime। একই ভাষায় Frontend ও Backend। npm-এর মাধ্যমে লক্ষাধিক package। REST API, WebSocket, CLI tool সব বানানো যায়।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--o)">মাঝারি</span></div>
+                <div class="bar-track"><div class="bar-fill bar-mid" style="width:50%"></div></div>
+              </div>
+            </div>
+
+            <div class="fw-card" data-fw="express">
+              <span class="fw-badge back">Backend Framework</span>
+              <div class="fw-logo">⚡</div>
+              <div class="fw-name" style="color:var(--y)">Express.js</div>
+              <div class="fw-tag">Node.js-এর সবচেয়ে জনপ্রিয় framework</div>
+              <div class="fw-pills">
+                <span class="fw-pill">Minimalist</span>
+                <span class="fw-pill">Middleware</span>
+                <span class="fw-pill">REST API</span>
+                <span class="fw-pill">Routing</span>
+              </div>
+              <div class="fw-desc">Node.js দিয়ে REST API বানাতে Express সবচেয়ে জনপ্রিয়। Middleware system দিয়ে authentication, logging সহজে যোগ করা যায়।</div>
+              <div class="diff-bar" style="margin-top:10px">
+                <div class="diff-label"><span>শেখার কঠিনত্ব</span><span style="color:var(--g)">সহজ</span></div>
+                <div class="bar-track"><div class="bar-fill bar-easy" style="width:35%"></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Framework comparison table -->
+      <div class="card v-card reveal" style="margin-top:20px">
+        <div class="card-head">
+          <div class="c-emoji">🤔</div>
+          <div class="c-meta">
+            <div class="c-name cv">কোনটা শিখবো? — সিদ্ধান্ত গাইড</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-title">প্রথমে শিখুন: JavaScript ভালোভাবে</div>
+              <div class="tl-body">ES6+, async/await, array methods, DOM — Framework শেখার আগে এগুলো শক্ত করুন। নইলে Framework-এ আটকে যাবেন।</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--v)"></div>
+              <div class="tl-title">Frontend চাইলে: React শিখুন</div>
+              <div class="tl-body">Job market-এ সবচেয়ে বেশি চাহিদা। শেখা মাঝারি কঠিন কিন্তু community বিশাল। তারপর Next.js শিখুন।</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--g)"></div>
+              <div class="tl-title">PHP ব্যাকগ্রাউন্ড থাকলে: Vue.js</div>
+              <div class="tl-body">Laravel-এর সাথে Vue অসাধারণ মানায়। Inertia.js ব্যবহার করলে Laravel+Vue একসাথে কাজ করে। শিখতেও সহজ।</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--b)"></div>
+              <div class="tl-title">Backend চাইলে: Node.js + Express</div>
+              <div class="tl-body">একই JS দিয়ে Backend API বানান। REST API, Database (MongoDB/PostgreSQL) সংযোগ করুন।</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--r)"></div>
+              <div class="tl-title">Enterprise job চাইলে: Angular + TypeScript</div>
+              <div class="tl-body">বড় কোম্পানি Angular ব্যবহার করে। TypeScript বাধ্যতামূলক — কঠিন কিন্তু শক্তিশালী।</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══ 14. TOOLING ══ -->
+    <section id="tooling" data-chapter="Tools">
+      <div class="s-head reveal">
+        <div class="s-icon ic-g">🔨</div>
+        <div><div class="s-title">JavaScript Ecosystem ও Tooling<small>npm · Vite · TypeScript · ESLint · Prettier</small></div></div>
+      </div>
+
+      <div class="card g-card reveal">
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Tool</th><th>কী করে</th><th>কেন লাগে</th></tr></thead>
+              <tbody>
+                <tr><td>npm / yarn / pnpm</td><td>Package manager</td><td>Library install ও project dependency manage করে। <code>npm install</code> দিলে সব library নামে।</td></tr>
+                <tr><td>Vite</td><td>Build tool + Dev server</td><td>আগের Webpack-এর চেয়ে ১০০x দ্রুত। React, Vue সব project-এ এখন Vite ব্যবহার হয়।</td></tr>
+                <tr><td>TypeScript</td><td>Typed JavaScript</td><td>JS-এ type add করে। Bug ধরতে সাহায্য করে। বড় project-এ অবশ্যই ব্যবহার করুন।</td></tr>
+                <tr><td>ESLint</td><td>Code linter</td><td>Code-এর ভুল ও bad practice ধরে। Team project-এ consistent code লিখতে সাহায্য করে।</td></tr>
+                <tr><td>Prettier</td><td>Code formatter</td><td>Code automatically format করে। সবার code একরকম দেখায়।</td></tr>
+                <tr><td>Vitest / Jest</td><td>Testing framework</td><td>Code test লেখার জন্য। Bug ছাড়া code release নিশ্চিত করে।</td></tr>
+                <tr><td>Axios</td><td>HTTP client</td><td>fetch()-এর চেয়ে সহজ API। Interceptor, auto JSON parse, error handling বেশি ভালো।</td></tr>
+                <tr><td>Zod / Yup</td><td>Schema validation</td><td>Form data ও API response validate করতে। TypeScript-এর সাথে Zod সেরা।</td></tr>
+                <tr><td>Zustand / Redux</td><td>State management</td><td>React-এ বড় app-এ global state manage করতে। Zustand সহজ, Redux শক্তিশালী।</td></tr>
+                <tr><td>TanStack Query</td><td>Data fetching + caching</td><td>API data fetch, cache, refetch সব handle করে। React-এ সেরা পছন্দ।</td></tr>
+                <tr><td>Tailwind CSS</td><td>Utility CSS framework</td><td>JS-এর সাথে Tailwind সবচেয়ে বেশি ব্যবহার হয়। Rapid UI development-এর জন্য।</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tip tip-y" style="margin-top:16px">
+            <i>🗺️</i>
+            <span><strong>Learning roadmap:</strong> HTML/CSS → JavaScript basics → ES6+ → DOM → Async/Await → npm → React/Vue → Next.js/Nuxt → TypeScript → Testing। সব একসাথে শিখতে যাবেন না — ধাপে ধাপে এগান।</span>
+          </div>
+
+          <div class="chips" style="margin-top:16px">
+            <div class="chip">npm init</div>
+            <div class="chip">npm install react</div>
+            <div class="chip">npm create vite@latest</div>
+            <div class="chip">npx create-next-app</div>
+            <div class="chip">npm run dev</div>
+            <div class="chip">npm run build</div>
+            <div class="chip">npm run test</div>
+            <div class="chip">npx eslint .</div>
+            <div class="chip">npx prettier --write .</div>
+            <div class="chip">tsc --init</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Reference -->
+      <div class="card g-card reveal">
+        <div class="card-head">
+          <div class="c-emoji">⚡</div>
+          <div class="c-meta">
+            <div class="c-name cg">ES6+ Quick Reference — সব এক জায়গায়</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cb">
+            <div class="cb-bar"><div class="dots"><span></span><span></span><span></span></div>es6-cheatsheet.js</div>
+            <pre>
+<span class="cm">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ES6+ CHEAT SHEET — বাংলায়
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span class="cm">// Variable</span>
+<span class="kw">const</span> x <span class="op">=</span> <span class="num">5</span>;   <span class="kw">let</span> y <span class="op">=</span> <span class="num">10</span>;
+
+<span class="cm">// Arrow function</span>
+<span class="kw">const</span> <span class="fn">fn</span> <span class="op">=</span> (a, b) <span class="ar">=&gt;</span> a <span class="op">+</span> b;
+
+<span class="cm">// Template literal</span>
+<span class="kw">const</span> msg <span class="op">=</span> <span class="str">`হ্যালো ${name}!`</span>;
+
+<span class="cm">// Destructuring</span>
+<span class="kw">const</span> { a, b } <span class="op">=</span> obj;   <span class="kw">const</span> [x, y] <span class="op">=</span> arr;
+
+<span class="cm">// Spread / Rest</span>
+<span class="kw">const</span> copy <span class="op">=</span> { ...obj };   <span class="kw">const</span> <span class="fn">fn</span> <span class="op">=</span> (...args) <span class="ar">=&gt;</span> args;
+
+<span class="cm">// Default param</span>
+<span class="kw">const</span> <span class="fn">hello</span> <span class="op">=</span> (name <span class="op">=</span> <span class="str">"বন্ধু"</span>) <span class="ar">=&gt;</span> <span class="str">`হ্যালো ${name}`</span>;
+
+<span class="cm">// Optional chaining</span>
+<span class="kw">const</span> city <span class="op">=</span> user<span class="op">?.</span>address<span class="op">?.</span>city;
+
+<span class="cm">// Nullish coalescing</span>
+<span class="kw">const</span> val <span class="op">=</span> data <span class="op">??</span> <span class="str">"default"</span>;
+
+<span class="cm">// Async / Await</span>
+<span class="kw">const</span> <span class="fn">getData</span> <span class="op">=</span> <span class="kw">async</span> () <span class="ar">=&gt;</span> {
+  <span class="kw">const</span> res  <span class="op">=</span> <span class="kw">await</span> fetch(<span class="str">"/api/data"</span>);
+  <span class="kw">return</span> res.json();
+};
+
+<span class="cm">// Array methods</span>
+arr.map(x <span class="ar">=&gt;</span> x <span class="op">*</span> <span class="num">2</span>);
+arr.filter(x <span class="ar">=&gt;</span> x <span class="op">&gt;</span> <span class="num">5</span>);
+arr.reduce((acc, x) <span class="ar">=&gt;</span> acc <span class="op">+</span> x, <span class="num">0</span>);
+arr.find(x <span class="ar">=&gt;</span> x.id <span class="op">===</span> <span class="num">1</span>);
+
+<span class="cm">// Class</span>
+<span class="kw">class</span> <span class="cl">Person</span> {
+  <span class="fn">constructor</span>(name) { <span class="kw">this</span>.name <span class="op">=</span> name; }
+  <span class="fn">greet</span>() { <span class="kw">return</span> <span class="str">`আমি ${this.name}`</span>; }
+}
+
+<span class="cm">// Module</span>
+<span class="kw">export const</span> x <span class="op">=</span> <span class="num">1</span>;
+<span class="kw">import</span> { x } <span class="kw">from</span> <span class="str">"./module.js"</span>;
+
+<span class="cm">// Promise.all</span>
+<span class="kw">const</span> [a, b] <span class="op">=</span> <span class="kw">await</span> Promise.all([fetchA(), fetchB()]);
+
+<span class="cm">// Set — unique values</span>
+<span class="kw">const</span> unique <span class="op">=</span> [...<span class="kw">new</span> Set([<span class="num">1</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])]; <span class="cm">// [1, 2, 3]</span>
+
+<span class="cm">// Map — key-value collection</span>
+<span class="kw">const</span> map <span class="op">=</span> <span class="kw">new</span> Map();
+map.set(<span class="str">"key"</span>, <span class="str">"value"</span>);
+map.get(<span class="str">"key"</span>); <span class="cm">// "value"</span>
+
+<span class="cm">// Symbol — unique identifier</span>
+<span class="kw">const</span> id <span class="op">=</span> Symbol(<span class="str">"id"</span>);
+
+<span class="cm">// Generator (advanced)</span>
+<span class="kw">function</span><span class="op">*</span> <span class="fn">range</span>(start, end) {
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> start; i <span class="op">&lt;=</span> end; i<span class="op">++</span>) <span class="kw">yield</span> i;
+}
+[...range(<span class="num">1</span>, <span class="num">5</span>)]; <span class="cm">// [1, 2, 3, 4, 5]</span>
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end layout -->
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div style="font-size:2rem;margin-bottom:10px">⚡</div>
+  <div><strong>JavaScript & ES6+</strong> — সম্পূর্ণ বাংলা গাইড</div>
+  <div style="margin-top:6px;color:var(--text3)">Vanilla JS · ES6+ · React · Vue · Node.js · সব বাংলায়</div>
+</footer>
+
+<script>
+// ── Chapter nav dots ──
+const sections = document.querySelectorAll('[data-chapter]');
+const nav = document.getElementById('chapterNav');
+
+sections.forEach(sec => {
+  const dot = document.createElement('div');
+  dot.className = 'cn-dot';
+  dot.setAttribute('data-label', sec.getAttribute('data-chapter'));
+  dot.addEventListener('click', () => sec.scrollIntoView({ behavior: 'smooth' }));
+  nav.appendChild(dot);
+});
+
+// ── Intersection Observer for reveal ──
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.07 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Active chapter dot ──
+const chapterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = [...sections].indexOf(e.target);
+      document.querySelectorAll('.cn-dot').forEach((d, i) => {
+        d.classList.toggle('on', i === idx);
+      });
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => chapterObs.observe(s));
+
+// ── Sidebar active link ──
+const sideLinks = document.querySelectorAll('.nav-link');
+const allSections = document.querySelectorAll('section[id]');
+
+const sideObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sideLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { threshold: 0.3 });
+
+allSections.forEach(s => sideObs.observe(s));
+</script>
+</body>
+</html>

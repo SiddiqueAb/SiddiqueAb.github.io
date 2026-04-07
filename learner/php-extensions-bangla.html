@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP Extensions — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --bg3: #141c30;
+    --card: #111827;
+    --card2: #1a2234;
+    --border: #1e2d4a;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --glow: 0 0 20px rgba(0,212,255,0.15);
+    --glow2: 0 0 30px rgba(124,58,237,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glowing orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orb-float 8s ease-in-out infinite;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(0,212,255,0.06); top: -100px; right: -100px; }
+  .orb2 { width: 300px; height: 300px; background: rgba(124,58,237,0.08); bottom: 20%; left: -80px; animation-delay: -4s; }
+  .orb3 { width: 250px; height: 250px; background: rgba(16,185,129,0.06); top: 50%; right: 10%; animation-delay: -2s; }
+
+  @keyframes orb-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 80px 20px 60px;
+    background: linear-gradient(180deg, rgba(0,212,255,0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-badge::before { content: '⚡'; }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text2);
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* TOC */
+  .toc {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  .toc-inner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+  }
+
+  .toc-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .toc-link {
+    color: var(--text2);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent;
+  }
+
+  .toc-link:hover {
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.2);
+    color: var(--accent);
+  }
+
+  /* Main content */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* Section headers */
+  .section-header {
+    margin: 60px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .section-icon.cyan { background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); }
+  .section-icon.purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); }
+  .section-icon.green { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+  .section-icon.amber { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+  .section-icon.red { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); }
+  .section-icon.pink { background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.3); }
+  .section-icon.indigo { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); }
+  .section-icon.teal { background: rgba(20,184,166,0.15); border: 1px solid rgba(20,184,166,0.3); }
+
+  .section-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-title span {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    color: var(--text3);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Extension card */
+  .ext-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+  }
+
+  .ext-card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+  }
+
+  .ext-card.purple-card:hover { border-color: rgba(124,58,237,0.4); box-shadow: var(--glow2); }
+  .ext-card.green-card:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 0 25px rgba(16,185,129,0.15); }
+  .ext-card.amber-card:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 0 25px rgba(245,158,11,0.15); }
+
+  .ext-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ext-emoji {
+    font-size: 2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ext-meta { flex: 1; }
+
+  .ext-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .ext-name.purple { color: #a78bfa; }
+  .ext-name.green { color: var(--accent3); }
+  .ext-name.amber { color: var(--accent4); }
+  .ext-name.red { color: var(--accent5); }
+  .ext-name.pink { color: #f472b6; }
+  .ext-name.indigo { color: #818cf8; }
+  .ext-name.teal { color: #2dd4bf; }
+
+  .ext-tagline {
+    font-size: 0.9rem;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .ext-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-must { background: rgba(239,68,68,0.2); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-rec { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-opt { background: rgba(100,116,139,0.2); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
+  .badge-builtin { background: rgba(0,212,255,0.1); color: #67e8f9; border: 1px solid rgba(0,212,255,0.3); }
+  .badge-perf { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+
+  .ext-body {
+    padding: 20px 24px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+  }
+
+  .info-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .info-box-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .info-box-text {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .ext-desc {
+    font-size: 0.95rem;
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  /* use-case list */
+  .use-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .use-list li {
+    font-size: 0.88rem;
+    color: var(--text2);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .use-list li::before {
+    content: '→';
+    color: var(--accent3);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* INI section */
+  .ini-intro {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .ini-intro p {
+    color: var(--text2);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .code-block {
+    background: #060b14;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  .code-block-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'Fira Code', monospace;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 5px;
+    margin-right: 4px;
+  }
+
+  .code-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .code-dots span:nth-child(1) { background: #ef4444; }
+  .code-dots span:nth-child(2) { background: #f59e0b; }
+  .code-dots span:nth-child(3) { background: #10b981; }
+
+  .code-block pre {
+    padding: 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #94a3b8;
+  }
+
+  .ini-key { color: #67e8f9; }
+  .ini-val { color: #86efac; }
+  .ini-comment { color: #475569; font-style: italic; }
+  .ini-section { color: #f59e0b; font-weight: 600; }
+  .ini-ext { color: #c084fc; }
+  .ini-eq { color: #e2e8f0; }
+
+  /* INI table */
+  .ini-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-top: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  thead {
+    background: var(--bg3);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    color: var(--text3);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba(0,212,255,0.03); }
+
+  td:first-child {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  td .val {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent3);
+    font-size: 0.8rem;
+  }
+
+  /* Warning / tip boxes */
+  .tip-box {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .tip-box.blue { background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.2); color: #93c5fd; }
+  .tip-box.amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); color: #fcd34d; }
+  .tip-box.red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
+  .tip-box.green { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
+
+  .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* quick ref grid */
+  .qr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .qr-item {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    transition: all 0.2s;
+  }
+
+  .qr-item:hover { border-color: rgba(0,212,255,0.3); }
+
+  .qr-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .qr-desc {
+    font-size: 0.8rem;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  /* divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* footer */
+  .footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.85rem;
+  }
+
+  .footer-logo {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  /* scroll animations */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade-up 0.5s ease forwards;
+  }
+
+  @keyframes fade-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,0.3); }
+
+  /* highlight inline code */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.85em;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">PHP Extension Master Guide · বাংলায়</div>
+  <h1>PHP Extensions<br>সম্পূর্ণ বাংলা গাইড</h1>
+  <p class="hero-sub">cURL থেকে OPcache পর্যন্ত — প্রতিটি PHP extension কী, কেন, কখন ব্যবহার করবেন তার বিস্তারিত ব্যাখ্যা</p>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">২০+</div><div class="stat-label">Extensions</div></div>
+    <div class="stat"><div class="stat-num">php.ini</div><div class="stat-label">সম্পূর্ণ ব্যাখ্যা</div></div>
+    <div class="stat"><div class="stat-num">১০০%</div><div class="stat-label">বাংলায়</div></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-inner fade-in">
+    <div class="toc-title">📋 বিষয়সূচি</div>
+    <div class="toc-grid">
+      <a href="#what-is-ext" class="toc-link">🔌 Extension কী?</a>
+      <a href="#curl" class="toc-link">🌐 cURL</a>
+      <a href="#pdo" class="toc-link">🗄️ PDO & Database</a>
+      <a href="#gd-image" class="toc-link">🖼️ GD / Imagick</a>
+      <a href="#mbstring" class="toc-link">🔤 Mbstring</a>
+      <a href="#json-xml" class="toc-link">📦 JSON & XML</a>
+      <a href="#caching" class="toc-link">⚡ Cache Extensions</a>
+      <a href="#security" class="toc-link">🔒 Security</a>
+      <a href="#zip-file" class="toc-link">🗜️ File & ZIP</a>
+      <a href="#mail" class="toc-link">📧 Mail</a>
+      <a href="#misc" class="toc-link">🛠️ অন্যান্য</a>
+      <a href="#ini" class="toc-link">⚙️ php.ini গাইড</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- WHAT IS EXTENSION -->
+  <section id="what-is-ext">
+    <div class="section-header fade-in">
+      <div class="section-icon cyan">🔌</div>
+      <div>
+        <div class="section-title">PHP Extension কী?<span>ext_* / .so / .dll</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in delay-1">
+      <div class="ext-body">
+        <p class="ext-desc">
+          PHP Extension হলো PHP-এর অতিরিক্ত ক্ষমতা যোগ করার পদ্ধতি। PHP কোর খুব ছোট রাখা হয়েছে — শুধু ভাষার মূল কাজগুলো করে। কিন্তু ডাটাবেজ সংযোগ, ছবি প্রক্রিয়াকরণ, ইমেইল পাঠানো, ফাইল কম্প্রেস করা — এসব কাজের জন্য আলাদা Extensions ব্যবহার করতে হয়।
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">💻 Linux-এ কোথায় থাকে</div>
+            <div class="info-box-text"><code>/usr/lib/php/extensions/</code> ফোল্ডারে <code>.so</code> ফাইল হিসেবে</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">🪟 Windows-এ কোথায় থাকে</div>
+            <div class="info-box-text"><code>ext/</code> ফোল্ডারে <code>.dll</code> ফাইল হিসেবে</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">⚙️ Enable করার উপায়</div>
+            <div class="info-box-text"><code>php.ini</code>-তে <code>extension=curl</code> লিখে PHP restart করুন</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">🔍 Check করার উপায়</div>
+            <div class="info-box-text">Terminal-এ <code>php -m</code> বা ব্রাউজারে <code>phpinfo()</code> দেখুন</div>
+          </div>
+        </div>
+        <div class="tip-box blue">
+          <span class="tip-icon">💡</span>
+          <span><strong>মনে রাখুন:</strong> সব extension enable করা উচিত নয়। শুধু যেগুলো দরকার সেগুলোই চালু রাখুন — এতে PHP দ্রুত চলে এবং সার্ভার নিরাপদ থাকে।</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- cURL -->
+  <section id="curl">
+    <div class="section-header fade-in">
+      <div class="section-icon cyan">🌐</div>
+      <div>
+        <div class="section-title">নেটওয়ার্ক ও HTTP Extensions<span>curl · sockets · ftp</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🌐</div>
+        <div class="ext-meta">
+          <div class="ext-name">php_curl (cURL)</div>
+          <div class="ext-tagline">Client URL Library — HTTP/HTTPS রিকোয়েস্ট পাঠানোর মূল হাতিয়ার</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+            <span class="badge badge-perf">Web APIs</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          cURL হলো PHP-এর সবচেয়ে গুরুত্বপূর্ণ extension। এটি দিয়ে আপনার PHP কোড থেকে যেকোনো URL-এ HTTP রিকোয়েস্ট পাঠানো যায় — ঠিক যেমন ব্রাউজার করে। REST API কল করা, OAuth login করা, ফাইল ডাউনলোড করা — সব cURL দিয়েই হয়।
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">🎯 কী কী করা যায়</div>
+            <div class="info-box-text">HTTP GET/POST/PUT/DELETE, ফাইল আপলোড/ডাউনলোড, HTTPS সংযোগ, Cookie পাঠানো, Authorization header সেট করা</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">📦 Enable করুন</div>
+            <div class="info-box-text"><code>extension=curl</code> (php.ini)<br>অথবা: <code>apt install php-curl</code></div>
+          </div>
+        </div>
+        <ul class="use-list">
+          <li>Payment Gateway (SSLCommerz, bKash API, Stripe) সংযোগ করতে</li>
+          <li>Facebook, Google, GitHub OAuth login করতে</li>
+          <li>Weather API, SMS API, Map API ব্যবহার করতে</li>
+          <li>Laravel, Symfony, Guzzle — সব ফ্রেমওয়ার্কই ভেতরে cURL ব্যবহার করে</li>
+          <li>Webhook পাঠাতে ও গ্রহণ করতে</li>
+        </ul>
+        <div class="tip-box amber">
+          <span class="tip-icon">⚠️</span>
+          <span>cURL ছাড়া কোনো আধুনিক PHP প্রজেক্ট কাজ করে না বললেই চলে। Laravel, WordPress, WooCommerce সবই cURL ব্যবহার করে।</span>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-dots"><span></span><span></span><span></span></div>curl_example.php</div>
+          <pre><span style="color:#64748b">// cURL দিয়ে API কল করার উদাহরণ</span>
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, <span style="color:#86efac">"https://api.example.com/users"</span>);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [<span style="color:#86efac">"Authorization: Bearer YOUR_TOKEN"</span>]);
+$response = curl_exec($ch);
+curl_close($ch);
+$data = json_decode($response, true);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔌</div>
+        <div class="ext-meta">
+          <div class="ext-name">php_sockets</div>
+          <div class="ext-tagline">নিম্ন-স্তরের নেটওয়ার্ক সংযোগ</div>
+          <div class="ext-badges">
+            <span class="badge badge-opt">ঐচ্ছিক</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          Sockets extension দিয়ে একদম কাঁচা TCP/UDP সংযোগ তৈরি করা যায়। WebSocket সার্ভার বানাতে, custom protocol implement করতে বা real-time chat application বানাতে এটি দরকার হয়।
+        </p>
+        <ul class="use-list">
+          <li>WebSocket সার্ভার তৈরিতে (Ratchet, Swoole)</li>
+          <li>Custom TCP/UDP server বানাতে</li>
+          <li>Real-time notification system-এ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📁</div>
+        <div class="ext-meta">
+          <div class="ext-name">php_ftp</div>
+          <div class="ext-tagline">FTP সার্ভারে ফাইল আপলোড/ডাউনলোড</div>
+          <div class="ext-badges">
+            <span class="badge badge-opt">ঐচ্ছিক</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          FTP extension দিয়ে PHP কোড থেকে FTP সার্ভারে সংযোগ করে ফাইল আপলোড ও ডাউনলোড করা যায়।
+        </p>
+        <ul class="use-list">
+          <li>Remote FTP সার্ভারে backup পাঠাতে</li>
+          <li>Legacy system-এর সাথে ফাইল আদান-প্রদানে</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATABASE -->
+  <section id="pdo">
+    <div class="section-header fade-in">
+      <div class="section-icon purple">🗄️</div>
+      <div>
+        <div class="section-title">ডাটাবেজ Extensions<span>pdo · mysqli · pgsql · sqlite3</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card purple-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🏆</div>
+        <div class="ext-meta">
+          <div class="ext-name purple">php_pdo + php_pdo_mysql</div>
+          <div class="ext-tagline">PHP Data Objects — ডাটাবেজ সংযোগের সবচেয়ে আধুনিক পদ্ধতি</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+            <span class="badge badge-rec">Best Practice</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          PDO হলো ডাটাবেজ সংযোগের জন্য একটি unified interface। একই কোডে MySQL, PostgreSQL, SQLite সব ডাটাবেজ ব্যবহার করা যায়। Prepared Statement ব্যবহার করে SQL Injection থেকে সুরক্ষিত থাকা যায়।
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">✅ সুবিধা</div>
+            <div class="info-box-text">একটাই API দিয়ে যেকোনো ডাটাবেজ, Prepared Statements দিয়ে নিরাপত্তা, ORM লাইব্রেরিগুলো PDO ব্যবহার করে</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">📦 Enable করুন</div>
+            <div class="info-box-text"><code>extension=pdo_mysql</code> (MySQL-এর জন্য)<br><code>extension=pdo_pgsql</code> (PostgreSQL-এর জন্য)</div>
+          </div>
+        </div>
+        <ul class="use-list">
+          <li>Laravel Eloquent, Doctrine ORM — সব PDO ব্যবহার করে</li>
+          <li>MySQL, MariaDB, PostgreSQL, SQLite সংযোগে</li>
+          <li>SQL Injection রোধে Prepared Statement-এর মাধ্যমে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card purple-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🐬</div>
+        <div class="ext-meta">
+          <div class="ext-name purple">php_mysqli</div>
+          <div class="ext-tagline">MySQL Improved — সরাসরি MySQL সংযোগ</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+            <span class="badge badge-builtin">WordPress ব্যবহার করে</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          MySQLi হলো পুরনো <code>mysql_*</code> function-এর আধুনিক সংস্করণ। WordPress এটি ব্যবহার করে। Object-Oriented ও Procedural — দুই স্টাইলেই ব্যবহার করা যায়।
+        </p>
+        <div class="tip-box green">
+          <span class="tip-icon">✅</span>
+          <span>নতুন প্রজেক্টে PDO ব্যবহার করুন। WordPress বা পুরনো কোড মেইনটেইন করতে MySQLi ব্যবহার করুন।</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-card purple-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📊</div>
+        <div class="ext-meta">
+          <div class="ext-name purple">php_pgsql / php_pdo_pgsql</div>
+          <div class="ext-tagline">PostgreSQL ডাটাবেজ সংযোগ</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Enterprise</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          PostgreSQL ব্যবহারকারীদের জন্য। JSONB, Full-text Search, Advanced Query-র জন্য PostgreSQL অনেকে MySQL-এর চেয়ে বেশি পছন্দ করেন।
+        </p>
+      </div>
+    </div>
+
+    <div class="ext-card purple-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">💾</div>
+        <div class="ext-meta">
+          <div class="ext-name purple">php_sqlite3 / php_pdo_sqlite</div>
+          <div class="ext-tagline">ফাইল-ভিত্তিক ডাটাবেজ</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">ছোট প্রজেক্ট</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          SQLite হলো সার্ভার ছাড়া ডাটাবেজ। একটি ফাইলেই পুরো ডাটাবেজ। Testing, ছোট অ্যাপ, CLI tools-এর জন্য আদর্শ।
+        </p>
+        <ul class="use-list">
+          <li>Unit testing-এ মূল DB-এর পরিবর্তে ব্যবহার</li>
+          <li>ছোট configuration database সংরক্ষণে</li>
+          <li>সার্ভার-বিহীন simple app-এ</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGE -->
+  <section id="gd-image">
+    <div class="section-header fade-in">
+      <div class="section-icon green">🖼️</div>
+      <div>
+        <div class="section-title">ইমেজ প্রক্রিয়াকরণ<span>gd · imagick · exif</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card green-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🎨</div>
+        <div class="ext-meta">
+          <div class="ext-name green">php_gd (GD Library)</div>
+          <div class="ext-tagline">সবচেয়ে জনপ্রিয় image processing extension</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          GD হলো PHP-এর built-in image library। ছবি তৈরি করা, resize করা, crop করা, watermark দেওয়া, text লেখা, thumbnail বানানো — সব GD দিয়ে করা যায়। JPEG, PNG, GIF, WebP সব ফরম্যাট সাপোর্ট করে।
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">🎯 কী কী করা যায়</div>
+            <div class="info-box-text">Thumbnail তৈরি, Watermark, Text-to-image, Captcha, Chart/Graph, QR code, ছবির format conversion</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">📦 Enable করুন</div>
+            <div class="info-box-text"><code>extension=gd</code><br>অথবা: <code>apt install php-gd</code></div>
+          </div>
+        </div>
+        <ul class="use-list">
+          <li>Profile picture upload করলে auto-resize করতে</li>
+          <li>CAPTCHA তৈরিতে (গণিতের ছবি)</li>
+          <li>Certificate বা Invoice PDF-এ ছবি সংযোগে</li>
+          <li>Product image thumbnail বানাতে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card green-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">✨</div>
+        <div class="ext-meta">
+          <div class="ext-name green">php_imagick (ImageMagick)</div>
+          <div class="ext-tagline">Professional-grade ইমেজ প্রক্রিয়াকরণ</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">প্রফেশনাল</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          ImageMagick হলো GD-এর চেয়ে অনেক বেশি শক্তিশালী। PDF থেকে ছবি বানানো, SVG convert করা, PSD ফাইল খোলা, advanced color manipulation — এসব ImageMagick দিয়েই সম্ভব। তবে বেশি RAM ব্যবহার করে।
+        </p>
+        <ul class="use-list">
+          <li>PDF-এর প্রতিটি পৃষ্ঠা ছবিতে রূপান্তরে</li>
+          <li>PSD, SVG, TIFF ফাইল প্রক্রিয়াকরণে</li>
+          <li>উচ্চমানের ছবি compression ও optimization-এ</li>
+          <li>Batch image processing-এ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card green-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📷</div>
+        <div class="ext-meta">
+          <div class="ext-name green">php_exif</div>
+          <div class="ext-tagline">ছবির metadata পড়ার extension</div>
+          <div class="ext-badges">
+            <span class="badge badge-opt">ঐচ্ছিক</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          EXIF extension দিয়ে ছবির মধ্যে লুকানো তথ্য পড়া যায় — ক্যামেরার মডেল, ছবি তোলার তারিখ, GPS location, orientation সব।
+        </p>
+        <ul class="use-list">
+          <li>ছবি upload-এর সময় auto-rotate করতে (orientation ঠিক করতে)</li>
+          <li>GPS location থেকে photo map তৈরিতে</li>
+          <li>ক্যামেরার metadata সংরক্ষণে</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- MBSTRING -->
+  <section id="mbstring">
+    <div class="section-header fade-in">
+      <div class="section-icon amber">🔤</div>
+      <div>
+        <div class="section-title">স্ট্রিং ও ভাষা Extensions<span>mbstring · intl · iconv</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card amber-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🌏</div>
+        <div class="ext-meta">
+          <div class="ext-name amber">php_mbstring (Multibyte String)</div>
+          <div class="ext-tagline">বাংলা, আরবি, চীনা — সব ভাষার জন্য অপরিহার্য</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+            <span class="badge badge-builtin">বাংলার জন্য জরুরি</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          PHP-এর সাধারণ string function যেমন <code>strlen()</code>, <code>strtolower()</code> শুধু ASCII character বোঝে। কিন্তু বাংলা, আরবি, হিন্দি বা চীনা ভাষায় কাজ করতে হলে mbstring লাগবে। এটি ছাড়া বাংলা টেক্সট ভেঙে যায়।
+        </p>
+        <div class="tip-box red">
+          <span class="tip-icon">🚨</span>
+          <span>বাংলায় কাজ করলে <strong>mbstring অবশ্যই enable করতে হবে</strong>। নইলে <code>strlen("বাংলা")</code> ৫ দেওয়ার বদলে ভুল সংখ্যা দেবে কারণ প্রতিটি বাংলা অক্ষর একাধিক byte নেয়।</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">🔧 mbstring vs normal</div>
+            <div class="info-box-text">Normal: <code>strlen("বাংলা")</code> = ভুল<br>Mbstring: <code>mb_strlen("বাংলা")</code> = সঠিক ✅</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">📦 Enable করুন</div>
+            <div class="info-box-text"><code>extension=mbstring</code><br>অথবা: <code>apt install php-mbstring</code></div>
+          </div>
+        </div>
+        <ul class="use-list">
+          <li>বাংলা/আরবি/হিন্দি টেক্সট processing-এ</li>
+          <li>UTF-8 string-এর সঠিক দৈর্ঘ্য, substring, uppercase/lowercase করতে</li>
+          <li>Laravel, Symfony — সব ফ্রেমওয়ার্ক mbstring চায়</li>
+          <li>Email, SMS-এ Unicode বার্তা পাঠাতে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card amber-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🌍</div>
+        <div class="ext-meta">
+          <div class="ext-name amber">php_intl (Internationalization)</div>
+          <div class="ext-tagline">আন্তর্জাতিক ভাষা, তারিখ, মুদ্রা ফরম্যাটিং</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Globalization</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          intl extension দিয়ে বিভিন্ন দেশের নিয়মে তারিখ, সময়, মুদ্রা, সংখ্যা format করা যায়। যেমন বাংলাদেশে ৳১,০০,০০০ কিন্তু USA-তে $100,000 — intl এই কাজ করে।
+        </p>
+        <ul class="use-list">
+          <li>Multi-language website-এ locale-based formatting-এ</li>
+          <li>বিভিন্ন দেশের তারিখ ফরম্যাট (DD/MM/YYYY vs MM/DD/YYYY)-এ</li>
+          <li>মুদ্রা symbol ও দেশ-ভেদে number formatting-এ</li>
+          <li>String comparison যেখানে ভাষার নিয়ম মানা দরকার</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card amber-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔄</div>
+        <div class="ext-meta">
+          <div class="ext-name amber">php_iconv</div>
+          <div class="ext-tagline">Character encoding রূপান্তর</div>
+          <div class="ext-badges">
+            <span class="badge badge-opt">ঐচ্ছিক</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          iconv দিয়ে এক encoding থেকে আরেক encoding-এ convert করা যায়। পুরনো system থেকে data নেওয়ার সময় যখন ISO-8859 থেকে UTF-8-এ convert করতে হয়।
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- JSON & XML -->
+  <section id="json-xml">
+    <div class="section-header fade-in">
+      <div class="section-icon indigo">📦</div>
+      <div>
+        <div class="section-title">Data Format Extensions<span>json · xml · simplexml · dom</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📋</div>
+        <div class="ext-meta">
+          <div class="ext-name indigo">php_json</div>
+          <div class="ext-tagline">JSON parse ও encode — আধুনিক API-র মূল ভিত্তি</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+            <span class="badge badge-builtin">PHP 8-এ Built-in</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          JSON extension দিয়ে PHP array/object থেকে JSON string বানানো এবং JSON string থেকে PHP array বানানো যায়। REST API, AJAX — সবখানে এটি লাগে।
+        </p>
+        <div class="tip-box green">
+          <span class="tip-icon">✅</span>
+          <span>PHP 8.0+ থেকে JSON built-in হয়ে গেছে, আলাদা enable করতে হয় না। তবে পুরনো PHP-তে <code>extension=json</code> লাগবে।</span>
+        </div>
+        <ul class="use-list">
+          <li>API response তৈরি ও parse করতে: <code>json_encode($data)</code></li>
+          <li>AJAX থেকে আসা data পড়তে: <code>json_decode($input, true)</code></li>
+          <li>Config file, settings সংরক্ষণে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📄</div>
+        <div class="ext-meta">
+          <div class="ext-name indigo">php_xml + php_simplexml + php_dom</div>
+          <div class="ext-tagline">XML ডকুমেন্ট পড়া ও তৈরি করা</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">প্রয়োজন অনুযায়ী</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          XML extension দিয়ে XML ডকুমেন্ট parse করা যায়। SimpleXML সহজ XML-এর জন্য। DOM অনেক বেশি নিয়ন্ত্রণ দেয়। RSS feed পড়া, SOAP API ব্যবহার, sitemap.xml তৈরিতে এগুলো লাগে।
+        </p>
+        <ul class="use-list">
+          <li>RSS/Atom feed parse করতে</li>
+          <li>SOAP Web Service ব্যবহার করতে (পুরনো ব্যাংকিং API)</li>
+          <li>sitemap.xml, configuration XML তৈরিতে</li>
+          <li>HTML parse করতে (DOMDocument)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CACHING -->
+  <section id="caching">
+    <div class="section-header fade-in">
+      <div class="section-icon teal">⚡</div>
+      <div>
+        <div class="section-title">Cache ও Performance Extensions<span>opcache · apcu · redis · memcached</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🚀</div>
+        <div class="ext-meta">
+          <div class="ext-name teal">Zend OPcache</div>
+          <div class="ext-tagline">PHP-কে ৫-১০ গুণ দ্রুত করে — সবচেয়ে গুরুত্বপূর্ণ performance extension</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই Enable করুন</span>
+            <span class="badge badge-perf">Performance</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          PHP প্রতিটি request-এ .php ফাইল পড়ে, parse করে, bytecode-এ compile করে তারপর execute করে। OPcache এই compiled bytecode মেমোরিতে সংরক্ষণ করে রাখে। পরের request-এ আর compile করতে হয় না — সরাসরি execute হয়।
+        </p>
+        <div class="tip-box blue">
+          <span class="tip-icon">💡</span>
+          <span>Production server-এ OPcache সবসময় enable করুন। এটি শুধু একটি লাইন change করলেই PHP ৫-১০ গুণ দ্রুত হয়।</span>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-dots"><span></span><span></span><span></span></div>php.ini — OPcache সেটিং</div>
+          <pre><span class="ini-section">[opcache]</span>
+<span class="ini-key">zend_extension</span><span class="ini-eq">=</span><span class="ini-val">opcache</span>
+<span class="ini-key">opcache.enable</span><span class="ini-eq">=</span><span class="ini-val">1</span>              <span class="ini-comment">; OPcache চালু করুন</span>
+<span class="ini-key">opcache.memory_consumption</span><span class="ini-eq">=</span><span class="ini-val">256</span>    <span class="ini-comment">; 256MB RAM বরাদ্দ</span>
+<span class="ini-key">opcache.max_accelerated_files</span><span class="ini-eq">=</span><span class="ini-val">10000</span> <span class="ini-comment">; সর্বোচ্চ ফাইল সংখ্যা</span>
+<span class="ini-key">opcache.revalidate_freq</span><span class="ini-eq">=</span><span class="ini-val">60</span>       <span class="ini-comment">; ৬০ সেকেন্ড পর file check করবে</span>
+<span class="ini-key">opcache.validate_timestamps</span><span class="ini-eq">=</span><span class="ini-val">0</span>    <span class="ini-comment">; Production-এ 0 করুন (দ্রুততার জন্য)</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">💨</div>
+        <div class="ext-meta">
+          <div class="ext-name teal">php_apcu (APCu)</div>
+          <div class="ext-tagline">প্রক্রিয়ার মধ্যে দ্রুত data caching</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Recommended</span>
+            <span class="badge badge-perf">In-Memory Cache</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          APCu হলো PHP-এর user-space memory cache। যেকোনো PHP variable (array, object) RAM-এ সংরক্ষণ করা যায় এবং পরে আবার পড়া যায়। Database query result, config data — এসব cache করতে ব্যবহার করুন।
+        </p>
+        <ul class="use-list">
+          <li>ঘন ঘন ব্যবহৃত DB query result cache করতে</li>
+          <li>Session-এর বিকল্প হিসেবে</li>
+          <li>Rate limiting counter রাখতে</li>
+          <li>Small website-এ Redis ছাড়াই caching করতে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔴</div>
+        <div class="ext-meta">
+          <div class="ext-name teal">php_redis / php_memcached</div>
+          <div class="ext-tagline">External cache server সংযোগ</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Production Cache</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          Redis ও Memcached হলো আলাদা cache server। PHP extension দিয়ে এই server-এর সাথে কথা বলা যায়। Laravel-এর Cache, Queue, Session সব Redis-এ রাখা যায়।
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-box-label">Redis এর সুবিধা</div>
+            <div class="info-box-text">Data structure support (List, Set, Hash), Persistence, Pub/Sub, Laravel Queue-এ ব্যবহার</div>
+          </div>
+          <div class="info-box">
+            <div class="info-box-label">Memcached এর সুবিধা</div>
+            <div class="info-box-text">একদম সরল key-value store, multi-server support, খুব দ্রুত</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section id="security">
+    <div class="section-header fade-in">
+      <div class="section-icon red">🔒</div>
+      <div>
+        <div class="section-title">নিরাপত্তা Extensions<span>openssl · sodium · hash</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔐</div>
+        <div class="ext-meta">
+          <div class="ext-name red">php_openssl</div>
+          <div class="ext-tagline">SSL, TLS, Encryption — নিরাপদ যোগাযোগের ভিত্তি</div>
+          <div class="ext-badges">
+            <span class="badge badge-must">অবশ্যই লাগবে</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          OpenSSL extension ছাড়া HTTPS ব্যবহার করে কোনো URL-এ request পাঠানো যায় না। cURL এর HTTPS, JWT token, SSL certificate — সব OpenSSL-এর উপর নির্ভর করে।
+        </p>
+        <ul class="use-list">
+          <li>HTTPS API call করতে (cURL-এর সাথে)</li>
+          <li>JWT (JSON Web Token) তৈরি ও verify করতে</li>
+          <li>Email encryption (S/MIME)-এ</li>
+          <li>RSA/AES encryption/decryption করতে</li>
+          <li>SSL Certificate পড়তে ও যাচাই করতে</li>
+        </ul>
+        <div class="tip-box red">
+          <span class="tip-icon">🚨</span>
+          <span>OpenSSL ছাড়া Payment Gateway-র HTTPS API call করা সম্ভব নয়। এটি সবসময় enable রাখুন।</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🧂</div>
+        <div class="ext-meta">
+          <div class="ext-name red">php_sodium (libsodium)</div>
+          <div class="ext-tagline">আধুনিক cryptography — সবচেয়ে নিরাপদ encryption</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">PHP 7.2+ Built-in</span>
+            <span class="badge badge-perf">Modern Crypto</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          Sodium হলো OpenSSL-এর চেয়ে আধুনিক ও নিরাপদ cryptography library। PHP 7.2 থেকে built-in। Password hashing, secret key encryption, digital signatures সব করা যায়।
+        </p>
+        <ul class="use-list">
+          <li>API key encryption করতে</li>
+          <li>End-to-end encrypted message তৈরিতে</li>
+          <li>Secure random number তৈরিতে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">#️⃣</div>
+        <div class="ext-meta">
+          <div class="ext-name red">php_hash</div>
+          <div class="ext-tagline">MD5, SHA256, bcrypt — হ্যাশিং ফাংশন</div>
+          <div class="ext-badges">
+            <span class="badge badge-builtin">PHP-তে Built-in</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          Hash extension দিয়ে MD5, SHA-1, SHA-256, HMAC সব ধরনের hash তৈরি করা যায়। Password hash করতে <code>password_hash()</code> ব্যবহার করুন (bcrypt ব্যবহার করে)।
+        </p>
+        <div class="tip-box amber">
+          <span class="tip-icon">⚠️</span>
+          <span>Password store করতে <strong>কখনো MD5 বা SHA1 ব্যবহার করবেন না</strong>। সবসময় <code>password_hash($pass, PASSWORD_BCRYPT)</code> ব্যবহার করুন।</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILE & ZIP -->
+  <section id="zip-file">
+    <div class="section-header fade-in">
+      <div class="section-icon pink">🗜️</div>
+      <div>
+        <div class="section-title">ফাইল Extension<span>zip · fileinfo · zlib</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🗜️</div>
+        <div class="ext-meta">
+          <div class="ext-name pink">php_zip</div>
+          <div class="ext-tagline">ZIP ফাইল তৈরি ও খোলা</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Recommended</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          ZIP extension দিয়ে PHP থেকে ZIP ফাইল তৈরি করা, extract করা যায়। Composer PHP package ইনস্টল করতে এটি ব্যবহার করে।
+        </p>
+        <ul class="use-list">
+          <li>Backup system-এ ফাইল compress করতে</li>
+          <li>Multiple ফাইল একসাথে download করাতে</li>
+          <li>Composer package management-এ (অবশ্যই লাগে)</li>
+          <li>Laravel zip package তৈরিতে</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔍</div>
+        <div class="ext-meta">
+          <div class="ext-name pink">php_fileinfo</div>
+          <div class="ext-tagline">ফাইলের আসল ধরন detect করা</div>
+          <div class="ext-badges">
+            <span class="badge badge-rec">Security</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          Fileinfo দিয়ে ফাইলের extension দেখে নয়, ভেতরের content দেখে আসল file type বের করা যায়। কেউ malware.php কে malware.jpg নাম দিয়ে upload করলেও fileinfo ধরে ফেলে।
+        </p>
+        <div class="tip-box green">
+          <span class="tip-icon">🛡️</span>
+          <span>File upload security-র জন্য সবসময় <code>finfo_file()</code> দিয়ে MIME type যাচাই করুন। শুধু extension দেখা নিরাপদ নয়।</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">🔃</div>
+        <div class="ext-meta">
+          <div class="ext-name pink">php_zlib</div>
+          <div class="ext-tagline">gzip compression — bandwidth সাশ্রয়</div>
+          <div class="ext-badges">
+            <span class="badge badge-builtin">Generally Built-in</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          zlib দিয়ে data compress ও decompress করা যায়। HTTP response gzip করে পাঠালে bandwidth ৭০% পর্যন্ত কমে।
+        </p>
+        <ul class="use-list">
+          <li>HTTP output compression (Apache/Nginx-এ)</li>
+          <li>Database-এ বড় data compress করে store করতে</li>
+          <li>.gz ফাইল পড়তে ও লিখতে</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIL -->
+  <section id="mail">
+    <div class="section-header fade-in">
+      <div class="section-icon cyan">📧</div>
+      <div>
+        <div class="section-title">Email Extensions<span>imap · mailparse</span></div>
+      </div>
+    </div>
+
+    <div class="ext-card fade-in">
+      <div class="ext-header">
+        <div class="ext-emoji">📬</div>
+        <div class="ext-meta">
+          <div class="ext-name">php_imap</div>
+          <div class="ext-tagline">Email server থেকে ইমেইল পড়া</div>
+          <div class="ext-badges">
+            <span class="badge badge-opt">ঐচ্ছিক</span>
+          </div>
+        </div>
+      </div>
+      <div class="ext-body">
+        <p class="ext-desc">
+          IMAP extension দিয়ে PHP থেকে email server-এ connect করে inbox-এর ইমেইল পড়া যায়। Email-based ticketing system বা support system বানাতে এটি কাজে লাগে।
+        </p>
+        <ul class="use-list">
+          <li>Email-to-ticket system (Support helpdesk)</li>
+          <li>Inbox থেকে automatic data extraction</li>
+          <li>Email parsing ও auto-reply system</li>
+        </ul>
+        <div class="tip-box blue">
+          <span class="tip-icon">💡</span>
+          <span>শুধু ইমেইল <em>পাঠাতে</em> IMAP লাগে না। পাঠাতে শুধু <code>mail()</code> function বা SMTP (PHPMailer/SwiftMailer) লাগে। IMAP লাগে ইমেইল <em>পড়তে</em>।</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISC -->
+  <section id="misc">
+    <div class="section-header fade-in">
+      <div class="section-icon purple">🛠️</div>
+      <div>
+        <div class="section-title">অন্যান্য গুরুত্বপূর্ণ Extensions<span>tokenizer · bcmath · calendar · soap</span></div>
+      </div>
+    </div>
+
+    <div class="qr-grid fade-in">
+      <div class="qr-item">
+        <div class="qr-name">php_bcmath</div>
+        <div class="qr-desc">বড় সংখ্যার সঠিক গণনা। টাকার হিসাব (দশমিক সংখ্যা) সঠিক রাখতে। ফ্লোটিং পয়েন্ট error এড়াতে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_gmp</div>
+        <div class="qr-desc">GNU Multiple Precision। Cryptography-তে বিশাল সংখ্যার গণনায়। RSA key generation-এ।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_soap</div>
+        <div class="qr-desc">SOAP Web Service-এর সাথে কথা বলতে। পুরনো ব্যাংক ও সরকারি API (WSDL) ব্যবহার করতে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_tokenizer</div>
+        <div class="qr-desc">PHP কোড parse করতে। Code analyzer, formatter, syntax highlighter বানাতে। Composer ব্যবহার করে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_pcntl</div>
+        <div class="qr-desc">Linux process control। Background worker, daemon process তৈরিতে। CLI app-এ signal handling-এ।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_posix</div>
+        <div class="qr-desc">Unix system call। Process ID পাওয়া, user permission check করা। Server-side CLI tool-এ।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_calendar</div>
+        <div class="qr-desc">Julian ও Gregorian calendar conversion। বিভিন্ন calendar system-এর মধ্যে তারিখ রূপান্তরে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_xsl</div>
+        <div class="qr-desc">XSL/XSLT transformation। XML-কে HTML বা অন্য format-এ transform করতে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_pdo_odbc</div>
+        <div class="qr-desc">ODBC ডাটাবেজ সংযোগ। Microsoft SQL Server, Access, IBM DB2 সংযোগে।</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-name">php_mongodb</div>
+        <div class="qr-desc">MongoDB NoSQL ডাটাবেজ। Document-based storage। JSON-like data store করতে।</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PHP.INI SECTION -->
+  <section id="ini">
+    <div class="section-header fade-in">
+      <div class="section-icon amber">⚙️</div>
+      <div>
+        <div class="section-title">php.ini — সম্পূর্ণ বাংলা গাইড<span>Configuration File ব্যাখ্যা</span></div>
+      </div>
+    </div>
+
+    <div class="ini-intro fade-in">
+      <p>
+        <code>php.ini</code> হলো PHP-এর প্রধান configuration ফাইল। এখানে সব Extension enable/disable করা হয়, memory limit, upload size, error reporting, timezone — সব সেটিং এখানে থাকে। ফাইলটি সাধারণত <code>/etc/php/8.x/apache2/php.ini</code> বা <code>/etc/php/8.x/fpm/php.ini</code>-তে পাওয়া যায়।
+      </p>
+    </div>
+
+    <div class="code-block fade-in">
+      <div class="code-block-header"><div class="code-dots"><span></span><span></span><span></span></div>php.ini — সম্পূর্ণ ব্যাখ্যাসহ উদাহরণ</div>
+      <pre><span class="ini-comment">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PHP.INI — বাংলায় বিস্তারিত ব্যাখ্যা
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; === EXTENSION লোড করার নিয়ম ===
+;; extension= দিয়ে সাধারণ extension লোড হয়
+;; zend_extension= দিয়ে Zend engine extension (OPcache) লোড হয়</span>
+
+<span class="ini-section">[PHP]</span>
+
+<span class="ini-comment">; ====== BASIC ENGINE SETTINGS ======</span>
+
+<span class="ini-key">engine</span> <span class="ini-eq">=</span> <span class="ini-val">On</span>             <span class="ini-comment">; PHP engine চালু রাখুন (সবসময় On)</span>
+<span class="ini-key">short_open_tag</span> <span class="ini-eq">=</span> <span class="ini-val">Off</span>     <span class="ini-comment">; &lt;? এর পরিবর্তে &lt;?php ব্যবহার করুন (Off রাখা ভালো)</span>
+<span class="ini-key">precision</span> <span class="ini-eq">=</span> <span class="ini-val">14</span>          <span class="ini-comment">; দশমিক সংখ্যায় কতটি অঙ্ক দেখাবে</span>
+
+<span class="ini-comment">; ====== MEMORY ও EXECUTION ======</span>
+
+<span class="ini-key">memory_limit</span> <span class="ini-eq">=</span> <span class="ini-val">256M</span>     <span class="ini-comment">; একটি PHP script সর্বোচ্চ কতটুকু RAM ব্যবহার করতে পারবে</span>
+                             <span class="ini-comment">; Laravel: ন্যূনতম 128M, ভিডিও/ছবি হলে 512M বা বেশি</span>
+
+<span class="ini-key">max_execution_time</span> <span class="ini-eq">=</span> <span class="ini-val">30</span>  <span class="ini-comment">; script সর্বোচ্চ ৩০ সেকেন্ড চলবে, তারপর বন্ধ হবে</span>
+                             <span class="ini-comment">; বড় file import বা batch job-এ বাড়াতে হতে পারে (300)</span>
+
+<span class="ini-key">max_input_time</span> <span class="ini-eq">=</span> <span class="ini-val">60</span>     <span class="ini-comment">; POST/GET data গ্রহণ করতে সর্বোচ্চ ৬০ সেকেন্ড</span>
+
+<span class="ini-comment">; ====== FILE UPLOAD সেটিং ======</span>
+
+<span class="ini-key">file_uploads</span> <span class="ini-eq">=</span> <span class="ini-val">On</span>       <span class="ini-comment">; ফাইল আপলোড চালু রাখুন</span>
+
+<span class="ini-key">upload_max_filesize</span> <span class="ini-eq">=</span> <span class="ini-val">64M</span> <span class="ini-comment">; সর্বোচ্চ আপলোড ফাইল সাইজ (64MB)</span>
+                             <span class="ini-comment">; এই সীমা বাড়ালে post_max_size-ও বাড়াতে হবে</span>
+
+<span class="ini-key">post_max_size</span> <span class="ini-eq">=</span> <span class="ini-val">128M</span>    <span class="ini-comment">; একটি POST request-এ সর্বোচ্চ কতটুকু data পাঠানো যাবে</span>
+                             <span class="ini-comment">; upload_max_filesize-এর চেয়ে বড় রাখতে হবে</span>
+
+<span class="ini-key">upload_tmp_dir</span> <span class="ini-eq">=</span> <span class="ini-val">/tmp</span>   <span class="ini-comment">; আপলোড করা ফাইল সাময়িকভাবে কোথায় রাখবে</span>
+
+<span class="ini-key">max_file_uploads</span> <span class="ini-eq">=</span> <span class="ini-val">20</span>   <span class="ini-comment">; একসাথে সর্বোচ্চ কতটি ফাইল আপলোড করা যাবে</span>
+
+<span class="ini-comment">; ====== ERROR REPORTING ======</span>
+
+<span class="ini-key">display_errors</span> <span class="ini-eq">=</span> <span class="ini-val">Off</span>     <span class="ini-comment">; Production-এ Off রাখুন (error browser-এ দেখাবে না)</span>
+                             <span class="ini-comment">; Development-এ On করুন</span>
+
+<span class="ini-key">display_startup_errors</span> <span class="ini-eq">=</span> <span class="ini-val">Off</span> <span class="ini-comment">; PHP startup error দেখানো হবে কিনা</span>
+
+<span class="ini-key">log_errors</span> <span class="ini-eq">=</span> <span class="ini-val">On</span>          <span class="ini-comment">; Error log ফাইলে লিখুন (সবসময় On রাখুন)</span>
+
+<span class="ini-key">error_log</span> <span class="ini-eq">=</span> <span class="ini-val">/var/log/php/error.log</span>  <span class="ini-comment">; Error কোথায় লগ হবে</span>
+
+<span class="ini-key">error_reporting</span> <span class="ini-eq">=</span> <span class="ini-val">E_ALL</span>  <span class="ini-comment">; কোন ধরনের error report করবে</span>
+                             <span class="ini-comment">; E_ALL = সব error | Production: E_ALL & ~E_DEPRECATED</span>
+
+<span class="ini-comment">; ====== DATE/TIME ======</span>
+
+<span class="ini-key">date.timezone</span> <span class="ini-eq">=</span> <span class="ini-val">Asia/Dhaka</span>  <span class="ini-comment">; বাংলাদেশের timezone সেট করুন</span>
+                                <span class="ini-comment">; না করলে PHP warning দেবে</span>
+
+<span class="ini-comment">; ====== SESSION সেটিং ======</span>
+
+<span class="ini-key">session.save_handler</span> <span class="ini-eq">=</span> <span class="ini-val">files</span>    <span class="ini-comment">; session কোথায় সংরক্ষণ হবে (files / redis / memcached)</span>
+<span class="ini-key">session.save_path</span> <span class="ini-eq">=</span> <span class="ini-val">"/var/lib/php/sessions"</span>
+<span class="ini-key">session.gc_maxlifetime</span> <span class="ini-eq">=</span> <span class="ini-val">1440</span>  <span class="ini-comment">; session কতক্ষণ বৈধ থাকবে (সেকেন্ডে = ২৪ মিনিট)</span>
+<span class="ini-key">session.cookie_secure</span> <span class="ini-eq">=</span> <span class="ini-val">1</span>     <span class="ini-comment">; HTTPS-এ cookie পাঠাও (Production-এ 1 করুন)</span>
+<span class="ini-key">session.cookie_httponly</span> <span class="ini-eq">=</span> <span class="ini-val">1</span>  <span class="ini-comment">; JavaScript থেকে cookie access করা বন্ধ (XSS রোধে)</span>
+<span class="ini-key">session.cookie_samesite</span> <span class="ini-eq">=</span> <span class="ini-val">Strict</span> <span class="ini-comment">; CSRF attack রোধে</span>
+
+<span class="ini-comment">; ====== EXTENSIONS ENABLE করা ======</span>
+
+<span class="ini-ext">extension=curl</span>          <span class="ini-comment">; HTTP request পাঠাতে (অবশ্যই চালু করুন)</span>
+<span class="ini-ext">extension=mysqli</span>        <span class="ini-comment">; MySQL সংযোগ (WordPress ব্যবহার করে)</span>
+<span class="ini-ext">extension=pdo_mysql</span>     <span class="ini-comment">; PDO দিয়ে MySQL (Laravel, Symfony)</span>
+<span class="ini-ext">extension=pdo_pgsql</span>     <span class="ini-comment">; PDO দিয়ে PostgreSQL</span>
+<span class="ini-ext">extension=pdo_sqlite</span>    <span class="ini-comment">; SQLite ডাটাবেজ</span>
+<span class="ini-ext">extension=gd</span>            <span class="ini-comment">; ছবি resize, thumbnail, watermark</span>
+<span class="ini-ext">extension=mbstring</span>      <span class="ini-comment">; বাংলা/আরবি ভাষার জন্য অবশ্যই লাগবে</span>
+<span class="ini-ext">extension=openssl</span>       <span class="ini-comment">; HTTPS, SSL, JWT, encryption</span>
+<span class="ini-ext">extension=json</span>          <span class="ini-comment">; JSON parse/encode (PHP 8-এ built-in)</span>
+<span class="ini-ext">extension=xml</span>           <span class="ini-comment">; XML parse করতে</span>
+<span class="ini-ext">extension=simplexml</span>     <span class="ini-comment">; সহজ XML parsing</span>
+<span class="ini-ext">extension=dom</span>           <span class="ini-comment">; DOM XML manipulation</span>
+<span class="ini-ext">extension=zip</span>           <span class="ini-comment">; ZIP ফাইল তৈরি ও extract</span>
+<span class="ini-ext">extension=fileinfo</span>      <span class="ini-comment">; ফাইলের আসল type detect করা</span>
+<span class="ini-ext">extension=intl</span>          <span class="ini-comment">; Internationalization (বহু-ভাষা)</span>
+<span class="ini-ext">extension=bcmath</span>        <span class="ini-comment">; সঠিক বড় সংখ্যার গণনা (টাকার হিসাব)</span>
+<span class="ini-ext">extension=sodium</span>        <span class="ini-comment">; আধুনিক cryptography</span>
+<span class="ini-ext">extension=redis</span>         <span class="ini-comment">; Redis cache server সংযোগ</span>
+<span class="ini-ext">extension=apcu</span>          <span class="ini-comment">; In-memory PHP caching</span>
+<span class="ini-ext">extension=imap</span>          <span class="ini-comment">; Email server থেকে mail পড়া</span>
+<span class="ini-ext">extension=soap</span>          <span class="ini-comment">; SOAP Web Service</span>
+<span class="ini-ext">extension=sockets</span>       <span class="ini-comment">; TCP/UDP socket connection</span>
+<span class="ini-ext">extension=tokenizer</span>     <span class="ini-comment">; PHP code parsing (Composer লাগে)</span>
+<span class="ini-ext">extension=exif</span>          <span class="ini-comment">; ছবির metadata (GPS, camera model)</span>
+
+<span class="ini-comment">; Zend Extension (OPcache) — সবার নিচে থাকবে</span>
+<span class="ini-ext">zend_extension=opcache</span>  <span class="ini-comment">; PHP-কে ৫-১০x দ্রুত করে — সবসময় চালু রাখুন!</span>
+
+<span class="ini-comment">; ====== OPCACHE সেটিং ======</span>
+<span class="ini-section">[opcache]</span>
+<span class="ini-key">opcache.enable</span><span class="ini-eq">=</span><span class="ini-val">1</span>
+<span class="ini-key">opcache.memory_consumption</span><span class="ini-eq">=</span><span class="ini-val">256</span>        <span class="ini-comment">; cache-র জন্য RAM (MB)</span>
+<span class="ini-key">opcache.interned_strings_buffer</span><span class="ini-eq">=</span><span class="ini-val">16</span>   <span class="ini-comment">; string buffer (MB)</span>
+<span class="ini-key">opcache.max_accelerated_files</span><span class="ini-eq">=</span><span class="ini-val">10000</span>  <span class="ini-comment">; কতটি ফাইল cache করবে</span>
+<span class="ini-key">opcache.validate_timestamps</span><span class="ini-eq">=</span><span class="ini-val">1</span>       <span class="ini-comment">; Development-এ 1, Production-এ 0</span>
+<span class="ini-key">opcache.revalidate_freq</span><span class="ini-eq">=</span><span class="ini-val">0</span>           <span class="ini-comment">; কতক্ষণ পর file check করবে (0=প্রতি request-এ)</span></pre>
+    </div>
+
+    <!-- INI Quick Reference Table -->
+    <div class="ini-table-wrap fade-in">
+      <table>
+        <thead>
+          <tr>
+            <th>php.ini directive</th>
+            <th>Development</th>
+            <th>Production</th>
+            <th>কী করে / কেন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>display_errors</td>
+            <td><span class="val">On</span></td>
+            <td><span class="val">Off</span></td>
+            <td>error browser-এ দেখানো হবে কিনা। Production-এ Off করুন নইলে হ্যাকার সুবিধা পাবে</td>
+          </tr>
+          <tr>
+            <td>error_reporting</td>
+            <td><span class="val">E_ALL</span></td>
+            <td><span class="val">E_ALL & ~E_DEPRECATED</span></td>
+            <td>কোন ধরনের PHP error report করবে</td>
+          </tr>
+          <tr>
+            <td>memory_limit</td>
+            <td><span class="val">512M</span></td>
+            <td><span class="val">256M</span></td>
+            <td>script-এর সর্বোচ্চ RAM ব্যবহার</td>
+          </tr>
+          <tr>
+            <td>max_execution_time</td>
+            <td><span class="val">120</span></td>
+            <td><span class="val">30</span></td>
+            <td>script কতক্ষণ চলতে পারবে (সেকেন্ড)</td>
+          </tr>
+          <tr>
+            <td>upload_max_filesize</td>
+            <td><span class="val">100M</span></td>
+            <td><span class="val">32M</span></td>
+            <td>সর্বোচ্চ upload ফাইল সাইজ</td>
+          </tr>
+          <tr>
+            <td>post_max_size</td>
+            <td><span class="val">128M</span></td>
+            <td><span class="val">64M</span></td>
+            <td>একটি POST request-এ সর্বোচ্চ data। upload size-এর চেয়ে বড় রাখুন</td>
+          </tr>
+          <tr>
+            <td>date.timezone</td>
+            <td><span class="val">Asia/Dhaka</span></td>
+            <td><span class="val">Asia/Dhaka</span></td>
+            <td>বাংলাদেশ timezone। না দিলে PHP warning দেবে</td>
+          </tr>
+          <tr>
+            <td>session.cookie_secure</td>
+            <td><span class="val">0</span></td>
+            <td><span class="val">1</span></td>
+            <td>HTTPS-এ session cookie পাঠাবে। HTTP-তে পাঠাবে না</td>
+          </tr>
+          <tr>
+            <td>session.cookie_httponly</td>
+            <td><span class="val">1</span></td>
+            <td><span class="val">1</span></td>
+            <td>JavaScript থেকে session cookie পড়া বন্ধ — XSS রোধে</td>
+          </tr>
+          <tr>
+            <td>opcache.enable</td>
+            <td><span class="val">1</span></td>
+            <td><span class="val">1</span></td>
+            <td>PHP দ্রুততার জন্য সবসময় চালু রাখুন</td>
+          </tr>
+          <tr>
+            <td>opcache.validate_timestamps</td>
+            <td><span class="val">1</span></td>
+            <td><span class="val">0</span></td>
+            <td>Development-এ 1 (file change দেখবে), Production-এ 0 (দ্রুততার জন্য)</td>
+          </tr>
+          <tr>
+            <td>expose_php</td>
+            <td><span class="val">On</span></td>
+            <td><span class="val">Off</span></td>
+            <td>HTTP header-এ PHP version দেখানো। Production-এ Off করুন — security</td>
+          </tr>
+          <tr>
+            <td>allow_url_fopen</td>
+            <td><span class="val">On</span></td>
+            <td><span class="val">Off</span></td>
+            <td>URL থেকে file_get_contents() করতে পারবে কিনা। cURL ব্যবহার করুন পরিবর্তে</td>
+          </tr>
+          <tr>
+            <td>allow_url_include</td>
+            <td><span class="val">Off</span></td>
+            <td><span class="val">Off</span></td>
+            <td>Remote URL থেকে PHP include করা বন্ধ — সবসময় Off রাখুন (security)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box amber fade-in" style="margin-top:20px">
+      <span class="tip-icon">🔄</span>
+      <span>php.ini পরিবর্তন করার পরে <strong>Apache</strong>: <code>sudo systemctl restart apache2</code> এবং <strong>PHP-FPM</strong>: <code>sudo systemctl restart php8.x-fpm</code> দিয়ে restart করতে হবে।</span>
+    </div>
+
+    <div class="tip-box blue fade-in">
+      <span class="tip-icon">🔍</span>
+      <span>php.ini-র location জানতে terminal-এ <code>php --ini</code> দিন। অথবা PHP ফাইলে <code>&lt;?php phpinfo(); ?&gt;</code> লিখে browser-এ open করুন — সব তথ্য দেখাবে।</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Quick Decision Guide -->
+  <section>
+    <div class="section-header fade-in">
+      <div class="section-icon green">🎯</div>
+      <div>
+        <div class="section-title">কোন কাজে কোন Extension?<span>Quick Decision Guide</span></div>
+      </div>
+    </div>
+
+    <div class="ini-table-wrap fade-in">
+      <table>
+        <thead>
+          <tr>
+            <th>আমি যা করতে চাই</th>
+            <th>যে Extension লাগবে</th>
+            <th>php.ini লাইন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Payment Gateway / API call করতে</td>
+            <td>cURL + OpenSSL</td>
+            <td><span class="val">extension=curl</span></td>
+          </tr>
+          <tr>
+            <td>MySQL ডাটাবেজ ব্যবহার করতে</td>
+            <td>PDO + pdo_mysql</td>
+            <td><span class="val">extension=pdo_mysql</span></td>
+          </tr>
+          <tr>
+            <td>বাংলায় text processing করতে</td>
+            <td>Mbstring</td>
+            <td><span class="val">extension=mbstring</span></td>
+          </tr>
+          <tr>
+            <td>ছবি resize/thumbnail করতে</td>
+            <td>GD বা Imagick</td>
+            <td><span class="val">extension=gd</span></td>
+          </tr>
+          <tr>
+            <td>PHP দ্রুত করতে</td>
+            <td>OPcache</td>
+            <td><span class="val">zend_extension=opcache</span></td>
+          </tr>
+          <tr>
+            <td>Cache রাখতে (Redis)</td>
+            <td>php_redis</td>
+            <td><span class="val">extension=redis</span></td>
+          </tr>
+          <tr>
+            <td>ZIP ফাইল বানাতে</td>
+            <td>php_zip</td>
+            <td><span class="val">extension=zip</span></td>
+          </tr>
+          <tr>
+            <td>Password সুরক্ষিত রাখতে</td>
+            <td>Hash (built-in)</td>
+            <td>আলাদা extension লাগে না</td>
+          </tr>
+          <tr>
+            <td>Composer ইনস্টল করতে</td>
+            <td>zip + tokenizer + mbstring</td>
+            <td>তিনটিই enable করুন</td>
+          </tr>
+          <tr>
+            <td>Laravel চালাতে</td>
+            <td>curl + pdo_mysql + mbstring + openssl + zip + gd + json + xml</td>
+            <td>সবগুলো enable করুন</td>
+          </tr>
+          <tr>
+            <td>WordPress চালাতে</td>
+            <td>mysqli + gd + mbstring + curl + zip</td>
+            <td>এই পাঁচটি অবশ্যই</td>
+          </tr>
+          <tr>
+            <td>টাকার সঠিক হিসাব করতে</td>
+            <td>BCMath</td>
+            <td><span class="val">extension=bcmath</span></td>
+          </tr>
+          <tr>
+            <td>SOAP API ব্যবহার করতে</td>
+            <td>php_soap</td>
+            <td><span class="val">extension=soap</span></td>
+          </tr>
+          <tr>
+            <td>ফাইল upload নিরাপদ করতে</td>
+            <td>Fileinfo</td>
+            <td><span class="val">extension=fileinfo</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">⚡</div>
+  <div>PHP Extensions — সম্পূর্ণ বাংলা গাইড</div>
+  <div style="margin-top:6px;color:#334155">PHP 8.x · সব তথ্য বাংলায় · Developer-দের জন্য তৈরি</div>
+</div>
+
+<script>
+  // Scroll-triggered fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => {
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
