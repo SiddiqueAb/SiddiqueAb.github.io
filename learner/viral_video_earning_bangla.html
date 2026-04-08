@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ভাইরাল ভিডিও ও আয় গাইড | মুখ-কণ্ঠ ছাড়া</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Baloo+Da+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --card: #1a1a1a;
+  --border: #2a2a2a;
+  --gold: #f5c842;
+  --gold2: #e8a020;
+  --red: #ff4444;
+  --green: #00e676;
+  --blue: #4fc3f7;
+  --purple: #ce93d8;
+  --text: #f0f0f0;
+  --muted: #888;
+  --fb: #1877f2;
+  --yt: #ff0000;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Header */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px;
+  position: relative;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,200,66,0.08) 0%, transparent 70%);
+  overflow: hidden;
+}
+
+.hero-rings {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(245,200,66,0.06);
+  animation: ring-expand 4s ease-out infinite;
+}
+.ring:nth-child(1) { width: 300px; height: 300px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 500px; height: 500px; animation-delay: 0.8s; }
+.ring:nth-child(3) { width: 700px; height: 700px; animation-delay: 1.6s; }
+.ring:nth-child(4) { width: 900px; height: 900px; animation-delay: 2.4s; }
+
+@keyframes ring-expand {
+  0% { opacity: 0.5; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+.hero-emoji {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.hero h1 {
+  font-family: 'Baloo Da 2', cursive;
+  font-size: clamp(28px, 5vw, 54px);
+  font-weight: 800;
+  line-height: 1.25;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 16px;
+}
+
+.hero h1 .gold { color: var(--gold); }
+.hero h1 .red { color: var(--red); }
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 36px;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+
+.htag {
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.htag.gold { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.3); color: var(--gold); }
+.htag.red { background: rgba(255,68,68,0.1); border-color: rgba(255,68,68,0.3); color: var(--red); }
+.htag.green { background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.3); color: var(--green); }
+.htag.blue { background: rgba(79,195,247,0.1); border-color: rgba(79,195,247,0.3); color: var(--blue); }
+
+.scroll-hint {
+  position: relative;
+  z-index: 1;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.scroll-arrow {
+  width: 24px;
+  height: 24px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  animation: bounce 1.5s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50% { transform: rotate(45deg) translateY(6px); }
+}
+
+/* Navigation */
+.nav-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,13,13,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.ntab {
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: block;
+}
+
+.ntab:hover { color: var(--text); }
+.ntab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* Main container */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 20px 100px;
+}
+
+/* Section */
+.section {
+  padding: 60px 0 20px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.section.visible { opacity: 1; transform: none; }
+
+.sec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.sec-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.sec-meta { flex: 1; }
+
+.sec-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.sec-title {
+  font-family: 'Baloo Da 2', cursive;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 18px;
+  transition: border-color 0.3s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: #3a3a3a;
+  transform: translateY(-2px);
+}
+
+.card-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.ca-gold { background: linear-gradient(90deg, var(--gold), var(--gold2), transparent); }
+.ca-red { background: linear-gradient(90deg, var(--red), #ff8080, transparent); }
+.ca-green { background: linear-gradient(90deg, var(--green), #80ffb0, transparent); }
+.ca-blue { background: linear-gradient(90deg, var(--blue), #80d8ff, transparent); }
+.ca-purple { background: linear-gradient(90deg, var(--purple), #f3e5f5, transparent); }
+.ca-fb { background: linear-gradient(90deg, var(--fb), #90caf9, transparent); }
+.ca-yt { background: linear-gradient(90deg, var(--yt), #ff8080, transparent); }
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.card p, .card li {
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+.card ul { padding-left: 20px; }
+.card ul li { margin-bottom: 6px; }
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+
+/* Niche card */
+.niche-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.niche-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--glow-color, rgba(245,200,66,0.05)) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.niche-card:hover { border-color: #444; transform: translateY(-4px); }
+.niche-card:hover::before { opacity: 1; }
+
+.niche-emoji { font-size: 36px; margin-bottom: 10px; }
+.niche-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.niche-earn { font-size: 12px; color: var(--green); font-weight: 600; }
+.niche-diff { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Steps */
+.steps { counter-reset: st; }
+
+.step-item {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 28px;
+  align-items: flex-start;
+}
+
+.step-bubble {
+  counter-increment: st;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(245,200,66,0.1);
+  border: 2px solid rgba(245,200,66,0.4);
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Baloo Da 2', cursive;
+}
+
+.step-body h4 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.step-body p {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Tool table */
+.tool-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.tool-table th {
+  background: rgba(245,200,66,0.08);
+  color: var(--gold);
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-table td {
+  padding: 13px 16px;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(42,42,42,0.6);
+  vertical-align: middle;
+}
+
+.tool-table tr:last-child td { border-bottom: none; }
+.tool-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+
+/* Platform badge */
+.plat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.plat-fb { background: rgba(24,119,242,0.15); color: var(--fb); }
+.plat-yt { background: rgba(255,0,0,0.12); color: var(--yt); }
+.plat-both { background: rgba(245,200,66,0.12); color: var(--gold); }
+.plat-free { background: rgba(0,230,118,0.12); color: var(--green); }
+.plat-paid { background: rgba(206,147,216,0.12); color: var(--purple); }
+
+/* Income viz */
+.income-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.inc-label {
+  width: 140px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.inc-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.inc-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1.5s ease;
+  width: 0;
+}
+
+.inc-val {
+  width: 100px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Info box */
+.infobox {
+  background: linear-gradient(135deg, rgba(245,200,66,0.06), rgba(232,160,32,0.04));
+  border: 1px solid rgba(245,200,66,0.2);
+  border-radius: 14px;
+  padding: 22px;
+  margin: 22px 0;
+}
+
+.infobox h4 { color: var(--gold); margin-bottom: 8px; font-size: 15px; }
+.infobox p { color: var(--muted); font-size: 14px; }
+
+/* Warning box */
+.warnbox {
+  background: rgba(255,68,68,0.05);
+  border: 1px solid rgba(255,68,68,0.2);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 16px 0;
+}
+.warnbox h4 { color: var(--red); margin-bottom: 6px; font-size: 14px; }
+.warnbox p { color: var(--muted); font-size: 14px; }
+
+/* Checklist */
+.checklist { list-style: none; padding: 0; }
+.checklist li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(42,42,42,0.5);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.checklist li:last-child { border-bottom: none; }
+.check-icon { flex-shrink: 0; color: var(--green); font-size: 16px; }
+.check-icon.warn { color: var(--red); }
+.check-icon.info { color: var(--blue); }
+
+/* Platform comparison */
+.plat-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.plat-box {
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+
+.plat-box.fb-box {
+  background: linear-gradient(135deg, rgba(24,119,242,0.08), rgba(24,119,242,0.04));
+  border-color: rgba(24,119,242,0.2);
+}
+
+.plat-box.yt-box {
+  background: linear-gradient(135deg, rgba(255,0,0,0.08), rgba(255,0,0,0.04));
+  border-color: rgba(255,0,0,0.2);
+}
+
+.plat-logo {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.plat-name {
+  font-family: 'Baloo Da 2', cursive;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.fb-box .plat-name { color: var(--fb); }
+.yt-box .plat-name { color: var(--yt); }
+
+.plat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(42,42,42,0.4);
+  font-size: 13px;
+}
+.plat-row:last-child { border-bottom: none; }
+.plat-key { color: var(--muted); }
+.plat-val { color: var(--text); font-weight: 600; }
+
+/* Flow arrow list */
+.flow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 16px 0;
+}
+
+.flow-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.flow-item .fi-icon { font-size: 20px; }
+.flow-connector {
+  width: 2px;
+  height: 14px;
+  background: var(--border);
+  margin-left: 28px;
+}
+
+/* Highlight number */
+.big-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.big-num {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.bn-val {
+  font-family: 'Baloo Da 2', cursive;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.bn-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* Footer */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 50px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+footer h3 {
+  font-family: 'Baloo Da 2', cursive;
+  font-size: 22px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+footer p { color: var(--muted); font-size: 14px; }
+
+@media (max-width: 600px) {
+  .plat-compare { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .ntab { padding: 14px 14px; font-size: 12px; }
+  .inc-label { width: 110px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+  </div>
+
+  <div class="hero-emoji">🎬</div>
+  <h1><span class="gold">মুখ-কণ্ঠ ছাড়াই</span><br><span class="red">ভাইরাল ভিডিও</span> বানাও<br>এবং আয় করো</h1>
+  <p class="hero-sub">Facebook ও YouTube-এ নিজের চেহারা বা গলা না দেখিয়ে ভিডিও বানানো ও টাকা আয়ের সম্পূর্ণ বাংলা গাইড</p>
+
+  <div class="hero-tags">
+    <span class="htag gold">✨ No Face</span>
+    <span class="htag red">🎙️ No Voice</span>
+    <span class="htag green">💰 Income</span>
+    <span class="htag blue">📱 Beginner Friendly</span>
+  </div>
+
+  <div class="scroll-hint">
+    <span>নিচে স্ক্রল করুন</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- Nav -->
+<nav class="nav-tabs">
+  <a class="ntab active" href="#niche">নিশ বাছাই</a>
+  <a class="ntab" href="#tools">টুলস</a>
+  <a class="ntab" href="#creation">ভিডিও তৈরি</a>
+  <a class="ntab" href="#viral">ভাইরাল কৌশল</a>
+  <a class="ntab" href="#facebook">Facebook</a>
+  <a class="ntab" href="#youtube">YouTube</a>
+  <a class="ntab" href="#earning">আয় পদ্ধতি</a>
+  <a class="ntab" href="#roadmap">রোডম্যাপ</a>
+</nav>
+
+<div class="container">
+
+  <!-- Section 1: Niche -->
+  <section class="section" id="niche">
+    <div class="sec-header">
+      <div class="sec-icon">🎯</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০১</div>
+        <h2 class="sec-title">সঠিক নিশ বাছাই — সফলতার প্রথম ধাপ</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-gold"></div>
+      <h3>নিশ কেন গুরুত্বপূর্ণ?</h3>
+      <p>নিশ মানে আপনার ভিডিওর বিষয়। ভুল নিশে হাজারো ভিডিও বানিয়েও আয় নেই। সঠিক নিশ বেছে নিলে — ২০-৩০টি ভিডিওতেই মাসে ৳৩০,০০০+ আয় সম্ভব। নিচের নিশগুলো No-Face No-Voice ফরম্যাটে সবচেয়ে ভালো কাজ করে।</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="niche-card" style="--glow-color: rgba(245,200,66,0.06)">
+        <div class="niche-emoji">💰</div>
+        <div class="niche-name">Finance Tips</div>
+        <div class="niche-earn">$৫–$১৫ CPM</div>
+        <div class="niche-diff">⭐⭐⭐ মধ্যম</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">🍳</div>
+        <div class="niche-name">রান্নার ভিডিও</div>
+        <div class="niche-earn">$২–$৬ CPM</div>
+        <div class="niche-diff">⭐⭐ সহজ</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">💪</div>
+        <div class="niche-name">Fitness & Health</div>
+        <div class="niche-earn">$৩–$৮ CPM</div>
+        <div class="niche-diff">⭐⭐ সহজ</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">📱</div>
+        <div class="niche-name">Tech Tips</div>
+        <div class="niche-earn">$৪–$১২ CPM</div>
+        <div class="niche-diff">⭐⭐⭐ মধ্যম</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">🧠</div>
+        <div class="niche-name">মোটিভেশন</div>
+        <div class="niche-earn">$২–$৫ CPM</div>
+        <div class="niche-diff">⭐⭐ সহজ</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">🌍</div>
+        <div class="niche-name">Facts/History</div>
+        <div class="niche-earn">$২–$৭ CPM</div>
+        <div class="niche-diff">⭐⭐ সহজ</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">🎮</div>
+        <div class="niche-name">Gaming Highlights</div>
+        <div class="niche-earn">$২–$৫ CPM</div>
+        <div class="niche-diff">⭐⭐ সহজ</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">📚</div>
+        <div class="niche-name">শিক্ষামূলক</div>
+        <div class="niche-earn">$৩–$৮ CPM</div>
+        <div class="niche-diff">⭐⭐⭐ মধ্যম</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-emoji">😂</div>
+        <div class="niche-name">Meme/Compilation</div>
+        <div class="niche-earn">$১–$৩ CPM</div>
+        <div class="niche-diff">⭐ সহজ</div>
+      </div>
+    </div>
+
+    <div class="infobox" style="margin-top:20px;">
+      <h4>💡 বাংলাদেশিদের জন্য সেরা নিশ (২০২৫)</h4>
+      <p>বাংলা ভাষায় <strong style="color:var(--gold)">ইসলামিক মোটিভেশন, রান্নার রেসিপি, কৃষি টিপস, সরকারি চাকরির তথ্য, স্বাস্থ্য টিপস</strong> — এই নিশগুলোতে প্রতিযোগিতা কম কিন্তু দর্শক অনেক বেশি। শুরু করুন এখানেই।</p>
+    </div>
+  </section>
+
+  <!-- Section 2: Tools -->
+  <section class="section" id="tools">
+    <div class="sec-header">
+      <div class="sec-icon">🛠️</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০২</div>
+        <h2 class="sec-title">প্রয়োজনীয় টুলস — বেশিরভাগ ফ্রি!</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-green"></div>
+      <h3>📹 ভিডিও তৈরির টুলস</h3>
+      <div style="overflow-x:auto; margin-top:12px;">
+        <table class="tool-table">
+          <thead>
+            <tr>
+              <th>টুল নাম</th>
+              <th>কাজ</th>
+              <th>মূল্য</th>
+              <th>প্ল্যাটফর্ম</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--text)">CapCut</strong></td>
+              <td>ভিডিও এডিট, সাবটাইটেল অটো-জেনারেট</td>
+              <td><span class="plat plat-free">✓ ফ্রি</span></td>
+              <td>PC/মোবাইল</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">Canva</strong></td>
+              <td>থাম্বনেইল, গ্রাফিক ডিজাইন, স্লাইড ভিডিও</td>
+              <td><span class="plat plat-free">✓ ফ্রি</span></td>
+              <td>ওয়েব/অ্যাপ</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">InVideo AI</strong></td>
+              <td>টেক্সট থেকে ভিডিও অটো তৈরি</td>
+              <td><span class="plat plat-paid">পেইড ($২৫/মাস)</span></td>
+              <td>ওয়েব</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">Pictory AI</strong></td>
+              <td>ব্লগ/স্ক্রিপ্ট থেকে ভিডিও</td>
+              <td><span class="plat plat-paid">পেইড ($১৯/মাস)</span></td>
+              <td>ওয়েব</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">DaVinci Resolve</strong></td>
+              <td>প্রফেশনাল ভিডিও এডিটিং</td>
+              <td><span class="plat plat-free">✓ ফ্রি</span></td>
+              <td>PC</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">PowerPoint/Slides</strong></td>
+              <td>স্লাইডশো ভিডিও (তথ্যমূলক)</td>
+              <td><span class="plat plat-free">✓ ফ্রি</span></td>
+              <td>PC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-blue"></div>
+      <h3>🎙️ AI ভয়েসওভার (নিজে না বলেও!)</h3>
+      <div style="overflow-x:auto; margin-top:12px;">
+        <table class="tool-table">
+          <thead>
+            <tr><th>টুল</th><th>বৈশিষ্ট্য</th><th>বাংলা সাপোর্ট</th><th>মূল্য</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--text)">ElevenLabs</strong></td>
+              <td>সবচেয়ে মানসম্পন্ন AI ভয়েস</td>
+              <td><span class="plat plat-free">✓ আছে</span></td>
+              <td>ফ্রি/পেইড</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">Murf AI</strong></td>
+              <td>১২০+ ভয়েস, ২০+ ভাষা</td>
+              <td><span class="plat plat-free">✓ আছে</span></td>
+              <td>ফ্রি ট্রায়াল</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">Google Text-to-Speech</strong></td>
+              <td>বাংলা ভয়েস জেনারেট</td>
+              <td><span class="plat plat-free">✓ সেরা বাংলা</span></td>
+              <td>ফ্রি</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">Speechify</strong></td>
+              <td>যেকোনো টেক্সট পড়ে শোনায়</td>
+              <td><span class="plat plat-free">✓ আছে</span></td>
+              <td>ফ্রি</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text)">CapCut AI ভয়েস</strong></td>
+              <td>অ্যাপেই বাংলা AI ভয়েস</td>
+              <td><span class="plat plat-free">✓ আছে</span></td>
+              <td>ফ্রি</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-accent ca-purple"></div>
+        <h3>🖼️ স্টক ফুটেজ (ফ্রি)</h3>
+        <ul>
+          <li><strong style="color:var(--text)">Pexels.com</strong> — ফ্রি HD ভিডিও ক্লিপ</li>
+          <li><strong style="color:var(--text)">Pixabay.com</strong> — ফ্রি ভিডিও ও ছবি</li>
+          <li><strong style="color:var(--text)">Coverr.co</strong> — সুন্দর ফ্রি বি-রোল</li>
+          <li><strong style="color:var(--text)">Videvo.net</strong> — ১০,০০০+ ফ্রি ক্লিপ</li>
+          <li><strong style="color:var(--text)">YouTube Studio</strong> — ফ্রি অডিও লাইব্রেরি</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-accent ca-red"></div>
+        <h3>🎵 ব্যাকগ্রাউন্ড মিউজিক (কপিরাইট ফ্রি)</h3>
+        <ul>
+          <li><strong style="color:var(--text)">YouTube Audio Library</strong> — সম্পূর্ণ ফ্রি</li>
+          <li><strong style="color:var(--text)">Pixabay Music</strong> — রয়্যালটি-ফ্রি</li>
+          <li><strong style="color:var(--text)">Free Music Archive</strong> — বৈচিত্র্যময়</li>
+          <li><strong style="color:var(--text)">Bensound.com</strong> — প্রফেশনাল মানের</li>
+          <li><strong style="color:var(--text)">Mixkit.co</strong> — সহজে ডাউনলোড</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Creation -->
+  <section class="section" id="creation">
+    <div class="sec-header">
+      <div class="sec-icon">🎬</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৩</div>
+        <h2 class="sec-title">ভিডিও তৈরির ৫টি পদ্ধতি</h2>
+      </div>
+    </div>
+
+    <!-- Method 1 -->
+    <div class="card" style="border-color:rgba(245,200,66,0.2);">
+      <div class="card-accent ca-gold"></div>
+      <h3>🖥️ পদ্ধতি ১: স্ক্রিন রেকর্ড ভিডিও</h3>
+      <p style="margin-bottom:14px;">মানচিত্র, গ্রাফ, ওয়েবসাইট, সফটওয়্যার — স্ক্রিন রেকর্ড করে AI ভয়েস যোগ করুন। সবচেয়ে সহজ পদ্ধতি।</p>
+      <div class="flow-list">
+        <div class="flow-item"><span class="fi-icon">📝</span> ChatGPT দিয়ে স্ক্রিপ্ট লিখুন</div>
+        <div class="flow-connector"></div>
+        <div class="flow-item"><span class="fi-icon">🖥️</span> OBS বা Windows Game Bar দিয়ে স্ক্রিন রেকর্ড করুন</div>
+        <div class="flow-connector"></div>
+        <div class="flow-item"><span class="fi-icon">🎙️</span> ElevenLabs বা Google TTS দিয়ে AI ভয়েস তৈরি করুন</div>
+        <div class="flow-connector"></div>
+        <div class="flow-item"><span class="fi-icon">✂️</span> CapCut-এ ভিডিও + ভয়েস + মিউজিক যোগ করুন</div>
+        <div class="flow-connector"></div>
+        <div class="flow-item"><span class="fi-icon">🚀</span> আপলোড করুন</div>
+      </div>
+    </div>
+
+    <!-- Method 2 -->
+    <div class="card">
+      <div class="card-accent ca-blue"></div>
+      <h3>🤖 পদ্ধতি ২: AI দিয়ে অটোমেটিক ভিডিও</h3>
+      <p style="margin-bottom:14px;">InVideo AI বা Pictory-তে শুধু টপিক লিখুন — মিনিটের মধ্যে পুরো ভিডিও তৈরি হয়ে যাবে। স্ক্রিপ্ট, ফুটেজ, ভয়েস, সাবটাইটেল সব অটো।</p>
+      <div class="grid-2">
+        <div>
+          <p style="color:var(--green); font-weight:700; margin-bottom:8px;">✅ সুবিধা</p>
+          <ul style="color:var(--muted); padding-left:16px; font-size:14px;">
+            <li>সময় বাঁচে প্রচুর</li>
+            <li>প্রতিদিন ১০+ ভিডিও বানানো সম্ভব</li>
+            <li>কোনো দক্ষতা লাগে না</li>
+          </ul>
+        </div>
+        <div>
+          <p style="color:var(--red); font-weight:700; margin-bottom:8px;">⚠️ সীমাবদ্ধতা</p>
+          <ul style="color:var(--muted); padding-left:16px; font-size:14px;">
+            <li>মাসিক খরচ আছে ($১৯–$৪৯)</li>
+            <li>বাংলা কন্টেন্ট সীমিত</li>
+            <li>কাস্টমাইজেশন কম</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Method 3 -->
+    <div class="card">
+      <div class="card-accent ca-green"></div>
+      <h3>🎞️ পদ্ধতি ৩: স্লাইডশো/টেক্সট ভিডিও</h3>
+      <p style="margin-bottom:14px;">Canva বা PowerPoint-এ সুন্দর স্লাইড বানান, ছবি যোগ করুন, ভিডিও এক্সপোর্ট করুন। মোটিভেশন, ইসলামিক, ফ্যাক্টস চ্যানেলের জন্য পারফেক্ট।</p>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-bubble">১</div>
+          <div class="step-body">
+            <h4>Canva-তে টেমপ্লেট বেছে নিন</h4>
+            <p>YouTube Thumbnail বা Presentation টেমপ্লেট বেছে ১৬:৯ রেশিওতে কাজ করুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">২</div>
+          <div class="step-body">
+            <h4>টেক্সট ও ছবি যোগ করুন</h4>
+            <p>প্রতিটি স্লাইডে মূল পয়েন্ট, সুন্দর ফন্ট ও প্রাসঙ্গিক ছবি রাখুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৩</div>
+          <div class="step-body">
+            <h4>অ্যানিমেশন যোগ করুন</h4>
+            <p>Canva-র বিল্ট-ইন অ্যানিমেশন দিন। ভিডিও জীবন্ত দেখাবে।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৪</div>
+          <div class="step-body">
+            <h4>MP4 এক্সপোর্ট + ভয়েস/মিউজিক যোগ</h4>
+            <p>CapCut-এ ওপেন করে AI ভয়েস বা টেক্সট-টু-স্পিচ ও ব্যাকগ্রাউন্ড মিউজিক যোগ করুন।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Method 4 -->
+    <div class="card">
+      <div class="card-accent ca-purple"></div>
+      <h3>🍳 পদ্ধতি ৪: হাতের ভিডিও (Hands-Only)</h3>
+      <p>শুধু হাত দেখান — মুখ নয়। রান্না, ক্রাফট, DIY, টিউটোরিয়াল ভিডিওর জন্য অসাধারণ। স্মার্টফোন উপরে রেখে টেবিলের উপর কাজ করুন। শুধু হাত দেখানো চ্যানেলগুলো ইউটিউবে কোটি কোটি ভিউ পায়।</p>
+    </div>
+
+    <!-- Method 5 -->
+    <div class="card">
+      <div class="card-accent ca-red"></div>
+      <h3>📊 পদ্ধতি ৫: ডেটা/চার্ট ভিডিও (Bar Chart Race)</h3>
+      <p>দেশের জনসংখ্যা, ক্রিকেট রান, স্কোর তুলনা — এরকম অ্যানিমেটেড চার্ট ভিডিও দ্রুত ভাইরাল হয়। <strong style="color:var(--text)">Flourish.studio</strong> (ফ্রি) ব্যবহার করুন। শুধু ডেটা ইনপুট দিন — অটো অ্যানিমেশন তৈরি হয়।</p>
+    </div>
+  </section>
+
+  <!-- Section 4: Viral Tips -->
+  <section class="section" id="viral">
+    <div class="sec-header">
+      <div class="sec-icon">🔥</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৪</div>
+        <h2 class="sec-title">ভাইরাল হওয়ার আসল রহস্য</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-red"></div>
+      <h3>⚡ প্রথম ৩ সেকেন্ড — সবচেয়ে গুরুত্বপূর্ণ!</h3>
+      <p>৭০% দর্শক প্রথম ৩ সেকেন্ডেই ভিডিও ছেড়ে দেন। শুরুতেই এমন কিছু দেখান বা বলুন যা কৌতূহল তৈরি করে।</p>
+      <div style="margin-top:16px;" class="grid-2">
+        <div style="background:rgba(0,230,118,0.05); border:1px solid rgba(0,230,118,0.15); border-radius:10px; padding:14px;">
+          <p style="color:var(--green); font-weight:700; font-size:13px; margin-bottom:8px;">✅ ভালো হুক উদাহরণ</p>
+          <p style="color:var(--muted); font-size:13px;">"এই একটা কাজ করলে আপনার রান্না চিরকাল মনে রাখবে সবাই..."</p>
+          <br>
+          <p style="color:var(--muted); font-size:13px;">"৯৯% মানুষ জানে না এই সহজ টিপস..."</p>
+        </div>
+        <div style="background:rgba(255,68,68,0.05); border:1px solid rgba(255,68,68,0.15); border-radius:10px; padding:14px;">
+          <p style="color:var(--red); font-weight:700; font-size:13px; margin-bottom:8px;">❌ খারাপ শুরু</p>
+          <p style="color:var(--muted); font-size:13px;">"আজকে আমি আপনাদের দেখাব..."</p>
+          <br>
+          <p style="color:var(--muted); font-size:13px;">"হ্যালো বন্ধুরা, আমার চ্যানেলে স্বাগতম..."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-gold"></div>
+      <h3>📌 ভাইরাল থাম্বনেইলের ৫টি নিয়ম</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">বড় টেক্সট:</strong> থাম্বনেইলে ৩-৫ শব্দের বেশি না। মোবাইলে ছোট দেখায় তাই বড় হরফ ব্যবহার করুন।</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">উজ্জ্বল রং:</strong> হলুদ, লাল, কমলা — এই রংগুলো মনোযোগ টানে। গাঢ় নীল বা ধূসর এড়িয়ে চলুন।</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">কন্ট্রাস্ট:</strong> টেক্সট ও ব্যাকগ্রাউন্ডের মধ্যে স্পষ্ট পার্থক্য রাখুন যাতে দূর থেকে পড়া যায়।</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">কৌতূহল তৈরি:</strong> থাম্বনেইলে এমন কিছু দেখান যা দেখে মানুষ ক্লিক না করে থাকতে পারে না।</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">সামঞ্জস্য:</strong> চ্যানেলের সব থাম্বনেইল একই স্টাইলে রাখুন যাতে ব্র্যান্ড পরিচিত হয়।</div></li>
+      </ul>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-accent ca-blue"></div>
+        <h3>📅 কনসিস্টেন্সি = সাফল্য</h3>
+        <ul class="checklist">
+          <li><span class="check-icon">✔</span> সপ্তাহে কমপক্ষে ৩টি ভিডিও আপলোড করুন</li>
+          <li><span class="check-icon">✔</span> নির্দিষ্ট সময়ে আপলোড দিন (যেমন প্রতি সোম, বুধ, শুক্র)</li>
+          <li><span class="check-icon">✔</span> প্রথম ৩ মাস ফলাফল না দেখলেও ছাড়বেন না</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-accent ca-green"></div>
+        <h3>🔍 SEO কীওয়ার্ড টিপস</h3>
+        <ul class="checklist">
+          <li><span class="check-icon info">ℹ</span> YouTube-এ সার্চ করুন, সাজেশন দেখুন</li>
+          <li><span class="check-icon info">ℹ</span> TubeBuddy বা VidIQ ফ্রি ভার্সন ব্যবহার করুন</li>
+          <li><span class="check-icon info">ℹ</span> টাইটেলে মূল কীওয়ার্ড প্রথমে রাখুন</li>
+          <li><span class="check-icon info">ℹ</span> ডেসক্রিপশনে ২০০+ শব্দ লিখুন</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="infobox">
+      <h4>⏱️ আদর্শ ভিডিও দৈর্ঘ্য</h4>
+      <p>
+        <span class="plat plat-yt">YouTube Short</span> ৩০–৬০ সেকেন্ড &nbsp;
+        <span class="plat plat-yt">YouTube Long</span> ৮–১৫ মিনিট &nbsp;
+        <span class="plat plat-fb">Facebook Reel</span> ১৫–৯০ সেকেন্ড &nbsp;
+        <span class="plat plat-fb">Facebook Video</span> ৩–১০ মিনিট
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 5: Facebook -->
+  <section class="section" id="facebook">
+    <div class="sec-header">
+      <div class="sec-icon">📘</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৫</div>
+        <h2 class="sec-title">Facebook থেকে আয় — সম্পূর্ণ গাইড</h2>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(24,119,242,0.3)">
+      <div class="card-accent ca-fb"></div>
+      <h3>Facebook Monetization-এর শর্ত (In-stream Ads)</h3>
+      <div class="big-numbers">
+        <div class="big-num"><div class="bn-val">৫,০০০</div><div class="bn-label">পেজ ফলোয়ার</div></div>
+        <div class="big-num"><div class="bn-val">৬০,০০০</div><div class="bn-label">মিনিট ওয়াচটাইম (৬০ দিনে)</div></div>
+        <div class="big-num"><div class="bn-val">৬০</div><div class="bn-label">দিনে ওয়াচটাইম সংগ্রহের সময়</div></div>
+        <div class="big-num"><div class="bn-val">৩ মিনিট</div><div class="bn-label">ন্যূনতম ভিডিও দৈর্ঘ্য</div></div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-bubble">১</div>
+        <div class="step-body">
+          <h4>Facebook Page খুলুন</h4>
+          <p>ব্যক্তিগত প্রোফাইল নয় — একটি পাবলিক পেজ খুলুন। নিশ অনুযায়ী নাম দিন। প্রফেশনাল প্রোফাইল ও কভার ছবি যোগ করুন।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">২</div>
+        <div class="step-body">
+          <h4>নিয়মিত ভিডিও আপলোড করুন</h4>
+          <p>প্রতিটি ভিডিও কমপক্ষে ৩ মিনিটের হতে হবে। Native upload করুন — YouTube লিংক শেয়ার নয়। Facebook নিজের প্ল্যাটফর্মের ভিডিওকে বেশি রিচ দেয়।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">৩</div>
+        <div class="step-body">
+          <h4>Facebook Reels চালু করুন</h4>
+          <p>Short ভিডিও (Reels) আপলোড দিন। Reels-এ অর্গানিক রিচ অনেক বেশি। ৩০ সেকেন্ড থেকে ৯০ সেকেন্ডের ভার্টিকাল ভিডিও তৈরি করুন।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">৪</div>
+        <div class="step-body">
+          <h4>Creator Studio-তে Apply করুন</h4>
+          <p>শর্ত পূরণ হলে Meta Creator Studio-তে গিয়ে Monetization Apply করুন। In-stream Ads, Stars, Subscriptions — সব অপশন দেখাবে।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">৫</div>
+        <div class="step-body">
+          <h4>Payment Method যোগ করুন</h4>
+          <p>বাংলাদেশ থেকে Payoneer বা Bank Account যোগ করুন। $১০০ জমলে পেমেন্ট পাবেন।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-fb"></div>
+      <h3>💡 Facebook-এ দ্রুত গ্রো করার টিপস</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">✔</span> <div>ভিডিওতে <strong style="color:var(--text)">বাংলা সাবটাইটেল</strong> যোগ করুন — ৮৫% মানুষ Sound off-এ দেখেন</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">Group-এ শেয়ার করুন</strong> — আপনার নিশের বড় বড় গ্রুপে ভিডিও পোস্ট করুন</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">Engagement বাড়ান</strong> — মন্তব্যের জবাব দিন, প্রশ্ন করুন</div></li>
+        <li><span class="check-icon">✔</span> <div>ভিডিওর প্রথম ফ্রেমে <strong style="color:var(--text)">Eye-catching ছবি</strong> রাখুন (Custom Thumbnail)</div></li>
+        <li><span class="check-icon warn">⚠</span> <div>কপিরাইট ভিডিও ব্যবহার করবেন না — পেজ ব্যান হয়ে যাবে</div></li>
+      </ul>
+    </div>
+
+    <div class="warnbox">
+      <h4>⛔ Facebook Reels Bonus Program</h4>
+      <p>Meta মাঝে মাঝে নির্বাচিত ক্রিয়েটরদের Reels Bonus দেয় (প্রতি মাসে $১০০–$৩,০০০)। এটি Invite-only। নিয়মিত Reels আপলোড দিলে আপনিও পেতে পারেন।</p>
+    </div>
+  </section>
+
+  <!-- Section 6: YouTube -->
+  <section class="section" id="youtube">
+    <div class="sec-header">
+      <div class="sec-icon">📺</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৬</div>
+        <h2 class="sec-title">YouTube থেকে আয় — সম্পূর্ণ গাইড</h2>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(255,0,0,0.2)">
+      <div class="card-accent ca-yt"></div>
+      <h3>YouTube Partner Program (YPP) শর্ত</h3>
+      <div class="big-numbers">
+        <div class="big-num"><div class="bn-val">১,০০০</div><div class="bn-label">সাবস্ক্রাইবার</div></div>
+        <div class="big-num"><div class="bn-val">৪,০০০</div><div class="bn-label">ঘণ্টা ওয়াচটাইম (১ বছরে)</div></div>
+        <div class="big-num" style="--gold:#00e676">
+          <div class="bn-val" style="color:var(--green)">অথবা</div>
+          <div class="bn-label">Short-এর জন্য</div>
+        </div>
+        <div class="big-num"><div class="bn-val">১০M</div><div class="bn-label">Short ভিউ (৯০ দিনে)</div></div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-bubble">১</div>
+        <div class="step-body">
+          <h4>YouTube Channel খুলুন</h4>
+          <p>Google Account দিয়ে Channel খুলুন। নিশ অনুযায়ী নাম ও আর্ট দিন। About Section সুন্দরভাবে পূরণ করুন।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">২</div>
+        <div class="step-body">
+          <h4>YouTube Shorts দিয়ে শুরু করুন</h4>
+          <p>Shorts (৬০ সেকেন্ড পর্যন্ত) খুব দ্রুত ভিউ আনে। নতুন চ্যানেলের জন্য সেরা কৌশল। প্রতিদিন ১-২টি Short আপলোড দিন।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">৩</div>
+        <div class="step-body">
+          <h4>Long-form Video (৮-১৫ মিনিট) আপলোড করুন</h4>
+          <p>Long ভিডিওতে AdSense থেকে বেশি আয় হয়। ভিডিওর মাঝে মিড-রোল বিজ্ঞাপন যোগ হয়। সপ্তাহে ২-৩টি করুন।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-bubble">৪</div>
+        <div class="step-body">
+          <h4>YPP Apply করুন</h4>
+          <p>YouTube Studio > Earn > Apply for YPP। Google AdSense Account যোগ করুন। ২–৪ সপ্তাহের মধ্যে Approval পাবেন।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-yt"></div>
+      <h3>🔑 YouTube SEO — সার্চে আসার কৌশল</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">✔</span> <div>টাইটেলে <strong style="color:var(--text)">মূল কীওয়ার্ড প্রথমে</strong> রাখুন — যেমন "রান্না টিপস | ৫ মিনিটে..."</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">Description-এ ৩০০+ শব্দ</strong> লিখুন, প্রথম ২ লাইনে কীওয়ার্ড রাখুন</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">১৫টি ট্যাগ</strong> ব্যবহার করুন — মিক্স করুন ব্রড ও স্পেসিফিক ট্যাগ</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">চ্যাপ্টার যোগ করুন</strong> (Timestamps) — YouTube বেশি রিচ দেয়</div></li>
+        <li><span class="check-icon">✔</span> <div><strong style="color:var(--text)">Playlist তৈরি করুন</strong> — একই নিশের ভিডিও একসাথে রাখুন</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 7: Earning -->
+  <section class="section" id="earning">
+    <div class="sec-header">
+      <div class="sec-icon">💰</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৭</div>
+        <h2 class="sec-title">আয়ের সকল পদ্ধতি</h2>
+      </div>
+    </div>
+
+    <!-- Platform compare -->
+    <div class="plat-compare">
+      <div class="plat-box fb-box">
+        <div class="plat-logo">📘</div>
+        <div class="plat-name">Facebook</div>
+        <div class="plat-row"><span class="plat-key">CPM রেট</span><span class="plat-val">$০.৫–$৩</span></div>
+        <div class="plat-row"><span class="plat-key">বাংলাদেশ CPM</span><span class="plat-val">$০.৩–$১</span></div>
+        <div class="plat-row"><span class="plat-key">পেমেন্ট থ্রেশহোল্ড</span><span class="plat-val">$১০০</span></div>
+        <div class="plat-row"><span class="plat-key">Shorts (Reels) বোনাস</span><span class="plat-val">✓ আছে</span></div>
+        <div class="plat-row"><span class="plat-key">বাংলা কন্টেন্ট</span><span class="plat-val">খুব ভালো</span></div>
+      </div>
+      <div class="plat-box yt-box">
+        <div class="plat-logo">📺</div>
+        <div class="plat-name">YouTube</div>
+        <div class="plat-row"><span class="plat-key">CPM রেট</span><span class="plat-val">$১–$১৫</span></div>
+        <div class="plat-row"><span class="plat-key">বাংলাদেশ CPM</span><span class="plat-val">$০.৫–$২</span></div>
+        <div class="plat-row"><span class="plat-key">পেমেন্ট থ্রেশহোল্ড</span><span class="plat-val">$১০০</span></div>
+        <div class="plat-row"><span class="plat-key">Shorts মনিটাইজেশন</span><span class="plat-val">✓ আছে</span></div>
+        <div class="plat-row"><span class="plat-key">Long-form আয়</span><span class="plat-val">অনেক বেশি</span></div>
+      </div>
+    </div>
+
+    <!-- Income streams -->
+    <div class="card" style="margin-top:8px;">
+      <div class="card-accent ca-gold"></div>
+      <h3>💎 আয়ের ৭টি পদ্ধতি</h3>
+      <div style="margin-top:16px;" class="steps">
+        <div class="step-item">
+          <div class="step-bubble">১</div>
+          <div class="step-body">
+            <h4>Ad Revenue (বিজ্ঞাপন)</h4>
+            <p>সবচেয়ে পরিচিত পদ্ধতি। ভিডিওর আগে ও মাঝে বিজ্ঞাপন দেখায়। প্রতি হাজার ভিউতে $০.৫–$৫ আয় হয়।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">২</div>
+          <div class="step-body">
+            <h4>Affiliate Marketing</h4>
+            <p>পণ্যের লিংক Description-এ দিন। কেউ কিনলে ৫-৩০% কমিশন পাবেন। Daraz, Amazon, Hostinger — এরকম প্রোগ্রামে যোগ দিন। Ad Revenue-এর চেয়ে ১০ গুণ বেশি আয় সম্ভব।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৩</div>
+          <div class="step-body">
+            <h4>Sponsored Content</h4>
+            <p>ব্র্যান্ড আপনাকে তাদের পণ্য রিভিউ বা প্রমোট করতে টাকা দেবে। ১০,০০০+ সাবস্ক্রাইবার হলে ব্র্যান্ড নিজেই যোগাযোগ করে।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৪</div>
+          <div class="step-body">
+            <h4>Channel Membership / Super Thanks</h4>
+            <p>YouTube-এ Channel Membership চালু করুন। দর্শকরা মাসিক ফি দিয়ে exclusive কন্টেন্ট পাবেন। Super Thanks দিয়ে সরাসরি টিপস পাবেন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৫</div>
+          <div class="step-body">
+            <h4>Digital Products বিক্রি</h4>
+            <p>নিজের ই-বুক, কোর্স, টেমপ্লেট বিক্রি করুন। একবার তৈরি করলে বারবার আয় হয়। Gumroad বা Teachable ব্যবহার করুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৬</div>
+          <div class="step-body">
+            <h4>Facebook Stars</h4>
+            <p>লাইভ স্ট্রিমিংয়ে দর্শকরা Stars পাঠাতে পারেন। ১ Star = $০.০১। জনপ্রিয় ক্রিয়েটররা লাইভে হাজার হাজার Stars পান।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble">৭</div>
+          <div class="step-body">
+            <h4>Channel/Page বিক্রি</h4>
+            <p>বড় চ্যানেল ও পেজ ব্যবসায়িকভাবে কিনে-বেচা হয়। ১ লক্ষ সাবস্ক্রাইবারের চ্যানেল $৫০০–$৫,০০০-এ বিক্রি হয়।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Income projection -->
+    <div class="card">
+      <div class="card-accent ca-green"></div>
+      <h3>📈 বাস্তব আয়ের হিসাব (বাংলা কন্টেন্ট)</h3>
+      <p style="color:var(--muted); margin-bottom:20px; font-size:14px;">প্রতি মাসে আনুমানিক আয় (শুধু Ad Revenue, বাংলাদেশি দর্শক)</p>
+
+      <div class="income-bar">
+        <div class="inc-label">১০K ভিউ/মাস</div>
+        <div class="inc-track"><div class="inc-fill" style="width:5%; background: linear-gradient(90deg, var(--green), #00ff88);"></div></div>
+        <div class="inc-val">$৩–$৮</div>
+      </div>
+      <div class="income-bar">
+        <div class="inc-label">১০০K ভিউ/মাস</div>
+        <div class="inc-track"><div class="inc-fill" style="width:15%; background: linear-gradient(90deg, var(--blue), #80d8ff);"></div></div>
+        <div class="inc-val">$৩০–$৮০</div>
+      </div>
+      <div class="income-bar">
+        <div class="inc-label">৫০০K ভিউ/মাস</div>
+        <div class="inc-track"><div class="inc-fill" style="width:35%; background: linear-gradient(90deg, var(--gold), #ffd700);"></div></div>
+        <div class="inc-val">$১৫০–$৪০০</div>
+      </div>
+      <div class="income-bar">
+        <div class="inc-label">১M ভিউ/মাস</div>
+        <div class="inc-track"><div class="inc-fill" style="width:55%; background: linear-gradient(90deg, var(--gold2), var(--gold));"></div></div>
+        <div class="inc-val">$৩০০–$৮০০</div>
+      </div>
+      <div class="income-bar">
+        <div class="inc-label">৫M ভিউ/মাস</div>
+        <div class="inc-track"><div class="inc-fill" style="width:80%; background: linear-gradient(90deg, var(--red), var(--gold));"></div></div>
+        <div class="inc-val">$১,৫০০–$৪,০০০</div>
+      </div>
+
+      <div class="warnbox" style="margin-top:20px;">
+        <h4>⚠️ মনে রাখুন</h4>
+        <p>Affiliate Marketing ও Sponsorship যোগ করলে উপরের পরিমাণ ৩-১০ গুণ বেড়ে যায়। Finance বা Tech নিশে বাংলাদেশি দর্শকের CPM তুলনামূলক বেশি।</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Roadmap -->
+  <section class="section" id="roadmap">
+    <div class="sec-header">
+      <div class="sec-icon">🗺️</div>
+      <div class="sec-meta">
+        <div class="sec-label">ধাপ ০৮</div>
+        <h2 class="sec-title">শূন্য থেকে আয় — মাসভিত্তিক রোডম্যাপ</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-gold"></div>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-bubble" style="background:rgba(0,230,118,0.15); border-color:rgba(0,230,118,0.4); color:var(--green);">M1</div>
+          <div class="step-body">
+            <h4>মাস ১ — প্রস্তুতি ও শুরু</h4>
+            <p>নিশ বাছাই করুন। CapCut ও Canva ইনস্টল করুন। Facebook Page ও YouTube Channel খুলুন। প্রথম ১০টি ভিডিও তৈরি করুন। টুলস শিখুন, পারফেকশন নয়।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble" style="background:rgba(79,195,247,0.15); border-color:rgba(79,195,247,0.4); color:var(--blue);">M2</div>
+          <div class="step-body">
+            <h4>মাস ২ — কনসিস্টেন্সি ও শেখা</h4>
+            <p>প্রতি সপ্তাহে ৩-৫টি ভিডিও দিন। Analytics দেখুন — কোন ভিডিও বেশি ভিউ পাচ্ছে? সেই স্টাইলে আরও বানান। থাম্বনেইল উন্নত করুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble" style="background:rgba(206,147,216,0.15); border-color:rgba(206,147,216,0.4); color:var(--purple);">M3</div>
+          <div class="step-body">
+            <h4>মাস ৩ — অপ্টিমাইজেশন</h4>
+            <p>SEO ঠিক করুন। সফল ভিডিওর ফরম্যাট বারবার ব্যবহার করুন। Affiliate লিংক Description-এ যোগ করুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble" style="background:rgba(245,200,66,0.15); border-color:rgba(245,200,66,0.4); color:var(--gold);">M4</div>
+          <div class="step-body">
+            <h4>মাস ৪–৬ — মনিটাইজেশন</h4>
+            <p>YouTube ও Facebook-এর শর্ত পূরণ হলে Apply করুন। প্রথম Payment পাবেন। Affiliate ও Sponsorship থেকেও আসবে।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-bubble" style="background:rgba(255,68,68,0.15); border-color:rgba(255,68,68,0.4); color:var(--red);">M6+</div>
+          <div class="step-body">
+            <h4>মাস ৬+ — স্কেল আপ</h4>
+            <p>ভালো টুলে বিনিয়োগ করুন। আরও চ্যানেল খুলুন। কন্টেন্ট ব্যাচে তৈরি করুন (সপ্তাহে একদিন ৭ ভিডিও বানান)। সহকারী নিন।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent ca-green"></div>
+      <h3>✅ সফলতার চেকলিস্ট</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">✔</span> নিশ বাছাই করেছি এবং প্রতিযোগিতা যাচাই করেছি</li>
+        <li><span class="check-icon">✔</span> CapCut ও Canva ইনস্টল করেছি</li>
+        <li><span class="check-icon">✔</span> YouTube Channel ও Facebook Page খুলেছি</li>
+        <li><span class="check-icon">✔</span> প্রথম ভিডিও আপলোড করেছি</li>
+        <li><span class="check-icon">✔</span> সাপ্তাহিক আপলোড শিডিউল নির্ধারণ করেছি</li>
+        <li><span class="check-icon">✔</span> Affiliate Program-এ রেজিস্ট্রেশন করেছি</li>
+        <li><span class="check-icon">✔</span> Payoneer অ্যাকাউন্ট খুলেছি</li>
+        <li><span class="check-icon warn">⚠</span> কপিরাইট কন্টেন্ট ব্যবহার না করার শপথ নিয়েছি</li>
+        <li><span class="check-icon warn">⚠</span> ৩ মাস না থামার মানসিক প্রস্তুতি নিয়েছি</li>
+      </ul>
+    </div>
+
+    <div class="infobox">
+      <h4>🚀 শেষ কথা</h4>
+      <p>সফলতার একটাই রহস্য — <strong style="color:var(--gold)">কনসিস্টেন্সি</strong>। প্রথম ৩ মাস ভিউ কম আসবে, আয় হবে না — এটা স্বাভাবিক। যারা ছাড়ে না, তারাই জেতে। আপনার প্রতিটি ভিডিও একটি বিনিয়োগ — একবার আপলোড করলে বছরের পর বছর আয় দেয়।</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div style="font-size:40px; margin-bottom:16px;">🎬💰</div>
+  <h3>শুরু করুন আজই!</h3>
+  <p>মুখ নয়, কণ্ঠ নয় — শুধু দরকার পরিশ্রম ও ধৈর্য</p>
+  <p style="margin-top:10px; font-size:12px; color:#444;">এই গাইড শিক্ষামূলক উদ্দেশ্যে তৈরি। আয়ের পরিমাণ কন্টেন্টের মান ও ধারাবাহিকতার উপর নির্ভর করে।</p>
+</footer>
+
+<script>
+// Scroll animations
+const sections = document.querySelectorAll('.section');
+const obs = new IntersectionObserver(e => {
+  e.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+sections.forEach(s => obs.observe(s));
+
+// Animate income bars when visible
+const barObs = new IntersectionObserver(e => {
+  e.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.querySelectorAll('.inc-fill').forEach(b => {
+        const w = b.style.width;
+        b.style.width = '0';
+        setTimeout(() => b.style.width = w, 100);
+      });
+      barObs.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.card').forEach(c => barObs.observe(c));
+
+// Nav active state
+const navLinks = document.querySelectorAll('.ntab');
+const secEls = document.querySelectorAll('.section');
+
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secEls.forEach(s => {
+    if (s.getBoundingClientRect().top < window.innerHeight * 0.4) cur = s.id;
+  });
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+  });
+});
+
+// Niche card click
+document.querySelectorAll('.niche-card').forEach(c => {
+  c.addEventListener('click', function() {
+    this.style.transform = 'scale(0.96)';
+    setTimeout(() => this.style.transform = '', 200);
+  });
+});
+
+// First section visible
+setTimeout(() => document.getElementById('niche').classList.add('visible'), 200);
+</script>
+</body>
+</html>

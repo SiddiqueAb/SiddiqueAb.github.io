@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নেটওয়ার্ক কীভাবে কাজ করে</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050d1a;
+    --surface: #0a1628;
+    --card: #0f1f38;
+    --border: #1a3050;
+    --accent: #00c8ff;
+    --accent2: #7b2fff;
+    --accent3: #00ffaa;
+    --text: #e8f4ff;
+    --muted: #7a9cbd;
+    --glow: 0 0 30px rgba(0,200,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orb-float 8s ease-in-out infinite;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(0,200,255,0.06); top: -100px; right: -100px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(123,47,255,0.08); bottom: 200px; left: -50px; animation-delay: 3s; }
+  .orb3 { width: 250px; height: 250px; background: rgba(0,255,170,0.05); top: 50%; right: 10%; animation-delay: 5s; }
+
+  @keyframes orb-float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 80px 20px 60px;
+    background: linear-gradient(180deg, rgba(0,200,255,0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,200,255,0.1);
+    border: 1px solid rgba(0,200,255,0.3);
+    color: var(--accent);
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: pulse-badge 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-badge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,200,255,0.3); }
+    50% { box-shadow: 0 0 20px rgba(0,200,255,0.2); }
+  }
+
+  .hero h1 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 400;
+    line-height: 1.3;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+
+  .hero p {
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 18px;
+  }
+
+  /* Network animation */
+  .network-viz {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 50px auto 0;
+    height: 180px;
+  }
+
+  .network-viz svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .node-pulse {
+    animation: node-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes node-glow {
+    0%, 100% { opacity: 0.6; r: 8; }
+    50% { opacity: 1; r: 11; }
+  }
+
+  .data-packet {
+    animation: travel 3s linear infinite;
+  }
+  .data-packet2 { animation-delay: 1s; }
+  .data-packet3 { animation-delay: 2s; }
+
+  @keyframes travel {
+    0% { offset-distance: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+
+  /* Main content */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: rgba(0,200,255,0.15); border: 1px solid rgba(0,200,255,0.3); }
+  .icon-purple { background: rgba(123,47,255,0.15); border: 1px solid rgba(123,47,255,0.3); }
+  .icon-green { background: rgba(0,255,170,0.15); border: 1px solid rgba(0,255,170,0.3); }
+  .icon-orange { background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.3); }
+  .icon-red { background: rgba(255,80,80,0.15); border: 1px solid rgba(255,80,80,0.3); }
+
+  .section-title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .section-num {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,200,255,0.3);
+    box-shadow: var(--glow);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .card.blue::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .card.purple::before { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .card.green::before { background: linear-gradient(90deg, var(--accent3), transparent); }
+  .card.orange::before { background: linear-gradient(90deg, #ffa500, transparent); }
+  .card.red::before { background: linear-gradient(90deg, #ff5050, transparent); }
+
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .card p {
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  /* Grid layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  /* Steps */
+  .steps {
+    counter-reset: step;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    counter-increment: step;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0,200,255,0.1);
+    border: 2px solid rgba(0,200,255,0.4);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-content h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .step-content p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+  }
+
+  .flow-box {
+    background: rgba(0,200,255,0.08);
+    border: 1px solid rgba(0,200,255,0.25);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 20px;
+  }
+
+  /* Highlight box */
+  .highlight {
+    background: linear-gradient(135deg, rgba(0,200,255,0.08), rgba(123,47,255,0.08));
+    border: 1px solid rgba(0,200,255,0.2);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .highlight h4 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  .highlight p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* Protocol table */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th {
+    background: rgba(0,200,255,0.1);
+    color: var(--accent);
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 13px 18px;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(26,48,80,0.5);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(0,200,255,0.03); color: var(--text); }
+
+  /* Info badge */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-blue { background: rgba(0,200,255,0.15); color: var(--accent); }
+  .badge-purple { background: rgba(123,47,255,0.2); color: #b085ff; }
+  .badge-green { background: rgba(0,255,170,0.15); color: var(--accent3); }
+
+  /* Packet visual */
+  .packet-demo {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin: 20px 0;
+  }
+
+  .packet-row {
+    display: flex;
+    align-items: stretch;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .packet-field {
+    flex: 1;
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+
+  .packet-field:last-child { border-right: none; }
+
+  .pf-header { background: rgba(0,200,255,0.12); flex: 0.8; }
+  .pf-source { background: rgba(123,47,255,0.1); }
+  .pf-dest { background: rgba(0,255,170,0.1); }
+  .pf-data { background: rgba(255,165,0,0.08); flex: 2; }
+  .pf-check { background: rgba(255,80,80,0.1); flex: 0.7; }
+
+  .pf-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .pf-val {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  /* OSI Layer viz */
+  .osi-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .osi-layer {
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .osi-layer:hover {
+    transform: translateX(6px);
+    box-shadow: -4px 0 20px rgba(0,200,255,0.2);
+    border-color: rgba(0,200,255,0.3);
+  }
+
+  .osi-num {
+    width: 40px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .osi-name {
+    width: 160px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 15px;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .osi-desc {
+    padding: 8px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .osi-proto {
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .l7 { background: rgba(255,80,80,0.08); --lc: #ff5050; }
+  .l6 { background: rgba(255,140,0,0.08); --lc: #ff8c00; }
+  .l5 { background: rgba(255,220,0,0.08); --lc: #ffd700; }
+  .l4 { background: rgba(0,255,170,0.08); --lc: #00ffaa; }
+  .l3 { background: rgba(0,200,255,0.08); --lc: #00c8ff; }
+  .l2 { background: rgba(123,47,255,0.08); --lc: #7b2fff; }
+  .l1 { background: rgba(255,105,180,0.08); --lc: #ff69b4; }
+
+  .osi-num, .osi-name { color: var(--lc); }
+
+  /* Voice codec */
+  .codec-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .codec-card {
+    flex: 1;
+    min-width: 140px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+
+  .codec-card:hover { border-color: rgba(0,200,255,0.4); }
+
+  .codec-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .codec-bw {
+    font-size: 12px;
+    color: var(--accent3);
+    margin-bottom: 4px;
+  }
+
+  .codec-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Scroll indicator */
+  .toc {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .toc-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+
+  .toc-dot.active {
+    background: var(--accent);
+    transform: scale(1.5);
+  }
+
+  @media (max-width: 600px) {
+    .toc { display: none; }
+    .osi-proto { display: none; }
+    .osi-name { width: 120px; font-size: 13px; }
+  }
+
+  /* Animated data line */
+  @keyframes dash {
+    to { stroke-dashoffset: -20; }
+  }
+
+  .animated-line {
+    stroke-dasharray: 6 4;
+    animation: dash 0.6s linear infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- TOC Dots -->
+<nav class="toc" id="toc">
+  <div class="toc-dot active" onclick="scrollToSection(0)"></div>
+  <div class="toc-dot" onclick="scrollToSection(1)"></div>
+  <div class="toc-dot" onclick="scrollToSection(2)"></div>
+  <div class="toc-dot" onclick="scrollToSection(3)"></div>
+  <div class="toc-dot" onclick="scrollToSection(4)"></div>
+  <div class="toc-dot" onclick="scrollToSection(5)"></div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">🌐 ডিজিটাল নেটওয়ার্ক</div>
+  <h1>নেটওয়ার্ক কীভাবে কাজ করে?</h1>
+  <p>কম্পিউটার থেকে কম্পিউটার — ভয়েস থেকে ভিডিও — সবকিছু পাঠানো হয় ডেটার ছোট ছোট প্যাকেটে</p>
+
+  <!-- Animated network -->
+  <div class="network-viz">
+    <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(0,200,255,0.6)"/>
+        </marker>
+        <path id="path1" d="M 80,90 Q 200,30 350,90" fill="none"/>
+        <path id="path2" d="M 350,90 Q 500,30 620,90" fill="none"/>
+        <path id="path3" d="M 80,90 Q 200,150 350,90" fill="none"/>
+      </defs>
+
+      <!-- Connection lines -->
+      <path d="M 80,90 Q 200,30 350,90" stroke="rgba(0,200,255,0.15)" stroke-width="2" fill="none"/>
+      <path d="M 350,90 Q 500,30 620,90" stroke="rgba(0,200,255,0.15)" stroke-width="2" fill="none"/>
+      <path d="M 80,90 Q 200,150 350,90" stroke="rgba(123,47,255,0.2)" stroke-width="2" fill="none"/>
+      <path d="M 350,90 Q 200,150 620,90" stroke="rgba(0,255,170,0.1)" stroke-width="1.5" fill="none" stroke-dasharray="4 4"/>
+
+      <!-- Animated data packets -->
+      <circle r="5" fill="#00c8ff" opacity="0.9">
+        <animateMotion dur="2.5s" repeatCount="indefinite" begin="0s">
+          <mpath href="#path1"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="5" fill="#7b2fff" opacity="0.9">
+        <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.8s">
+          <mpath href="#path2"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
+      </circle>
+      <circle r="4" fill="#00ffaa" opacity="0.9">
+        <animateMotion dur="3s" repeatCount="indefinite" begin="1.5s">
+          <mpath href="#path3"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+      </circle>
+
+      <!-- Nodes -->
+      <!-- Computer -->
+      <circle cx="80" cy="90" r="28" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)" stroke-width="2"/>
+      <circle cx="80" cy="90" r="20" fill="rgba(0,200,255,0.15)" stroke="rgba(0,200,255,0.3)" stroke-width="1.5" class="node-pulse"/>
+      <text x="80" y="95" text-anchor="middle" font-size="18">💻</text>
+      <text x="80" y="128" text-anchor="middle" font-size="11" fill="rgba(0,200,255,0.8)">আপনার PC</text>
+
+      <!-- Router -->
+      <circle cx="350" cy="90" r="32" fill="rgba(123,47,255,0.08)" stroke="rgba(123,47,255,0.5)" stroke-width="2"/>
+      <circle cx="350" cy="90" r="22" fill="rgba(123,47,255,0.15)" stroke="rgba(123,47,255,0.3)" stroke-width="1.5">
+        <animate attributeName="r" values="22;25;22" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <text x="350" y="95" text-anchor="middle" font-size="20">🌐</text>
+      <text x="350" y="132" text-anchor="middle" font-size="11" fill="rgba(123,47,255,0.9)">রাউটার/সার্ভার</text>
+
+      <!-- Remote computer -->
+      <circle cx="620" cy="90" r="28" fill="rgba(0,255,170,0.08)" stroke="rgba(0,255,170,0.5)" stroke-width="2"/>
+      <circle cx="620" cy="90" r="20" fill="rgba(0,255,170,0.15)" stroke="rgba(0,255,170,0.3)" stroke-width="1.5" class="node-pulse"/>
+      <text x="620" y="95" text-anchor="middle" font-size="18">📱</text>
+      <text x="620" y="128" text-anchor="middle" font-size="11" fill="rgba(0,255,170,0.8)">গন্তব্য</text>
+    </svg>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Section 1: Network basics -->
+  <section class="section" id="s0">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🔌</div>
+      <div>
+        <div class="section-num">অধ্যায় ০১</div>
+        <h2 class="section-title">নেটওয়ার্ক কী এবং কীভাবে ডিভাইস সংযুক্ত হয়?</h2>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <h3>নেটওয়ার্ক মানে কী?</h3>
+      <p>নেটওয়ার্ক হলো দুটি বা তার বেশি ডিভাইসের একটি সংযুক্ত ব্যবস্থা যেখানে তারা একে অপরের সাথে তথ্য আদান-প্রদান করতে পারে। আপনার ফোন, ল্যাপটপ, রাউটার — সবই একটি নেটওয়ার্কের অংশ। ইন্টারনেট হলো পৃথিবীর সবচেয়ে বড় নেটওয়ার্ক — কোটি কোটি ডিভাইসের সংযোগ।</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card blue">
+        <h3>🏠 LAN (লোকাল এরিয়া নেটওয়ার্ক)</h3>
+        <p>একটি ছোট এলাকার মধ্যে (বাড়ি, অফিস, স্কুল) ডিভাইসগুলো একটি রাউটারের মাধ্যমে সংযুক্ত থাকে। Wi-Fi বা ইথারনেট ক্যাবল ব্যবহার করে।</p>
+      </div>
+      <div class="card purple">
+        <h3>🌍 WAN (ওয়াইড এরিয়া নেটওয়ার্ক)</h3>
+        <p>দেশ থেকে দেশে, মহাদেশ থেকে মহাদেশে সংযোগ। ISP (ইন্টারনেট সার্ভিস প্রোভাইডার) রাউটার, ফাইবার অপটিক ক্যাবল, স্যাটেলাইটের মাধ্যমে এটি তৈরি করে।</p>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <h4>📡 সংযোগের মাধ্যমগুলো কী কী?</h4>
+      <p>
+        <span class="badge badge-blue">ফাইবার অপটিক</span> আলোর গতিতে ডেটা পাঠায়, সবচেয়ে দ্রুত &nbsp;
+        <span class="badge badge-purple">কপার ক্যাবল</span> বৈদ্যুতিক সিগনাল দিয়ে ডেটা পাঠায় &nbsp;
+        <span class="badge badge-green">Wi-Fi/রেডিও তরঙ্গ</span> বেতার সংযোগ, ২.৪GHz বা ৫GHz ফ্রিকোয়েন্সিতে
+      </p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h4>আপনার ডিভাইস → মডেম/রাউটার</h4>
+          <p>আপনার ফোন বা কম্পিউটার প্রথমে বাড়ির রাউটারের সাথে সংযুক্ত হয়। রাউটার প্রতিটি ডিভাইসকে একটি আইপি অ্যাড্রেস দেয় (যেমন ১৯২.১৬৮.১.১০৪)।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h4>রাউটার → ISP (ইন্টারনেট প্রদানকারী)</h4>
+          <p>রাউটার আপনার ডেটা ISP-এর কাছে পাঠায়। ISP হলো গেটওয়ে — যেমন GP, Robi, BTCL। তারা আপনাকে ইন্টারনেটের সাথে যুক্ত করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h4>ISP → DNS সার্ভার</h4>
+          <p>আপনি যখন "google.com" টাইপ করেন, DNS সার্ভার সেই নামটিকে একটি আইপি অ্যাড্রেসে রূপান্তরিত করে (৮.৮.৮.৮)। এটি ফোন বইয়ের মতো কাজ করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h4>গন্তব্য সার্ভারের কাছে পৌঁছানো</h4>
+          <p>রাউটারগুলো ডেটা প্যাকেট সঠিক পথে পাঠায়। প্রতিটি রাউটার প্যাকেটটি দেখে এবং পরবর্তী গন্তব্যে ফরওয়ার্ড করে — এটিকে বলে "হপ"।</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: IP & Packets -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <div class="section-icon icon-purple">📦</div>
+      <div>
+        <div class="section-num">অধ্যায় ০২</div>
+        <h2 class="section-title">আইপি অ্যাড্রেস ও ডেটা প্যাকেট</h2>
+      </div>
+    </div>
+
+    <div class="card purple">
+      <h3>আইপি অ্যাড্রেস কী?</h3>
+      <p>প্রতিটি ডিভাইসের একটি অনন্য ঠিকানা থাকে — এটাই IP (Internet Protocol) অ্যাড্রেস। IPv4 দেখতে এরকম: <strong style="color:#b085ff">103.12.45.67</strong>। IPv6 আরও লম্বা: <strong style="color:#00ffaa">2001:0db8:85a3::8a2e:0370:7334</strong>। পৃথিবীর কোটি কোটি ডিভাইসের প্রত্যেকটির নিজস্ব ঠিকানা থাকে।</p>
+    </div>
+
+    <div class="card purple">
+      <h3>ডেটা প্যাকেট কী?</h3>
+      <p>ইন্টারনেটে কোনো ফাইল, ছবি বা ভয়েস কল একসাথে পাঠানো হয় না। বড় তথ্যকে ছোট ছোট টুকরোয় ভাগ করা হয় — এগুলোকে বলে <strong style="color:#b085ff">প্যাকেট</strong>। প্রতিটি প্যাকেট আলাদা পথে যেতে পারে এবং গন্তব্যে পৌঁছে আবার জোড়া লাগে।</p>
+    </div>
+
+    <div class="packet-demo">
+      <h3 style="margin-bottom:20px; font-size:16px; color:var(--muted);">একটি ডেটা প্যাকেটের গঠন:</h3>
+      <div class="packet-row">
+        <div class="packet-field pf-header">
+          <span class="pf-label">হেডার</span>
+          <span class="pf-val">📋 মেটাডেটা</span>
+        </div>
+        <div class="packet-field pf-source">
+          <span class="pf-label">উৎস IP</span>
+          <span class="pf-val">192.168.1.5</span>
+        </div>
+        <div class="packet-field pf-dest">
+          <span class="pf-label">গন্তব্য IP</span>
+          <span class="pf-val">8.8.8.8</span>
+        </div>
+        <div class="packet-field pf-data">
+          <span class="pf-label">পেলোড (আসল তথ্য)</span>
+          <span class="pf-val">01101000 01100101 01101100...</span>
+        </div>
+        <div class="packet-field pf-check">
+          <span class="pf-label">চেকসাম</span>
+          <span class="pf-val">✓ যাচাই</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:14px; margin-top:8px;">প্রতিটি প্যাকেট সাধারণত ১৫০০ bytes পর্যন্ত হয়। একটি ভিডিও ফাইল হাজার হাজার প্যাকেটে বিভক্ত হয়।</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-box">ডেটা তৈরি</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">প্যাকেটে ভাগ</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">রাউটিং</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">গন্তব্যে পৌঁছানো</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">পুনর্মিলন</div>
+    </div>
+  </section>
+
+  <!-- Section 3: OSI Model -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <div class="section-icon icon-green">🏗️</div>
+      <div>
+        <div class="section-num">অধ্যায় ০৩</div>
+        <h2 class="section-title">OSI মডেল — নেটওয়ার্কের ৭টি স্তর</h2>
+      </div>
+    </div>
+
+    <div class="card green">
+      <h3>OSI মডেল কী?</h3>
+      <p>নেটওয়ার্ক যোগাযোগকে ৭টি স্তরে ভাগ করে বোঝা হয়। নিচ থেকে উপরে — ফিজিক্যাল ক্যাবল থেকে শুরু করে আপনার অ্যাপ পর্যন্ত। প্রতিটি স্তর নির্দিষ্ট কাজ করে।</p>
+    </div>
+
+    <div class="osi-layers" style="margin-top:20px;">
+      <div class="osi-layer l7">
+        <div class="osi-num">৭</div>
+        <div class="osi-name">অ্যাপ্লিকেশন</div>
+        <div class="osi-desc">ব্যবহারকারী যা দেখেন — ব্রাউজার, অ্যাপ, ইমেইল ক্লায়েন্ট</div>
+        <div class="osi-proto">HTTP, SMTP, DNS</div>
+      </div>
+      <div class="osi-layer l6">
+        <div class="osi-num">৬</div>
+        <div class="osi-name">প্রেজেন্টেশন</div>
+        <div class="osi-desc">ডেটা এনক্রিপশন, কম্প্রেশন, ফরম্যাট রূপান্তর</div>
+        <div class="osi-proto">SSL/TLS, JPEG</div>
+      </div>
+      <div class="osi-layer l5">
+        <div class="osi-num">৫</div>
+        <div class="osi-name">সেশন</div>
+        <div class="osi-desc">সংযোগ শুরু, বজায় রাখা এবং শেষ করার নিয়ন্ত্রণ</div>
+        <div class="osi-proto">NetBIOS, RPC</div>
+      </div>
+      <div class="osi-layer l4">
+        <div class="osi-num">৪</div>
+        <div class="osi-name">ট্রান্সপোর্ট</div>
+        <div class="osi-desc">ডেটা নির্ভরযোগ্যভাবে পাঠানো, এরর চেক, পোর্ট নম্বর</div>
+        <div class="osi-proto">TCP, UDP</div>
+      </div>
+      <div class="osi-layer l3">
+        <div class="osi-num">৩</div>
+        <div class="osi-name">নেটওয়ার্ক</div>
+        <div class="osi-desc">IP অ্যাড্রেস দিয়ে সঠিক পথ খোঁজা (রাউটিং)</div>
+        <div class="osi-proto">IP, ICMP</div>
+      </div>
+      <div class="osi-layer l2">
+        <div class="osi-num">২</div>
+        <div class="osi-name">ডেটা লিংক</div>
+        <div class="osi-desc">MAC অ্যাড্রেস দিয়ে লোকাল নেটওয়ার্কে ডেটা পাঠানো</div>
+        <div class="osi-proto">Ethernet, Wi-Fi</div>
+      </div>
+      <div class="osi-layer l1">
+        <div class="osi-num">১</div>
+        <div class="osi-name">ফিজিক্যাল</div>
+        <div class="osi-desc">আসল তার, ক্যাবল, রেডিও সিগনাল — বিটের ফিজিক্যাল ট্রান্সমিশন</div>
+        <div class="osi-proto">Fiber, Cat6</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Voice Transfer -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <div class="section-icon icon-orange">🎙️</div>
+      <div>
+        <div class="section-num">অধ্যায় ০৪</div>
+        <h2 class="section-title">ভয়েস কল কীভাবে কাজ করে? (VoIP)</h2>
+      </div>
+    </div>
+
+    <div class="card orange">
+      <h3>VoIP (Voice over Internet Protocol)</h3>
+      <p>WhatsApp, Messenger, Skype-এর কল সাধারণ ফোন কলের মতো না। আপনার গলার শব্দকে ডিজিটাল ডেটায় পরিণত করে ইন্টারনেটের মাধ্যমে পাঠানো হয়। এই প্রযুক্তিকে বলে VoIP।</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h4>🎤 শব্দ ক্যাপচার → ডিজিটাল রূপান্তর (ADC)</h4>
+          <p>মাইক্রোফোন বাতাসের কম্পন ধরে অ্যানালগ সিগনালে পরিণত করে। ADC (Analog-to-Digital Converter) সেই সিগনালকে ০ এবং ১-এর বাইনারি ডেটায় রূপান্তর করে। সেকেন্ডে ৮,০০০ থেকে ৪৮,০০০ বার স্যাম্পল নেওয়া হয়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h4>🗜️ কম্প্রেশন (Codec)</h4>
+          <p>Raw অডিও ডেটা অনেক বড়। Codec (Coder-Decoder) সেটিকে ছোট করে। Opus, G.711, G.729 এরকম কিছু জনপ্রিয় ভয়েস কোডেক। WhatsApp Opus কোডেক ব্যবহার করে যা মাত্র ৬-৫১ kbps ব্যান্ডউইথ নেয়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h4>📦 UDP প্যাকেটে পাঠানো</h4>
+          <p>ভয়েস ডেটা ছোট UDP প্যাকেটে পাঠানো হয়। TCP-র পরিবর্তে UDP ব্যবহার হয় কারণ গতি বেশি গুরুত্বপূর্ণ। একটি প্যাকেট হারিয়ে গেলে অপেক্ষা না করে পরের প্যাকেট নেওয়া হয় — তাই কলে হালকা "ক্র্যাকিং" শোনা যায়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h4>🌐 RTP প্রোটোকল দিয়ে রিয়েল-টাইম ডেলিভারি</h4>
+          <p>RTP (Real-time Transport Protocol) নিশ্চিত করে প্যাকেটগুলো সঠিক ক্রমে আসছে। প্রতিটি প্যাকেটে টাইমস্ট্যাম্প থাকে। Jitter buffer ছোট ছোট বিলম্বকে মসৃণ করে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৫</div>
+        <div class="step-content">
+          <h4>🔊 ডিকোড → শব্দে রূপান্তর (DAC)</h4>
+          <p>প্রাপকের ডিভাইসে Codec ডেটা ডিকোড করে, DAC (Digital-to-Analog Converter) সেটিকে আবার অ্যানালগ সিগনালে পরিণত করে, স্পিকার শব্দ তৈরি করে।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="codec-row">
+      <div class="codec-card">
+        <div class="codec-name">Opus</div>
+        <div class="codec-bw">৬–৫১ kbps</div>
+        <div class="codec-desc">WhatsApp, Discord ব্যবহার করে। সেরা মান।</div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">G.711</div>
+        <div class="codec-bw">৬৪ kbps</div>
+        <div class="codec-desc">ট্র্যাডিশনাল VoIP ও PSTN কলে ব্যবহার।</div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">G.729</div>
+        <div class="codec-bw">৮ kbps</div>
+        <div class="codec-desc">কম ব্যান্ডউইথে ভালো মান দেয়।</div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">AAC-LD</div>
+        <div class="codec-bw">৪০–৮০ kbps</div>
+        <div class="codec-desc">FaceTime-এ ব্যবহৃত, উচ্চ মানের অডিও।</div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <h4>⚡ লেটেন্সি কেন গুরুত্বপূর্ণ?</h4>
+      <p>ভয়েস কলে ১৫০ms-এর বেশি দেরি হলে কথোপকথন অস্বস্তিকর হয়। ২৫০ms-এর বেশি হলে মানুষ একে অপরের কথা কেটে ফেলে। এজন্য ভয়েস ডেটার জন্য বিশেষ QoS (Quality of Service) ব্যবস্থা নেওয়া হয়।</p>
+    </div>
+  </section>
+
+  <!-- Section 5: Video Transfer -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <div class="section-icon icon-red">🎬</div>
+      <div>
+        <div class="section-num">অধ্যায় ০৫</div>
+        <h2 class="section-title">ভিডিও কীভাবে ট্রান্সফার হয়?</h2>
+      </div>
+    </div>
+
+    <div class="card red">
+      <h3>ভিডিও ডেটা কত বড়?</h3>
+      <p>১ সেকেন্ডের ৭২০p ভিডিওতে ৩০টি ফ্রেম থাকে। প্রতিটি ফ্রেমে ১,২৮০×৭২০ = ৯,২১,৬০০ পিক্সেল। প্রতিটি পিক্সেলে ৩ বাইট রঙের তথ্য। তাই RAW ভিডিওর আকার = ৩০ × ৯,২১,৬০০ × ৩ = প্রতি সেকেন্ডে ~৮০ MB! এই বিশাল তথ্য কম্প্রেস না করলে পাঠানো অসম্ভব।</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card red">
+        <h3>📹 ভিডিও কম্প্রেশন কীভাবে কাজ করে?</h3>
+        <p>H.264, H.265, VP9 — এই কোডেকগুলো <strong style="color:#ff8080">I-Frame</strong> (কম্পলিট ফ্রেম), <strong style="color:#ffa0a0">P-Frame</strong> (আগের ফ্রেমের পার্থক্য), এবং <strong style="color:#ffb0b0">B-Frame</strong> (আগে-পরের রেফারেন্স) ব্যবহার করে ফাইল ৯৫% পর্যন্ত ছোট করে।</p>
+      </div>
+      <div class="card orange">
+        <h3>📡 স্ট্রিমিং বনাম ডাউনলোড</h3>
+        <p><strong style="color:var(--accent3)">HLS (HTTP Live Streaming)</strong> ভিডিওকে ছোট ছোট সেগমেন্টে ভাগ করে পাঠায়। <strong style="color:var(--accent)">DASH (Dynamic Adaptive Streaming)</strong> আপনার ইন্টারনেট গতি বুঝে স্বয়ংক্রিয়ভাবে ভিডিও কোয়ালিটি পরিবর্তন করে।</p>
+      </div>
+    </div>
+
+    <div class="steps" style="margin-top:20px;">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h4>📷 ক্যামেরা → ফ্রেম ক্যাপচার</h4>
+          <p>ক্যামেরা সেন্সর প্রতি সেকেন্ডে ২৪-৬০টি ছবি তোলে। প্রতিটি ছবিকে পিক্সেল আরজিবি (লাল, সবুজ, নীল) মানে ভাগ করা হয়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h4>🗜️ ভিডিও এনকোড (কম্প্রেশন)</h4>
+          <p>H.264/H.265 এনকোডার ভিডিও ফ্রেমগুলো বিশ্লেষণ করে। শুধু যেটুকু পরিবর্তন হয়েছে সেটুকুই পাঠায়। ৮০ MB/s থেকে মাত্র ৪ MB/s-এ নামিয়ে আনে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h4>📦 TCP/UDP প্যাকেটে ভাগ করা</h4>
+          <p>ভিডিও স্ট্রিমিং — TCP ব্যবহার করে (নির্ভরযোগ্যতার জন্য)। লাইভ ভিডিও কল — UDP ব্যবহার করে (গতির জন্য)। CDN সার্ভার থেকে পাঠানো হয় — আপনার কাছের সার্ভার থেকে।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h4>📺 বাফার ও ডিকোড</h4>
+          <p>আপনার ডিভাইস কিছুটা ভিডিও আগে থেকেই ডাউনলোড করে রাখে (বাফার)। GPU ভিডিও ডিকোড করে প্রতিটি ফ্রেম স্ক্রিনে দেখায়।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:24px;">
+      <table>
+        <thead>
+          <tr>
+            <th>ভিডিও কোয়ালিটি</th>
+            <th>রেজোলিউশন</th>
+            <th>দরকারি স্পিড</th>
+            <th>কোডেক</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SD ভিডিও</td>
+            <td>৪৮০p</td>
+            <td>~১ Mbps</td>
+            <td>H.264</td>
+          </tr>
+          <tr>
+            <td>HD ভিডিও</td>
+            <td>৭২০p</td>
+            <td>~২.৫ Mbps</td>
+            <td>H.264</td>
+          </tr>
+          <tr>
+            <td>Full HD</td>
+            <td>১০৮০p</td>
+            <td>~৫ Mbps</td>
+            <td>H.264/H.265</td>
+          </tr>
+          <tr>
+            <td>4K Ultra HD</td>
+            <td>২১৬০p</td>
+            <td>~২৫ Mbps</td>
+            <td>H.265/AV1</td>
+          </tr>
+          <tr>
+            <td>ভিডিও কল (Zoom)</td>
+            <td>৭২০p</td>
+            <td>~১.৫ Mbps</td>
+            <td>VP8/VP9</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Section 6: WebRTC -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <div class="section-icon icon-green">⚡</div>
+      <div>
+        <div class="section-num">অধ্যায় ০৬</div>
+        <h2 class="section-title">WebRTC — সরাসরি পিয়ার-টু-পিয়র সংযোগ</h2>
+      </div>
+    </div>
+
+    <div class="card green">
+      <h3>WebRTC কী?</h3>
+      <p>Google Meet, WhatsApp ভিডিও কল, Facebook Live — এসব WebRTC (Web Real-Time Communication) প্রযুক্তি ব্যবহার করে। এটি দুটি ব্রাউজার বা অ্যাপের মধ্যে সার্ভার ছাড়াই সরাসরি ভিডিও-অডিও পাঠাতে পারে।</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h4>সিগনালিং (Signaling)</h4>
+          <p>দুটি ডিভাইস প্রথমে একটি সিগনালিং সার্ভারের মাধ্যমে পরিচিত হয়। "আমি এখানে আছি, আমার IP এটা" — এই তথ্য বিনিময় হয়। SDP (Session Description Protocol) ফরম্যাটে এই তথ্য পাঠানো হয়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h4>ICE (NAT ভেদ করা)</h4>
+          <p>বেশিরভাগ ডিভাইস NAT (Network Address Translation)-এর পেছনে থাকে। STUN সার্ভার আপনার পাবলিক IP খুঁজে দেয়। TURN সার্ভার রিলে হিসেবে কাজ করে যদি সরাসরি সংযোগ না হয়।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h4>DTLS এনক্রিপশন</h4>
+          <p>সংযোগ স্থাপিত হলে DTLS (Datagram TLS) প্রোটোকল দিয়ে সব ডেটা এনক্রিপ্ট করা হয়। কেউ মাঝপথে শুনলেও বুঝতে পারবে না।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h4>SRTP দিয়ে মিডিয়া পাঠানো</h4>
+          <p>ভয়েস ও ভিডিও SRTP (Secure Real-time Transport Protocol) দিয়ে পাঠানো হয়। সরাসরি পিয়ার-টু-পিয়ার হওয়ায় লেটেন্সি খুব কম।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>প্রযুক্তি</th>
+            <th>কাজ</th>
+            <th>উদাহরণ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SDP</td><td>কোডেক, রেজোলিউশন ঠিক করা</td><td>কল শুরুর সময়</td></tr>
+          <tr><td>ICE/STUN</td><td>পাবলিক IP খোঁজা</td><td>NAT ট্রাভার্সাল</td></tr>
+          <tr><td>TURN</td><td>রিলে সার্ভার (যদি দরকার)</td><td>ফায়ারওয়ালের পেছনে</td></tr>
+          <tr><td>DTLS</td><td>কানেকশন এনক্রিপশন</td><td>নিরাপত্তা</td></tr>
+          <tr><td>SRTP</td><td>অডিও/ভিডিও নিরাপদে পাঠানো</td><td>রিয়েল-টাইম মিডিয়া</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight" style="margin-top:24px;">
+      <h4>🔐 নিরাপত্তা ও এনক্রিপশন</h4>
+      <p>আপনার WhatsApp কল End-to-End Encrypted। মানে শুধু আপনি এবং যাকে কল করছেন তারাই শুনতে পাবেন — WhatsApp-ও না। HTTPS দিয়ে পাঠানো সব ওয়েব ডেটাও TLS এনক্রিপশনে সুরক্ষিত। আধুনিক ইন্টারনেটে এনক্রিপশন ছাড়া নিরাপদ যোগাযোগ সম্ভব নয়।</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p style="color:var(--accent); font-size:18px; margin-bottom:8px;">🌐</p>
+  <p>নেটওয়ার্ক প্রযুক্তি ব্যাখ্যা | ডিজিটাল বাংলাদেশ</p>
+  <p style="margin-top:6px; font-size:13px;">প্রতিদিন কোটি কোটি প্যাকেট ছুটে চলে — এক প্রান্ত থেকে আরেক প্রান্তে</p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // TOC dots
+  const tocDots = document.querySelectorAll('.toc-dot');
+  const sectionIds = ['s0','s1','s2','s3','s4','s5'];
+
+  function scrollToSection(i) {
+    document.getElementById(sectionIds[i]).scrollIntoView({ behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', () => {
+    let current = 0;
+    sectionIds.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < window.innerHeight * 0.5) {
+        current = i;
+      }
+    });
+    tocDots.forEach((d, i) => d.classList.toggle('active', i === current));
+  });
+
+  // Trigger first section
+  setTimeout(() => {
+    document.getElementById('s0').classList.add('visible');
+  }, 300);
+</script>
+</body>
+</html>
