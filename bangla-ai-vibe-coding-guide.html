@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>প্রো ভাইব কোডিং গাইড — Ubuntu AI Stack</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --card: #141d2e;
+    --border: rgba(99,179,237,0.15);
+    --border2: rgba(99,179,237,0.3);
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --accent5: #f472b6;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --code-bg: #0d1117;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --red: #f87171;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56,189,248,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(129,140,248,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 20% 50%, rgba(52,211,153,0.06) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:0.5;transform:scale(1.3)}
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #e2e8f0 0%, #38bdf8 40%, #818cf8 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+  .toc-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    position: relative;
+  }
+  .toc-pills a {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .toc-pills a:hover { border-color: var(--accent); color: var(--accent); background: rgba(56,189,248,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+  
+  /* SECTION */
+  .section {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 2.5rem;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.25);
+    border-radius: 6px;
+    padding: 4px 10px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .card-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tag-free { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+  .tag-hot { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .tag-new { background: rgba(248,114,114,0.12); color: var(--red); border: 1px solid rgba(248,114,114,0.25); }
+  .tag-pro { background: rgba(129,140,248,0.12); color: var(--accent2); border: 1px solid rgba(129,140,248,0.25); }
+
+  /* CODE BLOCK */
+  .code-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 11px; height: 11px; border-radius: 50%;
+  }
+  .d1{background:#f87171} .d2{background:#fbbf24} .d3{background:#4ade80}
+  pre {
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: #a5d8ff;
+  }
+  pre .c { color: #6b7280; }
+  pre .kw { color: #f472b6; }
+  pre .str { color: #86efac; }
+  pre .num { color: #fb923c; }
+  pre .fn { color: #93c5fd; }
+  pre .var { color: #fde68a; }
+  pre .op { color: #94a3b8; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: rgba(56,189,248,0.07);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(99,179,237,0.07);
+  }
+  td:first-child { color: var(--text); font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* STEP LIST */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 2rem;
+    position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    width: 2px;
+    height: calc(100% - 44px);
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    opacity: 0.3;
+  }
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .step-content p { font-size: 14px; color: var(--muted); }
+
+  /* INFO BOX */
+  .info-box {
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .info-tip { background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2); color: var(--text); }
+  .info-warn { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.2); color: var(--text); }
+  .info-success { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: var(--text); }
+  .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .info-text p { color: var(--muted); margin-top: 4px; }
+  .info-text strong { color: var(--text); font-size: 14.5px; }
+
+  /* HIGHLIGHT TEXT */
+  .highlight { color: var(--accent); font-weight: 500; }
+  .highlight2 { color: var(--accent3); font-weight: 500; }
+  .highlight3 { color: var(--accent4); font-weight: 500; }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  nav .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* RESOURCES */
+  .res-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .res-link:hover { border-color: var(--accent); transform: translateX(4px); }
+  .res-link-icon { font-size: 20px; flex-shrink: 0; }
+  .res-link-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .res-link-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .res-link-arrow { margin-left: auto; color: var(--muted); font-size: 16px; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 0; }
+
+  /* FOOTER */
+  footer {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* LABEL */
+  .label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+
+  p { margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  @media(max-width:600px){
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">$ vibe-code --ai ubuntu</span>
+    <div class="nav-links">
+      <a href="#tools">টুলস</a>
+      <a href="#setup">সেটআপ</a>
+      <a href="#models">মডেল</a>
+      <a href="#agent">এজেন্ট</a>
+      <a href="#workflow">ওয়ার্কফ্লো</a>
+      <a href="#resources">রিসোর্স</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span></span> Ubuntu-First AI Coding Guide · 2025
+  </div>
+  <h1>প্রো-লেভেল ভাইব কোডিং<br>ফ্রি AI দিয়ে, Ubuntu-তে</h1>
+  <p class="hero-sub">
+    ফ্রি AI মডেল ব্যবহার করে প্রফেশনাল-গ্রেড কোড লেখার সম্পূর্ণ গাইড। এজেন্ট, MCP সার্ভার, লোকাল LLM — সব কিছু বাংলায়।
+  </p>
+  <div class="toc-pills">
+    <a href="#tools">⚡ ফ্রি AI টুলস</a>
+    <a href="#setup">🛠 Ubuntu সেটআপ</a>
+    <a href="#models">🤖 টপ মডেল</a>
+    <a href="#agent">🧠 AI এজেন্ট</a>
+    <a href="#workflow">🔄 ভাইব ওয়ার্কফ্লো</a>
+    <a href="#mcp">🔗 MCP সার্ভার</a>
+    <a href="#resources">📚 রিসোর্স</a>
+  </div>
+</div>
+
+<!-- ====== SECTION 1: WHAT IS VIBE CODING ====== -->
+<section class="section" id="intro">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">ভাইব কোডিং কী?</h2>
+    </div>
+    <div class="card-grid card-grid-3">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">ধারণা</div>
+        <div class="card-body">আপনি AI-কে বলবেন কী বানাতে চান — AI কোড লিখবে, আপনি চেক করবেন, ইটারেট করবেন। কোড মুখস্থ নয়, সমস্যা সমাধানই মূল লক্ষ্য।</div>
+        <span class="tag tag-hot">✦ নতুন প্যারাডাইম</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">💡</div>
+        <div class="card-title">কেন Ubuntu?</div>
+        <div class="card-body">Linux-এ অলিভকাল, CLI টুল, Docker, GPU ড্রাইভার সব কিছু সহজ। ফ্রি AI মডেল রান করার জন্য Ubuntu সবচেয়ে স্ট্যাবল প্ল্যাটফর্ম।</div>
+        <span class="tag tag-free">✓ সম্পূর্ণ ফ্রি</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">প্রো লেভেল মানে</div>
+        <div class="card-body">শুধু চ্যাট করা নয় — এজেন্ট চালানো, ফাইল সিস্টেম অ্যাক্সেস, টুল কল, অটোমেটেড পাইপলাইন বানানো।</div>
+        <span class="tag tag-pro">★ Advanced</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 2: FREE AI TOOLS ====== -->
+<section class="section" id="tools">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">ফ্রি AI কোডিং টুলস</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>টুল</th>
+            <th>ক্যাটাগরি</th>
+            <th>ফ্রি প্ল্যান</th>
+            <th>বেস্ট ফর</th>
+            <th>স্ট্যাটাস</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Claude.ai (Anthropic)</td>
+            <td>Chat + Code</td>
+            <td>✅ Sonnet ফ্রি</td>
+            <td>Complex reasoning, লম্বা কোড</td>
+            <td><span class="tag tag-hot">🔥 TOP</span></td>
+          </tr>
+          <tr>
+            <td>Cursor IDE</td>
+            <td>AI IDE</td>
+            <td>✅ ২০০০ req/মাস</td>
+            <td>Full codebase edit</td>
+            <td><span class="tag tag-pro">PRO</span></td>
+          </tr>
+          <tr>
+            <td>GitHub Copilot</td>
+            <td>IDE Plugin</td>
+            <td>✅ ফ্রি টিয়ার</td>
+            <td>Autocomplete, VS Code</td>
+            <td><span class="tag tag-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td>Aider</td>
+            <td>CLI Agent</td>
+            <td>✅ Open Source</td>
+            <td>Terminal-based coding agent</td>
+            <td><span class="tag tag-hot">🔥 CLI</span></td>
+          </tr>
+          <tr>
+            <td>Continue.dev</td>
+            <td>VS Code Extension</td>
+            <td>✅ সম্পূর্ণ ফ্রি</td>
+            <td>Local model integration</td>
+            <td><span class="tag tag-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td>Ollama</td>
+            <td>Local LLM Runner</td>
+            <td>✅ Open Source</td>
+            <td>Offline/Local AI models</td>
+            <td><span class="tag tag-pro">LOCAL</span></td>
+          </tr>
+          <tr>
+            <td>OpenRouter</td>
+            <td>API Gateway</td>
+            <td>✅ ফ্রি ক্রেডিট</td>
+            <td>Multiple models এক API-এ</td>
+            <td><span class="tag tag-hot">🔥 API</span></td>
+          </tr>
+          <tr>
+            <td>Groq</td>
+            <td>Fast Inference</td>
+            <td>✅ ফ্রি টিয়ার</td>
+            <td>Ultra-fast LLaMA / Mixtral</td>
+            <td><span class="tag tag-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td>Google AI Studio</td>
+            <td>Gemini API</td>
+            <td>✅ Gemini 2.0 ফ্রি</td>
+            <td>Long context, multimodal</td>
+            <td><span class="tag tag-new">NEW</span></td>
+          </tr>
+          <tr>
+            <td>Mistral AI</td>
+            <td>API + Chat</td>
+            <td>✅ Le Chat ফ্রি</td>
+            <td>European, fast, multilingual</td>
+            <td><span class="tag tag-free">FREE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 3: UBUNTU SETUP ====== -->
+<section class="section" id="setup">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Ubuntu সেটআপ — ধাপে ধাপে</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>সিস্টেম আপডেট ও বেস টুলস ইন্সটল</h3>
+          <p>প্রথমে Ubuntu আপডেট করুন এবং প্রয়োজনীয় ডেভ টুলস ইন্সটল করুন।</p>
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            </div>
+            <pre><span class="c"># সিস্টেম আপডেট</span>
+<span class="kw">sudo</span> apt update && <span class="kw">sudo</span> apt upgrade -y
+
+<span class="c"># বেস টুলস ইন্সটল</span>
+<span class="kw">sudo</span> apt install -y <span class="str">curl wget git build-essential \
+  python3 python3-pip python3-venv \
+  nodejs npm docker.io docker-compose \
+  htop nvtop tmux zsh</span>
+
+<span class="c"># Oh-My-ZSH (optional কিন্তু recommended)</span>
+<span class="fn">sh</span> -c <span class="str">"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"</span>
+
+<span class="c"># Docker permission ফিক্স</span>
+<span class="kw">sudo</span> usermod -aG docker $<span class="var">USER</span>
+newgrp docker</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Ollama ইন্সটল — লোকাল AI মডেল রান করুন</h3>
+          <p>Ollama দিয়ে ইন্টারনেট ছাড়াই লোকালি AI মডেল চালাতে পারবেন।</p>
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            </div>
+            <pre><span class="c"># Ollama ইন্সটল করুন</span>
+<span class="fn">curl</span> -fsSL https://ollama.ai/install.sh | sh
+
+<span class="c"># জনপ্রিয় ফ্রি মডেল ডাউনলোড</span>
+ollama pull codellama         <span class="c"># Code Llama 7B (কোডিং)</span>
+ollama pull llama3.2          <span class="c"># Meta LLaMA 3.2 3B</span>
+ollama pull qwen2.5-coder     <span class="c"># Qwen 2.5 Coder (সেরা ফ্রি কোডার)</span>
+ollama pull deepseek-coder-v2 <span class="c"># DeepSeek Coder V2</span>
+ollama pull phi4              <span class="c"># Microsoft Phi-4 (ছোট কিন্তু শক্তিশালী)</span>
+
+<span class="c"># চেক করুন কোন মডেল আছে</span>
+ollama list
+
+<span class="c"># টেস্ট করুন</span>
+ollama run qwen2.5-coder <span class="str">"Write a Python FastAPI hello world"</span></pre>
+          </div>
+          <div class="info-box info-success">
+            <span class="info-icon">✅</span>
+            <div class="info-text">
+              <strong>GPU থাকলে:</strong>
+              <p>NVIDIA GPU থাকলে Ollama স্বয়ংক্রিয়ভাবে CUDA ব্যবহার করে। <code>nvidia-smi</code> দিয়ে চেক করুন। RTX 3060+ এ Llama 70B ও চলে!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Aider — টার্মিনাল AI কোডিং এজেন্ট</h3>
+          <p>Aider হলো সবচেয়ে পাওয়ারফুল CLI কোডিং এজেন্ট। পুরো রেপো বুঝে কোড লেখে।</p>
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            </div>
+            <pre><span class="c"># Python venv তৈরি করুন</span>
+python3 -m venv ~/.venv/aider
+<span class="fn">source</span> ~/.venv/aider/bin/activate
+
+<span class="c"># Aider ইন্সটল</span>
+pip install aider-chat
+
+<span class="c"># ফ্রি মডেল দিয়ে ব্যবহার (Ollama)</span>
+aider --model ollama/qwen2.5-coder:32b
+
+<span class="c"># OpenRouter দিয়ে (ফ্রি ক্রেডিট)</span>
+<span class="kw">export</span> <span class="var">OPENROUTER_API_KEY</span>=<span class="str">"your-key-here"</span>
+aider --model openrouter/google/gemini-2.0-flash-exp:free
+
+<span class="c"># Groq দিয়ে (ultra fast, ফ্রি)</span>
+<span class="kw">export</span> <span class="var">GROQ_API_KEY</span>=<span class="str">"your-groq-key"</span>
+aider --model groq/llama-3.1-70b-versatile
+
+<span class="c"># প্রজেক্টে শুরু করুন</span>
+<span class="fn">cd</span> ~/my-project
+aider app.py utils.py  <span class="c"># specific files নিয়ে কাজ</span>
+aider --map-tokens <span class="num">2048</span>  <span class="c"># পুরো repo map করুন</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Continue.dev VS Code Extension সেটআপ</h3>
+          <p>VS Code-এ লোকাল AI ইন্টিগ্রেট করুন।</p>
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">json — ~/.continue/config.json</span>
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            </div>
+            <pre>{
+  <span class="str">"models"</span>: [
+    {
+      <span class="str">"title"</span>: <span class="str">"Qwen 2.5 Coder (Local)"</span>,
+      <span class="str">"provider"</span>: <span class="str">"ollama"</span>,
+      <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:32b"</span>,
+      <span class="str">"apiBase"</span>: <span class="str">"http://localhost:11434"</span>
+    },
+    {
+      <span class="str">"title"</span>: <span class="str">"Gemini 2.0 Flash (Free)"</span>,
+      <span class="str">"provider"</span>: <span class="str">"gemini"</span>,
+      <span class="str">"model"</span>: <span class="str">"gemini-2.0-flash-exp"</span>,
+      <span class="str">"apiKey"</span>: <span class="str">"YOUR_GOOGLE_AI_STUDIO_KEY"</span>
+    },
+    {
+      <span class="str">"title"</span>: <span class="str">"DeepSeek R1 (OpenRouter Free)"</span>,
+      <span class="str">"provider"</span>: <span class="str">"openrouter"</span>,
+      <span class="str">"model"</span>: <span class="str">"deepseek/deepseek-r1:free"</span>,
+      <span class="str">"apiKey"</span>: <span class="str">"YOUR_OPENROUTER_KEY"</span>
+    }
+  ],
+  <span class="str">"tabAutocompleteModel"</span>: {
+    <span class="str">"title"</span>: <span class="str">"Qwen Coder Fast"</span>,
+    <span class="str">"provider"</span>: <span class="str">"ollama"</span>,
+    <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:1.5b"</span>
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3>Claude Code CLI ইন্সটল</h3>
+          <p>Anthropic-এর অফিশিয়াল CLI — সবচেয়ে পাওয়ারফুল কোডিং এজেন্ট।</p>
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            </div>
+            <pre><span class="c"># Node.js 18+ লাগবে</span>
+<span class="fn">node</span> --version  <span class="c"># v18+ হওয়া দরকার</span>
+
+<span class="c"># nvm দিয়ে latest Node ইন্সটল</span>
+<span class="fn">curl</span> -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+<span class="kw">source</span> ~/.bashrc
+nvm install --lts
+nvm use --lts
+
+<span class="c"># Claude Code ইন্সটল</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="c"># API Key সেট করুন (console.anthropic.com থেকে নিন)</span>
+<span class="kw">export</span> <span class="var">ANTHROPIC_API_KEY</span>=<span class="str">"sk-ant-..."</span>
+
+<span class="c"># প্রজেক্ট ফোল্ডারে চালু করুন</span>
+<span class="fn">cd</span> ~/my-project
+claude  <span class="c"># ইন্টারেক্টিভ মোড চালু হবে</span>
+
+<span class="c"># ওয়ান-শট কমান্ড</span>
+claude <span class="str">"Add JWT authentication to this FastAPI app"</span>
+claude --print <span class="str">"Explain this codebase structure"</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 4: TOP FREE MODELS ====== -->
+<section class="section" id="models">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">হাই-ডিমান্ড ফ্রি মডেল গাইড</h2>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="info-icon">💡</span>
+      <div class="info-text">
+        <strong>কীভাবে পাবেন?</strong>
+        <p>OpenRouter.ai তে একাউন্ট খুলুন — ৫০+ ফ্রি মডেল পাবেন। Google AI Studio-তে ফ্রিতে Gemini ব্যবহার করুন। Groq-এ LLaMA-র ultra-fast inference একদম ফ্রি।</p>
+      </div>
+    </div>
+
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="label">কোডিং চ্যাম্পিয়ন</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent);">Qwen 2.5 Coder 32B</div>
+        <div class="card-body">
+          Alibaba-র কোডিং মডেল। HumanEval বেঞ্চমার্কে GPT-4-কে টেক্কা দেয়। Ollama-তে লোকালি রান করুন অথবা OpenRouter-এ ফ্রিতে।<br><br>
+          <strong style="color:var(--text)">কীভাবে পাবেন:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">ollama pull qwen2.5-coder:32b</code>
+        </div>
+        <span class="tag tag-hot">🥇 #1 কোডার</span>
+      </div>
+      <div class="card">
+        <div class="label">রিজনিং কিং</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent2);">DeepSeek R1 / V3</div>
+        <div class="card-body">
+          চীনা AI কোম্পানির রিজনিং মডেল। O1-এর সাথে তুলনীয়, সম্পূর্ণ ওপেন সোর্স এবং OpenRouter-এ ফ্রি।<br><br>
+          <strong style="color:var(--text)">OpenRouter এ:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">deepseek/deepseek-r1:free</code>
+        </div>
+        <span class="tag tag-free">✓ ফ্রি</span>
+      </div>
+      <div class="card">
+        <div class="label">গুগলের পাওয়ার</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent3);">Gemini 2.0 Flash</div>
+        <div class="card-body">
+          ১ মিলিয়ন টোকেন কনটেক্সট। পুরো প্রজেক্ট একবারে দিতে পারবেন। Google AI Studio থেকে API key নিন, সম্পূর্ণ ফ্রি।<br><br>
+          <strong style="color:var(--text)">API Endpoint:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">gemini-2.0-flash-exp</code>
+        </div>
+        <span class="tag tag-new">🆕 নতুন</span>
+      </div>
+      <div class="card">
+        <div class="label">Meta-র LLaMA</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent4);">LLaMA 3.3 70B (Groq)</div>
+        <div class="card-body">
+          Groq-এর ultra-fast chip-এ চলে — ৩০০ token/sec। সম্পূর্ণ ফ্রি, API key লাগে শুধু। Coding + reasoning উভয়তে দারুণ।<br><br>
+          <strong style="color:var(--text)">Groq URL:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">groq.com → Get API Key</code>
+        </div>
+        <span class="tag tag-hot">⚡ Ultra Fast</span>
+      </div>
+      <div class="card">
+        <div class="label">Microsoft-র Phi</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent5);">Phi-4 / Phi-3.5</div>
+        <div class="card-body">
+          ছোট কিন্তু অবিশ্বাস্য শক্তিশালী। মাত্র 14B প্যারামিটারে GPT-4-কে অনেক টাস্কে হারায়। লোকালে দ্রুত চলে।<br><br>
+          <strong style="color:var(--text)">Ollama:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">ollama pull phi4</code>
+        </div>
+        <span class="tag tag-free">✓ লোকাল</span>
+      </div>
+      <div class="card">
+        <div class="label">Mistral</div>
+        <div class="card-title" style="font-size:1.1rem; color:var(--accent);">Mistral Large 2 / Nemo</div>
+        <div class="card-body">
+          ইউরোপিয়ান AI। Le Chat চ্যাট ইন্টারফেস সম্পূর্ণ ফ্রি। Mistral Nemo লোকালে খুব ভালো। Codestral কোডিং বিশেষজ্ঞ।<br><br>
+          <strong style="color:var(--text)">Chat:</strong><br>
+          <code style="font-size:12px; color:var(--accent3);">chat.mistral.ai (ফ্রি)</code>
+        </div>
+        <span class="tag tag-free">✓ ফ্রি চ্যাট</span>
+      </div>
+    </div>
+
+    <div class="info-box info-warn">
+      <span class="info-icon">⚠️</span>
+      <div class="info-text">
+        <strong>GPU RAM গাইড:</strong>
+        <p>4GB VRAM → 3B-7B মডেল | 8GB → 7B-13B মডেল | 16GB → 13B-34B মডেল | 24GB+ → 70B মডেল (quantized) | CPU-only হলে 7B পর্যন্ত চলবে (ধীরে)।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 5: AI AGENT ====== -->
+<section class="section" id="agent">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">AI এজেন্ট বানানো ও ব্যবহার</h2>
+    </div>
+
+    <p style="color:var(--muted); margin-bottom:2rem;">এজেন্ট মানে AI যে নিজে নিজে সিদ্ধান্ত নেয়, টুল ব্যবহার করে, এবং মাল্টিপল স্টেপে কাজ শেষ করে।</p>
+
+    <div class="label">Python দিয়ে Simple Agent</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">python — simple_agent.py</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="kw">import</span> subprocess
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI  <span class="c"># OpenRouter OpenAI-compatible</span>
+
+<span class="c"># OpenRouter দিয়ে ফ্রি মডেল ব্যবহার</span>
+client = <span class="fn">OpenAI</span>(
+    base_url=<span class="str">"https://openrouter.ai/api/v1"</span>,
+    api_key=<span class="str">"sk-or-..."</span>,
+)
+
+<span class="c"># টুল ডেফিনিশন</span>
+tools = [
+    {
+        <span class="str">"type"</span>: <span class="str">"function"</span>,
+        <span class="str">"function"</span>: {
+            <span class="str">"name"</span>: <span class="str">"run_bash"</span>,
+            <span class="str">"description"</span>: <span class="str">"Run a bash command and return output"</span>,
+            <span class="str">"parameters"</span>: {
+                <span class="str">"type"</span>: <span class="str">"object"</span>,
+                <span class="str">"properties"</span>: {
+                    <span class="str">"command"</span>: {<span class="str">"type"</span>: <span class="str">"string"</span>}
+                },
+                <span class="str">"required"</span>: [<span class="str">"command"</span>]
+            }
+        }
+    }
+]
+
+<span class="kw">def</span> <span class="fn">run_bash</span>(command: str) -> str:
+    result = subprocess.<span class="fn">run</span>(
+        command, shell=<span class="kw">True</span>, capture_output=<span class="kw">True</span>, text=<span class="kw">True</span>
+    )
+    <span class="kw">return</span> result.stdout + result.stderr
+
+<span class="kw">def</span> <span class="fn">agent_loop</span>(task: str):
+    messages = [{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: task}]
+
+    <span class="kw">while</span> <span class="kw">True</span>:
+        response = client.chat.completions.<span class="fn">create</span>(
+            model=<span class="str">"google/gemini-2.0-flash-exp:free"</span>,
+            messages=messages,
+            tools=tools
+        )
+        msg = response.choices[<span class="num">0</span>].message
+
+        <span class="kw">if not</span> msg.tool_calls:
+            <span class="fn">print</span>(<span class="str">f"\n✅ Done:\n{msg.content}"</span>)
+            <span class="kw">break</span>
+
+        <span class="kw">for</span> tool_call <span class="kw">in</span> msg.tool_calls:
+            cmd = tool_call.function.arguments
+            output = <span class="fn">run_bash</span>(cmd)
+            messages.<span class="fn">append</span>({
+                <span class="str">"role"</span>: <span class="str">"tool"</span>,
+                <span class="str">"tool_call_id"</span>: tool_call.id,
+                <span class="str">"content"</span>: output
+            })
+
+<span class="c"># ব্যবহার করুন</span>
+<span class="fn">agent_loop</span>(<span class="str">"Create a Python FastAPI app with /health endpoint and run it"</span>)</pre>
+    </div>
+
+    <div class="label" style="margin-top:2rem;">LangChain Agent — ফ্রি Groq দিয়ে</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">python — langchain_agent.py</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="kw">from</span> langchain_groq <span class="kw">import</span> ChatGroq
+<span class="kw">from</span> langchain.agents <span class="kw">import</span> create_react_agent, AgentExecutor
+<span class="kw">from</span> langchain_community.tools <span class="kw">import</span> ShellTool
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> PromptTemplate
+
+<span class="c"># ফ্রি Groq LLM</span>
+llm = <span class="fn">ChatGroq</span>(
+    model=<span class="str">"llama-3.3-70b-versatile"</span>,
+    temperature=<span class="num">0</span>,
+    groq_api_key=<span class="str">"your-groq-key"</span>
+)
+
+<span class="c"># টুলস</span>
+tools = [<span class="fn">ShellTool</span>()]
+
+<span class="c"># ReAct প্রম্পট টেমপ্লেট</span>
+prompt = PromptTemplate.<span class="fn">from_template</span>(<span class="str">"""
+You are a coding agent. Use tools to complete tasks.
+Available tools: {tools}
+Tool names: {tool_names}
+Task: {input}
+{agent_scratchpad}
+"""</span>)
+
+agent = <span class="fn">create_react_agent</span>(llm, tools, prompt)
+executor = <span class="fn">AgentExecutor</span>(agent=agent, tools=tools, verbose=<span class="kw">True</span>)
+
+result = executor.<span class="fn">invoke</span>({
+    <span class="str">"input"</span>: <span class="str">"List files in current dir, then create hello.py"</span>
+})</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 6: OPENROUTER FREE MODELS ====== -->
+<section class="section" id="openrouter">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">OpenRouter — ফ্রি মডেলের খনি</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>মডেল ID</th><th>প্যারামিটার</th><th>স্পেশালিটি</th><th>দৈনিক লিমিট</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>google/gemini-2.0-flash-exp:free</td><td>—</td><td>Long context, multimodal</td><td>১৫০০ req/day</td></tr>
+          <tr><td>deepseek/deepseek-r1:free</td><td>671B MoE</td><td>Reasoning, math, code</td><td>১০০ req/day</td></tr>
+          <tr><td>deepseek/deepseek-v3-base:free</td><td>685B MoE</td><td>General coding</td><td>২০০ req/day</td></tr>
+          <tr><td>meta-llama/llama-3.3-70b-instruct:free</td><td>70B</td><td>General purpose</td><td>২০ req/min</td></tr>
+          <tr><td>qwen/qwen-2.5-coder-32b-instruct:free</td><td>32B</td><td>Code generation</td><td>২০ req/min</td></tr>
+          <tr><td>mistralai/mistral-7b-instruct:free</td><td>7B</td><td>Fast, general</td><td>২০ req/min</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">python — openrouter_setup.py</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="kw">import</span> os
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = <span class="fn">OpenAI</span>(
+    base_url=<span class="str">"https://openrouter.ai/api/v1"</span>,
+    api_key=os.environ[<span class="str">"OPENROUTER_API_KEY"</span>],
+    default_headers={
+        <span class="str">"HTTP-Referer"</span>: <span class="str">"https://myapp.com"</span>,
+        <span class="str">"X-Title"</span>: <span class="str">"My Vibe Coder"</span>
+    }
+)
+
+<span class="c"># ফ্রি মডেল লিস্ট দেখুন</span>
+<span class="kw">import</span> requests
+r = requests.<span class="fn">get</span>(<span class="str">"https://openrouter.ai/api/v1/models"</span>)
+free_models = [m <span class="kw">for</span> m <span class="kw">in</span> r.json()[<span class="str">"data"</span>]
+               <span class="kw">if</span> m[<span class="str">"id"</span>].<span class="fn">endswith</span>(<span class="str">":free"</span>)]
+
+<span class="fn">print</span>(<span class="str">f"ফ্রি মডেল: {len(free_models)}টি"</span>)
+<span class="kw">for</span> m <span class="kw">in</span> free_models[:10]:
+    <span class="fn">print</span>(<span class="str">f"  → {m['id']}"</span>)</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 7: MCP SERVER ====== -->
+<section class="section" id="mcp">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">MCP সার্ভার — AI কে সুপারপাওয়ার দিন</h2>
+    </div>
+
+    <p style="color:var(--muted); margin-bottom:1.5rem;">Model Context Protocol (MCP) হলো AI-কে external tools দেওয়ার স্ট্যান্ডার্ড। ফাইল সিস্টেম, ডেটাবেস, API — সব কিছু AI সরাসরি ব্যবহার করতে পারে।</p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">bash — MCP ইন্সটল ও কনফিগার</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="c"># ফাইলসিস্টেম MCP সার্ভার</span>
+npx -y @modelcontextprotocol/server-filesystem ~/projects
+
+<span class="c"># PostgreSQL MCP</span>
+npx -y @modelcontextprotocol/server-postgres postgresql://localhost/mydb
+
+<span class="c"># Git MCP (repository operations)</span>
+npx -y @modelcontextprotocol/server-git --repository ~/my-project
+
+<span class="c"># Brave Search MCP (ওয়েব সার্চ)</span>
+BRAVE_API_KEY=<span class="str">"your-key"</span> npx -y @modelcontextprotocol/server-brave-search</pre>
+    </div>
+
+    <div class="label" style="margin-top:1.5rem;">Claude Code-এ MCP কনফিগার করুন</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">json — ~/.claude/claude.json</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre>{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"filesystem"</span>: {
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-filesystem"</span>, <span class="str">"/home/user/projects"</span>]
+    },
+    <span class="str">"postgres"</span>: {
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-postgres"</span>],
+      <span class="str">"env"</span>: {
+        <span class="str">"POSTGRES_URL"</span>: <span class="str">"postgresql://localhost/mydb"</span>
+      }
+    },
+    <span class="str">"git"</span>: {
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-git"</span>,
+               <span class="str">"--repository"</span>, <span class="str">"/home/user/project"</span>]
+    }
+  }
+}</pre>
+    </div>
+
+    <div class="info-box info-success">
+      <span class="info-icon">🔥</span>
+      <div class="info-text">
+        <strong>MCP দিয়ে কী করা যায়:</strong>
+        <p>Claude Code-কে বলুন "আমার পুরো প্রজেক্টের সব টোডো কমেন্ট খুঁজে বের করো এবং GitHub Issue বানাও" — MCP এটি এক কমান্ডে করে দেবে!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 8: VIBE WORKFLOW ====== -->
+<section class="section" id="workflow">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">প্রো ভাইব কোডিং ওয়ার্কফ্লো</h2>
+    </div>
+
+    <div class="card-grid card-grid-2" style="margin-bottom:2rem;">
+      <div class="card" style="border-color:rgba(56,189,248,0.3)">
+        <div class="label">টেকনিক ১</div>
+        <div class="card-title">SPEC-First Vibe Coding</div>
+        <div class="card-body">কোড লেখার আগে AI-কে দিয়ে spec.md লেখান। তারপর সেই spec থেকে কোড জেনারেট করুন। ফলাফল অনেক বেশি কনসিস্টেন্ট।</div>
+      </div>
+      <div class="card" style="border-color:rgba(129,140,248,0.3)">
+        <div class="label">টেকনিক ২</div>
+        <div class="card-title">Test-Driven Vibe Coding</div>
+        <div class="card-body">প্রথমে টেস্ট লেখান AI দিয়ে, তারপর সেই টেস্ট পাস করার কোড লেখান। Bug অনেক কম হয় এবং কোড self-documented থাকে।</div>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3)">
+        <div class="label">টেকনিক ৩</div>
+        <div class="card-title">Multi-Model Pipeline</div>
+        <div class="card-body">Planning-এ Gemini (long context), Coding-এ Qwen Coder, Review-এ DeepSeek R1 ব্যবহার করুন। প্রতিটি মডেল তার সেরাটা দেয়।</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,146,60,0.3)">
+        <div class="label">টেকনিক ৪</div>
+        <div class="card-title">Context Engineering</div>
+        <div class="card-body">CLAUDE.md ফাইলে প্রজেক্ট কনটেক্সট লিখুন। AI সবসময় এটা পড়বে। কোড স্টাইল, আর্কিটেকচার, নিয়ম সব লিখে রাখুন।</div>
+      </div>
+    </div>
+
+    <div class="label">CLAUDE.md উদাহরণ</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">markdown — CLAUDE.md</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="c"># প্রজেক্ট: My SaaS App</span>
+
+<span class="kw">## টেক স্ট্যাক</span>
+- Backend: FastAPI + PostgreSQL + Redis
+- Frontend: Next.js 14 + TypeScript + Tailwind
+- AI: Anthropic Claude API
+
+<span class="kw">## কোড স্টাইল</span>
+- Python: PEP8, type hints সবসময়, docstring required
+- TypeScript: strict mode, no any, functional components only
+- সব ফাংশন বাংলায় কমেন্ট করুন
+
+<span class="kw">## আর্কিটেকচার রুলস</span>
+- Service layer pattern ব্যবহার করুন
+- Direct DB calls কন্ট্রোলারে নয়, service-এ
+- Env vars সবসময় .env.example-এ ডকুমেন্ট করুন
+
+<span class="kw">## কমান্ড</span>
+- <span class="str">`make dev`</span>: dev সার্ভার চালু
+- <span class="str">`make test`</span>: সব টেস্ট রান
+- <span class="str">`make migrate`</span>: DB migration</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 9: ADVANCED TECHNIQUES ====== -->
+<section class="section" id="advanced">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">এডভান্সড টেকনিক</h2>
+    </div>
+
+    <div class="label">AutoGen দিয়ে Multi-Agent System</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">python — multi_agent.py</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="kw">import</span> autogen
+
+<span class="c"># ফ্রি Groq কনফিগ</span>
+config = [{
+    <span class="str">"model"</span>: <span class="str">"llama-3.3-70b-versatile"</span>,
+    <span class="str">"base_url"</span>: <span class="str">"https://api.groq.com/openai/v1"</span>,
+    <span class="str">"api_key"</span>: <span class="str">"your-groq-key"</span>
+}]
+
+<span class="c"># Planner এজেন্ট</span>
+planner = autogen.<span class="fn">AssistantAgent</span>(
+    name=<span class="str">"Planner"</span>,
+    system_message=<span class="str">"তুমি একজন সফটওয়্যার আর্কিটেক্ট। task analyze করো।"</span>,
+    llm_config={<span class="str">"config_list"</span>: config}
+)
+
+<span class="c"># Coder এজেন্ট</span>
+coder = autogen.<span class="fn">AssistantAgent</span>(
+    name=<span class="str">"Coder"</span>,
+    system_message=<span class="str">"তুমি Python বিশেষজ্ঞ। Planner-এর plan অনুযায়ী কোড লেখো।"</span>,
+    llm_config={<span class="str">"config_list"</span>: config}
+)
+
+<span class="c"># Reviewer এজেন্ট</span>
+reviewer = autogen.<span class="fn">AssistantAgent</span>(
+    name=<span class="str">"Reviewer"</span>,
+    system_message=<span class="str">"তুমি QA engineer। কোড রিভিউ করো এবং বাগ খোঁজো।"</span>,
+    llm_config={<span class="str">"config_list"</span>: config}
+)
+
+<span class="c"># User proxy (human in the loop)</span>
+user = autogen.<span class="fn">UserProxyAgent</span>(
+    name=<span class="str">"User"</span>,
+    code_execution_config={<span class="str">"work_dir"</span>: <span class="str">"coding"</span>, <span class="str">"use_docker"</span>: <span class="kw">False</span>}
+)
+
+<span class="c"># Group chat তৈরি</span>
+groupchat = autogen.<span class="fn">GroupChat</span>(
+    agents=[user, planner, coder, reviewer],
+    messages=[], max_round=<span class="num">15</span>
+)
+manager = autogen.<span class="fn">GroupChatManager</span>(groupchat=groupchat,
+                                     llm_config={<span class="str">"config_list"</span>: config})
+
+<span class="c"># কাজ শুরু করুন</span>
+user.<span class="fn">initiate_chat</span>(manager,
+    message=<span class="str">"একটি REST API বানাও যেটা ইউজার অথেন্টিকেশন করে"</span>)</pre>
+    </div>
+
+    <div class="label" style="margin-top:2rem;">Shell Script দিয়ে AI Automation</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">bash — ai_review.sh</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="c">#!/bin/bash</span>
+<span class="c"># git commit-এর আগে AI code review</span>
+
+DIFF=$(<span class="fn">git</span> diff --staged)
+
+<span class="kw">if</span> [ -z <span class="str">"$DIFF"</span> ]; <span class="kw">then</span>
+    <span class="fn">echo</span> <span class="str">"কোনো staged পরিবর্তন নেই"</span>
+    <span class="kw">exit</span> <span class="num">0</span>
+<span class="kw">fi</span>
+
+<span class="fn">echo</span> <span class="str">"🤖 AI Code Review চলছে..."</span>
+
+<span class="c"># Ollama দিয়ে লোকাল রিভিউ (ফ্রি)</span>
+REVIEW=$(ollama run qwen2.5-coder <span class="str">"Review this git diff for bugs, security issues, and improvements:\n\n$DIFF"</span>)
+
+<span class="fn">echo</span> <span class="str">"📋 AI Review:"</span>
+<span class="fn">echo</span> <span class="str">"$REVIEW"</span>
+<span class="fn">echo</span>
+<span class="fn">read</span> -p <span class="str">"Commit করবেন? (y/n): "</span> confirm
+
+<span class="kw">if</span> [ <span class="str">"$confirm"</span> = <span class="str">"y"</span> ]; <span class="kw">then</span>
+    <span class="fn">git</span> commit
+<span class="kw">else</span>
+    <span class="fn">echo</span> <span class="str">"❌ Commit বাতিল"</span>
+<span class="kw">fi</span></pre>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="info-icon">💡</span>
+      <div class="info-text">
+        <strong>git hook হিসেবে সেট করুন:</strong>
+        <p><code>cp ai_review.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit</code> — এখন প্রতিটি commit-এর আগে AI রিভিউ হবে।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SECTION 10: RESOURCES ====== -->
+<section class="section" id="resources">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">রিসোর্স ও লিংক</h2>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px;">
+      <div>
+        <div class="label" style="margin-bottom:12px;">🔑 API Keys (ফ্রি)</div>
+        <a href="https://openrouter.ai" class="res-link" target="_blank">
+          <span class="res-link-icon">🌐</span>
+          <div><div class="res-link-title">OpenRouter.ai</div><div class="res-link-sub">৫০+ ফ্রি মডেল, এক API key</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://aistudio.google.com" class="res-link" target="_blank">
+          <span class="res-link-icon">🔷</span>
+          <div><div class="res-link-title">Google AI Studio</div><div class="res-link-sub">Gemini 2.0 Flash ফ্রি</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://console.groq.com" class="res-link" target="_blank">
+          <span class="res-link-icon">⚡</span>
+          <div><div class="res-link-title">Groq Console</div><div class="res-link-sub">Ultra-fast LLaMA/Mixtral ফ্রি</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://mistral.ai" class="res-link" target="_blank">
+          <span class="res-link-icon">🌪</span>
+          <div><div class="res-link-title">Mistral AI</div><div class="res-link-sub">Le Chat ফ্রি, API ক্রেডিট</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom:12px;">🛠 টুলস ও এজেন্ট</div>
+        <a href="https://ollama.ai" class="res-link" target="_blank">
+          <span class="res-link-icon">🦙</span>
+          <div><div class="res-link-title">Ollama</div><div class="res-link-sub">লোকাল LLM রান করার সেরা টুল</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://github.com/paul-gauthier/aider" class="res-link" target="_blank">
+          <span class="res-link-icon">🖥</span>
+          <div><div class="res-link-title">Aider (GitHub)</div><div class="res-link-sub">CLI কোডিং এজেন্ট, ওপেন সোর্স</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://continue.dev" class="res-link" target="_blank">
+          <span class="res-link-icon">🔌</span>
+          <div><div class="res-link-title">Continue.dev</div><div class="res-link-sub">VS Code AI extension ফ্রি</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+        <a href="https://modelcontextprotocol.io" class="res-link" target="_blank">
+          <span class="res-link-icon">🔗</span>
+          <div><div class="res-link-title">MCP Official Docs</div><div class="res-link-sub">MCP সার্ভার তৈরির গাইড</div></div>
+          <span class="res-link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="label" style="margin-top:2.5rem; margin-bottom:12px;">📦 pip packages</div>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">bash — সব ইন্সটল করুন</span>
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      </div>
+      <pre><span class="c"># AI/LLM Libraries</span>
+pip install openai anthropic langchain langchain-community
+pip install langchain-groq langchain-google-genai
+pip install pyautogen autogen-agentchat
+
+<span class="c"># Local AI Tools</span>
+pip install ollama llama-index litellm
+
+<span class="c"># Agent Frameworks</span>
+pip install crewai phidata instructor
+
+<span class="c"># Utilities</span>
+pip install python-dotenv rich typer httpx
+pip install aider-chat  <span class="c"># CLI coding agent</span>
+
+<span class="c"># সব একসাথে</span>
+pip install openai anthropic langchain langchain-community \
+  langchain-groq pyautogen ollama litellm crewai \
+  aider-chat rich python-dotenv</pre>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="font-size:22px; margin-bottom:12px;">🚀</p>
+    <p>এই গাইড সম্পূর্ণ ফ্রি এবং ওপেন। শিখুন, বানান, শেয়ার করুন।</p>
+    <p style="margin-top:8px; color:rgba(148,163,184,0.5); font-size:12px;">Ubuntu AI Vibe Coding Guide · বাংলায় · 2025</p>
+  </div>
+</footer>
+
+</body>
+</html>
