@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel Scalable Coding Guidelines - বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #e74c3c;
+    --red-dark: #c0392b;
+    --orange: #e67e22;
+    --green: #27ae60;
+    --green-light: #d5f5e3;
+    --blue: #2980b9;
+    --blue-light: #d6eaf8;
+    --purple: #8e44ad;
+    --purple-light: #f4ecf7;
+    --teal: #16a085;
+    --teal-light: #d1f2eb;
+    --yellow: #f39c12;
+    --yellow-light: #fef9e7;
+    --gray: #95a5a6;
+    --dark: #1a1a2e;
+    --darker: #0f0f1a;
+    --card: #16213e;
+    --card2: #0f3460;
+    --text: #e8eaf6;
+    --muted: #9ca3c0;
+    --border: rgba(255,255,255,0.08);
+    --accent: #e74c3c;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--darker);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+    border-bottom: 1px solid rgba(231,76,60,0.3);
+    padding: 60px 20px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(231,76,60,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(231,76,60,0.15);
+    border: 1px solid rgba(231,76,60,0.4);
+    color: #e74c3c;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--red); }
+  .hero p {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+  .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+
+  /* NAV */
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 30px;
+    max-width: 900px;
+    margin: 40px auto;
+  }
+  .toc h2 { color: var(--red); font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .toc a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .toc a:hover { background: rgba(231,76,60,0.1); border-color: rgba(231,76,60,0.3); color: #fff; }
+  .toc a .num { color: var(--red); font-weight: 700; font-size: 12px; min-width: 24px; }
+
+  /* MAIN WRAPPER */
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 60px;
+    scroll-margin-top: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 44px;
+    height: 44px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .section-header h2 { font-size: clamp(1.3rem, 3vw, 1.8rem); color: #fff; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h3 { font-size: 17px; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .card h3 .icon { font-size: 20px; }
+  .card p { color: var(--muted); font-size: 15px; line-height: 1.8; }
+  .card ul { list-style: none; margin-top: 12px; }
+  .card ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    color: var(--muted);
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li::before { content: '→'; color: var(--red); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  .card-green { border-color: rgba(39,174,96,0.3); }
+  .card-green h3 .icon, .card-green .badge { color: var(--green); }
+  .card-blue { border-color: rgba(41,128,185,0.3); }
+  .card-blue h3 .icon, .card-blue .badge { color: #5dade2; }
+  .card-purple { border-color: rgba(142,68,173,0.3); }
+  .card-purple h3 .icon { color: #a569bd; }
+  .card-yellow { border-color: rgba(243,156,18,0.3); }
+  .card-yellow h3 .icon { color: var(--yellow); }
+  .card-teal { border-color: rgba(22,160,133,0.3); }
+  .card-teal h3 .icon { color: #1abc9c; }
+
+  /* CODE */
+  pre {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    position: relative;
+  }
+  pre .lang-label {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #e6edf3;
+  }
+  .kw { color: #ff79c6; }
+  .cl { color: #69d2e7; }
+  .fn { color: #50fa7b; }
+  .st { color: #f1fa8c; }
+  .cm { color: #6272a4; font-style: italic; }
+  .nm { color: #bd93f9; }
+  .vr { color: #ffb86c; }
+  .ar { color: #8be9fd; }
+  .re { color: #e74c3c; font-weight: 600; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+  /* ALERT */
+  .alert {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 15px;
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; }
+  .alert-green { background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.25); color: #82e0aa; }
+  .alert-red { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.25); color: #f1948a; }
+  .alert-yellow { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.25); color: #f8c471; }
+  .alert-blue { background: rgba(41,128,185,0.1); border: 1px solid rgba(41,128,185,0.25); color: #85c1e9; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-red { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+  .badge-green { background: rgba(39,174,96,0.2); color: #27ae60; border: 1px solid rgba(39,174,96,0.3); }
+  .badge-blue { background: rgba(41,128,185,0.2); color: #2980b9; border: 1px solid rgba(41,128,185,0.3); }
+  .badge-yellow { background: rgba(243,156,18,0.2); color: #e67e22; border: 1px solid rgba(243,156,18,0.3); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: rgba(231,76,60,0.15); color: var(--red); padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 1px solid rgba(231,76,60,0.2); }
+  td { padding: 11px 16px; color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+
+  /* FOLDER TREE */
+  .tree {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .tree .folder { color: #69d2e7; }
+  .tree .file { color: #e6edf3; }
+  .tree .comment { color: #6272a4; }
+  .tree .indent { color: rgba(255,255,255,0.15); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 40px 0; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* COMPARISON */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .compare-bad { border-color: rgba(231,76,60,0.3) !important; }
+  .compare-bad .compare-label { color: #e74c3c; font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .compare-good { border-color: rgba(39,174,96,0.3) !important; }
+  .compare-good .compare-label { color: #27ae60; font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+  @media(max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* STEP LIST */
+  .steps { counter-reset: step; list-style: none; }
+  .steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(step);
+    width: 32px;
+    height: 32px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .steps li .step-content h4 { color: #fff; font-size: 15px; margin-bottom: 4px; }
+  .steps li .step-content p { color: var(--muted); font-size: 14px; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid var(--red);
+    padding: 16px 20px;
+    background: rgba(231,76,60,0.06);
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 768px) {
+    .hero { padding: 40px 20px 35px; }
+    .toc { margin: 20px; }
+    .wrapper { padding: 0 16px 60px; }
+    table { font-size: 13px; }
+    th, td { padding: 9px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">📚 সম্পূর্ণ বাংলা গাইড</div>
+  <h1>Laravel <span>Scalable</span> Coding<br>Guidelines</h1>
+  <p>মিড থেকে লার্জ প্রজেক্টের জন্য পরিষ্কার, স্কেলেবল ও মেইনটেইনেবল কোড লেখার সম্পূর্ণ গাইডলাইন</p>
+  <div class="hero-tags">
+    <span class="tag">Laravel 10/11</span>
+    <span class="tag">Service Layer</span>
+    <span class="tag">Repository Pattern</span>
+    <span class="tag">Clean Code</span>
+    <span class="tag">SOLID Principles</span>
+    <span class="tag">API Best Practices</span>
+  </div>
+</header>
+
+<!-- TABLE OF CONTENTS -->
+<div class="wrapper">
+<div class="toc">
+  <h2>📋 বিষয়সূচি</h2>
+  <div class="toc-grid">
+    <a href="#structure"><span class="num">01</span> ফোল্ডার স্ট্রাকচার</a>
+    <a href="#naming"><span class="num">02</span> নামকরণ নিয়ম</a>
+    <a href="#service"><span class="num">03</span> Service Layer</a>
+    <a href="#repository"><span class="num">04</span> Repository Pattern</a>
+    <a href="#controller"><span class="num">05</span> Controller গাইডলাইন</a>
+    <a href="#model"><span class="num">06</span> Model Best Practices</a>
+    <a href="#request"><span class="num">07</span> Form Request Validation</a>
+    <a href="#resource"><span class="num">08</span> API Resource</a>
+    <a href="#event"><span class="num">09</span> Events & Listeners</a>
+    <a href="#job"><span class="num">10</span> Jobs & Queues</a>
+    <a href="#cache"><span class="num">11</span> Caching Strategy</a>
+    <a href="#solid"><span class="num">12</span> SOLID Principles</a>
+  </div>
+</div>
+
+<!-- ====== SECTION 1: FOLDER STRUCTURE ====== -->
+<div class="section" id="structure">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <h2>ফোল্ডার স্ট্রাকচার</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📁</span> কেন সঠিক স্ট্রাকচার দরকার?</h3>
+    <p>বড় প্রজেক্টে যখন ৫-১০ জন ডেভেলপার কাজ করেন, তখন সঠিক ফোল্ডার স্ট্রাকচার না থাকলে কোড খুঁজে পাওয়া, বোঝা এবং মেইনটেইন করা কঠিন হয়ে পড়ে। Laravel-এর ডিফল্ট স্ট্রাকচার ছোট প্রজেক্টের জন্য ভালো, কিন্তু মিড/লার্জ প্রজেক্টে আমাদের আরও কাস্টম লেয়ার যোগ করতে হয়।</p>
+  </div>
+
+  <div class="tree">
+    <div><span class="folder">app/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Http/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Controllers/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Api/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← API controllers আলাদা রাখুন</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">UserController.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">OrderController.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Web/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Web controllers</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Requests/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Form validation</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">User/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">StoreUserRequest.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">UpdateUserRequest.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Resources/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← API Resources</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Middleware/</span></div>
+    <div></div>
+    <div>&nbsp;&nbsp;<span class="folder">Services/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Business Logic এখানে</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">UserService.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">OrderService.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">PaymentService.php</span></div>
+    <div></div>
+    <div>&nbsp;&nbsp;<span class="folder">Repositories/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Database access layer</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">Interfaces/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">UserRepositoryInterface.php</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">UserRepository.php</span></div>
+    <div></div>
+    <div>&nbsp;&nbsp;<span class="folder">Models/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Events/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Listeners/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Jobs/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Traits/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Reusable traits</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Enums/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Status codes, types</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Helpers/</span></div>
+    <div>&nbsp;&nbsp;<span class="folder">Exceptions/</span>&nbsp;&nbsp;&nbsp;<span class="comment">← Custom exceptions</span></div>
+  </div>
+
+  <div class="alert alert-yellow">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>মনে রাখুন:</strong> সব Controller-এ database query লেখা বড় ভুল। Controller → Service → Repository এই লেয়ার ভাগ করুন।</div>
+  </div>
+</div>
+
+<!-- ====== SECTION 2: NAMING ====== -->
+<div class="section" id="naming">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <h2>নামকরণ নিয়ম (Naming Conventions)</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>উপাদান</th>
+        <th>নিয়ম</th>
+        <th>সঠিক উদাহরণ</th>
+        <th>ভুল উদাহরণ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Model</td><td>Singular PascalCase</td><td><code>User</code>, <code>OrderItem</code></td><td><code>users</code>, <code>order_item</code></td></tr>
+      <tr><td>Controller</td><td>Plural + Controller</td><td><code>UsersController</code></td><td><code>UserCtrl</code></td></tr>
+      <tr><td>Service</td><td>Singular + Service</td><td><code>UserService</code></td><td><code>UserHelper</code></td></tr>
+      <tr><td>Repository</td><td>Model + Repository</td><td><code>UserRepository</code></td><td><code>UserRepo</code></td></tr>
+      <tr><td>Migration</td><td>snake_case + action</td><td><code>create_users_table</code></td><td><code>users_migration</code></td></tr>
+      <tr><td>Method (Controller)</td><td>camelCase, RESTful</td><td><code>index, store, show</code></td><td><code>getUsers, addUser</code></td></tr>
+      <tr><td>Variable</td><td>camelCase</td><td><code>$userOrder</code></td><td><code>$user_order</code></td></tr>
+      <tr><td>Database Table</td><td>plural snake_case</td><td><code>order_items</code></td><td><code>OrderItem</code></td></tr>
+      <tr><td>Route Name</td><td>dot notation</td><td><code>users.index</code></td><td><code>get_users</code></td></tr>
+      <tr><td>Event</td><td>Past tense</td><td><code>OrderPlaced</code></td><td><code>PlaceOrder</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight-box">
+    💡 <strong>টিপস:</strong> নাম থেকেই বোঝা যাওয়া উচিত কোড কী করছে। <code>getUsrData()</code> এর চেয়ে <code>getUserProfile(int $userId)</code> অনেক বেশি পরিষ্কার।
+  </div>
+</div>
+
+<!-- ====== SECTION 3: SERVICE LAYER ====== -->
+<div class="section" id="service">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <h2>Service Layer — Business Logic</h2>
+  </div>
+
+  <div class="card card-green">
+    <h3><span class="icon">⚙️</span> Service Layer কী এবং কেন?</h3>
+    <p>Service Layer হলো আপনার application-এর "মগজ"। সব business logic — যেমন payment process, order calculation, email পাঠানো, notification — এখানে থাকবে। Controller শুধু request নেবে এবং response দেবে, কিন্তু কোনো business logic জানবে না।</p>
+    <ul>
+      <li>Controller পাতলা (thin) থাকে, শুধু request/response handle করে</li>
+      <li>একই service অনেক জায়গা থেকে ব্যবহার করা যায় (reusable)</li>
+      <li>Unit testing করা সহজ হয়</li>
+      <li>Code পরিবর্তন করলে এক জায়গাতেই পরিবর্তন করতে হয়</li>
+    </ul>
+  </div>
+
+  <div class="compare">
+    <div class="card compare-bad" style="background: rgba(231,76,60,0.05);">
+      <div class="compare-label">❌ ভুল — Controller-এ Business Logic</div>
+      <pre style="margin:0; background: rgba(0,0,0,0.4); border:none; padding:14px;"><code><span class="kw">public function</span> <span class="fn">register</span>(<span class="ar">Request</span> <span class="vr">$request</span>)
+{
+    <span class="cm">// সব কিছু controller-এ লেখা ❌</span>
+    <span class="vr">$user</span> = <span class="cl">User</span>::<span class="fn">create</span>([...]);
+    <span class="cl">Mail</span>::<span class="fn">to</span>(<span class="vr">$user</span>)-><span class="fn">send</span>(...);
+    <span class="cl">Cache</span>::<span class="fn">forget</span>(<span class="st">'users'</span>);
+    <span class="cl">Log</span>::<span class="fn">info</span>(<span class="st">'User created'</span>);
+    <span class="cm">// ৫০+ লাইনের controller!</span>
+}</code></pre>
+    </div>
+    <div class="card compare-good" style="background: rgba(39,174,96,0.05);">
+      <div class="compare-label">✅ সঠিক — Service Layer ব্যবহার</div>
+      <pre style="margin:0; background: rgba(0,0,0,0.4); border:none; padding:14px;"><code><span class="kw">public function</span> <span class="fn">register</span>(
+    <span class="cl">StoreUserRequest</span> <span class="vr">$request</span>,
+    <span class="cl">UserService</span> <span class="vr">$userService</span>
+) {
+    <span class="vr">$user</span> = <span class="vr">$userService</span>
+        -><span class="fn">register</span>(<span class="vr">$request</span>-><span class="fn">validated</span>());
+
+    <span class="kw">return new</span> <span class="cl">UserResource</span>(<span class="vr">$user</span>);
+    <span class="cm">// পরিষ্কার ৫ লাইন! ✅</span>
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📝</span> UserService সম্পূর্ণ উদাহরণ</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="kw">namespace</span> <span class="cl">App\Services</span>;
+
+<span class="kw">use</span> <span class="cl">App\Models\User</span>;
+<span class="kw">use</span> <span class="cl">App\Repositories\Interfaces\UserRepositoryInterface</span>;
+<span class="kw">use</span> <span class="cl">App\Events\UserRegistered</span>;
+<span class="kw">use</span> <span class="cl">App\Exceptions\UserCreationException</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\Hash</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\DB</span>;
+
+<span class="kw">class</span> <span class="cl">UserService</span>
+{
+    <span class="cm">/**
+     * Constructor injection — dependency injection ব্যবহার করুন
+     */</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cl">UserRepositoryInterface</span> <span class="vr">$userRepository</span>,
+    ) {}
+
+    <span class="cm">/**
+     * নতুন user register করা
+     * @throws UserCreationException
+     */</span>
+    <span class="kw">public function</span> <span class="fn">register</span>(<span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>
+    {
+        <span class="cm">// Transaction ব্যবহার — একটি ব্যর্থ হলে সব rollback</span>
+        <span class="kw">return</span> <span class="cl">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span> () <span class="kw">use</span> (<span class="vr">$data</span>) {
+            <span class="vr">$user</span> = <span class="vr">$this</span>->userRepository-><span class="fn">create</span>([
+                <span class="st">'name'</span>     => <span class="vr">$data</span>[<span class="st">'name'</span>],
+                <span class="st">'email'</span>    => <span class="vr">$data</span>[<span class="st">'email'</span>],
+                <span class="st">'password'</span> => <span class="cl">Hash</span>::<span class="fn">make</span>(<span class="vr">$data</span>[<span class="st">'password'</span>]),
+            ]);
+
+            <span class="cm">// Event fire — listener আলাদাভাবে কাজ করবে</span>
+            <span class="fn">event</span>(<span class="kw">new</span> <span class="cl">UserRegistered</span>(<span class="vr">$user</span>));
+
+            <span class="kw">return</span> <span class="vr">$user</span>;
+        });
+    }
+
+    <span class="cm">/**
+     * User profile update — শুধু allowed fields পরিবর্তন
+     */</span>
+    <span class="kw">public function</span> <span class="fn">updateProfile</span>(<span class="cl">User</span> <span class="vr">$user</span>, <span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>
+    {
+        <span class="vr">$allowedFields</span> = [<span class="st">'name'</span>, <span class="st">'phone'</span>, <span class="st">'bio'</span>, <span class="st">'avatar'</span>];
+
+        <span class="vr">$updateData</span> = <span class="fn">array_intersect_key</span>(
+            <span class="vr">$data</span>,
+            <span class="fn">array_flip</span>(<span class="vr">$allowedFields</span>)
+        );
+
+        <span class="kw">return</span> <span class="vr">$this</span>->userRepository-><span class="fn">update</span>(<span class="vr">$user</span>->id, <span class="vr">$updateData</span>);
+    }
+}</code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 4: REPOSITORY PATTERN ====== -->
+<div class="section" id="repository">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <h2>Repository Pattern</h2>
+  </div>
+
+  <div class="card card-blue">
+    <h3><span class="icon">🗄️</span> Repository Pattern কী?</h3>
+    <p>Repository হলো Database access-এর মধ্যস্থতাকারী। Service কখনো সরাসরি Eloquent model ব্যবহার করবে না — সবসময় Repository-র মাধ্যমে data নেবে। এতে পরে database change করলেও (MySQL → MongoDB) শুধু Repository পরিবর্তন করলেই হবে।</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📋</span> ধাপ ১: Interface তৈরি করুন</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Repositories/Interfaces/UserRepositoryInterface.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Repositories\Interfaces</span>;
+
+<span class="kw">use</span> <span class="cl">App\Models\User</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Pagination\LengthAwarePaginator</span>;
+
+<span class="kw">interface</span> <span class="cl">UserRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="kw">int</span> <span class="vr">$id</span>): ?<span class="cl">User</span>;
+    <span class="kw">public function</span> <span class="fn">findByEmail</span>(<span class="kw">string</span> <span class="vr">$email</span>): ?<span class="cl">User</span>;
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>;
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="kw">int</span> <span class="vr">$id</span>, <span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>;
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="kw">int</span> <span class="vr">$id</span>): <span class="kw">bool</span>;
+    <span class="kw">public function</span> <span class="fn">paginate</span>(<span class="kw">int</span> <span class="vr">$perPage</span> = <span class="nm">15</span>): <span class="cl">LengthAwarePaginator</span>;
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> ধাপ ২: Repository Implement করুন</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Repositories/UserRepository.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Repositories</span>;
+
+<span class="kw">use</span> <span class="cl">App\Models\User</span>;
+<span class="kw">use</span> <span class="cl">App\Repositories\Interfaces\UserRepositoryInterface</span>;
+
+<span class="kw">class</span> <span class="cl">UserRepository</span> <span class="kw">implements</span> <span class="cl">UserRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cl">User</span> <span class="vr">$model</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="kw">int</span> <span class="vr">$id</span>): ?<span class="cl">User</span>
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>->model-><span class="fn">find</span>(<span class="vr">$id</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>->model-><span class="fn">create</span>(<span class="vr">$data</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">paginate</span>(<span class="kw">int</span> <span class="vr">$perPage</span> = <span class="nm">15</span>): <span class="cl">LengthAwarePaginator</span>
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>->model
+            -><span class="fn">latest</span>()
+            -><span class="fn">paginate</span>(<span class="vr">$perPage</span>);
+    }
+
+    <span class="cm">// ... অন্যান্য methods</span>
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔗</span> ধাপ ৩: ServiceProvider-এ Bind করুন</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Providers/RepositoryServiceProvider.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Providers</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Support\ServiceProvider</span>;
+<span class="kw">use</span> <span class="cl">App\Repositories\Interfaces\UserRepositoryInterface</span>;
+<span class="kw">use</span> <span class="cl">App\Repositories\UserRepository</span>;
+
+<span class="kw">class</span> <span class="cl">RepositoryServiceProvider</span> <span class="kw">extends</span> <span class="cl">ServiceProvider</span>
+{
+    <span class="kw">public function</span> <span class="fn">register</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// Interface চাইলে, এই concrete class দাও</span>
+        <span class="vr">$this</span>->app-><span class="fn">bind</span>(
+            <span class="cl">UserRepositoryInterface</span>::class,
+            <span class="cl">UserRepository</span>::class
+        );
+    }
+}</code></pre>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">💡</span>
+      <div>এই Provider-টি <code>config/app.php</code> এর <code>providers</code> array-তে যোগ করতে হবে।</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 5: CONTROLLER ====== -->
+<div class="section" id="controller">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <h2>Controller Guidelines</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <h3><span class="icon">✅</span> Controller কী করবে</h3>
+      <ul>
+        <li>Request validate করা (Form Request দিয়ে)</li>
+        <li>Service call করা</li>
+        <li>Response return করা</li>
+        <li>HTTP status code সেট করা</li>
+      </ul>
+    </div>
+    <div class="card card-purple">
+      <h3><span class="icon">🚫</span> Controller কী করবে না</h3>
+      <ul>
+        <li>Database query লেখা নয়</li>
+        <li>Email/Notification পাঠানো নয়</li>
+        <li>Business logic রাখা নয়</li>
+        <li>৩০+ লাইনের method রাখা নয়</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📝</span> সঠিক Controller উদাহরণ</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="kw">namespace</span> <span class="cl">App\Http\Controllers\Api</span>;
+
+<span class="kw">use</span> <span class="cl">App\Http\Controllers\Controller</span>;
+<span class="kw">use</span> <span class="cl">App\Http\Requests\User\StoreUserRequest</span>;
+<span class="kw">use</span> <span class="cl">App\Http\Requests\User\UpdateUserRequest</span>;
+<span class="kw">use</span> <span class="cl">App\Http\Resources\UserResource</span>;
+<span class="kw">use</span> <span class="cl">App\Services\UserService</span>;
+<span class="kw">use</span> <span class="cl">App\Models\User</span>;
+
+<span class="kw">class</span> <span class="cl">UserController</span> <span class="kw">extends</span> <span class="cl">Controller</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cl">UserService</span> <span class="vr">$userService</span>
+    ) {}
+
+    <span class="cm">/**
+     * সব users দেখাও (paginated)
+     */</span>
+    <span class="kw">public function</span> <span class="fn">index</span>(): <span class="cl">JsonResponse</span>
+    {
+        <span class="vr">$users</span> = <span class="vr">$this</span>->userService-><span class="fn">getAllPaginated</span>();
+
+        <span class="kw">return</span> <span class="cl">UserResource</span>::<span class="fn">collection</span>(<span class="vr">$users</span>)
+            -><span class="fn">response</span>();
+    }
+
+    <span class="cm">/**
+     * নতুন user তৈরি করো
+     */</span>
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cl">StoreUserRequest</span> <span class="vr">$request</span>): <span class="cl">JsonResponse</span>
+    {
+        <span class="vr">$user</span> = <span class="vr">$this</span>->userService
+            -><span class="fn">register</span>(<span class="vr">$request</span>-><span class="fn">validated</span>());
+
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="cl">UserResource</span>(<span class="vr">$user</span>))
+            -><span class="fn">response</span>()
+            -><span class="fn">setStatusCode</span>(<span class="nm">201</span>);
+    }
+
+    <span class="cm">/**
+     * একজন user দেখাও
+     */</span>
+    <span class="kw">public function</span> <span class="fn">show</span>(<span class="cl">User</span> <span class="vr">$user</span>): <span class="cl">JsonResponse</span>
+    {
+        <span class="cm">// Route Model Binding ব্যবহার করুন — $user auto-loaded</span>
+        <span class="kw">return</span> (<span class="kw">new</span> <span class="cl">UserResource</span>(<span class="vr">$user</span>))-><span class="fn">response</span>();
+    }
+}</code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 6: MODEL ====== -->
+<div class="section" id="model">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <h2>Model Best Practices</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🏗️</span> সঠিকভাবে Model লেখা</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="kw">namespace</span> <span class="cl">App\Models</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Model</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\SoftDeletes</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Factories\HasFactory</span>;
+<span class="kw">use</span> <span class="cl">App\Enums\UserStatus</span>;
+
+<span class="kw">class</span> <span class="cl">User</span> <span class="kw">extends</span> <span class="cl">Model</span>
+{
+    <span class="kw">use</span> <span class="cl">HasFactory</span>, <span class="cl">SoftDeletes</span>;
+
+    <span class="cm">// ১. সবসময় $fillable বা $guarded লিখুন</span>
+    <span class="kw">protected</span> <span class="vr">$fillable</span> = [
+        <span class="st">'name'</span>, <span class="st">'email'</span>, <span class="st">'password'</span>,
+        <span class="st">'phone'</span>, <span class="st">'status'</span>,
+    ];
+
+    <span class="cm">// ২. hidden fields — API response-এ দেখাবে না</span>
+    <span class="kw">protected</span> <span class="vr">$hidden</span> = [<span class="st">'password'</span>, <span class="st">'remember_token'</span>];
+
+    <span class="cm">// ৩. Casts — type নিশ্চিত করুন</span>
+    <span class="kw">protected</span> <span class="kw">function</span> <span class="fn">casts</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'email_verified_at'</span> => <span class="st">'datetime'</span>,
+            <span class="st">'password'</span>          => <span class="st">'hashed'</span>,
+            <span class="st">'status'</span>            => <span class="cl">UserStatus</span>::class, <span class="cm">// Enum cast</span>
+            <span class="st">'settings'</span>          => <span class="st">'array'</span>,
+        ];
+    }
+
+    <span class="cm">// ৪. Relationships — সব relationship method লিখুন</span>
+    <span class="kw">public function</span> <span class="fn">orders</span>(): <span class="cl">HasMany</span>
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="fn">hasMany</span>(<span class="cl">Order</span>::class);
+    }
+
+    <span class="kw">public function</span> <span class="fn">profile</span>(): <span class="cl">HasOne</span>
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="fn">hasOne</span>(<span class="cl">UserProfile</span>::class);
+    }
+
+    <span class="cm">// ৫. Scope — reusable query filters</span>
+    <span class="kw">public function</span> <span class="fn">scopeActive</span>(<span class="vr">$query</span>): <span class="vr">$query</span>
+    {
+        <span class="kw">return</span> <span class="vr">$query</span>-><span class="fn">where</span>(<span class="st">'status'</span>, <span class="cl">UserStatus</span>::Active);
+    }
+}</code></pre>
+  </div>
+
+  <div class="card card-yellow">
+    <h3><span class="icon">⚡</span> Enum ব্যবহার করুন (Laravel 10+)</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Enums/UserStatus.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Enums</span>;
+
+<span class="kw">enum</span> <span class="cl">UserStatus</span>: <span class="kw">string</span>
+{
+    <span class="kw">case</span> <span class="nm">Active</span>   = <span class="st">'active'</span>;
+    <span class="kw">case</span> <span class="nm">Inactive</span> = <span class="st">'inactive'</span>;
+    <span class="kw">case</span> <span class="nm">Banned</span>   = <span class="st">'banned'</span>;
+
+    <span class="kw">public function</span> <span class="fn">label</span>(): <span class="kw">string</span>
+    {
+        <span class="kw">return match</span>(<span class="vr">$this</span>) {
+            <span class="cl">UserStatus</span>::<span class="nm">Active</span>   => <span class="st">'সক্রিয়'</span>,
+            <span class="cl">UserStatus</span>::<span class="nm">Inactive</span> => <span class="st">'নিষ্ক্রিয়'</span>,
+            <span class="cl">UserStatus</span>::<span class="nm">Banned</span>   => <span class="st">'নিষিদ্ধ'</span>,
+        };
+    }
+}
+
+<span class="cm">// ব্যবহার — magic string এর পরিবর্তে</span>
+<span class="vr">$user</span>-><span class="fn">where</span>(<span class="st">'status'</span>, <span class="cl">UserStatus</span>::<span class="nm">Active</span>); <span class="cm">// ✅ type-safe</span></code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 7: FORM REQUEST ====== -->
+<div class="section" id="request">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <h2>Form Request Validation</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🛡️</span> Validation Controller-এ নয়, Request-এ লিখুন</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Http/Requests/User/StoreUserRequest.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Http\Requests\User</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Foundation\Http\FormRequest</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Validation\Rules\Password</span>;
+
+<span class="kw">class</span> <span class="cl">StoreUserRequest</span> <span class="kw">extends</span> <span class="cl">FormRequest</span>
+{
+    <span class="cm">/**
+     * এই request কে করতে পারবে?
+     */</span>
+    <span class="kw">public function</span> <span class="fn">authorize</span>(): <span class="kw">bool</span>
+    {
+        <span class="kw">return true</span>; <span class="cm">// বা policy check: auth()->user()->can('create', User::class)</span>
+    }
+
+    <span class="cm">/**
+     * Validation rules
+     */</span>
+    <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'name'</span>     => [<span class="st">'required'</span>, <span class="st">'string'</span>, <span class="st">'max:100'</span>],
+            <span class="st">'email'</span>    => [<span class="st">'required'</span>, <span class="st">'email'</span>, <span class="st">'unique:users,email'</span>],
+            <span class="st">'password'</span> => [<span class="st">'required'</span>, <span class="st">'confirmed'</span>,
+                            <span class="cl">Password</span>::<span class="fn">min</span>(<span class="nm">8</span>)-><span class="fn">mixedCase</span>()-><span class="fn">numbers</span>()],
+            <span class="st">'phone'</span>    => [<span class="st">'nullable'</span>, <span class="st">'string'</span>, <span class="st">'regex:/^01[3-9]\d{8}$/'</span>],
+        ];
+    }
+
+    <span class="cm">/**
+     * Custom error messages — ইউজারের বোঝার জন্য
+     */</span>
+    <span class="kw">public function</span> <span class="fn">messages</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'email.unique'</span>   => <span class="st">'এই ইমেইল ইতিমধ্যে ব্যবহার হচ্ছে।'</span>,
+            <span class="st">'phone.regex'</span>    => <span class="st">'বাংলাদেশের সঠিক ফোন নম্বর দিন।'</span>,
+            <span class="st">'password.min'</span>   => <span class="st">'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।'</span>,
+        ];
+    }
+
+    <span class="cm">/**
+     * Data পরিষ্কার করুন validation-এর আগে
+     */</span>
+    <span class="kw">protected function</span> <span class="fn">prepareForValidation</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-><span class="fn">merge</span>([
+            <span class="st">'email'</span> => <span class="fn">strtolower</span>(<span class="vr">$this</span>->email ?? <span class="st">''</span>),
+        ]);
+    }
+}</code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 8: API RESOURCE ====== -->
+<div class="section" id="resource">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <h2>API Resource</h2>
+  </div>
+
+  <div class="card card-teal">
+    <h3><span class="icon">📦</span> API Resource কেন ব্যবহার করবেন?</h3>
+    <p>Model সরাসরি return করলে database structure expose হয়ে যায়। API Resource দিয়ে আপনি ঠিক করতে পারেন ক্লায়েন্ট কোন data দেখবে এবং কোন format-এ দেখবে।</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎨</span> UserResource উদাহরণ</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Http/Resources/UserResource.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Http\Resources</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Http\Request</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Http\Resources\Json\JsonResource</span>;
+
+<span class="kw">class</span> <span class="cl">UserResource</span> <span class="kw">extends</span> <span class="cl">JsonResource</span>
+{
+    <span class="kw">public function</span> <span class="fn">toArray</span>(<span class="cl">Request</span> <span class="vr">$request</span>): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'id'</span>         => <span class="vr">$this</span>->id,
+            <span class="st">'name'</span>       => <span class="vr">$this</span>->name,
+            <span class="st">'email'</span>      => <span class="vr">$this</span>->email,
+            <span class="st">'phone'</span>      => <span class="vr">$this</span>->phone,
+            <span class="st">'status'</span>     => <span class="vr">$this</span>->status,
+            <span class="st">'status_label'</span> => <span class="vr">$this</span>->status?-><span class="fn">label</span>(),
+
+            <span class="cm">// Conditional — শুধু যখন load করা আছে</span>
+            <span class="st">'orders'</span>     => <span class="cl">OrderResource</span>::<span class="fn">collection</span>(
+                                <span class="vr">$this</span>-><span class="fn">whenLoaded</span>(<span class="st">'orders'</span>)
+                             ),
+            <span class="st">'profile'</span>    => <span class="kw">new</span> <span class="cl">ProfileResource</span>(
+                                <span class="vr">$this</span>-><span class="fn">whenLoaded</span>(<span class="st">'profile'</span>)
+                             ),
+
+            <span class="cm">// শুধু admin-রা দেখবে</span>
+            <span class="st">'ip_address'</span> => <span class="vr">$this</span>-><span class="fn">when</span>(
+                                <span class="vr">$request</span>-><span class="fn">user</span>()?-><span class="fn">isAdmin</span>(),
+                                <span class="vr">$this</span>->last_ip
+                             ),
+
+            <span class="st">'created_at'</span> => <span class="vr">$this</span>->created_at?-><span class="fn">format</span>(<span class="st">'d M, Y'</span>),
+        ];
+    }
+}</code></pre>
+  </div>
+
+  <div class="alert alert-green">
+    <span class="alert-icon">✅</span>
+    <div><code>whenLoaded()</code> ব্যবহার করুন — এটি N+1 query সমস্যা এড়াতে সাহায্য করে। Relationship load না হলে response-এ আসবে না।</div>
+  </div>
+</div>
+
+<!-- ====== SECTION 9: EVENTS ====== -->
+<div class="section" id="event">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <h2>Events & Listeners</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔔</span> Events ব্যবহার করুন Side Effects-এর জন্য</h3>
+    <p style="margin-bottom:12px;">User register হওয়ার পর email পাঠানো, notification দেওয়া, log রাখা — এগুলো Service-এ না লিখে Event fire করুন এবং Listener-এ handle করুন। এতে Service পরিষ্কার থাকে।</p>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Events/UserRegistered.php</span>
+<span class="kw">class</span> <span class="cl">UserRegistered</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">public readonly</span> <span class="cl">User</span> <span class="vr">$user</span>
+    ) {}
+}
+
+<span class="cm">// app/Listeners/SendWelcomeEmail.php</span>
+<span class="kw">class</span> <span class="cl">SendWelcomeEmail</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cl">UserRegistered</span> <span class="vr">$event</span>): <span class="kw">void</span>
+    {
+        <span class="cl">Mail</span>::<span class="fn">to</span>(<span class="vr">$event</span>->user)
+            -><span class="fn">queue</span>(<span class="kw">new</span> <span class="cl">WelcomeEmail</span>(<span class="vr">$event</span>->user));
+    }
+}
+
+<span class="cm">// app/Listeners/CreateUserWallet.php</span>
+<span class="kw">class</span> <span class="cl">CreateUserWallet</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cl">UserRegistered</span> <span class="vr">$event</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// একই event, আলাদা listener</span>
+        <span class="cl">Wallet</span>::<span class="fn">create</span>([<span class="st">'user_id'</span> => <span class="vr">$event</span>->user->id]);
+    }
+}
+
+<span class="cm">// EventServiceProvider-এ register করুন:</span>
+<span class="kw">protected</span> <span class="vr">$listen</span> = [
+    <span class="cl">UserRegistered</span>::class => [
+        <span class="cl">SendWelcomeEmail</span>::class,
+        <span class="cl">CreateUserWallet</span>::class,
+        <span class="cl">NotifyAdmins</span>::class,
+    ],
+];</code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 10: JOBS ====== -->
+<div class="section" id="job">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2>Jobs & Queues</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-blue">
+      <h3><span class="icon">⚡</span> Queue কখন ব্যবহার করবেন?</h3>
+      <ul>
+        <li>Email পাঠানো</li>
+        <li>SMS notification</li>
+        <li>ভারী report generate</li>
+        <li>Third-party API call</li>
+        <li>Image processing</li>
+        <li>Bulk data import/export</li>
+      </ul>
+    </div>
+    <div class="card card-yellow">
+      <h3><span class="icon">🏃</span> Synchronous কখন?</h3>
+      <ul>
+        <li>তাৎক্ষণিক response দরকার</li>
+        <li>Database transaction-এর মধ্যে</li>
+        <li>ছোট, দ্রুত কাজ</li>
+        <li>Response-এ result দরকার</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> Job উদাহরণ</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// app/Jobs/ProcessOrderExport.php</span>
+<span class="kw">namespace</span> <span class="cl">App\Jobs</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Bus\Queueable</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Contracts\Queue\ShouldQueue</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Foundation\Bus\Dispatchable</span>;
+
+<span class="kw">class</span> <span class="cl">ProcessOrderExport</span> <span class="kw">implements</span> <span class="cl">ShouldQueue</span>
+{
+    <span class="kw">use</span> <span class="cl">Dispatchable</span>, <span class="cl">Queueable</span>;
+
+    <span class="cm">// কতবার retry করবে</span>
+    <span class="kw">public</span> <span class="vr">$tries</span> = <span class="nm">3</span>;
+
+    <span class="cm">// কত সেকেন্ডে timeout</span>
+    <span class="kw">public</span> <span class="vr">$timeout</span> = <span class="nm">120</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="kw">int</span> <span class="vr">$userId</span>,
+        <span class="kw">private readonly</span> <span class="kw">string</span> <span class="vr">$dateRange</span>,
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cl">OrderExportService</span> <span class="vr">$exportService</span>): <span class="kw">void</span>
+    {
+        <span class="vr">$exportService</span>-><span class="fn">generate</span>(<span class="vr">$this</span>->userId, <span class="vr">$this</span>->dateRange);
+    }
+
+    <span class="cm">// ব্যর্থ হলে কী করবে?</span>
+    <span class="kw">public function</span> <span class="fn">failed</span>(<span class="vr">\Throwable</span> <span class="vr">$exception</span>): <span class="kw">void</span>
+    {
+        <span class="cl">Log</span>::<span class="fn">error</span>(<span class="st">'Export failed'</span>, [
+            <span class="st">'user_id'</span> => <span class="vr">$this</span>->userId,
+            <span class="st">'error'</span>   => <span class="vr">$exception</span>-><span class="fn">getMessage</span>(),
+        ]);
+    }
+}
+
+<span class="cm">// dispatch করার উপায়:</span>
+<span class="cl">ProcessOrderExport</span>::<span class="fn">dispatch</span>(<span class="vr">$userId</span>, <span class="st">'2024-01'</span>);
+<span class="cl">ProcessOrderExport</span>::<span class="fn">dispatch</span>(<span class="vr">$userId</span>, <span class="st">'2024-01'</span>)-><span class="fn">delay</span>(<span class="fn">now</span>()-><span class="fn">addMinutes</span>(<span class="nm">5</span>));</code></pre>
+  </div>
+</div>
+
+<!-- ====== SECTION 11: CACHING ====== -->
+<div class="section" id="cache">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <h2>Caching Strategy</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚡</span> সঠিক Caching Pattern</h3>
+    <pre><code><span class="lang-label">PHP</span><span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\Cache</span>;
+
+<span class="kw">class</span> <span class="cl">UserService</span>
+{
+    <span class="kw">private const</span> <span class="nm">CACHE_TTL</span> = <span class="nm">3600</span>; <span class="cm">// ১ ঘণ্টা</span>
+
+    <span class="kw">public function</span> <span class="fn">getUserProfile</span>(<span class="kw">int</span> <span class="vr">$userId</span>): <span class="cl">User</span>
+    {
+        <span class="cm">// remember: আছে দাও, নেই তো তৈরি করে দাও</span>
+        <span class="kw">return</span> <span class="cl">Cache</span>::<span class="fn">remember</span>(
+            <span class="st">"user.profile.{</span><span class="vr">$userId</span><span class="st">}"</span>,
+            <span class="kw">self</span>::<span class="nm">CACHE_TTL</span>,
+            <span class="kw">fn</span>() => <span class="vr">$this</span>->userRepository-><span class="fn">findWithRelations</span>(<span class="vr">$userId</span>)
+        );
+    }
+
+    <span class="kw">public function</span> <span class="fn">updateProfile</span>(<span class="cl">User</span> <span class="vr">$user</span>, <span class="kw">array</span> <span class="vr">$data</span>): <span class="cl">User</span>
+    {
+        <span class="vr">$updated</span> = <span class="vr">$this</span>->userRepository-><span class="fn">update</span>(<span class="vr">$user</span>->id, <span class="vr">$data</span>);
+
+        <span class="cm">// Update করলে cache মুছে ফেলুন</span>
+        <span class="cl">Cache</span>::<span class="fn">forget</span>(<span class="st">"user.profile.{</span><span class="vr">$user</span><span class="st">->id}"</span>);
+
+        <span class="kw">return</span> <span class="vr">$updated</span>;
+    }
+
+    <span class="cm">// সম্পর্কিত সব cache মুছতে Tags ব্যবহার করুন (Redis)</span>
+    <span class="kw">public function</span> <span class="fn">clearUserCache</span>(<span class="kw">int</span> <span class="vr">$userId</span>): <span class="kw">void</span>
+    {
+        <span class="cl">Cache</span>::<span class="fn">tags</span>([<span class="st">"user.{</span><span class="vr">$userId</span><span class="st">}"</span>])-><span class="fn">flush</span>();
+    }
+}</code></pre>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Data Type</th><th>Cache Duration</th><th>কারণ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>User profile</td><td>১ ঘণ্টা</td><td>মাঝেমধ্যে পরিবর্তন হয়</td></tr>
+      <tr><td>Product list</td><td>১৫ মিনিট</td><td>ঘন ঘন update হয়</td></tr>
+      <tr><td>Settings/Config</td><td>১ দিন</td><td>খুব কমই পরিবর্তন</td></tr>
+      <tr><td>Realtime data</td><td>Cache করবেন না</td><td>সবসময় fresh দরকার</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ====== SECTION 12: SOLID ====== -->
+<div class="section" id="solid">
+  <div class="section-header">
+    <div class="section-num">12</div>
+    <h2>SOLID Principles — Laravel-এ</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <h3><span class="icon">S</span> Single Responsibility</h3>
+      <p>প্রতিটি class শুধু একটি কাজ করবে। <code>UserService</code> শুধু user-সম্পর্কিত কাজ করবে, email পাঠাবে না।</p>
+    </div>
+    <div class="card card-blue">
+      <h3><span class="icon">O</span> Open/Closed</h3>
+      <p>নতুন feature যোগ করতে পুরনো code পরিবর্তন না করে extend করুন। Interface দিয়ে নতুন implementation যোগ করুন।</p>
+    </div>
+    <div class="card card-purple">
+      <h3><span class="icon">L</span> Liskov Substitution</h3>
+      <p>Interface implement করা যেকোনো class, সেই interface-এর জায়গায় ব্যবহার করা যাবে। <code>MySQLUserRepo</code> এবং <code>MongoUserRepo</code> উভয়ই একই interface implement করে।</p>
+    </div>
+    <div class="card card-yellow">
+      <h3><span class="icon">I</span> Interface Segregation</h3>
+      <p>বড় interface না বানিয়ে ছোট ছোট specific interface বানান। <code>ReadableRepository</code> এবং <code>WritableRepository</code> আলাদা রাখুন।</p>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: rgba(231,76,60,0.3);">
+    <h3><span class="icon" style="color: var(--red);">D</span> Dependency Inversion — সবচেয়ে গুরুত্বপূর্ণ</h3>
+    <p style="margin-bottom: 14px;">High-level module (Service) নিচের module (Repository)-এর concrete class জানবে না — শুধু interface জানবে।</p>
+    <pre><code><span class="lang-label">PHP</span><span class="cm">// ❌ ভুল — concrete class-এ depend করা</span>
+<span class="kw">class</span> <span class="cl">UserService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cl">UserRepository</span> <span class="vr">$repo</span> <span class="cm">// concrete class!</span>
+    ) {}
+}
+
+<span class="cm">// ✅ সঠিক — interface-এ depend করা</span>
+<span class="kw">class</span> <span class="cl">UserService</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="cl">UserRepositoryInterface</span> <span class="vr">$repo</span> <span class="cm">// interface!</span>
+    ) {}
+    <span class="cm">// এখন MySQL → MongoDB → Redis যেকোনো কিছুতে switch করা যাবে</span>
+}</code></pre>
+  </div>
+</div>
+
+<!-- QUICK REFERENCE -->
+<div class="divider"></div>
+<div class="card" style="border-color: rgba(231,76,60,0.4); background: rgba(231,76,60,0.04);">
+  <h3><span class="icon">🚀</span> Quick Reference — কোনটা কোথায় লিখবেন?</h3>
+  <table>
+    <thead>
+      <tr><th>কাজ</th><th>কোথায় লিখবেন</th><th>কারণ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Database query</td><td>Repository</td><td>DB access centralized থাকে</td></tr>
+      <tr><td>Business Logic</td><td>Service</td><td>Reusable, testable</td></tr>
+      <tr><td>Validation</td><td>Form Request</td><td>Controller পরিষ্কার থাকে</td></tr>
+      <tr><td>API Response format</td><td>API Resource</td><td>Data hiding, formatting</td></tr>
+      <tr><td>Side effects (email, log)</td><td>Event + Listener</td><td>Decoupled, scalable</td></tr>
+      <tr><td>Heavy/background tasks</td><td>Job + Queue</td><td>User experience ভালো</td></tr>
+      <tr><td>Repeated query conditions</td><td>Model Scope</td><td>DRY principle</td></tr>
+      <tr><td>Authorization</td><td>Policy + Gate</td><td>Permission centralized</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- end wrapper -->
+
+<footer>
+  <p>Laravel Scalable Coding Guidelines — বাংলা গাইড</p>
+  <p style="margin-top:6px; font-size:12px;">Clean Code · SOLID Principles · Scalable Architecture</p>
+</footer>
+
+</body>
+</html>
