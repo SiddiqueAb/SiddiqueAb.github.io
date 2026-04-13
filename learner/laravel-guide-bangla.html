@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel 12 + Inertia + Vue.js — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1f2937;
+    --border: #30363d;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --green: #22c55e;
+    --blue: #38bdf8;
+    --purple: #a78bfa;
+    --pink: #f472b6;
+    --yellow: #facc15;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #c9d1d9;
+    --code-bg: #0d1117;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* TOP HEADER */
+  .top-header {
+    background: linear-gradient(135deg, #1a0a00 0%, #0d1117 40%, #0a0a1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .top-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(249,115,22,0.08) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+
+  .badge {
+    display: inline-block;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.4);
+    color: var(--accent);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .top-header h1 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+  .top-header h1 span { color: var(--accent); }
+  .top-header p {
+    color: var(--text2);
+    font-size: 16px;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .tech-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .pill {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text3);
+  }
+  .pill.orange { border-color: var(--accent); color: var(--accent); }
+  .pill.blue { border-color: var(--blue); color: var(--blue); }
+  .pill.green { border-color: var(--green); color: var(--green); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* TOC */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin: 40px auto;
+    max-width: 1100px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .toc h2 { color: var(--accent); font-size: 18px; margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 8px; }
+  .toc a { color: var(--blue); text-decoration: none; font-size: 15px; }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* SECTIONS */
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 30px 20px;
+    overflow: hidden;
+    max-width: 1100px;
+  }
+  @media(min-width:1140px){ .section { margin: 30px auto; } .toc { margin: 40px auto; } }
+
+  .section-header {
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(90deg, rgba(249,115,22,0.06) 0%, transparent 60%);
+  }
+  .section-num {
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+  }
+  .section-body { padding: 28px; }
+
+  /* EXPLANATION TEXT */
+  .explain {
+    background: rgba(56,189,248,0.05);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    color: var(--text3);
+    font-size: 15px;
+  }
+  .explain strong { color: var(--blue); }
+
+  .tip {
+    background: rgba(34,197,94,0.05);
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    color: var(--text3);
+    font-size: 14px;
+  }
+  .tip::before { content: '💡 '; }
+
+  .warn {
+    background: rgba(250,204,21,0.05);
+    border: 1px solid rgba(250,204,21,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    color: var(--text3);
+    font-size: 14px;
+  }
+  .warn::before { content: '⚠️ '; }
+
+  /* CODE */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .code-label {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-label .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text3);
+  }
+  .kw { color: #f97316; } /* keyword */
+  .fn { color: #38bdf8; } /* function */
+  .str { color: #22c55e; } /* string */
+  .cm { color: #6b7280; font-style: italic; } /* comment */
+  .cl { color: #a78bfa; } /* class */
+  .var { color: #fbbf24; } /* variable */
+  .ph { color: #f472b6; } /* php tag */
+
+  /* FOLDER TREE */
+  .tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    color: var(--text3);
+  }
+  .tree .folder { color: var(--blue); font-weight: 600; }
+  .tree .file { color: var(--text3); }
+  .tree .file.php { color: #a78bfa; }
+  .tree .file.vue { color: var(--green); }
+  .tree .file.js { color: var(--yellow); }
+  .tree .note { color: var(--text2); font-style: italic; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .flow-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--accent); font-size: 18px; padding: 0 4px; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--accent);
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  h3 {
+    color: var(--accent2);
+    font-size: 17px;
+    margin: 24px 0 10px;
+    font-family: 'Tiro Bangla', serif;
+    font-weight: 400;
+  }
+  p { color: var(--text3); margin-bottom: 12px; font-size: 15px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text2);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  footer span { color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media(max-width:600px){
+    .section-body { padding: 16px; }
+    pre { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="top-header">
+  <div class="badge">Mid-Level Developer Guide</div>
+  <h1>Laravel 12 + Inertia.js + Vue.js<br><span>সম্পূর্ণ বাংলা গাইড</span></h1>
+  <p>Clean Code • Fast Loading • Professional Architecture • Real-world Pattern</p>
+  <div class="tech-pills">
+    <span class="pill orange">Laravel 12</span>
+    <span class="pill blue">Inertia.js</span>
+    <span class="pill green">Vue 3</span>
+    <span class="pill">Repository Pattern</span>
+    <span class="pill">Service Provider</span>
+    <span class="pill">Trait</span>
+    <span class="pill">Middleware</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h2>📋 বিষয়সূচি</h2>
+  <ol>
+    <li><a href="#s1">ফোল্ডার স্ট্রাকচার — সম্পূর্ণ প্রজেক্ট লেআউট</a></li>
+    <li><a href="#s2">Dynamic Table Name — ডায়নামিক টেবিল ব্যবস্থাপনা (ETKA Style)</a></li>
+    <li><a href="#s3">Model — সঠিকভাবে Model লেখা</a></li>
+    <li><a href="#s4">Repository Pattern — Interface ও Implementation</a></li>
+    <li><a href="#s5">Trait — কোড রিইউজ করার সেরা উপায়</a></li>
+    <li><a href="#s6">Service Provider — Dependency Injection রেজিস্ট্রেশন</a></li>
+    <li><a href="#s7">Middleware — Request ফিল্টার ও গার্ড</a></li>
+    <li><a href="#s8">Controller — Inertia সহ ক্লিন Controller</a></li>
+    <li><a href="#s9">Navbar, Header, Footer — Vue Component স্ট্রাকচার</a></li>
+    <li><a href="#s10">Clean Code ও Fast Loading টিপস</a></li>
+  </ol>
+</div>
+
+<!-- SECTION 1: Folder Structure -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">১</div>
+    <h2>ফোল্ডার স্ট্রাকচার — সম্পূর্ণ প্রজেক্ট লেআউট</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      একটি ভালো প্রজেক্টে <strong>প্রতিটি ফাইলের নির্দিষ্ট জায়গা থাকে</strong>। নিচে Laravel 12 + Inertia + Vue এর জন্য আদর্শ ফোল্ডার স্ট্রাকচার দেওয়া হলো।
+    </div>
+    <div class="tree">
+<span class="folder">app/</span><br>
+├── <span class="folder">Http/</span><br>
+│   ├── <span class="folder">Controllers/</span><br>
+│   │   ├── <span class="folder">Admin/</span>           <span class="note">← Admin আলাদা ফোল্ডারে</span><br>
+│   │   │   └── <span class="file php">PartController.php</span><br>
+│   │   └── <span class="file php">Controller.php</span><br>
+│   ├── <span class="folder">Middleware/</span><br>
+│   │   ├── <span class="file php">RoleMiddleware.php</span><br>
+│   │   └── <span class="file php">HandleInertiaRequests.php</span><br>
+│   └── <span class="folder">Requests/</span>            <span class="note">← Form Validation এখানে</span><br>
+│       └── <span class="file php">StorePartRequest.php</span><br>
+├── <span class="folder">Models/</span><br>
+│   ├── <span class="file php">Part.php</span><br>
+│   └── <span class="file php">DynamicModel.php</span>   <span class="note">← Dynamic table এর জন্য</span><br>
+├── <span class="folder">Repositories/</span><br>
+│   ├── <span class="folder">Interfaces/</span><br>
+│   │   └── <span class="file php">PartRepositoryInterface.php</span><br>
+│   ├── <span class="file php">PartRepository.php</span><br>
+│   └── <span class="file php">BaseRepository.php</span> <span class="note">← সব repo এর parent</span><br>
+├── <span class="folder">Services/</span>               <span class="note">← Business Logic এখানে</span><br>
+│   └── <span class="file php">PartService.php</span><br>
+├── <span class="folder">Traits/</span><br>
+│   ├── <span class="file php">ApiResponseTrait.php</span><br>
+│   ├── <span class="file php">HasDynamicTable.php</span><br>
+│   └── <span class="file php">LogActivityTrait.php</span><br>
+├── <span class="folder">Providers/</span><br>
+│   ├── <span class="file php">AppServiceProvider.php</span><br>
+│   └── <span class="file php">RepositoryServiceProvider.php</span><br>
+<br>
+<span class="folder">resources/</span><br>
+├── <span class="folder">js/</span><br>
+│   ├── <span class="folder">Components/</span>          <span class="note">← Reusable Vue Components</span><br>
+│   │   ├── <span class="folder">Layout/</span><br>
+│   │   │   ├── <span class="file vue">Navbar.vue</span><br>
+│   │   │   ├── <span class="file vue">Header.vue</span><br>
+│   │   │   └── <span class="file vue">Footer.vue</span><br>
+│   │   └── <span class="folder">UI/</span><br>
+│   │       ├── <span class="file vue">Button.vue</span><br>
+│   │       └── <span class="file vue">Modal.vue</span><br>
+│   ├── <span class="folder">Layouts/</span>             <span class="note">← Page Wrapper Layouts</span><br>
+│   │   ├── <span class="file vue">AppLayout.vue</span><br>
+│   │   └── <span class="file vue">AuthLayout.vue</span><br>
+│   ├── <span class="folder">Pages/</span>               <span class="note">← Inertia Pages (View এর বদলে)</span><br>
+│   │   ├── <span class="folder">Parts/</span><br>
+│   │   │   ├── <span class="file vue">Index.vue</span><br>
+│   │   │   └── <span class="file vue">Show.vue</span><br>
+│   │   └── <span class="folder">Auth/</span><br>
+│   │       └── <span class="file vue">Login.vue</span><br>
+│   ├── <span class="file js">app.js</span>              <span class="note">← Inertia entry point</span><br>
+│   └── <span class="file js">bootstrap.js</span><br>
+<br>
+<span class="folder">routes/</span><br>
+├── <span class="file php">web.php</span><br>
+└── <span class="file php">api.php</span>
+    </div>
+    <div class="tip">View ফোল্ডার লাগবে না! Inertia ব্যবহার করলে <code>resources/views/</code> এর বদলে <code>resources/js/Pages/</code> ব্যবহার করুন।</div>
+  </div>
+</div>
+
+<!-- SECTION 2: Dynamic Table -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">২</div>
+    <h2>Dynamic Table Name — ডায়নামিক টেবিল ব্যবস্থাপনা (ETKA Style)</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      ETKA-র মতো ডাটাবেজে টেবিলের নাম নির্দিষ্ট থাকে না — যেমন <strong>K001, K002, PR_456</strong> ইত্যাদি নম্বার-ভিত্তিক নাম। Laravel-এ এটা হ্যান্ডেল করার জন্য <strong>Dynamic Model</strong> এবং <strong>Trait</strong> ব্যবহার করা হয়।
+    </div>
+
+    <h3>Dynamic Model — টেবিলের নাম রানটাইমে সেট করা</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Models/DynamicModel.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Models</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Model</span>;
+
+<span class="kw">class</span> <span class="cl">DynamicModel</span> <span class="kw">extends</span> <span class="cl">Model</span>
+{
+    <span class="cm">// টেবিলের নাম ডায়নামিকভাবে সেট করার জন্য</span>
+    <span class="kw">protected</span> <span class="var">$table</span>;
+
+    <span class="cm">/**
+     * যেকোনো টেবিলের নাম দিয়ে Model তৈরি করুন
+     * ব্যবহার: DynamicModel::forTable('K001')->get();
+     */</span>
+    <span class="kw">public static function</span> <span class="fn">forTable</span>(<span class="kw">string</span> <span class="var">$tableName</span>): <span class="kw">static</span>
+    {
+        <span class="var">$instance</span> = <span class="kw">new static</span>();
+        <span class="var">$instance</span>-&gt;table = <span class="var">$tableName</span>;
+        <span class="kw">return</span> <span class="var">$instance</span>;
+    }
+
+    <span class="cm">// টেবিল নাম রিটার্ন করে</span>
+    <span class="kw">public function</span> <span class="fn">getTable</span>(): <span class="kw">string</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;table ?? <span class="kw">parent</span>::<span class="fn">getTable</span>();
+    }
+}</pre>
+    </div>
+
+    <h3>ব্যবহার — Controller এ কিভাবে লিখবেন</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Http/Controllers/EtkaController.php
+      </div>
+      <pre><span class="kw">use</span> <span class="cl">App\Models\DynamicModel</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\DB</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\Schema</span>;
+
+<span class="kw">class</span> <span class="cl">EtkaController</span> <span class="kw">extends</span> <span class="cl">Controller</span>
+{
+    <span class="cm">// ডায়নামিক টেবিল থেকে ডাটা আনা</span>
+    <span class="kw">public function</span> <span class="fn">getPartsFromTable</span>(<span class="kw">string</span> <span class="var">$tableCode</span>)
+    {
+        <span class="cm">// যেমন: K001, PR_123 ইত্যাদি</span>
+        <span class="var">$tableName</span> = <span class="str">'K'</span> . <span class="fn">str_pad</span>(<span class="var">$tableCode</span>, <span class="str">3</span>, <span class="str">'0'</span>, STR_PAD_LEFT);
+
+        <span class="cm">// টেবিল আছে কিনা চেক করুন</span>
+        <span class="kw">if</span> (!<span class="cl">Schema</span>::<span class="fn">hasTable</span>(<span class="var">$tableName</span>)) {
+            <span class="kw">return</span> <span class="fn">back</span>()-&gt;<span class="fn">with</span>(<span class="str">'error'</span>, <span class="str">'টেবিল পাওয়া যায়নি'</span>);
+        }
+
+        <span class="cm">// DynamicModel দিয়ে যেকোনো টেবিল query করুন</span>
+        <span class="var">$parts</span> = <span class="cl">DynamicModel</span>::<span class="fn">forTable</span>(<span class="var">$tableName</span>)
+            -&gt;<span class="fn">newQuery</span>()
+            -&gt;<span class="fn">select</span>([<span class="str">'PR_NR'</span>, <span class="str">'MCODE'</span>, <span class="str">'PRICE'</span>])
+            -&gt;<span class="fn">paginate</span>(<span class="str">20</span>);
+
+        <span class="kw">return</span> <span class="fn">inertia</span>(<span class="str">'Etka/Parts'</span>, [
+            <span class="str">'parts'</span> =&gt; <span class="var">$parts</span>,
+            <span class="str">'tableName'</span> =&gt; <span class="var">$tableName</span>,
+        ]);
+    }
+
+    <span class="cm">// সব ডায়নামিক টেবিলের তালিকা বের করা</span>
+    <span class="kw">public function</span> <span class="fn">getAllDynamicTables</span>()
+    {
+        <span class="var">$allTables</span> = <span class="cl">DB</span>::<span class="fn">select</span>(<span class="str">'SHOW TABLES'</span>);
+
+        <span class="cm">// K দিয়ে শুরু হওয়া ডায়নামিক টেবিল ফিল্টার করুন</span>
+        <span class="var">$dynamicTables</span> = <span class="fn">collect</span>(<span class="var">$allTables</span>)
+            -&gt;<span class="fn">map</span>(<span class="kw">fn</span>(<span class="var">$t</span>) =&gt; <span class="fn">array_values</span>((<span class="kw">array</span>)<span class="var">$t</span>)[<span class="str">0</span>])
+            -&gt;<span class="fn">filter</span>(<span class="kw">fn</span>(<span class="var">$name</span>) =&gt; <span class="fn">str_starts_with</span>(<span class="var">$name</span>, <span class="str">'K'</span>))
+            -&gt;<span class="fn">values</span>();
+
+        <span class="kw">return</span> <span class="fn">inertia</span>(<span class="str">'Etka/Tables'</span>, [<span class="str">'tables'</span> =&gt; <span class="var">$dynamicTables</span>]);
+    }
+}</pre>
+    </div>
+    <div class="warn">টেবিলের নাম সবসময় Schema::hasTable() দিয়ে আগে চেক করুন — না হলে error আসবে।</div>
+
+    <h3>Meta Table — কোন টেবিলে কী আছে সেটা ট্র্যাক রাখুন</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        database/migrations/create_table_registry.php
+      </div>
+      <pre><span class="cl">Schema</span>::<span class="fn">create</span>(<span class="str">'table_registry'</span>, <span class="kw">function</span> (<span class="cl">Blueprint</span> <span class="var">$table</span>) {
+    <span class="var">$table</span>-&gt;<span class="fn">id</span>();
+    <span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'table_name'</span>);      <span class="cm">// যেমন: K001</span>
+    <span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'catalog_type'</span>);    <span class="cm">// যেমন: VW, AUDI</span>
+    <span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'description'</span>)-&gt;<span class="fn">nullable</span>();
+    <span class="var">$table</span>-&gt;<span class="fn">boolean</span>(<span class="str">'is_active'</span>)-&gt;<span class="fn">default</span>(<span class="kw">true</span>);
+    <span class="var">$table</span>-&gt;<span class="fn">timestamps</span>();
+});</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: Model -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">৩</div>
+    <h2>Model — সঠিকভাবে Model লেখা</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Model হলো <strong>ডাটাবেজের প্রতিনিধি</strong>। এতে শুধু ডাটার structure ও relationship থাকবে — business logic থাকবে না।
+    </div>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Models/Part.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Models</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Model</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Factories\HasFactory</span>;
+<span class="kw">use</span> <span class="cl">App\Traits\LogActivityTrait</span>;
+
+<span class="kw">class</span> <span class="cl">Part</span> <span class="kw">extends</span> <span class="cl">Model</span>
+{
+    <span class="kw">use</span> <span class="cl">HasFactory</span>, <span class="cl">LogActivityTrait</span>;
+
+    <span class="cm">// Mass assignment থেকে রক্ষা করার জন্য</span>
+    <span class="kw">protected</span> <span class="var">$fillable</span> = [
+        <span class="str">'part_no'</span>,
+        <span class="str">'description'</span>,
+        <span class="str">'price'</span>,
+        <span class="str">'catalog_type'</span>,
+        <span class="str">'mcode'</span>,
+    ];
+
+    <span class="cm">// JSON response এ লুকানো field</span>
+    <span class="kw">protected</span> <span class="var">$hidden</span> = [<span class="str">'deleted_at'</span>];
+
+    <span class="cm">// Type casting</span>
+    <span class="kw">protected</span> <span class="kw">function</span> <span class="fn">casts</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="str">'price'</span> =&gt; <span class="str">'decimal:2'</span>,
+            <span class="str">'is_active'</span> =&gt; <span class="str">'boolean'</span>,
+        ];
+    }
+
+    <span class="cm">// Relationship — একটি Part একটি Catalog এ থাকে</span>
+    <span class="kw">public function</span> <span class="fn">catalog</span>()
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">belongsTo</span>(<span class="cl">Catalog</span>::<span class="kw">class</span>);
+    }
+
+    <span class="cm">// Scope — শুধু Active parts আনার জন্য</span>
+    <span class="kw">public function</span> <span class="fn">scopeActive</span>(<span class="var">$query</span>)
+    {
+        <span class="kw">return</span> <span class="var">$query</span>-&gt;<span class="fn">where</span>(<span class="str">'is_active'</span>, <span class="kw">true</span>);
+    }
+}</pre>
+    </div>
+    <div class="tip">Model-এ কখনো <code>DB::select()</code> কাঁচা query লিখবেন না — সেটা Repository-তে লিখুন।</div>
+  </div>
+</div>
+
+<!-- SECTION 4: Repository -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">৪</div>
+    <h2>Repository Pattern — Interface ও Implementation</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Repository Pattern মানে হলো <strong>ডাটাবেজ কাজ আলাদা করা</strong>। Controller সরাসরি Model ব্যবহার করবে না — Repository এর মাধ্যমে করবে। এতে পরে MySQL থেকে MongoDB-তে যাওয়া সহজ হয়।
+    </div>
+
+    <h3>Base Repository — সবার জন্য Common কাজ</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Repositories/BaseRepository.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Repositories</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Database\Eloquent\Model</span>;
+
+<span class="kw">abstract class</span> <span class="cl">BaseRepository</span>
+{
+    <span class="kw">protected</span> <span class="cl">Model</span> <span class="var">$model</span>;
+
+    <span class="kw">public function</span> <span class="fn">getAll</span>(<span class="kw">int</span> <span class="var">$perPage</span> = <span class="str">20</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">latest</span>()-&gt;<span class="fn">paginate</span>(<span class="var">$perPage</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">findById</span>(<span class="kw">int</span> <span class="var">$id</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">findOrFail</span>(<span class="var">$id</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">create</span>(<span class="kw">array</span> <span class="var">$data</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">create</span>(<span class="var">$data</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="kw">int</span> <span class="var">$id</span>, <span class="kw">array</span> <span class="var">$data</span>)
+    {
+        <span class="var">$record</span> = <span class="var">$this</span>-&gt;<span class="fn">findById</span>(<span class="var">$id</span>);
+        <span class="var">$record</span>-&gt;<span class="fn">update</span>(<span class="var">$data</span>);
+        <span class="kw">return</span> <span class="var">$record</span>-&gt;<span class="fn">fresh</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">delete</span>(<span class="kw">int</span> <span class="var">$id</span>): <span class="kw">bool</span>
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">destroy</span>(<span class="var">$id</span>) > <span class="str">0</span>;
+    }
+}</pre>
+    </div>
+
+    <h3>PartRepository — নির্দিষ্ট কাজ</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Repositories/PartRepository.php
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">PartRepository</span> <span class="kw">extends</span> <span class="cl">BaseRepository</span> <span class="kw">implements</span> <span class="cl">PartRepositoryInterface</span>
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="cl">Part</span> <span class="var">$model</span>)
+    {
+        <span class="var">$this</span>-&gt;model = <span class="var">$model</span>;
+    }
+
+    <span class="cm">// Part নম্বার দিয়ে খোঁজা</span>
+    <span class="kw">public function</span> <span class="fn">findByPartNo</span>(<span class="kw">string</span> <span class="var">$partNo</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model
+            -&gt;<span class="fn">where</span>(<span class="str">'part_no'</span>, <span class="str">'like'</span>, <span class="str">"%{$partNo}%"</span>)
+            -&gt;<span class="fn">active</span>()   <span class="cm">// Model scope ব্যবহার</span>
+            -&gt;<span class="fn">paginate</span>(<span class="str">20</span>);
+    }
+
+    <span class="cm">// Catalog অনুযায়ী Parts আনা</span>
+    <span class="kw">public function</span> <span class="fn">getByCatalog</span>(<span class="kw">string</span> <span class="var">$catalogType</span>)
+    {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model
+            -&gt;<span class="fn">where</span>(<span class="str">'catalog_type'</span>, <span class="var">$catalogType</span>)
+            -&gt;<span class="fn">with</span>(<span class="str">'catalog'</span>)
+            -&gt;<span class="fn">paginate</span>(<span class="str">20</span>);
+    }
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: Trait -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">৫</div>
+    <h2>Trait — কোড রিইউজ করার সেরা উপায়</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Trait হলো <strong>কপি-পেস্ট এর বিকল্প</strong>। একই কোড বারবার না লিখে Trait-এ রেখে যেকোনো Class-এ <code>use</code> করুন।
+    </div>
+
+    <table>
+      <tr><th>Trait নাম</th><th>কাজ</th><th>কোথায় use করবেন</th></tr>
+      <tr><td>ApiResponseTrait</td><td>Inertia response ফরম্যাট</td><td>সব Controller</td></tr>
+      <tr><td>HasDynamicTable</td><td>ডায়নামিক টেবিল query</td><td>DynamicModel</td></tr>
+      <tr><td>LogActivityTrait</td><td>User activity log</td><td>Model</td></tr>
+    </table>
+
+    <h3>ApiResponseTrait</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Traits/ApiResponseTrait.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Traits</span>;
+
+<span class="kw">use</span> <span class="cl">Inertia\Inertia</span>;
+
+<span class="kw">trait</span> <span class="cl">ApiResponseTrait</span>
+{
+    <span class="cm">// Inertia Page রেন্ডার করুন</span>
+    <span class="kw">protected function</span> <span class="fn">render</span>(<span class="kw">string</span> <span class="var">$page</span>, <span class="kw">array</span> <span class="var">$props</span> = [])
+    {
+        <span class="kw">return</span> <span class="cl">Inertia</span>::<span class="fn">render</span>(<span class="var">$page</span>, <span class="var">$props</span>);
+    }
+
+    <span class="cm">// সফল হলে Flash message সহ ফিরে যান</span>
+    <span class="kw">protected function</span> <span class="fn">success</span>(<span class="kw">string</span> <span class="var">$message</span>, <span class="kw">string</span> <span class="var">$redirectTo</span> = <span class="kw">null</span>)
+    {
+        <span class="var">$redirect</span> = <span class="var">$redirectTo</span>
+            ? <span class="fn">redirect</span>()-&gt;<span class="fn">route</span>(<span class="var">$redirectTo</span>)
+            : <span class="fn">back</span>();
+
+        <span class="kw">return</span> <span class="var">$redirect</span>-&gt;<span class="fn">with</span>(<span class="str">'success'</span>, <span class="var">$message</span>);
+    }
+
+    <span class="cm">// Error হলে</span>
+    <span class="kw">protected function</span> <span class="fn">error</span>(<span class="kw">string</span> <span class="var">$message</span>)
+    {
+        <span class="kw">return</span> <span class="fn">back</span>()-&gt;<span class="fn">with</span>(<span class="str">'error'</span>, <span class="var">$message</span>);
+    }
+
+    <span class="cm">// JSON API response (যদি API দরকার হয়)</span>
+    <span class="kw">protected function</span> <span class="fn">jsonSuccess</span>(<span class="var">$data</span>, <span class="kw">string</span> <span class="var">$message</span> = <span class="str">'সফল'</span>)
+    {
+        <span class="kw">return</span> <span class="fn">response</span>()-&gt;<span class="fn">json</span>([
+            <span class="str">'success'</span> =&gt; <span class="kw">true</span>,
+            <span class="str">'message'</span> =&gt; <span class="var">$message</span>,
+            <span class="str">'data'</span>    =&gt; <span class="var">$data</span>,
+        ]);
+    }
+}</pre>
+    </div>
+
+    <h3>LogActivityTrait — Model এ ব্যবহার</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Traits/LogActivityTrait.php
+      </div>
+      <pre><span class="kw">trait</span> <span class="cl">LogActivityTrait</span>
+{
+    <span class="cm">// Model save হওয়ার পর automatically চলবে</span>
+    <span class="kw">public static function</span> <span class="fn">bootLogActivityTrait</span>()
+    {
+        <span class="kw">static</span>::<span class="fn">created</span>(<span class="kw">function</span> (<span class="var">$model</span>) {
+            <span class="fn">logger</span>()-&gt;<span class="fn">info</span>(<span class="var">$model</span>::<span class="kw">class</span> . <span class="str">' তৈরি হয়েছে'</span>, [
+                <span class="str">'id'</span>   =&gt; <span class="var">$model</span>-&gt;id,
+                <span class="str">'user'</span> =&gt; <span class="fn">auth</span>()-&gt;<span class="fn">id</span>(),
+            ]);
+        });
+
+        <span class="kw">static</span>::<span class="fn">deleted</span>(<span class="kw">function</span> (<span class="var">$model</span>) {
+            <span class="fn">logger</span>()-&gt;<span class="fn">warning</span>(<span class="var">$model</span>::<span class="kw">class</span> . <span class="str">' মুছে ফেলা হয়েছে'</span>, [
+                <span class="str">'id'</span> =&gt; <span class="var">$model</span>-&gt;id,
+            ]);
+        });
+    }
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: Service Provider -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">৬</div>
+    <h2>Service Provider — Dependency Injection রেজিস্ট্রেশন</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Service Provider হলো Laravel এর <strong>বুটস্ট্র্যাপ সিস্টেম</strong>। অ্যাপ চালু হওয়ার সময় Provider গুলো চলে। এখানে Interface কে কোন Class এ bind করবেন তা বলে দেওয়া হয়।
+    </div>
+
+    <div class="flow">
+      <div class="flow-item">Controller চায় Interface</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">Provider বলে দেয় কোন Class দিতে হবে</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">Laravel Repository inject করে</div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Providers/RepositoryServiceProvider.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Providers</span>;
+
+<span class="kw">use</span> <span class="cl">Illuminate\Support\ServiceProvider</span>;
+
+<span class="cm">// Interfaces</span>
+<span class="kw">use</span> <span class="cl">App\Repositories\Interfaces\PartRepositoryInterface</span>;
+
+<span class="cm">// Implementations</span>
+<span class="kw">use</span> <span class="cl">App\Repositories\PartRepository</span>;
+
+<span class="kw">class</span> <span class="cl">RepositoryServiceProvider</span> <span class="kw">extends</span> <span class="cl">ServiceProvider</span>
+{
+    <span class="kw">public function</span> <span class="fn">register</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// Interface → Implementation bind করুন</span>
+        <span class="var">$this</span>-&gt;app-&gt;<span class="fn">bind</span>(
+            <span class="cl">PartRepositoryInterface</span>::<span class="kw">class</span>,
+            <span class="cl">PartRepository</span>::<span class="kw">class</span>
+        );
+
+        <span class="cm">// নতুন Repository যোগ করতে শুধু এখানে bind করুন</span>
+        <span class="cm">// $this->app->bind(CatalogRepositoryInterface::class, CatalogRepository::class);</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">boot</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// Inertia Shared Data — সব page এ পাঠানো data</span>
+        <span class="fn">inertia</span>()-&gt;<span class="fn">share</span>([
+            <span class="str">'auth.user'</span> =&gt; <span class="kw">fn</span>() =&gt; <span class="fn">auth</span>()-&gt;<span class="fn">user</span>()
+                ?-&gt;<span class="fn">only</span>([<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'role'</span>]),
+            <span class="str">'flash'</span> =&gt; <span class="kw">fn</span>() =&gt; [
+                <span class="str">'success'</span> =&gt; <span class="fn">session</span>(<span class="str">'success'</span>),
+                <span class="str">'error'</span>   =&gt; <span class="fn">session</span>(<span class="str">'error'</span>),
+            ],
+        ]);
+    }
+}</pre>
+    </div>
+
+    <h3>bootstrap/providers.php এ রেজিস্টার করুন (Laravel 12)</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        bootstrap/providers.php
+      </div>
+      <pre><span class="kw">return</span> [
+    <span class="cl">App\Providers\AppServiceProvider</span>::<span class="kw">class</span>,
+    <span class="cl">App\Providers\RepositoryServiceProvider</span>::<span class="kw">class</span>, <span class="cm">// এটা যোগ করুন</span>
+];</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 7: Middleware -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <div class="section-num">৭</div>
+    <h2>Middleware — Request ফিল্টার ও গার্ড</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Middleware হলো <strong>Request এবং Response এর মাঝখানের ফিল্টার</strong>। Controller পৌঁছানোর আগে Middleware চেক করে — User লগইন আছে কিনা, Role আছে কিনা ইত্যাদি।
+    </div>
+
+    <div class="flow">
+      <div class="flow-item">Browser Request</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">Middleware (চেক করে)</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">Controller</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">Response</div>
+    </div>
+
+    <h3>Role Middleware — Admin/User আলাদা করা</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Http/Middleware/RoleMiddleware.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Http\Middleware</span>;
+
+<span class="kw">use</span> <span class="cl">Closure</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Http\Request</span>;
+
+<span class="kw">class</span> <span class="cl">RoleMiddleware</span>
+{
+    <span class="kw">public function</span> <span class="fn">handle</span>(<span class="cl">Request</span> <span class="var">$request</span>, <span class="cl">Closure</span> <span class="var">$next</span>, <span class="kw">string</span> ...<span class="var">$roles</span>)
+    {
+        <span class="cm">// লগইন আছে কিনা চেক</span>
+        <span class="kw">if</span> (!<span class="fn">auth</span>()-&gt;<span class="fn">check</span>()) {
+            <span class="kw">return</span> <span class="fn">redirect</span>()-&gt;<span class="fn">route</span>(<span class="str">'login'</span>);
+        }
+
+        <span class="var">$user</span> = <span class="fn">auth</span>()-&gt;<span class="fn">user</span>();
+
+        <span class="cm">// Role চেক করুন</span>
+        <span class="kw">if</span> (!<span class="fn">in_array</span>(<span class="var">$user</span>-&gt;role, <span class="var">$roles</span>)) {
+            <span class="kw">return</span> <span class="fn">inertia</span>()-&gt;<span class="fn">render</span>(<span class="str">'Errors/403'</span>)
+                -&gt;<span class="fn">toResponse</span>(<span class="var">$request</span>)
+                -&gt;<span class="fn">setStatusCode</span>(<span class="str">403</span>);
+        }
+
+        <span class="kw">return</span> <span class="var">$next</span>(<span class="var">$request</span>);
+    }
+}</pre>
+    </div>
+
+    <h3>Route এ Middleware ব্যবহার</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        routes/web.php
+      </div>
+      <pre><span class="kw">use</span> <span class="cl">App\Http\Middleware\RoleMiddleware</span>;
+
+<span class="cm">// শুধু Admin এর জন্য</span>
+<span class="cl">Route</span>::<span class="fn">middleware</span>([<span class="str">'auth'</span>, <span class="cl">RoleMiddleware</span>::<span class="kw">class</span> . <span class="str">':admin'</span>])
+    -&gt;<span class="fn">prefix</span>(<span class="str">'admin'</span>)
+    -&gt;<span class="fn">group</span>(<span class="kw">function</span> () {
+        <span class="cl">Route</span>::<span class="fn">resource</span>(<span class="str">'parts'</span>, <span class="cl">PartController</span>::<span class="kw">class</span>);
+    });
+
+<span class="cm">// সব লগইন ইউজার এর জন্য</span>
+<span class="cl">Route</span>::<span class="fn">middleware</span>(<span class="str">'auth'</span>)-&gt;<span class="fn">group</span>(<span class="kw">function</span> () {
+    <span class="cl">Route</span>::<span class="fn">get</span>(<span class="str">'/dashboard'</span>, <span class="cl">DashboardController</span>::<span class="kw">class</span>);
+});</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8: Controller -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <div class="section-num">৮</div>
+    <h2>Controller — Inertia সহ ক্লিন Controller</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Controller শুধু <strong>Request নেবে, Repository কে বলবে, Response পাঠাবে</strong> — এর বেশি কিছু করবে না। Business Logic Service Class এ রাখুন।
+    </div>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Http/Controllers/PartController.php
+      </div>
+      <pre><span class="ph">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="cl">App\Http\Controllers</span>;
+
+<span class="kw">use</span> <span class="cl">App\Http\Requests\StorePartRequest</span>;
+<span class="kw">use</span> <span class="cl">App\Repositories\Interfaces\PartRepositoryInterface</span>;
+<span class="kw">use</span> <span class="cl">App\Traits\ApiResponseTrait</span>;
+
+<span class="kw">class</span> <span class="cl">PartController</span> <span class="kw">extends</span> <span class="cl">Controller</span>
+{
+    <span class="kw">use</span> <span class="cl">ApiResponseTrait</span>;
+
+    <span class="cm">// Constructor Injection — Provider এটা ঠিক করে দেবে</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private readonly</span> <span class="cl">PartRepositoryInterface</span> <span class="var">$partRepo</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="var">$parts</span> = <span class="var">$this</span>-&gt;partRepo-&gt;<span class="fn">getAll</span>();
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">render</span>(<span class="str">'Parts/Index'</span>, <span class="fn">compact</span>(<span class="str">'parts'</span>));
+    }
+
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="cl">StorePartRequest</span> <span class="var">$request</span>)
+    {
+        <span class="cm">// Request validation আলাদা class এ (StorePartRequest)</span>
+        <span class="var">$this</span>-&gt;partRepo-&gt;<span class="fn">create</span>(<span class="var">$request</span>-&gt;<span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">success</span>(<span class="str">'পার্ট সফলভাবে যোগ হয়েছে'</span>, <span class="str">'parts.index'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">update</span>(<span class="cl">StorePartRequest</span> <span class="var">$request</span>, <span class="kw">int</span> <span class="var">$id</span>)
+    {
+        <span class="var">$this</span>-&gt;partRepo-&gt;<span class="fn">update</span>(<span class="var">$id</span>, <span class="var">$request</span>-&gt;<span class="fn">validated</span>());
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">success</span>(<span class="str">'পার্ট আপডেট হয়েছে'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">destroy</span>(<span class="kw">int</span> <span class="var">$id</span>)
+    {
+        <span class="var">$this</span>-&gt;partRepo-&gt;<span class="fn">delete</span>(<span class="var">$id</span>);
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">success</span>(<span class="str">'পার্ট মুছে ফেলা হয়েছে'</span>);
+    }
+}</pre>
+    </div>
+
+    <h3>Form Request — Validation আলাদা করুন</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        app/Http/Requests/StorePartRequest.php
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">StorePartRequest</span> <span class="kw">extends</span> <span class="cl">FormRequest</span>
+{
+    <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="str">'part_no'</span>      =&gt; <span class="str">'required|string|max:50|unique:parts'</span>,
+            <span class="str">'description'</span>  =&gt; <span class="str">'required|string|max:255'</span>,
+            <span class="str">'price'</span>        =&gt; <span class="str">'required|numeric|min:0'</span>,
+            <span class="str">'catalog_type'</span> =&gt; <span class="str">'required|in:VW,AUDI,SKODA,SEAT'</span>,
+        ];
+    }
+
+    <span class="kw">public function</span> <span class="fn">messages</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="str">'part_no.required'</span> =&gt; <span class="str">'পার্ট নম্বার দিতে হবে'</span>,
+            <span class="str">'price.numeric'</span>    =&gt; <span class="str">'মূল্য সংখ্যায় দিতে হবে'</span>,
+        ];
+    }
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 9: Navbar / Header / Footer Vue -->
+<div class="section" id="s9">
+  <div class="section-header">
+    <div class="section-num">৯</div>
+    <h2>Navbar, Header, Footer — Vue Component স্ট্রাকচার</h2>
+  </div>
+  <div class="section-body">
+    <div class="explain">
+      Inertia-তে কোনো Blade layout নেই। এর বদলে <strong>Vue Layout Component</strong> ব্যবহার করা হয়। Navbar, Header, Footer সব Vue Component হিসেবে থাকে।
+    </div>
+
+    <h3>AppLayout.vue — মেইন Layout Wrapper</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        resources/js/Layouts/AppLayout.vue
+      </div>
+      <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> Navbar <span class="kw">from</span> <span class="str">'@/Components/Layout/Navbar.vue'</span>;
+<span class="kw">import</span> Footer <span class="kw">from</span> <span class="str">'@/Components/Layout/Footer.vue'</span>;
+<span class="kw">import</span> { usePage } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>;
+<span class="kw">import</span> { computed } <span class="kw">from</span> <span class="str">'vue'</span>;
+
+<span class="cm">// Service Provider এ share করা flash message</span>
+<span class="kw">const</span> flash = computed(() =&gt; usePage().props.flash);
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;div class=<span class="str">"min-h-screen flex flex-col"</span>&gt;
+    <span class="cm">&lt;!-- Navbar --&gt;</span>
+    &lt;Navbar /&gt;
+
+    <span class="cm">&lt;!-- Flash Messages --&gt;</span>
+    &lt;div v-if=<span class="str">"flash.success"</span> class=<span class="str">"flash-success"</span>&gt;
+      {{ flash.success }}
+    &lt;/div&gt;
+    &lt;div v-if=<span class="str">"flash.error"</span> class=<span class="str">"flash-error"</span>&gt;
+      {{ flash.error }}
+    &lt;/div&gt;
+
+    <span class="cm">&lt;!-- Page Content --&gt;</span>
+    &lt;main class=<span class="str">"flex-1 container mx-auto px-4 py-6"</span>&gt;
+      &lt;slot /&gt;  <span class="cm">&lt;!-- Page এর content এখানে আসবে --&gt;</span>
+    &lt;/main&gt;
+
+    &lt;Footer /&gt;
+  &lt;/div&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+    </div>
+
+    <h3>Navbar.vue — Navigation Component</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        resources/js/Components/Layout/Navbar.vue
+      </div>
+      <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { Link, usePage } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>;
+<span class="kw">import</span> { computed } <span class="kw">from</span> <span class="str">'vue'</span>;
+
+<span class="cm">// Shared auth user (Provider থেকে আসে)</span>
+<span class="kw">const</span> user = computed(() =&gt; usePage().props.auth?.user);
+
+<span class="kw">const</span> navLinks = [
+  { name: <span class="str">'ড্যাশবোর্ড'</span>, route: <span class="str">'dashboard'</span> },
+  { name: <span class="str">'পার্টস'</span>,     route: <span class="str">'parts.index'</span> },
+  { name: <span class="str">'ক্যাটালগ'</span>,   route: <span class="str">'catalog.index'</span> },
+];
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;nav class=<span class="str">"navbar"</span>&gt;
+    <span class="cm">&lt;!-- Logo --&gt;</span>
+    &lt;Link :href=<span class="str">"route('dashboard')"</span> class=<span class="str">"logo"</span>&gt;
+      ETKA Parts
+    &lt;/Link&gt;
+
+    <span class="cm">&lt;!-- Navigation Links --&gt;</span>
+    &lt;div class=<span class="str">"nav-links"</span>&gt;
+      &lt;Link
+        v-for=<span class="str">"link in navLinks"</span>
+        :key=<span class="str">"link.route"</span>
+        :href=<span class="str">"route(link.route)"</span>
+        :class=<span class="str">"{ active: $page.url.startsWith('/' + link.route) }"</span>
+      &gt;
+        {{ link.name }}
+      &lt;/Link&gt;
+    &lt;/div&gt;
+
+    <span class="cm">&lt;!-- User Menu --&gt;</span>
+    &lt;div class=<span class="str">"user-menu"</span> v-if=<span class="str">"user"</span>&gt;
+      &lt;span&gt;{{ user.name }}&lt;/span&gt;
+      &lt;Link :href=<span class="str">"route('logout')"</span> method=<span class="str">"post"</span>&gt;লগআউট&lt;/Link&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+    </div>
+
+    <h3>Page Component — Layout ব্যবহার</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        resources/js/Pages/Parts/Index.vue
+      </div>
+      <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> AppLayout <span class="kw">from</span> <span class="str">'@/Layouts/AppLayout.vue'</span>;
+<span class="kw">import</span> { Link } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>;
+
+<span class="cm">// Controller থেকে আসা props</span>
+<span class="kw">const</span> props = defineProps({
+  parts: Object, <span class="cm">// Paginated data</span>
+});
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  <span class="cm">&lt;!-- Layout এখানে wrap করে --&gt;</span>
+  &lt;AppLayout&gt;
+    &lt;h1&gt;পার্টস তালিকা&lt;/h1&gt;
+
+    &lt;table&gt;
+      &lt;tr v-for=<span class="str">"part in parts.data"</span> :key=<span class="str">"part.id"</span>&gt;
+        &lt;td&gt;{{ part.part_no }}&lt;/td&gt;
+        &lt;td&gt;{{ part.description }}&lt;/td&gt;
+        &lt;td&gt;{{ part.price }}&lt;/td&gt;
+        &lt;td&gt;
+          &lt;Link :href=<span class="str">"route('parts.show', part.id)"</span>&gt;দেখুন&lt;/Link&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+
+    <span class="cm">&lt;!-- Pagination --&gt;</span>
+    &lt;div class=<span class="str">"pagination"</span>&gt;
+      &lt;Link
+        v-for=<span class="str">"link in parts.links"</span>
+        :key=<span class="str">"link.label"</span>
+        :href=<span class="str">"link.url"</span>
+        v-html=<span class="str">"link.label"</span>
+      /&gt;
+    &lt;/div&gt;
+  &lt;/AppLayout&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 10: Clean Code & Fast Loading -->
+<div class="section" id="s10">
+  <div class="section-header">
+    <div class="section-num">১০</div>
+    <h2>Clean Code ও Fast Loading টিপস</h2>
+  </div>
+  <div class="section-body">
+
+    <h3>🚀 Performance টিপস</h3>
+    <table>
+      <tr><th>সমস্যা</th><th>সমাধান</th></tr>
+      <tr><td>N+1 Query</td><td><code>with('relation')</code> eager loading ব্যবহার করুন</td></tr>
+      <tr><td>Slow Query</td><td>সব searchable column এ Index দিন</td></tr>
+      <tr><td>Heavy Payload</td><td>শুধু দরকারী column <code>select()</code> করুন</td></tr>
+      <tr><td>Cache নেই</td><td>Static data <code>Cache::remember()</code> দিয়ে cache করুন</td></tr>
+      <tr><td>Large Bundle</td><td>Vue <code>defineAsyncComponent()</code> দিয়ে lazy load করুন</td></tr>
+    </table>
+
+    <h3>Cache ব্যবহার</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        Repository তে Cache ব্যবহার
+      </div>
+      <pre><span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\Cache</span>;
+
+<span class="kw">public function</span> <span class="fn">getAllCatalogTypes</span>()
+{
+    <span class="cm">// ৬০ মিনিট cache রাখবে — বারবার DB query হবে না</span>
+    <span class="kw">return</span> <span class="cl">Cache</span>::<span class="fn">remember</span>(<span class="str">'catalog_types'</span>, <span class="str">60</span> * <span class="str">60</span>, <span class="kw">function</span> () {
+        <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">distinct</span>()-&gt;<span class="fn">pluck</span>(<span class="str">'catalog_type'</span>);
+    });
+}
+
+<span class="cm">// Data update হলে cache clear করুন</span>
+<span class="kw">public function</span> <span class="fn">create</span>(<span class="kw">array</span> <span class="var">$data</span>)
+{
+    <span class="cl">Cache</span>::<span class="fn">forget</span>(<span class="str">'catalog_types'</span>);
+    <span class="kw">return</span> <span class="var">$this</span>-&gt;model-&gt;<span class="fn">create</span>(<span class="var">$data</span>);
+}</pre>
+    </div>
+
+    <h3>Lazy Loading Vue Components</h3>
+    <div class="code-block">
+      <div class="code-label">
+        <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+        resources/js/app.js — Inertia Entry Point
+      </div>
+      <pre><span class="kw">import</span> { createApp, h } <span class="kw">from</span> <span class="str">'vue'</span>;
+<span class="kw">import</span> { createInertiaApp } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>;
+<span class="kw">import</span> { resolvePageComponent } <span class="kw">from</span> <span class="str">'laravel-vite-plugin/inertia-helpers'</span>;
+
+createInertiaApp({
+  <span class="cm">// Page গুলো Lazy Load হবে — সব একসাথে load হবে না</span>
+  resolve: (name) =>
+    resolvePageComponent(
+      `./Pages/${name}.vue`,
+      import.meta.glob(<span class="str">'./Pages/**/*.vue'</span>)
+    ),
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () =&gt; h(App, props) })
+      .use(plugin)
+      .mount(el);
+  },
+});</pre>
+    </div>
+
+    <h3>✅ Clean Code চেকলিস্ট</h3>
+    <div class="explain">
+      <strong>প্রতিটি ফাইল বানানোর আগে নিজেকে জিজ্ঞেস করুন:</strong><br><br>
+      ✔ Controller কি শুধু Request নিচ্ছে এবং Response দিচ্ছে?<br>
+      ✔ Business Logic কি Service Class এ আছে?<br>
+      ✔ DB Query কি Repository তে আছে?<br>
+      ✔ Validation কি আলাদা FormRequest এ আছে?<br>
+      ✔ Repeated কোড কি Trait এ নেওয়া হয়েছে?<br>
+      ✔ Interface ব্যবহার করা হয়েছে কি?<br>
+      ✔ Eager Loading (<code>with()</code>) ব্যবহার করা হয়েছে কি?
+    </div>
+
+    <div class="tip">একটি ভালো নিয়ম: <strong>"একটি Class এর একটিই কাজ"</strong> — এই নিয়ম মানলেই কোড clean থাকবে।</div>
+  </div>
+</div>
+
+<footer>
+  <p>তৈরি করা হয়েছে <span>Laravel 12 + Inertia.js + Vue 3</span> গাইডের জন্য &nbsp;|&nbsp; সম্পূর্ণ বাংলা ভাষায়</p>
+  <p style="margin-top:8px; font-size:12px;">Repository Pattern • Service Provider • Trait • Middleware • Dynamic Table</p>
+</footer>
+
+</body>
+</html>

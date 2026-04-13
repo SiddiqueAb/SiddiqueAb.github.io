@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaasKit — UI Component Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SAASKIT — DESIGN TOKENS & CSS VARIABLES
+   ============================================================ */
+:root {
+  /* Brand Colors */
+  --primary:        #2563EB;
+  --primary-hover:  #1D4ED8;
+  --primary-light:  #EFF6FF;
+  --secondary:      #7C3AED;
+  --secondary-light:#F5F3FF;
+  --accent:         #06B6D4;
+  --accent-light:   #ECFEFF;
+  --success:        #10B981;
+  --success-light:  #ECFDF5;
+  --warning:        #F59E0B;
+  --warning-light:  #FFFBEB;
+  --danger:         #EF4444;
+  --danger-light:   #FEF2F2;
+  --info:           #3B82F6;
+  --info-light:     #EFF6FF;
+
+  /* Neutrals */
+  --white:          #FFFFFF;
+  --gray-50:        #F8FAFC;
+  --gray-100:       #F1F5F9;
+  --gray-200:       #E2E8F0;
+  --gray-300:       #CBD5E1;
+  --gray-400:       #94A3B8;
+  --gray-500:       #64748B;
+  --gray-600:       #475569;
+  --gray-700:       #334155;
+  --gray-800:       #1E293B;
+  --gray-900:       #0F172A;
+
+  /* Typography */
+  --font-sans:      'DM Sans', sans-serif;
+  --font-mono:      'DM Mono', monospace;
+  --text-xs:        .75rem;
+  --text-sm:        .875rem;
+  --text-base:      1rem;
+  --text-lg:        1.125rem;
+  --text-xl:        1.25rem;
+  --text-2xl:       1.5rem;
+  --text-3xl:       1.875rem;
+  --text-4xl:       2.25rem;
+
+  /* Spacing */
+  --space-1:  .25rem;
+  --space-2:  .5rem;
+  --space-3:  .75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-sm:   4px;
+  --radius:      8px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,.06);
+  --shadow:      0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:   0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+  --shadow-lg:   0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  --shadow-xl:   0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
+
+  /* Transitions */
+  --transition:  all .18s ease;
+  --transition-slow: all .3s ease;
+
+  /* Sidebar width */
+  --sidebar-w:   260px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--gray-50);
+  color: var(--gray-800);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; }
+ul, ol { list-style: none; }
+code, pre { font-family: var(--font-mono); }
+
+/* ============================================================
+   LAYOUT HELPERS
+   ============================================================ */
+.container        { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); }
+.row              { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.col              { flex: 1 1 0; min-width: 0; }
+.col-1  { flex: 0 0 calc(8.333% - var(--space-6)); }
+.col-2  { flex: 0 0 calc(16.666% - var(--space-6)); }
+.col-3  { flex: 0 0 calc(25% - var(--space-6)); }
+.col-4  { flex: 0 0 calc(33.333% - var(--space-6)); }
+.col-5  { flex: 0 0 calc(41.666% - var(--space-6)); }
+.col-6  { flex: 0 0 calc(50% - var(--space-6)); }
+.col-7  { flex: 0 0 calc(58.333% - var(--space-6)); }
+.col-8  { flex: 0 0 calc(66.666% - var(--space-6)); }
+.col-9  { flex: 0 0 calc(75% - var(--space-6)); }
+.col-10 { flex: 0 0 calc(83.333% - var(--space-6)); }
+.col-11 { flex: 0 0 calc(91.666% - var(--space-6)); }
+.col-12 { flex: 0 0 100%; }
+
+.flex           { display: flex; }
+.flex-col       { flex-direction: column; }
+.items-center   { align-items: center; }
+.items-start    { align-items: flex-start; }
+.items-end      { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between{ justify-content: space-between; }
+.justify-end    { justify-content: flex-end; }
+.flex-wrap      { flex-wrap: wrap; }
+.gap-1  { gap: var(--space-1); }
+.gap-2  { gap: var(--space-2); }
+.gap-3  { gap: var(--space-3); }
+.gap-4  { gap: var(--space-4); }
+.gap-6  { gap: var(--space-6); }
+.gap-8  { gap: var(--space-8); }
+.grid   { display: grid; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); gap: var(--space-6); }
+
+/* ============================================================
+   SPACING UTILITIES
+   ============================================================ */
+.m-0{margin:0} .m-1{margin:var(--space-1)} .m-2{margin:var(--space-2)}
+.m-3{margin:var(--space-3)} .m-4{margin:var(--space-4)} .m-6{margin:var(--space-6)}
+.m-8{margin:var(--space-8)}
+.mt-0{margin-top:0} .mt-1{margin-top:var(--space-1)} .mt-2{margin-top:var(--space-2)}
+.mt-3{margin-top:var(--space-3)} .mt-4{margin-top:var(--space-4)} .mt-6{margin-top:var(--space-6)}
+.mt-8{margin-top:var(--space-8)} .mt-10{margin-top:var(--space-10)} .mt-12{margin-top:var(--space-12)}
+.mb-0{margin-bottom:0} .mb-1{margin-bottom:var(--space-1)} .mb-2{margin-bottom:var(--space-2)}
+.mb-3{margin-bottom:var(--space-3)} .mb-4{margin-bottom:var(--space-4)} .mb-6{margin-bottom:var(--space-6)}
+.mb-8{margin-bottom:var(--space-8)}
+.ml-auto{margin-left:auto} .mr-auto{margin-right:auto} .mx-auto{margin:0 auto}
+.p-0{padding:0} .p-1{padding:var(--space-1)} .p-2{padding:var(--space-2)}
+.p-3{padding:var(--space-3)} .p-4{padding:var(--space-4)} .p-5{padding:var(--space-5)}
+.p-6{padding:var(--space-6)} .p-8{padding:var(--space-8)} .p-10{padding:var(--space-10)}
+.px-2{padding-left:var(--space-2);padding-right:var(--space-2)}
+.px-3{padding-left:var(--space-3);padding-right:var(--space-3)}
+.px-4{padding-left:var(--space-4);padding-right:var(--space-4)}
+.px-6{padding-left:var(--space-6);padding-right:var(--space-6)}
+.py-1{padding-top:var(--space-1);padding-bottom:var(--space-1)}
+.py-2{padding-top:var(--space-2);padding-bottom:var(--space-2)}
+.py-3{padding-top:var(--space-3);padding-bottom:var(--space-3)}
+.py-4{padding-top:var(--space-4);padding-bottom:var(--space-4)}
+.py-6{padding-top:var(--space-6);padding-bottom:var(--space-6)}
+.py-8{padding-top:var(--space-8);padding-bottom:var(--space-8)}
+.py-12{padding-top:var(--space-12);padding-bottom:var(--space-12)}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1,.h1{font-size:var(--text-4xl);font-weight:700;line-height:1.2;letter-spacing:-.02em}
+h2,.h2{font-size:var(--text-3xl);font-weight:700;line-height:1.25;letter-spacing:-.015em}
+h3,.h3{font-size:var(--text-2xl);font-weight:600;line-height:1.3}
+h4,.h4{font-size:var(--text-xl);font-weight:600;line-height:1.35}
+h5,.h5{font-size:var(--text-lg);font-weight:600}
+h6,.h6{font-size:var(--text-base);font-weight:600}
+.text-xs{font-size:var(--text-xs)} .text-sm{font-size:var(--text-sm)}
+.text-base{font-size:var(--text-base)} .text-lg{font-size:var(--text-lg)}
+.text-xl{font-size:var(--text-xl)} .text-2xl{font-size:var(--text-2xl)}
+.text-3xl{font-size:var(--text-3xl)} .text-4xl{font-size:var(--text-4xl)}
+.font-light{font-weight:300} .font-normal{font-weight:400} .font-medium{font-weight:500}
+.font-semibold{font-weight:600} .font-bold{font-weight:700}
+.text-left{text-align:left} .text-center{text-align:center} .text-right{text-align:right}
+.text-white{color:var(--white)} .text-primary{color:var(--primary)}
+.text-secondary{color:var(--secondary)} .text-success{color:var(--success)}
+.text-warning{color:var(--warning)} .text-danger{color:var(--danger)}
+.text-muted{color:var(--gray-500)} .text-dark{color:var(--gray-800)}
+.text-gray-400{color:var(--gray-400)} .text-gray-600{color:var(--gray-600)}
+.leading-tight{line-height:1.25} .leading-snug{line-height:1.375}
+.leading-normal{line-height:1.5} .leading-relaxed{line-height:1.75}
+.tracking-tight{letter-spacing:-.025em} .tracking-wide{letter-spacing:.05em}
+.uppercase{text-transform:uppercase} .capitalize{text-transform:capitalize}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ============================================================
+   COLORS — Background
+   ============================================================ */
+.bg-white{background:var(--white)} .bg-primary{background:var(--primary)}
+.bg-primary-light{background:var(--primary-light)} .bg-secondary{background:var(--secondary)}
+.bg-secondary-light{background:var(--secondary-light)} .bg-accent{background:var(--accent)}
+.bg-success{background:var(--success)} .bg-success-light{background:var(--success-light)}
+.bg-warning{background:var(--warning)} .bg-warning-light{background:var(--warning-light)}
+.bg-danger{background:var(--danger)} .bg-danger-light{background:var(--danger-light)}
+.bg-gray-50{background:var(--gray-50)} .bg-gray-100{background:var(--gray-100)}
+.bg-gray-800{background:var(--gray-800)} .bg-gray-900{background:var(--gray-900)}
+
+/* ============================================================
+   GRADIENTS
+   ============================================================ */
+.gradient-primary   { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); }
+.gradient-blue      { background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%); }
+.gradient-purple    { background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%); }
+.gradient-green     { background: linear-gradient(135deg, #059669 0%, #06B6D4 100%); }
+.gradient-orange    { background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); }
+.gradient-dark      { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); }
+.gradient-glass     { background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, rgba(255,255,255,.05) 100%); backdrop-filter: blur(12px); }
+.gradient-text-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gradient-mesh { background: radial-gradient(at 40% 20%, #dbeafe 0px, transparent 50%), radial-gradient(at 80% 0%, #ede9fe 0px, transparent 50%), radial-gradient(at 0% 50%, #ecfdf5 0px, transparent 50%), radial-gradient(at 80% 50%, #fff7ed 0px, transparent 50%), radial-gradient(at 0% 100%, #ecfeff 0px, transparent 50%); background-color: #f8fafc; }
+
+/* ============================================================
+   BORDER & DISPLAY
+   ============================================================ */
+.border         { border: 1px solid var(--gray-200); }
+.border-top     { border-top: 1px solid var(--gray-200); }
+.border-bottom  { border-bottom: 1px solid var(--gray-200); }
+.border-primary { border-color: var(--primary); }
+.border-danger  { border-color: var(--danger); }
+.rounded-sm  { border-radius: var(--radius-sm); }
+.rounded     { border-radius: var(--radius); }
+.rounded-md  { border-radius: var(--radius-md); }
+.rounded-lg  { border-radius: var(--radius-lg); }
+.rounded-xl  { border-radius: var(--radius-xl); }
+.rounded-full{ border-radius: var(--radius-full); }
+.shadow-sm   { box-shadow: var(--shadow-sm); }
+.shadow      { box-shadow: var(--shadow); }
+.shadow-md   { box-shadow: var(--shadow-md); }
+.shadow-lg   { box-shadow: var(--shadow-lg); }
+.shadow-xl   { box-shadow: var(--shadow-xl); }
+.w-full  { width: 100%; }
+.h-full  { height: 100%; }
+.overflow-hidden { overflow: hidden; }
+.overflow-auto   { overflow: auto; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.hidden   { display: none; }
+.block    { display: block; }
+.inline   { display: inline; }
+.inline-flex { display: inline-flex; }
+.opacity-50  { opacity: .5; }
+.cursor-pointer { cursor: pointer; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2); padding: .5rem 1.125rem;
+  font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500;
+  line-height: 1.5; border: 1.5px solid transparent; border-radius: var(--radius);
+  cursor: pointer; transition: var(--transition); white-space: nowrap;
+  text-decoration: none !important; outline: none; -webkit-appearance: none;
+}
+.btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.btn-primary   { background: var(--primary);   color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); box-shadow: 0 4px 12px rgba(37,99,235,.3); transform: translateY(-1px); }
+
+.btn-secondary { background: var(--secondary); color: #fff; border-color: var(--secondary); }
+.btn-secondary:hover { background: #6D28D9; border-color: #6D28D9; box-shadow: 0 4px 12px rgba(124,58,237,.3); transform: translateY(-1px); }
+
+.btn-success   { background: var(--success);   color: #fff; border-color: var(--success); }
+.btn-success:hover   { background: #059669; transform: translateY(-1px); }
+
+.btn-warning   { background: var(--warning);   color: #fff; border-color: var(--warning); }
+.btn-warning:hover   { background: #D97706; transform: translateY(-1px); }
+
+.btn-danger    { background: var(--danger);    color: #fff; border-color: var(--danger); }
+.btn-danger:hover    { background: #DC2626; transform: translateY(-1px); }
+
+.btn-outline-primary { background: transparent; color: var(--primary); border-color: var(--primary); }
+.btn-outline-primary:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
+
+.btn-outline-secondary { background: transparent; color: var(--secondary); border-color: var(--secondary); }
+.btn-outline-secondary:hover { background: var(--secondary); color: #fff; }
+
+.btn-outline-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+.btn-outline-danger:hover { background: var(--danger); color: #fff; }
+
+.btn-ghost     { background: transparent; color: var(--gray-700); border-color: var(--gray-200); }
+.btn-ghost:hover { background: var(--gray-100); }
+
+.btn-dark      { background: var(--gray-900); color: #fff; border-color: var(--gray-900); }
+.btn-dark:hover { background: var(--gray-700); }
+
+.btn-gradient  { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border: none; }
+.btn-gradient:hover { opacity: .9; box-shadow: 0 6px 20px rgba(37,99,235,.35); transform: translateY(-1px); }
+
+.btn-link      { background: none; border: none; color: var(--primary); padding: 0; font-weight: 500; }
+.btn-link:hover { text-decoration: underline; }
+
+/* Sizes */
+.btn-xs  { padding: .2rem .6rem;  font-size: .7rem; }
+.btn-sm  { padding: .35rem .85rem; font-size: var(--text-xs); }
+.btn-lg  { padding: .7rem 1.5rem;  font-size: var(--text-base); }
+.btn-xl  { padding: .9rem 2rem;    font-size: var(--text-lg); }
+.btn-block { width: 100%; }
+.btn-icon  { padding: .5rem; width: 36px; height: 36px; }
+.btn-icon.btn-sm { width: 30px; height: 30px; padding: .3rem; }
+.btn-icon.btn-lg { width: 44px; height: 44px; }
+
+.btn[disabled], .btn.disabled { opacity: .5; cursor: not-allowed; pointer-events: none; transform: none !important; }
+.btn-loading { position: relative; color: transparent !important; }
+.btn-loading::after {
+  content: ''; position: absolute; inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%); width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* ============================================================
+   BADGE / CHIP / TAG
+   ============================================================ */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: .18rem .55rem; font-size: .7rem; font-weight: 600;
+  border-radius: var(--radius-full); line-height: 1.4; white-space: nowrap;
+}
+.badge-primary   { background: var(--primary-light);   color: var(--primary); }
+.badge-secondary { background: var(--secondary-light); color: var(--secondary); }
+.badge-success   { background: var(--success-light);   color: #065F46; }
+.badge-warning   { background: var(--warning-light);   color: #92400E; }
+.badge-danger    { background: var(--danger-light);    color: #991B1B; }
+.badge-info      { background: var(--info-light);      color: #1D4ED8; }
+.badge-dark      { background: var(--gray-800);        color: #fff; }
+.badge-gray      { background: var(--gray-100);        color: var(--gray-600); }
+.badge-accent    { background: var(--accent-light);    color: #0E7490; }
+.badge-dot::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+.badge-lg { padding: .35rem .85rem; font-size: var(--text-xs); }
+.badge-outline { background: transparent; border: 1.5px solid currentColor; }
+
+/* ============================================================
+   CARD
+   ============================================================ */
+.card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);
+  overflow: hidden; transition: var(--transition-slow);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card-header {
+  padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+}
+.card-body  { padding: var(--space-6); }
+.card-footer {
+  padding: var(--space-4) var(--space-6); border-top: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+.card-title { font-size: var(--text-base); font-weight: 600; color: var(--gray-800); }
+.card-subtitle { font-size: var(--text-sm); color: var(--gray-500); margin-top: 2px; }
+.card-image { width: 100%; display: block; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.card-flat  { border: none; box-shadow: none; background: var(--gray-50); }
+.card-bordered { border: 2px solid var(--primary); }
+.card-gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border: none; color: #fff; }
+.card-gradient .card-header { border-color: rgba(255,255,255,.2); }
+.card-dark { background: var(--gray-900); border-color: var(--gray-700); color: #fff; }
+.card-dark .card-header { border-color: var(--gray-700); }
+.card-dark .card-footer { background: var(--gray-800); border-color: var(--gray-700); }
+
+/* Stat card */
+.stat-card { padding: var(--space-6); }
+.stat-card .stat-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);
+}
+.stat-card .stat-value { font-size: var(--text-3xl); font-weight: 700; line-height: 1; }
+.stat-card .stat-label { font-size: var(--text-sm); color: var(--gray-500); margin-top: var(--space-1); }
+.stat-card .stat-change { font-size: var(--text-sm); font-weight: 500; margin-top: var(--space-2); }
+.stat-change.up   { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar-layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: var(--sidebar-w); background: var(--white);
+  border-right: 1px solid var(--gray-200); display: flex;
+  flex-direction: column; flex-shrink: 0; position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-dark {
+  background: var(--gray-900); border-color: var(--gray-700);
+}
+.sidebar-brand {
+  padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; gap: var(--space-3); font-weight: 700;
+  font-size: var(--text-lg); color: var(--gray-900);
+}
+.sidebar-dark .sidebar-brand { border-color: var(--gray-700); color: #fff; }
+.sidebar-brand-icon {
+  width: 34px; height: 34px; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;
+}
+.sidebar-nav      { padding: var(--space-4) var(--space-3); flex: 1; }
+.sidebar-section  { margin-bottom: var(--space-6); }
+.sidebar-section-label {
+  font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--gray-400); padding: 0 var(--space-3); margin-bottom: var(--space-2);
+}
+.sidebar-dark .sidebar-section-label { color: var(--gray-500); }
+.nav-item { margin-bottom: 2px; }
+.nav-link {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: .5rem var(--space-3); border-radius: var(--radius);
+  color: var(--gray-600); font-size: var(--text-sm); font-weight: 500;
+  transition: var(--transition); text-decoration: none !important; cursor: pointer;
+}
+.nav-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+.nav-link:hover { background: var(--gray-100); color: var(--gray-900); }
+.nav-link:hover svg { opacity: 1; }
+.nav-link.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-link.active svg { opacity: 1; }
+.sidebar-dark .nav-link { color: var(--gray-400); }
+.sidebar-dark .nav-link:hover { background: var(--gray-800); color: #fff; }
+.sidebar-dark .nav-link.active { background: rgba(37,99,235,.2); color: #93C5FD; }
+.nav-badge { margin-left: auto; }
+.sidebar-footer {
+  padding: var(--space-4) var(--space-3); border-top: 1px solid var(--gray-200);
+}
+.sidebar-dark .sidebar-footer { border-color: var(--gray-700); }
+.sidebar-user {
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius); cursor: pointer; transition: var(--transition);
+}
+.sidebar-user:hover { background: var(--gray-100); }
+.sidebar-dark .sidebar-user:hover { background: var(--gray-800); }
+.sidebar-content { flex: 1; min-width: 0; overflow-y: auto; }
+
+/* ============================================================
+   NAVBAR / TOPBAR
+   ============================================================ */
+.navbar {
+  background: var(--white); border-bottom: 1px solid var(--gray-200);
+  padding: 0 var(--space-6); height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4); position: sticky; top: 0; z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.navbar-brand {
+  font-weight: 700; font-size: var(--text-lg); color: var(--gray-900);
+  text-decoration: none !important; display: flex; align-items: center; gap: var(--space-2);
+}
+.navbar-nav { display: flex; align-items: center; gap: var(--space-1); }
+.navbar-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+/* ============================================================
+   SEARCHBOX
+   ============================================================ */
+.search-box { position: relative; }
+.search-box input {
+  padding: .5rem 1rem .5rem 2.5rem; border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-full); background: var(--gray-50);
+  font-size: var(--text-sm); width: 260px; transition: var(--transition);
+  font-family: var(--font-sans); outline: none; color: var(--gray-800);
+}
+.search-box input::placeholder { color: var(--gray-400); }
+.search-box input:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 3px rgba(37,99,235,.1); width: 320px; }
+.search-box .search-icon {
+  position: absolute; left: .75rem; top: 50%; transform: translateY(-50%);
+  color: var(--gray-400); pointer-events: none;
+}
+.search-box .search-clear {
+  position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+  color: var(--gray-400); cursor: pointer; display: none;
+}
+.search-box-lg input { width: 100%; padding: .75rem 1rem .75rem 3rem; font-size: var(--text-base); border-radius: var(--radius-md); }
+.search-box-lg .search-icon { left: 1rem; }
+
+/* ============================================================
+   FORM ELEMENTS
+   ============================================================ */
+.form-group     { margin-bottom: var(--space-5); }
+.form-label     { display: block; font-size: var(--text-sm); font-weight: 500; color: var(--gray-700); margin-bottom: var(--space-2); }
+.form-required::after { content: ' *'; color: var(--danger); }
+.form-hint      { font-size: var(--text-xs); color: var(--gray-500); margin-top: var(--space-1); }
+.form-error     { font-size: var(--text-xs); color: var(--danger); margin-top: var(--space-1); }
+
+.form-control {
+  display: block; width: 100%; padding: .5rem .875rem;
+  font-family: var(--font-sans); font-size: var(--text-sm); color: var(--gray-800);
+  background: var(--white); border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius); transition: var(--transition); outline: none;
+  line-height: 1.5;
+}
+.form-control::placeholder { color: var(--gray-400); }
+.form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.form-control:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+.form-control.is-invalid { border-color: var(--danger); }
+.form-control.is-invalid:focus { box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+.form-control.is-valid { border-color: var(--success); }
+.form-control-sm { padding: .3rem .7rem; font-size: var(--text-xs); }
+.form-control-lg { padding: .7rem 1rem; font-size: var(--text-base); }
+select.form-control { cursor: pointer; }
+textarea.form-control { resize: vertical; min-height: 100px; }
+
+.input-group { display: flex; }
+.input-group .form-control { border-radius: 0; flex: 1; }
+.input-group .form-control:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.input-group .form-control:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+.input-addon {
+  display: flex; align-items: center; padding: 0 .875rem;
+  background: var(--gray-100); border: 1.5px solid var(--gray-200);
+  color: var(--gray-600); font-size: var(--text-sm); white-space: nowrap;
+}
+.input-addon:first-child { border-right: none; border-radius: var(--radius) 0 0 var(--radius); }
+.input-addon:last-child  { border-left: none;  border-radius: 0 var(--radius) var(--radius) 0; }
+
+/* Checkbox & Radio */
+.form-check { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+  width: 17px; height: 17px; cursor: pointer;
+  accent-color: var(--primary); flex-shrink: 0;
+}
+.form-check-label { font-size: var(--text-sm); color: var(--gray-700); cursor: pointer; }
+
+/* Toggle Switch */
+.toggle { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; }
+.toggle-switch {
+  position: relative; width: 44px; height: 24px;
+  background: var(--gray-300); border-radius: var(--radius-full);
+  transition: background .2s; flex-shrink: 0;
+}
+.toggle-switch::after {
+  content: ''; position: absolute; width: 18px; height: 18px;
+  background: #fff; border-radius: 50%; top: 3px; left: 3px;
+  transition: transform .2s; box-shadow: var(--shadow-sm);
+}
+.toggle input { display: none; }
+.toggle input:checked + .toggle-switch { background: var(--primary); }
+.toggle input:checked + .toggle-switch::after { transform: translateX(20px); }
+.toggle-label { font-size: var(--text-sm); color: var(--gray-700); }
+
+/* Range slider */
+.form-range { width: 100%; accent-color: var(--primary); cursor: pointer; }
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
+table, .table { width: 100%; border-collapse: collapse; background: var(--white); font-size: var(--text-sm); }
+.table th {
+  background: var(--gray-50); color: var(--gray-600); font-weight: 600;
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+  padding: .75rem 1rem; text-align: left; border-bottom: 1px solid var(--gray-200);
+  white-space: nowrap;
+}
+.table td {
+  padding: .85rem 1rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-100);
+  vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: none; }
+.table tbody tr { transition: background .15s; }
+.table tbody tr:hover { background: var(--gray-50); }
+.table-striped tbody tr:nth-child(even) { background: var(--gray-50); }
+.table-bordered th, .table-bordered td { border: 1px solid var(--gray-200); }
+.table-compact th, .table-compact td { padding: .5rem .875rem; }
+.table-avatar { display: flex; align-items: center; gap: .75rem; }
+.table-actions { display: flex; align-items: center; gap: .5rem; }
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
+  background: var(--primary-light); color: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: var(--text-sm); flex-shrink: 0; border: 2px solid var(--white);
+}
+.avatar-xs  { width: 26px; height: 26px; font-size: .6rem; }
+.avatar-sm  { width: 32px; height: 32px; font-size: .7rem; }
+.avatar-lg  { width: 52px; height: 52px; font-size: var(--text-lg); }
+.avatar-xl  { width: 72px; height: 72px; font-size: var(--text-2xl); }
+.avatar-group { display: flex; }
+.avatar-group .avatar { margin-left: -10px; }
+.avatar-group .avatar:first-child { margin-left: 0; }
+.avatar-gradient { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+.accordion { border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; }
+.accordion-item { border-bottom: 1px solid var(--gray-200); }
+.accordion-item:last-child { border-bottom: none; }
+.accordion-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem var(--space-5); cursor: pointer; background: var(--white);
+  font-weight: 500; font-size: var(--text-sm); color: var(--gray-800);
+  transition: background .15s; user-select: none; gap: var(--space-3);
+}
+.accordion-header:hover { background: var(--gray-50); }
+.accordion-icon {
+  width: 20px; height: 20px; flex-shrink: 0; color: var(--gray-400);
+  transition: transform .25s; display: flex; align-items: center; justify-content: center;
+}
+.accordion-item.open .accordion-icon { transform: rotate(180deg); }
+.accordion-body { padding: 0; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease; }
+.accordion-item.open .accordion-body { max-height: 500px; padding: var(--space-4) var(--space-5); }
+.accordion-flush { border: none; border-radius: 0; }
+.accordion-flush .accordion-item { border-left: none; border-right: none; }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs { border-bottom: 2px solid var(--gray-200); display: flex; gap: 0; }
+.tab-item {
+  padding: .65rem 1.25rem; font-size: var(--text-sm); font-weight: 500;
+  color: var(--gray-500); cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: var(--transition); white-space: nowrap;
+}
+.tab-item:hover { color: var(--gray-800); }
+.tab-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-content { padding: var(--space-6) 0; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.tabs-pills { border-bottom: none; gap: var(--space-2); padding: var(--space-1); background: var(--gray-100); border-radius: var(--radius); display: inline-flex; }
+.tabs-pills .tab-item { border: none; border-radius: var(--radius-sm); color: var(--gray-600); margin: 0; }
+.tabs-pills .tab-item.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow-sm); }
+.tabs-underline { border-bottom: none; gap: var(--space-4); }
+.tabs-underline .tab-item { padding: .5rem 0; border: none; border-bottom: 2px solid transparent; color: var(--gray-500); margin: 0; }
+.tabs-underline .tab-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ============================================================
+   ALERT / NOTIFICATION
+   ============================================================ */
+.alert {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: .875rem var(--space-4); border-radius: var(--radius);
+  border: 1px solid transparent; font-size: var(--text-sm); line-height: 1.5;
+}
+.alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-content { flex: 1; }
+.alert-title { font-weight: 600; margin-bottom: 2px; }
+.alert-close { margin-left: auto; cursor: pointer; opacity: .6; flex-shrink: 0; }
+.alert-close:hover { opacity: 1; }
+.alert-primary { background: var(--primary-light); border-color: #BFDBFE; color: #1D4ED8; }
+.alert-success { background: var(--success-light); border-color: #A7F3D0; color: #065F46; }
+.alert-warning { background: var(--warning-light); border-color: #FDE68A; color: #92400E; }
+.alert-danger  { background: var(--danger-light);  border-color: #FECACA; color: #991B1B; }
+.alert-info    { background: var(--info-light);    border-color: #BFDBFE; color: #1D4ED8; }
+.alert-dark    { background: var(--gray-800); border-color: var(--gray-700); color: #fff; }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: var(--space-4); backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white); border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl); width: 100%; max-width: 520px;
+  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+  transform: scale(.95) translateY(8px); transition: transform .25s;
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-sm { max-width: 380px; }
+.modal-lg { max-width: 720px; }
+.modal-xl { max-width: 960px; }
+.modal-header {
+  padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+}
+.modal-title { font-size: var(--text-lg); font-weight: 600; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; cursor: pointer;
+  color: var(--gray-500); transition: var(--transition); flex-shrink: 0;
+  background: none; border: none;
+}
+.modal-close:hover { background: var(--gray-100); color: var(--gray-800); }
+.modal-body   { padding: var(--space-6); overflow-y: auto; flex: 1; }
+.modal-footer {
+  padding: var(--space-4) var(--space-6); border-top: 1px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3);
+  background: var(--gray-50);
+}
+
+/* ============================================================
+   DROPDOWN
+   ============================================================ */
+.dropdown { position: relative; display: inline-flex; }
+.dropdown-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 200;
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);
+  min-width: 180px; padding: var(--space-2); display: none; flex-direction: column; gap: 2px;
+}
+.dropdown-menu.open { display: flex; }
+.dropdown-menu.right { left: auto; right: 0; }
+.dropdown-item {
+  display: flex; align-items: center; gap: var(--space-2); padding: .45rem .75rem;
+  border-radius: var(--radius); color: var(--gray-700); font-size: var(--text-sm);
+  font-weight: 500; cursor: pointer; transition: background .15s; text-decoration: none !important;
+}
+.dropdown-item svg { width: 16px; height: 16px; color: var(--gray-400); flex-shrink: 0; }
+.dropdown-item:hover { background: var(--gray-100); color: var(--gray-900); }
+.dropdown-item.danger { color: var(--danger); }
+.dropdown-item.danger:hover { background: var(--danger-light); }
+.dropdown-divider { height: 1px; background: var(--gray-200); margin: var(--space-1) 0; }
+.dropdown-label { padding: .25rem .75rem; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); }
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+.progress { background: var(--gray-100); border-radius: var(--radius-full); overflow: hidden; }
+.progress-xs  { height: 4px; }
+.progress-sm  { height: 6px; }
+.progress     { height: 10px; }
+.progress-lg  { height: 16px; }
+.progress-bar {
+  height: 100%; background: var(--primary); border-radius: var(--radius-full);
+  transition: width .6s ease; position: relative; overflow: hidden;
+}
+.progress-bar::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+  animation: shimmer 2s infinite;
+}
+@keyframes shimmer { to { left: 200%; } }
+.progress-bar.success   { background: var(--success); }
+.progress-bar.warning   { background: var(--warning); }
+.progress-bar.danger    { background: var(--danger); }
+.progress-bar.gradient  { background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.progress-label { display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--gray-600); margin-bottom: var(--space-1); }
+
+/* ============================================================
+   SPINNER / LOADER
+   ============================================================ */
+.spinner {
+  width: 24px; height: 24px; border: 3px solid var(--gray-200);
+  border-top-color: var(--primary); border-radius: 50%;
+  animation: spin .7s linear infinite; display: inline-block;
+}
+.spinner-sm { width: 16px; height: 16px; border-width: 2px; }
+.spinner-lg { width: 40px; height: 40px; border-width: 4px; }
+.spinner-white { border-color: rgba(255,255,255,.3); border-top-color: #fff; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+  background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+@keyframes skeleton-shimmer { to { background-position: -200% 0; } }
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+[data-tooltip] { position: relative; cursor: default; }
+[data-tooltip]::after {
+  content: attr(data-tooltip); position: absolute; bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%); background: var(--gray-900); color: #fff;
+  font-size: .7rem; font-weight: 500; padding: .3rem .65rem; border-radius: var(--radius-sm);
+  white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .2s;
+  font-family: var(--font-sans);
+}
+[data-tooltip]:hover::after { opacity: 1; }
+
+/* ============================================================
+   LIST GROUP
+   ============================================================ */
+.list-group { border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; }
+.list-group-item {
+  display: flex; align-items: center; gap: var(--space-3); padding: .875rem var(--space-4);
+  border-bottom: 1px solid var(--gray-200); background: var(--white);
+  font-size: var(--text-sm); transition: background .15s; cursor: default;
+}
+.list-group-item:last-child { border-bottom: none; }
+.list-group-item:hover { background: var(--gray-50); }
+.list-group-item.active { background: var(--primary-light); color: var(--primary); }
+.list-group-flush { border: none; border-radius: 0; }
+.list-group-flush .list-group-item { border-left: none; border-right: none; }
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination { display: flex; align-items: center; gap: var(--space-1); }
+.page-item {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: var(--radius); border: 1.5px solid var(--gray-200);
+  font-size: var(--text-sm); font-weight: 500; color: var(--gray-600);
+  cursor: pointer; transition: var(--transition); background: var(--white);
+}
+.page-item:hover { border-color: var(--primary); color: var(--primary); }
+.page-item.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.page-item.disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+.page-dots { width: auto; border: none; background: none; padding: 0 .25rem; }
+
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
+.breadcrumb { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+.breadcrumb-item { color: var(--gray-500); }
+.breadcrumb-item a { color: var(--gray-500); transition: color .15s; }
+.breadcrumb-item a:hover { color: var(--primary); text-decoration: none !important; }
+.breadcrumb-item.active { color: var(--gray-800); font-weight: 500; }
+.breadcrumb-sep { color: var(--gray-300); }
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.divider { height: 1px; background: var(--gray-200); margin: var(--space-6) 0; }
+.divider-vertical { width: 1px; background: var(--gray-200); align-self: stretch; margin: 0 var(--space-4); }
+.divider-text { display: flex; align-items: center; gap: var(--space-4); color: var(--gray-400); font-size: var(--text-sm); margin: var(--space-6) 0; }
+.divider-text::before, .divider-text::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+/* ============================================================
+   CODE BLOCK
+   ============================================================ */
+.code-block {
+  background: var(--gray-900); color: #E2E8F0; border-radius: var(--radius-lg);
+  padding: var(--space-5); font-family: var(--font-mono); font-size: var(--text-sm);
+  overflow-x: auto; line-height: 1.7; position: relative;
+}
+.code-block .code-lang {
+  position: absolute; top: var(--space-3); right: var(--space-4);
+  font-size: .65rem; font-weight: 700; text-transform: uppercase;
+  color: var(--gray-500); letter-spacing: .08em;
+}
+code { background: var(--gray-100); color: var(--danger); padding: .1em .4em; border-radius: var(--radius-sm); font-size: .875em; font-family: var(--font-mono); }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: var(--space-16) var(--space-8);
+}
+.empty-icon {
+  width: 64px; height: 64px; background: var(--gray-100); border-radius: var(--radius-xl);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-400); margin-bottom: var(--space-4);
+}
+.empty-title { font-size: var(--text-lg); font-weight: 600; color: var(--gray-800); margin-bottom: var(--space-2); }
+.empty-text  { font-size: var(--text-sm); color: var(--gray-500); max-width: 340px; margin-bottom: var(--space-5); }
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--gray-200); }
+.timeline-item { position: relative; margin-bottom: var(--space-6); }
+.timeline-dot {
+  position: absolute; left: -2.44rem; top: .2rem;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--primary);
+  border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--primary);
+}
+.timeline-dot.success { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+.timeline-dot.warning { background: var(--warning); box-shadow: 0 0 0 2px var(--warning); }
+.timeline-dot.danger  { background: var(--danger);  box-shadow: 0 0 0 2px var(--danger); }
+.timeline-time  { font-size: var(--text-xs); color: var(--gray-400); margin-bottom: var(--space-1); }
+.timeline-title { font-size: var(--text-sm); font-weight: 600; color: var(--gray-800); }
+.timeline-body  { font-size: var(--text-sm); color: var(--gray-500); margin-top: 3px; }
+
+/* ============================================================
+   MISC UTILITIES
+   ============================================================ */
+.divider-section { padding: var(--space-12) 0; }
+.section-label {
+  display: inline-block; font-size: .65rem; font-weight: 800; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--primary); background: var(--primary-light);
+  padding: .2rem .7rem; border-radius: var(--radius-full); margin-bottom: var(--space-3);
+}
+.component-demo {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-6);
+}
+.component-title {
+  font-size: var(--text-xl); font-weight: 700; color: var(--gray-900);
+  margin-bottom: var(--space-1); margin-top: var(--space-10);
+  padding-bottom: var(--space-3); border-bottom: 2px solid var(--gray-100);
+}
+.component-title:first-child { margin-top: 0; }
+.component-desc { font-size: var(--text-sm); color: var(--gray-500); margin-bottom: var(--space-5); }
+.swatch { width: 40px; height: 40px; border-radius: var(--radius); box-shadow: var(--shadow); }
+.swatch-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+
+/* ============================================================
+   PAGE LAYOUT (DEMO)
+   ============================================================ */
+.page-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.page-content { flex: 1; padding: var(--space-6); }
+.page-header {
+  padding: var(--space-5) var(--space-6); background: var(--white);
+  border-bottom: 1px solid var(--gray-200); display: flex;
+  align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);
+}
+
+/* ============================================================
+   NOTIFICATION DOT
+   ============================================================ */
+.notif-dot {
+  position: relative; display: inline-flex;
+}
+.notif-dot::after {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--danger); border: 2px solid var(--white);
+}
+
+/* ============================================================
+   COPY-PASTE HELPER CLASSES
+   ============================================================ */
+.d-flex{display:flex} .d-grid{display:grid} .d-block{display:block} .d-none{display:none}
+.align-center{align-items:center} .justify-between{justify-content:space-between}
+.full-width{width:100%} .max-w-sm{max-width:480px} .max-w-md{max-width:680px}
+.max-w-lg{max-width:900px} .mx-auto{margin-left:auto;margin-right:auto}
+.z-10{z-index:10} .z-20{z-index:20} .z-50{z-index:50}
+.pointer{cursor:pointer} .select-none{user-select:none}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sticky-top{position:sticky;top:0;z-index:50}
+.aspect-video{aspect-ratio:16/9} .aspect-square{aspect-ratio:1}
+.object-cover{object-fit:cover} .object-contain{object-fit:contain}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SIDEBAR LAYOUT DEMO
+     ============================================================ -->
+<div class="sidebar-layout">
+
+  <!-- SIDEBAR (dark) -->
+  <aside class="sidebar sidebar-dark">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      SaasKit
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Main</div>
+        <div class="nav-item">
+          <a class="nav-link active" href="#">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="#">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Users
+            <span class="nav-badge badge badge-primary">12</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="#">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Analytics
+          </a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="#">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Billing
+            <span class="nav-badge badge badge-warning">!</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Content</div>
+        <div class="nav-item"><a class="nav-link" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Documents
+        </a></div>
+        <div class="nav-item"><a class="nav-link" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+          Reports
+        </a></div>
+        <div class="nav-item"><a class="nav-link" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messages
+        </a></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">System</div>
+        <div class="nav-item"><a class="nav-link" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          Settings
+        </a></div>
+        <div class="nav-item"><a class="nav-link" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Logs
+        </a></div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar avatar-sm avatar-gradient">JD</div>
+        <div style="flex:1;min-width:0">
+          <div class="text-sm font-medium text-white truncate">Jane Doe</div>
+          <div class="text-xs text-gray-400 truncate">jane@company.com</div>
+        </div>
+        <svg width="16" height="16" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="page-main">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="flex items-center gap-4">
+        <div class="breadcrumb">
+          <div class="breadcrumb-item"><a href="#">Home</a></div>
+          <span class="breadcrumb-sep">›</span>
+          <div class="breadcrumb-item"><a href="#">Dashboard</a></div>
+          <span class="breadcrumb-sep">›</span>
+          <div class="breadcrumb-item active">Components</div>
+        </div>
+      </div>
+      <div class="search-box">
+        <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search components…">
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon notif-dot" data-tooltip="Notifications">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <button class="btn btn-ghost btn-icon" data-tooltip="Help">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+        <div class="avatar avatar-sm avatar-gradient" style="cursor:pointer">JD</div>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1 class="text-2xl font-bold text-dark">SaasKit Component Library</h1>
+        <p class="text-sm text-muted mt-1">Copy-paste ready UI components for your SaaS product</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="btn btn-ghost btn-sm">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="btn btn-primary btn-sm">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Component
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="page-content">
+
+      <!-- ══════════════════════════════════════════════
+           STAT CARDS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Stat Cards</div>
+      <div class="component-desc">Key metric cards for dashboard overviews.</div>
+      <div class="grid-4 mb-8">
+        <div class="card stat-card">
+          <div class="stat-icon bg-primary-light">
+            <svg width="22" height="22" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stat-value">24,521</div>
+          <div class="stat-label">Total Users</div>
+          <div class="stat-change up">↑ 12.5% vs last month</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon bg-success-light">
+            <svg width="22" height="22" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="stat-value">$84,210</div>
+          <div class="stat-label">Monthly Revenue</div>
+          <div class="stat-change up">↑ 8.2% vs last month</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon bg-warning-light">
+            <svg width="22" height="22" fill="none" stroke="#F59E0B" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-label">Active Orders</div>
+          <div class="stat-change down">↓ 3.1% vs last month</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon bg-secondary-light">
+            <svg width="22" height="22" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="stat-value">98.4%</div>
+          <div class="stat-label">Uptime</div>
+          <div class="stat-change up">↑ 0.2% vs last month</div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           COLORS & GRADIENTS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Colors & Gradients</div>
+      <div class="component-desc">CSS variable–based palette. Use <code>.bg-*</code>, <code>.text-*</code>, <code>.gradient-*</code>.</div>
+      <div class="component-demo">
+        <div class="swatch-row">
+          <div><div class="swatch bg-primary"></div><div class="text-xs text-muted mt-1">primary</div></div>
+          <div><div class="swatch bg-secondary"></div><div class="text-xs text-muted mt-1">secondary</div></div>
+          <div><div class="swatch bg-accent"></div><div class="text-xs text-muted mt-1">accent</div></div>
+          <div><div class="swatch bg-success"></div><div class="text-xs text-muted mt-1">success</div></div>
+          <div><div class="swatch bg-warning"></div><div class="text-xs text-muted mt-1">warning</div></div>
+          <div><div class="swatch bg-danger"></div><div class="text-xs text-muted mt-1">danger</div></div>
+          <div><div class="swatch bg-gray-800"></div><div class="text-xs text-muted mt-1">dark</div></div>
+          <div><div class="swatch bg-gray-100 border"></div><div class="text-xs text-muted mt-1">light</div></div>
+        </div>
+        <div class="swatch-row">
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-primary"></div>
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-blue"></div>
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-purple"></div>
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-green"></div>
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-orange"></div>
+          <div style="flex:1;height:40px;border-radius:8px" class="gradient-dark"></div>
+        </div>
+        <div class="mt-4">
+          <span class="gradient-text-primary text-3xl font-bold">Gradient Text</span>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           BUTTONS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Buttons</div>
+      <div class="component-desc">All variants, sizes, states, and icon buttons.</div>
+      <div class="component-demo">
+        <div class="flex flex-wrap gap-3 mb-4">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-success">Success</button>
+          <button class="btn btn-warning">Warning</button>
+          <button class="btn btn-danger">Danger</button>
+          <button class="btn btn-dark">Dark</button>
+          <button class="btn btn-gradient">Gradient</button>
+        </div>
+        <div class="flex flex-wrap gap-3 mb-4">
+          <button class="btn btn-outline-primary">Outline Primary</button>
+          <button class="btn btn-outline-secondary">Outline Secondary</button>
+          <button class="btn btn-outline-danger">Outline Danger</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-link">Link Button</button>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <button class="btn btn-primary btn-xs">XSmall</button>
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Default</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+          <button class="btn btn-primary btn-xl">XLarge</button>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button class="btn btn-primary" disabled>Disabled</button>
+          <button class="btn btn-primary btn-loading">Loading</button>
+          <button class="btn btn-primary btn-icon" data-tooltip="Add item">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="btn btn-ghost btn-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="btn btn-primary" style="gap:.5rem">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload File
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           BADGES & CHIPS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Badges & Tags</div>
+      <div class="component-desc">Use <code>.badge-*</code> for status indicators and labels.</div>
+      <div class="component-demo">
+        <div class="flex flex-wrap gap-3 mb-4">
+          <span class="badge badge-primary">Primary</span>
+          <span class="badge badge-secondary">Secondary</span>
+          <span class="badge badge-success">Success</span>
+          <span class="badge badge-warning">Warning</span>
+          <span class="badge badge-danger">Danger</span>
+          <span class="badge badge-info">Info</span>
+          <span class="badge badge-dark">Dark</span>
+          <span class="badge badge-gray">Gray</span>
+          <span class="badge badge-accent">Accent</span>
+        </div>
+        <div class="flex flex-wrap gap-3 mb-4">
+          <span class="badge badge-success badge-dot">Active</span>
+          <span class="badge badge-warning badge-dot">Pending</span>
+          <span class="badge badge-danger badge-dot">Offline</span>
+          <span class="badge badge-gray badge-dot">Inactive</span>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <span class="badge badge-primary badge-outline">Outline</span>
+          <span class="badge badge-success badge-outline">Outline</span>
+          <span class="badge badge-primary badge-lg">Large Badge</span>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           CARDS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Cards</div>
+      <div class="component-desc">Card variants for content blocks, panels, and data containers.</div>
+      <div class="grid-3 mb-6">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Default Card</div>
+              <div class="card-subtitle">Card with header and footer</div>
+            </div>
+            <button class="btn btn-ghost btn-icon btn-sm">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+          </div>
+          <div class="card-body">
+            <p class="text-sm text-muted">This is a standard card component with header, body, and footer sections. Use it to group related content.</p>
+          </div>
+          <div class="card-footer flex justify-between items-center">
+            <span class="badge badge-success badge-dot">Published</span>
+            <button class="btn btn-primary btn-sm">View More</button>
+          </div>
+        </div>
+
+        <div class="card card-gradient">
+          <div class="card-header">
+            <div class="card-title text-white">Gradient Card</div>
+          </div>
+          <div class="card-body">
+            <p class="text-sm" style="color:rgba(255,255,255,.8)">Use <code style="background:rgba(255,255,255,.15);color:#fff">.card-gradient</code> for highlighted panels and feature callouts.</p>
+            <div class="mt-4 flex gap-2">
+              <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">Learn More</button>
+              <button class="btn btn-sm" style="background:#fff;color:#2563EB;border-color:#fff">Get Started</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-dark">
+          <div class="card-header">
+            <div class="card-title text-white">Dark Card</div>
+          </div>
+          <div class="card-body">
+            <p class="text-sm" style="color:#94A3B8">Dark-themed card for contrast sections or code preview areas. Mix with light cards for visual rhythm.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-outline-primary">Action</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           FORM ELEMENTS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Form Elements</div>
+      <div class="component-desc">All native inputs styled and ready. Validate with <code>.is-invalid</code> / <code>.is-valid</code>.</div>
+      <div class="component-demo">
+        <div class="grid-2">
+          <div>
+            <div class="form-group">
+              <label class="form-label form-required">Full Name</label>
+              <input class="form-control" type="text" placeholder="Jane Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label form-required">Email Address</label>
+              <input class="form-control is-invalid" type="email" placeholder="jane@example.com" value="notanemail">
+              <div class="form-error">Please enter a valid email address.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <input class="form-control" type="password" placeholder="Min. 8 characters">
+                <span class="input-addon" style="cursor:pointer">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website URL</label>
+              <div class="input-group">
+                <span class="input-addon">https://</span>
+                <input class="form-control" type="text" placeholder="yoursite.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select class="form-control">
+                <option>Select a role…</option>
+                <option>Admin</option>
+                <option>Editor</option>
+                <option>Viewer</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-control" rows="4" placeholder="Tell us about yourself…"></textarea>
+              <div class="form-hint">Max 200 characters.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Satisfaction (1–10)</label>
+              <input class="form-range" type="range" min="1" max="10" value="7">
+            </div>
+            <div class="form-group">
+              <label class="form-label mb-3">Preferences</label>
+              <div class="flex flex-col gap-2">
+                <label class="form-check"><input type="checkbox" checked><span class="form-check-label">Email notifications</span></label>
+                <label class="form-check"><input type="checkbox"><span class="form-check-label">SMS alerts</span></label>
+                <label class="form-check"><input type="checkbox" checked><span class="form-check-label">Weekly digest</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label mb-3">Plan</label>
+              <div class="flex gap-4">
+                <label class="form-check"><input type="radio" name="plan" checked><span class="form-check-label">Starter</span></label>
+                <label class="form-check"><input type="radio" name="plan"><span class="form-check-label">Pro</span></label>
+                <label class="form-check"><input type="radio" name="plan"><span class="form-check-label">Enterprise</span></label>
+              </div>
+            </div>
+            <div class="flex flex-col gap-3">
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-switch"></span><span class="toggle-label">Enable two-factor auth</span></label>
+              <label class="toggle"><input type="checkbox"><span class="toggle-switch"></span><span class="toggle-label">Dark mode</span></label>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-switch"></span><span class="toggle-label">Public profile</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex gap-3">
+          <button class="btn btn-primary">Save Changes</button>
+          <button class="btn btn-ghost">Cancel</button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           SEARCH BOX
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Search Box</div>
+      <div class="component-desc">Compact and full-width search inputs.</div>
+      <div class="component-demo flex flex-col gap-4">
+        <div class="search-box">
+          <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Quick search…">
+        </div>
+        <div class="search-box search-box-lg w-full">
+          <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search users, orders, or documents…" style="width:100%">
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           TABLE
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Data Table</div>
+      <div class="component-desc">Responsive data tables with avatars, badges, and action buttons.</div>
+      <div class="card mb-6">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Users</div>
+            <div class="card-subtitle">Manage your team members</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="search-box">
+              <svg class="search-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search…" style="width:180px">
+            </div>
+            <button class="btn btn-primary btn-sm">+ Invite</button>
+          </div>
+        </div>
+        <div class="table-wrapper" style="border:none;border-radius:0;box-shadow:none">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><input type="checkbox"></th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Revenue</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><div class="table-avatar"><div class="avatar avatar-sm avatar-gradient">JD</div><div><div class="font-medium text-sm">Jane Doe</div><div class="text-xs text-muted">jane@example.com</div></div></div></td>
+                <td><span class="badge badge-primary">Admin</span></td>
+                <td><span class="badge badge-success badge-dot">Active</span></td>
+                <td class="text-sm text-muted">Jan 12, 2024</td>
+                <td class="font-medium text-sm">$12,400</td>
+                <td><div class="table-actions"><button class="btn btn-ghost btn-icon btn-sm" data-tooltip="Edit"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-ghost btn-icon btn-sm" data-tooltip="Delete" style="color:var(--danger)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><div class="table-avatar"><div class="avatar avatar-sm" style="background:var(--warning-light);color:var(--warning)">AB</div><div><div class="font-medium text-sm">Alex Brown</div><div class="text-xs text-muted">alex@example.com</div></div></div></td>
+                <td><span class="badge badge-secondary">Editor</span></td>
+                <td><span class="badge badge-warning badge-dot">Pending</span></td>
+                <td class="text-sm text-muted">Mar 5, 2024</td>
+                <td class="font-medium text-sm">$8,200</td>
+                <td><div class="table-actions"><button class="btn btn-ghost btn-icon btn-sm"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-ghost btn-icon btn-sm" style="color:var(--danger)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><div class="table-avatar"><div class="avatar avatar-sm" style="background:var(--success-light);color:var(--success)">SK</div><div><div class="font-medium text-sm">Sara Kim</div><div class="text-xs text-muted">sara@example.com</div></div></div></td>
+                <td><span class="badge badge-gray">Viewer</span></td>
+                <td><span class="badge badge-danger badge-dot">Inactive</span></td>
+                <td class="text-sm text-muted">Apr 20, 2024</td>
+                <td class="font-medium text-sm">$3,900</td>
+                <td><div class="table-actions"><button class="btn btn-ghost btn-icon btn-sm"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-ghost btn-icon btn-sm" style="color:var(--danger)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer flex justify-between items-center">
+          <span class="text-sm text-muted">Showing 3 of 128 users</span>
+          <div class="pagination">
+            <div class="page-item disabled">‹</div>
+            <div class="page-item active">1</div>
+            <div class="page-item">2</div>
+            <div class="page-item">3</div>
+            <div class="page-dots">…</div>
+            <div class="page-item">12</div>
+            <div class="page-item">›</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           ACCORDION
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Accordion</div>
+      <div class="component-desc">Collapsible sections. Toggle <code>.open</code> class on <code>.accordion-item</code>.</div>
+      <div class="component-demo">
+        <div class="accordion">
+          <div class="accordion-item open">
+            <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+              What plans do you offer?
+              <span class="accordion-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="accordion-body">
+              We offer Starter, Pro, and Enterprise plans. All plans include core features, with Pro and Enterprise unlocking advanced analytics, team collaboration, and priority support.
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+              Can I cancel anytime?
+              <span class="accordion-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="accordion-body">
+              Yes, you can cancel your subscription at any time from your account settings. You'll retain access until the end of your billing period.
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+              Do you offer a free trial?
+              <span class="accordion-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="accordion-body">
+              Absolutely! Every new account starts with a 14-day free trial of our Pro plan. No credit card required.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           TABS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Tabs</div>
+      <div class="component-desc">Three tab styles: underline (default), pills, and plain underline.</div>
+      <div class="component-demo">
+        <div class="mb-6">
+          <div class="tabs" id="tabs1">
+            <div class="tab-item active" onclick="switchTab('tabs1','t1a')">Overview</div>
+            <div class="tab-item" onclick="switchTab('tabs1','t1b')">Analytics</div>
+            <div class="tab-item" onclick="switchTab('tabs1','t1c')">Reports</div>
+            <div class="tab-item" onclick="switchTab('tabs1','t1d')">Settings</div>
+          </div>
+          <div class="tab-content">
+            <div class="tab-pane active" id="t1a"><p class="text-sm text-muted">Overview content: high-level metrics and summaries for your account.</p></div>
+            <div class="tab-pane" id="t1b"><p class="text-sm text-muted">Analytics content: detailed charts and trend analysis.</p></div>
+            <div class="tab-pane" id="t1c"><p class="text-sm text-muted">Reports content: downloadable reports and data exports.</p></div>
+            <div class="tab-pane" id="t1d"><p class="text-sm text-muted">Settings content: configure your preferences and integrations.</p></div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <div class="tabs tabs-pills" id="tabs2">
+            <div class="tab-item active" onclick="switchTab('tabs2','t2a')">All</div>
+            <div class="tab-item" onclick="switchTab('tabs2','t2b')">Active</div>
+            <div class="tab-item" onclick="switchTab('tabs2','t2c')">Pending</div>
+            <div class="tab-item" onclick="switchTab('tabs2','t2d')">Archived</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           ALERTS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Alerts</div>
+      <div class="component-desc">Status-based notification banners with dismiss support.</div>
+      <div class="component-demo flex flex-col gap-3">
+        <div class="alert alert-primary">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div class="alert-content"><div class="alert-title">Heads up!</div>You have 3 new notifications since your last login.</div>
+          <svg class="alert-close" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="this.closest('.alert').remove()"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div class="alert alert-success">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="alert-content"><div class="alert-title">Changes saved!</div>Your profile has been updated successfully.</div>
+          <svg class="alert-close" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="this.closest('.alert').remove()"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div class="alert alert-warning">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="alert-content"><div class="alert-title">Trial ending soon</div>Your 14-day trial expires in 3 days. Upgrade to keep access.</div>
+          <button class="btn btn-sm btn-warning ml-auto">Upgrade Now</button>
+        </div>
+        <div class="alert alert-danger">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div class="alert-content"><div class="alert-title">Payment failed</div>Your card ending in 4242 was declined. Please update your payment method.</div>
+          <svg class="alert-close" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="this.closest('.alert').remove()"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           PROGRESS BARS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Progress Bars</div>
+      <div class="component-desc">Sizes, colors, and animated shimmer effect built-in.</div>
+      <div class="component-demo flex flex-col gap-5">
+        <div>
+          <div class="progress-label"><span>Storage used</span><span>68%</span></div>
+          <div class="progress"><div class="progress-bar" style="width:68%"></div></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>CPU</span><span>42%</span></div>
+          <div class="progress"><div class="progress-bar success" style="width:42%"></div></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Memory</span><span>81%</span></div>
+          <div class="progress"><div class="progress-bar warning" style="width:81%"></div></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Disk</span><span>94%</span></div>
+          <div class="progress"><div class="progress-bar danger" style="width:94%"></div></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Bandwidth (gradient)</span><span>55%</span></div>
+          <div class="progress progress-lg"><div class="progress-bar gradient" style="width:55%"></div></div>
+        </div>
+        <div class="progress progress-xs"><div class="progress-bar" style="width:35%"></div></div>
+        <div class="progress progress-sm"><div class="progress-bar success" style="width:70%"></div></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           AVATAR
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Avatars</div>
+      <div class="component-desc">User avatars with sizes, colors, and group stacking.</div>
+      <div class="component-demo">
+        <div class="flex items-center gap-4 mb-5">
+          <div class="avatar avatar-xs avatar-gradient">JD</div>
+          <div class="avatar avatar-sm" style="background:var(--warning-light);color:var(--warning)">AB</div>
+          <div class="avatar" style="background:var(--success-light);color:var(--success)">SK</div>
+          <div class="avatar avatar-lg avatar-gradient">MR</div>
+          <div class="avatar avatar-xl" style="background:var(--secondary-light);color:var(--secondary)">TP</div>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="avatar-group">
+            <div class="avatar avatar-sm avatar-gradient">A</div>
+            <div class="avatar avatar-sm" style="background:var(--warning-light);color:var(--warning)">B</div>
+            <div class="avatar avatar-sm" style="background:var(--success-light);color:var(--success)">C</div>
+            <div class="avatar avatar-sm" style="background:var(--secondary-light);color:var(--secondary)">D</div>
+            <div class="avatar avatar-sm bg-gray-200 text-muted">+8</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           MODAL DEMO
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Modal</div>
+      <div class="component-desc">Overlay dialogs. Toggle <code>.open</code> on <code>.modal-overlay</code>.</div>
+      <div class="component-demo">
+        <div class="flex gap-3">
+          <button class="btn btn-primary" onclick="document.getElementById('modal1').classList.add('open')">Open Modal</button>
+          <button class="btn btn-outline-danger" onclick="document.getElementById('modal2').classList.add('open')">Delete Confirm</button>
+        </div>
+      </div>
+
+      <!-- Modal 1 -->
+      <div class="modal-overlay" id="modal1" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title">Edit Profile</div>
+            <button class="modal-close" onclick="document.getElementById('modal1').classList.remove('open')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Display Name</label>
+              <input class="form-control" type="text" value="Jane Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-control" type="email" value="jane@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-control" rows="3">Product designer and full-stack developer.</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="document.getElementById('modal1').classList.remove('open')">Cancel</button>
+            <button class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 2 – Confirm Delete -->
+      <div class="modal-overlay" id="modal2" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="modal modal-sm">
+          <div class="modal-header">
+            <div class="modal-title">Confirm Delete</div>
+            <button class="modal-close" onclick="document.getElementById('modal2').classList.remove('open')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="empty-icon mx-auto" style="background:var(--danger-light);color:var(--danger)">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </div>
+            <div class="empty-title mt-3">Delete this record?</div>
+            <p class="text-sm text-muted">This action cannot be undone. All data associated with this record will be permanently removed.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="document.getElementById('modal2').classList.remove('open')">Cancel</button>
+            <button class="btn btn-danger" onclick="document.getElementById('modal2').classList.remove('open')">Yes, Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           DROPDOWN
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Dropdown Menu</div>
+      <div class="component-desc">Context menus and action menus. Toggle <code>.open</code> on <code>.dropdown-menu</code>.</div>
+      <div class="component-demo flex gap-4">
+        <div class="dropdown">
+          <button class="btn btn-primary" onclick="this.nextElementSibling.classList.toggle('open')">
+            Actions
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-label">Account</div>
+            <a class="dropdown-item" href="#">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profile
+            </a>
+            <a class="dropdown-item" href="#">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41"/></svg>
+              Settings
+            </a>
+            <a class="dropdown-item" href="#">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>
+              Export Data
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item danger" href="#">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-ghost btn-icon" onclick="this.nextElementSibling.classList.toggle('open')">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+          <div class="dropdown-menu right">
+            <a class="dropdown-item" href="#">Edit</a>
+            <a class="dropdown-item" href="#">Duplicate</a>
+            <a class="dropdown-item" href="#">Archive</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item danger" href="#">Delete</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           LIST GROUP
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">List Group</div>
+      <div class="component-desc">Ordered lists of content, settings, or navigation items.</div>
+      <div class="component-demo grid-2">
+        <div class="list-group">
+          <div class="list-group-item">
+            <div class="avatar avatar-sm avatar-gradient">J</div>
+            <div style="flex:1"><div class="font-medium text-sm">Jane Doe</div><div class="text-xs text-muted">Admin</div></div>
+            <span class="badge badge-success badge-dot">Active</span>
+          </div>
+          <div class="list-group-item active">
+            <div class="avatar avatar-sm" style="background:var(--warning-light);color:var(--warning)">A</div>
+            <div style="flex:1"><div class="font-medium text-sm">Alex Brown</div><div class="text-xs" style="color:var(--primary)">Editor</div></div>
+            <span class="badge badge-warning badge-dot">Pending</span>
+          </div>
+          <div class="list-group-item">
+            <div class="avatar avatar-sm" style="background:var(--success-light);color:var(--success)">S</div>
+            <div style="flex:1"><div class="font-medium text-sm">Sara Kim</div><div class="text-xs text-muted">Viewer</div></div>
+            <span class="badge badge-danger badge-dot">Offline</span>
+          </div>
+        </div>
+        <div>
+          <div class="list-group">
+            <div class="list-group-item justify-between">
+              <span class="text-sm">Notifications</span>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-switch"></span></label>
+            </div>
+            <div class="list-group-item justify-between">
+              <span class="text-sm">Dark Mode</span>
+              <label class="toggle"><input type="checkbox"><span class="toggle-switch"></span></label>
+            </div>
+            <div class="list-group-item justify-between">
+              <span class="text-sm">Two-factor Auth</span>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-switch"></span></label>
+            </div>
+            <div class="list-group-item justify-between">
+              <span class="text-sm">Beta Features</span>
+              <label class="toggle"><input type="checkbox"><span class="toggle-switch"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           TIMELINE
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Timeline</div>
+      <div class="component-desc">Activity feeds and audit log components.</div>
+      <div class="component-demo">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">Today, 10:32 AM</div>
+            <div class="timeline-title">Subscription upgraded to Pro</div>
+            <div class="timeline-body">User upgraded from Starter to Pro plan. Billing updated immediately.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot success"></div>
+            <div class="timeline-time">Yesterday, 3:15 PM</div>
+            <div class="timeline-title">Payment processed</div>
+            <div class="timeline-body">$49/month charged to card ending in 4242.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot warning"></div>
+            <div class="timeline-time">Apr 8, 9:00 AM</div>
+            <div class="timeline-title">Login from new device</div>
+            <div class="timeline-body">Sign-in detected from Chrome on Windows in Dhaka, BD.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot danger"></div>
+            <div class="timeline-time">Apr 5, 2:44 PM</div>
+            <div class="timeline-title">Password reset requested</div>
+            <div class="timeline-body">Reset link sent to jane@example.com.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           EMPTY STATE
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Empty State</div>
+      <div class="component-desc">Use when a section has no data to display.</div>
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          </div>
+          <div class="empty-title">No files uploaded yet</div>
+          <div class="empty-text">Upload your first file to get started. Supports PDF, PNG, JPG up to 50MB.</div>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Upload File
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           LOADERS / SKELETONS
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Loaders & Skeletons</div>
+      <div class="component-desc">Spinners for async states; skeletons for content loading.</div>
+      <div class="component-demo">
+        <div class="flex items-center gap-6 mb-6">
+          <div class="spinner spinner-sm"></div>
+          <div class="spinner"></div>
+          <div class="spinner spinner-lg"></div>
+          <div style="background:var(--primary);padding:.75rem;border-radius:var(--radius)"><div class="spinner spinner-white"></div></div>
+        </div>
+        <div class="card p-5" style="max-width:380px">
+          <div class="flex gap-3 items-center mb-4">
+            <div class="skeleton" style="width:44px;height:44px;border-radius:50%;flex-shrink:0"></div>
+            <div style="flex:1">
+              <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px"></div>
+              <div class="skeleton" style="height:12px;width:40%"></div>
+            </div>
+          </div>
+          <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:85%;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:12px;width:70%"></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           CODE BLOCK
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Code Block</div>
+      <div class="component-desc">Display formatted code snippets inline or in panels.</div>
+      <div class="code-block">
+        <span class="code-lang">JS</span>
+<span style="color:#93C5FD">import</span> { SaasKit } <span style="color:#93C5FD">from</span> <span style="color:#86EFAC">'saaskit-ui'</span>;
+
+<span style="color:#93C5FD">const</span> app = <span style="color:#F472B6">new</span> <span style="color:#FCD34D">SaasKit</span>({
+  theme: <span style="color:#86EFAC">'light'</span>,
+  primary: <span style="color:#86EFAC">'#2563EB'</span>,
+  components: [<span style="color:#86EFAC">'Button'</span>, <span style="color:#86EFAC">'Card'</span>, <span style="color:#86EFAC">'Table'</span>],
+});
+
+app.<span style="color:#FCD34D">mount</span>(<span style="color:#86EFAC">'#root'</span>);
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           TYPOGRAPHY SCALE
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Typography Scale</div>
+      <div class="component-desc">All heading levels and text utilities. <code>--font-sans</code> and <code>--font-mono</code> system variables.</div>
+      <div class="component-demo">
+        <h1 class="mb-2">H1 — Page Title (2.25rem / 700)</h1>
+        <h2 class="mb-2">H2 — Section Heading (1.875rem / 700)</h2>
+        <h3 class="mb-2">H3 — Subsection (1.5rem / 600)</h3>
+        <h4 class="mb-2">H4 — Card Title (1.25rem / 600)</h4>
+        <h5 class="mb-2">H5 — Label Header (1.125rem / 600)</h5>
+        <h6 class="mb-4">H6 — Small Header (1rem / 600)</h6>
+        <p class="mb-2 text-muted">Body text (1rem) — The quick brown fox jumps over the lazy dog. Use <code>.text-muted</code> for secondary copy.</p>
+        <p class="text-sm text-muted mb-4">Small text (0.875rem) — Supporting info, timestamps, meta descriptions. Pair with <code>.text-muted</code>.</p>
+        <div class="flex flex-wrap gap-4">
+          <span class="text-primary font-semibold">Primary</span>
+          <span class="text-secondary font-semibold">Secondary</span>
+          <span class="text-success font-semibold">Success</span>
+          <span class="text-warning font-semibold">Warning</span>
+          <span class="text-danger font-semibold">Danger</span>
+          <span class="text-muted">Muted</span>
+          <span class="gradient-text-primary font-bold text-lg">Gradient</span>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           SPACING REFERENCE
+      ══════════════════════════════════════════════ -->
+      <div class="component-title">Spacing & Layout Reference</div>
+      <div class="component-desc">8-point spacing scale via <code>--space-*</code> variables. Use <code>.p-*</code>, <code>.m-*</code>, <code>.px-*</code>, <code>.py-*</code> etc.</div>
+      <div class="component-demo">
+        <div class="flex items-end gap-4 mb-4">
+          <div style="background:var(--primary);height:var(--space-1);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-2);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-3);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-4);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-6);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-8);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-10);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-12);width:60px;border-radius:2px"></div>
+          <div style="background:var(--primary);height:var(--space-16);width:60px;border-radius:2px"></div>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs text-muted">
+          <span>1=4px</span><span>2=8px</span><span>3=12px</span><span>4=16px</span><span>6=24px</span>
+          <span>8=32px</span><span>10=40px</span><span>12=48px</span><span>16=64px</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="divider"></div>
+      <div class="flex justify-between items-center py-4 text-sm text-muted">
+        <div>SaasKit v1.0 — Pure CSS + HTML. Zero dependencies. Copy-paste ready.</div>
+        <div class="flex gap-4">
+          <a href="#" class="text-muted">Docs</a>
+          <a href="#" class="text-muted">GitHub</a>
+          <a href="#" class="text-muted">Changelog</a>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-main -->
+</div><!-- /sidebar-layout -->
+
+<script>
+// Tab switcher
+function switchTab(groupId, paneId) {
+  const group = document.getElementById(groupId);
+  if (!group) return;
+  group.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  // Only switch panes if they exist
+  const pane = document.getElementById(paneId);
+  if (pane) {
+    pane.closest('.card-body, .component-demo, .page-content')?.querySelectorAll?.('.tab-pane')?.forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => { if(p.id && p.id.startsWith(paneId.slice(0,2))) p.classList.remove('active'); });
+    pane.classList.add('active');
+  }
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown')) {
+    document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+  }
+});
+</script>
+</body>
+</html>
