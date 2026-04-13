@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>পেমেন্ট গেটওয়ে ইন্টিগ্রেশন - সম্পূর্ণ নিরাপত্তা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #6c63ff;
+    --text: #e2e8f0;
+    --text-muted: #8899aa;
+    --danger: #ff4757;
+    --success: #00d4aa;
+    --warning: #ffd700;
+    --bkash: #e2136e;
+    --nagad: #f5a623;
+    --rocket: #8b5cf6;
+    --ssl: #1a6dd3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,170,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(108,99,255,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  header {
+    padding: 60px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    padding: 6px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 18px;
+    max-width: 620px;
+    margin: 0 auto 40px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  /* Gateway pills */
+  .gw-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 60px;
+    animation: fadeDown 0.9s ease both;
+  }
+
+  .pill {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 2px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .pill:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .pill-bkash { color: var(--bkash); border-color: var(--bkash); background: rgba(226,19,110,0.08); }
+  .pill-nagad { color: var(--nagad); border-color: var(--nagad); background: rgba(245,166,35,0.08); }
+  .pill-rocket { color: var(--rocket); border-color: var(--rocket); background: rgba(139,92,246,0.08); }
+  .pill-ssl { color: var(--ssl); border-color: var(--ssl); background: rgba(26,109,211,0.08); }
+  .pill-stripe { color: #6772e5; border-color: #6772e5; background: rgba(103,114,229,0.08); }
+
+  /* SECTION */
+  section { margin-bottom: 60px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .section-num {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 18px;
+    transition: border-color 0.3s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover { border-color: rgba(0,212,170,0.3); transform: translateY(-2px); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover::before { opacity: 1; }
+  .card-accent::before { background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+  .card-danger::before { background: linear-gradient(90deg, var(--danger), #ff9a56); }
+  .card-warning::before { background: linear-gradient(90deg, var(--warning), #ff6b35); }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+  }
+
+  /* GATEWAY CARDS */
+  .gw-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  .gw-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+  .gw-bkash { border-color: rgba(226,19,110,0.4); background: rgba(226,19,110,0.05); }
+  .gw-nagad { border-color: rgba(245,166,35,0.4); background: rgba(245,166,35,0.05); }
+  .gw-rocket { border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.05); }
+  .gw-ssl { border-color: rgba(26,109,211,0.4); background: rgba(26,109,211,0.05); }
+
+  .gw-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .gw-bkash .gw-name { color: var(--bkash); }
+  .gw-nagad .gw-name { color: var(--nagad); }
+  .gw-rocket .gw-name { color: var(--rocket); }
+  .gw-ssl .gw-name { color: var(--ssl); }
+
+  .gw-type {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .gw-bkash .gw-type { background: rgba(226,19,110,0.2); color: var(--bkash); }
+  .gw-nagad .gw-type { background: rgba(245,166,35,0.2); color: var(--nagad); }
+  .gw-rocket .gw-type { background: rgba(139,92,246,0.2); color: var(--rocket); }
+  .gw-ssl .gw-type { background: rgba(26,109,211,0.2); color: var(--ssl); }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid #1e2d45;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-label {
+    position: absolute;
+    top: 12px; right: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  pre, code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #a8d8b9;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .k { color: #ff79c6; } /* keyword */
+  .s { color: #f1fa8c; } /* string */
+  .c { color: #6272a4; } /* comment */
+  .v { color: #8be9fd; } /* variable */
+  .f { color: #50fa7b; } /* function */
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .check-ok { background: rgba(0,212,170,0.15); color: var(--accent); }
+  .check-warn { background: rgba(255,215,0,0.15); color: var(--warning); }
+  .check-danger { background: rgba(255,71,87,0.15); color: var(--danger); }
+
+  /* ALERT BOXES */
+  .alert {
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .alert-danger { background: rgba(255,71,87,0.1); border: 1px solid rgba(255,71,87,0.3); }
+  .alert-warning { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.3); }
+  .alert-success { background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.3); }
+  .alert-info { background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0;
+  }
+  .flow-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 130px;
+  }
+  .flow-arrow { color: var(--accent); font-size: 20px; font-weight: 700; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 18px 0;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 50px;
+  }
+  .toc-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .toc ol {
+    counter-reset: toc-counter;
+    list-style: none;
+    columns: 2;
+    column-gap: 24px;
+  }
+  @media (max-width: 600px) { .toc ol { columns: 1; } }
+  .toc ol li {
+    counter-increment: toc-counter;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+    break-inside: avoid;
+  }
+  .toc ol li::before {
+    content: "0" counter(toc-counter) ".";
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    margin-right: 10px;
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 50px 0 30px;
+    color: var(--text-muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+  footer span { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(0,212,170,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,0.2);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    margin: 2px;
+  }
+
+  b, strong { color: var(--text); font-weight: 600; }
+  p { margin-bottom: 12px; color: #c0cdd8; }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 50px 0;
+  }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .highlight-warn { color: var(--warning); font-weight: 600; }
+  .highlight-danger { color: var(--danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="hero-badge">🔐 সম্পূর্ণ নিরাপত্তা গাইড</div>
+    <h1>পেমেন্ট গেটওয়ে ইন্টিগ্রেশন<br><span>নিরাপদ ও সঠিকভাবে</span></h1>
+    <p class="hero-sub">Laravel, PHP ও CodeIgniter প্রজেক্টে bKash, Nagad, Rocket এবং SSLCommerz পেমেন্ট গেটওয়ে ইন্টিগ্রেট করার সম্পূর্ণ গাইড — নিরাপত্তার সর্বোচ্চ মানদণ্ড সহ।</p>
+    <div class="gw-pills">
+      <div class="pill pill-bkash">💰 bKash</div>
+      <div class="pill pill-nagad">🟠 Nagad</div>
+      <div class="pill pill-rocket">🚀 Rocket</div>
+      <div class="pill pill-ssl">🔒 SSLCommerz</div>
+      <div class="pill pill-stripe">💳 Stripe</div>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">📋 বিষয়সূচি</div>
+    <ol>
+      <li>পেমেন্ট গেটওয়ে কীভাবে কাজ করে</li>
+      <li>বাংলাদেশের পেমেন্ট গেটওয়ে পরিচিতি</li>
+      <li>Environment Variables ও Config নিরাপত্তা</li>
+      <li>HTTPS এবং SSL সার্টিফিকেট</li>
+      <li>CSRF ও Webhook যাচাই</li>
+      <li>Database নিরাপত্তা</li>
+      <li>Laravel ইন্টিগ্রেশন কোড উদাহরণ</li>
+      <li>CodeIgniter ইন্টিগ্রেশন</li>
+      <li>ট্রানজেকশন লগিং ও অডিট</li>
+      <li>সিকিউরিটি চেকলিস্ট</li>
+    </ol>
+  </div>
+
+
+  <!-- SECTION 1: HOW IT WORKS -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(0,212,170,0.15);color:var(--accent);">01</div>
+      <h2>পেমেন্ট গেটওয়ে কীভাবে কাজ করে?</h2>
+    </div>
+
+    <div class="card card-accent">
+      <h3>🔄 পেমেন্ট ফ্লো (Payment Flow)</h3>
+      <p>যেকোনো পেমেন্ট গেটওয়ে ইন্টিগ্রেশনে নিচের ধাপগুলো অনুসরণ করা হয়:</p>
+      <div class="flow">
+        <div class="flow-step">ব্যবহারকারী<br>Checkout</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">আপনার Server<br>Order তৈরি</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Gateway-এ<br>Redirect</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">ব্যবহারকারী<br>পেমেন্ট করে</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Callback/<br>Webhook</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">পেমেন্ট<br>যাচাই ✅</div>
+      </div>
+      <div class="alert alert-warning">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>গুরুত্বপূর্ণ:</strong> শুধু Callback/Redirect-এর উপর নির্ভর করবেন না। সবসময় Gateway API-তে সরাসরি পেমেন্ট ভেরিফাই করুন। এটি সবচেয়ে বড় নিরাপত্তা ভুলের একটি।</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: GATEWAYS -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(226,19,110,0.15);color:var(--bkash);">02</div>
+      <h2>বাংলাদেশের পেমেন্ট গেটওয়ে পরিচিতি</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="gw-card gw-bkash">
+        <div class="gw-name">💰 bKash</div>
+        <div class="gw-type">Mobile Banking</div>
+        <ul class="checklist" style="margin-top:0;">
+          <li><div class="check-icon check-ok">✓</div><span>bKash PGW (Payment Gateway) API ব্যবহার করে</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>OAuth2 Token-based Authentication</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Sandbox ও Production আলাদা credentials</span></li>
+          <li><div class="check-icon check-warn">!</div><span>Token মেয়াদ শেষ হলে Refresh করতে হয়</span></li>
+        </ul>
+        <div style="margin-top:14px;">
+          <span class="tag">app_key</span>
+          <span class="tag">app_secret</span>
+          <span class="tag">username</span>
+          <span class="tag">password</span>
+        </div>
+      </div>
+
+      <div class="gw-card gw-nagad">
+        <div class="gw-name">🟠 Nagad</div>
+        <div class="gw-type">Mobile Banking</div>
+        <ul class="checklist" style="margin-top:0;">
+          <li><div class="check-icon check-ok">✓</div><span>Digital Signature (RSA) যাচাই করতে হয়</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Public/Private Key Pair ব্যবহার করে</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Encrypted Payload তৈরি করতে হয়</span></li>
+          <li><div class="check-icon check-warn">!</div><span>Public Key Nagad থেকে নেওয়া হয়</span></li>
+        </ul>
+        <div style="margin-top:14px;">
+          <span class="tag">merchant_id</span>
+          <span class="tag">private_key</span>
+          <span class="tag">public_key</span>
+        </div>
+      </div>
+
+      <div class="gw-card gw-rocket">
+        <div class="gw-name">🚀 Rocket (DBBL)</div>
+        <div class="gw-type">Mobile Banking</div>
+        <ul class="checklist" style="margin-top:0;">
+          <li><div class="check-icon check-ok">✓</div><span>Dutch-Bangla Bank এর সার্ভিস</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>API Key ও Merchant Account দরকার</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>IPN (Instant Payment Notification) সাপোর্ট</span></li>
+          <li><div class="check-icon check-warn">!</div><span>Business account প্রয়োজন</span></li>
+        </ul>
+        <div style="margin-top:14px;">
+          <span class="tag">merchant_number</span>
+          <span class="tag">api_key</span>
+        </div>
+      </div>
+
+      <div class="gw-card gw-ssl">
+        <div class="gw-name">🔒 SSLCommerz</div>
+        <div class="gw-type">Full Payment Gateway</div>
+        <ul class="checklist" style="margin-top:0;">
+          <li><div class="check-icon check-ok">✓</div><span>সব ধরনের পেমেন্ট মেথড সাপোর্ট করে</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>বাংলাদেশে সবচেয়ে জনপ্রিয় গেটওয়ে</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Official PHP SDK পাওয়া যায়</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>IPN ও হ্যাশ যাচাই করা সহজ</span></li>
+        </ul>
+        <div style="margin-top:14px;">
+          <span class="tag">store_id</span>
+          <span class="tag">store_passwd</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 3: ENV SECURITY -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent3);">03</div>
+      <h2>Environment Variables ও Config নিরাপত্তা</h2>
+    </div>
+
+    <div class="alert alert-danger">
+      <div class="alert-icon">🚨</div>
+      <div><strong>কখনো করবেন না:</strong> API Key, Secret, Password সরাসরি কোডে লিখবেন না। GitHub বা যেকোনো Version Control-এ এগুলো push করা হলে আপনার পুরো পেমেন্ট সিস্টেম হ্যাক হতে পারে।</div>
+    </div>
+
+    <div class="card card-accent">
+      <h3>📁 Laravel .env ফাইলে রাখুন</h3>
+      <div class="code-block">
+        <div class="code-label">📄 .env</div>
+        <pre><span class="c"># bKash Credentials</span>
+<span class="v">BKASH_APP_KEY</span>=<span class="s">your_bkash_app_key_here</span>
+<span class="v">BKASH_APP_SECRET</span>=<span class="s">your_bkash_app_secret_here</span>
+<span class="v">BKASH_USERNAME</span>=<span class="s">your_username</span>
+<span class="v">BKASH_PASSWORD</span>=<span class="s">your_password</span>
+<span class="v">BKASH_BASE_URL</span>=<span class="s">https://tokenized.sandbox.bka.sh/v1.2.0-beta</span>
+
+<span class="c"># Nagad Credentials</span>
+<span class="v">NAGAD_MERCHANT_ID</span>=<span class="s">your_merchant_id</span>
+<span class="v">NAGAD_PRIVATE_KEY</span>=<span class="s">your_rsa_private_key_base64</span>
+<span class="v">NAGAD_PUBLIC_KEY</span>=<span class="s">nagad_public_key_base64</span>
+
+<span class="c"># SSLCommerz Credentials</span>
+<span class="v">SSLCOMMERZ_STORE_ID</span>=<span class="s">your_store_id</span>
+<span class="v">SSLCOMMERZ_STORE_PASSWORD</span>=<span class="s">your_store_password</span>
+<span class="v">SSLCOMMERZ_IS_LIVE</span>=<span class="s">false</span></pre>
+      </div>
+
+      <h3>⚙️ Config ফাইলে ব্যবহার করুন</h3>
+      <div class="code-block">
+        <div class="code-label">📄 config/payment.php</div>
+        <pre><span class="k">&lt;?php</span>
+
+<span class="k">return</span> [
+    <span class="s">'bkash'</span> <span class="k">=&gt;</span> [
+        <span class="s">'app_key'</span>     <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'BKASH_APP_KEY'</span>),
+        <span class="s">'app_secret'</span>  <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'BKASH_APP_SECRET'</span>),
+        <span class="s">'username'</span>    <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'BKASH_USERNAME'</span>),
+        <span class="s">'password'</span>    <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'BKASH_PASSWORD'</span>),
+        <span class="s">'base_url'</span>    <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'BKASH_BASE_URL'</span>),
+    ],
+    <span class="s">'sslcommerz'</span> <span class="k">=&gt;</span> [
+        <span class="s">'store_id'</span>       <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'SSLCOMMERZ_STORE_ID'</span>),
+        <span class="s">'store_password'</span> <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'SSLCOMMERZ_STORE_PASSWORD'</span>),
+        <span class="s">'is_live'</span>        <span class="k">=&gt;</span> <span class="f">env</span>(<span class="s">'SSLCOMMERZ_IS_LIVE'</span>, <span class="k">false</span>),
+    ],
+];</pre>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-icon">✅</div>
+        <div><strong>.gitignore এ যোগ করুন:</strong> <code>.env</code> ফাইল সবসময় .gitignore-এ থাকা উচিত। Laravel-এ ডিফল্টভাবেই থাকে, কিন্তু একবার চেক করুন।</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 4: HTTPS -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,215,0,0.15);color:var(--warning);">04</div>
+      <h2>HTTPS এবং SSL সার্টিফিকেট</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-warning">
+        <h3>🌐 HTTPS বাধ্যতামূলক কেন?</h3>
+        <p>সব পেমেন্ট গেটওয়ে (bKash, Nagad, SSLCommerz) Production-এ <strong>HTTPS URL</strong> ছাড়া কাজ করে না। HTTP ব্যবহার করলে পেমেন্ট ডেটা Man-in-the-Middle Attack-এর শিকার হতে পারে।</p>
+        <div class="alert alert-info" style="margin-top:12px;">
+          <div class="alert-icon">💡</div>
+          <div>Let's Encrypt থেকে <strong>বিনামূল্যে</strong> SSL সার্টিফিকেট নিন। অথবা Hosting Panel (cPanel) থেকে সহজেই সেটআপ করুন।</div>
+        </div>
+      </div>
+      <div class="card card-accent">
+        <h3>🔧 Laravel-এ HTTPS Force করুন</h3>
+        <div class="code-block">
+          <pre><span class="c">// AppServiceProvider.php boot() মেথডে</span>
+<span class="k">if</span> (<span class="f">app</span>()-&gt;<span class="f">environment</span>(<span class="s">'production'</span>)) {
+    <span class="v">\URL</span>::<span class="f">forceScheme</span>(<span class="s">'https'</span>);
+}
+
+<span class="c">// .env ফাইলে</span>
+<span class="v">APP_URL</span>=<span class="s">https://yoursite.com</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 5: CSRF & WEBHOOK -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,71,87,0.15);color:var(--danger);">05</div>
+      <h2>CSRF ও Webhook নিরাপত্তা</h2>
+    </div>
+
+    <div class="card card-danger">
+      <h3>🛡️ Webhook Route-এ CSRF Exempt করুন</h3>
+      <p>Gateway-এর Callback/IPN URL-এ CSRF token থাকে না, তাই এটি exclude করতে হবে — কিন্তু অন্য নিরাপত্তা যোগ করতে হবে।</p>
+
+      <div class="code-block">
+        <div class="code-label">📄 Laravel — VerifyCsrfToken.php</div>
+        <pre><span class="k">protected</span> <span class="v">$except</span> = [
+    <span class="s">'payment/bkash/callback'</span>,
+    <span class="s">'payment/sslcommerz/ipn'</span>,
+    <span class="s">'payment/nagad/callback'</span>,
+];</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">🔐 Webhook Signature যাচাই — SSLCommerz</div>
+        <pre><span class="k">public function</span> <span class="f">sslIpn</span>(<span class="v">Request</span> <span class="v">$request</span>)
+{
+    <span class="c">// SSLCommerz Hash Verification</span>
+    <span class="v">$postData</span>       = <span class="v">$request</span>-&gt;<span class="f">all</span>();
+    <span class="v">$receivedHash</span>   = <span class="v">$postData</span>[<span class="s">'verify_sign'</span>];
+    <span class="v">$storePassword</span>  = <span class="f">config</span>(<span class="s">'payment.sslcommerz.store_password'</span>);
+
+    <span class="c">// hash তৈরি করুন</span>
+    <span class="k">unset</span>(<span class="v">$postData</span>[<span class="s">'verify_sign'</span>], <span class="v">$postData</span>[<span class="s">'verify_key'</span>]);
+    <span class="f">ksort</span>(<span class="v">$postData</span>);
+
+    <span class="v">$hashString</span> = <span class="f">md5</span>(<span class="v">$storePassword</span>);
+    <span class="k">foreach</span> (<span class="v">$postData</span> <span class="k">as</span> <span class="v">$key</span> <span class="k">=&gt;</span> <span class="v">$value</span>) {
+        <span class="v">$hashString</span> .= <span class="v">$key</span> . <span class="f">md5</span>(<span class="v">$value</span>);
+    }
+    <span class="v">$generatedHash</span> = <span class="f">md5</span>(<span class="v">$hashString</span>);
+
+    <span class="k">if</span> (<span class="v">$generatedHash</span> !== <span class="v">$receivedHash</span>) {
+        <span class="k">return</span> <span class="f">response</span>()-&gt;<span class="f">json</span>([<span class="s">'error'</span> <span class="k">=&gt;</span> <span class="s">'Invalid signature'</span>], 403);
+    }
+
+    <span class="c">// এখন পেমেন্ট প্রসেস করুন</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="alert alert-danger">
+      <div class="alert-icon">🚨</div>
+      <div><strong>সবচেয়ে বড় ভুল:</strong> Callback পেলেই Order complete করা। সবসময় Gateway-এর API-তে সরাসরি <strong>Query/Verify</strong> করে পেমেন্ট নিশ্চিত করুন।</div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 6: DATABASE -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(0,212,170,0.15);color:var(--accent);">06</div>
+      <h2>Database নিরাপত্তা ও ট্রানজেকশন</h2>
+    </div>
+
+    <div class="card card-accent">
+      <h3>🗄️ Payment Table Schema</h3>
+      <div class="code-block">
+        <div class="code-label">📄 Migration</div>
+        <pre><span class="f">Schema</span>::<span class="f">create</span>(<span class="s">'payment_transactions'</span>, <span class="k">function</span> (<span class="v">Blueprint</span> <span class="v">$table</span>) {
+    <span class="v">$table</span>-&gt;<span class="f">id</span>();
+    <span class="v">$table</span>-&gt;<span class="f">string</span>(<span class="s">'order_id'</span>)-&gt;<span class="f">unique</span>();
+    <span class="v">$table</span>-&gt;<span class="f">string</span>(<span class="s">'gateway'</span>);             <span class="c">// bkash, nagad, sslcommerz</span>
+    <span class="v">$table</span>-&gt;<span class="f">string</span>(<span class="s">'gateway_trx_id'</span>)-&gt;<span class="f">nullable</span>();
+    <span class="v">$table</span>-&gt;<span class="f">decimal</span>(<span class="s">'amount'</span>, 10, 2);
+    <span class="v">$table</span>-&gt;<span class="f">string</span>(<span class="s">'currency'</span>)-&gt;<span class="f">default</span>(<span class="s">'BDT'</span>);
+    <span class="v">$table</span>-&gt;<span class="f">enum</span>(<span class="s">'status'</span>, [<span class="s">'pending'</span>, <span class="s">'success'</span>, <span class="s">'failed'</span>, <span class="s">'cancelled'</span>]);
+    <span class="v">$table</span>-&gt;<span class="f">json</span>(<span class="s">'gateway_response'</span>)-&gt;<span class="f">nullable</span>(); <span class="c">// Full response save করুন</span>
+    <span class="v">$table</span>-&gt;<span class="f">foreignId</span>(<span class="s">'user_id'</span>)-&gt;<span class="f">constrained</span>();
+    <span class="v">$table</span>-&gt;<span class="f">ipAddress</span>(<span class="s">'ip_address'</span>)-&gt;<span class="f">nullable</span>();
+    <span class="v">$table</span>-&gt;<span class="f">timestamp</span>(<span class="s">'paid_at'</span>)-&gt;<span class="f">nullable</span>();
+    <span class="v">$table</span>-&gt;<span class="f">timestamps</span>();
+});</pre>
+      </div>
+
+      <div class="alert alert-warning">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>Double Payment রোধ করুন:</strong> একই order_id দিয়ে দুইবার payment complete হতে না পারে সেটি নিশ্চিত করুন। Database-এ unique constraint এবং code-এ check রাখুন।</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 7: LARAVEL CODE -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent3);">07</div>
+      <h2>Laravel — bKash ইন্টিগ্রেশন উদাহরণ</h2>
+    </div>
+
+    <div class="card card-accent">
+      <h3>📦 Step 1: Token নিন</h3>
+      <div class="code-block">
+        <div class="code-label">📄 BkashService.php</div>
+        <pre><span class="k">class</span> <span class="f">BkashService</span>
+{
+    <span class="k">private</span> <span class="v">$baseUrl</span>;
+    <span class="k">private</span> <span class="v">$token</span>;
+
+    <span class="k">public function</span> <span class="f">__construct</span>()
+    {
+        <span class="v">$this</span>-&gt;<span class="v">baseUrl</span> = <span class="f">config</span>(<span class="s">'payment.bkash.base_url'</span>);
+    }
+
+    <span class="k">public function</span> <span class="f">getToken</span>(): <span class="k">string</span>
+    {
+        <span class="c">// Cache করুন — বারবার token নেওয়া API limit শেষ করে</span>
+        <span class="k">return</span> <span class="f">Cache</span>::<span class="f">remember</span>(<span class="s">'bkash_token'</span>, 3500, <span class="k">function</span> () {
+            <span class="v">$response</span> = <span class="f">Http</span>::<span class="f">withHeaders</span>([
+                <span class="s">'username'</span>   <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.username'</span>),
+                <span class="s">'password'</span>   <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.password'</span>),
+            ])-&gt;<span class="f">post</span>(<span class="v">$this</span>-&gt;<span class="v">baseUrl</span> . <span class="s">'/tokenized/checkout/token/grant'</span>, [
+                <span class="s">'app_key'</span>    <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.app_key'</span>),
+                <span class="s">'app_secret'</span> <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.app_secret'</span>),
+            ]);
+
+            <span class="k">return</span> <span class="v">$response</span>-&gt;<span class="f">json</span>(<span class="s">'id_token'</span>);
+        });
+    }
+
+    <span class="k">public function</span> <span class="f">createPayment</span>(<span class="k">array</span> <span class="v">$data</span>): <span class="k">array</span>
+    {
+        <span class="v">$token</span> = <span class="v">$this</span>-&gt;<span class="f">getToken</span>();
+
+        <span class="v">$response</span> = <span class="f">Http</span>::<span class="f">withHeaders</span>([
+            <span class="s">'Authorization'</span> <span class="k">=&gt;</span> <span class="v">$token</span>,
+            <span class="s">'X-APP-Key'</span>     <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.app_key'</span>),
+        ])-&gt;<span class="f">post</span>(<span class="v">$this</span>-&gt;<span class="v">baseUrl</span> . <span class="s">'/tokenized/checkout/create'</span>, [
+            <span class="s">'mode'</span>           <span class="k">=&gt;</span> <span class="s">'0011'</span>,
+            <span class="s">'payerReference'</span> <span class="k">=&gt;</span> <span class="v">$data</span>[<span class="s">'user_id'</span>],
+            <span class="s">'callbackURL'</span>    <span class="k">=&gt;</span> <span class="f">route</span>(<span class="s">'bkash.callback'</span>),
+            <span class="s">'amount'</span>         <span class="k">=&gt;</span> <span class="v">$data</span>[<span class="s">'amount'</span>],
+            <span class="s">'currency'</span>       <span class="k">=&gt;</span> <span class="s">'BDT'</span>,
+            <span class="s">'intent'</span>         <span class="k">=&gt;</span> <span class="s">'sale'</span>,
+            <span class="s">'merchantInvoiceNumber'</span> <span class="k">=&gt;</span> <span class="v">$data</span>[<span class="s">'order_id'</span>],
+        ]);
+
+        <span class="k">return</span> <span class="v">$response</span>-&gt;<span class="f">json</span>();
+    }
+
+    <span class="k">public function</span> <span class="f">executePayment</span>(<span class="k">string</span> <span class="v">$paymentId</span>): <span class="k">array</span>
+    {
+        <span class="v">$token</span> = <span class="v">$this</span>-&gt;<span class="f">getToken</span>();
+
+        <span class="v">$response</span> = <span class="f">Http</span>::<span class="f">withHeaders</span>([
+            <span class="s">'Authorization'</span> <span class="k">=&gt;</span> <span class="v">$token</span>,
+            <span class="s">'X-APP-Key'</span>     <span class="k">=&gt;</span> <span class="f">config</span>(<span class="s">'payment.bkash.app_key'</span>),
+        ])-&gt;<span class="f">post</span>(<span class="v">$this</span>-&gt;<span class="v">baseUrl</span> . <span class="s">'/tokenized/checkout/execute'</span>, [
+            <span class="s">'paymentID'</span> <span class="k">=&gt;</span> <span class="v">$paymentId</span>,
+        ]);
+
+        <span class="k">return</span> <span class="v">$response</span>-&gt;<span class="f">json</span>();
+    }
+}</pre>
+      </div>
+
+      <h3>📩 Step 2: Callback হ্যান্ডেল করুন (যাচাইসহ)</h3>
+      <div class="code-block">
+        <div class="code-label">📄 PaymentController.php</div>
+        <pre><span class="k">public function</span> <span class="f">bkashCallback</span>(<span class="v">Request</span> <span class="v">$request</span>, <span class="v">BkashService</span> <span class="v">$bkash</span>)
+{
+    <span class="v">$paymentId</span> = <span class="v">$request</span>-&gt;<span class="f">get</span>(<span class="s">'paymentID'</span>);
+    <span class="v">$status</span>    = <span class="v">$request</span>-&gt;<span class="f">get</span>(<span class="s">'status'</span>);
+
+    <span class="k">if</span> (<span class="v">$status</span> !== <span class="s">'success'</span>) {
+        <span class="k">return</span> <span class="f">redirect</span>()-&gt;<span class="f">route</span>(<span class="s">'payment.failed'</span>);
+    }
+
+    <span class="c">// ✅ সবসময় Execute করে যাচাই করুন</span>
+    <span class="v">$result</span> = <span class="v">$bkash</span>-&gt;<span class="f">executePayment</span>(<span class="v">$paymentId</span>);
+
+    <span class="k">if</span> (<span class="v">$result</span>[<span class="s">'statusCode'</span>] !== <span class="s">'0000'</span>) {
+        <span class="f">Log</span>::<span class="f">error</span>(<span class="s">'bKash payment failed'</span>, <span class="v">$result</span>);
+        <span class="k">return</span> <span class="f">redirect</span>()-&gt;<span class="f">route</span>(<span class="s">'payment.failed'</span>);
+    }
+
+    <span class="c">// Double payment চেক করুন</span>
+    <span class="v">$existing</span> = <span class="v">PaymentTransaction</span>::<span class="f">where</span>(<span class="s">'gateway_trx_id'</span>, <span class="v">$result</span>[<span class="s">'trxID'</span>])-&gt;<span class="f">first</span>();
+    <span class="k">if</span> (<span class="v">$existing</span>) {
+        <span class="k">return</span> <span class="f">redirect</span>()-&gt;<span class="f">route</span>(<span class="s">'payment.success'</span>);
+    }
+
+    <span class="c">// DB Transaction ব্যবহার করুন</span>
+    <span class="f">DB</span>::<span class="f">transaction</span>(<span class="k">function</span> () <span class="k">use</span> (<span class="v">$result</span>) {
+        <span class="v">PaymentTransaction</span>::<span class="f">where</span>(<span class="s">'order_id'</span>, <span class="v">$result</span>[<span class="s">'merchantInvoiceNumber'</span>])
+            -&gt;<span class="f">update</span>([
+                <span class="s">'status'</span>           <span class="k">=&gt;</span> <span class="s">'success'</span>,
+                <span class="s">'gateway_trx_id'</span>   <span class="k">=&gt;</span> <span class="v">$result</span>[<span class="s">'trxID'</span>],
+                <span class="s">'gateway_response'</span> <span class="k">=&gt;</span> <span class="f">json_encode</span>(<span class="v">$result</span>),
+                <span class="s">'paid_at'</span>          <span class="k">=&gt;</span> <span class="f">now</span>(),
+            ]);
+        <span class="c">// এখন order fulfill করুন</span>
+    });
+
+    <span class="k">return</span> <span class="f">redirect</span>()-&gt;<span class="f">route</span>(<span class="s">'payment.success'</span>);
+}</pre>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 8: CODEIGNITER -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,107,53,0.15);color:var(--accent2);">08</div>
+      <h2>CodeIgniter — SSLCommerz উদাহরণ</h2>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ CodeIgniter 3/4 এ Config ফাইল</h3>
+      <div class="code-block">
+        <div class="code-label">📄 application/config/payment.php (CI3)</div>
+        <pre><span class="c">// সরাসরি credentials লিখবেন না!</span>
+<span class="c">// .htaccess বা server environment variable ব্যবহার করুন</span>
+
+<span class="v">$config</span>[<span class="s">'sslcommerz_store_id'</span>]  = <span class="f">getenv</span>(<span class="s">'SSLCOMMERZ_STORE_ID'</span>);
+<span class="v">$config</span>[<span class="s">'sslcommerz_password'</span>]   = <span class="f">getenv</span>(<span class="s">'SSLCOMMERZ_STORE_PASSWORD'</span>);
+<span class="v">$config</span>[<span class="s">'sslcommerz_is_live'</span>]   = <span class="f">getenv</span>(<span class="s">'SSLCOMMERZ_IS_LIVE'</span>) === <span class="s">'true'</span>;</pre>
+      </div>
+
+      <h3>🔐 .htaccess এ Environment Variable (Shared Hosting)</h3>
+      <div class="code-block">
+        <div class="code-label">📄 .htaccess</div>
+        <pre><span class="c"># .htaccess এ Environment Variable সেট করুন</span>
+<span class="k">SetEnv</span> <span class="v">SSLCOMMERZ_STORE_ID</span> <span class="s">your_store_id</span>
+<span class="k">SetEnv</span> <span class="v">SSLCOMMERZ_STORE_PASSWORD</span> <span class="s">your_password</span>
+<span class="k">SetEnv</span> <span class="v">SSLCOMMERZ_IS_LIVE</span> <span class="s">false</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">📄 SSLCommerz Payment Initiation (CI4)</div>
+        <pre><span class="k">public function</span> <span class="f">initiatePayment</span>()
+{
+    <span class="v">$post_data</span> = [
+        <span class="s">'store_id'</span>      <span class="k">=&gt;</span> <span class="v">$this</span>-&gt;<span class="v">config</span>-&gt;<span class="f">item</span>(<span class="s">'sslcommerz_store_id'</span>),
+        <span class="s">'store_passwd'</span>  <span class="k">=&gt;</span> <span class="v">$this</span>-&gt;<span class="v">config</span>-&gt;<span class="f">item</span>(<span class="s">'sslcommerz_password'</span>),
+        <span class="s">'total_amount'</span>  <span class="k">=&gt;</span> <span class="v">$amount</span>,
+        <span class="s">'currency'</span>      <span class="k">=&gt;</span> <span class="s">'BDT'</span>,
+        <span class="s">'tran_id'</span>       <span class="k">=&gt;</span> <span class="f">uniqid</span>(<span class="s">'TXN_'</span>), <span class="c">// Unique Order ID</span>
+        <span class="s">'success_url'</span>   <span class="k">=&gt;</span> <span class="f">base_url</span>(<span class="s">'payment/success'</span>),
+        <span class="s">'fail_url'</span>      <span class="k">=&gt;</span> <span class="f">base_url</span>(<span class="s">'payment/fail'</span>),
+        <span class="s">'cancel_url'</span>    <span class="k">=&gt;</span> <span class="f">base_url</span>(<span class="s">'payment/cancel'</span>),
+        <span class="s">'ipn_url'</span>       <span class="k">=&gt;</span> <span class="f">base_url</span>(<span class="s">'payment/ipn'</span>),
+        <span class="c">// Customer Info</span>
+        <span class="s">'cus_name'</span>      <span class="k">=&gt;</span> <span class="f">$this->session->userdata</span>(<span class="s">'name'</span>),
+        <span class="s">'cus_email'</span>     <span class="k">=&gt;</span> <span class="f">$this->session->userdata</span>(<span class="s">'email'</span>),
+    ];
+
+    <span class="c">// SSL API call করুন cURL দিয়ে</span>
+    <span class="v">$direct_api_url</span> = <span class="s">"https://sandbox.sslcommerz.com/gwprocess/v4/api.php"</span>;
+
+    <span class="c">// Response থেকে GatewayPageURL নিয়ে redirect করুন</span>
+    <span class="k">if</span> (<span class="v">$response</span>[<span class="s">'GatewayPageURL'</span>]) {
+        <span class="f">redirect</span>(<span class="v">$response</span>[<span class="s">'GatewayPageURL'</span>]);
+    }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 9: LOGGING -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(0,212,170,0.15);color:var(--accent);">09</div>
+      <h2>ট্রানজেকশন লগিং ও অডিট ট্রেইল</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-accent">
+        <h3>📝 সব Response লগ করুন</h3>
+        <p>প্রতিটি পেমেন্ট API Response — সফল বা ব্যর্থ — সম্পূর্ণভাবে Database-এ সেভ করুন। Dispute বা fraud investigation-এ এটি অপরিহার্য।</p>
+        <div class="code-block">
+          <pre><span class="c">// Laravel Log Facade</span>
+<span class="f">Log</span>::<span class="f">channel</span>(<span class="s">'payment'</span>)-&gt;<span class="f">info</span>(<span class="s">'bKash Response'</span>, [
+    <span class="s">'user_id'</span>    <span class="k">=&gt;</span> <span class="f">auth</span>()-&gt;<span class="f">id</span>(),
+    <span class="s">'ip'</span>         <span class="k">=&gt;</span> <span class="v">$request</span>-&gt;<span class="f">ip</span>(),
+    <span class="s">'response'</span>   <span class="k">=&gt;</span> <span class="v">$result</span>,
+    <span class="s">'timestamp'</span>  <span class="k">=&gt;</span> <span class="f">now</span>(),
+]);</pre>
+        </div>
+      </div>
+      <div class="card card-warning">
+        <h3>🚫 Rate Limiting যোগ করুন</h3>
+        <p>পেমেন্ট Initiation Route-এ Rate Limit দিন যাতে Brute Force বা API abuse ঠেকানো যায়।</p>
+        <div class="code-block">
+          <pre><span class="c">// routes/web.php</span>
+<span class="f">Route</span>::<span class="f">middleware</span>([<span class="s">'throttle:5,1'</span>])
+    -&gt;<span class="f">post</span>(<span class="s">'/payment/initiate'</span>, [
+        <span class="v">PaymentController</span>::<span class="k">class</span>, <span class="s">'initiate'</span>
+    ]);</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 10: CHECKLIST -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,71,87,0.15);color:var(--danger);">10</div>
+      <h2>সম্পূর্ণ নিরাপত্তা চেকলিস্ট ✅</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>🔐 Credential নিরাপত্তা</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-ok">✓</div><span>API Key ও Secret সবসময় <strong>.env</strong> বা Environment Variable-এ রাখুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span><strong>.env</strong> ফাইল GitHub-এ push করবেন না</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Sandbox ও Production credentials আলাদা রাখুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Credentials কখনো Log করবেন না</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Production-এ APP_DEBUG=false করুন</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🌐 নেটওয়ার্ক নিরাপত্তা</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-ok">✓</div><span>সাইটে Valid <strong>SSL Certificate</strong> ইনস্টল করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>HTTP থেকে HTTPS-এ Redirect করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Webhook URL-এ IP Whitelist করুন (যদি Gateway সাপোর্ট করে)</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Gateway API-তে cURL SSL Verification চালু রাখুন</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>💳 Payment যাচাই</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-danger">!</div><span>শুধু Callback-এর উপর নির্ভর করবেন <strong>না</strong></span></li>
+          <li><div class="check-icon check-ok">✓</div><span>সবসময় Gateway API-তে সরাসরি <strong>Verify/Execute</strong> করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Webhook-এর <strong>Hash/Signature</strong> যাচাই করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Double Payment রোধে Unique Transaction ID চেক করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Amount যাচাই করুন — Gateway থেকে আসা amount ও DB-র amount মেলান</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🗄️ Database নিরাপত্তা</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-ok">✓</div><span>সব পেমেন্ট Operation <strong>DB::transaction()</strong>-এর মধ্যে করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Gateway-এর সম্পূর্ণ Response JSON হিসেবে সেভ করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Prepared Statement বা ORM ব্যবহার করুন (SQL Injection ঠেকাতে)</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Payment Status শুধু Backend থেকেই আপডেট হবে</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>📊 লগিং ও মনিটরিং</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-ok">✓</div><span>সব API Request ও Response লগ করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>ব্যর্থ পেমেন্টে Alert পাঠান (Email/SMS)</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>User IP Address ট্র্যাক করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>পেমেন্ট Route-এ Rate Limiting যোগ করুন</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🧪 Testing</h3>
+        <ul class="checklist">
+          <li><div class="check-icon check-ok">✓</div><span>সবসময় প্রথমে <strong>Sandbox/Test Mode</strong>-এ পরীক্ষা করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Failed payment flow পরীক্ষা করুন</span></li>
+          <li><div class="check-icon check-ok">✓</div><span>Network timeout handling পরীক্ষা করুন</span></li>
+          <li><div class="check-icon check-warn">!</div><span>Production-এ Live করার আগে Checklist পুনরায় যাচাই করুন</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- COMPARISON TABLE -->
+  <section>
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent3);">+</div>
+      <h2>গেটওয়ে তুলনা</h2>
+    </div>
+    <div class="card">
+      <div style="overflow-x:auto;">
+        <table>
+          <tr>
+            <th>গেটওয়ে</th>
+            <th>Auth Method</th>
+            <th>Webhook</th>
+            <th>Laravel Package</th>
+            <th>কঠিনত্ব</th>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--bkash)">bKash</strong></td>
+            <td>OAuth2 Token</td>
+            <td>Callback URL</td>
+            <td>Manual / 3rd Party</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--nagad)">Nagad</strong></td>
+            <td>RSA Signature</td>
+            <td>Callback URL</td>
+            <td>Manual</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--rocket)">Rocket</strong></td>
+            <td>API Key</td>
+            <td>IPN URL</td>
+            <td>Manual</td>
+            <td>⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--ssl)">SSLCommerz</strong></td>
+            <td>Store ID + Pass</td>
+            <td>IPN + Hash</td>
+            <td>Official SDK ✅</td>
+            <td>⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#6772e5">Stripe</strong></td>
+            <td>API Key</td>
+            <td>Signed Webhook</td>
+            <td>Official Package ✅</td>
+            <td>⭐</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FINAL ALERT -->
+  <div class="alert alert-success" style="margin-bottom:50px;">
+    <div class="alert-icon">🎯</div>
+    <div>
+      <strong>মূল কথা:</strong> পেমেন্ট ইন্টিগ্রেশনে সবচেয়ে গুরুত্বপূর্ণ হলো — <strong>(১) Credentials নিরাপদ রাখুন</strong>, <strong>(২) সবসময় Gateway API-তে Payment Verify করুন</strong>, <strong>(৩) DB Transaction ব্যবহার করুন</strong>, এবং <strong>(৪) সব কিছু Log করুন</strong>। এই চারটি নিয়ম মানলে ৯০% নিরাপত্তা নিশ্চিত।
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>পেমেন্ট গেটওয়ে নিরাপত্তা গাইড — Laravel · PHP · CodeIgniter</p>
+    <p style="margin-top:8px; font-size:12px;">bKash · Nagad · Rocket · SSLCommerz · Stripe<br>
+    <span>নিরাপদ কোড লিখুন, নিরাপদ পেমেন্ট নিশ্চিত করুন</span> 🔐</p>
+  </div>
+</footer>
+
+</body>
+</html>
