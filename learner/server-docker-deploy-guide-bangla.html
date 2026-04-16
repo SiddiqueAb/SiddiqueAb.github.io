@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel 12 + Inertia + Vue.js — Docker Deploy গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg:#07090f; --bg2:#0d1117; --bg3:#161b27; --card:#1c2333;
+  --border:#2a3449; --accent:#00d4ff; --accent2:#00ff9d; --accent3:#ff6b35;
+  --warn:#ffd166; --danger:#ff4d6d; --text:#e2e8f0; --muted:#8892a4;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Hind Siliguri', sans-serif; font-size: 16px; line-height: 1.7;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,255,157,0.05) 0%, transparent 60%);
+}
+.sidebar {
+  position:fixed; left:0; top:0; bottom:0; width:260px;
+  background:var(--bg2); border-right:1px solid var(--border);
+  overflow-y:auto; z-index:100; padding:0 0 60px;
+}
+.sidebar-logo { padding:24px 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+.logo-icon { display:flex; align-items:center; gap:10px; }
+.logo-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.logo-text { font-size:13px; font-weight:700; color:var(--accent); letter-spacing:2px; text-transform:uppercase; }
+.logo-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+.nav-section { padding:8px 0; }
+.nav-label { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--muted); padding:8px 20px 4px; text-transform:uppercase; }
+.nav-link {
+  display:flex; align-items:center; gap:10px; padding:9px 20px;
+  text-decoration:none; color:var(--muted); font-size:13.5px; font-weight:500;
+  border-left:3px solid transparent; transition:all 0.2s;
+}
+.nav-link:hover, .nav-link.active { color:var(--text); background:rgba(0,212,255,0.06); border-left-color:var(--accent); }
+.step-num {
+  width:20px; height:20px; border-radius:50%; background:var(--bg3);
+  font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  color:var(--accent); flex-shrink:0;
+}
+.main { margin-left:260px; padding:0 44px 80px; position:relative; z-index:1; }
+.hero { padding:60px 0 50px; border-bottom:1px solid var(--border); margin-bottom:48px; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,212,255,0.1); border:1px solid rgba(0,212,255,0.3);
+  padding:5px 14px; border-radius:20px; font-size:12px; color:var(--accent);
+  letter-spacing:1px; text-transform:uppercase; margin-bottom:20px; font-weight:600;
+}
+.hero h1 { font-size:40px; font-weight:700; line-height:1.2; margin-bottom:16px; }
+.hero h1 .hl1 { color:var(--accent); }
+.hero h1 .hl2 { color:var(--accent2); }
+.hero-desc { font-size:17px; color:var(--muted); max-width:600px; margin-bottom:28px; }
+.tech-pills { display:flex; flex-wrap:wrap; gap:10px; }
+.tp { background:var(--bg3); border:1px solid var(--border); padding:6px 14px; border-radius:6px; font-size:13px; color:var(--text); font-weight:500; font-family:'JetBrains Mono',monospace; }
+.tp.b { border-color:rgba(0,212,255,0.4); color:var(--accent); }
+.tp.g { border-color:rgba(0,255,157,0.4); color:var(--accent2); }
+.tp.o { border-color:rgba(255,107,53,0.4); color:var(--accent3); }
+.ov-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:50px; }
+.ov-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; overflow:hidden; }
+.ov-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.ov-card.b::before { background:linear-gradient(90deg,var(--accent),transparent); }
+.ov-card.g::before { background:linear-gradient(90deg,var(--accent2),transparent); }
+.ov-card.o::before { background:linear-gradient(90deg,var(--accent3),transparent); }
+.ov-card.w::before { background:linear-gradient(90deg,var(--warn),transparent); }
+.ov-icon { font-size:28px; margin-bottom:10px; }
+.ov-title { font-size:14px; font-weight:700; margin-bottom:5px; }
+.ov-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+.section { margin-bottom:60px; }
+.section-header { display:flex; align-items:center; gap:14px; margin-bottom:28px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+.section-num {
+  width:38px; height:38px; border-radius:10px; flex-shrink:0;
+  background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,212,255,0.05));
+  border:1px solid rgba(0,212,255,0.3); display:flex; align-items:center; justify-content:center;
+  font-size:16px; font-weight:800; color:var(--accent); font-family:'JetBrains Mono',monospace;
+}
+.section-title { font-size:24px; font-weight:700; line-height:1.2; }
+.section-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+.info-box { border-radius:10px; padding:16px 20px; margin-bottom:20px; font-size:14.5px; display:flex; gap:12px; align-items:flex-start; }
+.info-box .icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.info-box .content { line-height:1.65; }
+.info-box .content strong { display:block; margin-bottom:4px; font-size:12px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
+.ib-blue { background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); }
+.ib-blue .content strong { color:var(--accent); }
+.ib-green { background:rgba(0,255,157,0.08); border:1px solid rgba(0,255,157,0.2); }
+.ib-green .content strong { color:var(--accent2); }
+.ib-warn { background:rgba(255,209,102,0.08); border:1px solid rgba(255,209,102,0.2); }
+.ib-warn .content strong { color:var(--warn); }
+.ib-danger { background:rgba(255,77,109,0.08); border:1px solid rgba(255,77,109,0.2); }
+.ib-danger .content strong { color:var(--danger); }
+.step-card { background:var(--card); border:1px solid var(--border); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+.step-head { display:flex; align-items:center; gap:14px; padding:16px 22px; background:var(--bg3); border-bottom:1px solid var(--border); }
+.sbadge { background:var(--accent); color:var(--bg); font-size:11px; font-weight:800; padding:3px 9px; border-radius:4px; font-family:'JetBrains Mono',monospace; letter-spacing:1px; flex-shrink:0; }
+.sbadge.g { background:var(--accent2); }
+.sbadge.o { background:var(--accent3); }
+.sbadge.w { background:var(--warn); }
+.step-title { font-size:16px; font-weight:600; }
+.step-body { padding:22px; }
+.step-why { background:rgba(0,212,255,0.05); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:16px; font-size:14px; color:var(--muted); }
+.step-why strong { color:var(--accent); font-size:12px; text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:4px; }
+.code-wrap { background:#0d1117; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin:14px 0; }
+.code-head { display:flex; justify-content:space-between; align-items:center; padding:8px 16px; background:var(--bg3); border-bottom:1px solid var(--border); }
+.code-label { font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-size:11px; padding:3px 10px; border-radius:4px; cursor:pointer; transition:all 0.2s; font-family:'JetBrains Mono',monospace; }
+.copy-btn:hover { color:var(--accent); border-color:var(--accent); }
+pre { padding:18px 20px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; color:#e2e8f0; }
+.c { color:#8b949e; font-style:italic; }
+.k { color:#ff9757; }
+.v { color:#7ee787; }
+.t { color:#f97583; }
+.s { color:#a5d6ff; }
+.cmd { color:#79c0ff; }
+.file-tree { background:#0d1117; border:1px solid var(--border); border-radius:8px; padding:18px 20px; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:2; }
+.ft-d { color:var(--accent); font-weight:600; }
+.ft-i { color:var(--accent2); font-weight:600; }
+.ft-c { color:var(--muted); font-style:italic; }
+.info-table { width:100%; border-collapse:collapse; font-size:14px; margin:14px 0; }
+.info-table th { background:var(--bg3); color:var(--muted); font-weight:700; padding:10px 16px; text-align:left; font-size:12px; letter-spacing:1px; text-transform:uppercase; border-bottom:1px solid var(--border); }
+.info-table td { padding:11px 16px; border-bottom:1px solid rgba(42,52,73,0.6); vertical-align:top; }
+.info-table tr:last-child td { border-bottom:none; }
+.info-table td:first-child { font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:13px; }
+.info-table td:nth-child(2) { color:var(--text); }
+.info-table td:nth-child(3) { color:var(--muted); font-size:13px; }
+.checklist { list-style:none; margin:12px 0; }
+.checklist li { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(42,52,73,0.4); font-size:14.5px; }
+.checklist li:last-child { border-bottom:none; }
+.checklist li::before { content:'✓'; color:var(--accent2); font-weight:800; font-size:13px; margin-top:3px; flex-shrink:0; }
+.timeline { position:relative; padding-left:34px; }
+.timeline::before { content:''; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3)); border-radius:2px; }
+.tl-item { position:relative; padding:0 0 24px 16px; }
+.tl-dot { position:absolute; left:-34px; top:4px; width:20px; height:20px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:var(--accent); font-family:'JetBrains Mono',monospace; }
+.tl-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+.tl-desc { font-size:13.5px; color:var(--muted); }
+.progress-bar { position:fixed; top:0; left:0; height:3px; z-index:300; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.1s; width:0%; }
+.menu-btn { display:none; position:fixed; top:16px; left:16px; z-index:200; background:var(--card); border:1px solid var(--border); color:var(--text); width:40px; height:40px; border-radius:8px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+p { margin-bottom:10px; }
+h4 { font-size:16px; font-weight:700; margin:18px 0 10px; color:var(--text); }
+code { background:var(--bg3); padding:2px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:13px; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--bg2); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--accent); }
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:none;}
+  .main{margin-left:0;padding:0 18px 60px;}
+  .hero h1{font-size:26px;}
+  .menu-btn{display:flex;}
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pgbar"></div>
+<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="logo-text">Deploy Guide</div>
+        <div class="logo-sub">Laravel 12 + Docker</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">ভূমিকা</div>
+    <a href="#overview" class="nav-link"><span class="step-num">0</span> ওভারভিউ</a>
+    <a href="#prereq" class="nav-link"><span class="step-num">1</span> Windows টুলস</a>
+    <a href="#structure" class="nav-link"><span class="step-num">2</span> ফোল্ডার স্ট্রাকচার</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Docker ফাইল</div>
+    <a href="#dockerfile" class="nav-link"><span class="step-num">3</span> Dockerfile</a>
+    <a href="#compose" class="nav-link"><span class="step-num">4</span> Docker Compose</a>
+    <a href="#nginx" class="nav-link"><span class="step-num">5</span> Nginx Config</a>
+    <a href="#phpini" class="nav-link"><span class="step-num">6</span> PHP Config</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">সার্ভার সেটআপ</div>
+    <a href="#ssh" class="nav-link"><span class="step-num">7</span> SSH Connect</a>
+    <a href="#docker-install" class="nav-link"><span class="step-num">8</span> Docker Install</a>
+    <a href="#env" class="nav-link"><span class="step-num">9</span> .env Setup</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">ডিপ্লয় ও পরিচালনা</div>
+    <a href="#upload" class="nav-link"><span class="step-num">10</span> কোড আপলোড</a>
+    <a href="#run" class="nav-link"><span class="step-num">11</span> Build &amp; Run</a>
+    <a href="#troubleshoot" class="nav-link"><span class="step-num">12</span> সমস্যা সমাধান</a>
+    <a href="#checklist" class="nav-link"><span class="step-num">✓</span> চেকলিস্ট</a>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><span>●</span> ডেভ সার্ভার ডিপ্লয়মেন্ট গাইড</div>
+  <h1><span class="hl1">Laravel 12</span> + Inertia.js +<br><span class="hl2">Vue.js</span> — Docker দিয়ে Deploy</h1>
+  <p class="hero-desc">Windows ল্যাপটপ থেকে Hetzner VPS-এ সম্পূর্ণ বাংলায় ধাপে ধাপে ডিপ্লয়মেন্ট গাইড। প্রতিটি কমান্ড কেন দিচ্ছি তার বিস্তারিত ব্যাখ্যাসহ।</p>
+  <div class="tech-pills">
+    <span class="tp b">Laravel 12</span>
+    <span class="tp">Inertia.js</span>
+    <span class="tp g">Vue 3</span>
+    <span class="tp b">Docker</span>
+    <span class="tp">Nginx</span>
+    <span class="tp o">PHP 8.3-FPM</span>
+    <span class="tp">MySQL 8</span>
+    <span class="tp">Redis 7</span>
+  </div>
+</div>
+
+<!-- OVERVIEW CARDS -->
+<div id="overview" class="ov-grid">
+  <div class="ov-card b">
+    <div class="ov-icon">🖥️</div>
+    <div class="ov-title">সার্ভার তথ্য</div>
+    <div class="ov-desc">IP: 178.104.78.234<br>User: root | Port: 22<br>OS: Ubuntu 22.04 LTS</div>
+  </div>
+  <div class="ov-card g">
+    <div class="ov-icon">🐳</div>
+    <div class="ov-title">Docker Stack</div>
+    <div class="ov-desc">PHP-FPM 8.3 + Nginx<br>MySQL 8 + Redis 7<br>Docker Compose v2</div>
+  </div>
+  <div class="ov-card o">
+    <div class="ov-icon">⚡</div>
+    <div class="ov-title">সময় লাগবে</div>
+    <div class="ov-desc">প্রথমবার: ~45 মিনিট<br>পরবর্তী deploy: ~5 মিনিট<br>সব step ব্যাখ্যাসহ</div>
+  </div>
+  <div class="ov-card w">
+    <div class="ov-icon">💻</div>
+    <div class="ov-title">Windows থেকে</div>
+    <div class="ov-desc">Git Bash / PowerShell<br>SSH + SCP ব্যবহার<br>Docker Desktop optional</div>
+  </div>
+</div>
+
+<!-- STEP 1: PREREQUISITES -->
+<section id="prereq" class="section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">Windows-এ প্রয়োজনীয় টুলস ইনস্টল করুন</div>
+      <div class="section-sub">Deploy শুরু করার আগে এগুলো থাকতে হবে</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">💡</span>
+    <div class="content">
+      <strong>কেন এই টুলগুলো দরকার?</strong>
+      Windows থেকে Linux সার্ভারে কাজ করতে SSH client দরকার। Git দিয়ে কোড ম্যানেজ করি, Git Bash দেয় Unix-style terminal। Docker Desktop দিয়ে local-এ test করা যায়।
+    </div>
+  </div>
+
+  <table class="info-table">
+    <thead><tr><th>টুল</th><th>কাজ কী করে</th><th>ডাউনলোড</th></tr></thead>
+    <tbody>
+      <tr><td>Git for Windows</td><td>Git Bash terminal + SSH client দেয়, কোড version control করে</td><td>git-scm.com</td></tr>
+      <tr><td>VS Code</td><td>কোড editor, Remote SSH extension দিয়ে সার্ভারে সরাসরি edit করা যায়</td><td>code.visualstudio.com</td></tr>
+      <tr><td>Docker Desktop</td><td>Windows-এ Docker চালানো ও local test করা (optional কিন্তু কাজের)</td><td>docker.com/desktop</td></tr>
+      <tr><td>Windows Terminal</td><td>Multiple tab terminal, Git Bash + PowerShell একসাথে</td><td>Microsoft Store</td></tr>
+      <tr><td>MobaXterm</td><td>GUI দিয়ে SSH + drag-drop file transfer (optional)</td><td>mobaxterm.mobatek.net</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box ib-warn">
+    <span class="icon">⚠️</span>
+    <div class="content">
+      <strong>গুরুত্বপূর্ণ নোট</strong>
+      Git for Windows ইনস্টল করলে "Git Bash" পাওয়া যাবে — এই গাইডের সব কমান্ড এখানেই চলবে। SSH, SCP সব built-in আছে। PowerShell-ও কাজ করে তবে কিছু command আলাদা।
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2: STRUCTURE -->
+<section id="structure" class="section">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">প্রজেক্ট ফোল্ডার স্ট্রাকচার</div>
+      <div class="section-sub">Docker ফাইলগুলো কোথায় কীভাবে রাখবেন</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">📁</span>
+    <div class="content">
+      <strong>কেন এই স্ট্রাকচার?</strong>
+      Docker config ফাইলগুলো (Dockerfile, docker-compose.yml) প্রজেক্টের root-এ রাখলে সবকিছু একসাথে git-এ থাকে এবং যেকোনো সার্ভারে সহজে deploy হয়। <code>docker/</code> folder-এ service-specific config রাখলে পরিষ্কার থাকে।
+    </div>
+  </div>
+
+  <div class="file-tree">
+<span class="ft-d">my-laravel-app/</span>        <span class="ft-c">← আপনার Laravel প্রজেক্ট root</span>
+├── <span class="ft-i">Dockerfile</span>              <span class="ft-c">← PHP-FPM Docker image তৈরির নির্দেশনা</span>
+├── <span class="ft-i">docker-compose.yml</span>      <span class="ft-c">← সব service একসাথে পরিচালনা</span>
+├── <span class="ft-i">.env</span>                    <span class="ft-c">← environment variables (git-এ push করবেন না!)</span>
+├── <span class="ft-i">.env.example</span>            <span class="ft-c">← template (এটা git-এ push করুন)</span>
+├── <span class="ft-i">.dockerignore</span>           <span class="ft-c">← Docker build থেকে কী বাদ দেবে</span>
+│
+├── <span class="ft-d">docker/</span>                 <span class="ft-c">← Docker config ফাইলসমূহ</span>
+│   ├── <span class="ft-d">nginx/</span>
+│   │   └── <span class="ft-i">default.conf</span>       <span class="ft-c">← Nginx web server configuration</span>
+│   └── <span class="ft-d">php/</span>
+│       └── <span class="ft-i">php.ini</span>            <span class="ft-c">← PHP custom settings</span>
+│
+├── <span class="ft-d">app/</span>                    <span class="ft-c">← Laravel Models, Controllers</span>
+├── <span class="ft-d">resources/js/</span>           <span class="ft-c">← Vue 3 + Inertia components</span>
+│   ├── <span class="ft-d">Pages/</span>               <span class="ft-c">← Inertia page components</span>
+│   └── <span class="ft-d">Components/</span>          <span class="ft-c">← Reusable Vue components</span>
+├── <span class="ft-d">public/</span>                 <span class="ft-c">← Web root (Nginx এটা serve করে)</span>
+│   └── <span class="ft-d">build/</span>               <span class="ft-c">← Vite compiled assets (auto-generated)</span>
+└── <span class="ft-d">storage/</span>               <span class="ft-c">← Logs, uploads, cache</span>
+  </div>
+</section>
+
+<!-- STEP 3: DOCKERFILE -->
+<section id="dockerfile" class="section">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title">Dockerfile তৈরি করুন</div>
+      <div class="section-sub">PHP 8.3-FPM + Node.js multi-stage build</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">🐳</span>
+    <div class="content">
+      <strong>Dockerfile কী এবং কেন?</strong>
+      Dockerfile একটি রেসিপি — এটা Docker-কে বলে: "এই PHP version নাও, এই PHP extensions install করো, Composer দিয়ে packages নাও, কোড copy করো।" এর ফলে যেকোনো সার্ভারে হুবহু একই environment তৈরি হয় — "It works on my machine" সমস্যা চিরতরে শেষ।
+    </div>
+  </div>
+
+  <div class="info-box ib-green">
+    <span class="icon">⚡</span>
+    <div class="content">
+      <strong>Multi-Stage Build কেন ব্যবহার করছি?</strong>
+      Stage 1: Node.js দিয়ে Vue/Vite build করি (JS → CSS, compiled JS তৈরি হয়)। Stage 2: PHP-FPM-এ শুধু compiled assets নিয়ে আসি। Final image-এ Node.js থাকে না — image size 700MB থেকে ~200MB হয়!
+    </div>
+  </div>
+
+  <p>প্রজেক্টের root-এ <code>Dockerfile</code> নামে ফাইল তৈরি করুন:</p>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Dockerfile</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># ════════════════════════════════════════════════════</span>
+<span class="c"># STAGE 1: Node.js দিয়ে Frontend Build</span>
+<span class="c"># Vue 3 + Vite → public/build/ folder তৈরি করবে</span>
+<span class="c"># ════════════════════════════════════════════════════</span>
+<span class="t">FROM</span> <span class="v">node:20-alpine</span> <span class="cmd">AS</span> frontend
+
+<span class="t">WORKDIR</span> /app
+
+<span class="c"># package.json আগে copy করি — Docker layer cache ব্যবহার করে</span>
+<span class="c"># কোড না বদলালে npm install বারবার run করতে হবে না (build দ্রুত)</span>
+<span class="t">COPY</span> package*.json ./
+<span class="t">RUN</span> npm ci --frozen-lockfile
+
+<span class="c"># বাকি সব ফাইল copy করি</span>
+<span class="t">COPY</span> . .
+
+<span class="c"># Vite build চালাই — resources/js/* → public/build/ হয়</span>
+<span class="t">RUN</span> npm run build
+
+
+<span class="c"># ════════════════════════════════════════════════════</span>
+<span class="c"># STAGE 2: PHP 8.3-FPM Application</span>
+<span class="c"># Alpine Linux = হালকা, fast, production-ready</span>
+<span class="c"># ════════════════════════════════════════════════════</span>
+<span class="t">FROM</span> <span class="v">php:8.3-fpm-alpine</span>
+
+<span class="c"># System-level dependencies install করি</span>
+<span class="c"># কেন? PHP extensions compile করতে এগুলো দরকার</span>
+<span class="t">RUN</span> apk add --no-cache \
+    git curl unzip libpng-dev libjpeg-turbo-dev \
+    libwebp-dev freetype-dev libzip-dev \
+    oniguruma-dev icu-dev linux-headers shadow
+
+<span class="c"># PHP Extensions install করি</span>
+<span class="c"># pdo_mysql: MySQL connection</span>
+<span class="c"># mbstring: Bengali/Unicode string support</span>
+<span class="c"># gd: Image processing</span>
+<span class="c"># zip: ZIP file handling</span>
+<span class="c"># intl: Internationalization</span>
+<span class="c"># opcache: PHP code caching (performance)</span>
+<span class="t">RUN</span> docker-php-ext-configure gd \
+    --with-freetype --with-jpeg --with-webp \
+  && docker-php-ext-install -j$(nproc) \
+    pdo_mysql mbstring exif pcntl bcmath \
+    gd zip intl opcache
+
+<span class="c"># Redis PHP extension (session/cache এর জন্য)</span>
+<span class="t">RUN</span> pecl install redis && docker-php-ext-enable redis
+
+<span class="c"># Composer (PHP package manager) install</span>
+<span class="t">COPY</span> --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+<span class="t">WORKDIR</span> /var/www/html
+
+<span class="c"># composer.json আগে copy → packages install → তারপর কোড copy</span>
+<span class="c"># এতে কোড বদলালে packages পুনরায় install হয় না (fast build)</span>
+<span class="t">COPY</span> composer*.json ./
+<span class="t">RUN</span> composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-scripts \
+    --no-interaction
+
+<span class="c"># সম্পূর্ণ Laravel project copy করি</span>
+<span class="t">COPY</span> . .
+
+<span class="c"># Stage 1 থেকে compiled Vue/JS assets নিয়ে আসি</span>
+<span class="t">COPY</span> --from=frontend /app/public/build ./public/build
+
+<span class="c"># Production optimization: config, route, view cache করি</span>
+<span class="c"># এতে প্রতিটি request-এ file read কমে — app দ্রুত হয়</span>
+<span class="t">RUN</span> php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache
+
+<span class="c"># storage ও bootstrap/cache এ write permission দিই</span>
+<span class="c"># www-data = Nginx/PHP-FPM এর user</span>
+<span class="t">RUN</span> chown -R www-data:www-data /var/www/html \
+ && chmod -R 775 storage bootstrap/cache
+
+<span class="c"># PHP-FPM 9000 port-এ চলে</span>
+<span class="t">EXPOSE</span> 9000
+<span class="t">CMD</span> ["php-fpm"]</pre>
+  </div>
+
+  <p>এবার <code>.dockerignore</code> ফাইল তৈরি করুন (Docker build দ্রুত হবে):</p>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">.dockerignore</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># এগুলো Docker image-এ যাবে না — image ছোট ও দ্রুত হয়</span>
+.git
+.gitignore
+node_modules
+vendor
+storage/logs/*.log
+.env
+.env.*
+!.env.example
+*.md
+tests/
+docker-compose*.yml
+Dockerfile</pre>
+  </div>
+</section>
+
+<!-- STEP 4: DOCKER COMPOSE -->
+<section id="compose" class="section">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-title">docker-compose.yml তৈরি করুন</div>
+      <div class="section-sub">PHP + Nginx + MySQL + Redis একসাথে পরিচালনা</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">🔗</span>
+    <div class="content">
+      <strong>Docker Compose কেন?</strong>
+      আমাদের app-এ 4টি parts: PHP app, Nginx web server, MySQL database, Redis cache। Docker Compose এদের সবাইকে একটি কমান্ডে (<code>docker compose up -d</code>) চালু করে। এরা নিজেদের নাম দিয়ে ডাকতে পারে (IP মনে রাখতে হয় না)।
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">docker-compose.yml</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="k">version:</span> <span class="s">'3.9'</span>
+
+<span class="k">services:</span>
+
+  <span class="c"># ── PHP Laravel Application ──────────────────────</span>
+  <span class="k">app:</span>
+    <span class="k">build:</span>
+      <span class="k">context:</span> <span class="v">.</span>                   <span class="c"># Dockerfile এই folder-এ আছে</span>
+      <span class="k">dockerfile:</span> <span class="v">Dockerfile</span>
+    <span class="k">container_name:</span> <span class="v">laravel_app</span>
+    <span class="k">restart:</span> <span class="v">unless-stopped</span>          <span class="c"># Server restart হলে auto চালু হবে</span>
+    <span class="k">volumes:</span>
+      <span class="c"># storage host-এ রাখি, container delete হলেও files থাকবে</span>
+      - <span class="v">./storage:/var/www/html/storage</span>
+    <span class="k">environment:</span>
+      - <span class="v">APP_ENV=production</span>
+      - <span class="v">APP_KEY=${APP_KEY}</span>          <span class="c"># .env থেকে নেবে</span>
+      - <span class="v">DB_HOST=mysql</span>               <span class="c"># service নাম = hostname</span>
+      - <span class="v">DB_DATABASE=${DB_DATABASE}</span>
+      - <span class="v">DB_USERNAME=${DB_USERNAME}</span>
+      - <span class="v">DB_PASSWORD=${DB_PASSWORD}</span>
+      - <span class="v">REDIS_HOST=redis</span>
+      - <span class="v">CACHE_DRIVER=redis</span>
+      - <span class="v">SESSION_DRIVER=redis</span>
+    <span class="k">depends_on:</span>
+      <span class="k">mysql:</span>
+        <span class="k">condition:</span> <span class="v">service_healthy</span>  <span class="c"># MySQL ready হলে তারপর start</span>
+      <span class="k">redis:</span>
+        <span class="k">condition:</span> <span class="v">service_started</span>
+    <span class="k">networks:</span>
+      - <span class="v">app-network</span>
+
+  <span class="c"># ── Nginx Web Server ──────────────────────────────</span>
+  <span class="k">nginx:</span>
+    <span class="k">image:</span> <span class="v">nginx:1.25-alpine</span>
+    <span class="k">container_name:</span> <span class="v">laravel_nginx</span>
+    <span class="k">restart:</span> <span class="v">unless-stopped</span>
+    <span class="k">ports:</span>
+      - <span class="s">"80:80"</span>                      <span class="c"># সার্ভারের port 80 → Nginx 80</span>
+      - <span class="s">"443:443"</span>                    <span class="c"># SSL এর জন্য (পরে setup করুন)</span>
+    <span class="k">volumes:</span>
+      <span class="c"># Nginx config mount করি</span>
+      - <span class="v">./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro</span>
+      <span class="c"># Public folder static files serve করতে</span>
+      - <span class="v">./public:/var/www/html/public:ro</span>
+      <span class="c"># Uploaded files serve করতে</span>
+      - <span class="v">./storage/app/public:/var/www/html/storage/app/public:ro</span>
+    <span class="k">depends_on:</span>
+      - <span class="v">app</span>
+    <span class="k">networks:</span>
+      - <span class="v">app-network</span>
+
+  <span class="c"># ── MySQL 8 Database ──────────────────────────────</span>
+  <span class="k">mysql:</span>
+    <span class="k">image:</span> <span class="v">mysql:8.0</span>
+    <span class="k">container_name:</span> <span class="v">laravel_mysql</span>
+    <span class="k">restart:</span> <span class="v">unless-stopped</span>
+    <span class="k">environment:</span>
+      <span class="k">MYSQL_DATABASE:</span> <span class="v">${DB_DATABASE}</span>
+      <span class="k">MYSQL_USER:</span> <span class="v">${DB_USERNAME}</span>
+      <span class="k">MYSQL_PASSWORD:</span> <span class="v">${DB_PASSWORD}</span>
+      <span class="k">MYSQL_ROOT_PASSWORD:</span> <span class="v">${DB_ROOT_PASSWORD}</span>
+    <span class="k">volumes:</span>
+      <span class="c"># Named volume — container delete হলেও data থাকবে!</span>
+      - <span class="v">mysql_data:/var/lib/mysql</span>
+    <span class="k">healthcheck:</span>                      <span class="c"># MySQL ready কিনা check করে</span>
+      <span class="k">test:</span> ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      <span class="k">interval:</span> <span class="v">10s</span>
+      <span class="k">timeout:</span> <span class="v">5s</span>
+      <span class="k">retries:</span> <span class="v">5</span>
+    <span class="k">networks:</span>
+      - <span class="v">app-network</span>
+
+  <span class="c"># ── Redis Cache & Session ─────────────────────────</span>
+  <span class="k">redis:</span>
+    <span class="k">image:</span> <span class="v">redis:7-alpine</span>
+    <span class="k">container_name:</span> <span class="v">laravel_redis</span>
+    <span class="k">restart:</span> <span class="v">unless-stopped</span>
+    <span class="c"># appendonly yes = crash হলেও data recover হবে</span>
+    <span class="k">command:</span> <span class="v">redis-server --appendonly yes</span>
+    <span class="k">volumes:</span>
+      - <span class="v">redis_data:/data</span>
+    <span class="k">networks:</span>
+      - <span class="v">app-network</span>
+
+<span class="c"># Persistent volumes — data সার্ভারে থাকে</span>
+<span class="k">volumes:</span>
+  <span class="k">mysql_data:</span>
+    <span class="k">driver:</span> <span class="v">local</span>
+  <span class="k">redis_data:</span>
+    <span class="k">driver:</span> <span class="v">local</span>
+
+<span class="c"># Internal network — services নিজেদের মধ্যে কথা বলে</span>
+<span class="c"># বাইরে থেকে এই network দেখা যায় না (secure)</span>
+<span class="k">networks:</span>
+  <span class="k">app-network:</span>
+    <span class="k">driver:</span> <span class="v">bridge</span></pre>
+  </div>
+</section>
+
+<!-- STEP 5: NGINX -->
+<section id="nginx" class="section">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div>
+      <div class="section-title">Nginx কনফিগারেশন তৈরি করুন</div>
+      <div class="section-sub">Web server কীভাবে request handle করবে</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">⚡</span>
+    <div class="content">
+      <strong>Nginx কীভাবে কাজ করে?</strong>
+      Browser request করে → Nginx receive করে → Static file (.jpg, .css, .js) হলে নিজেই দিয়ে দেয় (দ্রুত) → PHP (.php) হলে PHP-FPM (app container) এ পাঠায় → PHP process করে → Nginx browser-এ পাঠায়। Inertia.js-এর জন্য সব route index.php-এ যাবে।
+    </div>
+  </div>
+
+  <p>ফাইল তৈরি করুন: <code>docker/nginx/default.conf</code></p>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">docker/nginx/default.conf</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="k">server</span> {
+    <span class="k">listen</span> <span class="v">80</span>;
+    <span class="k">server_name</span> <span class="v">_</span>;  <span class="c"># _ মানে যেকোনো domain/IP accept করবে</span>
+
+    <span class="c"># Laravel-এর public folder = web document root</span>
+    <span class="c"># শুধু এই folder external access পায়</span>
+    <span class="k">root</span> <span class="v">/var/www/html/public</span>;
+    <span class="k">index</span> <span class="v">index.php index.html</span>;
+
+    <span class="c"># File upload maximum size (100MB)</span>
+    <span class="k">client_max_body_size</span> <span class="v">100M</span>;
+
+    <span class="c"># Gzip compression — response ছোট হয়, page দ্রুত load হয়</span>
+    <span class="k">gzip</span> <span class="v">on</span>;
+    <span class="k">gzip_vary</span> <span class="v">on</span>;
+    <span class="k">gzip_min_length</span> <span class="v">1000</span>;
+    <span class="k">gzip_types</span>
+        <span class="v">text/plain text/css text/xml text/javascript</span>
+        <span class="v">application/json application/javascript application/xml+rss</span>
+        <span class="v">application/atom+xml image/svg+xml</span>;
+
+    <span class="c"># Static assets (CSS, JS, images) — browser 1 বছর cache করবে</span>
+    <span class="c"># Vite-generated files content hash-সহ থাকে, cache safe</span>
+    <span class="k">location</span> ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|map)$ {
+        <span class="k">expires</span> <span class="v">1y</span>;
+        <span class="k">add_header</span> <span class="v">Cache-Control "public, immutable"</span>;
+        <span class="k">try_files</span> <span class="v">$uri =404</span>;
+    }
+
+    <span class="c"># Laravel routing — এটাই সবচেয়ে গুরুত্বপূর্ণ line</span>
+    <span class="c"># try_files: file আছে? → দাও। folder আছে? → দাও। নাহলে index.php-এ route করো</span>
+    <span class="c"># Inertia.js এই ভাবেই Vue pages serve করে</span>
+    <span class="k">location</span> / {
+        <span class="k">try_files</span> <span class="v">$uri $uri/ /index.php?$query_string</span>;
+    }
+
+    <span class="c"># PHP files → PHP-FPM (app container) এ পাঠাও</span>
+    <span class="c"># fastcgi_pass app:9000 → 'app' service এর 9000 port</span>
+    <span class="k">location</span> ~ \.php$ {
+        <span class="k">fastcgi_pass</span> <span class="v">app:9000</span>;
+        <span class="k">fastcgi_index</span> <span class="v">index.php</span>;
+        <span class="k">fastcgi_param</span> <span class="v">SCRIPT_FILENAME $realpath_root$fastcgi_script_name</span>;
+        <span class="k">include</span> <span class="v">fastcgi_params</span>;
+        <span class="k">fastcgi_read_timeout</span> <span class="v">300</span>;  <span class="c"># Long-running requests এর জন্য</span>
+        <span class="k">fastcgi_buffer_size</span> <span class="v">128k</span>;
+        <span class="k">fastcgi_buffers</span> <span class="v">4 256k</span>;
+    }
+
+    <span class="c"># Hidden files (.htaccess, .git ইত্যাদি) block করি</span>
+    <span class="k">location</span> ~ /\.(?!well-known).* {
+        <span class="k">deny</span> <span class="v">all</span>;
+        <span class="k">return</span> <span class="v">404</span>;
+    }
+
+    <span class="c"># Security headers — basic protection</span>
+    <span class="k">add_header</span> <span class="v">X-Frame-Options "SAMEORIGIN" always</span>;
+    <span class="k">add_header</span> <span class="v">X-Content-Type-Options "nosniff" always</span>;
+    <span class="k">add_header</span> <span class="v">X-XSS-Protection "1; mode=block" always</span>;
+    <span class="k">add_header</span> <span class="v">Referrer-Policy "strict-origin-when-cross-origin" always</span>;
+
+    <span class="c"># Nginx error/access log</span>
+    <span class="k">error_log</span> <span class="v">/var/log/nginx/error.log</span>;
+    <span class="k">access_log</span> <span class="v">/var/log/nginx/access.log</span>;
+}</pre>
+  </div>
+</section>
+
+<!-- STEP 6: PHP INI -->
+<section id="phpini" class="section">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div>
+      <div class="section-title">PHP Configuration (php.ini)</div>
+      <div class="section-sub">Production-এর জন্য PHP settings optimize করুন</div>
+    </div>
+  </div>
+
+  <p>ফাইল তৈরি করুন: <code>docker/php/php.ini</code></p>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">docker/php/php.ini</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c">; ── Production PHP Settings ──</span>
+
+<span class="c">; Error display বন্ধ (logs-এ যাবে, browser-এ না)</span>
+display_errors = Off
+log_errors = On
+error_log = /var/log/php_errors.log
+
+<span class="c">; Memory limit — Laravel + Vue SSR এর জন্য 256MB ভালো</span>
+memory_limit = 256M
+
+<span class="c">; File upload settings</span>
+upload_max_filesize = 50M
+post_max_size = 55M
+
+<span class="c">; Request timeout</span>
+max_execution_time = 300
+max_input_time = 300
+
+<span class="c">; OPcache — PHP bytecode cache করে, app 3-5x দ্রুত হয়</span>
+opcache.enable = 1
+opcache.memory_consumption = 256
+opcache.max_accelerated_files = 20000
+opcache.revalidate_freq = 0        <span class="c">; Production: 0 (cache always)</span>
+opcache.validate_timestamps = 0    <span class="c">; Production: 0 (faster)</span>
+
+<span class="c">; Date timezone</span>
+date.timezone = Asia/Dhaka</pre>
+  </div>
+
+  <p>এখন Dockerfile-এ php.ini যোগ করতে এই line add করুন (COPY . . এর পর):</p>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Dockerfile-এ যোগ করুন</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># custom php.ini copy করি</span>
+<span class="t">COPY</span> docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini</pre>
+  </div>
+</section>
+
+<!-- STEP 7: SSH -->
+<section id="ssh" class="section">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div>
+      <div class="section-title">সার্ভারে SSH দিয়ে Connect করুন</div>
+      <div class="section-sub">Windows Git Bash থেকে Hetzner VPS-এ ঢুকুন</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-warn">
+    <span class="icon">🔑</span>
+    <div class="content">
+      <strong>নিরাপত্তা সতর্কতা</strong>
+      Root password প্রথম login এর পরেই বদলে ফেলুন। SSH key setup করুন password-এর বদলে। Production server-এ root login বন্ধ করে দেওয়া উচিত।
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Windows: Git Bash বা PowerShell খুলুন</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># SSH দিয়ে সার্ভারে connect করুন</span>
+<span class="c"># -p 22 = SSH port (default 22)</span>
+<span class="cmd">ssh</span> -p 22 root@178.104.78.234
+
+<span class="c"># প্রথমবার এই message আসবে:</span>
+<span class="c"># The authenticity of host '178.104.78.234' can't be established.</span>
+<span class="c"># ECDSA key fingerprint is SHA256:xxxxx</span>
+<span class="c"># Are you sure you want to continue connecting? → "yes" টাইপ করুন</span>
+
+<span class="c"># Password দিন (টাইপ করলে দেখা যাবে না — এটা normal!)</span>
+<span class="c"># Successfully connected হলে দেখবেন: root@ubuntu-server:~#</span></pre>
+  </div>
+
+  <h4>সার্ভারে ঢুকে সিস্টেম আপডেট ও Firewall সেটআপ করুন:</h4>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Server Terminal (Ubuntu 22.04)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># সিস্টেম update করুন — security patch পেতে জরুরি</span>
+<span class="cmd">apt</span> update && apt upgrade -y
+
+<span class="c"># দরকারি tools install করুন</span>
+<span class="cmd">apt</span> install -y curl git wget unzip nano htop ufw fail2ban
+
+<span class="c"># ── Firewall Setup ──</span>
+<span class="c"># শুধু দরকারি ports খুলি — বাকি সব বন্ধ থাকবে</span>
+<span class="cmd">ufw</span> default deny incoming    <span class="c"># সব incoming block</span>
+<span class="cmd">ufw</span> default allow outgoing   <span class="c"># সব outgoing allow</span>
+<span class="cmd">ufw</span> allow 22/tcp              <span class="c"># SSH (এটা না দিলে locked out!)</span>
+<span class="cmd">ufw</span> allow 80/tcp              <span class="c"># HTTP</span>
+<span class="cmd">ufw</span> allow 443/tcp             <span class="c"># HTTPS (SSL)</span>
+<span class="cmd">ufw</span> --force enable            <span class="c"># Firewall চালু করুন</span>
+<span class="cmd">ufw</span> status verbose            <span class="c"># Status দেখুন</span>
+
+<span class="c"># Swap memory তৈরি করুন (VPS-এ RAM কম হলে দরকার)</span>
+<span class="cmd">fallocate</span> -l 2G /swapfile
+<span class="cmd">chmod</span> 600 /swapfile
+<span class="cmd">mkswap</span> /swapfile
+<span class="cmd">swapon</span> /swapfile
+<span class="c"># Boot-এ auto enable করতে:</span>
+<span class="cmd">echo</span> '/swapfile none swap sw 0 0' >> /etc/fstab</pre>
+  </div>
+</section>
+
+<!-- STEP 8: DOCKER INSTALL -->
+<section id="docker-install" class="section">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div>
+      <div class="section-title">সার্ভারে Docker Engine ইনস্টল করুন</div>
+      <div class="section-sub">Official Docker repository থেকে latest version</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-blue">
+    <span class="icon">🐳</span>
+    <div class="content">
+      <strong>Server-এ Docker Desktop লাগবে না</strong>
+      Windows-এ Docker Desktop হলো GUI সহ। Ubuntu server-এ শুধু Docker Engine (CLI) + Docker Compose plugin লাগে। এটা অনেক হালকা এবং production-এর জন্য উপযুক্ত।
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Server Terminal — Docker Official Install</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># পুরনো Docker version থাকলে remove করুন</span>
+<span class="cmd">apt</span> remove -y docker docker-engine docker.io containerd runc 2>/dev/null || true
+
+<span class="c"># ── Step 1: Docker-এর GPG key যোগ করি ──</span>
+<span class="c"># কেন? Download হওয়া packages authentic কিনা verify করতে</span>
+<span class="cmd">curl</span> -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+<span class="c"># ── Step 2: Docker official repository যোগ করি ──</span>
+<span class="cmd">echo</span> "deb [arch=$(dpkg --print-architecture) \
+  signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" \
+  | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+<span class="c"># ── Step 3: Docker install করি ──</span>
+<span class="cmd">apt</span> update
+<span class="cmd">apt</span> install -y \
+  docker-ce \            <span class="c"># Docker Engine</span>
+  docker-ce-cli \        <span class="c"># CLI tools</span>
+  containerd.io \        <span class="c"># Container runtime</span>
+  docker-buildx-plugin \ <span class="c"># Advanced build</span>
+  docker-compose-plugin  <span class="c"># Docker Compose v2</span>
+
+<span class="c"># ── Step 4: Verify ──</span>
+<span class="cmd">docker</span> --version
+<span class="c"># Expected: Docker version 26.x.x, build xxxxxxx</span>
+
+<span class="cmd">docker</span> compose version
+<span class="c"># Expected: Docker Compose version v2.x.x</span>
+
+<span class="c"># ── Step 5: Docker service auto-start enable ──</span>
+<span class="cmd">systemctl</span> enable docker
+<span class="cmd">systemctl</span> start docker
+
+<span class="c"># ── Test: hello-world container চালান ──</span>
+<span class="cmd">docker</span> run --rm hello-world
+<span class="c"># "Hello from Docker!" দেখালে সফল!</span></pre>
+  </div>
+</section>
+
+<!-- STEP 9: ENV -->
+<section id="env" class="section">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <div>
+      <div class="section-title">.env ফাইল সার্ভারে তৈরি করুন</div>
+      <div class="section-sub">Environment variables — database, app key, cache config</div>
+    </div>
+  </div>
+
+  <div class="info-box ib-danger">
+    <span class="icon">🚨</span>
+    <div class="content">
+      <strong>.env ফাইল কখনো Git-এ push করবেন না!</strong>
+      .env-এ database password, APP_KEY, API keys থাকে। এগুলো .gitignore-এ রাখুন। সার্ভারে manually তৈরি করতে হবে। .env.example-এ sample রাখুন (password ছাড়া)।
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Server Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># প্রজেক্টের জন্য folder তৈরি করুন</span>
+<span class="cmd">mkdir</span> -p /var/www/myapp
+<span class="cmd">cd</span> /var/www/myapp
+
+<span class="c"># nano editor দিয়ে .env তৈরি করুন</span>
+<span class="cmd">nano</span> .env
+<span class="c"># নিচের content paste করুন, নিজের values দিন</span>
+<span class="c"># Save: Ctrl+X → Y → Enter</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">.env content (সার্ভারে paste করুন)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># ── Application ──────────────────────────────────</span>
+<span class="k">APP_NAME</span>=<span class="s">"My Laravel App"</span>
+<span class="k">APP_ENV</span>=<span class="v">production</span>
+<span class="k">APP_KEY</span>=<span class="v">base64:GENERATE_THIS_BELOW</span>
+<span class="k">APP_DEBUG</span>=<span class="v">false</span>                    <span class="c"># Production-এ সবসময় false!</span>
+<span class="k">APP_URL</span>=<span class="v">http://178.104.78.234</span>
+<span class="k">APP_TIMEZONE</span>=<span class="v">Asia/Dhaka</span>
+<span class="k">APP_LOCALE</span>=<span class="v">en</span>
+
+<span class="c"># ── Database ──────────────────────────────────────</span>
+<span class="k">DB_CONNECTION</span>=<span class="v">mysql</span>
+<span class="k">DB_HOST</span>=<span class="v">mysql</span>               <span class="c"># docker-compose service নাম</span>
+<span class="k">DB_PORT</span>=<span class="v">3306</span>
+<span class="k">DB_DATABASE</span>=<span class="v">laravel_db</span>
+<span class="k">DB_USERNAME</span>=<span class="v">laravel_user</span>
+<span class="k">DB_PASSWORD</span>=<span class="v">YourStrongPass123!</span>    <span class="c"># শক্তিশালী password দিন</span>
+<span class="k">DB_ROOT_PASSWORD</span>=<span class="v">RootPass456!</span>     <span class="c"># MySQL root password</span>
+
+<span class="c"># ── Cache, Session, Queue ─────────────────────────</span>
+<span class="k">CACHE_STORE</span>=<span class="v">redis</span>
+<span class="k">SESSION_DRIVER</span>=<span class="v">redis</span>
+<span class="k">SESSION_LIFETIME</span>=<span class="v">120</span>
+<span class="k">QUEUE_CONNECTION</span>=<span class="v">redis</span>
+
+<span class="c"># ── Redis ─────────────────────────────────────────</span>
+<span class="k">REDIS_HOST</span>=<span class="v">redis</span>             <span class="c"># docker-compose service নাম</span>
+<span class="k">REDIS_PASSWORD</span>=<span class="v">null</span>
+<span class="k">REDIS_PORT</span>=<span class="v">6379</span>
+
+<span class="c"># ── Mail (পরে configure করুন) ────────────────────</span>
+<span class="k">MAIL_MAILER</span>=<span class="v">log</span>              <span class="c"># এখন log-এ যাবে</span>
+
+<span class="c"># ── Inertia/Vite ─────────────────────────────────</span>
+<span class="k">VITE_APP_NAME</span>=<span class="v">"${APP_NAME}"</span></pre>
+  </div>
+</section>
+
+<!-- STEP 10: UPLOAD -->
+<section id="upload" class="section">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div>
+      <div class="section-title">কোড সার্ভারে পাঠান</div>
+      <div class="section-sub">Git clone বা SCP — দুটো পদ্ধতি</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge">পদ্ধতি A</span>
+      <span class="step-title">Git দিয়ে Clone করুন ✅ সেরা পদ্ধতি</span>
+    </div>
+    <div class="step-body">
+      <div class="step-why">
+        <strong>কেন Git সেরা?</strong>
+        পরবর্তী update-এ শুধু <code>git pull</code> দিলেই হবে। পুরো কোড বারবার upload করতে হবে না। History থাকে, rollback করা যায়।
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Server Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">cd</span> /var/www/myapp
+
+<span class="c"># Public GitHub repo:</span>
+<span class="cmd">git</span> clone https://github.com/yourusername/your-laravel-app.git .
+
+<span class="c"># Private repo (Personal Access Token ব্যবহার করুন):</span>
+<span class="cmd">git</span> clone https://YOUR_TOKEN@github.com/yourusername/your-laravel-app.git .
+<span class="c"># Token তৈরি: GitHub → Settings → Developer settings → Personal access tokens</span>
+
+<span class="c"># Specific branch clone করতে:</span>
+<span class="cmd">git</span> clone -b develop https://github.com/yourusername/repo.git .</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge g">পদ্ধতি B</span>
+      <span class="step-title">SCP দিয়ে Windows থেকে সরাসরি Copy করুন</span>
+    </div>
+    <div class="step-body">
+      <div class="step-why">
+        <strong>কখন ব্যবহার করবেন?</strong>
+        Git repo না থাকলে এই পদ্ধতি ব্যবহার করুন। Windows-এর Git Bash থেকে চালান।
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Windows Git Bash (আপনার PC-তে)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="c"># Windows থেকে সার্ভারে project copy করুন</span>
+<span class="c"># -r = recursive (subfolder সহ)</span>
+<span class="cmd">scp</span> -P 22 -r /c/Users/YourName/projects/my-laravel-app/* \
+    root@178.104.78.234:/var/www/myapp/
+
+<span class="c"># Windows path → Git Bash path:</span>
+<span class="c"># C:\Users\YourName\projects → /c/Users/YourName/projects</span>
+<span class="c"># C:\xampp\htdocs\myapp → /c/xampp/htdocs/myapp</span>
+
+<span class="c"># node_modules ও vendor বাদ দিয়ে copy করতে rsync ব্যবহার করুন:</span>
+<span class="cmd">rsync</span> -avz --progress \
+  --exclude='node_modules' \
+  --exclude='vendor' \
+  --exclude='.env' \
+  -e "ssh -p 22" \
+  /c/Users/YourName/projects/my-laravel-app/ \
+  root@178.104.78.234:/var/www/myapp/</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 11: BUILD AND RUN -->
+<section id="run" class="section">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <div>
+      <div class="section-title">Docker Build করুন এবং Run করুন 🚀</div>
+      <div class="section-sub">সার্ভারে সব container চালু করুন এবং Laravel setup করুন</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot">1</div>
+      <div class="tl-title">প্রজেক্ট ফোল্ডারে যান</div>
+      <div class="tl-desc">সব docker কমান্ড এখান থেকেই দিতে হবে — যেখানে docker-compose.yml আছে</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot">2</div>
+      <div class="tl-title">Docker Image Build করুন</div>
+      <div class="tl-desc">Dockerfile পড়ে image তৈরি করবে। প্রথমবার 5-15 মিনিট লাগতে পারে (internet speed অনুযায়ী)</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot">3</div>
+      <div class="tl-title">সব Container Start করুন</div>
+      <div class="tl-desc">PHP-FPM, Nginx, MySQL, Redis — সব একসাথে -d (background) mode-এ চালু হবে</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot">4</div>
+      <div class="tl-title">APP_KEY Generate করুন</div>
+      <div class="tl-desc">Laravel-এর encryption key — .env-এ যোগ হবে স্বয়ংক্রিয়ভাবে</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot">5</div>
+      <div class="tl-title">Database Migration চালান</div>
+      <div class="tl-desc">সব tables তৈরি হবে MySQL-এ। --force flag production-এ confirm ছাড়া run করে</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot">6</div>
+      <div class="tl-title">Browser-এ Check করুন</div>
+      <div class="tl-desc">http://178.104.78.234 খুললে Laravel + Vue app দেখা যাবে</div>
+    </div>
+  </div>
+
+  <div class="code-wrap" style="margin-top:28px">
+    <div class="code-head"><span class="code-label">Server Terminal — সব কমান্ড একসাথে (ধাপে ধাপে)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="c"># ── প্রজেক্ট folder-এ যান ──────────────────────────</span>
+<span class="cmd">cd</span> /var/www/myapp
+
+<span class="c"># .env.example থেকে .env তৈরি করুন (আগে না করলে)</span>
+<span class="cmd">cp</span> .env.example .env
+<span class="c"># তারপর nano .env দিয়ে সঠিক password/values দিন</span>
+<span class="cmd">nano</span> .env
+
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 1: Docker Image Build ─────────────────────</span>
+<span class="c"># --no-cache = fresh build (পুরনো cache ignore করে)</span>
+<span class="c"># প্রথমবার 10-15 মিনিট লাগতে পারে, OK!</span>
+<span class="cmd">docker</span> compose build --no-cache
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 2: সব Container Start ─────────────────────</span>
+<span class="c"># -d = detached/background mode</span>
+<span class="cmd">docker</span> compose up -d
+
+<span class="c"># Status check — সব "Up" থাকা উচিত</span>
+<span class="cmd">docker</span> compose ps
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 3: APP_KEY Generate ────────────────────────</span>
+<span class="c"># .env-এ APP_KEY খালি থাকলে এটা দিন</span>
+<span class="cmd">docker</span> compose exec app php artisan key:generate
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 4: Database Migration ─────────────────────</span>
+<span class="c"># --force = production-এ confirm ছাড়া run করে</span>
+<span class="cmd">docker</span> compose exec app php artisan migrate --force
+
+<span class="c"># Seeder থাকলে:</span>
+<span class="cmd">docker</span> compose exec app php artisan db:seed --force
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 5: Storage Symbolic Link ──────────────────</span>
+<span class="c"># public/storage → storage/app/public</span>
+<span class="c"># Upload করা files publicly serve করার জন্য দরকার</span>
+<span class="cmd">docker</span> compose exec app php artisan storage:link
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ── STEP 6: Cache Optimize ─────────────────────────</span>
+<span class="c"># Config, Routes, Views cache করি — app দ্রুত হবে</span>
+<span class="cmd">docker</span> compose exec app php artisan config:cache
+<span class="cmd">docker</span> compose exec app php artisan route:cache
+<span class="cmd">docker</span> compose exec app php artisan view:cache
+
+<span class="c">══════════════════════════════════════════════════════</span>
+<span class="c"># ✅ Done! Browser-এ open করুন:</span>
+<span class="c"># http://178.104.78.234</span></pre>
+  </div>
+
+  <div class="info-box ib-green">
+    <span class="icon">🎉</span>
+    <div class="content">
+      <strong>সফল হলে কী দেখবেন?</strong>
+      Browser-এ <code>http://178.104.78.234</code> লিখলে Laravel + Inertia.js + Vue 3 অ্যাপ দেখা যাবে। Nginx request receive করছে, PHP-FPM process করছে, Vue components render হচ্ছে।
+    </div>
+  </div>
+</section>
+
+<!-- STEP 12: TROUBLESHOOT -->
+<section id="troubleshoot" class="section">
+  <div class="section-header">
+    <div class="section-num">12</div>
+    <div>
+      <div class="section-title">সমস্যা সমাধান (Troubleshooting)</div>
+      <div class="section-sub">সাধারণ সমস্যা ও তাদের সমাধান</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge o">সমস্যা 1</span>
+      <span class="step-title">Container start হচ্ছে না / "Exited" দেখাচ্ছে</span>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Debug করুন</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="c"># সব container-এর status দেখুন</span>
+<span class="cmd">docker</span> compose ps -a
+
+<span class="c"># app container-এর সব log দেখুন</span>
+<span class="cmd">docker</span> compose logs app
+
+<span class="c"># Nginx এর log দেখুন</span>
+<span class="cmd">docker</span> compose logs nginx
+
+<span class="c"># MySQL-এর log দেখুন</span>
+<span class="cmd">docker</span> compose logs mysql
+
+<span class="c"># Real-time log follow করুন (Ctrl+C দিয়ে বন্ধ)</span>
+<span class="cmd">docker</span> compose logs -f --tail=50</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge o">সমস্যা 2</span>
+      <span class="step-title">500 Internal Server Error</span>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Fix Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="c"># Storage permission fix (সবচেয়ে common কারণ)</span>
+<span class="cmd">docker</span> compose exec app chmod -R 775 storage bootstrap/cache
+<span class="cmd">docker</span> compose exec app chown -R www-data:www-data storage bootstrap/cache
+
+<span class="c"># Cache clear করুন</span>
+<span class="cmd">docker</span> compose exec app php artisan cache:clear
+<span class="cmd">docker</span> compose exec app php artisan config:clear
+<span class="cmd">docker</span> compose exec app php artisan route:clear
+<span class="cmd">docker</span> compose exec app php artisan view:clear
+
+<span class="c"># Temporarily debug দেখতে .env-এ:</span>
+<span class="c"># APP_DEBUG=true করুন, error দেখুন, আবার false করুন!</span>
+<span class="cmd">docker</span> compose exec app php artisan config:clear</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge o">সমস্যা 3</span>
+      <span class="step-title">Database Connection Failed / SQLSTATE error</span>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Fix Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="c"># MySQL container চলছে কিনা দেখুন</span>
+<span class="cmd">docker</span> compose ps mysql
+
+<span class="c"># MySQL healthy হতে কিছু সময় লাগে — wait করুন</span>
+<span class="cmd">docker</span> compose logs mysql
+
+<span class="c"># .env check করুন:</span>
+<span class="c"># DB_HOST=mysql  ← IP না, service নাম!</span>
+<span class="c"># DB_PASSWORD=YourStrongPass123!</span>
+
+<span class="c"># সব container restart করুন</span>
+<span class="cmd">docker</span> compose down
+<span class="cmd">docker</span> compose up -d
+
+<span class="c"># MySQL-এ সরাসরি ঢুকে check করুন:</span>
+<span class="cmd">docker</span> compose exec mysql mysql -u root -p
+<span class="c"># SHOW DATABASES; → laravel_db দেখা যাওয়া উচিত</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="sbadge o">সমস্যা 4</span>
+      <span class="step-title">Vue/Inertia Page Load হচ্ছে না (Blank page)</span>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-label">Fix Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="c"># public/build folder আছে কিনা দেখুন</span>
+<span class="cmd">docker</span> compose exec app ls -la public/build/
+
+<span class="c"># Browser console-এ error দেখুন (F12 → Console)</span>
+<span class="c"># "Cannot find module" → npm run build হয়নি</span>
+<span class="c"># "404 /build/assets/app-xxx.js" → Vite manifest নেই</span>
+
+<span class="c"># Image rebuild করুন (npm build এ problem থাকলে)</span>
+<span class="cmd">docker</span> compose build --no-cache app
+<span class="cmd">docker</span> compose up -d --no-deps app
+
+<span class="c"># vite.config.js-এ server.host confirm করুন:</span>
+<span class="c"># এবং APP_URL সঠিক আছে কিনা .env-এ দেখুন</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <h4>📌 সার্ভার পরিচালনার দরকারি কমান্ড</h4>
+  <table class="info-table">
+    <thead><tr><th>কমান্ড</th><th>কী করে</th></tr></thead>
+    <tbody>
+      <tr><td>docker compose ps</td><td>সব container-এর status দেখুন</td></tr>
+      <tr><td>docker compose down</td><td>সব container বন্ধ করুন (data থাকবে)</td></tr>
+      <tr><td>docker compose restart nginx</td><td>শুধু Nginx restart করুন</td></tr>
+      <tr><td>docker compose exec app bash</td><td>app container-এর ভেতরে shell খুলুন</td></tr>
+      <tr><td>docker stats</td><td>CPU/RAM/Network usage real-time দেখুন</td></tr>
+      <tr><td>docker system prune -f</td><td>অব্যবহৃত images/containers মুছুন (space খালি)</td></tr>
+      <tr><td>docker compose logs -f app</td><td>app-এর real-time log দেখুন</td></tr>
+    </tbody>
+  </table>
+
+  <h4>🔄 Code Update করতে হলে (পরবর্তী Deploy)</h4>
+  <div class="code-wrap">
+    <div class="code-head"><span class="code-label">Update Script</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cmd">cd</span> /var/www/myapp
+
+<span class="c"># নতুন কোড pull করুন</span>
+<span class="cmd">git</span> pull origin main
+
+<span class="c"># Image rebuild করুন (Dockerfile বা code change হলে)</span>
+<span class="cmd">docker</span> compose build app
+
+<span class="c"># App container replace করুন (zero-downtime না কিন্তু দ্রুত)</span>
+<span class="cmd">docker</span> compose up -d --no-deps --force-recreate app
+
+<span class="c"># নতুন migration থাকলে:</span>
+<span class="cmd">docker</span> compose exec app php artisan migrate --force
+
+<span class="c"># Cache refresh করুন</span>
+<span class="cmd">docker</span> compose exec app php artisan optimize:clear
+<span class="cmd">docker</span> compose exec app php artisan optimize</pre>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section id="checklist" class="section">
+  <div class="section-header">
+    <div class="section-num">✓</div>
+    <div>
+      <div class="section-title">চূড়ান্ত চেকলিস্ট</div>
+      <div class="section-sub">সব ঠিক আছে কিনা নিশ্চিত করুন</div>
+    </div>
+  </div>
+
+  <ul class="checklist">
+    <li>Dockerfile সঠিকভাবে তৈরি — multi-stage build (Node.js + PHP)</li>
+    <li>docker-compose.yml-এ app, nginx, mysql, redis সব service আছে</li>
+    <li>docker/nginx/default.conf এ <code>fastcgi_pass app:9000</code> আছে</li>
+    <li>docker/php/php.ini তৈরি হয়েছে</li>
+    <li>সার্ভারে .env ফাইল তৈরি হয়েছে ও DB credentials সঠিক</li>
+    <li>APP_DEBUG=false (production-এ অবশ্যই)</li>
+    <li><code>docker compose ps</code> দিলে সব container "Up" দেখাচ্ছে</li>
+    <li><code>php artisan migrate</code> সফলভাবে run হয়েছে</li>
+    <li><code>php artisan storage:link</code> তৈরি হয়েছে</li>
+    <li>Browser-এ IP দিলে Laravel + Vue app দেখা যাচ্ছে</li>
+    <li>Firewall চালু — শুধু 22, 80, 443 port খোলা</li>
+  </ul>
+
+  <div class="info-box ib-blue" style="margin-top:24px">
+    <span class="icon">🚀</span>
+    <div class="content">
+      <strong>পরবর্তী পদক্ষেপ (Recommended)</strong>
+      ① Domain name connect করুন → ② Let's Encrypt SSL (HTTPS) → ③ GitHub Actions দিয়ে auto-deploy → ④ Laravel Horizon Queue monitoring → ⑤ Backup script তৈরি করুন
+    </div>
+  </div>
+
+  <div class="info-box ib-green" style="margin-top:16px">
+    <span class="icon">💬</span>
+    <div class="content">
+      <strong>কোনো সমস্যা হলে</strong>
+      <code>docker compose logs -f</code> দিয়ে error দেখুন। Error message copy করে search করুন। Stack Overflow এবং Laravel Documentation অনেক কাজের।
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('pgbar').style.width = p + '%';
+});
+
+// Active nav highlight
+const secs = document.querySelectorAll('section[id], div[id]');
+const links = document.querySelectorAll('.nav-link');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+secs.forEach(s => obs.observe(s));
+
+// Copy button
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.style.color = '#00ff9d';
+    btn.style.borderColor = '#00ff9d';
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>
