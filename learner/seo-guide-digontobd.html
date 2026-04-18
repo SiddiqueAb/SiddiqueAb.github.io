@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO মাস্টারগাইড — digontobd.com | বাংলা টিউটোরিয়াল</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --bg3: #161d30;
+    --card: #1a2238;
+    --card2: #1f2a40;
+    --border: rgba(99,179,237,0.15);
+    --border2: rgba(99,179,237,0.3);
+    --accent: #63b3ed;
+    --accent2: #4fd1c5;
+    --accent3: #f6ad55;
+    --accent4: #fc8181;
+    --accent5: #68d391;
+    --text: #e2e8f0;
+    --text2: #a0aec0;
+    --text3: #718096;
+    --green: #68d391;
+    --orange: #f6ad55;
+    --red: #fc8181;
+    --purple: #b794f4;
+    --pink: #f687b3;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  code, pre, .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1a35 50%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,179,237,0.08) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.3);
+    color: var(--accent);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 18px;
+    color: var(--text2);
+    max-width: 650px;
+    margin: 0 auto 32px;
+  }
+  .domain-pills {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .domain-pill {
+    background: rgba(79,209,197,0.1);
+    border: 1px solid rgba(79,209,197,0.3);
+    color: var(--accent2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; padding: 48px 24px; max-width: 1100px; margin: 0 auto; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky; top: 24px;
+    align-self: start;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .sidebar-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+    padding: 0 8px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text2);
+    text-decoration: none;
+    transition: all .2s;
+    cursor: pointer;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--card); color: var(--accent); }
+  .nav-item.active { background: rgba(99,179,237,0.1); color: var(--accent); border-left: 2px solid var(--accent); }
+  .nav-num {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--text3); min-width: 20px;
+  }
+
+  /* ── CONTENT ── */
+  .content section {
+    margin-bottom: 64px;
+    scroll-margin-top: 32px;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 44px; height: 44px;
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.3);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 24px; font-weight: 700; color: #fff; }
+  .section-subtitle { font-size: 14px; color: var(--text3); margin-top: 2px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 600; color: #fff;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .icon-green { background: rgba(104,211,145,0.15); }
+  .icon-blue { background: rgba(99,179,237,0.15); }
+  .icon-orange { background: rgba(246,173,85,0.15); }
+  .icon-red { background: rgba(252,129,129,0.15); }
+  .icon-purple { background: rgba(183,148,244,0.15); }
+  .icon-teal { background: rgba(79,209,197,0.15); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  p { color: var(--text2); margin-bottom: 12px; }
+  ul, ol { color: var(--text2); padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 6px; }
+  li strong { color: var(--text); }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .code-header {
+    background: var(--card2);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-lang {
+    background: rgba(99,179,237,0.15);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .code-block pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #e2e8f0;
+  }
+  .code-block pre .kw { color: #81a1c1; }
+  .code-block pre .str { color: #a3be8c; }
+  .code-block pre .cm { color: #4c566a; }
+  .code-block pre .tag { color: #88c0d0; }
+  .code-block pre .attr { color: #8fbcbb; }
+  .code-block pre .val { color: #a3be8c; }
+  .code-block pre .fn { color: #88c0d0; }
+  .code-block pre .num { color: #b48ead; }
+  .code-block pre .op { color: #81a1c1; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+  .badge-green { background: rgba(104,211,145,0.15); color: var(--green); }
+  .badge-orange { background: rgba(246,173,85,0.15); color: var(--orange); }
+  .badge-red { background: rgba(252,129,129,0.15); color: var(--red); }
+  .badge-blue { background: rgba(99,179,237,0.15); color: var(--accent); }
+  .badge-purple { background: rgba(183,148,244,0.15); color: var(--purple); }
+
+  /* ── ALERT BOXES ── */
+  .alert {
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 3px solid;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .alert-info { background: rgba(99,179,237,0.08); border-color: var(--accent); color: #90cdf4; }
+  .alert-warning { background: rgba(246,173,85,0.08); border-color: var(--orange); color: #fbd38d; }
+  .alert-success { background: rgba(104,211,145,0.08); border-color: var(--green); color: #9ae6b4; }
+  .alert-danger { background: rgba(252,129,129,0.08); border-color: var(--red); color: #fed7d7; }
+  .alert strong { display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: .5px; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--card2);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px; font-weight: 600;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8px 12px;
+    display: flex; align-items: flex-start; gap: 10px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .checklist li:hover { background: rgba(255,255,255,0.02); }
+  .check-icon { font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+  /* ── STEPS ── */
+  .steps { position: relative; padding-left: 32px; }
+  .steps::before {
+    content:''; position:absolute; left: 10px; top:0; bottom:0;
+    width: 1px; background: var(--border);
+  }
+  .step {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: -26px; top: 8px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99,179,237,0.15);
+  }
+  .step-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+
+  /* ── PERFORMANCE TABLE ── */
+  .perf-bar {
+    height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    transition: width .3s;
+    margin-top: 4px;
+  }
+
+  /* ── TOC ── */
+  .toc-section { padding: 40px 24px; max-width: 1100px; margin: 0 auto; }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .toc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+    display: block;
+  }
+  .toc-card:hover {
+    border-color: var(--border2);
+    background: var(--card2);
+    transform: translateY(-2px);
+  }
+  .toc-card-num { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--accent); margin-bottom: 6px; }
+  .toc-card-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .toc-card-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ── TAG ── */
+  .tag {
+    display: inline-block;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--text2);
+    margin: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+  }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .highlight-green { color: var(--green); font-weight: 600; }
+  .highlight-orange { color: var(--orange); font-weight: 600; }
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  h3 { font-size: 18px; font-weight: 600; color: var(--text); margin: 20px 0 10px; }
+  h4 { font-size: 15px; font-weight: 600; color: var(--text2); margin: 16px 0 8px; }
+
+  .ribbon {
+    background: linear-gradient(90deg, rgba(99,179,237,0.1), rgba(79,209,197,0.1));
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .ribbon-title { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🚀 অ্যাডভান্সড SEO গাইড ২০২৫</div>
+  <h1>digontobd.com-এর জন্য<br><span>সম্পূর্ণ SEO মাস্টারপ্ল্যান</span></h1>
+  <p>সাবডোমেইন-ভিত্তিক মাল্টি-বিজনেস সাইটের জন্য Google-এর ১ নম্বরে আসার কমপ্লিট বাংলা গাইড — Laravel + Vue.js + Shared Hosting</p>
+  <div class="domain-pills">
+    <span class="domain-pill">🌐 digontobd.com</span>
+    <span class="domain-pill">🛒 shop.digontobd.com</span>
+    <span class="domain-pill">🍽️ resto.digontobd.com</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc-section">
+  <div class="toc-grid">
+    <a href="#s1" class="toc-card"><div class="toc-card-num">01</div><div class="toc-card-title">সাবডোমেইন স্ট্র্যাটেজি</div><div class="toc-card-sub">Multi-site architecture</div></a>
+    <a href="#s2" class="toc-card"><div class="toc-card-num">02</div><div class="toc-card-title">On-Page SEO</div><div class="toc-card-sub">Title, Meta, Schema</div></a>
+    <a href="#s3" class="toc-card"><div class="toc-card-num">03</div><div class="toc-card-title">Technical SEO</div><div class="toc-card-sub">Robots, Sitemap, Core Web Vitals</div></a>
+    <a href="#s4" class="toc-card"><div class="toc-card-num">04</div><div class="toc-card-title">Laravel SEO Setup</div><div class="toc-card-sub">Package, Route, SSR</div></a>
+    <a href="#s5" class="toc-card"><div class="toc-card-num">05</div><div class="toc-card-title">Vue SPA + Inertia.js</div><div class="toc-card-sub">SSR migration গাইড</div></a>
+    <a href="#s6" class="toc-card"><div class="toc-card-num">06</div><div class="toc-card-title">Site Speed</div><div class="toc-card-sub">Shared hosting optimize</div></a>
+    <a href="#s7" class="toc-card"><div class="toc-card-num">07</div><div class="toc-card-title">E-commerce SEO</div><div class="toc-card-sub">shop.digontobd.com</div></a>
+    <a href="#s8" class="toc-card"><div class="toc-card-num">08</div><div class="toc-card-title">SaaS/Restaurant SEO</div><div class="toc-card-sub">resto.digontobd.com</div></a>
+    <a href="#s9" class="toc-card"><div class="toc-card-num">09</div><div class="toc-card-title">Link Building</div><div class="toc-card-sub">Backlink strategy</div></a>
+    <a href="#s10" class="toc-card"><div class="toc-card-num">10</div><div class="toc-card-title">Monitoring & Tools</div><div class="toc-card-sub">GSC, Analytics</div></a>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">বিষয়বস্তু</div>
+    <a href="#s1" class="nav-item"><span class="nav-num">01</span> সাবডোমেইন আর্কিটেকচার</a>
+    <a href="#s2" class="nav-item"><span class="nav-num">02</span> On-Page SEO ফান্ডামেন্টালস</a>
+    <a href="#s3" class="nav-item"><span class="nav-num">03</span> Technical SEO</a>
+    <a href="#s4" class="nav-item"><span class="nav-num">04</span> Laravel SEO সেটআপ</a>
+    <a href="#s5" class="nav-item"><span class="nav-num">05</span> Vue SPA → Inertia SSR</a>
+    <a href="#s6" class="nav-item"><span class="nav-num">06</span> Shared Hosting স্পিড</a>
+    <a href="#s7" class="nav-item"><span class="nav-num">07</span> E-commerce SEO</a>
+    <a href="#s8" class="nav-item"><span class="nav-num">08</span> SaaS / Restaurant SEO</a>
+    <a href="#s9" class="nav-item"><span class="nav-num">09</span> Link Building</a>
+    <a href="#s10" class="nav-item"><span class="nav-num">10</span> Monitoring & Tools</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ===== SECTION 1 ===== -->
+    <section id="s1">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div>
+          <div class="section-title">সাবডোমেইন আর্কিটেকচার ও SEO স্ট্র্যাটেজি</div>
+          <div class="section-subtitle">Multi-Business Domain Structure</div>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ গুরুত্বপূর্ণ সিদ্ধান্ত</strong>
+        Google সাবডোমেইনকে আলাদা সাইট হিসেবে বিবেচনা করে। তাই প্রতিটি সাবডোমেইনের SEO আলাদাভাবে করতে হবে। কিন্তু সঠিক ইন্টারলিংকিং করলে সবার মিলে authority শেয়ার হয়।
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-blue">🌐</div>digontobd.com (মেইন)</div>
+          <p>কর্পোরেট/ব্র্যান্ড হোমপেজ। সব বিজনেসের hub। DA বাড়লে সাবডোমেইনেও প্রভাব পড়ে।</p>
+          <ul>
+            <li>Brand keywords টার্গেট করুন</li>
+            <li>About, Blog, Contact রাখুন</li>
+            <li>Authority backlink এখানে বানান</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">🛒</div>shop.digontobd.com</div>
+          <p>E-commerce সাবডোমেইন। Product-specific SEO, structured data, shopping feed দরকার।</p>
+          <ul>
+            <li>Product + category keywords</li>
+            <li>Google Shopping integration</li>
+            <li>Review schema markup</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-orange">🍽️</div>resto.digontobd.com</div>
+          <p>Restaurant Management SaaS। B2B keywords, trial/demo CTA, local SEO দরকার।</p>
+          <ul>
+            <li>SaaS landing page SEO</li>
+            <li>Feature-based keyword targeting</li>
+            <li>Pricing page optimize করুন</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">🔗</div>Cross-domain Linking</div>
+          <p>সব সাবডোমেইন থেকে main domain-এ link দিন। Footer-এ সব domain উল্লেখ রাখুন।</p>
+          <ul>
+            <li>Footer nav-এ সব domain</li>
+            <li>Blog থেকে shop/resto-তে link</li>
+            <li>Rel="canonical" সঠিক রাখুন</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Subdomain SEO Architecture ডায়াগ্রাম</h3>
+      <div class="ribbon">
+        <div class="ribbon-title">🏗️ আর্কিটেকচার প্ল্যান</div>
+        <p style="font-size:14px; color:var(--text2); margin:0;">digontobd.com (Authority Hub) → shop.digontobd.com (E-commerce) + resto.digontobd.com (SaaS) | প্রতিটির আলাদা sitemap, robots.txt, GSC property হবে। Main domain থেকে উভয় সাবডোমেইনে contextual link থাকবে।</p>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>💡 Pro Tip: Google Search Console-এ</strong>
+        digontobd.com, shop.digontobd.com, এবং resto.digontobd.com — তিনটি আলাদা property হিসেবে add করুন। প্রতিটির performance আলাদাভাবে track করতে পারবেন।
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section id="s2">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div>
+          <div class="section-title">On-Page SEO ফান্ডামেন্টালস</div>
+          <div class="section-subtitle">Title Tag, Meta, Heading, Schema, Content</div>
+        </div>
+      </div>
+
+      <h3>Title Tag সঠিকভাবে লেখার নিয়ম</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Domain</th><th>Title Format</th><th>উদাহরণ</th></tr>
+          <tr><td><span class="tag">digontobd.com</span></td><td>Primary KW | Brand</td><td>ডিজিটাল সলিউশন বাংলাদেশ | Digonto BD</td></tr>
+          <tr><td><span class="tag">shop.*</span></td><td>Product | Category | Shop</td><td>স্মার্টফোন কিনুন | ইলেকট্রনিক্স | Digonto Shop</td></tr>
+          <tr><td><span class="tag">resto.*</span></td><td>Feature | Resto Management</td><td>রেস্তোরাঁ ম্যানেজমেন্ট সফটওয়্যার | Resto BD</td></tr>
+        </table>
+      </div>
+
+      <h3>Meta Tags — Laravel Blade টেমপ্লেট</h3>
+      <div class="code-block">
+        <div class="code-header"><span>resources/views/layouts/app.blade.php</span><span class="code-lang">Blade/HTML</span></div>
+        <pre><span class="cm">&lt;!-- SEO Meta Tags --&gt;</span>
+<span class="tag">&lt;title&gt;</span>{{ $seo['title'] ?? config('seo.default_title') }}<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"description"</span> <span class="attr">content=</span><span class="str">"{{ $seo['description'] ?? config('seo.default_description') }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"keywords"</span> <span class="attr">content=</span><span class="str">"{{ $seo['keywords'] ?? '' }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"robots"</span> <span class="attr">content=</span><span class="str">"index, follow"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="str">"canonical"</span> <span class="attr">href=</span><span class="str">"{{ $seo['canonical'] ?? url()->current() }}"</span><span class="tag">&gt;</span>
+
+<span class="cm">&lt;!-- Open Graph --&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:title"</span> <span class="attr">content=</span><span class="str">"{{ $seo['title'] }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:description"</span> <span class="attr">content=</span><span class="str">"{{ $seo['description'] }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:image"</span> <span class="attr">content=</span><span class="str">"{{ $seo['og_image'] ?? asset('img/og-default.jpg') }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:url"</span> <span class="attr">content=</span><span class="str">"{{ url()->current() }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:type"</span> <span class="attr">content=</span><span class="str">"website"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:locale"</span> <span class="attr">content=</span><span class="str">"bn_BD"</span><span class="tag">&gt;</span>
+
+<span class="cm">&lt;!-- Twitter Card --&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"twitter:card"</span> <span class="attr">content=</span><span class="str">"summary_large_image"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"twitter:title"</span> <span class="attr">content=</span><span class="str">"{{ $seo['title'] }}"</span><span class="tag">&gt;</span>
+
+<span class="cm">&lt;!-- Hreflang (বাংলা + ইংরেজি উভয় থাকলে) --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="str">"alternate"</span> <span class="attr">hreflang=</span><span class="str">"bn"</span> <span class="attr">href=</span><span class="str">"{{ url()->current() }}"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="str">"alternate"</span> <span class="attr">hreflang=</span><span class="str">"x-default"</span> <span class="attr">href=</span><span class="str">"{{ url()->current() }}"</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <h3>Schema Markup — JSON-LD</h3>
+      <div class="grid-2">
+        <div class="code-block">
+          <div class="code-header"><span>Organization Schema (main domain)</span><span class="code-lang">JSON-LD</span></div>
+          <pre>{
+  <span class="str">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="str">"@type"</span>: <span class="str">"Organization"</span>,
+  <span class="str">"name"</span>: <span class="str">"Digonto BD"</span>,
+  <span class="str">"url"</span>: <span class="str">"https://digontobd.com"</span>,
+  <span class="str">"logo"</span>: <span class="str">"https://digontobd.com/logo.png"</span>,
+  <span class="str">"contactPoint"</span>: {
+    <span class="str">"@type"</span>: <span class="str">"ContactPoint"</span>,
+    <span class="str">"telephone"</span>: <span class="str">"+880-XXX-XXXXXX"</span>,
+    <span class="str">"contactType"</span>: <span class="str">"customer service"</span>,
+    <span class="str">"areaServed"</span>: <span class="str">"BD"</span>,
+    <span class="str">"availableLanguage"</span>: <span class="str">"Bengali"</span>
+  },
+  <span class="str">"sameAs"</span>: [
+    <span class="str">"https://facebook.com/digontobd"</span>,
+    <span class="str">"https://linkedin.com/company/digontobd"</span>
+  ]
+}</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span>SoftwareApplication Schema (resto)</span><span class="code-lang">JSON-LD</span></div>
+          <pre>{
+  <span class="str">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="str">"@type"</span>: <span class="str">"SoftwareApplication"</span>,
+  <span class="str">"name"</span>: <span class="str">"Resto Manager"</span>,
+  <span class="str">"applicationCategory"</span>: 
+    <span class="str">"BusinessApplication"</span>,
+  <span class="str">"operatingSystem"</span>: <span class="str">"Web Browser"</span>,
+  <span class="str">"offers"</span>: {
+    <span class="str">"@type"</span>: <span class="str">"Offer"</span>,
+    <span class="str">"price"</span>: <span class="str">"0"</span>,
+    <span class="str">"priceCurrency"</span>: <span class="str">"BDT"</span>,
+    <span class="str">"description"</span>: <span class="str">"Free trial"</span>
+  },
+  <span class="str">"aggregateRating"</span>: {
+    <span class="str">"@type"</span>: <span class="str">"AggregateRating"</span>,
+    <span class="str">"ratingValue"</span>: <span class="str">"4.8"</span>,
+    <span class="str">"reviewCount"</span>: <span class="str">"120"</span>
+  }
+}</pre>
+        </div>
+      </div>
+
+      <h3>Heading Structure (H1–H6)</h3>
+      <div class="alert alert-success">
+        <strong>✅ সঠিক নিয়ম</strong>
+        প্রতিটি পেজে একটিমাত্র H1 থাকবে যেখানে primary keyword থাকবে। H2 তে secondary keywords, H3 তে supporting topics। Bangla কন্টেন্টে bangla keywords ব্যবহার করুন।
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span>Heading Hierarchy উদাহরণ (resto homepage)</span><span class="code-lang">HTML</span></div>
+        <pre><span class="tag">&lt;h1&gt;</span>বাংলাদেশে সেরা রেস্তোরাঁ ম্যানেজমেন্ট সফটওয়্যার<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>কেন Resto বেছে নেবেন?<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;h3&gt;</span>অর্ডার ম্যানেজমেন্ট সহজ করুন<span class="tag">&lt;/h3&gt;</span>
+  <span class="tag">&lt;h3&gt;</span>রিয়েল-টাইম রিপোর্টিং<span class="tag">&lt;/h3&gt;</span>
+<span class="tag">&lt;h2&gt;</span>প্রাইসিং প্ল্যান<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h2&gt;</span>কাস্টমার রিভিউ<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h2&gt;</span>প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)<span class="tag">&lt;/h2&gt;</span></pre>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section id="s3">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div>
+          <div class="section-title">Technical SEO — Complete Setup</div>
+          <div class="section-subtitle">Robots.txt, Sitemap, Core Web Vitals, HTTPS</div>
+        </div>
+      </div>
+
+      <h3>robots.txt — প্রতিটি সাবডোমেইনের জন্য আলাদা</h3>
+      <div class="grid-2">
+        <div class="code-block">
+          <div class="code-header"><span>digontobd.com/robots.txt</span><span class="code-lang">robots.txt</span></div>
+          <pre>User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /storage/
+Disallow: /_debugbar/
+Disallow: /telescope/
+
+<span class="cm"># Sitemap location</span>
+Sitemap: https://digontobd.com/sitemap.xml
+Sitemap: https://digontobd.com/sitemap-blog.xml
+
+<span class="cm"># Crawl delay (shared hosting-এ দিন)</span>
+Crawl-delay: 2</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span>shop.digontobd.com/robots.txt</span><span class="code-lang">robots.txt</span></div>
+          <pre>User-agent: *
+Allow: /
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*?sort=*
+Disallow: /*?filter=*
+Disallow: /*?page=*&sort=*
+
+<span class="cm"># Googlebot-এ shopping সব open</span>
+User-agent: Googlebot
+Allow: /products/
+Allow: /categories/
+
+Sitemap: https://shop.digontobd.com/sitemap.xml
+Sitemap: https://shop.digontobd.com/sitemap-products.xml</pre>
+        </div>
+      </div>
+
+      <h3>Dynamic Sitemap — Laravel Route</h3>
+      <div class="code-block">
+        <div class="code-header"><span>app/Http/Controllers/SitemapController.php</span><span class="code-lang">PHP</span></div>
+        <pre><span class="kw">namespace</span> App\Http\Controllers;
+
+<span class="kw">use</span> Illuminate\Http\Response;
+<span class="kw">use</span> App\Models\{Product, Category, BlogPost, Page};
+
+<span class="kw">class</span> <span class="fn">SitemapController</span> <span class="kw">extends</span> Controller
+{
+    <span class="kw">public function</span> <span class="fn">index</span>(): Response
+    {
+        $pages = Page::<span class="fn">where</span>(<span class="str">'is_published'</span>, <span class="num">true</span>)-><span class="fn">get</span>();
+        $posts = BlogPost::<span class="fn">latest</span>()-><span class="fn">published</span>()-><span class="fn">get</span>();
+
+        $content = <span class="fn">view</span>(<span class="str">'sitemap.index'</span>, <span class="fn">compact</span>(<span class="str">'pages'</span>, <span class="str">'posts'</span>));
+        <span class="kw">return</span> <span class="fn">response</span>($content, <span class="num">200</span>)
+            -><span class="fn">header</span>(<span class="str">'Content-Type'</span>, <span class="str">'text/xml'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">products</span>(): Response
+    {
+        <span class="cm">// shop subdomain-এর জন্য</span>
+        $products = Product::<span class="fn">active</span>()-><span class="fn">select</span>([<span class="str">'slug'</span>, <span class="str">'updated_at'</span>])-><span class="fn">get</span>();
+        $categories = Category::<span class="fn">active</span>()-><span class="fn">select</span>([<span class="str">'slug'</span>, <span class="str">'updated_at'</span>])-><span class="fn">get</span>();
+
+        $content = <span class="fn">view</span>(<span class="str">'sitemap.products'</span>, <span class="fn">compact</span>(<span class="str">'products'</span>, <span class="str">'categories'</span>));
+        <span class="kw">return</span> <span class="fn">response</span>($content, <span class="num">200</span>)
+            -><span class="fn">header</span>(<span class="str">'Content-Type'</span>, <span class="str">'text/xml'</span>);
+    }
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>resources/views/sitemap/index.blade.php</span><span class="code-lang">Blade/XML</span></div>
+        <pre><span class="tag">&lt;?xml</span> <span class="attr">version=</span><span class="str">"1.0"</span> <span class="attr">encoding=</span><span class="str">"UTF-8"</span><span class="tag">?&gt;</span>
+<span class="tag">&lt;urlset</span> <span class="attr">xmlns=</span><span class="str">"http://www.sitemaps.org/schemas/sitemap/0.9"</span>
+        <span class="attr">xmlns:image=</span><span class="str">"http://www.google.com/schemas/sitemap-image/1.1"</span><span class="tag">&gt;</span>
+@foreach($pages <span class="kw">as</span> $page)
+<span class="tag">&lt;url&gt;</span>
+  <span class="tag">&lt;loc&gt;</span>{{ url('/') }}/{{ $page->slug }}<span class="tag">&lt;/loc&gt;</span>
+  <span class="tag">&lt;lastmod&gt;</span>{{ $page->updated_at->toAtomString() }}<span class="tag">&lt;/lastmod&gt;</span>
+  <span class="tag">&lt;changefreq&gt;</span>weekly<span class="tag">&lt;/changefreq&gt;</span>
+  <span class="tag">&lt;priority&gt;</span>0.8<span class="tag">&lt;/priority&gt;</span>
+<span class="tag">&lt;/url&gt;</span>
+@endforeach
+
+@foreach($posts <span class="kw">as</span> $post)
+<span class="tag">&lt;url&gt;</span>
+  <span class="tag">&lt;loc&gt;</span>{{ url('/blog/') }}{{ $post->slug }}<span class="tag">&lt;/loc&gt;</span>
+  <span class="tag">&lt;lastmod&gt;</span>{{ $post->updated_at->toAtomString() }}<span class="tag">&lt;/lastmod&gt;</span>
+  <span class="tag">&lt;changefreq&gt;</span>monthly<span class="tag">&lt;/changefreq&gt;</span>
+  <span class="tag">&lt;priority&gt;</span>0.6<span class="tag">&lt;/priority&gt;</span>
+<span class="tag">&lt;/url&gt;</span>
+@endforeach
+<span class="tag">&lt;/urlset&gt;</span></pre>
+      </div>
+
+      <h3>Core Web Vitals লক্ষ্যমাত্রা</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Metric</th><th>ভালো</th><th>উন্নতি দরকার</th><th>খারাপ</th><th>আপনার লক্ষ্য</th></tr>
+          <tr><td><strong>LCP</strong> (Largest Contentful Paint)</td><td><span class="badge badge-green">≤ 2.5s</span></td><td><span class="badge badge-orange">2.5–4s</span></td><td><span class="badge badge-red">> 4s</span></td><td><span class="badge badge-green">< 2s</span></td></tr>
+          <tr><td><strong>FID/INP</strong> (Interaction to Next Paint)</td><td><span class="badge badge-green">≤ 200ms</span></td><td><span class="badge badge-orange">200–500ms</span></td><td><span class="badge badge-red">> 500ms</span></td><td><span class="badge badge-green">< 150ms</span></td></tr>
+          <tr><td><strong>CLS</strong> (Cumulative Layout Shift)</td><td><span class="badge badge-green">≤ 0.1</span></td><td><span class="badge badge-orange">0.1–0.25</span></td><td><span class="badge badge-red">> 0.25</span></td><td><span class="badge badge-green">< 0.05</span></td></tr>
+          <tr><td><strong>FCP</strong> (First Contentful Paint)</td><td><span class="badge badge-green">≤ 1.8s</span></td><td><span class="badge badge-orange">1.8–3s</span></td><td><span class="badge badge-red">> 3s</span></td><td><span class="badge badge-green">< 1.5s</span></td></tr>
+          <tr><td><strong>TTFB</strong> (Time to First Byte)</td><td><span class="badge badge-green">≤ 800ms</span></td><td><span class="badge badge-orange">800ms–1.8s</span></td><td><span class="badge badge-red">> 1.8s</span></td><td><span class="badge badge-green">< 600ms</span></td></tr>
+        </table>
+      </div>
+
+      <h3>.htaccess — Shared Hosting SEO Settings</h3>
+      <div class="code-block">
+        <div class="code-header"><span>public/.htaccess</span><span class="code-lang">Apache .htaccess</span></div>
+        <pre><span class="cm"># HTTPS Force Redirect</span>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<span class="cm"># WWW ছাড়া canonical URL (non-www preferred)</span>
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+<span class="cm"># Laravel routing</span>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+<span class="cm"># Gzip Compression (Speed boost)</span>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+<span class="cm"># Browser Caching</span>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType text/css "access plus 6 months"
+  ExpiresByType application/javascript "access plus 6 months"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<span class="cm"># Security Headers (SEO + safety)</span>
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+<span class="cm"># Trailing slash redirect (canonical)</span>
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [R=301,L]</pre>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section id="s4">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div>
+          <div class="section-title">Laravel SEO Setup — Package ও Configuration</div>
+          <div class="section-subtitle">artesaos/seotools, spatie/laravel-sitemap</div>
+        </div>
+      </div>
+
+      <h3>SEO Package ইনস্টলেশন</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Terminal</span><span class="code-lang">Bash</span></div>
+        <pre><span class="cm"># SEO Tools Package</span>
+composer require artesaos/seotools
+
+<span class="cm"># Sitemap Generator</span>
+composer require spatie/laravel-sitemap
+
+<span class="cm"># Image Optimization</span>
+composer require spatie/laravel-image-optimizer
+
+<span class="cm"># Config publish</span>
+php artisan vendor:publish --provider="Artesaos\SEOTools\Providers\SEOToolsServiceProvider"
+
+<span class="cm"># Cache setup</span>
+php artisan config:cache
+php artisan route:cache</pre>
+      </div>
+
+      <h3>SEO Service তৈরি করুন</h3>
+      <div class="code-block">
+        <div class="code-header"><span>app/Services/SeoService.php</span><span class="code-lang">PHP</span></div>
+        <pre><span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> Artesaos\SEOTools\Facades\{SEOMeta, OpenGraph, TwitterCard, JsonLd};
+
+<span class="kw">class</span> <span class="fn">SeoService</span>
+{
+    <span class="kw">public function</span> <span class="fn">setProductSeo</span>(Product $product): <span class="kw">void</span>
+    {
+        SEOMeta::<span class="fn">setTitle</span>($product->name . <span class="str">' | Digonto Shop'</span>);
+        SEOMeta::<span class="fn">setDescription</span>(<span class="fn">substr</span>(<span class="fn">strip_tags</span>($product->description), <span class="num">0</span>, <span class="num">160</span>));
+        SEOMeta::<span class="fn">setKeywords</span>($product->seo_keywords ?? []);
+        SEOMeta::<span class="fn">setCanonical</span>(<span class="fn">route</span>(<span class="str">'product.show'</span>, $product->slug));
+
+        OpenGraph::<span class="fn">setTitle</span>($product->name);
+        OpenGraph::<span class="fn">setDescription</span>($product->short_description);
+        OpenGraph::<span class="fn">addProperty</span>(<span class="str">'type'</span>, <span class="str">'product'</span>);
+        OpenGraph::<span class="fn">addImage</span>($product->image_url);
+
+        <span class="cm">// Product Schema</span>
+        JsonLd::<span class="fn">setType</span>(<span class="str">'Product'</span>);
+        JsonLd::<span class="fn">setTitle</span>($product->name);
+        JsonLd::<span class="fn">addValue</span>(<span class="str">'offers'</span>, [
+            <span class="str">'@type'</span>  => <span class="str">'Offer'</span>,
+            <span class="str">'price'</span> => $product->price,
+            <span class="str">'priceCurrency'</span> => <span class="str">'BDT'</span>,
+            <span class="str">'availability'</span> => $product->in_stock
+                ? <span class="str">'https://schema.org/InStock'</span>
+                : <span class="str">'https://schema.org/OutOfStock'</span>,
+        ]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">setBreadcrumbSchema</span>(<span class="kw">array</span> $items): <span class="kw">void</span>
+    {
+        $listItems = [];
+        <span class="kw">foreach</span> ($items <span class="kw">as</span> $i => $item) {
+            $listItems[] = [
+                <span class="str">'@type'</span>    => <span class="str">'ListItem'</span>,
+                <span class="str">'position'</span> => $i + <span class="num">1</span>,
+                <span class="str">'name'</span>     => $item[<span class="str">'name'</span>],
+                <span class="str">'item'</span>     => $item[<span class="str">'url'</span>],
+            ];
+        }
+        JsonLd::<span class="fn">addValue</span>(<span class="str">'breadcrumb'</span>, [
+            <span class="str">'@type'</span>           => <span class="str">'BreadcrumbList'</span>,
+            <span class="str">'itemListElement'</span> => $listItems,
+        ]);
+    }
+}</pre>
+      </div>
+
+      <h3>SEO-friendly URL Structure</h3>
+      <div class="code-block">
+        <div class="code-header"><span>routes/web.php</span><span class="code-lang">PHP</span></div>
+        <pre><span class="cm">// ✅ ভালো URL structure</span>
+Route::<span class="fn">get</span>(<span class="str">'/products/{category}/{slug}'</span>, [ProductController::<span class="kw">class</span>, <span class="str">'show'</span>])
+    -><span class="fn">name</span>(<span class="str">'product.show'</span>);
+
+Route::<span class="fn">get</span>(<span class="str">'/blog/{year}/{month}/{slug}'</span>, [BlogController::<span class="kw">class</span>, <span class="str">'show'</span>])
+    -><span class="fn">name</span>(<span class="str">'blog.show'</span>);
+
+<span class="cm">// SEO URL examples:</span>
+<span class="cm">// /products/smartphones/samsung-galaxy-s24</span>
+<span class="cm">// /blog/2025/01/restaurant-management-tips</span>
+<span class="cm">// /categories/electronics</span>
+
+<span class="cm">// ❌ খারাপ URL (এড়িয়ে চলুন)</span>
+<span class="cm">// /product?id=123</span>
+<span class="cm">// /p/abc123xyz</span></pre>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ Pagination SEO</strong>
+        Pagination-এ rel="next" ও rel="prev" ব্যবহার করুন। Google এখন এগুলো officially support না করলেও, ক্রলারে সাহায্য করে। <code>?page=2</code> URL-এ noindex দেবেন না — এতে content index হবে না।
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section id="s5">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div>
+          <div class="section-title">Vue SPA থেকে Inertia.js-এ মাইগ্রেশন</div>
+          <div class="section-subtitle">SEO সমস্যার সমাধান — SSR Setup</div>
+        </div>
+      </div>
+
+      <div class="alert alert-danger">
+        <strong>🚨 Vue SPA + Laravel-এর SEO সমস্যা</strong>
+        Pure Vue SPA (API-based)-এ Google bot JavaScript render করতে পারে, কিন্তু delay হয়। ফলে meta tag, content দেরিতে দেখা যায়। Inertia.js দিয়ে SSR করলে first paint-এই সব content পাওয়া যায়।
+      </div>
+
+      <h3>Inertia.js কি এবং কেন দরকার?</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-red">❌</div>Pure Vue SPA সমস্যা</div>
+          <ul>
+            <li>Googlebot JS render করতে সময় নেয়</li>
+            <li>Meta tag dynamically set হয়, late index হয়</li>
+            <li>Social share-এ blank preview</li>
+            <li>Initial page load blank screen</li>
+            <li>Crawl budget নষ্ট হয়</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">✅</div>Inertia.js SSR সুবিধা</div>
+          <ul>
+            <li>Server থেকে HTML render হয়ে আসে</li>
+            <li>Meta tag server-side set হয়</li>
+            <li>Social share সঠিক OG image দেখায়</li>
+            <li>TTFB ও LCP উন্নত হয়</li>
+            <li>Laravel + Vue একই codebase-এ</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Inertia.js SSR ইনস্টলেশন</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Terminal — Step by step</span><span class="code-lang">Bash</span></div>
+        <pre><span class="cm"># Step 1: Laravel Inertia package</span>
+composer require inertiajs/inertia-laravel
+
+<span class="cm"># Step 2: Vue Inertia adapter</span>
+npm install @inertiajs/vue3
+
+<span class="cm"># Step 3: SSR support</span>
+npm install @vue/server-renderer
+npm install @inertiajs/vue3 --save
+
+<span class="cm"># Step 4: Vite config update</span>
+<span class="cm"># vite.config.js পরিবর্তন করুন</span>
+
+<span class="cm"># Step 5: SSR server</span>
+npm run build:ssr</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>resources/js/app.js → Inertia Setup</span><span class="code-lang">JavaScript</span></div>
+        <pre><span class="kw">import</span> { createApp, h } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> { createInertiaApp } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { resolvePageComponent } <span class="kw">from</span> <span class="str">'laravel-vite-plugin/inertia-helpers'</span>
+
+<span class="fn">createInertiaApp</span>({
+    <span class="fn">resolve</span>: name =>
+        <span class="fn">resolvePageComponent</span>(
+            <span class="str">`./Pages/${name}.vue`</span>,
+            <span class="kw">import</span>.meta.<span class="fn">glob</span>(<span class="str">'./Pages/**/*.vue'</span>)
+        ),
+    <span class="fn">setup</span>({ el, App, props, plugin }) {
+        <span class="fn">createApp</span>({ <span class="fn">render</span>: () => h(App, props) })
+            .<span class="fn">use</span>(plugin)
+            .<span class="fn">mount</span>(el)
+    },
+    <span class="cm">// SSR title callback</span>
+    <span class="fn">title</span>: title => <span class="str">`${title} | Digonto BD`</span>,
+})</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>resources/js/ssr.js — SSR Entry Point</span><span class="code-lang">JavaScript</span></div>
+        <pre><span class="kw">import</span> { createSSRApp, h } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> { renderToString } <span class="kw">from</span> <span class="str">'@vue/server-renderer'</span>
+<span class="kw">import</span> { createInertiaApp } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { resolvePageComponent } <span class="kw">from</span> <span class="str">'laravel-vite-plugin/inertia-helpers'</span>
+
+<span class="fn">export default</span> <span class="kw">function</span> <span class="fn">render</span>(page) {
+    <span class="kw">return</span> <span class="fn">createInertiaApp</span>({
+        page,
+        render: renderToString,
+        <span class="fn">resolve</span>: name =>
+            <span class="fn">resolvePageComponent</span>(
+                <span class="str">`./Pages/${name}.vue`</span>,
+                <span class="kw">import</span>.meta.<span class="fn">glob</span>(<span class="str">'./Pages/**/*.vue'</span>)
+            ),
+        <span class="fn">setup</span>({ App, props, plugin }) {
+            <span class="kw">return</span> <span class="fn">createSSRApp</span>({ <span class="fn">render</span>: () => h(App, props) })
+                .<span class="fn">use</span>(plugin)
+        },
+    })
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>Vue Component-এ Inertia Head (SEO Meta)</span><span class="code-lang">Vue</span></div>
+        <pre><span class="tag">&lt;template&gt;</span>
+  <span class="cm">&lt;!-- Inertia Head component দিয়ে SEO meta set করুন --&gt;</span>
+  <span class="tag">&lt;Head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>{{ product.name }} | Digonto Shop<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">name=</span><span class="str">"description"</span> <span class="attr">:content=</span><span class="str">"product.meta_description"</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:title"</span> <span class="attr">:content=</span><span class="str">"product.name"</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">property=</span><span class="str">"og:image"</span> <span class="attr">:content=</span><span class="str">"product.image"</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="str">"canonical"</span> <span class="attr">:href=</span><span class="str">"productUrl"</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/Head&gt;</span>
+  <span class="cm">&lt;!-- page content --&gt;</span>
+<span class="tag">&lt;/template&gt;</span>
+
+<span class="tag">&lt;script</span> <span class="attr">setup</span><span class="tag">&gt;</span>
+<span class="kw">import</span> { Head } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { computed } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> props = <span class="fn">defineProps</span>({ product: Object })
+
+<span class="kw">const</span> productUrl = <span class="fn">computed</span>(() =>
+    <span class="str">`https://shop.digontobd.com/products/${props.product.slug}`</span>
+)
+<span class="tag">&lt;/script&gt;</span></pre>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>💡 Shared Hosting-এ SSR চালাতে Node.js লাগবে</strong>
+        অনেক shared hosting-এ Node.js সাপোর্ট থাকে না। সেক্ষেত্রে <strong>Vue SSR ছাড়াই</strong> শুধু Laravel Inertia ব্যবহার করুন এবং server-side থেকে meta tag inject করুন। SSR না থাকলে Prerendering (spatie/laravel-prerender) বিকল্প হিসেবে ব্যবহার করতে পারেন।
+      </div>
+
+      <h3>Prerendering (SSR বিকল্প — Shared Hosting-এর জন্য)</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Terminal + config</span><span class="code-lang">Bash</span></div>
+        <pre><span class="cm"># Prerender service (renders for bots only)</span>
+composer require spatie/laravel-prerender
+
+<span class="cm"># .env-এ যোগ করুন</span>
+PRERENDER_TOKEN=your_token_here
+PRERENDER_URL=https://service.prerender.io
+
+<span class="cm"># Middleware register করুন</span>
+<span class="cm"># app/Http/Kernel.php -এ</span>
+\Spatie\Prerender\PrerenderMiddleware::<span class="kw">class</span>,</pre>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section id="s6">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div>
+          <div class="section-title">Shared Hosting-এ Site Speed Optimization</div>
+          <div class="section-subtitle">Cache, CDN, Image, Database সব কিছু</div>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ Shared Hosting সীমাবদ্ধতা</strong>
+        Shared hosting-এ Redis, Memcached সাধারণত থাকে না। কিন্তু file-based caching, opcache, এবং সঠিক কনফিগারেশন দিয়ে ভালো speed পাওয়া যায়।
+      </div>
+
+      <h3>Laravel Cache Strategy — Shared Hosting-এর জন্য</h3>
+      <div class="code-block">
+        <div class="code-header"><span>.env — Cache Configuration</span><span class="code-lang">ENV</span></div>
+        <pre><span class="cm"># Shared hosting-এ file cache ব্যবহার করুন</span>
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync
+
+<span class="cm"># OPcache enable করুন (php.ini বা .htaccess-এ)</span>
+<span class="cm"># opcache.enable=1</span>
+<span class="cm"># opcache.memory_consumption=128</span>
+
+<span class="cm"># DB Connection Pool</span>
+DB_CONNECTION=mysql
+DB_HOST=localhost  <span class="cm"># localhost ব্যবহার করুন, IP নয়</span>
+
+<span class="cm"># App optimization</span>
+APP_ENV=production
+APP_DEBUG=false</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>app/Console/Commands/WarmCache.php — Cache Warming</span><span class="code-lang">PHP</span></div>
+        <pre><span class="cm">// Production deploy-এর পরে run করুন</span>
+php artisan config:cache   <span class="cm"># config ফাইল cache</span>
+php artisan route:cache    <span class="cm"># route cache</span>
+php artisan view:cache     <span class="cm"># blade template cache</span>
+php artisan event:cache    <span class="cm"># event cache</span>
+php artisan optimize       <span class="cm"># সব এক সাথে</span>
+
+<span class="cm">// Popular page গুলো pre-cache করুন</span>
+php artisan cache:warm <span class="cm"># custom command</span></pre>
+      </div>
+
+      <h3>Image Optimization — WebP Conversion</h3>
+      <div class="code-block">
+        <div class="code-header"><span>app/Services/ImageService.php</span><span class="code-lang">PHP</span></div>
+        <pre><span class="kw">use</span> Intervention\Image\Facades\Image;
+
+<span class="kw">class</span> <span class="fn">ImageService</span>
+{
+    <span class="kw">public function</span> <span class="fn">optimizeAndConvert</span>(UploadedFile $file, <span class="kw">string</span> $path): <span class="kw">string</span>
+    {
+        $filename = <span class="fn">pathinfo</span>($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+        <span class="cm">// WebP তৈরি করুন (ছোট সাইজ)</span>
+        $webp = Image::<span class="fn">make</span>($file)
+            -><span class="fn">resize</span>(<span class="num">1200</span>, <span class="num">null</span>, <span class="kw">function</span>($c) {
+                $c-><span class="fn">aspectRatio</span>();
+                $c-><span class="fn">upsize</span>();
+            })
+            -><span class="fn">encode</span>(<span class="str">'webp'</span>, <span class="num">80</span>); <span class="cm">// 80% quality</span>
+
+        $webpPath = $path . <span class="str">'/'</span> . $filename . <span class="str">'.webp'</span>;
+        <span class="fn">Storage</span>::<span class="fn">put</span>($webpPath, $webp);
+
+        <span class="cm">// Thumbnail তৈরি করুন</span>
+        $thumb = Image::<span class="fn">make</span>($file)
+            -><span class="fn">fit</span>(<span class="num">400</span>, <span class="num">400</span>)
+            -><span class="fn">encode</span>(<span class="str">'webp'</span>, <span class="num">70</span>);
+
+        $thumbPath = $path . <span class="str">'/thumb_'</span> . $filename . <span class="str">'.webp'</span>;
+        <span class="fn">Storage</span>::<span class="fn">put</span>($thumbPath, $thumb);
+
+        <span class="kw">return</span> $webpPath;
+    }
+}</pre>
+      </div>
+
+      <h3>Vite Build Optimization</h3>
+      <div class="code-block">
+        <div class="code-header"><span>vite.config.js</span><span class="code-lang">JavaScript</span></div>
+        <pre><span class="kw">import</span> { defineConfig } <span class="kw">from</span> <span class="str">'vite'</span>
+<span class="kw">import</span> laravel <span class="kw">from</span> <span class="str">'laravel-vite-plugin'</span>
+<span class="kw">import</span> vue <span class="kw">from</span> <span class="str">'@vitejs/plugin-vue'</span>
+<span class="kw">import</span> compression <span class="kw">from</span> <span class="str">'vite-plugin-compression'</span>
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+    plugins: [
+        <span class="fn">laravel</span>({
+            input: [<span class="str">'resources/js/app.js'</span>, <span class="str">'resources/css/app.css'</span>],
+            refresh: <span class="kw">true</span>,
+        }),
+        <span class="fn">vue</span>(),
+        <span class="fn">compression</span>({ algorithm: <span class="str">'gzip'</span> }),  <span class="cm">// gzip</span>
+        <span class="fn">compression</span>({ algorithm: <span class="str">'brotliCompress'</span>, ext: <span class="str">'.br'</span> }), <span class="cm">// brotli</span>
+    ],
+    build: {
+        rollupOptions: {
+            output: {
+                <span class="cm">// Code splitting — chunk-এ ভাগ করুন</span>
+                <span class="fn">manualChunks</span>(id) {
+                    <span class="kw">if</span> (id.<span class="fn">includes</span>(<span class="str">'node_modules'</span>)) {
+                        <span class="kw">return</span> <span class="str">'vendor'</span>;
+                    }
+                    <span class="kw">if</span> (id.<span class="fn">includes</span>(<span class="str">'Pages/Admin'</span>)) {
+                        <span class="kw">return</span> <span class="str">'admin'</span>; <span class="cm">// admin আলাদা chunk</span>
+                    }
+                }
+            }
+        },
+        chunkSizeWarningLimit: <span class="num">600</span>,
+        minify: <span class="str">'terser'</span>,
+        terserOptions: {
+            compress: { drop_console: <span class="kw">true</span> }  <span class="cm">// production-এ console.log বাদ</span>
+        }
+    }
+})</pre>
+      </div>
+
+      <h3>Database Query Optimization</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Eager Loading + Cache — Product Query</span><span class="code-lang">PHP</span></div>
+        <pre><span class="cm">// ❌ N+1 Query সমস্যা (SEO পেজ slow হয়)</span>
+$products = Product::<span class="fn">all</span>(); <span class="cm">// তারপর loop-এ category/image query</span>
+
+<span class="cm">// ✅ Eager Loading + Cache</span>
+$products = <span class="fn">cache</span>()-><span class="fn">remember</span>(<span class="str">'products_page_1'</span>, <span class="num">3600</span>, <span class="kw">function</span> () {
+    <span class="kw">return</span> Product::<span class="fn">with</span>([<span class="str">'category'</span>, <span class="str">'images'</span>, <span class="str">'tags'</span>])
+        -><span class="fn">active</span>()
+        -><span class="fn">orderBy</span>(<span class="str">'created_at'</span>, <span class="str">'desc'</span>)
+        -><span class="fn">select</span>([<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'slug'</span>, <span class="str">'price'</span>, <span class="str">'image'</span>])
+        -><span class="fn">paginate</span>(<span class="num">24</span>);
+});
+
+<span class="cm">// Database Index যোগ করুন migration-এ</span>
+Schema::<span class="fn">table</span>(<span class="str">'products'</span>, <span class="kw">function</span>($table) {
+    $table-><span class="fn">index</span>([<span class="str">'is_active'</span>, <span class="str">'created_at'</span>]);
+    $table-><span class="fn">index</span>(<span class="str">'slug'</span>);
+    $table-><span class="fn">fullText</span>([<span class="str">'name'</span>, <span class="str">'description'</span>]); <span class="cm">// Search-এর জন্য</span>
+});</pre>
+      </div>
+
+      <h3>Speed Checklist</h3>
+      <ul class="checklist">
+        <li><span class="check-icon" style="color:var(--green)">✓</span>সব image WebP format-এ convert করুন</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Laravel optimize command চালান (config/route/view cache)</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Gzip/Brotli compression .htaccess-এ enable করুন</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Browser caching header set করুন (1 year for assets)</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>CSS/JS minify করুন (Vite production build)</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Lazy loading images (<code>loading="lazy"</code>)</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Above-the-fold CSS inline করুন</li>
+        <li><span class="check-icon" style="color:var(--green)">✓</span>Google Fonts preconnect করুন</li>
+        <li><span class="check-icon" style="color:var(--orange)">⚠</span>CDN ব্যবহার করুন static assets-এর জন্য (Cloudflare free)</li>
+        <li><span class="check-icon" style="color:var(--orange)">⚠</span>Database query cache করুন (file cache)</li>
+        <li><span class="check-icon" style="color:var(--orange)">⚠</span>OPcache PHP-তে enable করুন</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section id="s7">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div>
+          <div class="section-title">E-commerce SEO — shop.digontobd.com</div>
+          <div class="section-subtitle">Product, Category, Filter Page Optimization</div>
+        </div>
+      </div>
+
+      <h3>Product Page SEO Checklist</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">📦</div>Product Page মাস্ট-হ্যাভ</div>
+          <ul class="checklist" style="list-style:none; padding:0;">
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Unique product description (copy-paste নয়)</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Product Schema (price, availability, review)</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Alt text সব image-এ (বাংলায়)</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Breadcrumb navigation + schema</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Related products internal linking</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> Review/Rating system</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--green)">✓</span> FAQ schema in product page</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-orange">⚠️</div>সতর্কতা</div>
+          <ul class="checklist" style="list-style:none; padding:0;">
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--red)">✗</span> Duplicate product description এড়িয়ে চলুন</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--red)">✗</span> Out-of-stock product delete করবেন না</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--red)">✗</span> Filter URL গুলো noindex করুন যদি content একই হয়</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--red)">✗</span> Manufacturer description copy করবেন না</li>
+            <li style="padding:6px 0; display:flex; gap:8px;"><span style="color:var(--red)">✗</span> Thin content পেজ এড়িয়ে চলুন</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Category Page SEO</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Category Controller — SEO Data</span><span class="code-lang">PHP</span></div>
+        <pre><span class="kw">public function</span> <span class="fn">show</span>(Category $category, Request $request)
+{
+    <span class="cm">// Filter URL গুলো noindex করুন</span>
+    <span class="kw">if</span> ($request-><span class="fn">hasAny</span>([<span class="str">'sort'</span>, <span class="str">'color'</span>, <span class="str">'brand'</span>])) {
+        SEOMeta::<span class="fn">setRobots</span>(<span class="str">'noindex, follow'</span>);
+        SEOMeta::<span class="fn">setCanonical</span>(<span class="fn">route</span>(<span class="str">'category.show'</span>, $category->slug));
+    }
+
+    <span class="cm">// Pagination canonical</span>
+    <span class="kw">if</span> ($request-><span class="fn">has</span>(<span class="str">'page'</span>) && $request->page > <span class="num">1</span>) {
+        SEOMeta::<span class="fn">setCanonical</span>(
+            <span class="fn">route</span>(<span class="str">'category.show'</span>, $category->slug) . <span class="str">'?page='</span> . $request->page
+        );
+    }
+
+    <span class="cm">// Category description + product count SEO text</span>
+    $description = $category->seo_description
+        ?? <span class="str">"বাংলাদেশে সেরা {$category->name} পণ্য কিনুন। "</span>
+        . <span class="str">"{$category->products_count}টি পণ্য পাবেন সেরা দামে।"</span>;
+
+    SEOMeta::<span class="fn">setDescription</span>($description);
+}</pre>
+      </div>
+
+      <h3>Google Shopping Feed (XML)</h3>
+      <div class="code-block">
+        <div class="code-header"><span>routes/web.php + Shopping Feed Controller</span><span class="code-lang">PHP</span></div>
+        <pre><span class="cm">// routes/web.php</span>
+Route::<span class="fn">get</span>(<span class="str">'/google-shopping-feed.xml'</span>, [ShoppingFeedController::<span class="kw">class</span>, <span class="str">'index'</span>]);
+
+<span class="cm">// ShoppingFeedController — Google Merchant Center XML</span>
+<span class="kw">public function</span> <span class="fn">index</span>()
+{
+    $products = Product::<span class="fn">active</span>()-><span class="fn">with</span>(<span class="str">'category'</span>)-><span class="fn">get</span>();
+    <span class="kw">return</span> <span class="fn">response</span>()
+        -><span class="fn">view</span>(<span class="str">'feeds.shopping'</span>, <span class="fn">compact</span>(<span class="str">'products'</span>))
+        -><span class="fn">header</span>(<span class="str">'Content-Type'</span>, <span class="str">'application/xml'</span>);
+}</pre>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section id="s8">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div>
+          <div class="section-title">SaaS / Restaurant SEO — resto.digontobd.com</div>
+          <div class="section-subtitle">Landing Page, Feature Pages, Local SEO</div>
+        </div>
+      </div>
+
+      <h3>SaaS Keyword Strategy</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Keyword Type</th><th>উদাহরণ</th><th>Intent</th><th>Priority</th></tr>
+          <tr><td>Problem-based</td><td>রেস্তোরাঁ অর্ডার ট্র্যাক করবো কিভাবে</td><td>Informational</td><td><span class="badge badge-blue">Medium</span></td></tr>
+          <tr><td>Solution-based</td><td>রেস্তোরাঁ ম্যানেজমেন্ট সফটওয়্যার</td><td>Commercial</td><td><span class="badge badge-green">High</span></td></tr>
+          <tr><td>Comparison</td><td>বেস্ট রেস্তোরাঁ পস সফটওয়্যার বাংলাদেশ</td><td>Commercial</td><td><span class="badge badge-green">High</span></td></tr>
+          <tr><td>Feature-based</td><td>অনলাইন মেনু ম্যানেজমেন্ট সিস্টেম</td><td>Navigational</td><td><span class="badge badge-blue">Medium</span></td></tr>
+          <tr><td>Pricing</td><td>রেস্তোরাঁ সফটওয়্যার প্রাইস বাংলাদেশ</td><td>Transactional</td><td><span class="badge badge-purple">Very High</span></td></tr>
+          <tr><td>Local</td><td>ঢাকায় রেস্তোরাঁ ম্যানেজমেন্ট সফটওয়্যার</td><td>Transactional</td><td><span class="badge badge-purple">Very High</span></td></tr>
+        </table>
+      </div>
+
+      <h3>Feature Page SEO Template</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Feature Page Structure</span><span class="code-lang">Blade/HTML</span></div>
+        <pre><span class="cm">&lt;!-- /features/order-management --&gt;</span>
+<span class="tag">&lt;h1&gt;</span>রেস্তোরাঁর অর্ডার ম্যানেজমেন্ট সিস্টেম<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>কিভাবে অর্ডার ম্যানেজমেন্ট কাজ করে?<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h2&gt;</span>প্রধান ফিচার সমূহ<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h2&gt;</span>কেন আমাদের সিস্টেম বেছে নেবেন?<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h2&gt;</span>বাস্তব ব্যবহারকারীর অভিজ্ঞতা<span class="tag">&lt;/h2&gt;</span>
+
+<span class="cm">&lt;!-- FAQ Schema দিন --&gt;</span>
+<span class="tag">&lt;h2&gt;</span>প্রায়শই জিজ্ঞাসিত প্রশ্ন<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">itemscope</span> <span class="attr">itemtype=</span><span class="str">"https://schema.org/FAQPage"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">itemscope</span> <span class="attr">itemprop=</span><span class="str">"mainEntity"</span> <span class="attr">itemtype=</span><span class="str">"https://schema.org/Question"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;h3</span> <span class="attr">itemprop=</span><span class="str">"name"</span><span class="tag">&gt;</span>মাসিক খরচ কত?<span class="tag">&lt;/h3&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">itemscope</span> <span class="attr">itemprop=</span><span class="str">"acceptedAnswer"</span> 
+         <span class="attr">itemtype=</span><span class="str">"https://schema.org/Answer"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;p</span> <span class="attr">itemprop=</span><span class="str">"text"</span><span class="tag">&gt;</span>আমাদের Basic প্ল্যান মাত্র ৯৯৯ টাকা/মাস...<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+
+      <h3>Landing Page Conversion + SEO</h3>
+      <div class="alert alert-success">
+        <strong>✅ SaaS Landing Page SEO টিপস</strong>
+        <br>১. Hero section-এ primary keyword H1-এ রাখুন।
+        <br>২. Pricing page-এ আলাদা SEO করুন — "রেস্তোরাঁ সফটওয়্যার প্রাইস" keyword টার্গেট করুন।
+        <br>৩. Case study/success story page তৈরি করুন।
+        <br>৪. Competitor comparison blog লিখুন।
+        <br>৫. Free trial CTA-তে urgency যোগ করুন।
+      </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section id="s9">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div>
+          <div class="section-title">Link Building Strategy</div>
+          <div class="section-subtitle">Backlink তৈরির পদ্ধতি</div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-blue">📝</div>Content Marketing</div>
+          <ul>
+            <li>বাংলা tech blog লিখুন</li>
+            <li>Guest post করুন</li>
+            <li>Infographic তৈরি করুন</li>
+            <li>YouTube video + description link</li>
+          </ul>
+          <div style="margin-top:12px;"><span class="badge badge-green">High ROI</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-teal">🤝</div>Local Citations</div>
+          <ul>
+            <li>Google My Business</li>
+            <li>Bangladesh Business Directory</li>
+            <li>Prothom Alo Tech listing</li>
+            <li>LinkedIn company page</li>
+          </ul>
+          <div style="margin-top:12px;"><span class="badge badge-blue">Trust Signal</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-orange">🔗</div>Digital PR</div>
+          <ul>
+            <li>Tech news-এ press release</li>
+            <li>Partner/reseller linking</li>
+            <li>University/College collaboration</li>
+            <li>NGO/Startup directory</li>
+          </ul>
+          <div style="margin-top:12px;"><span class="badge badge-purple">Authority</span></div>
+        </div>
+      </div>
+
+      <div class="alert alert-danger">
+        <strong>🚫 যা করবেন না — Blackhat SEO</strong>
+        Link buying, PBN (Private Blog Network), keyword stuffing, cloaking, hidden text — এগুলো Google penalty দেয়। একবার penalty খেলে recover করতে মাসের পর মাস লাগে।
+      </div>
+
+      <h3>Internal Linking Strategy</h3>
+      <div class="code-block">
+        <div class="code-header"><span>Internal Link Best Practices</span><span class="code-lang">HTML/Strategy</span></div>
+        <pre><span class="cm">&lt;!-- Anchor text-এ keyword ব্যবহার করুন --&gt;</span>
+<span class="cm">&lt;!-- ❌ খারাপ --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"/products"</span><span class="tag">&gt;</span>এখানে ক্লিক করুন<span class="tag">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- ✅ ভালো --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"/products/smartphones"</span><span class="tag">&gt;</span>সেরা স্মার্টফোন দেখুন<span class="tag">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- Cross-domain internal linking --&gt;</span>
+<span class="cm">&lt;!-- digontobd.com blog থেকে shop-এ --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"https://shop.digontobd.com/products/electronics"</span>
+   <span class="attr">rel=</span><span class="str">"noopener"</span><span class="tag">&gt;</span>
+  আমাদের Electronics Collection দেখুন
+<span class="tag">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- resto-তে রেফার করুন --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"https://resto.digontobd.com/features"</span><span class="tag">&gt;</span>
+  রেস্তোরাঁ সফটওয়্যার ট্রাই করুন
+<span class="tag">&lt;/a&gt;</span></pre>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div>
+          <div class="section-title">Monitoring, Tools & Tracking</div>
+          <div class="section-subtitle">Google Search Console, Analytics, Audit</div>
+        </div>
+      </div>
+
+      <h3>Google Search Console Setup</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-title">তিনটি আলাদা Property যোগ করুন</div>
+          <p>Search Console → Add Property → Domain property। digontobd.com, shop.digontobd.com, resto.digontobd.com — তিনটি আলাদাভাবে verify করুন।</p>
+        </div>
+        <div class="step">
+          <div class="step-title">Sitemap Submit করুন</div>
+          <p>প্রতিটি property-তে Sitemaps ট্যাবে গিয়ে সংশ্লিষ্ট sitemap.xml URL দিন। নিয়মিত submit করুন নতুন content-এর জন্য।</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Core Web Vitals Monitor করুন</div>
+          <p>Experience → Core Web Vitals রিপোর্ট নিয়মিত দেখুন। Poor URLs গুলো fix করুন।</p>
+        </div>
+        <div class="step">
+          <div class="step-title">Search Performance দেখুন</div>
+          <p>Performance → Search Results-এ কোন keywords-এ impression/click আসছে তা দেখুন। CTR কম থাকলে title/meta improve করুন।</p>
+        </div>
+        <div class="step">
+          <div class="step-title">Manual Penalty Check</div>
+          <p>Security & Manual Actions → Manual Actions-এ কোনো penalty আছে কিনা নিয়মিত দেখুন।</p>
+        </div>
+      </div>
+
+      <h3>Free SEO Tools</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><div class="icon icon-green">🔧</div>Free Tools</div>
+          <ul>
+            <li><strong>Google Search Console</strong> — অপরিহার্য</li>
+            <li><strong>Google Analytics 4</strong> — traffic analysis</li>
+            <li><strong>Google PageSpeed Insights</strong> — speed test</li>
+            <li><strong>Ahrefs Free</strong> — backlink check</li>
+            <li><strong>Screaming Frog</strong> (500 URL free) — crawl audit</li>
+            <li><strong>Rich Results Test</strong> — schema check</li>
+            <li><strong>Mobile-Friendly Test</strong></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="icon icon-purple">📊</div>GA4 Event Tracking</div>
+          <div class="code-block" style="margin-top:8px;">
+            <div class="code-header"><span>GA4 Events</span><span class="code-lang">JS</span></div>
+            <pre style="font-size:12px;"><span class="cm">// E-commerce events</span>
+<span class="fn">gtag</span>(<span class="str">'event'</span>, <span class="str">'view_item'</span>, {
+  currency: <span class="str">'BDT'</span>,
+  value: product.price,
+  items: [{ item_id: product.id }]
+});
+
+<span class="fn">gtag</span>(<span class="str">'event'</span>, <span class="str">'add_to_cart'</span>, {
+  currency: <span class="str">'BDT'</span>,
+  value: product.price
+});</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3>Monthly SEO Checklist</h3>
+      <ul class="checklist">
+        <li><span class="check-icon" style="color:var(--accent)">📅</span><strong>Weekly:</strong> GSC-এ নতুন error দেখুন, index coverage check করুন</li>
+        <li><span class="check-icon" style="color:var(--accent)">📅</span><strong>Weekly:</strong> নতুন blog/content publish করুন (min 2টি/সপ্তাহ)</li>
+        <li><span class="check-icon" style="color:var(--green)">📅</span><strong>Monthly:</strong> Top 10 keyword ranking track করুন</li>
+        <li><span class="check-icon" style="color:var(--green)">📅</span><strong>Monthly:</strong> Core Web Vitals score দেখুন ও improve করুন</li>
+        <li><span class="check-icon" style="color:var(--green)">📅</span><strong>Monthly:</strong> Broken link check ও fix করুন</li>
+        <li><span class="check-icon" style="color:var(--orange)">📅</span><strong>Quarterly:</strong> Full SEO audit করুন (Screaming Frog)</li>
+        <li><span class="check-icon" style="color:var(--orange)">📅</span><strong>Quarterly:</strong> Competitor analysis করুন</li>
+        <li><span class="check-icon" style="color:var(--orange)">📅</span><strong>Quarterly:</strong> Backlink profile check করুন</li>
+      </ul>
+
+      <div class="alert alert-success">
+        <strong>🎯 Google Top Ranking-এর জন্য Timeline</strong>
+        নতুন সাইটে সাধারণত ৩–৬ মাস লাগে প্রথম পেজে আসতে। প্রতি সপ্তাহে quality content, technical optimization, এবং link building চালিয়ে যান। ধৈর্য রাখুন — SEO একটি দীর্ঘমেয়াদী বিনিয়োগ।
+      </div>
+
+      <div class="ribbon" style="margin-top:32px;">
+        <div class="ribbon-title">🚀 Quick Win কৌশল — ১ মাসের মধ্যে</div>
+        <p style="font-size:14px; color:var(--text2); margin:0;">১. Google My Business তৈরি করুন (local SEO instant boost) → ২. সব পেজে proper title/meta দিন → ৩. Sitemap submit করুন → ৪. Page speed 90+ করুন → ৫. SSL certificate verify করুন → ৬. Mobile responsive নিশ্চিত করুন → ৭. 5টি high-quality blog post লিখুন। এই ৭টি কাজ করলেই ৩০ দিনের মধ্যে crawling ও ranking উন্নত হবে।</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:var(--bg2); border-top:1px solid var(--border); padding:40px 24px; text-align:center; margin-top:32px;">
+  <div style="font-size:13px; color:var(--text3);">
+    digontobd.com SEO মাস্টারগাইড — Laravel + Vue.js + Inertia.js + Shared Hosting
+    <br>
+    <span style="color:var(--accent);">shop.digontobd.com</span> &nbsp;|&nbsp;
+    <span style="color:var(--accent2);">resto.digontobd.com</span> &nbsp;|&nbsp;
+    <span style="color:var(--accent3);">digontobd.com</span>
+  </div>
+</footer>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll for TOC cards
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel — ডেটা সুরক্ষা, ভুল Entry Revert ও Big Project হ্যান্ডলিং</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700;900&family=Hind+Siliguri:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f5f0e8;
+  --bg2:       #ede7d9;
+  --bg3:       #e4dccb;
+  --ink:       #1a1208;
+  --ink2:      #3d2e14;
+  --ink3:      #6b5535;
+  --ink-light: #9c7c4e;
+  --red:       #c0392b;
+  --red-soft:  #fdecea;
+  --green:     #1a6b3c;
+  --green-soft:#e6f4ec;
+  --blue:      #1a3a6b;
+  --blue-soft: #e6ecf4;
+  --amber:     #b85c00;
+  --amber-soft:#fff3e0;
+  --gold:      #c9922a;
+  --rule:      rgba(26,18,8,0.12);
+  --code-bg:   #1e1710;
+  --shadow:    0 4px 24px rgba(26,18,8,0.10);
+  --shadow-lg: 0 12px 48px rgba(26,18,8,0.15);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Papyrus texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 31px,
+      rgba(26,18,8,0.025) 31px,
+      rgba(26,18,8,0.025) 32px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Left margin red line like a ledger book */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; bottom: 0;
+  left: 80px;
+  width: 2px;
+  background: rgba(192,57,43,0.15);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 40px 0 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ========= HEADER ========= */
+header {
+  padding: 70px 0 50px;
+  border-bottom: 3px double var(--rule);
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.ledger-stamp {
+  position: absolute;
+  top: 40px; right: 0;
+  width: 110px; height: 110px;
+  border: 3px solid rgba(192,57,43,0.35);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transform: rotate(-12deg);
+  opacity: 0.6;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+  animation: stampIn 1s cubic-bezier(0.17,0.67,0.35,1.2) both 0.5s;
+}
+@keyframes stampIn {
+  from { transform: rotate(-12deg) scale(2); opacity: 0; }
+  to   { transform: rotate(-12deg) scale(1); opacity: 0.6; }
+}
+
+.pre-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--ink-light);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pre-title::after {
+  content: '';
+  height: 1px;
+  width: 80px;
+  background: var(--ink-light);
+}
+
+h1 {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: clamp(28px, 4.5vw, 46px);
+  font-weight: 900;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+h1 em {
+  font-style: normal;
+  color: var(--red);
+  border-bottom: 3px solid var(--red);
+  padding-bottom: 2px;
+}
+
+.subtitle {
+  font-size: 17px;
+  color: var(--ink3);
+  max-width: 620px;
+  line-height: 1.8;
+}
+.subtitle strong { color: var(--ink); }
+
+/* ========= TOC ========= */
+.toc {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 28px 32px;
+  margin-bottom: 60px;
+  position: relative;
+}
+.toc::before {
+  content: '📋';
+  position: absolute;
+  top: -14px; left: 20px;
+  background: var(--bg2);
+  padding: 0 8px;
+  font-size: 20px;
+}
+.toc-head {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 4px 24px;
+}
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(26,18,8,0.1);
+  font-size: 14px;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.toc-item:hover { color: var(--red); }
+.toc-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ========= CHAPTER ========= */
+.chapter {
+  margin-bottom: 72px;
+  position: relative;
+}
+
+.chapter-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--rule);
+}
+
+.chapter-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--ink);
+  width: 44px; height: 44px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+.chapter-num.red { background: var(--red); }
+.chapter-num.green { background: var(--green); }
+.chapter-num.blue { background: var(--blue); }
+.chapter-num.amber { background: var(--amber); }
+
+h2 {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+h2 .en { font-family: 'Fira Code', monospace; font-size: 14px; color: var(--ink-light); font-weight: 400; display: block; margin-top: 4px; }
+
+h3 {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 28px 0 14px;
+}
+
+p {
+  color: var(--ink2);
+  margin-bottom: 14px;
+  font-size: 15.5px;
+}
+
+/* ========= CARDS ========= */
+.card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+.card.c-red::before { background: var(--red); }
+.card.c-green::before { background: var(--green); }
+.card.c-blue::before { background: var(--blue); }
+.card.c-amber::before { background: var(--amber); }
+.card.c-gold::before { background: var(--gold); }
+
+/* ========= CODE BLOCKS ========= */
+.code-wrap {
+  background: var(--code-bg);
+  border-radius: 10px;
+  margin: 18px 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.code-bar {
+  background: #2a2018;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.code-dots { display: flex; gap: 6px; }
+.code-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.code-filename {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.5px;
+}
+pre {
+  padding: 22px 24px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #e0d5c5;
+}
+.kw { color: #ff79c6; }
+.fn { color: #50fa7b; }
+.st { color: #f1fa8c; }
+.cm { color: #6272a4; font-style: italic; }
+.vr { color: #8be9fd; }
+.nu { color: #bd93f9; }
+.cl { color: #ffb86c; }
+
+/* ========= ALERTS ========= */
+.alert {
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.al-red    { background: var(--red-soft);   border: 1px solid rgba(192,57,43,0.25); color: #7b1a12; }
+.al-green  { background: var(--green-soft); border: 1px solid rgba(26,107,60,0.25); color: #0e4024; }
+.al-blue   { background: var(--blue-soft);  border: 1px solid rgba(26,58,107,0.25); color: #0e2547; }
+.al-amber  { background: var(--amber-soft); border: 1px solid rgba(184,92,0,0.25);  color: #5c2e00; }
+
+/* ========= CHECKLIST ========= */
+.chk { list-style: none; }
+.chk li {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px dashed rgba(26,18,8,0.08);
+  font-size: 14.5px; line-height: 1.6; color: var(--ink2);
+}
+.chk li:last-child { border-bottom: none; }
+.ci {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0; margin-top: 1px; font-weight: 700;
+}
+.ci-ok  { background: var(--green-soft); color: var(--green); }
+.ci-bad { background: var(--red-soft);   color: var(--red);   }
+.ci-w   { background: var(--amber-soft); color: var(--amber); }
+.ci-i   { background: var(--blue-soft);  color: var(--blue);  }
+
+/* ========= FLOW ========= */
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 20px 0; }
+.flow-box {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  min-width: 110px;
+}
+.flow-box.r { border-color: rgba(192,57,43,0.4); color: var(--red); background: var(--red-soft); }
+.flow-box.g { border-color: rgba(26,107,60,0.4); color: var(--green); background: var(--green-soft); }
+.flow-box.b { border-color: rgba(26,58,107,0.4); color: var(--blue); background: var(--blue-soft); }
+.flow-arr { color: var(--gold); font-size: 18px; font-weight: 700; }
+
+/* ========= TABLE ========= */
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 18px 0; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+th { background: var(--ink); color: #f5f0e8; padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; letter-spacing: 0.3px; }
+td { padding: 11px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink2); font-size: 14px; background: #fff; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg2); }
+
+/* ========= BADGE ========= */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.b-red   { background: var(--red-soft);   color: var(--red); }
+.b-green { background: var(--green-soft); color: var(--green); }
+.b-blue  { background: var(--blue-soft);  color: var(--blue); }
+.b-amber { background: var(--amber-soft); color: var(--amber); }
+
+/* ========= STEP LIST ========= */
+.steps { counter-reset: step; list-style: none; }
+.steps li {
+  counter-increment: step;
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(26,18,8,0.07);
+  font-size: 15px; color: var(--ink2);
+}
+.steps li:last-child { border-bottom: none; }
+.steps li::before {
+  content: counter(step);
+  width: 30px; height: 30px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ========= CONCEPT BOX ========= */
+.concept {
+  background: linear-gradient(135deg, #fff8ee, #fff);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 22px 0;
+  position: relative;
+}
+.concept-label {
+  position: absolute;
+  top: -12px; left: 20px;
+  background: var(--gold);
+  color: #fff;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 12px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+
+.divider {
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--rule) 0, var(--rule) 8px, transparent 8px, transparent 14px);
+  margin: 60px 0;
+}
+
+/* ========= FOOTER ========= */
+footer {
+  border-top: 3px double var(--rule);
+  padding: 40px 0 30px;
+  text-align: center;
+  color: var(--ink-light);
+  font-size: 13px;
+  line-height: 2;
+}
+footer strong { color: var(--ink); }
+
+/* ========= ANIMATIONS ========= */
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.chapter { animation: fadeUp 0.5s ease both; }
+
+code {
+  font-family: 'Fira Code', monospace;
+  background: rgba(26,18,8,0.07);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--red);
+}
+
+strong { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 680px) {
+  .wrap { padding: 0 16px 0 20px; }
+  body::after { display: none; }
+  .toc-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="ledger-stamp">LARAVEL<br>DATA<br>INTEGRITY<br>GUIDE<br>v2025</div>
+  <div class="pre-title">📒 Accounting-grade Data Safety</div>
+  <h1>Laravel-এ ভুল Entry <em>Revert</em> করা,<br>অনাকাঙ্ক্ষিত পরিবর্তন ঠেকানো<br>ও Big Project হ্যান্ডলিং</h1>
+  <p class="subtitle">
+    Accounting system, ERP বা যেকোনো বড় Laravel প্রজেক্টে — <strong>ভুল ডেটা entry ধরা, undo করা, audit trail রাখা</strong> এবং সম্পূর্ণ প্রজেক্টকে পরিচ্ছন্ন ও নিরাপদ রাখার সম্পূর্ণ গাইড।
+  </p>
+</header>
+
+<!-- ===== TOC ===== -->
+<div class="toc">
+  <div class="toc-head">বিষয়সূচি</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01.</span> মূল সমস্যা — কেন ডেটা নষ্ট হয়</div>
+    <div class="toc-item"><span class="toc-num">02.</span> Soft Delete — ডেটা মুছবেন না</div>
+    <div class="toc-item"><span class="toc-num">03.</span> Database Transactions</div>
+    <div class="toc-item"><span class="toc-num">04.</span> Audit Trail — কে কী করল</div>
+    <div class="toc-item"><span class="toc-num">05.</span> Model Versioning (History)</div>
+    <div class="toc-item"><span class="toc-num">06.</span> Accounting Reversal Entry</div>
+    <div class="toc-item"><span class="toc-num">07.</span> Form Validation ও Guard</div>
+    <div class="toc-item"><span class="toc-num">08.</span> Queue ও Job নিরাপত্তা</div>
+    <div class="toc-item"><span class="toc-num">09.</span> Big Project Architecture</div>
+    <div class="toc-item"><span class="toc-num">10.</span> সম্পূর্ণ চেকলিস্ট</div>
+  </div>
+</div>
+
+
+<!-- ===== CH 01 ===== -->
+<div class="chapter" id="ch01">
+  <div class="chapter-header">
+    <div class="chapter-num red">01</div>
+    <h2>মূল সমস্যা — কেন ডেটা নষ্ট হয়?<span class="en">Root Causes of Data Corruption</span></h2>
+  </div>
+
+  <p>বড় প্রজেক্টে ডেটা নষ্ট হওয়ার পেছনে সাধারণত ৫টি কারণ থাকে। এগুলো বোঝা না থাকলে সমাধানও সঠিক হয় না।</p>
+
+  <div class="card-grid">
+    <div class="card c-red">
+      <h3>❌ ভুল Entry</h3>
+      <ul class="chk">
+        <li><div class="ci ci-bad">✗</div><span>User ভুল amount টাইপ করেছে</span></li>
+        <li><div class="ci ci-bad">✗</div><span>Wrong account-এ credit/debit হয়েছে</span></li>
+        <li><div class="ci ci-bad">✗</div><span>Duplicate entry তৈরি হয়েছে</span></li>
+        <li><div class="ci ci-bad">✗</div><span>পুরনো ডেটা Overwrite হয়ে গেছে</span></li>
+      </ul>
+    </div>
+    <div class="card c-amber">
+      <h3>⚠️ System Bug</h3>
+      <ul class="chk">
+        <li><div class="ci ci-w">!</div><span>Race condition — দুটো request একসাথে আসা</span></li>
+        <li><div class="ci ci-w">!</div><span>Incomplete transaction (half-saved)</span></li>
+        <li><div class="ci ci-w">!</div><span>Queue job retry-তে double action</span></li>
+        <li><div class="ci ci-w">!</div><span>Cascade delete unwanted records</span></li>
+      </ul>
+    </div>
+    <div class="card c-blue">
+      <h3>🔄 Process Problem</h3>
+      <ul class="chk">
+        <li><div class="ci ci-i">i</div><span>কে পরিবর্তন করল জানার উপায় নেই</span></li>
+        <li><div class="ci ci-i">i</div><span>ভুল হলেও undo করার পদ্ধতি নেই</span></li>
+        <li><div class="ci ci-i">i</div><span>Approval ছাড়াই critical data edit</span></li>
+        <li><div class="ci ci-i">i</div><span>History/Log রাখা হয়নি</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-label">💡 মূল দর্শন</div>
+    <p style="margin:0;"><strong>Accounting নীতি:</strong> "ভুল হলে মুছে ফেলো না, বরং Reversal Entry দাও।" Laravel-এও এই একই নীতি অনুসরণ করতে হবে। ডেটা কখনো hard delete করবেন না — বরং এমন system তৈরি করুন যেখানে সব পরিবর্তনের ইতিহাস সংরক্ষিত থাকে।</p>
+  </div>
+</div>
+
+
+<!-- ===== CH 02 ===== -->
+<div class="chapter" id="ch02">
+  <div class="chapter-header">
+    <div class="chapter-num green">02</div>
+    <h2>Soft Delete — ডেটা কখনো মুছবেন না<span class="en">Soft Delete Strategy</span></h2>
+  </div>
+
+  <p>Hard Delete মানে ডেটা চিরতরে চলে যায়। Soft Delete মানে ডেটা থাকে, শুধু <code>deleted_at</code> timestamp সেট হয়। Accounting বা কোনো গুরুত্বপূর্ণ প্রজেক্টে সবসময় Soft Delete ব্যবহার করুন।</p>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">Migration + Model Setup</div>
+    </div>
+    <pre><span class="cm">// ১. Migration-এ deleted_at column যোগ করুন</span>
+<span class="cl">Schema</span>::<span class="fn">create</span>(<span class="st">'transactions'</span>, <span class="kw">function</span> (<span class="cl">Blueprint</span> <span class="vr">$table</span>) {
+    <span class="vr">$table</span>-><span class="fn">id</span>();
+    <span class="vr">$table</span>-><span class="fn">foreignId</span>(<span class="st">'account_id'</span>)-><span class="fn">constrained</span>();
+    <span class="vr">$table</span>-><span class="fn">decimal</span>(<span class="st">'amount'</span>, <span class="nu">15</span>, <span class="nu">2</span>);
+    <span class="vr">$table</span>-><span class="fn">enum</span>(<span class="st">'type'</span>, [<span class="st">'debit'</span>, <span class="st">'credit'</span>]);
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'reference'</span>)-><span class="fn">nullable</span>();
+    <span class="vr">$table</span>-><span class="fn">text</span>(<span class="st">'note'</span>)-><span class="fn">nullable</span>();
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'status'</span>)-><span class="fn">default</span>(<span class="st">'active'</span>); <span class="cm">// active|reversed|cancelled</span>
+    <span class="vr">$table</span>-><span class="fn">timestamps</span>();
+    <span class="vr">$table</span>-><span class="fn">softDeletes</span>(); <span class="cm">// ← এটি deleted_at column যোগ করে</span>
+});
+
+<span class="cm">// ২. Model-এ SoftDeletes Trait ব্যবহার করুন</span>
+<span class="kw">class</span> <span class="cl">Transaction</span> <span class="kw">extends</span> <span class="cl">Model</span>
+{
+    <span class="kw">use</span> <span class="cl">SoftDeletes</span>; <span class="cm">// ← এটাই যথেষ্ট!</span>
+
+    <span class="kw">protected</span> <span class="vr">$fillable</span> = [<span class="st">'account_id'</span>, <span class="st">'amount'</span>, <span class="st">'type'</span>, <span class="st">'reference'</span>, <span class="st">'note'</span>, <span class="st">'status'</span>];
+
+    <span class="cm">// Scope: শুধু Reversed দেখাও</span>
+    <span class="kw">public function</span> <span class="fn">scopeReversed</span>(<span class="vr">$query</span>)
+    {
+        <span class="kw">return</span> <span class="vr">$query</span>-><span class="fn">where</span>(<span class="st">'status'</span>, <span class="st">'reversed'</span>);
+    }
+}
+
+<span class="cm">// ৩. Delete করলে সত্যিকার অর্থে delete হয় না</span>
+<span class="vr">$transaction</span>-><span class="fn">delete</span>();         <span class="cm">// deleted_at = now()  — ডেটা আছে</span>
+<span class="vr">$transaction</span>-><span class="fn">forceDelete</span>();    <span class="cm">// সত্যিকারের DELETE — শুধু বিশেষ ক্ষেত্রে</span>
+
+<span class="cm">// ৪. Soft deleted রেকর্ড দেখতে</span>
+<span class="cl">Transaction</span>::<span class="fn">withTrashed</span>()-><span class="fn">find</span>(<span class="vr">$id</span>);      <span class="cm">// সব দেখাও</span>
+<span class="cl">Transaction</span>::<span class="fn">onlyTrashed</span>()-><span class="fn">get</span>();         <span class="cm">// শুধু deleted দেখাও</span>
+<span class="vr">$transaction</span>-><span class="fn">restore</span>();               <span class="cm">// Restore করো</span></pre>
+  </div>
+
+  <div class="alert al-green">
+    <div class="alert-icon">✅</div>
+    <div><strong>Best Practice:</strong> Invoice, Transaction, Journal Entry, Payment — এই ধরনের সব critical table-এ <code>SoftDeletes</code> অবশ্যই ব্যবহার করুন। এটি ৫ মিনিটের কাজ, কিন্তু ভবিষ্যতে অনেক বড় বিপদ থেকে বাঁচায়।</div>
+  </div>
+</div>
+
+
+<!-- ===== CH 03 ===== -->
+<div class="chapter" id="ch03">
+  <div class="chapter-header">
+    <div class="chapter-num blue">03</div>
+    <h2>Database Transaction — "সব হবে নয়তো কিছুই না"<span class="en">DB::transaction() Mastery</span></h2>
+  </div>
+
+  <p>Accounting-এ সবচেয়ে বিপজ্জনক পরিস্থিতি: <strong>Account থেকে টাকা কাটা গেল, কিন্তু অন্য account-এ যোগ হলো না।</strong> এটি ঠেকানোর একমাত্র উপায় Database Transaction।</p>
+
+  <div class="concept">
+    <div class="concept-label">📐 ACID নীতি</div>
+    <div class="card-grid" style="margin:0;">
+      <div style="padding:4px 0;"><strong>A — Atomicity:</strong> সব কাজ হবে অথবা কিছুই হবে না</div>
+      <div style="padding:4px 0;"><strong>C — Consistency:</strong> ডেটা সবসময় সঠিক অবস্থায় থাকবে</div>
+      <div style="padding:4px 0;"><strong>I — Isolation:</strong> দুটো transaction একে অপরকে প্রভাবিত করবে না</div>
+      <div style="padding:4px 0;"><strong>D — Durability:</strong> একবার save হলে power cut-এও থাকবে</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">TransactionService.php — সঠিক পদ্ধতি</div>
+    </div>
+    <pre><span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\DB</span>;
+<span class="kw">use</span> <span class="cl">Illuminate\Support\Facades\Log</span>;
+
+<span class="kw">class</span> <span class="cl">AccountingService</span>
+{
+    <span class="cm">/**
+     * Double Entry Accounting — টাকা transfer করা
+     * Debit এক account, Credit অন্য account
+     */</span>
+    <span class="kw">public function</span> <span class="fn">transfer</span>(<span class="kw">array</span> <span class="vr">$data</span>): <span class="vr">array</span>
+    {
+        <span class="kw">return</span> <span class="cl">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span> () <span class="kw">use</span> (<span class="vr">$data</span>) {
+
+            <span class="cm">// ১. Source account লক করুন (Pessimistic Locking)</span>
+            <span class="vr">$source</span> = <span class="cl">Account</span>::<span class="fn">lockForUpdate</span>()-><span class="fn">findOrFail</span>(<span class="vr">$data</span>[<span class="st">'from_account'</span>]);
+            <span class="vr">$dest</span>   = <span class="cl">Account</span>::<span class="fn">lockForUpdate</span>()-><span class="fn">findOrFail</span>(<span class="vr">$data</span>[<span class="st">'to_account'</span>]);
+
+            <span class="cm">// ২. Balance check করুন</span>
+            <span class="kw">if</span> (<span class="vr">$source</span>->balance < <span class="vr">$data</span>[<span class="st">'amount'</span>]) {
+                <span class="kw">throw new</span> <span class="cl">InsufficientBalanceException</span>(<span class="st">'Insufficient balance'</span>);
+            }
+
+            <span class="cm">// ৩. Reference number তৈরি করুন</span>
+            <span class="vr">$ref</span> = <span class="st">'TXN-'</span> . <span class="fn">strtoupper</span>(<span class="fn">uniqid</span>());
+
+            <span class="cm">// ৪. Debit entry</span>
+            <span class="vr">$debitEntry</span> = <span class="cl">Transaction</span>::<span class="fn">create</span>([
+                <span class="st">'account_id'</span>  => <span class="vr">$source</span>->id,
+                <span class="st">'amount'</span>      => <span class="vr">$data</span>[<span class="st">'amount'</span>],
+                <span class="st">'type'</span>        => <span class="st">'debit'</span>,
+                <span class="st">'reference'</span>   => <span class="vr">$ref</span>,
+                <span class="st">'note'</span>        => <span class="vr">$data</span>[<span class="st">'note'</span>] ?? <span class="st">null</span>,
+                <span class="st">'created_by'</span>  => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+            ]);
+
+            <span class="cm">// ৫. Credit entry</span>
+            <span class="vr">$creditEntry</span> = <span class="cl">Transaction</span>::<span class="fn">create</span>([
+                <span class="st">'account_id'</span>  => <span class="vr">$dest</span>->id,
+                <span class="st">'amount'</span>      => <span class="vr">$data</span>[<span class="st">'amount'</span>],
+                <span class="st">'type'</span>        => <span class="st">'credit'</span>,
+                <span class="st">'reference'</span>   => <span class="vr">$ref</span>,
+                <span class="st">'note'</span>        => <span class="vr">$data</span>[<span class="st">'note'</span>] ?? <span class="st">null</span>,
+                <span class="st">'created_by'</span>  => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+            ]);
+
+            <span class="cm">// ৬. Balance আপডেট করুন</span>
+            <span class="vr">$source</span>-><span class="fn">decrement</span>(<span class="st">'balance'</span>, <span class="vr">$data</span>[<span class="st">'amount'</span>]);
+            <span class="vr">$dest</span>-><span class="fn">increment</span>(<span class="st">'balance'</span>, <span class="vr">$data</span>[<span class="st">'amount'</span>]);
+
+            <span class="kw">return</span> [
+                <span class="st">'reference'</span>    => <span class="vr">$ref</span>,
+                <span class="st">'debit_entry'</span>  => <span class="vr">$debitEntry</span>,
+                <span class="st">'credit_entry'</span> => <span class="vr">$creditEntry</span>,
+            ];
+
+        <span class="cm">// যেকোনো Exception হলে সব Rollback হবে স্বয়ংক্রিয়ভাবে</span>
+        });
+    }
+}</pre>
+  </div>
+
+  <div class="alert al-red">
+    <div class="alert-icon">🚨</div>
+    <div><strong>Race Condition ঠেকান:</strong> <code>lockForUpdate()</code> ব্যবহার করুন। না হলে দুটো request একসাথে আসলে balance দুইবার কাটা যাবে। এটি Accounting-এর সবচেয়ে মারাত্মক বাগ।</div>
+  </div>
+</div>
+
+
+<!-- ===== CH 04 ===== -->
+<div class="chapter" id="ch04">
+  <div class="chapter-header">
+    <div class="chapter-num amber">04</div>
+    <h2>Audit Trail — কে, কী, কখন পরিবর্তন করল<span class="en">Complete Activity Logging</span></h2>
+  </div>
+
+  <p>Audit Trail মানে প্রতিটি পরিবর্তনের সম্পূর্ণ ইতিহাস রাখা — কোন User, কোন IP থেকে, কোন সময়ে, কী পরিবর্তন করেছে এবং আগের value কী ছিল।</p>
+
+  <h3>📦 spatie/laravel-activitylog Package</h3>
+  <p>বাংলাদেশের বড় প্রজেক্টে এই package সবচেয়ে বেশি ব্যবহার হয়। Install করুন:</p>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">Terminal + Model Setup</div>
+    </div>
+    <pre><span class="cm">// Install করুন</span>
+composer require spatie/laravel-activitylog
+php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider"
+php artisan migrate
+
+<span class="cm">// Model-এ যোগ করুন</span>
+<span class="kw">class</span> <span class="cl">Transaction</span> <span class="kw">extends</span> <span class="cl">Model</span>
+{
+    <span class="kw">use</span> <span class="cl">SoftDeletes</span>, <span class="cl">LogsActivity</span>;
+
+    <span class="cm">// কোন fields-এর change log রাখবেন</span>
+    <span class="kw">protected static</span> <span class="vr">$logAttributes</span>     = [<span class="st">'amount'</span>, <span class="st">'type'</span>, <span class="st">'status'</span>, <span class="st">'note'</span>];
+    <span class="kw">protected static</span> <span class="vr">$logOnlyDirty</span>        = <span class="kw">true</span>;  <span class="cm">// শুধু পরিবর্তিত fields লগ করো</span>
+    <span class="kw">protected static</span> <span class="vr">$submitEmptyLogs</span>     = <span class="kw">false</span>; <span class="cm">// Empty change লগ করো না</span>
+    <span class="kw">protected static</span> <span class="vr">$logName</span>             = <span class="st">'transaction'</span>;
+
+    <span class="cm">// Custom description</span>
+    <span class="kw">public function</span> <span class="fn">getDescriptionForEvent</span>(<span class="kw">string</span> <span class="vr">$eventName</span>): <span class="kw">string</span>
+    {
+        <span class="kw">return</span> <span class="st">"Transaction {$eventName} by "</span> . (<span class="fn">auth</span>()-><span class="fn">user</span>()-><span class="vr">name</span> ?? <span class="st">'System'</span>);
+    }
+}</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">Custom Audit Log — নিজে বানানো পদ্ধতি</div>
+    </div>
+    <pre><span class="cm">// audit_logs table migration</span>
+<span class="cl">Schema</span>::<span class="fn">create</span>(<span class="st">'audit_logs'</span>, <span class="kw">function</span> (<span class="cl">Blueprint</span> <span class="vr">$table</span>) {
+    <span class="vr">$table</span>-><span class="fn">id</span>();
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'model_type'</span>);            <span class="cm">// কোন Model: Transaction, Invoice</span>
+    <span class="vr">$table</span>-><span class="fn">unsignedBigInteger</span>(<span class="st">'model_id'</span>); <span class="cm">// কোন Record-এর ID</span>
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'event'</span>);               <span class="cm">// created|updated|deleted|reversed</span>
+    <span class="vr">$table</span>-><span class="fn">json</span>(<span class="st">'old_values'</span>)-><span class="fn">nullable</span>();  <span class="cm">// আগের মান</span>
+    <span class="vr">$table</span>-><span class="fn">json</span>(<span class="st">'new_values'</span>)-><span class="fn">nullable</span>();  <span class="cm">// নতুন মান</span>
+    <span class="vr">$table</span>-><span class="fn">foreignId</span>(<span class="st">'user_id'</span>)-><span class="fn">nullable</span>()-><span class="fn">constrained</span>();
+    <span class="vr">$table</span>-><span class="fn">ipAddress</span>(<span class="st">'ip_address'</span>)-><span class="fn">nullable</span>();
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'user_agent'</span>)-><span class="fn">nullable</span>();
+    <span class="vr">$table</span>-><span class="fn">text</span>(<span class="st">'reason'</span>)-><span class="fn">nullable</span>();    <span class="cm">// কেন পরিবর্তন করা হলো</span>
+    <span class="vr">$table</span>-><span class="fn">timestamp</span>(<span class="st">'created_at'</span>);
+});
+
+<span class="cm">// AuditService — যেকোনো জায়গা থেকে কল করুন</span>
+<span class="kw">class</span> <span class="cl">AuditService</span>
+{
+    <span class="kw">public static function</span> <span class="fn">log</span>(<span class="vr">$model</span>, <span class="kw">string</span> <span class="vr">$event</span>, <span class="kw">array</span> <span class="vr">$old</span> = [], <span class="kw">string</span> <span class="vr">$reason</span> = <span class="st">null</span>): <span class="kw">void</span>
+    {
+        <span class="cl">AuditLog</span>::<span class="fn">create</span>([
+            <span class="st">'model_type'</span>  => <span class="fn">get_class</span>(<span class="vr">$model</span>),
+            <span class="st">'model_id'</span>    => <span class="vr">$model</span>->id,
+            <span class="st">'event'</span>       => <span class="vr">$event</span>,
+            <span class="st">'old_values'</span>  => <span class="vr">$old</span>,
+            <span class="st">'new_values'</span>  => <span class="vr">$model</span>-><span class="fn">getDirty</span>(),
+            <span class="st">'user_id'</span>     => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+            <span class="st">'ip_address'</span>  => <span class="fn">request</span>()-><span class="fn">ip</span>(),
+            <span class="st">'user_agent'</span>  => <span class="fn">request</span>()-><span class="fn">userAgent</span>(),
+            <span class="st">'reason'</span>      => <span class="vr">$reason</span>,
+        ]);
+    }
+}</pre>
+  </div>
+</div>
+
+
+<!-- ===== CH 05 ===== -->
+<div class="chapter" id="ch05">
+  <div class="chapter-header">
+    <div class="chapter-num green">05</div>
+    <h2>Model Versioning — প্রতিটি পরিবর্তনের Version রাখুন<span class="en">Version History / Snapshot</span></h2>
+  </div>
+
+  <p>Audit Log শুধু "কী পরিবর্তন হয়েছে" দেখায়। কিন্তু Versioning মানে প্রতিটি save-এর সম্পূর্ণ snapshot রাখা — যেকোনো সময় যেকোনো পুরনো version-এ ফিরে যাওয়া যাবে।</p>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">Model Version History System</div>
+    </div>
+    <pre><span class="cm">// model_versions table</span>
+<span class="cl">Schema</span>::<span class="fn">create</span>(<span class="st">'model_versions'</span>, <span class="kw">function</span> (<span class="cl">Blueprint</span> <span class="vr">$table</span>) {
+    <span class="vr">$table</span>-><span class="fn">id</span>();
+    <span class="vr">$table</span>-><span class="fn">morphs</span>(<span class="st">'versionable'</span>);   <span class="cm">// model_type + model_id (polymorphic)</span>
+    <span class="vr">$table</span>-><span class="fn">integer</span>(<span class="st">'version_number'</span>);
+    <span class="vr">$table</span>-><span class="fn">json</span>(<span class="st">'snapshot'</span>);         <span class="cm">// সম্পূর্ণ row-এর JSON copy</span>
+    <span class="vr">$table</span>-><span class="fn">foreignId</span>(<span class="st">'created_by'</span>)-><span class="fn">constrained</span>(<span class="st">'users'</span>);
+    <span class="vr">$table</span>-><span class="fn">string</span>(<span class="st">'change_reason'</span>)-><span class="fn">nullable</span>();
+    <span class="vr">$table</span>-><span class="fn">timestamp</span>(<span class="st">'created_at'</span>);
+});
+
+<span class="cm">// Versionable Trait — যেকোনো Model-এ ব্যবহার করুন</span>
+<span class="kw">trait</span> <span class="cl">HasVersions</span>
+{
+    <span class="kw">protected static function</span> <span class="fn">bootHasVersions</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// প্রতিটি Update-এ স্বয়ংক্রিয়ভাবে version তৈরি হবে</span>
+        <span class="kw">static</span>::<span class="fn">updating</span>(<span class="kw">function</span> (<span class="vr">$model</span>) {
+            <span class="vr">$lastVersion</span> = <span class="cl">ModelVersion</span>::<span class="fn">where</span>([
+                <span class="st">'versionable_type'</span> => <span class="fn">get_class</span>(<span class="vr">$model</span>),
+                <span class="st">'versionable_id'</span>   => <span class="vr">$model</span>->id,
+            ])-><span class="fn">max</span>(<span class="st">'version_number'</span>) ?? <span class="nu">0</span>;
+
+            <span class="cl">ModelVersion</span>::<span class="fn">create</span>([
+                <span class="st">'versionable_type'</span> => <span class="fn">get_class</span>(<span class="vr">$model</span>),
+                <span class="st">'versionable_id'</span>   => <span class="vr">$model</span>->id,
+                <span class="st">'version_number'</span>   => <span class="vr">$lastVersion</span> + <span class="nu">1</span>,
+                <span class="st">'snapshot'</span>         => <span class="vr">$model</span>-><span class="fn">getOriginal</span>(), <span class="cm">// আগের মান save করো</span>
+                <span class="st">'created_by'</span>       => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+                <span class="st">'change_reason'</span>    => <span class="fn">request</span>()-><span class="fn">get</span>(<span class="st">'change_reason'</span>),
+            ]);
+        });
+    }
+
+    <span class="cm">// যেকোনো পুরনো version-এ ফিরে যান</span>
+    <span class="kw">public function</span> <span class="fn">revertToVersion</span>(<span class="kw">int</span> <span class="vr">$versionNumber</span>): <span class="kw">bool</span>
+    {
+        <span class="vr">$version</span> = <span class="cl">ModelVersion</span>::<span class="fn">where</span>([
+            <span class="st">'versionable_type'</span>   => <span class="fn">get_class</span>(<span class="vr">$this</span>),
+            <span class="st">'versionable_id'</span>     => <span class="vr">$this</span>->id,
+            <span class="st">'version_number'</span>     => <span class="vr">$versionNumber</span>,
+        ])-><span class="fn">firstOrFail</span>();
+
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="fn">update</span>(<span class="vr">$version</span>->snapshot);
+    }
+
+    <span class="kw">public function</span> <span class="fn">versions</span>()
+    {
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="fn">morphMany</span>(<span class="cl">ModelVersion</span>::<span class="kw">class</span>, <span class="st">'versionable'</span>)-><span class="fn">orderByDesc</span>(<span class="st">'version_number'</span>);
+    }
+}
+
+<span class="cm">// ব্যবহার:</span>
+<span class="vr">$invoice</span> = <span class="cl">Invoice</span>::<span class="fn">find</span>(<span class="nu">1</span>);
+<span class="vr">$invoice</span>-><span class="fn">versions</span>()-><span class="fn">get</span>();    <span class="cm">// সব version দেখুন</span>
+<span class="vr">$invoice</span>-><span class="fn">revertToVersion</span>(<span class="nu">3</span>);  <span class="cm">// Version 3-এ ফিরে যান</span></pre>
+  </div>
+</div>
+
+
+<!-- ===== CH 06 ===== -->
+<div class="chapter" id="ch06">
+  <div class="chapter-header">
+    <div class="chapter-num red">06</div>
+    <h2>Accounting Reversal — ভুল Entry বাতিল করুন<span class="en">Journal Reversal / Contra Entry</span></h2>
+  </div>
+
+  <p>Accounting-এ ভুল entry কখনো মুছে ফেলা হয় না। বরং একটি <strong>Reversal Entry</strong> বা <strong>Contra Entry</strong> দেওয়া হয় যা আগের entry-র বিপরীত কাজ করে। এটিই আন্তর্জাতিক accounting standard।</p>
+
+  <div class="flow">
+    <div class="flow-box r">ভুল Entry<br><small>Debit ৳5000</small></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Reversal Entry<br><small>Credit ৳5000</small></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box g">Net Effect<br><small>= 0 (শূন্য)</small></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box b">নতুন সঠিক Entry<br><small>নতুন amount</small></div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">ReversalService.php — সম্পূর্ণ Reversal System</div>
+    </div>
+    <pre><span class="kw">class</span> <span class="cl">ReversalService</span>
+{
+    <span class="kw">public function</span> <span class="fn">reverseTransaction</span>(<span class="kw">int</span> <span class="vr">$transactionId</span>, <span class="kw">string</span> <span class="vr">$reason</span>): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> <span class="cl">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span> () <span class="kw">use</span> (<span class="vr">$transactionId</span>, <span class="vr">$reason</span>) {
+
+            <span class="cm">// ১. মূল Transaction খুঁজুন এবং lock করুন</span>
+            <span class="vr">$original</span> = <span class="cl">Transaction</span>::<span class="fn">lockForUpdate</span>()-><span class="fn">findOrFail</span>(<span class="vr">$transactionId</span>);
+
+            <span class="cm">// ২. ইতিমধ্যে reversed কিনা check করুন</span>
+            <span class="kw">if</span> (<span class="vr">$original</span>->status === <span class="st">'reversed'</span>) {
+                <span class="kw">throw new</span> <span class="cl">AlreadyReversedException</span>(<span class="st">'এই Transaction ইতিমধ্যে বাতিল করা হয়েছে।'</span>);
+            }
+
+            <span class="cm">// ৩. Reversal reference তৈরি করুন</span>
+            <span class="vr">$reversalRef</span> = <span class="st">'REV-'</span> . <span class="vr">$original</span>->reference;
+
+            <span class="cm">// ৪. Reversal Entry তৈরি করুন (বিপরীত type)</span>
+            <span class="vr">$reversalEntry</span> = <span class="cl">Transaction</span>::<span class="fn">create</span>([
+                <span class="st">'account_id'</span>        => <span class="vr">$original</span>->account_id,
+                <span class="st">'amount'</span>            => <span class="vr">$original</span>->amount,
+                <span class="st">'type'</span>              => <span class="vr">$original</span>->type === <span class="st">'debit'</span> ? <span class="st">'credit'</span> : <span class="st">'debit'</span>, <span class="cm">// বিপরীত!</span>
+                <span class="st">'reference'</span>         => <span class="vr">$reversalRef</span>,
+                <span class="st">'note'</span>              => <span class="st">'REVERSAL: '</span> . <span class="vr">$reason</span>,
+                <span class="st">'status'</span>            => <span class="st">'reversal'</span>,
+                <span class="st">'reversed_entry_id'</span> => <span class="vr">$original</span>->id, <span class="cm">// কোন entry-র reversal</span>
+                <span class="st">'created_by'</span>        => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+            ]);
+
+            <span class="cm">// ৫. মূল entry-কে reversed mark করুন</span>
+            <span class="vr">$original</span>-><span class="fn">update</span>([
+                <span class="st">'status'</span>           => <span class="st">'reversed'</span>,
+                <span class="st">'reversed_by'</span>      => <span class="fn">auth</span>()-><span class="fn">id</span>(),
+                <span class="st">'reversed_at'</span>      => <span class="fn">now</span>(),
+                <span class="st">'reversal_reason'</span>  => <span class="vr">$reason</span>,
+            ]);
+
+            <span class="cm">// ৬. Account balance ঠিক করুন</span>
+            <span class="vr">$account</span> = <span class="cl">Account</span>::<span class="fn">lockForUpdate</span>()-><span class="fn">find</span>(<span class="vr">$original</span>->account_id);
+            <span class="kw">if</span> (<span class="vr">$original</span>->type === <span class="st">'debit'</span>) {
+                <span class="vr">$account</span>-><span class="fn">increment</span>(<span class="st">'balance'</span>, <span class="vr">$original</span>->amount); <span class="cm">// Debit ছিল → Balance ফেরত</span>
+            } <span class="kw">else</span> {
+                <span class="vr">$account</span>-><span class="fn">decrement</span>(<span class="st">'balance'</span>, <span class="vr">$original</span>->amount); <span class="cm">// Credit ছিল → Balance কমাও</span>
+            }
+
+            <span class="cm">// ৭. Audit Log</span>
+            <span class="cl">AuditService</span>::<span class="fn">log</span>(<span class="vr">$original</span>, <span class="st">'reversed'</span>, <span class="vr">$original</span>-><span class="fn">toArray</span>(), <span class="vr">$reason</span>);
+
+            <span class="kw">return</span> [
+                <span class="st">'original'</span>  => <span class="vr">$original</span>->fresh(),
+                <span class="st">'reversal'</span>  => <span class="vr">$reversalEntry</span>,
+            ];
+        });
+    }
+}
+
+<span class="cm">// Controller-এ ব্যবহার</span>
+<span class="kw">public function</span> <span class="fn">reverse</span>(<span class="cl">Request</span> <span class="vr">$request</span>, <span class="kw">int</span> <span class="vr">$id</span>, <span class="cl">ReversalService</span> <span class="vr">$service</span>)
+{
+    <span class="vr">$request</span>-><span class="fn">validate</span>([<span class="st">'reason'</span> => <span class="st">'required|string|min:10'</span>]);
+
+    <span class="vr">$result</span> = <span class="vr">$service</span>-><span class="fn">reverseTransaction</span>(<span class="vr">$id</span>, <span class="vr">$request</span>->reason);
+
+    <span class="kw">return</span> <span class="fn">back</span>()-><span class="fn">with</span>(<span class="st">'success'</span>, <span class="st">'Transaction সফলভাবে বাতিল করা হয়েছে।'</span>);
+}</pre>
+  </div>
+
+  <div class="alert al-amber">
+    <div class="alert-icon">⚠️</div>
+    <div><strong>গুরুত্বপূর্ণ:</strong> Reversal করার আগে সবসময় <code>reason</code> নেওয়া বাধ্যতামূলক করুন। "কেন বাতিল করা হলো" — এটি Audit-এর জন্য অপরিহার্য। Minimum ১০ character enforce করুন।</div>
+  </div>
+</div>
+
+
+<!-- ===== CH 07 ===== -->
+<div class="chapter" id="ch07">
+  <div class="chapter-header">
+    <div class="chapter-num blue">07</div>
+    <h2>Input Validation ও Data Guard<span class="en">Bulletproof Validation Strategy</span></h2>
+  </div>
+
+  <p>ভুল entry-র সবচেয়ে বড় কারণ হলো সঠিক validation না থাকা। Laravel-এর Form Request ব্যবহার করে সব validation একটি জায়গায় রাখুন।</p>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">TransactionRequest.php — Bulletproof Validation</div>
+    </div>
+    <pre><span class="kw">class</span> <span class="cl">CreateTransactionRequest</span> <span class="kw">extends</span> <span class="cl">FormRequest</span>
+{
+    <span class="kw">public function</span> <span class="fn">authorize</span>(): <span class="kw">bool</span>
+    {
+        <span class="cm">// শুধু accountant বা admin করতে পারবে</span>
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="fn">user</span>()-><span class="fn">hasAnyRole</span>([<span class="st">'accountant'</span>, <span class="st">'admin'</span>]);
+    }
+
+    <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'from_account'</span> => [<span class="st">'required'</span>, <span class="st">'exists:accounts,id'</span>,
+                                  <span class="cl">Rule</span>::<span class="fn">notIn</span>([<span class="vr">$this</span>->to_account])], <span class="cm">// নিজেকে নিজে transfer না</span>
+            <span class="st">'to_account'</span>   => [<span class="st">'required'</span>, <span class="st">'exists:accounts,id'</span>],
+            <span class="st">'amount'</span>       => [<span class="st">'required'</span>, <span class="st">'numeric'</span>, <span class="st">'min:1'</span>, <span class="st">'max:999999999'</span>],
+            <span class="st">'note'</span>         => [<span class="st">'nullable'</span>, <span class="st">'string'</span>, <span class="st">'max:500'</span>],
+            <span class="st">'transaction_date'</span> => [<span class="st">'required'</span>, <span class="st">'date'</span>, <span class="st">'before_or_equal:today'</span>],
+        ];
+    }
+
+    <span class="kw">public function</span> <span class="fn">messages</span>(): <span class="kw">array</span>
+    {
+        <span class="kw">return</span> [
+            <span class="st">'amount.min'</span>            => <span class="st">'পরিমাণ ০ এর বেশি হতে হবে।'</span>,
+            <span class="st">'from_account.not_in'</span>   => <span class="st">'Source ও Destination account আলাদা হতে হবে।'</span>,
+            <span class="st">'transaction_date.before_or_equal'</span> => <span class="st">'ভবিষ্যতের তারিখ দেওয়া যাবে না।'</span>,
+        ];
+    }
+
+    <span class="cm">// Data sanitize করুন</span>
+    <span class="kw">protected function</span> <span class="fn">prepareForValidation</span>(): <span class="kw">void</span>
+    {
+        <span class="vr">$this</span>-><span class="fn">merge</span>([
+            <span class="st">'amount'</span> => <span class="fn">round</span>(<span class="fn">abs</span>(<span class="vr">$this</span>->amount), <span class="nu">2</span>), <span class="cm">// Negative amount ঠেকান</span>
+        ]);
+    }
+}
+
+<span class="cm">// Custom Rule: Period Lock — পুরনো তারিখে entry ঠেকান</span>
+<span class="kw">class</span> <span class="cl">PeriodNotLocked</span> <span class="kw">implements</span> <span class="cl">Rule</span>
+{
+    <span class="kw">public function</span> <span class="fn">passes</span>(<span class="vr">$attribute</span>, <span class="vr">$value</span>): <span class="kw">bool</span>
+    {
+        <span class="cm">// Closed accounting period-এ entry করা যাবে না</span>
+        <span class="kw">return</span> !<span class="cl">AccountingPeriod</span>::<span class="fn">where</span>(<span class="st">'status'</span>, <span class="st">'closed'</span>)
+            -><span class="fn">whereDate</span>(<span class="st">'end_date'</span>, <span class="st">'>='</span>, <span class="vr">$value</span>)
+            -><span class="fn">exists</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">message</span>(): <span class="kw">string</span>
+    {
+        <span class="kw">return</span> <span class="st">'এই accounting period বন্ধ করা হয়েছে। পুরনো তারিখে entry দেওয়া যাবে না।'</span>;
+    }
+}</pre>
+  </div>
+</div>
+
+
+<!-- ===== CH 08 ===== -->
+<div class="chapter" id="ch08">
+  <div class="chapter-header">
+    <div class="chapter-num amber">08</div>
+    <h2>Queue ও Job-এ Idempotency<span class="en">Safe Background Jobs</span></h2>
+  </div>
+
+  <p>Queue Job retry হলে একই কাজ দুইবার হয়ে যেতে পারে — যেমন দুইবার payment process বা দুইবার email। এটি ঠেকাতে <strong>Idempotency</strong> key ব্যবহার করতে হবে।</p>
+
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">ProcessPaymentJob.php — Idempotent Job</div>
+    </div>
+    <pre><span class="kw">class</span> <span class="cl">ProcessPaymentJob</span> <span class="kw">implements</span> <span class="cl">ShouldQueue</span>
+{
+    <span class="kw">use</span> <span class="cl">Dispatchable</span>, <span class="cl">Queueable</span>, <span class="cl">SerializesModels</span>;
+
+    <span class="kw">public</span> <span class="vr">$tries</span> = <span class="nu">3</span>;       <span class="cm">// সর্বোচ্চ ৩ বার retry</span>
+    <span class="kw">public</span> <span class="vr">$backoff</span> = [<span class="nu">30</span>, <span class="nu">60</span>, <span class="nu">120</span>]; <span class="cm">// 30s, 60s, 120s পর retry</span>
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="kw">int</span> <span class="vr">$transactionId</span>,
+        <span class="kw">private</span> <span class="kw">readonly</span> <span class="kw">string</span> <span class="vr">$idempotencyKey</span> <span class="cm">// Unique key</span>
+    ) {}
+
+    <span class="kw">public function</span> <span class="fn">handle</span>(): <span class="kw">void</span>
+    {
+        <span class="cm">// ১. ইতিমধ্যে process হয়েছে কিনা check করুন</span>
+        <span class="vr">$processed</span> = <span class="cl">Cache</span>::<span class="fn">get</span>(<span class="st">'job_processed:'</span> . <span class="vr">$this</span>->idempotencyKey);
+
+        <span class="kw">if</span> (<span class="vr">$processed</span>) {
+            <span class="cl">Log</span>::<span class="fn">info</span>(<span class="st">'Job already processed, skipping'</span>, [<span class="st">'key'</span> => <span class="vr">$this</span>->idempotencyKey]);
+            <span class="kw">return</span>; <span class="cm">// দ্বিতীয়বার skip করুন</span>
+        }
+
+        <span class="cm">// ২. Atomic lock — একসাথে দুটো process ঠেকান</span>
+        <span class="vr">$lock</span> = <span class="cl">Cache</span>::<span class="fn">lock</span>(<span class="st">'payment:'</span> . <span class="vr">$this</span>->transactionId, <span class="nu">60</span>);
+
+        <span class="vr">$lock</span>-><span class="fn">block</span>(<span class="nu">10</span>, <span class="kw">function</span> () {
+            <span class="cm">// ৩. আসল কাজ করুন</span>
+            <span class="vr">$transaction</span> = <span class="cl">Transaction</span>::<span class="fn">findOrFail</span>(<span class="vr">$this</span>->transactionId);
+            <span class="vr">$transaction</span>-><span class="fn">update</span>([<span class="st">'status'</span> => <span class="st">'processed'</span>]);
+
+            <span class="cm">// ৪. সফল হলে Cache-এ mark করুন (24 ঘণ্টা)</span>
+            <span class="cl">Cache</span>::<span class="fn">put</span>(<span class="st">'job_processed:'</span> . <span class="vr">$this</span>->idempotencyKey, <span class="kw">true</span>, <span class="fn">now</span>()-><span class="fn">addDay</span>());
+        });
+    }
+
+    <span class="kw">public function</span> <span class="fn">failed</span>(<span class="cl">\Throwable</span> <span class="vr">$exception</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// সব retry শেষে fail হলে alert পাঠান</span>
+        <span class="cl">Log</span>::<span class="fn">critical</span>(<span class="st">'Payment Job Failed'</span>, [
+            <span class="st">'transaction_id'</span> => <span class="vr">$this</span>->transactionId,
+            <span class="st">'error'</span>          => <span class="vr">$exception</span>-><span class="fn">getMessage</span>(),
+        ]);
+        <span class="cm">// Notification::send(admin, new PaymentJobFailedNotification(...))</span>
+    }
+}</pre>
+  </div>
+</div>
+
+
+<!-- ===== CH 09 ===== -->
+<div class="chapter" id="ch09">
+  <div class="chapter-header">
+    <div class="chapter-num blue">09</div>
+    <h2>Big Project Architecture — বড় প্রজেক্ট সাজান<span class="en">Scalable Laravel Architecture</span></h2>
+  </div>
+
+  <p>বড় প্রজেক্টে সবকিছু Controller-এ লিখলে maintainability নষ্ট হয়। নিচের structure অনুসরণ করুন:</p>
+
+  <div class="card-grid">
+    <div class="card c-green">
+      <h3>📁 Folder Structure</h3>
+      <div class="code-wrap" style="margin-top:0;">
+        <div class="code-bar">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <div class="code-filename">app/ directory</div>
+        </div>
+        <pre style="font-size:12px;"><span class="vr">app/</span>
+├── <span class="fn">Http/Controllers/</span>    <span class="cm"># শুধু Request/Response</span>
+├── <span class="fn">Services/</span>           <span class="cm"># Business Logic</span>
+│   ├── <span class="cl">AccountingService</span>
+│   ├── <span class="cl">ReversalService</span>
+│   └── <span class="cl">AuditService</span>
+├── <span class="fn">Repositories/</span>       <span class="cm"># DB queries</span>
+├── <span class="fn">Actions/</span>            <span class="cm"># Single-action classes</span>
+│   └── <span class="cl">ReverseTransaction</span>
+├── <span class="fn">Events/</span>             <span class="cm"># Domain events</span>
+├── <span class="fn">Listeners/</span>          <span class="cm"># Event handlers</span>
+├── <span class="fn">Exceptions/</span>         <span class="cm"># Custom exceptions</span>
+│   ├── <span class="cl">AlreadyReversedException</span>
+│   └── <span class="cl">InsufficientBalanceException</span>
+└── <span class="fn">Traits/</span>             <span class="cm"># Reusable behaviors</span>
+    ├── <span class="cl">HasVersions</span>
+    └── <span class="cl">HasAuditLog</span></pre>
+      </div>
+    </div>
+    <div class="card c-blue">
+      <h3>🔄 Service Layer Pattern</h3>
+      <div class="code-wrap" style="margin-top:0;">
+        <div class="code-bar">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <div class="code-filename">পাতলা Controller, মোটা Service</div>
+        </div>
+        <pre style="font-size:12px;"><span class="cm">// ❌ ভুল: সব Controller-এ</span>
+<span class="kw">public function</span> <span class="fn">store</span>(<span class="cl">Request</span> <span class="vr">$req</span>) {
+    <span class="cm">// ৫০ লাইন business logic...</span>
+}
+
+<span class="cm">// ✅ সঠিক: Controller শুধু delegate করে</span>
+<span class="kw">public function</span> <span class="fn">store</span>(
+    <span class="cl">CreateTransactionRequest</span> <span class="vr">$request</span>,
+    <span class="cl">AccountingService</span> <span class="vr">$service</span>
+) {
+    <span class="vr">$result</span> = <span class="vr">$service</span>-><span class="fn">transfer</span>(
+        <span class="vr">$request</span>-><span class="fn">validated</span>()
+    );
+
+    <span class="kw">return</span> <span class="fn">back</span>()-><span class="fn">with</span>(<span class="st">'success'</span>, <span class="st">'Done'</span>);
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <h3>🔐 Permission ও Role Management</h3>
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">spatie/laravel-permission দিয়ে Role-based Access</div>
+    </div>
+    <pre><span class="cm">// Permission Define করুন</span>
+<span class="cl">Permission</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'create transactions'</span>]);
+<span class="cl">Permission</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'reverse transactions'</span>]);  <span class="cm">// শুধু Senior-দের জন্য</span>
+<span class="cl">Permission</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'view audit logs'</span>]);
+<span class="cl">Permission</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'lock accounting period'</span>]);
+
+<span class="cm">// Role তৈরি করুন</span>
+<span class="vr">$accountant</span> = <span class="cl">Role</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'accountant'</span>]);
+<span class="vr">$accountant</span>-><span class="fn">givePermissionTo</span>([<span class="st">'create transactions'</span>]); <span class="cm">// Reversal পারবে না</span>
+
+<span class="vr">$seniorAccountant</span> = <span class="cl">Role</span>::<span class="fn">create</span>([<span class="st">'name'</span> => <span class="st">'senior_accountant'</span>]);
+<span class="vr">$seniorAccountant</span>-><span class="fn">givePermissionTo</span>([<span class="st">'create transactions'</span>, <span class="st">'reverse transactions'</span>]);
+
+<span class="cm">// Route-এ Middleware দিয়ে Guard করুন</span>
+<span class="cl">Route</span>::<span class="fn">post</span>(<span class="st">'/transactions/{id}/reverse'</span>, [<span class="cl">TransactionController</span>::<span class="kw">class</span>, <span class="st">'reverse'</span>])
+    -><span class="fn">middleware</span>(<span class="st">'permission:reverse transactions'</span>);
+
+<span class="cm">// Controller-এ check করুন</span>
+<span class="vr">$this</span>-><span class="fn">authorize</span>(<span class="st">'reverse transactions'</span>);
+<span class="cm">// অথবা: $user->can('reverse transactions')</span></pre>
+  </div>
+
+  <h3>📊 Accounting Period Lock</h3>
+  <div class="code-wrap">
+    <div class="code-bar">
+      <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+      <div class="code-filename">AccountingPeriodService.php</div>
+    </div>
+    <pre><span class="cm">// Month/Year শেষে period lock করুন</span>
+<span class="kw">class</span> <span class="cl">AccountingPeriodService</span>
+{
+    <span class="kw">public function</span> <span class="fn">closePeriod</span>(<span class="kw">int</span> <span class="vr">$year</span>, <span class="kw">int</span> <span class="vr">$month</span>): <span class="kw">void</span>
+    {
+        <span class="cm">// শুধু Admin বা Finance Manager করতে পারবে</span>
+        <span class="fn">abort_unless</span>(<span class="fn">auth</span>()-><span class="fn">user</span>()-><span class="fn">can</span>(<span class="st">'lock accounting period'</span>), <span class="nu">403</span>);
+
+        <span class="cl">DB</span>::<span class="fn">transaction</span>(<span class="kw">function</span> () <span class="kw">use</span> (<span class="vr">$year</span>, <span class="vr">$month</span>) {
+            <span class="cm">// Period close করুন</span>
+            <span class="cl">AccountingPeriod</span>::<span class="fn">updateOrCreate</span>(
+                [<span class="st">'year'</span> => <span class="vr">$year</span>, <span class="st">'month'</span> => <span class="vr">$month</span>],
+                [<span class="st">'status'</span> => <span class="st">'closed'</span>, <span class="st">'closed_by'</span> => <span class="fn">auth</span>()-><span class="fn">id</span>(), <span class="st">'closed_at'</span> => <span class="fn">now</span>()]
+            );
+
+            <span class="cm">// Closing balance snapshot রাখুন</span>
+            <span class="cl">Account</span>::<span class="fn">each</span>(<span class="kw">function</span> (<span class="vr">$account</span>) <span class="kw">use</span> (<span class="vr">$year</span>, <span class="vr">$month</span>) {
+                <span class="cl">AccountBalance</span>::<span class="fn">create</span>([
+                    <span class="st">'account_id'</span> => <span class="vr">$account</span>->id,
+                    <span class="st">'year'</span>       => <span class="vr">$year</span>,
+                    <span class="st">'month'</span>      => <span class="vr">$month</span>,
+                    <span class="st">'balance'</span>    => <span class="vr">$account</span>->balance,
+                ]);
+            });
+        });
+    }
+}</pre>
+  </div>
+</div>
+
+
+<!-- ===== CH 10 ===== -->
+<div class="chapter" id="ch10">
+  <div class="chapter-header">
+    <div class="chapter-num green">10</div>
+    <h2>সম্পূর্ণ চেকলিস্ট<span class="en">Production Readiness Checklist</span></h2>
+  </div>
+
+  <div class="card-grid">
+    <div class="card c-green">
+      <h3>✅ Data Safety</h3>
+      <ul class="chk">
+        <li><div class="ci ci-ok">✓</div><span>সব Critical Table-এ <code>SoftDeletes</code></span></li>
+        <li><div class="ci ci-ok">✓</div><span>সব Financial Operation <code>DB::transaction()</code>-এ</span></li>
+        <li><div class="ci ci-ok">✓</div><span><code>lockForUpdate()</code> দিয়ে Race Condition ঠেকানো</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Amount সবসময় <code>decimal(15,2)</code> — float না</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Unique Reference Number প্রতিটি Transaction-এ</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Reversal Entry সিস্টেম — Hard delete না</span></li>
+      </ul>
+    </div>
+    <div class="card c-blue">
+      <h3>📝 Audit & History</h3>
+      <ul class="chk">
+        <li><div class="ci ci-ok">✓</div><span>Activity Log সব Model-এ (<code>spatie/activitylog</code>)</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Version History — পুরনো অবস্থায় ফেরার ব্যবস্থা</span></li>
+        <li><div class="ci ci-ok">✓</div><span>IP Address ও User Agent সহ Log</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Reason mandatory for Reversal/Edit</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Accounting Period Lock সিস্টেম</span></li>
+      </ul>
+    </div>
+    <div class="card c-red">
+      <h3>🔐 Access Control</h3>
+      <ul class="chk">
+        <li><div class="ci ci-ok">✓</div><span>Role-based permission (<code>spatie/permission</code>)</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Reversal শুধু Senior/Admin করতে পারবে</span></li>
+        <li><div class="ci ci-bad">✗</div><span>সাধারণ User কখনো direct DB query করবে না</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Form Request Validation সব endpoint-এ</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Negative Amount ও Future Date block করা</span></li>
+      </ul>
+    </div>
+    <div class="card c-amber">
+      <h3>🏗️ Architecture</h3>
+      <ul class="chk">
+        <li><div class="ci ci-ok">✓</div><span>Service Layer — Controller পাতলা</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Custom Exception classes</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Queue Job-এ Idempotency Key</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Events & Listeners দিয়ে decouple</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Repository Pattern (বড় প্রজেক্টে)</span></li>
+        <li><div class="ci ci-ok">✓</div><span>Failed Job monitoring চালু</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px;">📊 Tool ও Package সারণি</h3>
+  <table>
+    <tr>
+      <th>সমস্যা</th>
+      <th>Solution</th>
+      <th>Package / Method</th>
+      <th>কঠিনত্ব</th>
+    </tr>
+    <tr><td>ভুল Entry Revert</td><td>Reversal Service</td><td>Custom <span class="badge b-blue">Service Class</span></td><td>⭐⭐⭐</td></tr>
+    <tr><td>Data Delete রোধ</td><td>Soft Delete</td><td><span class="badge b-green">SoftDeletes Trait</span></td><td>⭐</td></tr>
+    <tr><td>Partial Save রোধ</td><td>DB Transaction</td><td><span class="badge b-blue">DB::transaction()</span></td><td>⭐</td></tr>
+    <tr><td>Race Condition</td><td>Pessimistic Lock</td><td><span class="badge b-blue">lockForUpdate()</span></td><td>⭐⭐</td></tr>
+    <tr><td>Activity Log</td><td>Audit Trail</td><td><span class="badge b-amber">spatie/activitylog</span></td><td>⭐</td></tr>
+    <tr><td>Version History</td><td>Snapshot Table</td><td><span class="badge b-blue">HasVersions Trait</span></td><td>⭐⭐⭐</td></tr>
+    <tr><td>Access Control</td><td>Role & Permission</td><td><span class="badge b-amber">spatie/permission</span></td><td>⭐⭐</td></tr>
+    <tr><td>Job Duplicate</td><td>Idempotency</td><td><span class="badge b-green">Cache Lock</span></td><td>⭐⭐⭐</td></tr>
+    <tr><td>Input Error</td><td>Form Request</td><td><span class="badge b-green">FormRequest Class</span></td><td>⭐</td></tr>
+    <tr><td>Period Security</td><td>Accounting Lock</td><td><span class="badge b-blue">Custom Service</span></td><td>⭐⭐⭐</td></tr>
+  </table>
+</div>
+
+<div class="divider"></div>
+
+<div class="alert al-green" style="margin-bottom:50px;">
+  <div class="alert-icon">🎯</div>
+  <div>
+    <strong>সারসংক্ষেপ:</strong> বড় প্রজেক্টে সবচেয়ে গুরুত্বপূর্ণ ৪টি নীতি —
+    <strong>(১) কখনো ডেটা hard delete করবেন না — SoftDelete ব্যবহার করুন।</strong>
+    <strong>(২) সব financial operation DB::transaction()-এ রাখুন।</strong>
+    <strong>(৩) ভুল হলে Reversal Entry দিন, মুছবেন না।</strong>
+    <strong>(৪) সব পরিবর্তনের Audit Log রাখুন।</strong>
+    এই ৪টি নীতি মানলে যেকোনো ভুল ধরা ও ঠিক করা সম্ভব।
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<footer>
+  <div class="wrap">
+    <strong>Laravel Data Integrity & Big Project Handling</strong> — বাংলা সম্পূর্ণ গাইড<br>
+    SoftDelete · DB Transaction · Audit Trail · Versioning · Reversal · Service Layer<br>
+    <span style="color:var(--gold);">নিরাপদ কোড লিখুন — ডেটা হারাবেন না</span> 📒
+  </div>
+</footer>
+
+</body>
+</html>
