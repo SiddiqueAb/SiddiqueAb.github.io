@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySQL মাস্টারক্লাস — PRAN-RFL ডেটাবেস ডিজাইন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #111318;
+    --bg3: #181c24;
+    --bg4: #1e2330;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --text2: #9aa3b8;
+    --text3: #5a6480;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --pink: #f472b6;
+    --orange: #fb923c;
+    --mono: 'JetBrains Mono', monospace;
+    --bangla: 'Hind Siliguri', sans-serif;
+    --serif: 'Tiro Bangla', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--bangla);
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+    padding: 0 2rem;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0.3rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--bg3); }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 2rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 5rem 0 4rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,142,247,0.1);
+    border: 1px solid rgba(79,142,247,0.25);
+    color: var(--accent);
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .hero h1 {
+    font-family: var(--bangla);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--cyan), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text2);
+    max-width: 680px;
+    margin: 0 auto 3rem;
+    animation: fadeUp 0.7s ease 0.2s both;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+  .stat-box {
+    text-align: center;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
+  }
+  .stat-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--mono);
+  }
+  .stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 2px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADERS */
+  .section {
+    margin: 5rem 0;
+  }
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    margin-bottom: 0.8rem;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--text3);
+  }
+  .section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .section-desc {
+    color: var(--text2);
+    font-family: var(--serif);
+    font-size: 1rem;
+    max-width: 700px;
+    margin-bottom: 2.5rem;
+  }
+
+  /* GRID CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .card {
+    background: var(--bg2);
+    padding: 1.8rem;
+    transition: background 0.2s;
+  }
+  .card:hover { background: var(--bg3); }
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+  .card-body {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* INFO PANELS */
+  .info-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .info-panel-header {
+    background: var(--bg3);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .info-panel-body {
+    padding: 1.5rem;
+  }
+
+  /* ACCENT COLORS */
+  .accent-blue  { color: var(--accent); }
+  .accent-green { color: var(--green); }
+  .accent-amber { color: var(--amber); }
+  .accent-red   { color: var(--red); }
+  .accent-cyan  { color: var(--cyan); }
+  .accent-pink  { color: var(--pink); }
+  .accent-purple { color: var(--accent2); }
+  .accent-orange { color: var(--orange); }
+
+  /* TAG / BADGE */
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    font-family: var(--mono);
+  }
+  .tag-blue   { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.2); }
+  .tag-green  { background: rgba(52,211,153,0.1);  color: var(--green);  border: 1px solid rgba(52,211,153,0.2); }
+  .tag-amber  { background: rgba(251,191,36,0.1);  color: var(--amber);  border: 1px solid rgba(251,191,36,0.2); }
+  .tag-red    { background: rgba(248,113,113,0.1); color: var(--red);    border: 1px solid rgba(248,113,113,0.2); }
+  .tag-cyan   { background: rgba(34,211,238,0.1);  color: var(--cyan);   border: 1px solid rgba(34,211,238,0.2); }
+  .tag-purple { background: rgba(124,92,252,0.1);  color: var(--accent2);border: 1px solid rgba(124,92,252,0.2); }
+  .tag-orange { background: rgba(251,146,60,0.1);  color: var(--orange); border: 1px solid rgba(251,146,60,0.2); }
+
+  /* CODE BLOCK */
+  .code-wrap {
+    background: #0d0f14;
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .code-header {
+    background: var(--bg3);
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+  .code-dots { display: flex; gap: 5px; }
+  .code-dot  { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  pre {
+    padding: 1.2rem 1.5rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #c9d1e0;
+  }
+  .kw  { color: #c678dd; }   /* keyword */
+  .fn  { color: #61afef; }   /* function/type */
+  .str { color: #98c379; }   /* string */
+  .cm  { color: #5c6370; font-style: italic; }  /* comment */
+  .num { color: #d19a66; }   /* number */
+  .op  { color: #56b6c2; }   /* operator */
+  .tbl { color: var(--amber); font-weight: 500; }  /* table name */
+  .col { color: #e5c07b; }   /* column */
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .data-table th {
+    background: var(--bg3);
+    color: var(--text2);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border2);
+  }
+  .data-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .mono { font-family: var(--mono); font-size: 0.8rem; }
+
+  /* ALERT / TIP BOX */
+  .tip {
+    display: flex;
+    gap: 12px;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .tip-blue   { background: rgba(79,142,247,0.08);  border-left: 3px solid var(--accent);  }
+  .tip-green  { background: rgba(52,211,153,0.08);  border-left: 3px solid var(--green);   }
+  .tip-amber  { background: rgba(251,191,36,0.08);  border-left: 3px solid var(--amber);   }
+  .tip-red    { background: rgba(248,113,113,0.08); border-left: 3px solid var(--red);     }
+
+  /* ARCHITECTURE DIAGRAM (SVG based) */
+  .arch-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  /* LAYER BOX */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 1.5rem 0;
+  }
+  .layer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .layer:hover { border-color: var(--border2); background: var(--bg3); }
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+    color: #000;
+    font-weight: 700;
+  }
+  .layer-content { flex: 1; }
+  .layer-name { font-weight: 600; font-size: 0.95rem; }
+  .layer-desc { font-size: 0.8rem; color: var(--text2); margin-top: 2px; }
+  .layer-sub {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .layer-pill {
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text2);
+  }
+
+  /* INDEX VISUAL */
+  .btree-visual {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+    overflow-x: auto;
+  }
+  .btree-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .btree-node {
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-align: center;
+    min-width: 100px;
+    font-weight: 500;
+  }
+  .btree-root  { border-color: var(--accent2); background: rgba(124,92,252,0.12); color: var(--accent2); }
+  .btree-branch { border-color: var(--accent);  background: rgba(79,142,247,0.1);  color: var(--accent); }
+  .btree-leaf  { border-color: var(--green);    background: rgba(52,211,153,0.1);  color: var(--green); }
+  .btree-leaf.highlight { border-color: var(--amber); background: rgba(251,191,36,0.15); color: var(--amber); }
+  .btree-data  { border-color: var(--cyan);     background: rgba(34,211,238,0.1);  color: var(--cyan); }
+  .btree-label {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .arrow-down {
+    display: flex;
+    justify-content: center;
+    color: var(--text3);
+    font-size: 1.2rem;
+    margin: -1rem 0 0.5rem;
+  }
+
+  /* TWO COLUMN */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+
+  /* SCHEMA TABLE BLOCK */
+  .schema-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .schema-header {
+    padding: 0.9rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .schema-name {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .schema-note {
+    font-size: 0.78rem;
+    color: var(--text2);
+    font-style: italic;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text3);
+    font-size: 0.82rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SCROLL TOP */
+  #scrollTop {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    transition: all 0.2s;
+  }
+  #scrollTop:hover { background: var(--cyan); transform: translateY(-2px); }
+
+  /* COMPARISON GRID */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .compare-cell {
+    background: var(--bg2);
+    padding: 1.2rem;
+  }
+  .compare-cell.header {
+    background: var(--bg3);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text2);
+  }
+  .compare-cell .val {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .compare-cell .desc { font-size: 0.78rem; color: var(--text2); }
+
+  /* PULSE DOT */
+  .pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* STICKY TOC */
+  .toc {
+    position: sticky;
+    top: 80px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    font-size: 0.82rem;
+  }
+  .toc-title { font-weight: 700; margin-bottom: 0.8rem; color: var(--text2); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .toc a { display: block; color: var(--text3); text-decoration: none; padding: 3px 0; transition: color 0.2s; }
+  .toc a:hover { color: var(--accent); }
+
+  .layout-with-toc {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .layout-with-toc { grid-template-columns: 1fr; } .toc { display: none; } }
+
+  /* PERFORMANCE METER */
+  .perf-bar {
+    margin: 0.5rem 0;
+  }
+  .perf-label { font-size: 0.8rem; color: var(--text2); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .perf-track { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .perf-fill  { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+  /* INLINE HIGHLIGHT */
+  code {
+    background: rgba(79,142,247,0.12);
+    color: var(--accent);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.85em;
+  }
+
+  /* NUMBER LIST */
+  .step-list { list-style: none; }
+  .step-list li {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .step-text { flex: 1; }
+  .step-title { font-weight: 600; margin-bottom: 3px; }
+  .step-desc  { font-size: 0.87rem; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">⚡ MySQL মাস্টারক্লাস</div>
+    <ul class="nav-links">
+      <li><a href="#architecture">আর্কিটেকচার</a></li>
+      <li><a href="#datatype">ডেটাটাইপ</a></li>
+      <li><a href="#index">ইনডেক্স</a></li>
+      <li><a href="#pran">PRAN-RFL DB</a></li>
+      <li><a href="#optimization">অপটিমাইজেশন</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="pulse-dot"></span>
+    বাংলায় সম্পূর্ণ MySQL প্রো গাইড
+  </div>
+  <h1>MySQL দিয়ে <span>মিলিয়ন রেকর্ড</span><br>সুপারফাস্ট ডেটাবেস বানাও</h1>
+  <p class="hero-sub">
+    PRAN-RFL এর মতো বিশাল কোম্পানির ডেটাবেস কীভাবে ডিজাইন করে প্রো ডেভেলপাররা — ডেটাটাইপ থেকে পার্টিশনিং পর্যন্ত সব কিছু
+  </p>
+  <div class="hero-stats">
+    <div class="stat-box">
+      <div class="stat-num">৫০M+</div>
+      <div class="stat-label">দৈনিক ট্রানজেকশন</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">&lt;10ms</div>
+      <div class="stat-label">কোয়েরি রেসপন্স টাইম</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">৩০+</div>
+      <div class="stat-label">টেবিল ডিজাইন</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">১০০%</div>
+      <div class="stat-label">প্রোডাকশন রেডি</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 1: ARCHITECTURE -->
+<section class="section" id="architecture">
+  <div class="section-label">পার্ট ০১</div>
+  <h2 class="section-title">MySQL কীভাবে কাজ করে? — <span class="accent-blue">আর্কিটেকচার</span></h2>
+  <p class="section-desc">তুমি যখন একটা SQL লেখো, সেটা ৬টি লেয়ার পার করে ডেটা তোমার কাছে আসে। এটা না বুঝলে অপটিমাইজ করা যায় না।</p>
+
+  <div class="layer-stack">
+    <div class="layer" style="background: rgba(79,142,247,0.06); border-color: rgba(79,142,247,0.2);">
+      <div class="layer-num" style="background: var(--accent);">১</div>
+      <div class="layer-content">
+        <div class="layer-name accent-blue">ক্লায়েন্ট লেয়ার</div>
+        <div class="layer-desc">তোমার অ্যাপ, PHP, Python, CLI — TCP/IP দিয়ে SQL পাঠায়</div>
+        <div class="layer-sub">
+          <span class="layer-pill">MySQL Workbench</span>
+          <span class="layer-pill">PHP PDO</span>
+          <span class="layer-pill">Node.js mysql2</span>
+          <span class="layer-pill">Python SQLAlchemy</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text3); font-size:1.2rem; padding: 4px 0;">↓</div>
+
+    <div class="layer" style="background: rgba(34,211,238,0.06); border-color: rgba(34,211,238,0.2);">
+      <div class="layer-num" style="background: var(--cyan);">২</div>
+      <div class="layer-content">
+        <div class="layer-name accent-cyan">কানেকশন ও থ্রেড ম্যানেজার</div>
+        <div class="layer-desc">প্রতি connection-এ একটা thread। max_connections সীমা পার হলে error দেয়। Thread cache থাকায় নতুন connection দ্রুত হয়।</div>
+        <div class="layer-sub">
+          <span class="layer-pill">max_connections=500</span>
+          <span class="layer-pill">thread_cache_size=100</span>
+          <span class="layer-pill">SSL/Auth</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text3); font-size:1.2rem; padding: 4px 0;">↓</div>
+
+    <div class="layer" style="background: rgba(124,92,252,0.06); border-color: rgba(124,92,252,0.2);">
+      <div class="layer-num" style="background: var(--accent2);">৩</div>
+      <div class="layer-content">
+        <div class="layer-name accent-purple">SQL প্রসেসিং লেয়ার — সবচেয়ে গুরুত্বপূর্ণ</div>
+        <div class="layer-desc">তোমার SQL এখানে পার্স হয়, অপটিমাইজ হয়, এক্সিকিউট হয়। Query Optimizer ঠিক করে INDEX ব্যবহার করবে কিনা।</div>
+        <div class="layer-sub">
+          <span class="layer-pill">Parser & Lexer</span>
+          <span class="layer-pill">Query Optimizer</span>
+          <span class="layer-pill">Execution Engine</span>
+          <span class="layer-pill">EXPLAIN দিয়ে দেখো</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text3); font-size:1.2rem; padding: 4px 0;">↓</div>
+
+    <div class="layer" style="background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.2);">
+      <div class="layer-num" style="background: var(--amber); color: #000;">৪</div>
+      <div class="layer-content">
+        <div class="layer-name accent-amber">স্টোরেজ ইঞ্জিন লেয়ার (Pluggable)</div>
+        <div class="layer-desc">MySQL-এর শক্তি — বিভিন্ন কাজে বিভিন্ন engine। বড় প্রজেক্টে সবসময় <code>InnoDB</code> ব্যবহার করো।</div>
+        <div class="layer-sub">
+          <span class="layer-pill">InnoDB ✓ (প্রো চয়েস)</span>
+          <span class="layer-pill">MyISAM (পুরানো)</span>
+          <span class="layer-pill">Memory (Cache)</span>
+          <span class="layer-pill">Archive (Log)</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text3); font-size:1.2rem; padding: 4px 0;">↓</div>
+
+    <div class="layer" style="background: rgba(251,146,60,0.06); border-color: rgba(251,146,60,0.2);">
+      <div class="layer-num" style="background: var(--orange);">৫</div>
+      <div class="layer-content">
+        <div class="layer-name accent-orange">InnoDB ইন্টার্নালস — মিলিয়ন রেকর্ডের হৃদয়</div>
+        <div class="layer-desc">Buffer Pool (RAM-এ ডেটা cache), Redo Log (crash recovery), Undo Log (transaction rollback), B+Tree Index Pages</div>
+        <div class="layer-sub">
+          <span class="layer-pill">innodb_buffer_pool_size = RAM-এর ৭০%</span>
+          <span class="layer-pill">MVCC (Multi-version)</span>
+          <span class="layer-pill">ACID Compliant</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text3); font-size:1.2rem; padding: 4px 0;">↓</div>
+
+    <div class="layer" style="background: rgba(90,100,128,0.08); border-color: var(--border2);">
+      <div class="layer-num" style="background: var(--text2); color: #000;">৬</div>
+      <div class="layer-content">
+        <div class="layer-name">ফিজিক্যাল স্টোরেজ</div>
+        <div class="layer-desc">SSD বা HDD-তে .ibd ফাইল (প্রতি টেবিল), Binary Logs (replication-এর জন্য), Slow Query Log</div>
+        <div class="layer-sub">
+          <span class="layer-pill">.ibd tablespace</span>
+          <span class="layer-pill">binlog</span>
+          <span class="layer-pill">slow_query_log</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-blue">
+    <span class="tip-icon">💡</span>
+    <div><strong>প্রো টিপ:</strong> <code>EXPLAIN SELECT * FROM orders WHERE customer_id = 5;</code> লিখলে দেখবে MySQL কোন path নিচ্ছে। <code>type: ALL</code> মানে full table scan — বিপদ সংকেত! <code>type: ref</code> বা <code>range</code> মানে index ব্যবহার হচ্ছে।</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 2: DATATYPE -->
+<section class="section" id="datatype">
+  <div class="section-label">পার্ট ০২</div>
+  <h2 class="section-title">ডেটাটাইপ ক্যালকুলেশন — <span class="accent-green">প্রোর মতো ভাবো</span></h2>
+  <p class="section-desc">একটাই নিয়ম মনে রাখো: <strong>সবচেয়ে ছোট datatype ব্যবহার করো যেটা কখনো overflow হবে না।</strong> PRAN-RFL-এ ১০ বাইট বাঁচানো মানে ৫০ কোটি রেকর্ডে = ৫ GB বাঁচানো।</p>
+
+  <!-- INTEGER TABLE -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <span class="schema-name accent-green">Integer Types — সংখ্যার জন্য</span>
+      <span class="tag tag-green">সবচেয়ে বেশি ব্যবহৃত</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>বাইট</th>
+          <th>UNSIGNED সর্বোচ্চ</th>
+          <th>কোথায় ব্যবহার করবে</th>
+          <th>প্রো টিপ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono accent-cyan">TINYINT</span></td>
+          <td><span class="mono accent-amber">1</span></td>
+          <td class="mono">255</td>
+          <td>status, is_active, bu_id, rating (১-৫)</td>
+          <td><span class="tag tag-green">PRAN-এর সব division_id এটাই</span></td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">SMALLINT</span></td>
+          <td><span class="mono accent-amber">2</span></td>
+          <td class="mono">65,535</td>
+          <td>category_id, warehouse_id, district_id</td>
+          <td><span class="tag tag-blue">বাংলাদেশে ৬৪ জেলা → SMALLINT</span></td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">MEDIUMINT</span></td>
+          <td><span class="mono accent-amber">3</span></td>
+          <td class="mono">১৬.৭ মিলিয়ন</td>
+          <td>product_id (যদি SKU কম থাকে)</td>
+          <td><span class="tag tag-amber">INT-এর চেয়ে ১ বাইট ছোট</span></td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">INT</span></td>
+          <td><span class="mono accent-amber">4</span></td>
+          <td class="mono">৪.২৯ বিলিয়ন</td>
+          <td>customer_id, product_id, sales_rep_id</td>
+          <td><span class="tag tag-blue">Default choice for IDs</span></td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">BIGINT</span></td>
+          <td><span class="mono accent-amber">8</span></td>
+          <td class="mono">১৮ কুইন্টিলিয়ন</td>
+          <td>order_id, transaction_id (daily millions)</td>
+          <td><span class="tag tag-red">শুধু সত্যিই দরকার হলে</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tip tip-amber" style="margin: 1rem 1rem 1rem;">
+      <span class="tip-icon">⚠️</span>
+      <div><strong>UNSIGNED সবসময় যোগ করো</strong> যদি নেগেটিভ কখনো হবে না। <code>INT UNSIGNED</code> দিলে ৪.২৯ বিলিয়ন পাও, <code>INT</code> দিলে মাত্র ২.১৪ বিলিয়ন — একই বাইটে দ্বিগুণ!</div>
+    </div>
+  </div>
+
+  <!-- STRING TABLE -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <span class="schema-name accent-blue">String Types — টেক্সটের জন্য</span>
+      <span class="tag tag-red">সবচেয়ে বেশি ভুল হয় এখানে</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>স্টোরেজ</th>
+          <th>কখন ব্যবহার করবে</th>
+          <th>কখন করবে না</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono accent-cyan">CHAR(n)</span></td>
+          <td>Fixed n bytes</td>
+          <td>সবসময় same length: BD mobile (11), ISO country code (2), PRAN product code CHAR(10)</td>
+          <td>variable length data-তে — waste হয়</td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">VARCHAR(n)</span></td>
+          <td>1-2 + actual chars</td>
+          <td>নাম, ইমেইল, address — সবচেয়ে বেশি ব্যবহৃত</td>
+          <td>INDEX column-এ VARCHAR(500) — ধীর হয়</td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">TINYTEXT</span></td>
+          <td>255 bytes max</td>
+          <td>Short notes, tags</td>
+          <td>INDEX করতে হলে ব্যবহার করো না</td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">TEXT</span></td>
+          <td>Off-page (pointer)</td>
+          <td>Long descriptions, product details, HTML content</td>
+          <td>INDEX করা যায় না — ORDER BY ধীর</td>
+        </tr>
+        <tr>
+          <td><span class="mono accent-cyan">ENUM</span></td>
+          <td>1-2 bytes মাত্র!</td>
+          <td>Fixed list: status('PENDING','PAID'), type('FOOD','BVRG')</td>
+          <td>নতুন value যোগ করতে ALTER লাগে — সাবধান</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tip tip-red" style="margin: 1rem;">
+      <span class="tip-icon">🚨</span>
+      <div><strong>সবচেয়ে বড় ভুল:</strong> সব জায়গায় <code>VARCHAR(255)</code> দেওয়া। email সর্বোচ্চ ৮০ char হয়। ব্যবহার করো <code>VARCHAR(80)</code>। ১০ কোটি রেকর্ডে ১৭৫ byte বাঁচবে = ~১.৭ GB!</div>
+    </div>
+  </div>
+
+  <!-- DATE & DECIMAL -->
+  <div class="two-col">
+    <div class="schema-block">
+      <div class="schema-header">
+        <span class="schema-name accent-amber">Date & Time Types</span>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Bytes</th><th>কখন</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="mono accent-cyan">DATE</span></td>
+            <td class="mono">3</td>
+            <td>delivery_date, mfg_date, exp_date</td>
+          </tr>
+          <tr>
+            <td><span class="mono accent-cyan">DATETIME</span></td>
+            <td class="mono">8</td>
+            <td>order_time, event_time (timezone নেই)</td>
+          </tr>
+          <tr>
+            <td><span class="mono accent-cyan">TIMESTAMP</span></td>
+            <td class="mono">4</td>
+            <td>created_at, updated_at — <strong>সবসময় এটাই</strong></td>
+          </tr>
+          <tr>
+            <td><span class="mono accent-cyan">YEAR</span></td>
+            <td class="mono">1</td>
+            <td>manufacturing_year</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tip tip-green" style="margin:1rem;">
+        <span class="tip-icon">✅</span>
+        <div>TIMESTAMP DATETIME-এর চেয়ে <strong>৪ বাইট ছোট</strong>। ৫০ কোটি রেকর্ডে = ২ GB বাঁচানো।</div>
+      </div>
+    </div>
+
+    <div class="schema-block">
+      <div class="schema-header">
+        <span class="schema-name accent-red">Money & Decimal — সবচেয়ে গুরুত্বপূর্ণ</span>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>সমস্যা</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="mono accent-red">FLOAT / DOUBLE</span></td>
+            <td style="color:var(--red)">৳১০০.৫০ → ৳১০০.৪৯৯৯৯৯ হতে পারে! কখনো টাকার জন্য নয়!</td>
+          </tr>
+          <tr>
+            <td><span class="mono accent-green">DECIMAL(10,2)</span></td>
+            <td>Exact। price, total, tax সবকিছুতে এটাই। ধীর কিন্তু নির্ভরযোগ্য।</td>
+          </tr>
+          <tr>
+            <td><span class="mono accent-cyan">BIGINT (paisa)</span></td>
+            <td>৳১০.৫০ = ১০৫০ পয়সা store করো। সবচেয়ে দ্রুত। PRAN-এর পছন্দ।</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tip tip-red" style="margin:1rem;">
+        <span class="tip-icon">🔥</span>
+        <div>PRAN-RFL-এ একদিনে ৫ কোটি টাকার হিসাব হলে FLOAT-এ ভুল হবেই। সবসময় <code>DECIMAL(12,2)</code>।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 3: INDEX -->
+<section class="section" id="index">
+  <div class="section-label">পার্ট ০৩</div>
+  <h2 class="section-title">Index কীভাবে কাজ করে — <span class="accent-purple">B+Tree গভীরে</span></h2>
+  <p class="section-desc">১ কোটি রেকর্ড থেকে একটা row খুঁজতে index ছাড়া MySQL ১ কোটিবার দেখে। Index থাকলে মাত্র ~২৩ বার। এটাই পার্থক্য।</p>
+
+  <!-- B+Tree visual -->
+  <div class="btree-visual">
+    <div class="btree-label">Root Node (মাথা)</div>
+    <div class="btree-row">
+      <div class="btree-node btree-root">1 – 10,000,000<br><small>সব key-এর রেঞ্জ</small></div>
+    </div>
+
+    <div class="arrow-down">↓ &nbsp; লগারিদমিক অনুসন্ধান</div>
+
+    <div class="btree-label">Branch Nodes (মধ্যবর্তী)</div>
+    <div class="btree-row">
+      <div class="btree-node btree-branch">1 – 3.3M</div>
+      <div class="btree-node btree-branch">3.3M – 6.6M</div>
+      <div class="btree-node btree-branch">6.6M – 10M</div>
+    </div>
+
+    <div class="arrow-down">↓ &nbsp; id=5,000,000 খুঁজছি → মধ্যের branch</div>
+
+    <div class="btree-label">Leaf Nodes (পাতা) — linked list!</div>
+    <div class="btree-row">
+      <div class="btree-node btree-leaf">3.3M–4M</div>
+      <div class="btree-node btree-leaf">4M–4.6M</div>
+      <div class="btree-node btree-leaf highlight">4.6M–5.3M ✓</div>
+      <div class="btree-node btree-leaf">5.3M–6M</div>
+      <div class="btree-node btree-leaf">6M–6.6M</div>
+    </div>
+
+    <div class="arrow-down">↓ &nbsp; Leaf → Actual Row Data</div>
+
+    <div class="btree-label">Data Row</div>
+    <div class="btree-row">
+      <div class="btree-node btree-data">id=5,000,000 | name='PRAN Mango Juice' | price=35.00</div>
+    </div>
+
+    <div style="display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div class="mono accent-red" style="font-size:1.4rem;font-weight:700;">১ কোটি</div>
+        <div style="font-size:0.78rem;color:var(--text2)">Full scan ছাড়া</div>
+      </div>
+      <div style="font-size:2rem;color:var(--text3);align-self:center;">→</div>
+      <div style="text-align:center;">
+        <div class="mono accent-green" style="font-size:1.4rem;font-weight:700;">~২৩ বার</div>
+        <div style="font-size:0.78rem;color:var(--text2)">B+Tree দিয়ে (log₂ 10M)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Index Types -->
+  <div style="margin-top:2rem;">
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🔑</div>
+        <div class="card-title accent-amber">Primary Key (Clustered Index)</div>
+        <div class="card-body">InnoDB-তে actual row data PRIMARY KEY-এর B+Tree-তে store হয়। মানে PK দিয়ে খোঁজা সবচেয়ে দ্রুত — data সরাসরি পাওয়া যায়। সবসময় <code>AUTO_INCREMENT INT/BIGINT</code> রাখো।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📌</div>
+        <div class="card-title accent-blue">Secondary Index (Non-clustered)</div>
+        <div class="card-body">Secondary index-এ secondary column value + primary key store হয়। তাই ২ বার lookup লাগে: প্রথমে secondary index, তারপর primary index থেকে row। এটাকে বলে "double lookup"।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <div class="card-title accent-green">Composite Index</div>
+        <div class="card-body"><code>KEY idx_bu_date (bu_id, date)</code> — এটা (bu_id) এবং (bu_id, date) দুটো query-ই cover করে। কিন্তু শুধু (date) query-তে কাজ করে না। Left prefix rule মনে রাখো।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-title accent-cyan">Covering Index</div>
+        <div class="card-body">যদি query-র সব column index-এ থাকে, MySQL data file-এই যায় না। শুধু index পড়েই answer দেয়। এটাই সবচেয়ে দ্রুত। PRAN-এর report query-তে এটা critical।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <div class="card-title accent-pink">UNIQUE Index</div>
+        <div class="card-body">Duplicate prevent করে + automatically index তৈরি করে। SKU, barcode, email, phone — এগুলোতে UNIQUE KEY দাও। Performance bonus পাবে।</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title accent-orange">FULLTEXT Index</div>
+        <div class="card-body">Product name বা description-এ search করতে। <code>WHERE name LIKE '%juice%'</code> index কাজ করে না — FULLTEXT index দাও। PRAN-এর product search-এ দরকার।</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-amber" style="margin-top:1.5rem;">
+    <span class="tip-icon">⚠️</span>
+    <div>
+      <strong>Index-এর ফাঁদ:</strong> বেশি index = INSERT/UPDATE ধীর হয়। প্রতি write-এ সব index update হয়। PRAN-এর order_items table-এ ৫-৬টার বেশি index রেখো না। শুধু যে column-এ WHERE/JOIN/ORDER BY লাগে সেখানে দাও।
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 4: PRAN-RFL DATABASE -->
+<section class="section" id="pran">
+  <div class="section-label">পার্ট ০৪ — মেইন কাজ</div>
+  <h2 class="section-title">PRAN-RFL <span class="accent-amber">সম্পূর্ণ ডেটাবেস ডিজাইন</span></h2>
+  <p class="section-desc">মাল্টিবিজনেস কোম্পানি — Food, Beverage, Plastic, Packaging। দৈনিক কোটি কোটি transaction। এখানে শিখবে কীভাবে প্রো ডেভেলপার এই পুরো সিস্টেম ডিজাইন করে।</p>
+
+  <div class="tip tip-blue" style="margin-bottom:2rem;">
+    <span class="tip-icon">🏗️</span>
+    <div>
+      <strong>ডিজাইন নীতি:</strong> Core → Master Data → Transactions → Finance → Analytics। প্রতিটা table ডিজাইনের আগে ভাবো — কোন query সবচেয়ে বেশি চলবে? সেই column-এ index দাও।
+    </div>
+  </div>
+
+  <!-- DATABASE CREATION -->
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div>
+      <span>pran_rfl_db.sql — Database তৈরি</span>
+    </div>
+    <pre><span class="kw">CREATE DATABASE</span> <span class="tbl">pran_rfl_db</span>
+  <span class="kw">CHARACTER SET</span> <span class="str">utf8mb4</span>
+  <span class="kw">COLLATE</span> <span class="str">utf8mb4_unicode_ci</span>;
+
+<span class="kw">USE</span> <span class="tbl">pran_rfl_db</span>;
+
+<span class="cm">-- utf8mb4 কেন? বাংলা ✓, Emoji ✓, সব language ✓
+-- utf8mb4_unicode_ci: case-insensitive, accent-sensitive</span></pre>
+  </div>
+
+  <!-- TABLE 1: BUSINESS UNITS -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-blue">business_units</span>
+        <span class="schema-note"> — কোম্পানির সব বিভাগ (Root Table)</span>
+      </div>
+      <div><span class="tag tag-blue">Core</span><span class="tag tag-green">Tiny</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">business_units</span> (
+  <span class="col">bu_id</span>      <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">code</span>       <span class="fn">CHAR(6)</span>          <span class="kw">NOT NULL</span>,   <span class="cm">-- 'FOOD','BVRG','PLAS','PACK','AGRI'</span>
+  <span class="col">name</span>       <span class="fn">VARCHAR(80)</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- 'PRAN Food Division'</span>
+  <span class="col">parent_bu</span>  <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NULL</span>,       <span class="cm">-- Sub-division হলে parent_bu_id</span>
+  <span class="col">is_active</span>  <span class="fn">TINYINT(1)</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="num">1</span>,
+  <span class="col">created_at</span> <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">bu_id</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_code</span> (<span class="col">code</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_parent</span> (<span class="col">parent_bu</span>)
+) <span class="fn">ENGINE=InnoDB</span>;
+
+<span class="cm">-- কেন TINYINT? PRAN কখনো ২৫৫টার বেশি BU রাখবে না।
+-- TINYINT = ১ byte। INT = ৪ byte। প্রতি FK reference-এ ৩ byte বাঁচে।
+-- ৫০ কোটি order_items row-তে bu_id FK আছে → ৩ × ৫০০M = ১.৫ GB বাঁচে!</span></pre>
+    </div>
+  </div>
+
+  <!-- TABLE 2: PRODUCTS -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-green">products</span>
+        <span class="schema-note"> — সব SKU master data</span>
+      </div>
+      <div><span class="tag tag-green">Master Data</span><span class="tag tag-cyan">Frequently Read</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">products</span> (
+  <span class="col">product_id</span>  <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">bu_id</span>       <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL</span>,
+  <span class="col">category_id</span> <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,
+  <span class="col">sku</span>         <span class="fn">VARCHAR(30)</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- 'PRAN-MNG-250ML-PET'</span>
+  <span class="col">barcode</span>     <span class="fn">VARCHAR(20)</span>      <span class="kw">NULL</span>,
+  <span class="col">name_bn</span>     <span class="fn">VARCHAR(120)</span>     <span class="kw">NOT NULL</span>,   <span class="cm">-- বাংলা নাম</span>
+  <span class="col">name_en</span>     <span class="fn">VARCHAR(120)</span>     <span class="kw">NOT NULL</span>,   <span class="cm">-- English name</span>
+  <span class="col">unit</span>        <span class="fn">ENUM</span>(<span class="str">'PCS'</span>,<span class="str">'DOZEN'</span>,<span class="str">'CASE'</span>,<span class="str">'KG'</span>,<span class="str">'LITER'</span>,<span class="str">'PACK'</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">unit_weight</span> <span class="fn">DECIMAL(8,3)</span>     <span class="kw">NULL</span>,       <span class="cm">-- kg per unit (export-এর জন্য)</span>
+  <span class="col">mrp</span>         <span class="fn">DECIMAL(10,2)</span>    <span class="kw">NOT NULL</span>,   <span class="cm">-- Maximum Retail Price</span>
+  <span class="col">trade_price</span> <span class="fn">DECIMAL(10,2)</span>    <span class="kw">NOT NULL</span>,   <span class="cm">-- Distributor price</span>
+  <span class="col">cost_price</span>  <span class="fn">DECIMAL(10,2)</span>    <span class="kw">NOT NULL</span>,   <span class="cm">-- Manufacturing cost</span>
+  <span class="col">vat_pct</span>     <span class="fn">DECIMAL(5,2)</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">is_active</span>   <span class="fn">TINYINT(1)</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="num">1</span>,
+  <span class="col">created_at</span>  <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">product_id</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_sku</span>     (<span class="col">sku</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_barcode</span> (<span class="col">barcode</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_bu_cat</span> (<span class="col">bu_id</span>, <span class="col">category_id</span>),  <span class="cm">-- "food category-র সব product"</span>
+  <span class="kw">KEY</span>         <span class="col">idx_active</span> (<span class="col">is_active</span>),
+  <span class="kw">FULLTEXT KEY</span> <span class="col">ft_name</span>   (<span class="col">name_en</span>, <span class="col">name_bn</span>),  <span class="cm">-- Product search</span>
+  <span class="kw">FOREIGN KEY</span> (<span class="col">bu_id</span>) <span class="kw">REFERENCES</span> <span class="tbl">business_units</span>(<span class="col">bu_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>;</pre>
+    </div>
+  </div>
+
+  <!-- TABLE 3: CUSTOMERS -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-cyan">customers</span>
+        <span class="schema-note"> — distributor, retailer, exporter</span>
+      </div>
+      <div><span class="tag tag-cyan">Master Data</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">customers</span> (
+  <span class="col">customer_id</span>  <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">type</span>         <span class="fn">ENUM</span>(<span class="str">'DISTRIBUTOR'</span>,<span class="str">'RETAILER'</span>,<span class="str">'EXPORT'</span>,<span class="str">'INSTITUTIONAL'</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">name</span>         <span class="fn">VARCHAR(150)</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">phone</span>        <span class="fn">VARCHAR(15)</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- BD: +8801XXXXXXXXX</span>
+  <span class="col">email</span>        <span class="fn">VARCHAR(80)</span>      <span class="kw">NULL</span>,
+  <span class="col">division_id</span>  <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL</span>,   <span class="cm">-- বাংলাদেশে ৮ division</span>
+  <span class="col">district_id</span>  <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,   <span class="cm">-- ৬৪ district</span>
+  <span class="col">upazila_id</span>   <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,
+  <span class="col">address</span>      <span class="fn">VARCHAR(300)</span>     <span class="kw">NULL</span>,
+  <span class="col">credit_limit</span> <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">credit_days</span>  <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL DEFAULT</span> <span class="num">0</span>,
+  <span class="col">is_active</span>    <span class="fn">TINYINT(1)</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="num">1</span>,
+  <span class="col">created_at</span>   <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">customer_id</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_type_div</span>  (<span class="col">type</span>, <span class="col">division_id</span>),  <span class="cm">-- "Dhaka-র সব distributor"</span>
+  <span class="kw">KEY</span>         <span class="col">idx_phone</span>     (<span class="col">phone</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_district</span>  (<span class="col">district_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>;</pre>
+    </div>
+  </div>
+
+  <!-- TABLE 4: SALES ORDERS — CRITICAL -->
+  <div class="schema-block" style="border-color: var(--amber);">
+    <div class="schema-header" style="border-color: var(--amber); background: rgba(251,191,36,0.06);">
+      <div>
+        <span class="schema-name accent-amber">sales_orders</span>
+        <span class="schema-note"> — সবচেয়ে গুরুত্বপূর্ণ টেবিল (দৈনিক লক্ষ লক্ষ row)</span>
+      </div>
+      <div><span class="tag tag-amber">⚡ PARTITION BY RANGE</span><span class="tag tag-red">Critical Table</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">sales_orders</span> (
+  <span class="col">order_id</span>      <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">order_no</span>      <span class="fn">VARCHAR(20)</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- 'SO-2026-04-00000001'</span>
+  <span class="col">bu_id</span>         <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL</span>,
+  <span class="col">customer_id</span>   <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">sales_rep_id</span>  <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">warehouse_id</span>  <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,
+  <span class="col">order_date</span>    <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,   <span class="cm">-- PARTITION KEY ← এটাই ম্যাজিক</span>
+  <span class="col">delivery_date</span> <span class="fn">DATE</span>             <span class="kw">NULL</span>,
+  <span class="col">status</span>        <span class="fn">ENUM</span>(<span class="str">'PENDING'</span>,<span class="str">'CONFIRMED'</span>,<span class="str">'DISPATCHED'</span>,
+                      <span class="str">'DELIVERED'</span>,<span class="str">'CANCELLED'</span>,<span class="str">'RETURNED'</span>)
+                  <span class="kw">NOT NULL DEFAULT</span> <span class="str">'PENDING'</span>,
+  <span class="col">subtotal</span>      <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">discount</span>      <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">vat_amount</span>    <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">total_amount</span>  <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">paid_amount</span>   <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">payment_status</span><span class="fn">ENUM</span>(<span class="str">'UNPAID'</span>,<span class="str">'PARTIAL'</span>,<span class="str">'PAID'</span>) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'UNPAID'</span>,
+  <span class="col">notes</span>         <span class="fn">VARCHAR(500)</span>     <span class="kw">NULL</span>,
+  <span class="col">created_at</span>    <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+  <span class="col">updated_at</span>    <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">order_id</span>, <span class="col">order_date</span>),  <span class="cm">-- partition-এ PK-তে partition key রাখতে হয়</span>
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_order_no</span>      (<span class="col">order_no</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_customer_date</span> (<span class="col">customer_id</span>, <span class="col">order_date</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_bu_date</span>       (<span class="col">bu_id</span>, <span class="col">order_date</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_status_date</span>   (<span class="col">status</span>, <span class="col">order_date</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_sales_rep</span>     (<span class="col">sales_rep_id</span>),
+  <span class="kw">FOREIGN KEY</span> (<span class="col">bu_id</span>)       <span class="kw">REFERENCES</span> <span class="tbl">business_units</span>(<span class="col">bu_id</span>),
+  <span class="kw">FOREIGN KEY</span> (<span class="col">customer_id</span>) <span class="kw">REFERENCES</span> <span class="tbl">customers</span>(<span class="col">customer_id</span>)
+
+) <span class="fn">ENGINE=InnoDB</span>
+  <span class="cm">-- ⚡ PARTITION BY RANGE: এপ্রিলের report শুধু এপ্রিল partition scan করবে!</span>
+  <span class="kw">PARTITION BY RANGE</span> (<span class="fn">YEAR</span>(<span class="col">order_date</span>) * <span class="num">100</span> + <span class="fn">MONTH</span>(<span class="col">order_date</span>)) (
+    <span class="kw">PARTITION</span> <span class="col">p202601</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202602</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202602</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202603</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202603</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202604</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202604</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202605</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202605</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202606</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202606</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202607</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202607</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202608</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202608</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202609</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202609</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202610</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202610</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202611</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202611</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202612</span>),
+    <span class="kw">PARTITION</span> <span class="col">p202612</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202701</span>),
+    <span class="kw">PARTITION</span> <span class="col">p_future</span><span class="kw">VALUES LESS THAN MAXVALUE</span>
+  );</pre>
+    </div>
+  </div>
+
+  <!-- TABLE 5: ORDER ITEMS -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-orange">order_items</span>
+        <span class="schema-note"> — সবচেয়ে বড় টেবিল (৩-৫x sales_orders)</span>
+      </div>
+      <div><span class="tag tag-orange">⚡ Partitioned</span><span class="tag tag-red">Biggest Table</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">order_items</span> (
+  <span class="col">item_id</span>       <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">order_id</span>      <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NOT NULL</span>,
+  <span class="col">order_date</span>    <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,   <span class="cm">-- Denormalized! Partition pruning-এর জন্য</span>
+  <span class="col">product_id</span>    <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">batch_no</span>      <span class="fn">VARCHAR(20)</span>      <span class="kw">NULL</span>,
+  <span class="col">qty_ordered</span>   <span class="fn">DECIMAL(10,3)</span>    <span class="kw">NOT NULL</span>,
+  <span class="col">qty_delivered</span> <span class="fn">DECIMAL(10,3)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.000</span>,
+  <span class="col">unit_price</span>    <span class="fn">DECIMAL(10,2)</span>    <span class="kw">NOT NULL</span>,
+  <span class="col">discount_pct</span>  <span class="fn">DECIMAL(5,2)</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.00</span>,
+  <span class="col">line_total</span>    <span class="fn">DECIMAL(12,2)</span>    <span class="kw">NOT NULL</span>,   <span class="cm">-- Denormalized: qty×price-discount</span>
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">item_id</span>, <span class="col">order_date</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_order_id</span>      (<span class="col">order_id</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_product_date</span>  (<span class="col">product_id</span>, <span class="col">order_date</span>),
+  <span class="kw">FOREIGN KEY</span> (<span class="col">product_id</span>) <span class="kw">REFERENCES</span> <span class="tbl">products</span>(<span class="col">product_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>
+  <span class="kw">PARTITION BY RANGE</span> (<span class="fn">YEAR</span>(<span class="col">order_date</span>)*<span class="num">100</span>+<span class="fn">MONTH</span>(<span class="col">order_date</span>)) (
+    <span class="kw">PARTITION</span> <span class="col">p202601</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202602</span>),
+    <span class="kw">PARTITION</span> <span class="col">p_future</span><span class="kw">VALUES LESS THAN MAXVALUE</span>
+  );
+
+<span class="cm">-- কেন order_date এখানে রাখলাম (denormalize)?
+-- JOIN ছাড়াই partition pruning কাজ করে।
+-- "এপ্রিলের সব item" → শুধু p202604 scan, বাকি ১১ মাস বাদ।</span></pre>
+    </div>
+  </div>
+
+  <!-- TABLE 6: INVENTORY -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-green">inventory</span>
+        <span class="schema-note"> — real-time stock (Virtual Column সহ)</span>
+      </div>
+      <div><span class="tag tag-green">Generated Column</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">inventory</span> (
+  <span class="col">inv_id</span>        <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">warehouse_id</span>  <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,
+  <span class="col">product_id</span>    <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">batch_no</span>      <span class="fn">VARCHAR(20)</span>      <span class="kw">NOT NULL</span>,
+  <span class="col">mfg_date</span>      <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,
+  <span class="col">exp_date</span>      <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,
+  <span class="col">qty_in_hand</span>   <span class="fn">DECIMAL(12,3)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.000</span>,
+  <span class="col">qty_reserved</span>  <span class="fn">DECIMAL(12,3)</span>    <span class="kw">NOT NULL DEFAULT</span> <span class="num">0.000</span>,
+  <span class="col">qty_available</span> <span class="fn">DECIMAL(12,3)</span>    <span class="kw">AS</span> (<span class="col">qty_in_hand</span> - <span class="col">qty_reserved</span>) <span class="kw">VIRTUAL</span>,
+  <span class="cm">-- ↑ Virtual Generated Column! Store হয় না, read-এ calculate হয়। Zero cost!</span>
+  <span class="col">unit_cost</span>     <span class="fn">DECIMAL(10,2)</span>    <span class="kw">NOT NULL</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">inv_id</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_wh_prod_batch</span> (<span class="col">warehouse_id</span>, <span class="col">product_id</span>, <span class="col">batch_no</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_product_exp</span>  (<span class="col">product_id</span>, <span class="col">exp_date</span>),  <span class="cm">-- Expiry alert query</span>
+  <span class="kw">KEY</span>         <span class="col">idx_warehouse</span>    (<span class="col">warehouse_id</span>),
+  <span class="kw">FOREIGN KEY</span> (<span class="col">product_id</span>) <span class="kw">REFERENCES</span> <span class="tbl">products</span>(<span class="col">product_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>;</pre>
+    </div>
+  </div>
+
+  <!-- TABLE 7: FINANCIAL -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div>
+        <span class="schema-name accent-red">financial_transactions</span>
+        <span class="schema-note"> — payment ledger</span>
+      </div>
+      <div><span class="tag tag-red">Finance</span><span class="tag tag-amber">Partitioned</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">financial_transactions</span> (
+  <span class="col">txn_id</span>      <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">txn_no</span>      <span class="fn">VARCHAR(25)</span>      <span class="kw">NOT NULL</span>,
+  <span class="col">txn_date</span>    <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,
+  <span class="col">txn_type</span>    <span class="fn">ENUM</span>(<span class="str">'PAYMENT'</span>,<span class="str">'RECEIPT'</span>,<span class="str">'REFUND'</span>,<span class="str">'ADVANCE'</span>,<span class="str">'ADJUSTMENT'</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">order_id</span>    <span class="fn">BIGINT UNSIGNED</span>  <span class="kw">NULL</span>,
+  <span class="col">customer_id</span> <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">amount</span>      <span class="fn">DECIMAL(14,2)</span>    <span class="kw">NOT NULL</span>,
+  <span class="col">method</span>      <span class="fn">ENUM</span>(<span class="str">'CASH'</span>,<span class="str">'CHEQUE'</span>,<span class="str">'BANK_TRANSFER'</span>,<span class="str">'BKASH'</span>,<span class="str">'NAGAD'</span>,<span class="str">'UPAY'</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">reference_no</span><span class="fn">VARCHAR(50)</span>      <span class="kw">NULL</span>,       <span class="cm">-- Cheque no, TXN ID</span>
+  <span class="col">remarks</span>     <span class="fn">VARCHAR(200)</span>     <span class="kw">NULL</span>,
+  <span class="col">created_by</span>  <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">created_at</span>  <span class="fn">TIMESTAMP</span>        <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+
+  <span class="kw">PRIMARY KEY</span> (<span class="col">txn_id</span>, <span class="col">txn_date</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_txn_no</span>        (<span class="col">txn_no</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_customer_date</span> (<span class="col">customer_id</span>, <span class="col">txn_date</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_order</span>         (<span class="col">order_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>
+  <span class="kw">PARTITION BY RANGE</span> (<span class="fn">YEAR</span>(<span class="col">txn_date</span>)*<span class="num">100</span>+<span class="fn">MONTH</span>(<span class="col">txn_date</span>)) (
+    <span class="kw">PARTITION</span> <span class="col">p202601</span> <span class="kw">VALUES LESS THAN</span> (<span class="num">202602</span>),
+    <span class="kw">PARTITION</span> <span class="col">p_future</span><span class="kw">VALUES LESS THAN MAXVALUE</span>
+  );</pre>
+    </div>
+  </div>
+
+  <!-- TABLE 8: EMPLOYEES & SALES REPS -->
+  <div class="schema-block">
+    <div class="schema-header">
+      <div><span class="schema-name accent-purple">employees</span><span class="schema-note"> — HR & Sales Team</span></div>
+      <div><span class="tag tag-purple">HR</span></div>
+    </div>
+    <div class="code-wrap" style="border:none;border-radius:0;">
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">employees</span> (
+  <span class="col">emp_id</span>       <span class="fn">INT UNSIGNED</span>     <span class="kw">NOT NULL AUTO_INCREMENT</span>,
+  <span class="col">emp_code</span>     <span class="fn">VARCHAR(15)</span>      <span class="kw">NOT NULL</span>,   <span class="cm">-- 'PRAN-EMP-00001'</span>
+  <span class="col">bu_id</span>        <span class="fn">TINYINT UNSIGNED</span> <span class="kw">NOT NULL</span>,
+  <span class="col">department_id</span><span class="fn">SMALLINT UNSIGNED</span><span class="kw">NOT NULL</span>,
+  <span class="col">name</span>         <span class="fn">VARCHAR(100)</span>     <span class="kw">NOT NULL</span>,
+  <span class="col">role</span>         <span class="fn">ENUM</span>(<span class="str">'SALES_REP'</span>,<span class="str">'MANAGER'</span>,<span class="str">'DRIVER'</span>,
+                     <span class="str">'WAREHOUSE'</span>,<span class="str">'FINANCE'</span>,<span class="str">'ADMIN'</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">phone</span>        <span class="fn">VARCHAR(15)</span>      <span class="kw">NOT NULL</span>,
+  <span class="col">territory_id</span> <span class="fn">SMALLINT UNSIGNED</span><span class="kw">NULL</span>,       <span class="cm">-- Sales rep-এর assigned area</span>
+  <span class="col">target_monthly</span><span class="fn">DECIMAL(12,2)</span>   <span class="kw">NULL</span>,
+  <span class="col">is_active</span>    <span class="fn">TINYINT(1)</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="num">1</span>,
+  <span class="col">joined_at</span>    <span class="fn">DATE</span>             <span class="kw">NOT NULL</span>,
+  <span class="kw">PRIMARY KEY</span> (<span class="col">emp_id</span>),
+  <span class="kw">UNIQUE KEY</span>  <span class="col">uk_emp_code</span> (<span class="col">emp_code</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_bu_role</span> (<span class="col">bu_id</span>, <span class="col">role</span>),
+  <span class="kw">KEY</span>         <span class="col">idx_territory</span> (<span class="col">territory_id</span>)
+) <span class="fn">ENGINE=InnoDB</span>;</pre>
+    </div>
+  </div>
+
+  <!-- REMAINING TABLES LIST -->
+  <div class="info-panel">
+    <div class="info-panel-header accent-blue">📋 বাকি টেবিল সমূহ (সম্পূর্ণ সিস্টেম)</div>
+    <div class="info-panel-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="tag tag-green">Master</div>
+          <ul style="font-size:0.85rem;color:var(--text2);margin-top:8px;list-style:none;">
+            <li>• <span class="mono">product_categories</span></li>
+            <li>• <span class="mono">warehouses</span></li>
+            <li>• <span class="mono">territories</span></li>
+            <li>• <span class="mono">departments</span></li>
+            <li>• <span class="mono">divisions_districts</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="tag tag-amber">Transactions</div>
+          <ul style="font-size:0.85rem;color:var(--text2);margin-top:8px;list-style:none;">
+            <li>• <span class="mono">purchase_orders</span></li>
+            <li>• <span class="mono">purchase_items</span></li>
+            <li>• <span class="mono">stock_movements</span></li>
+            <li>• <span class="mono">returns</span></li>
+            <li>• <span class="mono">return_items</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="tag tag-cyan">Production</div>
+          <ul style="font-size:0.85rem;color:var(--text2);margin-top:8px;list-style:none;">
+            <li>• <span class="mono">production_batches</span></li>
+            <li>• <span class="mono">raw_materials</span></li>
+            <li>• <span class="mono">bom</span> (Bill of Materials)</li>
+            <li>• <span class="mono">quality_checks</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="tag tag-purple">Analytics</div>
+          <ul style="font-size:0.85rem;color:var(--text2);margin-top:8px;list-style:none;">
+            <li>• <span class="mono">daily_sales_summary</span></li>
+            <li>• <span class="mono">monthly_target</span></li>
+            <li>• <span class="mono">product_performance</span></li>
+            <li>• <span class="mono">route_tracking</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 5: OPTIMIZATION -->
+<section class="section" id="optimization">
+  <div class="section-label">পার্ট ০৫</div>
+  <h2 class="section-title">মিলিয়ন রেকর্ড <span class="accent-cyan">অপটিমাইজেশন সিক্রেট</span></h2>
+  <p class="section-desc">এই কৌশলগুলো না জানলে তোমার ডেটাবেস ১ কোটি রেকর্ডে ক্রল করবে। PRAN-এর মতো কোম্পানি এগুলো ব্যবহার করে।</p>
+
+  <!-- Performance techniques -->
+  <div class="card-grid" style="margin-bottom:2rem;">
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <div class="card-title accent-amber">Partitioning</div>
+      <div class="card-body">৩০ কোটি order-কে মাসে ভাগ করো। এপ্রিলের query শুধু এপ্রিল partition scan করে — ৯৬% data skip করে। EXPLAIN PARTITIONS দিয়ে verify করো।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <div class="card-title accent-blue">Buffer Pool Tuning</div>
+      <div class="card-body"><code>innodb_buffer_pool_size = RAM × 70%</code>। ৬৪ GB RAM সার্ভারে ৪৫ GB Buffer Pool। Hot data সবসময় RAM-এ থাকে — disk I/O প্রায় শূন্য।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title accent-green">Covering Index</div>
+      <div class="card-body">Report query-তে SELECT শুধু indexed column নাও। MySQL data page-ই যাবে না, index থেকেই answer দেবে। ৫-১০x দ্রুত হয়।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title accent-cyan">Read Replica</div>
+      <div class="card-body">Write → Master DB। Report/Analytics → Slave DB। PRAN-এ report query master-কে block করে না। Binary Log-এ replication হয় real-time।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title accent-purple">Denormalization (যেখানে দরকার)</div>
+      <div class="card-body">order_items-এ order_date রাখা denormalization। কিন্তু এটা partition pruning-কে সম্ভব করে। ৩NF ভাঙা পাপ না — performance জরুরি হলে করো।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗃️</div>
+      <div class="card-title accent-pink">Slow Query Log</div>
+      <div class="card-body"><code>slow_query_log=ON, long_query_time=1</code> — ১ সেকেন্ডের বেশি query log হয়। সেগুলো EXPLAIN দিয়ে fix করো। Production এর প্রথম কাজ এটাই।</div>
+    </div>
+  </div>
+
+  <!-- Important Queries -->
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div>
+      <span>গুরুত্বপূর্ণ Query — PRAN-RFL Daily Reports</span>
+    </div>
+    <pre><span class="cm">-- ১. দৈনিক sales summary per BU (Partition Pruning কাজ করবে)</span>
+<span class="kw">SELECT</span>
+  <span class="col">bu_id</span>,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> <span class="col">total_orders</span>,
+  <span class="fn">SUM</span>(<span class="col">total_amount</span>) <span class="kw">AS</span> <span class="col">total_sales</span>,
+  <span class="fn">SUM</span>(<span class="col">paid_amount</span>) <span class="kw">AS</span> <span class="col">collected</span>,
+  <span class="fn">SUM</span>(<span class="col">total_amount</span> - <span class="col">paid_amount</span>) <span class="kw">AS</span> <span class="col">outstanding</span>
+<span class="kw">FROM</span> <span class="tbl">sales_orders</span>
+<span class="kw">WHERE</span> <span class="col">order_date</span> = <span class="fn">CURDATE</span>()   <span class="cm">-- partition pruning: শুধু আজকের partition</span>
+<span class="kw">GROUP BY</span> <span class="col">bu_id</span>;
+
+<span class="cm">-- ২. Top 10 products this month (Covering Index ব্যবহার)</span>
+<span class="kw">SELECT</span>
+  <span class="col">oi</span>.<span class="col">product_id</span>,
+  <span class="fn">SUM</span>(<span class="col">oi</span>.<span class="col">qty_delivered</span>) <span class="kw">AS</span> <span class="col">qty_sold</span>,
+  <span class="fn">SUM</span>(<span class="col">oi</span>.<span class="col">line_total</span>) <span class="kw">AS</span> <span class="col">revenue</span>
+<span class="kw">FROM</span> <span class="tbl">order_items</span> <span class="col">oi</span>
+<span class="kw">WHERE</span> <span class="col">oi</span>.<span class="col">order_date</span> <span class="op">BETWEEN</span> <span class="str">'2026-04-01'</span> <span class="op">AND</span> <span class="str">'2026-04-30'</span>
+<span class="kw">GROUP BY</span> <span class="col">oi</span>.<span class="col">product_id</span>
+<span class="kw">ORDER BY</span> <span class="col">revenue</span> <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="cm">-- ৩. Customer outstanding balance</span>
+<span class="kw">SELECT</span>
+  <span class="col">c</span>.<span class="col">name</span>,
+  <span class="fn">SUM</span>(<span class="col">so</span>.<span class="col">total_amount</span> - <span class="col">so</span>.<span class="col">paid_amount</span>) <span class="kw">AS</span> <span class="col">balance</span>
+<span class="kw">FROM</span> <span class="tbl">customers</span> <span class="col">c</span>
+<span class="kw">JOIN</span> <span class="tbl">sales_orders</span> <span class="col">so</span> <span class="kw">ON</span> <span class="col">c</span>.<span class="col">customer_id</span> = <span class="col">so</span>.<span class="col">customer_id</span>
+<span class="kw">WHERE</span> <span class="col">so</span>.<span class="col">payment_status</span> != <span class="str">'PAID'</span>
+  <span class="kw">AND</span> <span class="col">so</span>.<span class="col">order_date</span> <span class="op">>=</span> <span class="str">'2025-01-01'</span>  <span class="cm">-- partition range বলো</span>
+<span class="kw">GROUP BY</span> <span class="col">c</span>.<span class="col">customer_id</span>
+<span class="kw">HAVING</span> <span class="col">balance</span> <span class="op">></span> <span class="num">0</span>
+<span class="kw">ORDER BY</span> <span class="col">balance</span> <span class="kw">DESC</span>;
+
+<span class="cm">-- ৪. Expiry alert — ৩০ দিনের মধ্যে expire</span>
+<span class="kw">SELECT</span>
+  <span class="col">p</span>.<span class="col">name_bn</span>, <span class="col">p</span>.<span class="col">sku</span>,
+  <span class="col">i</span>.<span class="col">batch_no</span>, <span class="col">i</span>.<span class="col">exp_date</span>,
+  <span class="col">i</span>.<span class="col">qty_available</span>,  <span class="cm">-- Virtual column!</span>
+  <span class="col">w</span>.<span class="col">name</span> <span class="kw">AS</span> <span class="col">warehouse</span>
+<span class="kw">FROM</span> <span class="tbl">inventory</span> <span class="col">i</span>
+<span class="kw">JOIN</span> <span class="tbl">products</span>   <span class="col">p</span> <span class="kw">ON</span> <span class="col">i</span>.<span class="col">product_id</span>   = <span class="col">p</span>.<span class="col">product_id</span>
+<span class="kw">JOIN</span> <span class="tbl">warehouses</span> <span class="col">w</span> <span class="kw">ON</span> <span class="col">i</span>.<span class="col">warehouse_id</span> = <span class="col">w</span>.<span class="col">warehouse_id</span>
+<span class="kw">WHERE</span> <span class="col">i</span>.<span class="col">exp_date</span> <span class="op">BETWEEN</span> <span class="fn">CURDATE</span>() <span class="kw">AND</span> <span class="fn">DATE_ADD</span>(<span class="fn">CURDATE</span>(), <span class="kw">INTERVAL</span> <span class="num">30</span> <span class="kw">DAY</span>)
+  <span class="kw">AND</span> <span class="col">i</span>.<span class="col">qty_available</span> <span class="op">></span> <span class="num">0</span>
+<span class="kw">ORDER BY</span> <span class="col">i</span>.<span class="col">exp_date</span> <span class="kw">ASC</span>;</pre>
+  </div>
+
+  <!-- my.cnf config -->
+  <div class="code-wrap" style="margin-top:1.5rem;">
+    <div class="code-header">
+      <div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div></div>
+      <span>my.cnf — Production Server Config (৬৪ GB RAM সার্ভার)</span>
+    </div>
+    <pre><span class="cm">[mysqld]</span>
+<span class="col">innodb_buffer_pool_size</span>    = <span class="num">45G</span>    <span class="cm"># RAM-এর ৭০% — hot data cache</span>
+<span class="col">innodb_buffer_pool_instances</span>= <span class="num">8</span>     <span class="cm"># CPU core অনুযায়ী</span>
+<span class="col">innodb_log_file_size</span>       = <span class="num">2G</span>     <span class="cm"># বড় transaction-এর জন্য</span>
+<span class="col">innodb_flush_log_at_trx_commit</span> = <span class="num">2</span> <span class="cm"># Performance++, safety--</span>
+<span class="col">max_connections</span>            = <span class="num">500</span>
+<span class="col">thread_cache_size</span>          = <span class="num">100</span>
+<span class="col">query_cache_type</span>           = <span class="num">0</span>     <span class="cm"># MySQL 8-এ deprecated</span>
+<span class="col">slow_query_log</span>             = <span class="str">ON</span>
+<span class="col">slow_query_log_file</span>        = <span class="str">/var/log/mysql/slow.log</span>
+<span class="col">long_query_time</span>            = <span class="num">1</span>     <span class="cm"># ১ সেকেন্ডের বেশি log করো</span>
+<span class="col">log_queries_not_using_indexes</span> = <span class="str">ON</span>  <span class="cm"># Index নেই এমন query log</span>
+<span class="col">innodb_io_capacity</span>         = <span class="num">2000</span> <span class="cm"># SSD হলে ৫০০০</span>
+<span class="col">innodb_read_io_threads</span>     = <span class="num">8</span>
+<span class="col">innodb_write_io_threads</span>    = <span class="num">8</span>
+<span class="col">character_set_server</span>       = <span class="str">utf8mb4</span>
+<span class="col">collation_server</span>           = <span class="str">utf8mb4_unicode_ci</span></pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PART 6: PRO RULES -->
+<section class="section">
+  <div class="section-label">পার্ট ০৬ — চূড়ান্ত জ্ঞান</div>
+  <h2 class="section-title">প্রোর মতো ভাবার <span class="accent-pink">১০টি সোনার নিয়ম</span></h2>
+
+  <ul class="step-list">
+    <li>
+      <div class="step-num">১</div>
+      <div class="step-text">
+        <div class="step-title">সবচেয়ে ছোট সম্ভব datatype ব্যবহার করো</div>
+        <div class="step-desc">PRAN-এর bu_id TINYINT। district_id SMALLINT। order_id BIGINT। ভুল datatype = GB waste + ধীর index।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">২</div>
+      <div class="step-text">
+        <div class="step-title">Primary Key সবসময় UNSIGNED AUTO_INCREMENT রাখো</div>
+        <div class="step-desc">UUID ব্যবহার করো না PK হিসেবে — B+Tree fragmentation হয়, INSERT ধীর হয়। Sequential INT/BIGINT সবচেয়ে দ্রুত।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৩</div>
+      <div class="step-text">
+        <div class="step-title">টাকার জন্য সবসময় DECIMAL, কখনো FLOAT নয়</div>
+        <div class="step-desc">FLOAT-এ ৳১০০.৫০ → ৳১০০.৪৯৯৯৯৯৭ হতে পারে। লক্ষ লক্ষ transaction-এ error জমে বিশাল হিসাব গড়বড় হয়।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৪</div>
+      <div class="step-text">
+        <div class="step-title">WHERE clause-এ যে column আছে সেখানে INDEX দাও</div>
+        <div class="step-desc">কিন্তু বেশি index = INSERT/UPDATE ধীর। ৫-৭টার বেশি index না দেওয়াই ভালো। EXPLAIN দিয়ে verify করো।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৫</div>
+      <div class="step-text">
+        <div class="step-title">মিলিয়ন রেকর্ড টেবিলে PARTITION BY RANGE (date)</div>
+        <div class="step-desc">এটাই সবচেয়ে বড় performance boost। ১২ মাসে ভাগ করলে প্রতি query ৯০%+ data skip করতে পারে।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৬</div>
+      <div class="step-text">
+        <div class="step-title">innodb_buffer_pool_size = RAM-এর ৭০%</div>
+        <div class="step-desc">এটা না করলে MySQL বারবার disk থেকে read করবে। RAM থেকে data পড়া disk থেকে ১০০০x দ্রুত।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৭</div>
+      <div class="step-text">
+        <div class="step-title">SELECT * কখনো production-এ নয়</div>
+        <div class="step-desc">শুধু দরকারী column select করো। Covering index কাজ করবে। Network bandwidth কমবে। Memory কম লাগবে।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৮</div>
+      <div class="step-text">
+        <div class="step-title">created_at/updated_at সবসময় TIMESTAMP দাও</div>
+        <div class="step-desc">debug, audit, soft delete — সব কাজে লাগে। DATETIME-এর চেয়ে ৪ বাইট ছোট। ON UPDATE CURRENT_TIMESTAMP দাও updated_at-এ।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">৯</div>
+      <div class="step-text">
+        <div class="step-title">Slow Query Log চালু রাখো সবসময়</div>
+        <div class="step-desc">long_query_time=1 সেট করলে ১ সেকেন্ডের বেশি query লগ হয়। প্রতি সপ্তাহে log দেখো, EXPLAIN দিয়ে fix করো।</div>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">১০</div>
+      <div class="step-text">
+        <div class="step-title">EXPLAIN আগে, optimize পরে</div>
+        <div class="step-desc">অনুমান করে index দিও না। EXPLAIN SELECT... চালাও। rows, type, key দেখো। type=ALL মানে full scan — সমস্যা। type=ref মানে index চলছে — ভালো।</div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<hr class="divider">
+
+<!-- SUMMARY COMPARISON -->
+<section class="section">
+  <div class="section-label">সারাংশ</div>
+  <h2 class="section-title">Index ছাড়া vs সহ — <span class="accent-red">পার্থক্য কতটা?</span></h2>
+
+  <div class="compare-grid">
+    <div class="compare-cell header">পরিমাপ</div>
+    <div class="compare-cell header">❌ কোনো Index নেই</div>
+    <div class="compare-cell header">✅ সঠিক Index আছে</div>
+    <div class="compare-cell header">✅✅ Index + Partition</div>
+
+    <div class="compare-cell" style="color:var(--text2);">১ কোটি রেকর্ডে SELECT</div>
+    <div class="compare-cell"><div class="val accent-red">৩-৫ সেকেন্ড</div><div class="desc">Full table scan</div></div>
+    <div class="compare-cell"><div class="val accent-amber">৫-৫০ ms</div><div class="desc">B+Tree ~২৩ step</div></div>
+    <div class="compare-cell"><div class="val accent-green">&lt;১ ms</div><div class="desc">Partition + Index</div></div>
+
+    <div class="compare-cell" style="color:var(--text2);">মাসিক report (৩০ কোটি রেকর্ড)</div>
+    <div class="compare-cell"><div class="val accent-red">৩০+ মিনিট</div><div class="desc">সব scan</div></div>
+    <div class="compare-cell"><div class="val accent-amber">৫-১০ মিনিট</div><div class="desc">Index সাহায্য করে</div></div>
+    <div class="compare-cell"><div class="val accent-green">১০-৩০ সেকেন্ড</div><div class="desc">শুধু সেই মাসের partition</div></div>
+
+    <div class="compare-cell" style="color:var(--text2);">Storage (৫০ কোটি order_items)</div>
+    <div class="compare-cell"><div class="val accent-red">বড় datatype</div><div class="desc">~৮০ GB</div></div>
+    <div class="compare-cell"><div class="val accent-green">Optimal datatype</div><div class="desc">~৪৫ GB</div></div>
+    <div class="compare-cell"><div class="val accent-green">Same + Compress</div><div class="desc">~২৫ GB</div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div style="margin-bottom:8px">⚡ MySQL মাস্টারক্লাস — বাংলায় সম্পূর্ণ প্রো গাইড</div>
+  <div>PRAN-RFL ডেটাবেস ডিজাইন সহ • MySQL 8.0 • InnoDB Engine • Partitioning • Index Optimization</div>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+  });
+</script>
+
+</body>
+</html>

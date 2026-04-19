@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flutter & Dart - সম্পূর্ণ বাংলা ক্র্যাশ কোর্স</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --card: #141d2e;
+    --card2: #1e2a40;
+    --accent: #54d4f0;
+    --accent2: #7c5cf0;
+    --accent3: #f0a054;
+    --accent4: #54f0a0;
+    --text: #e8f0fe;
+    --text2: #9ab0cc;
+    --text3: #5a7090;
+    --border: rgba(84,212,240,0.15);
+    --border2: rgba(84,212,240,0.08);
+    --code-bg: #0d1424;
+    --success: #54f0a0;
+    --warning: #f0a054;
+    --danger: #f05454;
+    --info: #54d4f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1a35 40%, #1a1035 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 0 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(84,212,240,0.06) 0%, transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(84,212,240,0.1);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 13px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text2);
+    margin-bottom: 30px;
+    font-family: 'Tiro Bangla', serif;
+  }
+  .hero-chips {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .chip span { color: var(--accent); font-weight: 600; margin-right: 4px; }
+
+  /* NAV TOC */
+  .toc {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border2);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toc-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    scrollbar-width: none;
+  }
+  .toc-inner::-webkit-scrollbar { display: none; }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text3);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .toc-item:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .toc-num {
+    background: var(--card);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-top: 60px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border2);
+  }
+  .section-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .icon-blue { background: rgba(84,212,240,0.12); }
+  .icon-purple { background: rgba(124,92,240,0.12); }
+  .icon-orange { background: rgba(240,160,84,0.12); }
+  .icon-green { background: rgba(84,240,160,0.12); }
+  .icon-red { background: rgba(240,84,84,0.12); }
+  .icon-pink { background: rgba(240,84,160,0.12); }
+
+  .section-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-bn {
+    font-size: 14px;
+    color: var(--text3);
+    font-family: 'Tiro Bangla', serif;
+    margin-top: 2px;
+  }
+  .section-num {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text3);
+    background: var(--card);
+    border: 1px solid var(--border2);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card:hover { border-color: var(--border); }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 700px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    margin: 14px 0;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border2);
+    background: rgba(255,255,255,0.02);
+  }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(84,212,240,0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .code-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'Tiro Bangla', serif;
+  }
+  .code-body {
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c9d1d9;
+    white-space: pre;
+  }
+
+  /* Syntax Highlight */
+  .kw { color: #c792ea; } /* keyword */
+  .fn { color: #82aaff; } /* function */
+  .cls { color: #ffcb6b; } /* class */
+  .str { color: #c3e88d; } /* string */
+  .num { color: #f78c6c; } /* number */
+  .cm { color: #546e7a; font-style: italic; } /* comment */
+  .type { color: #80cbc4; } /* type */
+  .prop { color: #89ddff; } /* property */
+  .dart { color: #54d4f0; } /* dart specific */
+
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    bottom: -20px;
+    width: 1px;
+    background: var(--border2);
+  }
+  .step:last-child::before { display: none; }
+  .step-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .step-body { flex: 1; }
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .step-desc { font-size: 14px; color: var(--text2); }
+
+  /* TAGS & BADGES */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-right: 4px;
+  }
+  .badge-blue { background: rgba(84,212,240,0.12); color: var(--accent); }
+  .badge-purple { background: rgba(124,92,240,0.15); color: #a78bfa; }
+  .badge-green { background: rgba(84,240,160,0.12); color: var(--success); }
+  .badge-orange { background: rgba(240,160,84,0.12); color: var(--warning); }
+  .badge-red { background: rgba(240,84,84,0.12); color: var(--danger); }
+
+  /* INFO BOXES */
+  .info-box {
+    border-left: 3px solid var(--info);
+    background: rgba(84,212,240,0.05);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--text2);
+  }
+  .warn-box {
+    border-left: 3px solid var(--warning);
+    background: rgba(240,160,84,0.05);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--text2);
+  }
+  .success-box {
+    border-left: 3px solid var(--success);
+    background: rgba(84,240,160,0.05);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--text2);
+  }
+  .box-icon { font-size: 16px; margin-right: 8px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th {
+    background: var(--card2);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border2);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* WIDGET TREE */
+  .widget-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    color: var(--text2);
+  }
+  .wt-row { display: flex; align-items: center; gap: 8px; }
+  .wt-indent { display: inline-block; width: 24px; color: var(--border); }
+  .wt-name { color: var(--accent); }
+  .wt-prop { color: var(--text3); font-size: 11px; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border2);
+    margin: 40px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border2);
+    text-align: center;
+    padding: 30px;
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  p { margin-bottom: 10px; color: var(--text2); font-size: 15px; }
+  strong { color: var(--text); }
+  .accent { color: var(--accent); }
+  .accent2 { color: var(--accent2); }
+  .accent3 { color: var(--accent3); }
+  .accent4 { color: var(--accent4); }
+
+  ul.list { color: var(--text2); font-size: 14px; padding-left: 20px; }
+  ul.list li { margin-bottom: 6px; }
+  ul.list li::marker { color: var(--accent); }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--border2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media(max-width:700px){ .two-col { grid-template-columns:1fr; } }
+
+  /* Scroll to top */
+  #scrollTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px; height: 44px;
+    background: var(--accent2);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 999;
+  }
+  #scrollTop.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🚀 সম্পূর্ণ বাংলা ক্র্যাশ কোর্স</div>
+  <h1>Flutter & Dart</h1>
+  <p class="hero-sub">শূন্য থেকে শুরু করে প্রফেশনাল অ্যাপ ডেভেলপমেন্ট পর্যন্ত</p>
+  <div class="hero-chips">
+    <div class="chip"><span>📦</span> ইনস্টলেশন</div>
+    <div class="chip"><span>🎯</span> Dart বেসিক</div>
+    <div class="chip"><span>🧱</span> Widget</div>
+    <div class="chip"><span>⚡</span> State Management</div>
+    <div class="chip"><span>🏗️</span> Clean Architecture</div>
+    <div class="chip"><span>🔥</span> Real Project</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a class="toc-item" href="#s1"><div class="toc-num">1</div> Flutter কী?</a>
+    <a class="toc-item" href="#s2"><div class="toc-num">2</div> ইনস্টলেশন</a>
+    <a class="toc-item" href="#s3"><div class="toc-num">3</div> Dart ভাষা</a>
+    <a class="toc-item" href="#s4"><div class="toc-num">4</div> Widget</a>
+    <a class="toc-item" href="#s5"><div class="toc-num">5</div> Layout</a>
+    <a class="toc-item" href="#s6"><div class="toc-num">6</div> State</a>
+    <a class="toc-item" href="#s7"><div class="toc-num">7</div> Navigation</a>
+    <a class="toc-item" href="#s8"><div class="toc-num">8</div> API Call</a>
+    <a class="toc-item" href="#s9"><div class="toc-num">9</div> Clean Code</a>
+    <a class="toc-item" href="#s10"><div class="toc-num">10</div> Project</a>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🦋</div>
+    <div>
+      <div class="section-title">Flutter কী এবং কেন শিখবো?</div>
+      <div class="section-bn">What is Flutter & Why Learn It</div>
+    </div>
+    <div class="section-num">01</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">🎯 একটি কোড, সব প্ল্যাটফর্ম</div>
+      <p style="font-size:14px;">Android, iOS, Web, Desktop — সব জায়গায় একই Dart কোড দিয়ে অ্যাপ বানানো যায়।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ নেটিভ পারফরম্যান্স</div>
+      <p style="font-size:14px;">Flutter সরাসরি GPU-তে রেন্ডার করে। React Native-এর মতো Bridge দরকার নেই।</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🎨 সুন্দর UI</div>
+      <p style="font-size:14px;">Skia ইঞ্জিন দিয়ে যেকোনো কাস্টম ডিজাইন করা যায়। Material ও Cupertino দুটোই আছে।</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="box-icon">💡</span>
+    <strong>Flutter</strong> হলো Google-এর তৈরি একটি UI Toolkit। <strong>Dart</strong> হলো Flutter-এর প্রোগ্রামিং ভাষা। দুটো একসাথে শিখতে হবে।
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Flutter vs React Native vs Native</div>
+    <table>
+      <tr><th>বিষয়</th><th>Flutter</th><th>React Native</th><th>Native (Java/Swift)</th></tr>
+      <tr><td>ভাষা</td><td><span class="badge badge-blue">Dart</span></td><td><span class="badge badge-orange">JavaScript</span></td><td><span class="badge badge-purple">Java/Kotlin/Swift</span></td></tr>
+      <tr><td>পারফরম্যান্স</td><td>✅ চমৎকার</td><td>⚡ ভালো</td><td>✅✅ সেরা</td></tr>
+      <tr><td>UI কাস্টম</td><td>✅✅ সহজ</td><td>⚡ মাঝারি</td><td>কঠিন</td></tr>
+      <tr><td>শেখার সুবিধা</td><td>✅ সহজ</td><td>✅ সহজ</td><td>❌ কঠিন</td></tr>
+      <tr><td>Hot Reload</td><td>✅ আছে</td><td>✅ আছে</td><td>❌ নেই</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-icon icon-orange">⚙️</div>
+    <div>
+      <div class="section-title">ইনস্টলেশন ও সেটআপ</div>
+      <div class="section-bn">Installation & Setup — Step by Step</div>
+    </div>
+    <div class="section-num">02</div>
+  </div>
+
+  <div class="warn-box">
+    <span class="box-icon">⚠️</span>
+    প্রথমবার ইনস্টল করতে সময় লাগতে পারে। ধৈর্য ধরুন। ইন্টারনেট সংযোগ ভালো রাখুন।
+  </div>
+
+  <!-- Windows -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🪟 Windows-এ ইনস্টলেশন</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Flutter SDK ডাউনলোড করুন</div>
+          <div class="step-desc">flutter.dev/docs/get-started/install/windows — এখানে গিয়ে .zip ডাউনলোড করুন</div>
+          <div class="code-block" style="margin-top:10px;">
+            <div class="code-header"><span class="code-lang">URL</span><span class="code-label">সাইট</span></div>
+            <div class="code-body"><pre>https://flutter.dev/docs/get-started/install/windows</pre></div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">C:\flutter ফোল্ডারে Extract করুন</div>
+          <div class="step-desc">Desktop বা Program Files-এ রাখবেন না। সরাসরি C:\ ড্রাইভে রাখুন।</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">PATH Environment Variable সেট করুন</div>
+          <div class="code-block" style="margin-top:10px;">
+            <div class="code-header"><span class="code-lang">Path</span></div>
+            <div class="code-body"><pre>C:\flutter\bin</pre></div>
+          </div>
+          <div class="step-desc" style="margin-top:8px;">
+            Windows Search → "Environment Variables" → System Variables → Path → Edit → New → পেস্ট করুন
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Android Studio ইনস্টল করুন</div>
+          <div class="step-desc">developer.android.com/studio থেকে ডাউনলোড করুন। Android SDK ও Emulator সব আসবে।</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Flutter Doctor চালান</div>
+          <div class="code-block" style="margin-top:10px;">
+            <div class="code-header"><span class="code-lang">Terminal</span></div>
+            <div class="code-body"><pre>flutter doctor</pre></div>
+          </div>
+          <div class="step-desc" style="margin-top:8px;">সব ✅ দেখালে ইনস্টল সফল। ❌ দেখালে সেই সমস্যা ঠিক করুন।</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">VS Code এ Flutter Extension যোগ করুন</div>
+          <div class="step-desc">VS Code খুলুন → Extensions (Ctrl+Shift+X) → "Flutter" সার্চ করুন → Install</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <div class="step-title">প্রথম প্রজেক্ট তৈরি করুন</div>
+          <div class="code-block" style="margin-top:10px;">
+            <div class="code-header"><span class="code-lang">Terminal</span><span class="code-label">কমান্ড</span></div>
+            <div class="code-body"><pre>flutter create my_first_app
+cd my_first_app
+flutter run</pre></div>
+          </div>
+          <div class="success-box" style="margin-top:10px;">
+            <span class="box-icon">🎉</span> এমুলেটর বা ফোনে অ্যাপ চলে গেলে সব ঠিক আছে!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flutter Doctor Output -->
+  <div class="card">
+    <div class="card-title">🩺 Flutter Doctor Output বোঝা</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Output</span><span class="code-label">flutter doctor চালালে যা দেখবেন</span></div>
+      <div class="code-body"><pre>[✓] Flutter (Channel stable, 3.x.x)
+[✓] Windows Version (Installed version of Windows is version 10)
+[✓] Android toolchain - develop for Android devices
+[✓] Chrome - develop for the web
+[✗] Visual Studio - develop Windows apps
+    ✗ Visual Studio not installed  <span class="cm">← এটা optional, skip করতে পারেন</span>
+[✓] Android Studio (version 2023.x)
+[✓] VS Code (version 1.8x)
+[✓] Connected device (2 available)
+[✓] Network resources</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📁 প্রজেক্ট ফাইল স্ট্রাকচার</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Structure</span></div>
+      <div class="code-body"><pre>my_first_app/
+├── android/          <span class="cm">← Android নেটিভ কোড</span>
+├── ios/              <span class="cm">← iOS নেটিভ কোড</span>
+├── lib/              <span class="cm">← আপনার সব Dart কোড এখানে</span>
+│   └── main.dart     <span class="cm">← এন্ট্রি পয়েন্ট (প্রথম ফাইল)</span>
+├── test/             <span class="cm">← টেস্ট ফাইল</span>
+├── web/              <span class="cm">← Web সাপোর্ট</span>
+└── pubspec.yaml      <span class="cm">← Dependencies ও সেটিংস</span></pre></div>
+    </div>
+    <div class="info-box" style="margin-top:10px;">
+      <span class="box-icon">💡</span>
+      আপনার সব কাজ <strong>lib/</strong> ফোল্ডারের ভেতরে হবে। অন্য ফোল্ডারে সাধারণত হাত দেওয়ার দরকার নেই।
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🎯</div>
+    <div>
+      <div class="section-title">Dart প্রোগ্রামিং ভাষা</div>
+      <div class="section-bn">Dart Language Crash Course</div>
+    </div>
+    <div class="section-num">03</div>
+  </div>
+
+  <!-- Variables -->
+  <div class="card">
+    <div class="card-title">📦 Variable ও Data Type</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">ভেরিয়েবল</span></div>
+      <div class="code-body"><pre><span class="cm">// ১. var — টাইপ নিজেই বুঝে নেয়</span>
+<span class="kw">var</span> name = <span class="str">'রাফি'</span>;           <span class="cm">// String</span>
+<span class="kw">var</span> age = <span class="num">22</span>;               <span class="cm">// int</span>
+<span class="kw">var</span> height = <span class="num">5.9</span>;           <span class="cm">// double</span>
+<span class="kw">var</span> isStudent = <span class="kw">true</span>;      <span class="cm">// bool</span>
+
+<span class="cm">// ২. Explicit Type — স্পষ্ট করে টাইপ লেখা</span>
+<span class="type">String</span> city = <span class="str">'ঢাকা'</span>;
+<span class="type">int</span> year = <span class="num">2024</span>;
+<span class="type">double</span> price = <span class="num">99.99</span>;
+<span class="type">bool</span> isActive = <span class="kw">false</span>;
+
+<span class="cm">// ৩. final — একবার সেট হলে আর বদলানো যাবে না</span>
+<span class="kw">final</span> pi = <span class="num">3.14159</span>;
+<span class="kw">final</span> <span class="type">String</span> country = <span class="str">'Bangladesh'</span>;
+
+<span class="cm">// ৪. const — compile-time constant</span>
+<span class="kw">const</span> maxScore = <span class="num">100</span>;
+
+<span class="cm">// ৫. Nullable — null রাখতে পারবে</span>
+<span class="type">String</span>? phone;              <span class="cm">// null হতে পারে</span>
+phone = <span class="str">'01712345678'</span>;      <span class="cm">// এখন value আছে</span>
+phone = <span class="kw">null</span>;              <span class="cm">// আবার null</span></pre></div>
+    </div>
+  </div>
+
+  <!-- Collections -->
+  <div class="card">
+    <div class="card-title">📋 Collections (List, Map, Set)</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">কালেকশন</span></div>
+      <div class="code-body"><pre><span class="cm">// List (Array মতো)</span>
+<span class="type">List</span>&lt;<span class="type">String</span>&gt; fruits = [<span class="str">'আম'</span>, <span class="str">'কলা'</span>, <span class="str">'লিচু'</span>];
+fruits.add(<span class="str">'পেয়ারা'</span>);        <span class="cm">// যোগ করা</span>
+fruits.remove(<span class="str">'কলা'</span>);       <span class="cm">// বাদ দেওয়া</span>
+<span class="fn">print</span>(fruits[<span class="num">0</span>]);           <span class="cm">// আম (index 0)</span>
+<span class="fn">print</span>(fruits.length);       <span class="cm">// 3</span>
+
+<span class="cm">// Map (Key-Value pair)</span>
+<span class="type">Map</span>&lt;<span class="type">String</span>, <span class="kw">dynamic</span>&gt; student = {
+  <span class="str">'name'</span>: <span class="str">'তানভীর'</span>,
+  <span class="str">'age'</span>: <span class="num">20</span>,
+  <span class="str">'gpa'</span>: <span class="num">3.8</span>,
+};
+<span class="fn">print</span>(student[<span class="str">'name'</span>]);      <span class="cm">// তানভীর</span>
+student[<span class="str">'city'</span>] = <span class="str">'চট্টগ্রাম'</span>; <span class="cm">// নতুন key যোগ</span>
+
+<span class="cm">// Set (unique values, no duplicates)</span>
+<span class="type">Set</span>&lt;<span class="type">int</span>&gt; numbers = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">1</span>};
+<span class="fn">print</span>(numbers); <span class="cm">// {1, 2, 3} — duplicate বাদ যায়</span></pre></div>
+    </div>
+  </div>
+
+  <!-- Functions -->
+  <div class="card">
+    <div class="card-title">🔧 Function (ফাংশন)</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">ফাংশন লেখার উপায়</span></div>
+      <div class="code-body"><pre><span class="cm">// ১. সাধারণ ফাংশন</span>
+<span class="type">void</span> <span class="fn">greet</span>(<span class="type">String</span> name) {
+  <span class="fn">print</span>(<span class="str">'আস-সালামু আলাইকুম, </span>$name<span class="str">!'</span>);
+}
+
+<span class="cm">// ২. Return করা ফাংশন</span>
+<span class="type">int</span> <span class="fn">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+  <span class="kw">return</span> a + b;
+}
+
+<span class="cm">// ৩. Arrow Function (এক লাইনে)</span>
+<span class="type">double</span> <span class="fn">square</span>(<span class="type">double</span> n) => n * n;
+
+<span class="cm">// ৪. Named Parameters</span>
+<span class="type">void</span> <span class="fn">createUser</span>({
+  <span class="kw">required</span> <span class="type">String</span> name,
+  <span class="kw">required</span> <span class="type">int</span> age,
+  <span class="type">String</span> city = <span class="str">'ঢাকা'</span>,  <span class="cm">// default value</span>
+}) {
+  <span class="fn">print</span>(<span class="str">'</span>$name<span class="str">, </span>$age<span class="str">, </span>$city<span class="str">'</span>);
+}
+<span class="cm">// Call করার উপায়:</span>
+<span class="fn">createUser</span>(name: <span class="str">'সাকিব'</span>, age: <span class="num">25</span>);
+<span class="fn">createUser</span>(name: <span class="str">'মিতু'</span>, age: <span class="num">22</span>, city: <span class="str">'সিলেট'</span>);
+
+<span class="cm">// ৫. Anonymous / Lambda Function</span>
+<span class="kw">var</span> multiply = (<span class="type">int</span> x, <span class="type">int</span> y) => x * y;
+<span class="fn">print</span>(<span class="fn">multiply</span>(<span class="num">4</span>, <span class="num">5</span>)); <span class="cm">// 20</span></pre></div>
+    </div>
+  </div>
+
+  <!-- OOP -->
+  <div class="card">
+    <div class="card-title">🏛️ OOP — Class ও Object</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">ক্লাস ও অবজেক্ট</span></div>
+      <div class="code-body"><pre><span class="cm">// Class তৈরি</span>
+<span class="kw">class</span> <span class="cls">Student</span> {
+  <span class="cm">// Properties</span>
+  <span class="type">String</span> name;
+  <span class="type">int</span> age;
+  <span class="type">double</span> gpa;
+
+  <span class="cm">// Constructor</span>
+  <span class="cls">Student</span>({
+    <span class="kw">required</span> <span class="kw">this</span>.name,
+    <span class="kw">required</span> <span class="kw">this</span>.age,
+    <span class="kw">this</span>.gpa = <span class="num">0.0</span>,
+  });
+
+  <span class="cm">// Method (কাজ করার ফাংশন)</span>
+  <span class="type">void</span> <span class="fn">introduce</span>() {
+    <span class="fn">print</span>(<span class="str">'আমি </span>${<span class="kw">this</span>.name}<span class="str">, বয়স </span>${<span class="kw">this</span>.age}<span class="str">'</span>);
+  }
+
+  <span class="cm">// Getter</span>
+  <span class="type">bool</span> <span class="kw">get</span> <span class="prop">isFirstClass</span> => gpa >= <span class="num">3.5</span>;
+
+  <span class="cm">// toString override</span>
+  @<span class="fn">override</span>
+  <span class="type">String</span> <span class="fn">toString</span>() => <span class="str">'Student(</span>$name<span class="str">, </span>$age<span class="str">)'</span>;
+}
+
+<span class="cm">// Object তৈরি ও ব্যবহার</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="kw">var</span> s1 = <span class="cls">Student</span>(name: <span class="str">'নাফিসা'</span>, age: <span class="num">19</span>, gpa: <span class="num">3.9</span>);
+  s1.<span class="fn">introduce</span>();
+  <span class="fn">print</span>(s1.isFirstClass); <span class="cm">// true</span>
+}
+
+<span class="cm">// Inheritance (উত্তরাধিকার)</span>
+<span class="kw">class</span> <span class="cls">GraduateStudent</span> <span class="kw">extends</span> <span class="cls">Student</span> {
+  <span class="type">String</span> thesis;
+
+  <span class="cls">GraduateStudent</span>({
+    <span class="kw">required</span> <span class="type">String</span> name,
+    <span class="kw">required</span> <span class="type">int</span> age,
+    <span class="kw">required</span> <span class="kw">this</span>.thesis,
+  }) : <span class="kw">super</span>(name: name, age: age);
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- Async/Await -->
+  <div class="card">
+    <div class="card-title">⏳ Async / Await / Future</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">অ্যাসিঙ্ক প্রোগ্রামিং</span></div>
+      <div class="code-body"><pre><span class="cm">// Future — পরে কোনো একসময় result আসবে</span>
+<span class="cls">Future</span>&lt;<span class="type">String</span>&gt; <span class="fn">fetchUserName</span>() <span class="kw">async</span> {
+  <span class="cm">// ২ সেকেন্ড অপেক্ষা (API call simulate)</span>
+  <span class="kw">await</span> <span class="cls">Future</span>.<span class="fn">delayed</span>(<span class="cls">Duration</span>(seconds: <span class="num">2</span>));
+  <span class="kw">return</span> <span class="str">'রাহেলা'</span>;
+}
+
+<span class="kw">void</span> <span class="fn">main</span>() <span class="kw">async</span> {
+  <span class="fn">print</span>(<span class="str">'লোড হচ্ছে...'</span>);
+  <span class="type">String</span> name = <span class="kw">await</span> <span class="fn">fetchUserName</span>();
+  <span class="fn">print</span>(<span class="str">'ব্যবহারকারী: </span>$name<span class="str">'</span>);
+}
+
+<span class="cm">// Error Handling</span>
+<span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">loadData</span>() <span class="kw">async</span> {
+  <span class="kw">try</span> {
+    <span class="kw">var</span> data = <span class="kw">await</span> <span class="fn">fetchUserName</span>();
+    <span class="fn">print</span>(data);
+  } <span class="kw">catch</span> (e) {
+    <span class="fn">print</span>(<span class="str">'সমস্যা হয়েছে: </span>$e<span class="str">'</span>);
+  } <span class="kw">finally</span> {
+    <span class="fn">print</span>(<span class="str">'সবসময় চলবে'</span>);
+  }
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🧱</div>
+    <div>
+      <div class="section-title">Flutter Widgets</div>
+      <div class="section-bn">Widget দিয়ে UI বানানো</div>
+    </div>
+    <div class="section-num">04</div>
+  </div>
+
+  <div class="info-box">
+    <span class="box-icon">🔑</span>
+    Flutter-এ সবকিছুই <strong>Widget</strong>। Button, Text, Image, Layout — সব Widget। Widget হলো UI-এর ইট।
+  </div>
+
+  <!-- main.dart -->
+  <div class="card">
+    <div class="card-title">🚀 main.dart — প্রথম অ্যাপ</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">lib/main.dart</span></div>
+      <div class="code-body"><pre><span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+
+<span class="cm">// প্রোগ্রামের শুরু</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="fn">runApp</span>(<span class="kw">const</span> <span class="cls">MyApp</span>());
+}
+
+<span class="cm">// Root Widget</span>
+<span class="kw">class</span> <span class="cls">MyApp</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">const</span> <span class="cls">MyApp</span>({<span class="kw">super</span>.key});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">MaterialApp</span>(
+      title: <span class="str">'আমার প্রথম অ্যাপ'</span>,
+      theme: <span class="cls">ThemeData</span>(
+        colorScheme: <span class="cls">ColorScheme</span>.<span class="fn">fromSeed</span>(seedColor: <span class="cls">Colors</span>.blue),
+        useMaterial3: <span class="kw">true</span>,
+      ),
+      home: <span class="kw">const</span> <span class="cls">HomeScreen</span>(),
+    );
+  }
+}
+
+<span class="cm">// Home Screen Widget</span>
+<span class="kw">class</span> <span class="cls">HomeScreen</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">const</span> <span class="cls">HomeScreen</span>({<span class="kw">super</span>.key});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      appBar: <span class="cls">AppBar</span>(title: <span class="kw">const</span> <span class="cls">Text</span>(<span class="str">'হোম পেজ'</span>)),
+      body: <span class="kw">const</span> <span class="cls">Center</span>(
+        child: <span class="cls">Text</span>(
+          <span class="str">'আস-সালামু আলাইকুম! 👋'</span>,
+          style: <span class="cls">TextStyle</span>(fontSize: <span class="num">24</span>),
+        ),
+      ),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- Common Widgets -->
+  <div class="card">
+    <div class="card-title">📦 Common Widgets চিটশিট</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">সব কাজের Widget</span></div>
+      <div class="code-body"><pre><span class="cm">// ১. Text</span>
+<span class="cls">Text</span>(
+  <span class="str">'আমি Flutter শিখছি'</span>,
+  style: <span class="cls">TextStyle</span>(
+    fontSize: <span class="num">18</span>,
+    fontWeight: <span class="cls">FontWeight</span>.bold,
+    color: <span class="cls">Colors</span>.blue,
+  ),
+)
+
+<span class="cm">// ২. Image</span>
+<span class="cls">Image</span>.<span class="fn">network</span>(<span class="str">'https://example.com/image.jpg'</span>)
+<span class="cls">Image</span>.<span class="fn">asset</span>(<span class="str">'assets/logo.png'</span>)
+
+<span class="cm">// ৩. Button</span>
+<span class="cls">ElevatedButton</span>(
+  onPressed: () => <span class="fn">print</span>(<span class="str">'ক্লিক!'</span>),
+  child: <span class="kw">const</span> <span class="cls">Text</span>(<span class="str">'ক্লিক করুন'</span>),
+)
+<span class="cls">TextButton</span>(onPressed: () {}, child: <span class="cls">Text</span>(<span class="str">'টেক্সট বাটন'</span>))
+<span class="cls">IconButton</span>(icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.favorite), onPressed: () {})
+
+<span class="cm">// ৪. TextField</span>
+<span class="cls">TextField</span>(
+  decoration: <span class="cls">InputDecoration</span>(
+    labelText: <span class="str">'আপনার নাম'</span>,
+    hintText: <span class="str">'নাম লিখুন'</span>,
+    border: <span class="cls">OutlineInputBorder</span>(),
+  ),
+)
+
+<span class="cm">// ৫. Container</span>
+<span class="cls">Container</span>(
+  width: <span class="num">200</span>,
+  height: <span class="num">100</span>,
+  decoration: <span class="cls">BoxDecoration</span>(
+    color: <span class="cls">Colors</span>.blue,
+    borderRadius: <span class="cls">BorderRadius</span>.<span class="fn">circular</span>(<span class="num">12</span>),
+    boxShadow: [<span class="cls">BoxShadow</span>(blurRadius: <span class="num">8</span>, color: <span class="cls">Colors</span>.black26)],
+  ),
+  child: <span class="cls">Center</span>(child: <span class="cls">Text</span>(<span class="str">'বক্স'</span>)),
+)
+
+<span class="cm">// ৬. Card</span>
+<span class="cls">Card</span>(
+  elevation: <span class="num">4</span>,
+  child: <span class="cls">Padding</span>(
+    padding: <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),
+    child: <span class="cls">Text</span>(<span class="str">'কার্ড কনটেন্ট'</span>),
+  ),
+)
+
+<span class="cm">// ৭. ListView</span>
+<span class="cls">ListView</span>.<span class="fn">builder</span>(
+  itemCount: <span class="num">20</span>,
+  itemBuilder: (context, index) => <span class="cls">ListTile</span>(
+    leading: <span class="cls">Icon</span>(<span class="cls">Icons</span>.star),
+    title: <span class="cls">Text</span>(<span class="str">'আইটেম </span>${index + <span class="num">1</span>}<span class="str">'</span>),
+    subtitle: <span class="cls">Text</span>(<span class="str">'সাবটাইটেল'</span>),
+  ),
+)</pre></div>
+    </div>
+  </div>
+
+  <!-- Stateless vs Stateful -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title" style="color: var(--accent4);">🧊 StatelessWidget</div>
+      <p style="font-size:14px;">UI পরিবর্তন হয় না। শুধু একবার build হয়। দ্রুত ও হালকা।</p>
+      <div class="code-block" style="margin-top:10px;">
+        <div class="code-header"><span class="code-lang">Dart</span></div>
+        <div class="code-body"><pre><span class="kw">class</span> <span class="cls">MyWidget</span>
+    <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+
+  <span class="kw">const</span> <span class="cls">MyWidget</span>({<span class="kw">super</span>.key});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(
+    <span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'স্থির টেক্সট'</span>);
+  }
+}</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color: var(--accent3);">🔥 StatefulWidget</div>
+      <p style="font-size:14px;">UI পরিবর্তন হতে পারে। setState() দিয়ে আপডেট করা হয়।</p>
+      <div class="code-block" style="margin-top:10px;">
+        <div class="code-header"><span class="code-lang">Dart</span></div>
+        <div class="code-body"><pre><span class="kw">class</span> <span class="cls">Counter</span>
+    <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="kw">const</span> <span class="cls">Counter</span>({<span class="kw">super</span>.key});
+  @<span class="fn">override</span>
+  <span class="fn">_CounterState</span> <span class="fn">createState</span>()
+    => <span class="cls">_CounterState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_CounterState</span>
+    <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">Counter</span>&gt; {
+  <span class="type">int</span> count = <span class="num">0</span>;
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(ctx) =>
+    <span class="cls">Text</span>(<span class="str">'</span>$count<span class="str">'</span>);
+}</pre></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-icon icon-green">📐</div>
+    <div>
+      <div class="section-title">Layout Widgets</div>
+      <div class="section-bn">UI সাজানোর Widget</div>
+    </div>
+    <div class="section-num">05</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📏 Row, Column, Stack</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">লেআউট</span></div>
+      <div class="code-body"><pre><span class="cm">// Row — পাশাপাশি (horizontal)</span>
+<span class="cls">Row</span>(
+  mainAxisAlignment: <span class="cls">MainAxisAlignment</span>.spaceBetween,
+  crossAxisAlignment: <span class="cls">CrossAxisAlignment</span>.center,
+  children: [
+    <span class="cls">Icon</span>(<span class="cls">Icons</span>.star, color: <span class="cls">Colors</span>.yellow),
+    <span class="cls">Text</span>(<span class="str">'রেটিং'</span>),
+    <span class="cls">Text</span>(<span class="str">'4.8'</span>),
+  ],
+)
+
+<span class="cm">// Column — উপর-নিচ (vertical)</span>
+<span class="cls">Column</span>(
+  mainAxisAlignment: <span class="cls">MainAxisAlignment</span>.center,
+  children: [
+    <span class="cls">Text</span>(<span class="str">'শিরোনাম'</span>, style: <span class="cls">TextStyle</span>(fontSize: <span class="num">24</span>)),
+    <span class="cls">SizedBox</span>(height: <span class="num">8</span>),  <span class="cm">// ফাঁকা জায়গা</span>
+    <span class="cls">Text</span>(<span class="str">'বিবরণ এখানে থাকবে'</span>),
+    <span class="cls">SizedBox</span>(height: <span class="num">16</span>),
+    <span class="cls">ElevatedButton</span>(onPressed: () {}, child: <span class="cls">Text</span>(<span class="str">'শুরু'</span>)),
+  ],
+)
+
+<span class="cm">// Stack — একটার উপর আরেকটা</span>
+<span class="cls">Stack</span>(
+  children: [
+    <span class="cls">Image</span>.<span class="fn">network</span>(<span class="str">'https://example.com/bg.jpg'</span>),
+    <span class="cls">Positioned</span>(
+      bottom: <span class="num">20</span>,
+      left: <span class="num">20</span>,
+      child: <span class="cls">Text</span>(
+        <span class="str">'ছবির উপর টেক্সট'</span>,
+        style: <span class="cls">TextStyle</span>(color: <span class="cls">Colors</span>.white, fontSize: <span class="num">18</span>),
+      ),
+    ),
+  ],
+)
+
+<span class="cm">// Expanded — বাকি সব জায়গা নেয়</span>
+<span class="cls">Row</span>(
+  children: [
+    <span class="cls">Icon</span>(<span class="cls">Icons</span>.person),
+    <span class="cls">Expanded</span>(    <span class="cm">// বাকি সব জায়গা এই Text পাবে</span>
+      child: <span class="cls">Text</span>(<span class="str">'দীর্ঘ নাম এখানে থাকলেও overflow হবে না'</span>),
+    ),
+    <span class="cls">Icon</span>(<span class="cls">Icons</span>.arrow_forward),
+  ],
+)
+
+<span class="cm">// Padding ও Margin</span>
+<span class="cls">Padding</span>(
+  padding: <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),          <span class="cm">// সব দিকে 16</span>
+  <span class="cm">// padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),</span>
+  <span class="cm">// padding: EdgeInsets.only(top: 8, left: 16),</span>
+  child: <span class="cls">Text</span>(<span class="str">'প্যাডিং যুক্ত টেক্সট'</span>),
+)</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📱 Scaffold — অ্যাপের কাঠামো</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">পূর্ণ স্ক্রিন লেআউট</span></div>
+      <div class="code-body"><pre><span class="cls">Scaffold</span>(
+  <span class="cm">// উপরের বার</span>
+  appBar: <span class="cls">AppBar</span>(
+    title: <span class="cls">Text</span>(<span class="str">'আমার অ্যাপ'</span>),
+    leading: <span class="cls">IconButton</span>(
+      icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.menu),
+      onPressed: () {},
+    ),
+    actions: [
+      <span class="cls">IconButton</span>(icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.search), onPressed: () {}),
+      <span class="cls">IconButton</span>(icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.notifications), onPressed: () {}),
+    ],
+  ),
+
+  <span class="cm">// মূল কনটেন্ট</span>
+  body: <span class="cls">Center</span>(child: <span class="cls">Text</span>(<span class="str">'মূল কনটেন্ট'</span>)),
+
+  <span class="cm">// ভাসমান বাটন</span>
+  floatingActionButton: <span class="cls">FloatingActionButton</span>(
+    onPressed: () {},
+    child: <span class="cls">Icon</span>(<span class="cls">Icons</span>.add),
+  ),
+
+  <span class="cm">// নিচের নেভিগেশন</span>
+  bottomNavigationBar: <span class="cls">NavigationBar</span>(
+    destinations: <span class="kw">const</span> [
+      <span class="cls">NavigationDestination</span>(icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.home), label: <span class="str">'হোম'</span>),
+      <span class="cls">NavigationDestination</span>(icon: <span class="cls">Icon</span>(<span class="cls">Icons</span>.person), label: <span class="str">'প্রোফাইল'</span>),
+    ],
+  ),
+
+  <span class="cm">// পাশের ড্রয়ার</span>
+  drawer: <span class="cls">Drawer</span>(
+    child: <span class="cls">ListView</span>(children: [
+      <span class="cls">DrawerHeader</span>(child: <span class="cls">Text</span>(<span class="str">'মেনু'</span>)),
+      <span class="cls">ListTile</span>(title: <span class="cls">Text</span>(<span class="str">'সেটিংস'</span>), onTap: () {}),
+    ]),
+  ),
+)</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 6 ==================== -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-icon icon-orange">⚡</div>
+    <div>
+      <div class="section-title">State Management</div>
+      <div class="section-bn">State পরিচালনা করা</div>
+    </div>
+    <div class="section-num">06</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 setState — সবচেয়ে সহজ উপায়</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">কাউন্টার অ্যাপ</span></div>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">CounterApp</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="kw">const</span> <span class="cls">CounterApp</span>({<span class="kw">super</span>.key});
+  @<span class="fn">override</span>
+  <span class="cls">State</span>&lt;<span class="cls">CounterApp</span>&gt; <span class="fn">createState</span>() => <span class="cls">_CounterAppState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_CounterAppState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">CounterApp</span>&gt; {
+  <span class="type">int</span> _count = <span class="num">0</span>;
+
+  <span class="type">void</span> <span class="fn">_increment</span>() {
+    <span class="fn">setState</span>(() {      <span class="cm">// এটা UI আপডেট করে</span>
+      _count++;
+    });
+  }
+
+  <span class="type">void</span> <span class="fn">_decrement</span>() {
+    <span class="kw">if</span> (_count > <span class="num">0</span>) {
+      <span class="fn">setState</span>(() => _count--);
+    }
+  }
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      appBar: <span class="cls">AppBar</span>(title: <span class="kw">const</span> <span class="cls">Text</span>(<span class="str">'কাউন্টার'</span>)),
+      body: <span class="cls">Center</span>(
+        child: <span class="cls">Column</span>(
+          mainAxisAlignment: <span class="cls">MainAxisAlignment</span>.center,
+          children: [
+            <span class="cls">Text</span>(<span class="str">'$_count'</span>, style: <span class="cls">Theme</span>.<span class="fn">of</span>(context).textTheme.displayLarge),
+            <span class="kw">const</span> <span class="cls">SizedBox</span>(height: <span class="num">24</span>),
+            <span class="cls">Row</span>(
+              mainAxisAlignment: <span class="cls">MainAxisAlignment</span>.center,
+              children: [
+                <span class="cls">FloatingActionButton</span>(onPressed: <span class="fn">_decrement</span>, child: <span class="kw">const</span> <span class="cls">Icon</span>(<span class="cls">Icons</span>.remove)),
+                <span class="kw">const</span> <span class="cls">SizedBox</span>(width: <span class="num">24</span>),
+                <span class="cls">FloatingActionButton</span>(onPressed: <span class="fn">_increment</span>, child: <span class="kw">const</span> <span class="cls">Icon</span>(<span class="cls">Icons</span>.add)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔵 Provider — জনপ্রিয় State Management</div>
+    <div class="info-box" style="margin-bottom:12px;">
+      <span class="box-icon">📦</span>
+      pubspec.yaml-এ যোগ করুন: <span class="inline-code">provider: ^6.1.2</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">Provider Pattern</span></div>
+      <div class="code-body"><pre><span class="cm">// ১. Model তৈরি করুন</span>
+<span class="kw">class</span> <span class="cls">CartProvider</span> <span class="kw">extends</span> <span class="cls">ChangeNotifier</span> {
+  <span class="type">List</span>&lt;<span class="cls">Product</span>&gt; _items = [];
+
+  <span class="type">List</span>&lt;<span class="cls">Product</span>&gt; <span class="kw">get</span> <span class="prop">items</span> => _items;
+  <span class="type">int</span> <span class="kw">get</span> <span class="prop">itemCount</span> => _items.length;
+
+  <span class="type">void</span> <span class="fn">addItem</span>(<span class="cls">Product</span> product) {
+    _items.add(product);
+    <span class="fn">notifyListeners</span>();  <span class="cm">// UI কে জানায়</span>
+  }
+
+  <span class="type">void</span> <span class="fn">removeItem</span>(<span class="cls">Product</span> product) {
+    _items.remove(product);
+    <span class="fn">notifyListeners</span>();
+  }
+
+  <span class="type">double</span> <span class="kw">get</span> <span class="prop">totalPrice</span> =>
+    _items.<span class="fn">fold</span>(<span class="num">0</span>, (sum, item) => sum + item.price);
+}
+
+<span class="cm">// ২. main() তে Provider যোগ করুন</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="fn">runApp</span>(
+    <span class="cls">ChangeNotifierProvider</span>(
+      create: (_) => <span class="cls">CartProvider</span>(),
+      child: <span class="kw">const</span> <span class="cls">MyApp</span>(),
+    ),
+  );
+}
+
+<span class="cm">// ৩. Widget-এ ব্যবহার করুন</span>
+<span class="kw">class</span> <span class="cls">CartScreen</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="cm">// data পড়া ও watch করা</span>
+    <span class="kw">final</span> cart = context.<span class="fn">watch</span>&lt;<span class="cls">CartProvider</span>&gt;();
+
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      appBar: <span class="cls">AppBar</span>(
+        title: <span class="cls">Text</span>(<span class="str">'কার্ট (</span>${cart.itemCount}<span class="str">)'</span>),
+      ),
+      body: <span class="cls">ListView</span>.<span class="fn">builder</span>(
+        itemCount: cart.items.length,
+        itemBuilder: (ctx, i) => <span class="cls">ListTile</span>(
+          title: <span class="cls">Text</span>(cart.items[i].name),
+          subtitle: <span class="cls">Text</span>(<span class="str">'৳ </span>${cart.items[i].price}<span class="str">'</span>),
+        ),
+      ),
+      bottomNavigationBar: <span class="cls">Padding</span>(
+        padding: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),
+        child: <span class="cls">Text</span>(<span class="str">'মোট: ৳ </span>${cart.totalPrice}<span class="str">'</span>),
+      ),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 7 ==================== -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🧭</div>
+    <div>
+      <div class="section-title">Navigation (পেজ পরিবর্তন)</div>
+      <div class="section-bn">Screen to Screen Navigation</div>
+    </div>
+    <div class="section-num">07</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗺️ Navigation — এক পেজ থেকে আরেক পেজ</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">Navigator ব্যবহার</span></div>
+      <div class="code-body"><pre><span class="cm">// ১. পরের পেজে যাওয়া (Push)</span>
+<span class="cls">ElevatedButton</span>(
+  onPressed: () {
+    <span class="cls">Navigator</span>.<span class="fn">push</span>(
+      context,
+      <span class="cls">MaterialPageRoute</span>(
+        builder: (context) => <span class="cls">DetailScreen</span>(id: <span class="str">'123'</span>),
+      ),
+    );
+  },
+  child: <span class="cls">Text</span>(<span class="str">'বিস্তারিত দেখুন'</span>),
+)
+
+<span class="cm">// ২. আগের পেজে ফিরে যাওয়া (Pop)</span>
+<span class="cls">ElevatedButton</span>(
+  onPressed: () => <span class="cls">Navigator</span>.<span class="fn">pop</span>(context),
+  child: <span class="cls">Text</span>(<span class="str">'ফিরে যান'</span>),
+)
+
+<span class="cm">// ৩. পেজ replace করা (পিছনে যাওয়া যাবে না)</span>
+<span class="cls">Navigator</span>.<span class="fn">pushReplacement</span>(
+  context,
+  <span class="cls">MaterialPageRoute</span>(builder: (_) => <span class="cls">HomeScreen</span>()),
+);
+
+<span class="cm">// ৪. Named Routes — বড় প্রজেক্টে ব্যবহার করুন</span>
+<span class="cls">MaterialApp</span>(
+  initialRoute: <span class="str">'/'</span>,
+  routes: {
+    <span class="str">'/'</span>: (_) => <span class="cls">HomeScreen</span>(),
+    <span class="str">'/login'</span>: (_) => <span class="cls">LoginScreen</span>(),
+    <span class="str">'/profile'</span>: (_) => <span class="cls">ProfileScreen</span>(),
+  },
+)
+<span class="cm">// Navigate করুন:</span>
+<span class="cls">Navigator</span>.<span class="fn">pushNamed</span>(context, <span class="str">'/profile'</span>);
+
+<span class="cm">// ৫. Data পাঠানো ও নেওয়া</span>
+<span class="kw">class</span> <span class="cls">DetailScreen</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="type">String</span> id;
+  <span class="kw">const</span> <span class="cls">DetailScreen</span>({<span class="kw">super</span>.key, <span class="kw">required</span> <span class="kw">this</span>.id});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      appBar: <span class="cls">AppBar</span>(title: <span class="cls">Text</span>(<span class="str">'বিস্তারিত: </span>$id<span class="str">'</span>)),
+      body: <span class="cls">Text</span>(<span class="str">'ID: </span>$id<span class="str">'</span>),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 8 ==================== -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <div class="section-icon icon-red">🌐</div>
+    <div>
+      <div class="section-title">API Call ও HTTP</div>
+      <div class="section-bn">ইন্টারনেট থেকে ডেটা আনা</div>
+    </div>
+    <div class="section-num">08</div>
+  </div>
+
+  <div class="info-box">
+    <span class="box-icon">📦</span>
+    pubspec.yaml-এ: <span class="inline-code">http: ^1.2.1</span> এবং <span class="inline-code">dio: ^5.4.3</span> যোগ করুন
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 HTTP দিয়ে API Call</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">API Service</span></div>
+      <div class="code-body"><pre><span class="kw">import</span> <span class="str">'dart:convert'</span>;
+<span class="kw">import</span> <span class="str">'package:http/http.dart'</span> <span class="kw">as</span> http;
+
+<span class="cm">// Model Class</span>
+<span class="kw">class</span> <span class="cls">Post</span> {
+  <span class="kw">final</span> <span class="type">int</span> id;
+  <span class="kw">final</span> <span class="type">String</span> title;
+  <span class="kw">final</span> <span class="type">String</span> body;
+
+  <span class="kw">const</span> <span class="cls">Post</span>({<span class="kw">required</span> <span class="kw">this</span>.id, <span class="kw">required</span> <span class="kw">this</span>.title, <span class="kw">required</span> <span class="kw">this</span>.body});
+
+  <span class="cm">// JSON থেকে Object বানানো</span>
+  <span class="kw">factory</span> <span class="cls">Post</span>.<span class="fn">fromJson</span>(<span class="cls">Map</span>&lt;<span class="type">String</span>, <span class="kw">dynamic</span>&gt; json) {
+    <span class="kw">return</span> <span class="cls">Post</span>(
+      id: json[<span class="str">'id'</span>],
+      title: json[<span class="str">'title'</span>],
+      body: json[<span class="str">'body'</span>],
+    );
+  }
+}
+
+<span class="cm">// API Service</span>
+<span class="kw">class</span> <span class="cls">ApiService</span> {
+  <span class="kw">static</span> <span class="kw">const</span> baseUrl = <span class="str">'https://jsonplaceholder.typicode.com'</span>;
+
+  <span class="cm">// GET — ডেটা পড়া</span>
+  <span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="type">List</span>&lt;<span class="cls">Post</span>&gt;&gt; <span class="fn">getPosts</span>() <span class="kw">async</span> {
+    <span class="kw">final</span> response = <span class="kw">await</span> http.<span class="fn">get</span>(<span class="cls">Uri</span>.<span class="fn">parse</span>(<span class="str">'$baseUrl/posts'</span>));
+
+    <span class="kw">if</span> (response.statusCode == <span class="num">200</span>) {
+      <span class="kw">final</span> jsonList = <span class="fn">jsonDecode</span>(response.body) <span class="kw">as</span> <span class="type">List</span>;
+      <span class="kw">return</span> jsonList.<span class="fn">map</span>((json) => <span class="cls">Post</span>.<span class="fn">fromJson</span>(json)).<span class="fn">toList</span>();
+    } <span class="kw">else</span> {
+      <span class="kw">throw</span> <span class="cls">Exception</span>(<span class="str">'ডেটা লোড ব্যর্থ!'</span>);
+    }
+  }
+
+  <span class="cm">// POST — ডেটা পাঠানো</span>
+  <span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">createPost</span>(<span class="type">String</span> title, <span class="type">String</span> body) <span class="kw">async</span> {
+    <span class="kw">final</span> response = <span class="kw">await</span> http.<span class="fn">post</span>(
+      <span class="cls">Uri</span>.<span class="fn">parse</span>(<span class="str">'$baseUrl/posts'</span>),
+      headers: {<span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>},
+      body: <span class="fn">jsonEncode</span>({<span class="str">'title'</span>: title, <span class="str">'body'</span>: body}),
+    );
+    <span class="fn">print</span>(<span class="str">'Created: </span>${response.statusCode}<span class="str">'</span>);
+  }
+}
+
+<span class="cm">// Widget-এ FutureBuilder দিয়ে দেখানো</span>
+<span class="kw">class</span> <span class="cls">PostListScreen</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      appBar: <span class="cls">AppBar</span>(title: <span class="cls">Text</span>(<span class="str">'পোস্ট লিস্ট'</span>)),
+      body: <span class="cls">FutureBuilder</span>&lt;<span class="type">List</span>&lt;<span class="cls">Post</span>&gt;&gt;(
+        future: <span class="cls">ApiService</span>.<span class="fn">getPosts</span>(),
+        builder: (context, snapshot) {
+          <span class="cm">// লোড হচ্ছে</span>
+          <span class="kw">if</span> (snapshot.connectionState == <span class="cls">ConnectionState</span>.waiting) {
+            <span class="kw">return</span> <span class="kw">const</span> <span class="cls">Center</span>(child: <span class="cls">CircularProgressIndicator</span>());
+          }
+          <span class="cm">// সমস্যা হয়েছে</span>
+          <span class="kw">if</span> (snapshot.hasError) {
+            <span class="kw">return</span> <span class="cls">Center</span>(child: <span class="cls">Text</span>(<span class="str">'সমস্যা: </span>${snapshot.error}<span class="str">'</span>));
+          }
+          <span class="cm">// ডেটা পাওয়া গেছে</span>
+          <span class="kw">final</span> posts = snapshot.data!;
+          <span class="kw">return</span> <span class="cls">ListView</span>.<span class="fn">builder</span>(
+            itemCount: posts.length,
+            itemBuilder: (_, i) => <span class="cls">Card</span>(
+              margin: <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">8</span>),
+              child: <span class="cls">ListTile</span>(
+                title: <span class="cls">Text</span>(posts[i].title),
+                subtitle: <span class="cls">Text</span>(posts[i].body.<span class="fn">substring</span>(<span class="num">0</span>, <span class="num">50</span>)),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 9 ==================== -->
+<div class="section" id="s9">
+  <div class="section-header">
+    <div class="section-icon icon-green">🏗️</div>
+    <div>
+      <div class="section-title">Clean Architecture & Clean Code</div>
+      <div class="section-bn">পরিষ্কার কোড লেখার নিয়ম</div>
+    </div>
+    <div class="section-num">09</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📁 ফোল্ডার স্ট্রাকচার (Clean Architecture)</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Structure</span><span class="code-label">বড় প্রজেক্টের স্ট্রাকচার</span></div>
+      <div class="code-body"><pre>lib/
+├── core/                  <span class="cm">← সব জায়গায় ব্যবহার হয় এমন কোড</span>
+│   ├── constants/
+│   │   ├── app_colors.dart
+│   │   ├── app_strings.dart
+│   │   └── app_sizes.dart
+│   ├── theme/
+│   │   └── app_theme.dart
+│   └── utils/
+│       └── validators.dart
+│
+├── features/              <span class="cm">← প্রতিটি ফিচার আলাদা ফোল্ডারে</span>
+│   ├── auth/
+│   │   ├── data/
+│   │   │   ├── models/
+│   │   │   │   └── user_model.dart
+│   │   │   └── repositories/
+│   │   │       └── auth_repository.dart
+│   │   ├── domain/
+│   │   │   └── entities/
+│   │   │       └── user_entity.dart
+│   │   └── presentation/
+│   │       ├── screens/
+│   │       │   ├── login_screen.dart
+│   │       │   └── register_screen.dart
+│   │       └── widgets/
+│   │           └── auth_button.dart
+│   │
+│   ├── home/
+│   │   └── presentation/
+│   │       └── screens/
+│   │           └── home_screen.dart
+│   │
+│   └── products/
+│       ├── data/
+│       ├── domain/
+│       └── presentation/
+│
+└── main.dart</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✨ Clean Code উদাহরণ</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">❌ খারাপ কোড vs ✅ ভালো কোড</span></div>
+      <div class="code-body"><pre><span class="cm">// ❌ খারাপ — সব এক জায়গায়</span>
+<span class="kw">class</span> <span class="cls">MyPage</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      body: <span class="cls">Column</span>(children: [
+        <span class="cls">Container</span>(padding: <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>), color: <span class="cls">Colors</span>.blue, child: <span class="cls">Text</span>(<span class="str">'হেডার'</span>, style: <span class="cls">TextStyle</span>(fontSize: <span class="num">24</span>, color: <span class="cls">Colors</span>.white))),
+        <span class="cls">Container</span>(padding: <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>), child: <span class="cls">Text</span>(<span class="str">'কনটেন্ট'</span>)),
+      ]),
+    );
+  }
+}
+
+<span class="cm">// ✅ ভালো — আলাদা আলাদা Widget</span>
+<span class="kw">class</span> <span class="cls">MyPage</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="kw">const</span> <span class="cls">Scaffold</span>(
+      body: <span class="cls">Column</span>(children: [
+        <span class="cls">PageHeader</span>(),
+        <span class="cls">PageContent</span>(),
+      ]),
+    );
+  }
+}
+
+<span class="kw">class</span> <span class="cls">PageHeader</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">const</span> <span class="cls">PageHeader</span>({<span class="kw">super</span>.key});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Container</span>(
+      padding: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),
+      color: <span class="cls">Theme</span>.<span class="fn">of</span>(context).primaryColor,
+      child: <span class="cls">Text</span>(
+        <span class="str">'হেডার'</span>,
+        style: <span class="cls">Theme</span>.<span class="fn">of</span>(context).textTheme.headlineSmall?.copyWith(
+          color: <span class="cls">Colors</span>.white,
+        ),
+      ),
+    );
+  }
+}
+
+<span class="cm">// ✅ Constants আলাদা ফাইলে</span>
+<span class="kw">class</span> <span class="cls">AppSizes</span> {
+  <span class="kw">static</span> <span class="kw">const</span> <span class="type">double</span> paddingS = <span class="num">8</span>;
+  <span class="kw">static</span> <span class="kw">const</span> <span class="type">double</span> paddingM = <span class="num">16</span>;
+  <span class="kw">static</span> <span class="kw">const</span> <span class="type">double</span> paddingL = <span class="num">24</span>;
+  <span class="kw">static</span> <span class="kw">const</span> <span class="type">double</span> radiusM = <span class="num">12</span>;
+  <span class="kw">static</span> <span class="kw">const</span> <span class="type">double</span> radiusL = <span class="num">20</span>;
+}
+
+<span class="kw">class</span> <span class="cls">AppColors</span> {
+  <span class="kw">static</span> <span class="kw">const</span> primary = <span class="cls">Color</span>(<span class="num">0xFF2563EB</span>);
+  <span class="kw">static</span> <span class="kw">const</span> secondary = <span class="cls">Color</span>(<span class="num">0xFF7C3AED</span>);
+  <span class="kw">static</span> <span class="kw">const</span> success = <span class="cls">Color</span>(<span class="num">0xFF16A34A</span>);
+  <span class="kw">static</span> <span class="kw">const</span> error = <span class="cls">Color</span>(<span class="num">0xFFDC2626</span>);
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- pubspec.yaml -->
+  <div class="card">
+    <div class="card-title">📄 pubspec.yaml — Dependencies</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">YAML</span><span class="code-label">জনপ্রিয় packages</span></div>
+      <div class="code-body"><pre>name: my_app
+description: আমার Flutter অ্যাপ
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  <span class="cm"># State Management</span>
+  provider: ^6.1.2
+  riverpod: ^2.4.9
+  
+  <span class="cm"># HTTP & API</span>
+  http: ^1.2.1
+  dio: ^5.4.3
+  
+  <span class="cm"># Local Storage</span>
+  shared_preferences: ^2.2.3
+  hive: ^2.2.3
+  
+  <span class="cm"># Navigation</span>
+  go_router: ^14.0.0
+  
+  <span class="cm"># UI</span>
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  
+  <span class="cm"># Utils</span>
+  intl: ^0.19.0
+  connectivity_plus: ^6.0.3
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 10 ==================== -->
+<div class="section" id="s10">
+  <div class="section-header">
+    <div class="section-icon icon-pink">🔥</div>
+    <div>
+      <div class="section-title">সম্পূর্ণ Project উদাহরণ</div>
+      <div class="section-bn">Todo App — শুরু থেকে শেষ পর্যন্ত</div>
+    </div>
+    <div class="section-num">10</div>
+  </div>
+
+  <div class="success-box">
+    <span class="box-icon">🎯</span>
+    এই Todo App-এ শিখবেন: <strong>Model, Provider, List, Form, Delete, Toggle</strong> — সব একসাথে!
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Todo Model</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">lib/models/todo_model.dart</span></div>
+      <div class="code-body"><pre><span class="kw">class</span> <span class="cls">Todo</span> {
+  <span class="kw">final</span> <span class="type">String</span> id;
+  <span class="kw">final</span> <span class="type">String</span> title;
+  <span class="kw">final</span> <span class="type">String</span> description;
+  <span class="kw">final</span> <span class="type">bool</span> isCompleted;
+  <span class="kw">final</span> <span class="cls">DateTime</span> createdAt;
+
+  <span class="kw">const</span> <span class="cls">Todo</span>({
+    <span class="kw">required</span> <span class="kw">this</span>.id,
+    <span class="kw">required</span> <span class="kw">this</span>.title,
+    <span class="kw">this</span>.description = <span class="str">''</span>,
+    <span class="kw">this</span>.isCompleted = <span class="kw">false</span>,
+    <span class="kw">required</span> <span class="kw">this</span>.createdAt,
+  });
+
+  <span class="cm">// copyWith — পরিবর্তন করে নতুন object বানানো</span>
+  <span class="cls">Todo</span> <span class="fn">copyWith</span>({
+    <span class="type">String</span>? id,
+    <span class="type">String</span>? title,
+    <span class="type">String</span>? description,
+    <span class="type">bool</span>? isCompleted,
+  }) {
+    <span class="kw">return</span> <span class="cls">Todo</span>(
+      id: id ?? <span class="kw">this</span>.id,
+      title: title ?? <span class="kw">this</span>.title,
+      description: description ?? <span class="kw">this</span>.description,
+      isCompleted: isCompleted ?? <span class="kw">this</span>.isCompleted,
+      createdAt: <span class="kw">this</span>.createdAt,
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Todo Provider</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">lib/providers/todo_provider.dart</span></div>
+      <div class="code-body"><pre><span class="kw">import</span> <span class="str">'package:flutter/foundation.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:uuid/uuid.dart'</span>;
+<span class="kw">import</span> <span class="str">'../models/todo_model.dart'</span>;
+
+<span class="kw">class</span> <span class="cls">TodoProvider</span> <span class="kw">extends</span> <span class="cls">ChangeNotifier</span> {
+  <span class="kw">final</span> <span class="cls">List</span>&lt;<span class="cls">Todo</span>&gt; _todos = [];
+  <span class="kw">final</span> _uuid = <span class="kw">const</span> <span class="cls">Uuid</span>();
+
+  <span class="cm">// Getters</span>
+  <span class="type">List</span>&lt;<span class="cls">Todo</span>&gt; <span class="kw">get</span> <span class="prop">allTodos</span> => List.<span class="fn">unmodifiable</span>(_todos);
+  <span class="type">List</span>&lt;<span class="cls">Todo</span>&gt; <span class="kw">get</span> <span class="prop">pending</span> => _todos.<span class="fn">where</span>((t) => !t.isCompleted).<span class="fn">toList</span>();
+  <span class="type">List</span>&lt;<span class="cls">Todo</span>&gt; <span class="kw">get</span> <span class="prop">completed</span> => _todos.<span class="fn">where</span>((t) => t.isCompleted).<span class="fn">toList</span>();
+  <span class="type">int</span> <span class="kw">get</span> <span class="prop">totalCount</span> => _todos.length;
+
+  <span class="cm">// Todo যোগ করুন</span>
+  <span class="type">void</span> <span class="fn">addTodo</span>(<span class="type">String</span> title, {<span class="type">String</span> description = <span class="str">''</span>}) {
+    <span class="kw">if</span> (title.<span class="fn">trim</span>().isEmpty) <span class="kw">return</span>;
+
+    _todos.<span class="fn">insert</span>(<span class="num">0</span>, <span class="cls">Todo</span>(
+      id: _uuid.<span class="fn">v4</span>(),
+      title: title.<span class="fn">trim</span>(),
+      description: description,
+      createdAt: <span class="cls">DateTime</span>.now(),
+    ));
+    <span class="fn">notifyListeners</span>();
+  }
+
+  <span class="cm">// Complete toggle</span>
+  <span class="type">void</span> <span class="fn">toggleComplete</span>(<span class="type">String</span> id) {
+    <span class="kw">final</span> index = _todos.<span class="fn">indexWhere</span>((t) => t.id == id);
+    <span class="kw">if</span> (index != -<span class="num">1</span>) {
+      _todos[index] = _todos[index].<span class="fn">copyWith</span>(
+        isCompleted: !_todos[index].isCompleted,
+      );
+      <span class="fn">notifyListeners</span>();
+    }
+  }
+
+  <span class="cm">// Delete</span>
+  <span class="type">void</span> <span class="fn">deleteTodo</span>(<span class="type">String</span> id) {
+    _todos.<span class="fn">removeWhere</span>((t) => t.id == id);
+    <span class="fn">notifyListeners</span>();
+  }
+
+  <span class="cm">// সব completed বাদ দিন</span>
+  <span class="type">void</span> <span class="fn">clearCompleted</span>() {
+    _todos.<span class="fn">removeWhere</span>((t) => t.isCompleted);
+    <span class="fn">notifyListeners</span>();
+  }
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🖥️ Todo Screen — মূল UI</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Dart</span><span class="code-label">lib/screens/todo_screen.dart</span></div>
+      <div class="code-body"><pre><span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:provider/provider.dart'</span>;
+<span class="kw">import</span> <span class="str">'../providers/todo_provider.dart'</span>;
+
+<span class="kw">class</span> <span class="cls">TodoScreen</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="kw">const</span> <span class="cls">TodoScreen</span>({<span class="kw">super</span>.key});
+  @<span class="fn">override</span>
+  <span class="cls">State</span>&lt;<span class="cls">TodoScreen</span>&gt; <span class="fn">createState</span>() => <span class="cls">_TodoScreenState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_TodoScreenState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">TodoScreen</span>&gt; {
+  <span class="kw">final</span> _controller = <span class="cls">TextEditingController</span>();
+  <span class="kw">final</span> _formKey = <span class="cls">GlobalKey</span>&lt;<span class="cls">FormState</span>&gt;();
+
+  <span class="type">void</span> <span class="fn">_submit</span>() {
+    <span class="kw">if</span> (!_formKey.currentState!.<span class="fn">validate</span>()) <span class="kw">return</span>;
+
+    context.<span class="fn">read</span>&lt;<span class="cls">TodoProvider</span>&gt;().<span class="fn">addTodo</span>(_controller.text);
+    _controller.<span class="fn">clear</span>();
+  }
+
+  @<span class="fn">override</span>
+  <span class="type">void</span> <span class="fn">dispose</span>() {
+    _controller.<span class="fn">dispose</span>();  <span class="cm">// Memory leak রোধ করুন</span>
+    <span class="kw">super</span>.<span class="fn">dispose</span>();
+  }
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">final</span> todos = context.<span class="fn">watch</span>&lt;<span class="cls">TodoProvider</span>&gt;().allTodos;
+
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      backgroundColor: <span class="kw">const</span> <span class="cls">Color</span>(<span class="num">0xFFF5F5F5</span>),
+      appBar: <span class="cls">AppBar</span>(
+        title: <span class="kw">const</span> <span class="cls">Text</span>(<span class="str">'আমার কাজের তালিকা'</span>),
+        actions: [
+          <span class="cls">IconButton</span>(
+            icon: <span class="kw">const</span> <span class="cls">Icon</span>(<span class="cls">Icons</span>.delete_sweep),
+            onPressed: () => context.<span class="fn">read</span>&lt;<span class="cls">TodoProvider</span>&gt;().<span class="fn">clearCompleted</span>(),
+            tooltip: <span class="str">'সম্পন্ন মুছুন'</span>,
+          ),
+        ],
+      ),
+      body: <span class="cls">Column</span>(
+        children: [
+          <span class="cm">// Input Section</span>
+          <span class="cls">Padding</span>(
+            padding: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),
+            child: <span class="cls">Form</span>(
+              key: _formKey,
+              child: <span class="cls">Row</span>(
+                children: [
+                  <span class="cls">Expanded</span>(
+                    child: <span class="cls">TextFormField</span>(
+                      controller: _controller,
+                      decoration: <span class="kw">const</span> <span class="cls">InputDecoration</span>(
+                        hintText: <span class="str">'নতুন কাজ লিখুন...'</span>,
+                        border: <span class="cls">OutlineInputBorder</span>(),
+                        filled: <span class="kw">true</span>,
+                        fillColor: <span class="cls">Colors</span>.white,
+                      ),
+                      validator: (val) =>
+                        (val == <span class="kw">null</span> || val.isEmpty) ? <span class="str">'কাজ লিখুন'</span> : <span class="kw">null</span>,
+                      onFieldSubmitted: (_) => <span class="fn">_submit</span>(),
+                    ),
+                  ),
+                  <span class="kw">const</span> <span class="cls">SizedBox</span>(width: <span class="num">8</span>),
+                  <span class="cls">ElevatedButton</span>(
+                    onPressed: <span class="fn">_submit</span>,
+                    style: <span class="cls">ElevatedButton</span>.<span class="fn">styleFrom</span>(
+                      padding: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">16</span>),
+                    ),
+                    child: <span class="kw">const</span> <span class="cls">Icon</span>(<span class="cls">Icons</span>.add),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          <span class="cm">// List Section</span>
+          <span class="cls">Expanded</span>(
+            child: todos.isEmpty
+              ? <span class="kw">const</span> <span class="cls">Center</span>(child: <span class="cls">Text</span>(<span class="str">'কোনো কাজ নেই! ✨'</span>))
+              : <span class="cls">ListView</span>.<span class="fn">builder</span>(
+                  padding: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">symmetric</span>(horizontal: <span class="num">16</span>),
+                  itemCount: todos.length,
+                  itemBuilder: (_, i) => <span class="cls">TodoItem</span>(todo: todos[i]),
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+<span class="cm">// আলাদা Widget — পরিষ্কার কোড</span>
+<span class="kw">class</span> <span class="cls">TodoItem</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">Todo</span> todo;
+  <span class="kw">const</span> <span class="cls">TodoItem</span>({<span class="kw">super</span>.key, <span class="kw">required</span> <span class="kw">this</span>.todo});
+
+  @<span class="fn">override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cls">Card</span>(
+      margin: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">only</span>(bottom: <span class="num">8</span>),
+      child: <span class="cls">ListTile</span>(
+        leading: <span class="cls">Checkbox</span>(
+          value: todo.isCompleted,
+          onChanged: (_) => context
+            .<span class="fn">read</span>&lt;<span class="cls">TodoProvider</span>&gt;()
+            .<span class="fn">toggleComplete</span>(todo.id),
+        ),
+        title: <span class="cls">Text</span>(
+          todo.title,
+          style: <span class="cls">TextStyle</span>(
+            decoration: todo.isCompleted
+              ? <span class="cls">TextDecoration</span>.lineThrough
+              : <span class="kw">null</span>,
+            color: todo.isCompleted ? <span class="cls">Colors</span>.grey : <span class="kw">null</span>,
+          ),
+        ),
+        trailing: <span class="cls">IconButton</span>(
+          icon: <span class="kw">const</span> <span class="cls">Icon</span>(<span class="cls">Icons</span>.delete, color: <span class="cls">Colors</span>.red),
+          onPressed: () => context
+            .<span class="fn">read</span>&lt;<span class="cls">TodoProvider</span>&gt;()
+            .<span class="fn">deleteTodo</span>(todo.id),
+        ),
+      ),
+    );
+  }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- Hot Reload / Hot Restart -->
+  <div class="card">
+    <div class="card-title">🔥 দরকারী Flutter Commands</div>
+    <table>
+      <tr><th>কমান্ড</th><th>কাজ</th><th>শর্টকাট</th></tr>
+      <tr><td><span class="inline-code">flutter run</span></td><td>অ্যাপ চালানো</td><td>-</td></tr>
+      <tr><td><span class="inline-code">r</span></td><td>Hot Reload (দ্রুত UI আপডেট)</td><td>VS Code: Ctrl+F5</td></tr>
+      <tr><td><span class="inline-code">R</span></td><td>Hot Restart (State রিসেট)</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter pub get</span></td><td>Packages ডাউনলোড</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter build apk</span></td><td>Android APK তৈরি</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter build apk --release</span></td><td>Release APK (প্রকাশের জন্য)</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter clean</span></td><td>Build cache মুছুন</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter analyze</span></td><td>Code সমস্যা খোঁজা</td><td>-</td></tr>
+      <tr><td><span class="inline-code">flutter test</span></td><td>সব টেস্ট চালানো</td><td>-</td></tr>
+    </table>
+  </div>
+
+  <!-- Learning Roadmap -->
+  <div class="card" style="background: linear-gradient(135deg, rgba(84,212,240,0.05), rgba(124,92,240,0.05));">
+    <div class="card-title" style="color: var(--accent2);">🗺️ শেখার রোডম্যাপ</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" style="background: rgba(84,240,160,0.1); border-color: var(--success); color: var(--success);">1</div>
+        <div class="step-body">
+          <div class="step-title">সপ্তাহ ১-২: বেসিক</div>
+          <div class="step-desc">Dart ভাষা, Variable, Function, OOP, Flutter Widget, StatelessWidget, StatefulWidget, Layout</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background: rgba(84,212,240,0.1); border-color: var(--accent); color: var(--accent);">2</div>
+        <div class="step-body">
+          <div class="step-title">সপ্তাহ ৩-৪: মাঝারি</div>
+          <div class="step-desc">Navigation, State Management (Provider), HTTP API Call, JSON Parsing, Form & Validation</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background: rgba(240,160,84,0.1); border-color: var(--warning); color: var(--warning);">3</div>
+        <div class="step-body">
+          <div class="step-title">সপ্তাহ ৫-৬: এগিয়ে যান</div>
+          <div class="step-desc">Riverpod, GoRouter, Hive/SharedPreferences, Firebase, Clean Architecture</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background: rgba(124,92,240,0.1); border-color: var(--accent2); color: var(--accent2);">4</div>
+        <div class="step-body">
+          <div class="step-title">সপ্তাহ ৭+: প্রফেশনাল</div>
+          <div class="step-desc">Unit Test, Widget Test, CI/CD, Play Store Publish, Performance Optimization</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">📚 অফিশিয়াল রিসোর্স</div>
+      <ul class="list">
+        <li>flutter.dev/docs</li>
+        <li>dart.dev/guides</li>
+        <li>pub.dev (packages)</li>
+        <li>flutter.dev/codelabs</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">🎥 YouTube Channel</div>
+      <ul class="list">
+        <li>Flutter Official</li>
+        <li>Rivaan Ranawat</li>
+        <li>Net Ninja Flutter</li>
+        <li>Johannes Milke</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">💬 Community</div>
+      <ul class="list">
+        <li>Flutter Discord</li>
+        <li>r/FlutterDev</li>
+        <li>Stack Overflow</li>
+        <li>GitHub Issues</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  <p style="color: var(--text3); font-size:13px;">Flutter & Dart সম্পূর্ণ বাংলা ক্র্যাশ কোর্স &nbsp;•&nbsp; সবাইকে শুভেচ্ছা 🇧🇩</p>
+  <p style="color: var(--text3); font-size:12px; margin-top:8px;">Flutter 3.x | Dart 3.x | Material Design 3</p>
+</div>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel + Vue + Inertia.js — সম্পূর্ণ বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b12;
+  --s1:#0d1320;
+  --s2:#111b2e;
+  --s3:#16243d;
+  --s4:#1a2d4a;
+  --cyan:#00d4ff;
+  --cyan2:#38bdf8;
+  --green:#00ff9d;
+  --green2:#10b981;
+  --orange:#ff6b35;
+  --yellow:#ffd60a;
+  --red:#ff4757;
+  --purple:#a855f7;
+  --pink:#ec4899;
+  --text:#e8f4ff;
+  --text2:#7ea8c9;
+  --text3:#4a7a9b;
+  --border:rgba(0,212,255,0.12);
+  --glow:rgba(0,212,255,0.08);
+  --code-bg:#060a10;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Hind Siliguri',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+
+/* ── SCANLINE OVERLAY ── */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 20px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,212,255,0.15) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 10% 80%,rgba(168,85,247,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse 30% 30% at 90% 70%,rgba(0,255,157,0.06) 0%,transparent 60%),
+    var(--bg);
+}
+
+/* grid */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.04) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:grid 25s linear infinite;
+}
+@keyframes grid{0%{transform:translateY(0)}100%{transform:translateY(50px)}}
+
+.hero-logo{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:30px;
+  animation:fadeD .7s ease both;
+}
+.logo-pill{
+  padding:6px 16px;border-radius:6px;font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;font-weight:700;letter-spacing:1px;
+}
+.lp-laravel{background:rgba(255,107,53,0.15);border:1px solid rgba(255,107,53,0.4);color:var(--orange);}
+.lp-vue{background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.35);color:var(--green);}
+.lp-inertia{background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.4);color:var(--purple);}
+.lp-sep{color:var(--text3);font-size:1.2rem;}
+
+.hero h1{
+  font-family:'Noto Serif Bengali',serif;
+  font-size:clamp(1.9rem,5.5vw,4rem);
+  font-weight:900;line-height:1.2;margin-bottom:18px;
+  background:linear-gradient(135deg,#ffffff 0%,var(--cyan) 40%,var(--green) 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeD .7s .15s ease both;
+}
+.hero-sub{
+  font-size:1.05rem;color:var(--text2);max-width:620px;margin:0 auto 40px;
+  animation:fadeD .7s .3s ease both;
+}
+.hero-tags{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  animation:fadeD .7s .45s ease both;margin-bottom:50px;
+}
+.hero-tag{
+  padding:6px 14px;border-radius:20px;font-size:.8rem;
+  background:var(--glow);border:1px solid var(--border);color:var(--cyan2);
+}
+.hero-stats{display:flex;gap:48px;flex-wrap:wrap;justify-content:center;animation:fadeD .7s .6s ease both;}
+.hs{text-align:center;}
+.hs-n{font-family:'Noto Serif Bengali',serif;font-size:2.2rem;font-weight:900;color:var(--cyan);display:block;line-height:1;}
+.hs-l{font-size:.78rem;color:var(--text3);margin-top:4px;}
+@keyframes fadeD{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOC NAV ── */
+.toc{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,11,18,0.92);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 16px;overflow-x:auto;white-space:nowrap;
+  scrollbar-width:none;
+}
+.toc::-webkit-scrollbar{display:none}
+.toc-inner{display:inline-flex;gap:2px;padding:10px 0;}
+.toc a{
+  color:var(--text3);text-decoration:none;font-size:.8rem;
+  padding:6px 13px;border-radius:6px;transition:all .2s;border:1px solid transparent;
+}
+.toc a:hover{color:var(--cyan);border-color:var(--border);background:var(--glow);}
+
+/* ── LAYOUT ── */
+main{max-width:1080px;margin:0 auto;padding:70px 20px;}
+
+/* ── SECTION ── */
+.sec{margin-bottom:90px;}
+.sec-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:36px;}
+.sec-icon{
+  width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.7rem;flex-shrink:0;margin-top:2px;
+}
+.ic-cyan{background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(56,189,248,.08));border:1px solid rgba(0,212,255,.35);}
+.ic-green{background:linear-gradient(135deg,rgba(0,255,157,.15),rgba(16,185,129,.08));border:1px solid rgba(0,255,157,.3);}
+.ic-orange{background:linear-gradient(135deg,rgba(255,107,53,.18),rgba(255,107,53,.06));border:1px solid rgba(255,107,53,.35);}
+.ic-purple{background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(168,85,247,.06));border:1px solid rgba(168,85,247,.35);}
+.ic-red{background:linear-gradient(135deg,rgba(255,71,87,.18),rgba(255,71,87,.06));border:1px solid rgba(255,71,87,.35);}
+.ic-yellow{background:linear-gradient(135deg,rgba(255,214,10,.15),rgba(255,214,10,.05));border:1px solid rgba(255,214,10,.3);}
+.ic-pink{background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(236,72,153,.05));border:1px solid rgba(236,72,153,.3);}
+
+.sec-label{font-size:.7rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.sec-title{font-family:'Noto Serif Bengali',serif;font-size:1.9rem;font-weight:800;color:var(--text);line-height:1.2;}
+.sec-title em{font-style:normal;color:var(--cyan);}
+
+/* ── BUG CARD ── */
+.bug-list{display:flex;flex-direction:column;gap:20px;}
+.bug{
+  background:var(--s1);border:1px solid rgba(255,255,255,0.05);
+  border-radius:16px;overflow:hidden;transition:border-color .25s;
+}
+.bug:hover{border-color:var(--border);}
+.bug-head{
+  display:flex;align-items:flex-start;gap:16px;padding:22px 24px 18px;
+  cursor:pointer;user-select:none;
+}
+.bug-num{
+  min-width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;flex-shrink:0;
+}
+.bn-red{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.bn-orange{background:rgba(255,107,53,.15);color:var(--orange);border:1px solid rgba(255,107,53,.3);}
+.bn-yellow{background:rgba(255,214,10,.1);color:var(--yellow);border:1px solid rgba(255,214,10,.25);}
+.bn-green{background:rgba(0,255,157,.1);color:var(--green);border:1px solid rgba(0,255,157,.25);}
+.bn-cyan{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.25);}
+.bn-purple{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3);}
+.bn-pink{background:rgba(236,72,153,.12);color:var(--pink);border:1px solid rgba(236,72,153,.3);}
+
+.bug-meta{flex:1;}
+.bug-title{font-family:'Noto Serif Bengali',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:5px;}
+.bug-desc{font-size:.88rem;color:var(--text2);line-height:1.6;}
+.bug-sev{
+  font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;align-self:flex-start;
+}
+.sev-high{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.sev-med{background:rgba(255,214,10,.1);color:var(--yellow);border:1px solid rgba(255,214,10,.25);}
+.sev-low{background:rgba(0,255,157,.1);color:var(--green);border:1px solid rgba(0,255,157,.25);}
+
+.bug-body{padding:0 24px 24px;display:none;}
+.bug.open .bug-body{display:block;}
+.bug-toggle{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+  background:var(--glow);color:var(--cyan);display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:transform .2s;flex-shrink:0;align-self:flex-start;margin-top:4px;
+}
+.bug.open .bug-toggle{transform:rotate(45deg);}
+
+/* ── CODE BLOCK ── */
+.code-wrap{position:relative;margin:14px 0;}
+.code-label{
+  display:inline-block;padding:4px 12px;border-radius:6px 6px 0 0;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  background:var(--s3);color:var(--cyan2);border:1px solid var(--border);border-bottom:none;
+}
+.code-label.cl-php{color:var(--orange);}
+.code-label.cl-vue{color:var(--green);}
+.code-label.cl-bash{color:var(--yellow);}
+.code-label.cl-js{color:var(--yellow);}
+.code-label.cl-html{color:var(--pink);}
+
+pre{
+  background:var(--code-bg);border:1px solid var(--border);
+  border-radius:0 10px 10px 10px;padding:20px;
+  overflow-x:auto;font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;line-height:1.7;color:#a8d8f0;
+}
+pre .kw{color:#ff79c6;}
+pre .fn{color:#50fa7b;}
+pre .st{color:#f1fa8c;}
+pre .cm{color:#5a6e7a;font-style:italic;}
+pre .cn{color:#bd93f9;}
+pre .nm{color:#ffb86c;}
+pre .ok{color:#00ff9d;font-weight:700;}
+pre .err{color:#ff4757;font-weight:700;}
+pre .hl{background:rgba(0,212,255,0.08);display:block;margin:0 -20px;padding:0 20px;}
+
+.copy-btn{
+  position:absolute;top:36px;right:12px;
+  background:var(--s3);border:1px solid var(--border);border-radius:6px;
+  color:var(--text3);font-size:.7rem;padding:4px 10px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;transition:all .2s;
+}
+.copy-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+
+/* ── CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;}
+.card{
+  background:var(--s1);border:1px solid rgba(255,255,255,0.05);
+  border-radius:15px;padding:22px;transition:all .3s;position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;inset:0;border-radius:15px;
+  background:linear-gradient(135deg,var(--glow),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.card:hover{border-color:var(--border);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.card:hover::after{opacity:1;}
+.card-icon{font-size:1.8rem;margin-bottom:12px;}
+.card h3{font-family:'Noto Serif Bengali',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+.card p{font-size:.87rem;color:var(--text2);line-height:1.7;}
+.card-tag{display:inline-block;margin-top:12px;padding:3px 10px;border-radius:16px;font-size:.7rem;font-weight:600;}
+.t-cyan{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.25);}
+.t-green{background:rgba(0,255,157,.1);color:var(--green);border:1px solid rgba(0,255,157,.25);}
+.t-orange{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.3);}
+.t-purple{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3);}
+.t-red{background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.t-yellow{background:rgba(255,214,10,.1);color:var(--yellow);border:1px solid rgba(255,214,10,.25);}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.steps::before{
+  content:'';position:absolute;left:23px;top:46px;bottom:46px;width:2px;
+  background:linear-gradient(to bottom,var(--cyan),var(--green),var(--purple));opacity:.3;
+}
+.step{display:flex;gap:22px;padding:22px 0;}
+.step-n{
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;color:#000;flex-shrink:0;
+  position:relative;z-index:1;box-shadow:0 0 20px rgba(0,212,255,.4);
+}
+.step-c h3{font-family:'Noto Serif Bengali',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:7px;}
+.step-c p{font-size:.88rem;color:var(--text2);line-height:1.7;}
+
+/* ── HIGHLIGHT / CALLOUT ── */
+.callout{border-radius:14px;padding:22px 24px;margin:18px 0;}
+.callout h4{font-family:'Noto Serif Bengali',serif;font-size:1rem;font-weight:700;margin-bottom:10px;}
+.callout p,.callout li{font-size:.88rem;line-height:1.75;}
+.callout ul{padding-left:18px;}
+.callout li{margin-bottom:5px;}
+.co-red{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.25);}
+.co-red h4{color:var(--red);}
+.co-red p,.co-red li{color:#fca5a5;}
+.co-green{background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.2);}
+.co-green h4{color:var(--green);}
+.co-green p,.co-green li{color:#a7f3d0;}
+.co-cyan{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);}
+.co-cyan h4{color:var(--cyan);}
+.co-cyan p,.co-cyan li{color:#bae6fd;}
+.co-yellow{background:rgba(255,214,10,.06);border:1px solid rgba(255,214,10,.2);}
+.co-yellow h4{color:var(--yellow);}
+.co-yellow p,.co-yellow li{color:#fef08a;}
+.co-purple{background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.25);}
+.co-purple h4{color:var(--purple);}
+.co-purple p,.co-purple li{color:#d8b4fe;}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.05);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--s2);padding:13px 16px;text-align:left;font-size:.82rem;color:var(--cyan);font-weight:600;white-space:nowrap;}
+td{padding:11px 16px;font-size:.85rem;color:var(--text2);border-top:1px solid rgba(255,255,255,.04);}
+tr:hover td{background:var(--glow);}
+td code,th code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:var(--s3);padding:2px 6px;border-radius:4px;color:var(--cyan2);}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:70px 0;}
+
+/* ── INLINE CODE ── */
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;background:var(--s2);padding:2px 7px;border-radius:5px;color:var(--cyan2);border:1px solid var(--border);}
+
+/* ── PROGRESS CARD ── */
+.perf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin:20px 0;}
+.perf-c{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:20px;text-align:center;}
+.perf-val{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--cyan);display:block;margin-bottom:4px;}
+.perf-label{font-size:.78rem;color:var(--text3);}
+.perf-bar-wrap{margin:10px 0 4px;background:var(--s3);border-radius:20px;height:6px;overflow:hidden;}
+.perf-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--cyan),var(--green));}
+
+/* ── CHECKLIST ── */
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.cl-item{
+  background:var(--s1);border:1px solid rgba(255,255,255,.05);
+  border-radius:10px;padding:11px 15px;font-size:.85rem;color:var(--text2);
+  display:flex;align-items:flex-start;gap:10px;transition:all .2s;
+}
+.cl-item:hover{border-color:var(--border);color:var(--text);}
+.cl-item::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:60px 20px;border-top:1px solid var(--border);
+  background:radial-gradient(ellipse at 50% 100%,rgba(0,212,255,.05) 0%,transparent 70%);
+}
+footer h2{font-family:'Noto Serif Bengali',serif;font-size:1.6rem;color:var(--cyan);margin-bottom:10px;}
+footer p{color:var(--text3);font-size:.85rem;}
+
+@media(max-width:640px){
+  .sec-title{font-size:1.5rem;}
+  .cards{grid-template-columns:1fr;}
+  .hero-logo{flex-wrap:wrap;justify-content:center;}
+  .steps::before{display:none;}
+  .perf-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="hero">
+  <div class="hero-logo">
+    <span class="logo-pill lp-laravel">Laravel</span>
+    <span class="lp-sep">+</span>
+    <span class="logo-pill lp-vue">Vue.js</span>
+    <span class="lp-sep">+</span>
+    <span class="logo-pill lp-inertia">Inertia.js</span>
+  </div>
+  <h1>বাগ ফিক্স ও স্পিড অপ্টিমাইজেশন<br>সম্পূর্ণ বাংলা গাইড</h1>
+  <p class="hero-sub">মেনু ক্লিক সমস্যা, পুরানো পেজ দেখানো, স্লো লোডিং — সব সমস্যার সমাধান এক জায়গায়। শেয়ার হোস্টিংয়েও সুপারফাস্ট করুন।</p>
+  <div class="hero-tags">
+    <span class="hero-tag">🐛 বাগ ফিক্স</span>
+    <span class="hero-tag">⚡ পারফরম্যান্স</span>
+    <span class="hero-tag">🔄 Inertia সমস্যা</span>
+    <span class="hero-tag">🗂️ প্রোজেক্ট স্ট্রাকচার</span>
+    <span class="hero-tag">🚀 শেয়ার হোস্টিং</span>
+    <span class="hero-tag">💾 ক্যাশিং</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><span class="hs-n">১৫+</span><span class="hs-l">কমন বাগ সমাধান</span></div>
+    <div class="hs"><span class="hs-n">৫০+</span><span class="hs-l">পারফরম্যান্স টিপস</span></div>
+    <div class="hs"><span class="hs-n">১০০%</span><span class="hs-l">বাংলায় সম্পূর্ণ</span></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#common-bugs">🐛 কমন বাগ</a>
+    <a href="#menu-bug">📋 মেনু সমস্যা</a>
+    <a href="#inertia-fix">🔄 Inertia ফিক্স</a>
+    <a href="#structure">🗂️ প্রোজেক্ট স্ট্রাকচার</a>
+    <a href="#speed">⚡ স্পিড অপ্টিমাইজেশন</a>
+    <a href="#shared-hosting">🌐 শেয়ার হোস্টিং</a>
+    <a href="#laravel-opt">🔧 Laravel অপ্টিমাইজেশন</a>
+    <a href="#vue-opt">🟢 Vue অপ্টিমাইজেশন</a>
+    <a href="#checklist">✅ চেকলিস্ট</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════ SECTION 1: COMMON BUGS ═══════════════════════════ -->
+<section class="sec" id="common-bugs">
+  <div class="sec-head">
+    <div class="sec-icon ic-red">🐛</div>
+    <div>
+      <span class="sec-label">সেকশন ০১</span>
+      <h2 class="sec-title">Laravel + Inertia.js <em>কমন বাগ</em> ও সমাধান</h2>
+    </div>
+  </div>
+
+  <div class="callout co-yellow">
+    <h4>⚡ ডিবাগিং শুরু করার আগে এই কমান্ডগুলো চালান</h4>
+    <div class="code-wrap">
+      <span class="code-label cl-bash">Terminal</span>
+      <pre><span class="cm"># ক্যাশ পরিষ্কার করুন প্রথমে</span>
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+php artisan optimize:clear
+
+<span class="cm"># Vue/Vite বিল্ড ক্লিয়ার করুন</span>
+rm -rf node_modules/.vite
+npm run build</pre>
+    </div>
+  </div>
+
+  <div class="bug-list" id="bugList">
+
+    <!-- BUG 1 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-red">B01</div>
+        <div class="bug-meta">
+          <div class="bug-title">🔴 মেনু ক্লিকে পুরানো/ভুল পেজ খুলছে (Stale Page Bug)</div>
+          <div class="bug-desc">মেনুতে ক্লিক করলে নতুন পেজের বদলে আগের পেজের কন্টেন্ট দেখাচ্ছে। বিশেষত Back বাটন ব্যবহারের পর।</div>
+        </div>
+        <span class="bug-sev sev-high">HIGH</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="callout co-red">
+          <h4>🔍 কারণ কী?</h4>
+          <ul>
+            <li>Inertia.js ব্রাউজার ইতিহাস (history state) ক্যাশ করে রাখে</li>
+            <li>Vue-এর <code>keep-alive</code> উপাদান পুরানো কম্পোনেন্ট মেমোরিতে রেখে দেয়</li>
+            <li>Inertia <code>scroll restoration</code> সঠিকভাবে কাজ না করলে এই সমস্যা হয়</li>
+          </ul>
+        </div>
+        <p style="color:var(--text2);font-size:.88rem;margin:14px 0 8px;"><strong style="color:var(--green);">✅ সমাধান ১ — app.js/app.ts এ সেটিং করুন:</strong></p>
+        <div class="code-wrap">
+          <span class="code-label cl-js">resources/js/app.js</span>
+          <pre><span class="kw">import</span> { createApp, h } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { createInertiaApp } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { resolvePageComponent } <span class="kw">from</span> <span class="st">'laravel-vite-plugin/inertia-helpers'</span>
+
+<span class="fn">createInertiaApp</span>({
+  <span class="nm">resolve</span>: name =>
+    <span class="fn">resolvePageComponent</span>(
+      <span class="st">`./Pages/${name}.vue`</span>,
+      <span class="fn">import.meta.glob</span>(<span class="st">'./Pages/**/*.vue'</span>)
+    ),
+  <span class="nm">setup</span>({ el, App, props, plugin }) {
+    <span class="kw">return</span> <span class="fn">createApp</span>({ <span class="nm">render</span>: () => <span class="fn">h</span>(App, props) })
+      .<span class="fn">use</span>(plugin)
+      .<span class="fn">mount</span>(el)
+  },
+  <span class="cm">// ✅ এই লাইনটি যোগ করুন — scroll position রিসেট হবে</span>
+  <span class="nm">progress</span>: {
+    <span class="nm">color</span>: <span class="st">'#00d4ff'</span>,
+    <span class="nm">showSpinner</span>: <span class="kw">true</span>,
+  },
+})</pre>
+        </div>
+        <p style="color:var(--text2);font-size:.88rem;margin:14px 0 8px;"><strong style="color:var(--green);">✅ সমাধান ২ — Link কম্পোনেন্টে preserveState বন্ধ রাখুন:</strong></p>
+        <div class="code-wrap">
+          <span class="code-label cl-vue">Vue Component</span>
+          <pre><span class="cm">&lt;!-- ❌ ভুল — state ধরে রাখবে --&gt;</span>
+&lt;<span class="kw">Link</span> :href="route('dashboard')" :preserve-state="<span class="kw">true</span>"&gt;Dashboard&lt;/<span class="kw">Link</span>&gt;
+
+<span class="cm">&lt;!-- ✅ সঠিক — মেনু লিংকে preserveState বন্ধ রাখুন --&gt;</span>
+&lt;<span class="kw">Link</span> :href="route('dashboard')" :preserve-state="<span class="kw">false</span>"&gt;Dashboard&lt;/<span class="kw">Link</span>&gt;
+
+<span class="cm">&lt;!-- অথবা replace ব্যবহার করুন history stack পরিষ্কার করতে --&gt;</span>
+&lt;<span class="kw">Link</span> :href="route('home')" replace&gt;হোম&lt;/<span class="kw">Link</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 2 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-red">B02</div>
+        <div class="bug-meta">
+          <div class="bug-title">🔴 মেনু ক্লিক করলে কাজ করছে না (Navigation Not Working)</div>
+          <div class="bug-desc">মেনু লিংকে ক্লিক করছেন কিন্তু পেজ পরিবর্তন হচ্ছে না। Console-এ কোনো error নেই।</div>
+        </div>
+        <span class="bug-sev sev-high">HIGH</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="callout co-red">
+          <h4>🔍 সাধারণ কারণগুলো</h4>
+          <ul>
+            <li>Inertia <code>&lt;Link&gt;</code> এর বদলে সাধারণ <code>&lt;a&gt;</code> ট্যাগ ব্যবহার করছেন</li>
+            <li>JavaScript error আছে যা navigation ব্লক করছে</li>
+            <li>CSS এ অন্য উপাদান মেনুকে cover করছে (z-index সমস্যা)</li>
+            <li>Event listener conflict</li>
+          </ul>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-vue">Navbar.vue — সঠিক উপায়</span>
+          <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { Link, usePage } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="cm">// ✅ বর্তমান পেজ চেক করুন active class দিতে</span>
+<span class="kw">const</span> page = <span class="fn">usePage</span>()
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;nav&gt;
+    <span class="cm">&lt;!-- ❌ ভুল: সাধারণ anchor tag --&gt;</span>
+    &lt;a href="/dashboard"&gt;Dashboard&lt;/a&gt;
+
+    <span class="cm">&lt;!-- ✅ সঠিক: Inertia Link কম্পোনেন্ট --&gt;</span>
+    &lt;<span class="kw">Link</span>
+      :href="<span class="fn">route</span>('dashboard')"
+      :class="{ '<span class="st">active</span>': page.url.startsWith('/dashboard') }"
+    &gt;
+      Dashboard
+    &lt;/<span class="kw">Link</span>&gt;
+  &lt;/nav&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-vue">CSS Z-Index ফিক্স</span>
+          <pre><span class="cm">/* ✅ নিশ্চিত করুন navbar সবার উপরে আছে */</span>
+nav {
+  position: relative;
+  z-index: 1000; <span class="cm">/* বা sticky/fixed হলে আরও বেশি */</span>
+}
+
+<span class="cm">/* Modal/Overlay থাকলে তার নিচে রাখুন */</span>
+.modal { z-index: 9999; }
+.navbar { z-index: 500; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 3 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-orange">B03</div>
+        <div class="bug-meta">
+          <div class="bug-title">🟠 Back বাটনে পুরানো ডেটা দেখাচ্ছে (Back Navigation Cache)</div>
+          <div class="bug-desc">ব্রাউজারের Back বাটনে গেলে পেজ reload হয় না, পুরানো cached ডেটা দেখায়।</div>
+        </div>
+        <span class="bug-sev sev-high">HIGH</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-vue">পেজ কম্পোনেন্টে এটি যোগ করুন</span>
+          <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { onMounted, onUnmounted } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { router } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="cm">// ✅ Back navigation detect করে fresh load করুন</span>
+<span class="fn">onMounted</span>(() => {
+  <span class="kw">const</span> handler = router.<span class="fn">on</span>(<span class="st">'navigate'</span>, (e) => {
+    <span class="kw">if</span> (e.detail.page.rememberedState) {
+      <span class="cm">// Back এ এলে fresh data load করুন</span>
+      router.<span class="fn">reload</span>({ preserveScroll: <span class="kw">true</span> })
+    }
+  })
+  <span class="fn">onUnmounted</span>(handler) <span class="cm">// cleanup</span>
+})
+<span class="kw">&lt;/script&gt;</span></pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-php">Laravel Controller — Cache Header</span>
+          <pre><span class="cm">// ✅ Response এ no-cache header যোগ করুন</span>
+<span class="kw">public function</span> <span class="fn">index</span>()
+{
+    <span class="kw">return</span> <span class="fn">Inertia</span>::<span class="fn">render</span>(<span class="st">'Dashboard'</span>, [
+        <span class="st">'data'</span> => <span class="fn">MyModel</span>::<span class="fn">latest</span>()-><span class="fn">get</span>(),
+    ])-><span class="fn">withHeaders</span>([
+        <span class="st">'Cache-Control'</span> => <span class="st">'no-store, no-cache, must-revalidate'</span>,
+        <span class="st">'Pragma'</span>        => <span class="st">'no-cache'</span>,
+    ]);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 4 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-orange">B04</div>
+        <div class="bug-meta">
+          <div class="bug-title">🟠 Inertia Form Submit এর পর Redirect কাজ করছে না</div>
+          <div class="bug-desc">Form submit হচ্ছে কিন্তু redirect সঠিক পেজে যাচ্ছে না অথবা blank পেজ দেখাচ্ছে।</div>
+        </div>
+        <span class="bug-sev sev-high">HIGH</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-php">Controller — সঠিক Redirect</span>
+          <pre><span class="cm">// ❌ ভুল — Inertia এর সাথে এটি কাজ করে না</span>
+<span class="kw">return</span> <span class="fn">redirect</span>(<span class="st">'/'</span>);
+
+<span class="cm">// ✅ সঠিক — named route ব্যবহার করুন</span>
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="st">'dashboard'</span>);
+
+<span class="cm">// ✅ সফল message সহ</span>
+<span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="st">'posts.index'</span>)
+    -><span class="fn">with</span>(<span class="st">'success'</span>, <span class="st">'পোস্ট সংরক্ষিত হয়েছে!'</span>);</pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-vue">Vue — Form Submission সঠিক উপায়</span>
+          <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="kw">const</span> form = <span class="fn">useForm</span>({
+  title: <span class="st">''</span>,
+  body: <span class="st">''</span>,
+})
+
+<span class="kw">const</span> <span class="fn">submit</span> = () => {
+  form.<span class="fn">post</span>(<span class="fn">route</span>(<span class="st">'posts.store'</span>), {
+    <span class="nm">onSuccess</span>: () => {
+      form.<span class="fn">reset</span>() <span class="cm">// ✅ form reset করুন</span>
+    },
+    <span class="nm">onError</span>: (errors) => {
+      <span class="fn">console</span>.<span class="fn">log</span>(errors)
+    },
+    <span class="nm">preserveScroll</span>: <span class="kw">true</span>,
+  })
+}
+<span class="kw">&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 5 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-yellow">B05</div>
+        <div class="bug-meta">
+          <div class="bug-title">🟡 Vue Props রিয়েল-টাইম আপডেট হচ্ছে না</div>
+          <div class="bug-desc">Laravel থেকে নতুন ডেটা আসলেও Vue কম্পোনেন্ট পুরানো ডেটা দেখাচ্ছে।</div>
+        </div>
+        <span class="bug-sev sev-med">MED</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-vue">Reactive Props সঠিকভাবে ব্যবহার</span>
+          <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { computed, watch } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { usePage } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="cm">// ❌ ভুল — reactive নয়</span>
+<span class="kw">const</span> { user } = <span class="fn">usePage</span>().props
+
+<span class="cm">// ✅ সঠিক — computed দিয়ে reactive রাখুন</span>
+<span class="kw">const</span> page = <span class="fn">usePage</span>()
+<span class="kw">const</span> user = <span class="fn">computed</span>(() => page.props.auth.user)
+<span class="kw">const</span> posts = <span class="fn">computed</span>(() => page.props.posts)
+
+<span class="cm">// ✅ অথবা defineProps ব্যবহার করুন</span>
+<span class="kw">const</span> props = <span class="fn">defineProps</span>({
+  posts: { <span class="nm">type</span>: Array, <span class="nm">required</span>: <span class="kw">true</span> },
+  user:  { <span class="nm">type</span>: Object },
+})
+
+<span class="cm">// Props পরিবর্তন দেখতে watch করুন</span>
+<span class="fn">watch</span>(() => props.posts, (newVal) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">'Posts updated:'</span>, newVal)
+}, { deep: <span class="kw">true</span> })
+<span class="kw">&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 6 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-yellow">B06</div>
+        <div class="bug-meta">
+          <div class="bug-title">🟡 CSRF Token Mismatch (419 Error)</div>
+          <div class="bug-desc">Form submit করলে 419 Page Expired এরর দেখাচ্ছে।</div>
+        </div>
+        <span class="bug-sev sev-high">HIGH</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-php">Laravel — Session Config চেক করুন</span>
+          <pre><span class="cm">// config/session.php</span>
+<span class="st">'lifetime'</span> => <span class="cn">120</span>, <span class="cm">// মিনিট</span>
+<span class="st">'expire_on_close'</span> => <span class="kw">false</span>,
+<span class="st">'secure'</span> => env(<span class="st">'SESSION_SECURE_COOKIE'</span>, <span class="kw">false</span>), <span class="cm">// HTTP তে false</span>
+<span class="st">'domain'</span> => env(<span class="st">'SESSION_DOMAIN'</span>, <span class="kw">null</span>),
+<span class="st">'same_site'</span> => <span class="st">'lax'</span>, <span class="cm">// 'strict' থেকে 'lax' করুন</span></pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-js">Axios Global Setup (app.js)</span>
+          <pre><span class="kw">import</span> axios <span class="kw">from</span> <span class="st">'axios'</span>
+
+<span class="cm">// ✅ Axios globally configure করুন</span>
+axios.defaults.withCredentials = <span class="kw">true</span>
+axios.defaults.headers.common[<span class="st">'X-Requested-With'</span>] = <span class="st">'XMLHttpRequest'</span>
+
+<span class="kw">window</span>.axios = axios</pre>
+        </div>
+        <div class="callout co-green">
+          <h4>✅ দ্রুত সমাধান</h4>
+          <p><code>php artisan config:clear</code> এবং <code>php artisan cache:clear</code> চালান। তারপর ব্রাউজারের Cookie ও Cache মুছে আবার চেষ্টা করুন।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 7 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-green">B07</div>
+        <div class="bug-meta">
+          <div class="bug-title">🟢 Inertia Shared Data বার বার Null আসছে</div>
+          <div class="bug-desc">HandleInertiaRequests middleware থেকে share করা data Vue-এ null বা undefined আসছে।</div>
+        </div>
+        <span class="bug-sev sev-med">MED</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-php">app/Http/Middleware/HandleInertiaRequests.php</span>
+          <pre><span class="kw">public function</span> <span class="fn">share</span>(Request <span class="nm">$request</span>): array
+{
+    <span class="kw">return</span> <span class="fn">array_merge</span>(<span class="kw">parent</span>::<span class="fn">share</span>(<span class="nm">$request</span>), [
+        <span class="cm">// ✅ auth user সঠিকভাবে share করুন</span>
+        <span class="st">'auth'</span> => [
+            <span class="st">'user'</span> => <span class="nm">$request</span>-><span class="fn">user</span>() ? [
+                <span class="st">'id'</span>    => <span class="nm">$request</span>-><span class="fn">user</span>()->id,
+                <span class="st">'name'</span>  => <span class="nm">$request</span>-><span class="fn">user</span>()->name,
+                <span class="st">'email'</span> => <span class="nm">$request</span>-><span class="fn">user</span>()->email,
+                <span class="st">'role'</span>  => <span class="nm">$request</span>-><span class="fn">user</span>()->role,
+            ] : <span class="kw">null</span>,
+        ],
+        <span class="cm">// ✅ Flash messages share করুন</span>
+        <span class="st">'flash'</span> => [
+            <span class="st">'success'</span> => <span class="nm">$request</span>-><span class="fn">session</span>()-><span class="fn">get</span>(<span class="st">'success'</span>),
+            <span class="st">'error'</span>   => <span class="nm">$request</span>-><span class="fn">session</span>()-><span class="fn">get</span>(<span class="st">'error'</span>),
+        ],
+        <span class="cm">// ✅ ziggy routes</span>
+        <span class="st">'ziggy'</span> => <span class="kw">fn</span>() => [
+            ...(new \Tightenco\Ziggy\Ziggy)-><span class="fn">toArray</span>(),
+            <span class="st">'location'</span> => <span class="nm">$request</span>-><span class="fn">url</span>(),
+        ],
+    ]);
+}</pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-vue">Vue — usePage() দিয়ে access করুন</span>
+          <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { computed } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { usePage } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="kw">const</span> page = <span class="fn">usePage</span>()
+
+<span class="cm">// ✅ Optional chaining ব্যবহার করুন null safe করতে</span>
+<span class="kw">const</span> user    = <span class="fn">computed</span>(() => page.props.auth?.user)
+<span class="kw">const</span> success = <span class="fn">computed</span>(() => page.props.flash?.success)
+<span class="kw">const</span> error   = <span class="fn">computed</span>(() => page.props.flash?.error)
+<span class="kw">&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG 8 -->
+    <div class="bug" onclick="toggleBug(this)">
+      <div class="bug-head">
+        <div class="bug-num bn-cyan">B08</div>
+        <div class="bug-meta">
+          <div class="bug-title">🔵 Route Model Binding 404 Error</div>
+          <div class="bug-desc">Inertia route এ model binding সঠিকভাবে কাজ করছে না, 404 আসছে।</div>
+        </div>
+        <span class="bug-sev sev-med">MED</span>
+        <div class="bug-toggle">+</div>
+      </div>
+      <div class="bug-body">
+        <div class="code-wrap">
+          <span class="code-label cl-php">routes/web.php</span>
+          <pre><span class="cm">// ❌ ভুল</span>
+Route::<span class="fn">get</span>(<span class="st">'/post/{id}'</span>, [PostController::<span class="kw">class</span>, <span class="st">'show'</span>]);
+
+<span class="cm">// ✅ সঠিক — Route Model Binding</span>
+Route::<span class="fn">get</span>(<span class="st">'/post/{post}'</span>, [PostController::<span class="kw">class</span>, <span class="st">'show'</span>])
+    -><span class="fn">name</span>(<span class="st">'posts.show'</span>);
+
+<span class="cm">// Controller</span>
+<span class="kw">public function</span> <span class="fn">show</span>(Post <span class="nm">$post</span>) <span class="cm">// ✅ Type-hint করুন</span>
+{
+    <span class="kw">return</span> Inertia::<span class="fn">render</span>(<span class="st">'Post/Show'</span>, [
+        <span class="st">'post'</span> => <span class="nm">$post</span>-><span class="fn">load</span>(<span class="st">'user'</span>, <span class="st">'comments'</span>),
+    ]);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bug-list -->
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 2: MENU BUG DEEP DIVE ═══════════════════════════ -->
+<section class="sec" id="menu-bug">
+  <div class="sec-head">
+    <div class="sec-icon ic-orange">📋</div>
+    <div>
+      <span class="sec-label">সেকশন ০২</span>
+      <h2 class="sec-title">মেনু <em>সমস্যার</em> গভীর সমাধান</h2>
+    </div>
+  </div>
+
+  <div class="callout co-red">
+    <h4>⚠️ সবচেয়ে কমন মেনু সমস্যাগুলো</h4>
+    <ul>
+      <li>ক্লিক করলে আগের পেজ খুলছে</li>
+      <li>মেনু হাইলাইট (active state) সঠিক হচ্ছে না</li>
+      <li>Mobile menu বন্ধ হচ্ছে না navigation এর পরে</li>
+      <li>Dropdown মেনু ক্লিক করলে পেজ reload হয়ে যাচ্ছে</li>
+    </ul>
+  </div>
+
+  <h3 style="color:var(--cyan2);font-family:'Noto Serif Bengali',serif;margin:24px 0 16px;">✅ সম্পূর্ণ Navbar Component (প্রোডাকশন-রেডি)</h3>
+  <div class="code-wrap">
+    <span class="code-label cl-vue">components/Navbar.vue</span>
+    <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { ref, computed, onMounted, onUnmounted } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { Link, usePage, router } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="kw">const</span> page        = <span class="fn">usePage</span>()
+<span class="kw">const</span> mobileOpen  = <span class="fn">ref</span>(<span class="kw">false</span>)
+<span class="kw">const</span> isNavigating = <span class="fn">ref</span>(<span class="kw">false</span>)
+
+<span class="cm">// ✅ Active route checker</span>
+<span class="kw">const</span> <span class="fn">isActive</span> = (routeName) => {
+  <span class="kw">return</span> <span class="fn">route</span>().<span class="fn">current</span>(routeName)
+}
+
+<span class="cm">// ✅ Navigation হলে mobile menu বন্ধ করুন</span>
+<span class="kw">let</span> removeListener
+<span class="fn">onMounted</span>(() => {
+  removeListener = router.<span class="fn">on</span>(<span class="st">'start'</span>, () => {
+    isNavigating.value = <span class="kw">true</span>
+    mobileOpen.value   = <span class="kw">false</span> <span class="cm">// ✅ মেনু বন্ধ</span>
+  })
+  router.<span class="fn">on</span>(<span class="st">'finish'</span>, () => {
+    isNavigating.value = <span class="kw">false</span>
+  })
+})
+<span class="fn">onUnmounted</span>(() => removeListener && <span class="fn">removeListener</span>())
+
+<span class="kw">const</span> navItems = [
+  { label: <span class="st">'হোম'</span>,       route: <span class="st">'home'</span>       },
+  { label: <span class="st">'পণ্য'</span>,       route: <span class="st">'products.index'</span> },
+  { label: <span class="st">'যোগাযোগ'</span>, route: <span class="st">'contact'</span>    },
+]
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;nav class="navbar"&gt;
+    <span class="cm">&lt;!-- Loading bar --&gt;</span>
+    &lt;div v-if="isNavigating" class="nav-loading"&gt;&lt;/div&gt;
+
+    &lt;div class="nav-inner"&gt;
+      &lt;<span class="kw">Link</span> :href="<span class="fn">route</span>('home')" class="logo"&gt;MyShop&lt;/<span class="kw">Link</span>&gt;
+
+      <span class="cm">&lt;!-- Desktop Menu --&gt;</span>
+      &lt;ul class="nav-links"&gt;
+        &lt;li v-for="item in navItems" :key="item.route"&gt;
+          &lt;<span class="kw">Link</span>
+            :href="<span class="fn">route</span>(item.route)"
+            :class="{ 'active': <span class="fn">isActive</span>(item.route) }"
+            :preserve-state="<span class="kw">false</span>"
+          &gt;{{ item.label }}&lt;/<span class="kw">Link</span>&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+
+      <span class="cm">&lt;!-- Mobile Toggle --&gt;</span>
+      &lt;button @click="mobileOpen = !mobileOpen" class="burger"&gt;
+        &lt;span :class="{ 'open': mobileOpen }"&gt;&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+    <span class="cm">&lt;!-- Mobile Menu --&gt;</span>
+    &lt;Transition name="slide"&gt;
+      &lt;div v-show="mobileOpen" class="mobile-menu"&gt;
+        &lt;<span class="kw">Link</span>
+          v-for="item in navItems" :key="item.route"
+          :href="<span class="fn">route</span>(item.route)"
+          :preserve-state="<span class="kw">false</span>"
+          class="mobile-link"
+          :class="{ 'active': <span class="fn">isActive</span>(item.route) }"
+        &gt;{{ item.label }}&lt;/<span class="kw">Link</span>&gt;
+      &lt;/div&gt;
+    &lt;/Transition&gt;
+  &lt;/nav&gt;
+<span class="kw">&lt;/template&gt;</span>
+
+<span class="kw">&lt;style scoped&gt;</span>
+.nav-loading {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #00d4ff, #00ff9d);
+  animation: loading 1.2s ease-in-out infinite;
+  z-index: 9999;
+}
+@keyframes loading { 0%{width:0%} 100%{width:100%} }
+
+<span class="cm">/* Slide transition for mobile */</span>
+.slide-enter-active, .slide-leave-active { transition: all .25s ease; }
+.slide-enter-from, .slide-leave-to { transform: translateY(-10px); opacity: 0; }
+<span class="kw">&lt;/style&gt;</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 3: INERTIA FIX ═══════════════════════════ -->
+<section class="sec" id="inertia-fix">
+  <div class="sec-head">
+    <div class="sec-icon ic-purple">🔄</div>
+    <div>
+      <span class="sec-label">সেকশন ০৩</span>
+      <h2 class="sec-title">Inertia.js <em>গভীর সমস্যা</em> ও সমাধান</h2>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🔁</div>
+      <h3>Partial Reloads</h3>
+      <p>শুধু প্রয়োজনীয় ডেটা reload করুন। পুরো পেজ reload না করে নির্দিষ্ট props আপডেট করুন।</p>
+      <span class="card-tag t-cyan">পারফরম্যান্স</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📜</div>
+      <h3>Scroll Management</h3>
+      <p>Navigation এ scroll position সঠিকভাবে manage করুন। preserveScroll option ব্যবহার করুন।</p>
+      <span class="card-tag t-green">UX</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏳</div>
+      <h3>Loading States</h3>
+      <p>Navigation এর সময় loading indicator দেখান। কাস্টমার বুঝতে পারবেন পেজ লোড হচ্ছে।</p>
+      <span class="card-tag t-purple">UX</span>
+    </div>
+  </div>
+
+  <div class="code-wrap" style="margin-top:24px;">
+    <span class="code-label cl-js">Inertia Global Event Listeners (app.js)</span>
+    <pre><span class="kw">import</span> { router } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="cm">// ✅ Global navigation events</span>
+router.<span class="fn">on</span>(<span class="st">'start'</span>, (event) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">'Navigation started'</span>, event.detail.visit.url)
+  <span class="cm">// Loading spinner দেখান</span>
+  document.body.classList.<span class="fn">add</span>(<span class="st">'loading'</span>)
+})
+
+router.<span class="fn">on</span>(<span class="st">'finish'</span>, (event) => {
+  document.body.classList.<span class="fn">remove</span>(<span class="st">'loading'</span>)
+  <span class="cm">// Scroll to top</span>
+  <span class="kw">if</span> (!event.detail.visit.preserveScroll) {
+    <span class="kw">window</span>.<span class="fn">scrollTo</span>({ top: 0, behavior: <span class="st">'smooth'</span> })
+  }
+})
+
+router.<span class="fn">on</span>(<span class="st">'error'</span>, (event) => {
+  <span class="fn">console</span>.<span class="fn">error</span>(<span class="st">'Navigation error'</span>, event.detail.errors)
+})
+
+<span class="cm">// ✅ Partial reload — শুধু posts ডেটা রিফ্রেশ</span>
+router.<span class="fn">reload</span>({ only: [<span class="st">'posts'</span>, <span class="st">'pagination'</span>] })
+
+<span class="cm">// ✅ Visit with custom options</span>
+router.<span class="fn">visit</span>(<span class="fn">route</span>(<span class="st">'dashboard'</span>), {
+  method: <span class="st">'get'</span>,
+  preserveState: <span class="kw">false</span>,
+  preserveScroll: <span class="kw">false</span>,
+  replace: <span class="kw">false</span>, <span class="cm">// history stack এ রাখুন</span>
+  only: [<span class="st">'user'</span>],
+})</pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">Lazy Loading Props (Controller)</span>
+    <pre><span class="cm">// ✅ Lazy loading — শুধু request হলে load হবে</span>
+<span class="kw">return</span> Inertia::<span class="fn">render</span>(<span class="st">'Dashboard'</span>, [
+    <span class="st">'user'</span>  => <span class="nm">$request</span>-><span class="fn">user</span>(),          <span class="cm">// সবসময় load</span>
+    <span class="st">'posts'</span> => Inertia::<span class="fn">lazy</span>(<span class="kw">fn</span>() =>      <span class="cm">// শুধু partial reload-এ</span>
+        Post::<span class="fn">where</span>(<span class="st">'user_id'</span>, auth()->id)
+            -><span class="fn">latest</span>()
+            -><span class="fn">paginate</span>(<span class="cn">10</span>)
+    ),
+    <span class="st">'stats'</span> => Inertia::<span class="fn">defer</span>(<span class="kw">fn</span>() =>       <span class="cm">// পরে load হবে (Inertia v2)</span>
+        DashboardStats::<span class="fn">forUser</span>(auth()->id)
+    ),
+]);</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 4: STRUCTURE ═══════════════════════════ -->
+<section class="sec" id="structure">
+  <div class="sec-head">
+    <div class="sec-icon ic-cyan">🗂️</div>
+    <div>
+      <span class="sec-label">সেকশন ০৪</span>
+      <h2 class="sec-title">আদর্শ <em>প্রোজেক্ট স্ট্রাকচার</em></h2>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label">Project Structure</span>
+    <pre>my-project/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/        <span class="cm">← Resource controllers</span>
+│   │   ├── Middleware/
+│   │   │   └── HandleInertiaRequests.php  <span class="cm">← Shared data</span>
+│   │   └── Requests/           <span class="cm">← Form validation</span>
+│   ├── Models/                 <span class="cm">← Eloquent models</span>
+│   └── Services/               <span class="cm">← Business logic (Controller থেকে আলাদা)</span>
+│
+├── resources/js/
+│   ├── Pages/                  <span class="cm">← Inertia page components</span>
+│   │   ├── Auth/
+│   │   ├── Dashboard/
+│   │   └── Products/
+│   ├── Components/             <span class="cm">← Reusable Vue components</span>
+│   │   ├── ui/                 <span class="cm">← Button, Input, Modal etc.</span>
+│   │   └── Navbar.vue
+│   ├── Layouts/                <span class="cm">← App layout wrappers</span>
+│   │   ├── AppLayout.vue
+│   │   └── GuestLayout.vue
+│   ├── Composables/            <span class="cm">← Vue composables (use...)</span>
+│   ├── Stores/                 <span class="cm">← Pinia stores</span>
+│   └── app.js                  <span class="cm">← Entry point</span>
+│
+├── routes/
+│   ├── web.php                 <span class="cm">← Inertia routes</span>
+│   └── api.php                 <span class="cm">← API routes</span>
+│
+└── vite.config.js</pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">AppLayout.vue — সঠিক Layout</span>
+    <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { computed } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { Head, usePage } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+<span class="kw">import</span> Navbar <span class="kw">from</span> <span class="st">'@/Components/Navbar.vue'</span>
+<span class="kw">import</span> FlashMessage <span class="kw">from</span> <span class="st">'@/Components/FlashMessage.vue'</span>
+
+<span class="kw">const</span> props = <span class="fn">defineProps</span>({ title: String })
+<span class="kw">const</span> page  = <span class="fn">usePage</span>()
+<span class="kw">const</span> flash = <span class="fn">computed</span>(() => page.props.flash)
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;<span class="kw">Head</span> :title="props.title ?? 'MyApp'" /&gt;
+
+  &lt;div class="app-wrapper"&gt;
+    &lt;<span class="kw">Navbar</span> /&gt;
+
+    &lt;<span class="kw">FlashMessage</span>
+      :success="flash?.success"
+      :error="flash?.error"
+    /&gt;
+
+    &lt;main class="main-content"&gt;
+      &lt;slot /&gt;  <span class="cm">&lt;!-- ✅ Page content এখানে render হবে --&gt;</span>
+    &lt;/main&gt;
+
+    &lt;footer&gt;...&lt;/footer&gt;
+  &lt;/div&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">Pages/Products/Index.vue — Layout ব্যবহার</span>
+    <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> AppLayout <span class="kw">from</span> <span class="st">'@/Layouts/AppLayout.vue'</span>
+<span class="kw">import</span> { defineProps } <span class="kw">from</span> <span class="st">'vue'</span>
+
+<span class="cm">// ✅ Layout কম্পোনেন্ট এভাবে define করুন</span>
+<span class="fn">defineOptions</span>({ layout: AppLayout })
+
+<span class="kw">const</span> props = <span class="fn">defineProps</span>({
+  products: { <span class="nm">type</span>: Object, <span class="nm">required</span>: <span class="kw">true</span> }, <span class="cm">// Paginated</span>
+})
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;div&gt;
+    &lt;h1&gt;পণ্য তালিকা&lt;/h1&gt;
+    &lt;div v-for="product in products.data" :key="product.id"&gt;
+      {{ product.name }}
+    &lt;/div&gt;
+  &lt;/div&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 5: SPEED ═══════════════════════════ -->
+<section class="sec" id="speed">
+  <div class="sec-head">
+    <div class="sec-icon ic-yellow">⚡</div>
+    <div>
+      <span class="sec-label">সেকশন ০৫</span>
+      <h2 class="sec-title">হোমপেজ <em>সুপারফাস্ট</em> করুন</h2>
+    </div>
+  </div>
+
+  <div class="perf-grid">
+    <div class="perf-c">
+      <span class="perf-val">&lt;1s</span>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:95%"></div></div>
+      <span class="perf-label">লক্ষ্য: FCP টাইম</span>
+    </div>
+    <div class="perf-c">
+      <span class="perf-val">90+</span>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:90%"></div></div>
+      <span class="perf-label">লক্ষ্য: PageSpeed Score</span>
+    </div>
+    <div class="perf-c">
+      <span class="perf-val">&lt;200kb</span>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:80%"></div></div>
+      <span class="perf-label">লক্ষ্য: JS Bundle Size</span>
+    </div>
+    <div class="perf-c">
+      <span class="perf-val">&lt;50ms</span>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:85%"></div></div>
+      <span class="perf-label">লক্ষ্য: DB Query Time</span>
+    </div>
+  </div>
+
+  <h3 style="color:var(--cyan2);font-family:'Noto Serif Bengali',serif;margin:28px 0 16px;">🔧 Vite অপ্টিমাইজেশন</h3>
+  <div class="code-wrap">
+    <span class="code-label cl-js">vite.config.js</span>
+    <pre><span class="kw">import</span> { defineConfig } <span class="kw">from</span> <span class="st">'vite'</span>
+<span class="kw">import</span> laravel <span class="kw">from</span> <span class="st">'laravel-vite-plugin'</span>
+<span class="kw">import</span> vue <span class="kw">from</span> <span class="st">'@vitejs/plugin-vue'</span>
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  plugins: [
+    <span class="fn">laravel</span>({ input: <span class="st">'resources/js/app.js'</span>, refresh: <span class="kw">true</span> }),
+    <span class="fn">vue</span>({ template: { transformAssetUrls: { base: <span class="kw">null</span>, includeAbsolute: <span class="kw">false</span> } } }),
+  ],
+  build: {
+    <span class="nm">rollupOptions</span>: {
+      output: {
+        <span class="cm">// ✅ Code splitting — vendor আলাদা chunk</span>
+        <span class="nm">manualChunks</span>: {
+          <span class="st">'vendor'</span>:  [<span class="st">'vue'</span>, <span class="st">'@inertiajs/vue3'</span>],
+          <span class="st">'charts'</span>:  [<span class="st">'chart.js'</span>],        <span class="cm">// শুধু যেখানে দরকার</span>
+          <span class="st">'editor'</span>:  [<span class="st">'@tiptap/core'</span>],    <span class="cm">// Lazy load করুন</span>
+        },
+      },
+    },
+    <span class="nm">minify</span>: <span class="st">'esbuild'</span>, <span class="cm">// দ্রুত minification</span>
+    <span class="nm">sourcemap</span>: <span class="kw">false</span>,   <span class="cm">// production এ বন্ধ রাখুন</span>
+    <span class="nm">chunkSizeWarningLimit</span>: <span class="cn">1000</span>,
+  },
+  <span class="nm">resolve</span>: {
+    <span class="nm">alias</span>: { <span class="st">'@'</span>: <span class="st">'/resources/js'</span> }, <span class="cm">// ✅ Import alias</span>
+  },
+})</pre>
+  </div>
+
+  <h3 style="color:var(--cyan2);font-family:'Noto Serif Bengali',serif;margin:28px 0 16px;">🐘 Laravel Eloquent অপ্টিমাইজেশন</h3>
+  <div class="code-wrap">
+    <span class="code-label cl-php">N+1 Query সমস্যা ফিক্স</span>
+    <pre><span class="cm">// ❌ N+1 সমস্যা — প্রতিটি post এর জন্য আলাদা query</span>
+<span class="nm">$posts</span> = Post::<span class="fn">all</span>();
+<span class="kw">foreach</span> (<span class="nm">$posts</span> <span class="kw">as</span> <span class="nm">$post</span>) {
+    <span class="fn">echo</span> <span class="nm">$post</span>->user->name; <span class="cm">// ১০০ পোস্ট = ১০১ query!</span>
+}
+
+<span class="cm">// ✅ Eager Loading — মাত্র ২টি query</span>
+<span class="nm">$posts</span> = Post::<span class="fn">with</span>([<span class="st">'user'</span>, <span class="st">'category'</span>, <span class="st">'tags'</span>])
+    -><span class="fn">latest</span>()
+    -><span class="fn">paginate</span>(<span class="cn">12</span>);
+
+<span class="cm">// ✅ Select শুধু প্রয়োজনীয় columns</span>
+<span class="nm">$posts</span> = Post::<span class="fn">select</span>(<span class="st">'id'</span>, <span class="st">'title'</span>, <span class="st">'slug'</span>, <span class="st">'created_at'</span>)
+    -><span class="fn">with</span>([<span class="st">'user:id,name,avatar'</span>])  <span class="cm">// ✅ Related column select</span>
+    -><span class="fn">where</span>(<span class="st">'status'</span>, <span class="st">'published'</span>)
+    -><span class="fn">latest</span>()
+    -><span class="fn">paginate</span>(<span class="cn">12</span>);
+
+<span class="cm">// ✅ Cache দিয়ে DB চাপ কমান</span>
+<span class="nm">$categories</span> = <span class="fn">Cache</span>::<span class="fn">remember</span>(<span class="st">'categories'</span>, <span class="cn">3600</span>, <span class="kw">fn</span>() =>
+    Category::<span class="fn">active</span>()-><span class="fn">get</span>([<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'slug'</span>])
+);</pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-php">Laravel API Resource — ডেটা সীমিত রাখুন</span>
+    <pre><span class="cm">// app/Http/Resources/PostResource.php</span>
+<span class="kw">class</span> PostResource <span class="kw">extends</span> JsonResource
+{
+    <span class="kw">public function</span> <span class="fn">toArray</span>(Request <span class="nm">$request</span>): array
+    {
+        <span class="kw">return</span> [
+            <span class="st">'id'</span>         => <span class="nm">$this</span>->id,
+            <span class="st">'title'</span>      => <span class="nm">$this</span>->title,
+            <span class="st">'slug'</span>       => <span class="nm">$this</span>->slug,
+            <span class="st">'excerpt'</span>    => Str::<span class="fn">limit</span>(<span class="nm">$this</span>->body, <span class="cn">120</span>),
+            <span class="st">'image'</span>      => <span class="nm">$this</span>->getFirstMediaUrl(<span class="st">'thumbnail'</span>),
+            <span class="st">'created_at'</span> => <span class="nm">$this</span>->created_at-><span class="fn">diffForHumans</span>(),
+            <span class="cm">// ❌ $this->body — পুরো content পাঠাবেন না homepage এ</span>
+        ];
+    }
+}</pre>
+  </div>
+
+  <h3 style="color:var(--cyan2);font-family:'Noto Serif Bengali',serif;margin:28px 0 16px;">🟢 Vue Lazy Loading Components</h3>
+  <div class="code-wrap">
+    <span class="code-label cl-vue">Dynamic Import দিয়ে Bundle ছোট করুন</span>
+    <pre><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { defineAsyncComponent, ref } <span class="kw">from</span> <span class="st">'vue'</span>
+
+<span class="cm">// ✅ Chart — শুধু প্রয়োজনে load হবে</span>
+<span class="kw">const</span> ChartComponent = <span class="fn">defineAsyncComponent</span>(() =>
+  <span class="kw">import</span>(<span class="st">'@/Components/Chart.vue'</span>)
+)
+
+<span class="cm">// ✅ Modal — শুধু খুললে load হবে</span>
+<span class="kw">const</span> ProductModal = <span class="fn">defineAsyncComponent</span>({
+  loader: () => <span class="kw">import</span>(<span class="st">'@/Components/ProductModal.vue'</span>),
+  loadingComponent: LoadingSpinner,
+  delay: <span class="cn">200</span>,
+  errorComponent: ErrorDisplay,
+  timeout: <span class="cn">3000</span>,
+})
+
+<span class="kw">const</span> showModal = <span class="fn">ref</span>(<span class="kw">false</span>)
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  <span class="cm">&lt;!-- ✅ Lazy render — viewport এ না আসলে render হবে না --&gt;</span>
+  &lt;Suspense&gt;
+    &lt;<span class="kw">ChartComponent</span> v-if="showChart" /&gt;
+    &lt;template #fallback&gt;
+      &lt;div class="skeleton"&gt;Loading...&lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/Suspense&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 6: SHARED HOSTING ═══════════════════════════ -->
+<section class="sec" id="shared-hosting">
+  <div class="sec-head">
+    <div class="sec-icon ic-green">🌐</div>
+    <div>
+      <span class="sec-label">সেকশন ০৬</span>
+      <h2 class="sec-title">শেয়ার হোস্টিংয়ে <em>সুপারফাস্ট</em> করুন</h2>
+    </div>
+  </div>
+
+  <div class="callout co-yellow">
+    <h4>⚠️ শেয়ার হোস্টিংয়ের সীমাবদ্ধতা</h4>
+    <ul>
+      <li>RAM ও CPU সীমিত — ভারী query চালানো যাবে না</li>
+      <li>Redis/Memcached নাও থাকতে পারে — File cache ব্যবহার করুন</li>
+      <li>Supervisor নেই — Queue worker চালানো কঠিন</li>
+      <li>OPcache থাকলেও সেটিং নাও থাকতে পারে</li>
+    </ul>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">১</div>
+      <div class="step-c">
+        <h3>.htaccess অপ্টিমাইজ করুন</h3>
+        <div class="code-wrap">
+          <span class="code-label cl-html">.htaccess (public/ ফোল্ডারে)</span>
+          <pre>&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+&lt;/IfModule&gt;
+
+<span class="cm"># ✅ Browser Caching চালু করুন</span>
+&lt;IfModule mod_expires.c&gt;
+    ExpiresActive On
+    ExpiresByType image/jpg  "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png  "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css   "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 year"
+&lt;/IfModule&gt;
+
+<span class="cm"># ✅ GZIP Compression</span>
+&lt;IfModule mod_deflate.c&gt;
+    AddOutputFilterByType DEFLATE text/html text/plain text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+&lt;/IfModule&gt;
+
+<span class="cm"># ✅ Security headers</span>
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">২</div>
+      <div class="step-c">
+        <h3>Laravel Cache ও Optimize</h3>
+        <div class="code-wrap">
+          <span class="code-label cl-bash">Production deploy commands</span>
+          <pre><span class="cm"># ✅ এই কমান্ডগুলো deploy এর পর চালান</span>
+php artisan config:cache    <span class="cm"># config ক্যাশ করুন</span>
+php artisan route:cache     <span class="cm"># route ক্যাশ করুন (দ্রুত হয়)</span>
+php artisan view:cache      <span class="cm"># Blade view compile করুন</span>
+php artisan event:cache     <span class="cm"># Events cache করুন</span>
+php artisan optimize        <span class="cm"># সব একসাথে optimize</span>
+php artisan icons:cache     <span class="cm"># যদি icon package থাকে</span>
+composer install --no-dev --optimize-autoloader</pre>
+        </div>
+        <div class="code-wrap">
+          <span class="code-label cl-php">config/cache.php — File Cache</span>
+          <pre><span class="cm">// শেয়ার হোস্টিংয়ে Redis না থাকলে file cache ব্যবহার করুন</span>
+<span class="st">'default'</span> => env(<span class="st">'CACHE_DRIVER'</span>, <span class="st">'file'</span>),
+
+<span class="cm">// .env এ</span>
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync  <span class="cm">// ক্রোন জব না থাকলে</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">৩</div>
+      <div class="step-c">
+        <h3>Image Optimization</h3>
+        <div class="code-wrap">
+          <span class="code-label cl-php">ImageController.php</span>
+          <pre><span class="cm">// ✅ WebP format ব্যবহার করুন (৩০-৫০% ছোট)</span>
+<span class="kw">use</span> Intervention\Image\ImageManager;
+<span class="kw">use</span> Intervention\Image\Drivers\Gd\Driver;
+
+<span class="kw">public function</span> <span class="fn">store</span>(Request <span class="nm">$request</span>)
+{
+    <span class="nm">$manager</span> = <span class="kw">new</span> <span class="fn">ImageManager</span>(<span class="kw">new</span> <span class="fn">Driver</span>());
+    <span class="nm">$image</span>   = <span class="nm">$manager</span>-><span class="fn">read</span>(<span class="nm">$request</span>->file(<span class="st">'image'</span>));
+
+    <span class="cm">// Resize + WebP convert</span>
+    <span class="nm">$image</span>-><span class="fn">scale</span>(width: <span class="cn">800</span>)
+           -><span class="fn">toWebp</span>(quality: <span class="cn">80</span>) <span class="cm">// ✅ WebP, quality 80%</span>
+           -><span class="fn">save</span>(storage_path(<span class="st">'app/public/images/'</span> . <span class="fn">Str</span>::<span class="fn">uuid</span>() . <span class="st">'.webp'</span>));
+
+    <span class="cm">// thumbnail</span>
+    <span class="nm">$image</span>-><span class="fn">cover</span>(<span class="cn">400</span>, <span class="cn">300</span>)
+           -><span class="fn">toWebp</span>(quality: <span class="cn">70</span>)
+           -><span class="fn">save</span>(storage_path(<span class="st">'app/public/thumbnails/'</span> . ...));
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">৪</div>
+      <div class="step-c">
+        <h3>Database Index যোগ করুন</h3>
+        <div class="code-wrap">
+          <span class="code-label cl-php">Migration — Index</span>
+          <pre><span class="cm">// ✅ Frequently queried columns এ index যোগ করুন</span>
+Schema::<span class="fn">table</span>(<span class="st">'products'</span>, <span class="kw">function</span> (Blueprint <span class="nm">$table</span>) {
+    <span class="nm">$table</span>-><span class="fn">index</span>(<span class="st">'status'</span>);                    <span class="cm">// where status</span>
+    <span class="nm">$table</span>-><span class="fn">index</span>(<span class="st">'category_id'</span>);              <span class="cm">// where category</span>
+    <span class="nm">$table</span>-><span class="fn">index</span>([<span class="st">'status'</span>, <span class="st">'created_at'</span>]);  <span class="cm">// compound index</span>
+    <span class="nm">$table</span>-><span class="fn">fullText</span>(<span class="st">'title'</span>);                 <span class="cm">// search করলে</span>
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">৫</div>
+      <div class="step-c">
+        <h3>Vue Build Production Ready</h3>
+        <div class="code-wrap">
+          <span class="code-label cl-bash">Build Commands</span>
+          <pre><span class="cm"># ✅ Production build</span>
+npm run build
+
+<span class="cm"># Build পরে public/build ফোল্ডারে যাবে</span>
+<span class="cm"># এই ফাইলগুলো server এ upload করুন</span>
+
+<span class="cm"># ✅ bundle size check করুন</span>
+npm run build -- --report</pre>
+        </div>
+        <div class="callout co-green">
+          <h4>✅ শেয়ার হোস্টিং Deploy চেকলিস্ট</h4>
+          <ul>
+            <li><code>APP_ENV=production</code> এবং <code>APP_DEBUG=false</code> নিশ্চিত করুন</li>
+            <li><code>public/</code> ফোল্ডারের contents <code>public_html/</code> এ রাখুন</li>
+            <li>Laravel root ফাইল <code>public_html/</code> এর বাইরে রাখুন</li>
+            <li><code>public/index.php</code> এর path adjust করুন</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-php">শেয়ার হোস্টিং — index.php path fix</span>
+    <pre><span class="cm">// public_html/index.php এ এই paths ঠিক করুন</span>
+<span class="kw">require</span> <span class="fn">__DIR__</span>.<span class="st">'/../laravel/vendor/autoload.php'</span>;
+<span class="nm">$app</span> = <span class="kw">require_once</span> <span class="fn">__DIR__</span>.<span class="st">'/../laravel/bootstrap/app.php'</span>;
+
+<span class="cm">// storage link</span>
+<span class="cm">// config/filesystems.php</span>
+<span class="st">'links'</span> => [
+    <span class="fn">public_path</span>(<span class="st">'storage'</span>) => storage_path(<span class="st">'app/public'</span>),
+],</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 7: LARAVEL OPT ═══════════════════════════ -->
+<section class="sec" id="laravel-opt">
+  <div class="sec-head">
+    <div class="sec-icon ic-orange">🔧</div>
+    <div>
+      <span class="sec-label">সেকশন ০৭</span>
+      <h2 class="sec-title">Laravel <em>Advanced</em> অপ্টিমাইজেশন</h2>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">💾</div>
+      <h3>Response Caching</h3>
+      <p>পরিবর্তন না হওয়া পেজ cache করুন। Homepage, product listing — এসব পেজ cache করলে DB query শূন্যে নামে।</p>
+      <span class="card-tag t-cyan">DB Query কমায়</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔢</div>
+      <h3>Chunk Processing</h3>
+      <p>বড় ডেটাসেট chunk করে process করুন। একসাথে হাজার record না টেনে ১০০ করে process করুন।</p>
+      <span class="card-tag t-orange">Memory বাঁচায়</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗜️</div>
+      <h3>JSON Compression</h3>
+      <p>Inertia response gzip করুন। JSON response ৭০% পর্যন্ত ছোট হতে পারে compression এ।</p>
+      <span class="card-tag t-green">Bandwidth বাঁচায়</span>
+    </div>
+  </div>
+
+  <div class="code-wrap" style="margin-top:24px;">
+    <span class="code-label cl-php">Homepage Controller — সব অপ্টিমাইজেশন একসাথে</span>
+    <pre><span class="kw">class</span> HomeController <span class="kw">extends</span> Controller
+{
+    <span class="kw">public function</span> <span class="fn">index</span>()
+    {
+        <span class="cm">// ✅ Cache — ১ ঘণ্টা cached</span>
+        <span class="nm">$featured</span> = <span class="fn">Cache</span>::<span class="fn">remember</span>(<span class="st">'home.featured'</span>, <span class="cn">3600</span>, <span class="kw">fn</span>() =>
+            Product::<span class="fn">select</span>(<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'slug'</span>, <span class="st">'price'</span>, <span class="st">'image'</span>)
+                -><span class="fn">where</span>(<span class="st">'featured'</span>, <span class="kw">true</span>)
+                -><span class="fn">where</span>(<span class="st">'status'</span>, <span class="st">'active'</span>)
+                -><span class="fn">limit</span>(<span class="cn">8</span>)
+                -><span class="fn">get</span>()
+        );
+
+        <span class="nm">$categories</span> = <span class="fn">Cache</span>::<span class="fn">remember</span>(<span class="st">'home.categories'</span>, <span class="cn">7200</span>, <span class="kw">fn</span>() =>
+            Category::<span class="fn">select</span>(<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'slug'</span>, <span class="st">'icon'</span>)
+                -><span class="fn">withCount</span>(<span class="st">'products'</span>)
+                -><span class="fn">having</span>(<span class="st">'products_count'</span>, <span class="st">'>'</span>, <span class="cn">0</span>)
+                -><span class="fn">get</span>()
+        );
+
+        <span class="cm">// ✅ Latest products — ৩০ মিনিট cache</span>
+        <span class="nm">$latest</span> = <span class="fn">Cache</span>::<span class="fn">remember</span>(<span class="st">'home.latest'</span>, <span class="cn">1800</span>, <span class="kw">fn</span>() =>
+            Product::<span class="fn">select</span>(<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'slug'</span>, <span class="st">'price'</span>, <span class="st">'image'</span>, <span class="st">'created_at'</span>)
+                -><span class="fn">latest</span>()-><span class="fn">limit</span>(<span class="cn">12</span>)-><span class="fn">get</span>()
+        );
+
+        <span class="kw">return</span> Inertia::<span class="fn">render</span>(<span class="st">'Home'</span>, compact(
+            <span class="st">'featured'</span>, <span class="st">'categories'</span>, <span class="st">'latest'</span>
+        ));
+    }
+}
+
+<span class="cm">// ✅ Product update হলে cache clear করুন</span>
+<span class="kw">class</span> Product <span class="kw">extends</span> Model
+{
+    <span class="kw">protected static function</span> <span class="fn">booted</span>(): void
+    {
+        static::<span class="fn">saved</span>(<span class="kw">fn</span>() => <span class="fn">Cache</span>::<span class="fn">forget</span>(<span class="st">'home.featured'</span>));
+        static::<span class="fn">deleted</span>(<span class="kw">fn</span>() => <span class="fn">Cache</span>::<span class="fn">flush</span>());
+    }
+}</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 8: VUE OPT ═══════════════════════════ -->
+<section class="sec" id="vue-opt">
+  <div class="sec-head">
+    <div class="sec-icon ic-green">🟢</div>
+    <div>
+      <span class="sec-label">সেকশন ০৮</span>
+      <h2 class="sec-title">Vue.js <em>পারফরম্যান্স</em> ট্রিকস</h2>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">v-memo — Expensive List Optimization</span>
+    <pre><span class="kw">&lt;template&gt;</span>
+  <span class="cm">&lt;!-- ❌ প্রতিটি render এ সব item re-render হবে --&gt;</span>
+  &lt;div v-for="product in products" :key="product.id"&gt;
+    &lt;<span class="kw">ProductCard</span> :product="product" /&gt;
+  &lt;/div&gt;
+
+  <span class="cm">&lt;!-- ✅ v-memo — শুধু price বা name বদলালে re-render হবে --&gt;</span>
+  &lt;div
+    v-for="product in products"
+    :key="product.id"
+    v-memo="[product.price, product.name, product.stock]"
+  &gt;
+    &lt;<span class="kw">ProductCard</span> :product="product" /&gt;
+  &lt;/div&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">Virtual Scrolling — বিশাল List এর জন্য</span>
+    <pre><span class="cm">// npm install @tanstack/vue-virtual</span>
+<span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { useVirtualizer } <span class="kw">from</span> <span class="st">'@tanstack/vue-virtual'</span>
+<span class="kw">import</span> { ref } <span class="kw">from</span> <span class="st">'vue'</span>
+
+<span class="kw">const</span> props = <span class="fn">defineProps</span>({ items: Array }) <span class="cm">// হাজার হাজার item</span>
+<span class="kw">const</span> parentRef = <span class="fn">ref</span>(<span class="kw">null</span>)
+
+<span class="kw">const</span> virtualizer = <span class="fn">useVirtualizer</span>({
+  count: <span class="fn">computed</span>(() => props.items.length),
+  getScrollElement: () => parentRef.value,
+  estimateSize: () => <span class="cn">80</span>, <span class="cm">// প্রতিটি row এর height</span>
+})
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;div ref="parentRef" style="height: 600px; overflow-y: auto"&gt;
+    &lt;div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }"&gt;
+      &lt;div
+        v-for="row in virtualizer.getVirtualItems()"
+        :key="row.key"
+        :style="{ position: 'absolute', top: `${row.start}px`, width: '100%' }"
+      &gt;
+        {{ props.items[row.index].name }}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+<span class="kw">&lt;/template&gt;</span></pre>
+  </div>
+
+  <div class="code-wrap">
+    <span class="code-label cl-vue">Composable — useFetch (Reusable Data Fetching)</span>
+    <pre><span class="cm">// composables/useInertiaData.js</span>
+<span class="kw">import</span> { ref, onMounted } <span class="kw">from</span> <span class="st">'vue'</span>
+<span class="kw">import</span> { router } <span class="kw">from</span> <span class="st">'@inertiajs/vue3'</span>
+
+<span class="kw">export function</span> <span class="fn">useReload</span>(only = []) {
+  <span class="kw">const</span> loading = <span class="fn">ref</span>(<span class="kw">false</span>)
+
+  <span class="kw">const</span> <span class="fn">reload</span> = () => {
+    loading.value = <span class="kw">true</span>
+    router.<span class="fn">reload</span>({
+      only,
+      <span class="nm">onFinish</span>: () => loading.value = <span class="kw">false</span>
+    })
+  }
+
+  <span class="kw">return</span> { loading, reload }
+}
+
+<span class="cm">// ব্যবহার:</span>
+<span class="kw">const</span> { loading, reload } = <span class="fn">useReload</span>([<span class="st">'products'</span>])
+</pre>
+  </div>
+
+  <div class="callout co-purple">
+    <h4>🟣 Pinia Store — Global State Management</h4>
+    <pre style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#a8d8f0;margin-top:10px;overflow-x:auto;"><span class="cm">// stores/cartStore.js</span>
+<span class="kw">import</span> { defineStore } <span class="kw">from</span> <span class="st">'pinia'</span>
+
+<span class="kw">export const</span> useCartStore = <span class="fn">defineStore</span>(<span class="st">'cart'</span>, {
+  state: () => ({ items: [], total: <span class="cn">0</span> }),
+  getters: {
+    count: (state) => state.items.<span class="fn">reduce</span>((a, i) => a + i.qty, <span class="cn">0</span>),
+  },
+  actions: {
+    <span class="fn">addItem</span>(product) {
+      <span class="kw">const</span> existing = <span class="kw">this</span>.items.<span class="fn">find</span>(i => i.id === product.id)
+      <span class="kw">if</span> (existing) { existing.qty++ }
+      <span class="kw">else</span> { <span class="kw">this</span>.items.<span class="fn">push</span>({ ...product, qty: <span class="cn">1</span> }) }
+      <span class="kw">this</span>.<span class="fn">calcTotal</span>()
+    },
+    <span class="fn">calcTotal</span>() {
+      <span class="kw">this</span>.total = <span class="kw">this</span>.items.<span class="fn">reduce</span>((sum, i) => sum + i.price * i.qty, <span class="cn">0</span>)
+    }
+  }
+})</pre>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ═══════════════════════════ SECTION 9: CHECKLIST ═══════════════════════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head">
+    <div class="sec-icon ic-cyan">✅</div>
+    <div>
+      <span class="sec-label">সেকশন ০৯</span>
+      <h2 class="sec-title">প্রোডাকশন <em>চেকলিস্ট</em></h2>
+    </div>
+  </div>
+
+  <h3 style="color:var(--orange);font-family:'Noto Serif Bengali',serif;margin:0 0 14px;">🐛 বাগ ফিক্স</h3>
+  <ul class="cl-grid" style="margin-bottom:28px;">
+    <li>Inertia Link কম্পোনেন্ট ব্যবহার করছেন (a tag নয়)</li>
+    <li>preserve-state: false মেনু লিংকে</li>
+    <li>Mobile menu navigation এ auto-close</li>
+    <li>Back button এ fresh data load</li>
+    <li>CSRF token সঠিকভাবে কাজ করছে</li>
+    <li>Shared data optional chaining দিয়ে access</li>
+    <li>Form submit এ onSuccess callback আছে</li>
+    <li>Route names সঠিক ও Ziggy configured</li>
+  </ul>
+
+  <h3 style="color:var(--yellow);font-family:'Noto Serif Bengali',serif;margin:0 0 14px;">⚡ পারফরম্যান্স</h3>
+  <ul class="cl-grid" style="margin-bottom:28px;">
+    <li>Eager loading দিয়ে N+1 query বন্ধ</li>
+    <li>Database index সব প্রয়োজনীয় column এ</li>
+    <li>Response caching চালু</li>
+    <li>Image WebP format এ convert</li>
+    <li>Vite code splitting configured</li>
+    <li>Lazy loading component ব্যবহার</li>
+    <li>API Resource দিয়ে data সীমিত</li>
+    <li>GZIP compression .htaccess এ</li>
+  </ul>
+
+  <h3 style="color:var(--green);font-family:'Noto Serif Bengali',serif;margin:0 0 14px;">🌐 Deploy</h3>
+  <ul class="cl-grid">
+    <li>APP_DEBUG=false production এ</li>
+    <li>npm run build চালানো হয়েছে</li>
+    <li>php artisan optimize চালানো হয়েছে</li>
+    <li>Storage link তৈরি হয়েছে</li>
+    <li>Browser cache headers সক্রিয়</li>
+    <li>SSL certificate সক্রিয়</li>
+    <li>Error logging configured</li>
+    <li>Backup system আছে</li>
+  </ul>
+
+  <div class="callout co-cyan" style="margin-top:28px;">
+    <h4>🚀 দ্রুত Debug Command</h4>
+    <pre style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#a8d8f0;margin-top:10px;overflow-x:auto;">php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear && php artisan optimize:clear && php artisan optimize</pre>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <h2>⚡ সমস্যামুক্ত, দ্রুত Laravel + Vue + Inertia প্রোজেক্ট তৈরি করুন!</h2>
+  <p>কোনো প্রশ্ন থাকলে browser console এ error দেখুন এবং <code>php artisan telescope:install</code> দিয়ে debug করুন।</p>
+  <p style="margin-top:20px;font-size:.75rem;opacity:.4;">Laravel + Vue.js + Inertia.js বাংলা গাইড | ২০২৪-২০২৫</p>
+</footer>
+
+<script>
+function toggleBug(el) {
+  el.classList.toggle('open');
+}
+
+// Copy button
+document.querySelectorAll('pre').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'copy';
+  pre.parentElement.style.position = 'relative';
+  pre.parentElement.appendChild(btn);
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = '✓ copied';
+      setTimeout(() => btn.textContent = 'copy', 2000);
+    });
+  });
+});
+
+// Active nav highlight on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks  = document.querySelectorAll('.toc a');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.style.color = '');
+      const active = document.querySelector(`.toc a[href="#${e.target.id}"]`);
+      if (active) active.style.color = 'var(--cyan)';
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

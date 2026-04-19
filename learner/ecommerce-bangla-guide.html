@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ই-কমার্স সম্পূর্ণ গাইডলাইন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --surface3: #1e2d42;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --accent3: #fbbf24;
+    --green: #10b981;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --red: #ef4444;
+    --text: #f0f4ff;
+    --text2: #94a3b8;
+    --border: rgba(249,115,22,0.2);
+    --glow: rgba(249,115,22,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.1) 0%, transparent 50%),
+                var(--bg);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(249,115,22,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249,115,22,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(251,146,60,0.1));
+    border: 1px solid var(--accent);
+    border-radius: 50px;
+    padding: 8px 24px;
+    font-size: 0.85rem;
+    color: var(--accent2);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 60%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text2);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    animation: fadeDown 0.8s 0.4s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeDown 0.8s 0.6s ease both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .nav a:hover {
+    color: var(--accent);
+    border-color: var(--border);
+    background: var(--glow);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 80px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .section-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .icon-orange { background: linear-gradient(135deg, rgba(249,115,22,0.3), rgba(251,146,60,0.1)); border: 1px solid rgba(249,115,22,0.4); }
+  .icon-green { background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.1)); border: 1px solid rgba(16,185,129,0.4); }
+  .icon-blue { background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.1)); border: 1px solid rgba(59,130,246,0.4); }
+  .icon-purple { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(139,92,246,0.1)); border: 1px solid rgba(139,92,246,0.4); }
+  .icon-red { background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(239,68,68,0.1)); border: 1px solid rgba(239,68,68,0.4); }
+  .icon-gold { background: linear-gradient(135deg, rgba(251,191,36,0.3), rgba(251,191,36,0.1)); border: 1px solid rgba(251,191,36,0.4); }
+
+  .section-title {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-title span {
+    color: var(--accent);
+  }
+
+  .section-num {
+    font-size: 0.75rem;
+    color: var(--text2);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--border);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px var(--glow);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-icon { font-size: 2rem; margin-bottom: 12px; }
+
+  .card h3 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .card-tag {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .tag-orange { background: rgba(249,115,22,0.15); color: var(--accent2); border: 1px solid rgba(249,115,22,0.3); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .tag-blue { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .tag-purple { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.3); }
+  .tag-gold { background: rgba(251,191,36,0.15); color: var(--accent3); border: 1px solid rgba(251,191,36,0.3); }
+  .tag-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* WIDE CARD */
+  .card-wide {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .card-wide h3 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-wide p, .card-wide li {
+    font-size: 0.92rem;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .card-wide ul, .card-wide ol {
+    padding-left: 20px;
+  }
+
+  .card-wide li { margin-bottom: 6px; }
+
+  /* STEPS */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 48px;
+    bottom: 48px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--blue), var(--purple));
+    opacity: 0.4;
+  }
+
+  .step {
+    display: flex;
+    gap: 24px;
+    padding: 24px 0;
+    position: relative;
+  }
+
+  .step-num {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 20px rgba(249,115,22,0.4);
+  }
+
+  .step-content h3 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .step-content p {
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 18px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  tr:hover td { background: var(--glow); }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(251,191,36,0.05));
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .highlight h3 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin-bottom: 12px;
+  }
+
+  .highlight p, .highlight li {
+    font-size: 0.92rem;
+    color: #c0cce0;
+    line-height: 1.8;
+  }
+
+  .highlight ul { padding-left: 20px; }
+  .highlight li { margin-bottom: 6px; }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--surface3);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.05rem;
+    color: var(--accent3);
+    font-weight: 600;
+  }
+
+  /* TIP BOX */
+  .tip {
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    color: #a7f3d0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .tip::before { content: '💡'; font-size: 1.1rem; flex-shrink: 0; }
+
+  /* WARNING */
+  .warning {
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    color: #fca5a5;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .warning::before { content: '⚠️'; font-size: 1.1rem; flex-shrink: 0; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 60px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 60px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 0.85rem;
+    background: radial-gradient(ellipse at 50% 100%, rgba(249,115,22,0.06) 0%, transparent 70%);
+  }
+
+  footer h2 {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  /* PROFIT GRID */
+  .profit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .profit-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .profit-num {
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .profit-label {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+
+  .checklist li {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all 0.2s;
+  }
+
+  .checklist li:hover {
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .checklist li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  @media (max-width: 600px) {
+    .section-title { font-size: 1.4rem; }
+    .cards { grid-template-columns: 1fr; }
+    .profit-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🇧🇩 বাংলাদেশ ই-কমার্স গাইডলাইন ২০২৪</div>
+  <h1>ই-কমার্স ব্যবসার<br>সম্পূর্ণ গাইড</h1>
+  <p>পণ্য সোর্সিং থেকে শুরু করে ওয়েব অ্যাপ তৈরি, বিক্রি বাড়ানো এবং সর্বোচ্চ মুনাফা অর্জন পর্যন্ত সব কিছু এক জায়গায়।</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">৮+</span><span class="stat-label">মূল বিষয়</span></div>
+    <div class="stat"><span class="stat-num">৫০+</span><span class="stat-label">কার্যকর টিপস</span></div>
+    <div class="stat"><span class="stat-num">১০০%</span><span class="stat-label">বাংলায় সম্পূর্ণ</span></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#sourcing">📦 পণ্য সোর্সিং</a>
+  <a href="#terms">📋 গুরুত্বপূর্ণ টার্মস</a>
+  <a href="#webapp">💻 ওয়েব অ্যাপ</a>
+  <a href="#marketing">📣 মার্কেটিং</a>
+  <a href="#selling">🛒 বেশি বিক্রি</a>
+  <a href="#profit">💰 মুনাফা</a>
+  <a href="#legal">⚖️ আইনি বিষয়</a>
+  <a href="#checklist">✅ চেকলিস্ট</a>
+</nav>
+
+<main>
+
+  <!-- SECTION 1: SOURCING -->
+  <section class="section" id="sourcing">
+    <div class="section-header">
+      <div class="section-icon icon-orange">📦</div>
+      <div>
+        <span class="section-num">অধ্যায় ০১</span>
+        <h2 class="section-title">পণ্য <span>সোর্সিং</span> কৌশল</h2>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <h3>🎯 সফল ই-কমার্সের মূল ভিত্তি হলো সঠিক পণ্য সোর্সিং</h3>
+      <p>সঠিক পণ্য সঠিক দামে সোর্স করতে পারলে আপনার ব্যবসার ৫০% কাজ শেষ। বাকি ৫০% হলো মার্কেটিং এবং কাস্টমার সার্ভিস।</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🏭</div>
+        <h3>সরাসরি ম্যানুফ্যাকচারার</h3>
+        <p>ঢাকার নারায়ণগঞ্জ, সাভার, গাজীপুরে পোশাক ও টেক্সটাইল কারখানা থেকে সরাসরি কিনুন। দাম সবচেয়ে কম থাকে।</p>
+        <span class="card-tag tag-orange">সর্বোচ্চ মুনাফা</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏬</div>
+        <h3>পাইকারি বাজার</h3>
+        <p>ঢাকার চকবাজার, বাবুবাজার, ইসলামপুর, নিউমার্কেট পাইকারি বাজার থেকে বিভিন্ন পণ্য কিনুন। MOQ কম থাকে।</p>
+        <span class="card-tag tag-green">শুরু করার জন্য ভালো</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌏</div>
+        <h3>আন্তর্জাতিক সোর্স</h3>
+        <p>Alibaba, AliExpress, 1688.com থেকে চীনা পণ্য আমদানি করুন। কাস্টমস ও শিপিং খরচ হিসেব করুন।</p>
+        <span class="card-tag tag-blue">আমদানি পণ্য</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h3>ড্রপশিপিং</h3>
+        <p>নিজে স্টক না রেখে সরাসরি সরবরাহকারী থেকে কাস্টমারের কাছে পাঠান। পুঁজি কম লাগে, ঝুঁকিও কম।</p>
+        <span class="card-tag tag-purple">কম পুঁজিতে শুরু</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>হ্যান্ডমেড ও ক্র্যাফট</h3>
+        <p>স্থানীয় কারিগরদের কাছ থেকে হাতে তৈরি পণ্য সংগ্রহ করুন। নকশিকাঁথা, মৃৎশিল্প, বাঁশের পণ্য ইত্যাদি।</p>
+        <span class="card-tag tag-gold">ইউনিক পণ্য</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌿</div>
+        <h3>অর্গানিক ও খাদ্যপণ্য</h3>
+        <p>গ্রামের কৃষকদের কাছ থেকে সরাসরি অর্গানিক চাল, মধু, মশলা সংগ্রহ করুন। ক্রমবর্ধমান চাহিদা।</p>
+        <span class="card-tag tag-green">ট্রেন্ডিং নিশ</span>
+      </div>
+    </div>
+
+    <div class="card-wide" style="margin-top:20px;">
+      <h3>🔍 পণ্য বাছাইয়ের আগে যা পরীক্ষা করবেন</h3>
+      <ul>
+        <li><strong>বাজার গবেষণা:</strong> Facebook, Google Trends, Daraz-এ কোন পণ্যের চাহিদা বেশি তা যাচাই করুন</li>
+        <li><strong>প্রতিযোগিতা বিশ্লেষণ:</strong> কতজন বিক্রেতা আছে? তাদের দাম কত? আপনি কীভাবে আলাদা হবেন?</li>
+        <li><strong>মুনাফার মার্জিন:</strong> কমপক্ষে ৩০-৪০% গ্রস মার্জিন নিশ্চিত করুন</li>
+        <li><strong>শিপিং সহজতা:</strong> পণ্য ভারী নয়, ভাঙার ঝুঁকি কম এমন পণ্য বেছে নিন শুরুতে</li>
+        <li><strong>সিজনাল নাকি সারা বছর:</strong> সারা বছর চাহিদা থাকে এমন পণ্যে বিনিয়োগ করুন</li>
+      </ul>
+    </div>
+
+    <div class="tip">সোর্সিং শুরুর আগে ছোট পরিসরে ১০-২০টি পণ্য কিনে পরীক্ষা করুন। বাজারের সাড়া দেখে তারপর বড় অর্ডার করুন।</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 2: TERMS -->
+  <section class="section" id="terms">
+    <div class="section-header">
+      <div class="section-icon icon-blue">📋</div>
+      <div>
+        <span class="section-num">অধ্যায় ০২</span>
+        <h2 class="section-title">গুরুত্বপূর্ণ <span>টার্মস</span> ও ধারণা</h2>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>টার্ম</th>
+            <th>অর্থ</th>
+            <th>কেন গুরুত্বপূর্ণ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SKU</strong></td><td>Stock Keeping Unit — প্রতিটি পণ্যের আলাদা কোড</td><td>ইনভেন্টরি ট্র্যাক করতে সাহায্য করে</td></tr>
+          <tr><td><strong>MOQ</strong></td><td>Minimum Order Quantity — ন্যূনতম অর্ডার পরিমাণ</td><td>সাপ্লায়ারের শর্ত বোঝা জরুরি</td></tr>
+          <tr><td><strong>GMV</strong></td><td>Gross Merchandise Value — মোট বিক্রয় মূল্য</td><td>ব্যবসার আকার পরিমাপ করে</td></tr>
+          <tr><td><strong>CAC</strong></td><td>Customer Acquisition Cost — নতুন কাস্টমার আনার খরচ</td><td>মার্কেটিং বাজেট নির্ধারণে সাহায্য করে</td></tr>
+          <tr><td><strong>LTV</strong></td><td>Lifetime Value — একজন কাস্টমার সারাজীবনে কত আয় দেবে</td><td>কাস্টমার রিটেনশন বোঝায়</td></tr>
+          <tr><td><strong>CR</strong></td><td>Conversion Rate — ভিজিটর থেকে ক্রেতার হার</td><td>ওয়েবসাইটের কার্যকারিতা মাপে</td></tr>
+          <tr><td><strong>AOV</strong></td><td>Average Order Value — গড় অর্ডার মূল্য</td><td>আপসেল কৌশল তৈরিতে সাহায্য করে</td></tr>
+          <tr><td><strong>ROAS</strong></td><td>Return on Ad Spend — বিজ্ঞাপনের রিটার্ন</td><td>মার্কেটিং খরচের কার্যকারিতা মাপে</td></tr>
+          <tr><td><strong>COD</strong></td><td>Cash on Delivery — ডেলিভারিতে নগদ পেমেন্ট</td><td>বাংলাদেশে সবচেয়ে জনপ্রিয় পেমেন্ট পদ্ধতি</td></tr>
+          <tr><td><strong>CTR</strong></td><td>Click Through Rate — বিজ্ঞাপন দেখে ক্লিক করার হার</td><td>বিজ্ঞাপনের মান বোঝায়</td></tr>
+          <tr><td><strong>Bounce Rate</strong></td><td>একটি পেজ দেখেই চলে যাওয়ার হার</td><td>ওয়েবসাইটের সমস্যা চিহ্নিত করে</td></tr>
+          <tr><td><strong>Churn Rate</strong></td><td>কাস্টমার ছেড়ে যাওয়ার হার</td><td>ব্যবসার স্বাস্থ্য বোঝায়</td></tr>
+          <tr><td><strong>ROI</strong></td><td>Return on Investment — বিনিয়োগের রিটার্ন</td><td>ব্যবসার লাভজনকতা নির্ধারণ করে</td></tr>
+          <tr><td><strong>Fulfillment</strong></td><td>অর্ডার প্রস্তুত করে ডেলিভারি দেওয়ার প্রক্রিয়া</td><td>অপারেশনাল দক্ষতার মূল চাবিকাঠি</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards" style="margin-top:20px;">
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>মুনাফা সম্পর্কিত টার্মস</h3>
+        <p><strong style="color:var(--accent2)">গ্রস প্রফিট:</strong> বিক্রয় মূল্য − পণ্যের খরচ<br><strong style="color:var(--accent2)">নেট প্রফিট:</strong> সব খরচ বাদ দিয়ে যা থাকে<br><strong style="color:var(--accent2)">ব্রেক-ইভেন:</strong> যে বিক্রয়ে লাভ-লোকসান শূন্য</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚚</div>
+        <h3>লজিস্টিক্স টার্মস</h3>
+        <p><strong style="color:var(--green)">Lead Time:</strong> অর্ডার থেকে ডেলিভারি পর্যন্ত সময়<br><strong style="color:var(--green)">Last-Mile:</strong> গুদাম থেকে কাস্টমারের দরজা পর্যন্ত<br><strong style="color:var(--green)">3PL:</strong> তৃতীয় পক্ষের লজিস্টিক্স সেবা</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <h3>পেমেন্ট গেটওয়ে</h3>
+        <p><strong style="color:var(--blue)">bKash, Nagad:</strong> মোবাইল ব্যাংকিং<br><strong style="color:var(--blue)">SSLCommerz, ShurjoPay:</strong> কার্ড পেমেন্ট গেটওয়ে<br><strong style="color:var(--blue)">DBBL Nexus:</strong> ডেবিট কার্ড পেমেন্ট</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 3: WEB APP -->
+  <section class="section" id="webapp">
+    <div class="section-header">
+      <div class="section-icon icon-purple">💻</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৩</span>
+        <h2 class="section-title">ই-কমার্স <span>ওয়েব অ্যাপ</span> তৈরি</h2>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <h3>🚀 ওয়েব অ্যাপ তৈরির দুটি পথ</h3>
+      <p>১. <strong>রেডিমেড প্ল্যাটফর্ম</strong> — দ্রুত শুরু করুন (Shopify, WooCommerce, Shajgoj Clone) <br>
+         ২. <strong>কাস্টম ডেভেলপমেন্ট</strong> — নিজের প্রয়োজনমতো তৈরি করুন (React + Node.js অথবা Laravel)</p>
+    </div>
+
+    <h3 style="color:var(--accent2); margin-bottom:20px; font-family:'Noto Serif Bengali', serif;">📌 প্ল্যাটফর্ম তুলনা</h3>
+    <div class="table-wrap" style="margin-bottom:30px;">
+      <table>
+        <thead>
+          <tr><th>প্ল্যাটফর্ম</th><th>মাসিক খরচ</th><th>সুবিধা</th><th>অসুবিধা</th><th>উপযুক্ত কাদের জন্য</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Shopify</strong></td><td>$৩৯+</td><td>সহজ, শক্তিশালী</td><td>ব্যয়বহুল</td><td>মিড-সাইজ বিজনেস</td></tr>
+          <tr><td><strong>WooCommerce</strong></td><td>বিনামূল্যে (হোস্টিং ছাড়া)</td><td>কাস্টমাইজেবল</td><td>টেকনিক্যাল জ্ঞান দরকার</td><td>বাংলাদেশি ব্যবসায়ী</td></tr>
+          <tr><td><strong>Facebook Shop</strong></td><td>বিনামূল্যে</td><td>ইউজার বেস বিশাল</td><td>নিজের কন্ট্রোল কম</td><td>একদম শুরুতে</td></tr>
+          <tr><td><strong>Custom (Laravel)</strong></td><td>শুধু হোস্টিং</td><td>সম্পূর্ণ নিয়ন্ত্রণ</td><td>ডেভেলপার দরকার</td><td>বড় ই-কমার্স</td></tr>
+          <tr><td><strong>Pathao Shop</strong></td><td>কমিশন ভিত্তিক</td><td>ডেলিভারি সহজ</td><td>প্রতিযোগিতা বেশি</td><td>স্থানীয় বিক্রেতা</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color:var(--accent2); margin-bottom:20px; font-family:'Noto Serif Bengali', serif;">🛠️ কাস্টম ওয়েব অ্যাপ তৈরির ধাপ</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h3>ডোমেইন ও হোস্টিং কিনুন</h3>
+          <p>Namecheap বা GoDaddy থেকে .com.bd বা .shop ডোমেইন নিন। হোস্টিংয়ের জন্য ExonHost, SSDDriven বা DigitalOcean ব্যবহার করুন। ডোমেইন খরচ বছরে ৮০০-১৫০০ টাকা, হোস্টিং ২০০০-৫০০০ টাকা।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h3>টেক স্ট্যাক নির্বাচন করুন</h3>
+          <p><strong>ফ্রন্টএন্ড:</strong> React.js বা Next.js | <strong>ব্যাকএন্ড:</strong> Laravel (PHP) বা Node.js | <strong>ডেটাবেজ:</strong> MySQL বা PostgreSQL | <strong>পেমেন্ট:</strong> SSLCommerz বা ShurjoPay API ইন্টিগ্রেট করুন।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h3>অবশ্যক ফিচারগুলো তৈরি করুন</h3>
+          <p>প্রোডাক্ট লিস্টিং, সার্চ ও ফিল্টার, শপিং কার্ট, চেকআউট, পেমেন্ট গেটওয়ে, অর্ডার ট্র্যাকিং, অ্যাডমিন প্যানেল এবং কাস্টমার ড্যাশবোর্ড তৈরি করুন।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h3>মোবাইল রেসপন্সিভ করুন</h3>
+          <p>বাংলাদেশে ৯০%+ অনলাইন শপিং মোবাইল থেকে হয়। প্রতিটি পেজ মোবাইলে পরীক্ষা করুন। Google PageSpeed Score ৮০+ রাখুন।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৫</div>
+        <div class="step-content">
+          <h3>SSL ও নিরাপত্তা নিশ্চিত করুন</h3>
+          <p>HTTPS অবশ্যই সক্রিয় করুন। পেমেন্ট তথ্য এনক্রিপ্ট করুন। নিয়মিত ব্যাকআপ রাখুন। Google reCAPTCHA যোগ করুন।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">৬</div>
+        <div class="step-content">
+          <h3>টেস্টিং ও লাইভ করুন</h3>
+          <p>সব পেমেন্ট গেটওয়ে টেস্ট করুন। অর্ডার প্রক্রিয়া যাচাই করুন। লোড টেস্ট করুন। তারপর সফটলঞ্চ করুন।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:20px;">
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <h3>অ্যাপ থাকলে ভালো</h3>
+        <p>Flutter দিয়ে একটি কোডবেসে Android + iOS অ্যাপ তৈরি করুন। Push notification দিয়ে সেলস বাড়ান।</p>
+        <span class="card-tag tag-purple">বোনাস ফিচার</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>SEO-ফ্রেন্ডলি URL</h3>
+        <p>প্রোডাক্ট URL বাংলিশ করুন: /product/cotton-shirt-white। Meta tag, alt text সব পূরণ করুন।</p>
+        <span class="card-tag tag-green">অর্গানিক ট্র্যাফিক</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>পেজ স্পিড</h3>
+        <p>ছবি compress করুন। CDN ব্যবহার করুন। Lazy loading চালু করুন। ধীর সাইটে কাস্টমার চলে যায়।</p>
+        <span class="card-tag tag-orange">UX গুরুত্বপূর্ণ</span>
+      </div>
+    </div>
+
+    <div class="warning">বাংলাদেশে ডিজিটাল কমার্স আইন মেনে প্রাইভেসি পলিসি, রিফান্ড পলিসি এবং টার্মস অফ সার্ভিস পেজ অবশ্যই রাখুন।</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 4: MARKETING -->
+  <section class="section" id="marketing">
+    <div class="section-header">
+      <div class="section-icon icon-red">📣</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৪</span>
+        <h2 class="section-title">ডিজিটাল <span>মার্কেটিং</span> কৌশল</h2>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">📘</div>
+        <h3>Facebook মার্কেটিং</h3>
+        <p>বাংলাদেশে সবচেয়ে কার্যকর প্ল্যাটফর্ম। Facebook Page, Group, এবং Paid Ads ব্যবহার করুন। Lookalike Audience তৈরি করে ROAS বাড়ান।</p>
+        <span class="card-tag tag-blue">সর্বোচ্চ অডিয়েন্স</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📸</div>
+        <h3>Instagram & Reels</h3>
+        <p>ভিজুয়াল পণ্যের জন্য Instagram অসাধারণ। Short video content এবং Influencer collaboration করুন। ১৮-৩৫ বয়সী ক্রেতাদের কাছে পৌঁছান।</p>
+        <span class="card-tag tag-purple">ভিজুয়াল পণ্য</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎥</div>
+        <h3>YouTube ও TikTok</h3>
+        <p>Product review, unboxing video এবং how-to tutorial তৈরি করুন। দীর্ঘমেয়াদে সবচেয়ে সস্তা ট্র্যাফিক উৎস।</p>
+        <span class="card-tag tag-red">ভাইরাল সম্ভাবনা</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">✉️</div>
+        <h3>Email ও SMS মার্কেটিং</h3>
+        <p>কাস্টমারের ইমেইল ও নম্বর সংগ্রহ করুন। অফার, নতুন পণ্য ও রিমাইন্ডার পাঠান। Open rate ৩০%+ রাখুন।</p>
+        <span class="card-tag tag-green">সর্বোচ্চ ROI</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Google SEO ও Ads</h3>
+        <p>Google-এ র‍্যাংক করতে keyword research করুন। Google Shopping Ads দিয়ে প্রোডাক্ট দেখান। দীর্ঘমেয়াদী বিনিয়োগ।</p>
+        <span class="card-tag tag-orange">ক্রেতা সন্ধানী</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤳</div>
+        <h3>ইনফ্লুয়েন্সার মার্কেটিং</h3>
+        <p>Micro-influencer (১০K-১০০K ফলোয়ার) দিয়ে শুরু করুন। ROI সাধারণত ভালো থাকে। বার্টার বা কমিশন ভিত্তিক চুক্তি করুন।</p>
+        <span class="card-tag tag-gold">বিশ্বাসযোগ্যতা বাড়ায়</span>
+      </div>
+    </div>
+
+    <div class="card-wide" style="margin-top:20px;">
+      <h3>💡 Content Calendar — সপ্তাহিক পরিকল্পনা</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>দিন</th><th>Facebook</th><th>Instagram</th><th>কাজ</th></tr></thead>
+          <tbody>
+            <tr><td>সোমবার</td><td>প্রোডাক্ট পোস্ট</td><td>Reel</td><td>নতুন সপ্তাহ শুরু</td></tr>
+            <tr><td>বুধবার</td><td>Customer Review</td><td>Story Poll</td><td>এনগেজমেন্ট</td></tr>
+            <tr><td>শুক্রবার</td><td>অফার/ডিল</td><td>Carousel</td><td>সেলস বুস্ট</td></tr>
+            <tr><td>রবিবার</td><td>Behind the Scenes</td><td>BTS Story</td><td>ব্র্যান্ড বিল্ডিং</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 5: SELLING MORE -->
+  <section class="section" id="selling">
+    <div class="section-header">
+      <div class="section-icon icon-green">🛒</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৫</span>
+        <h2 class="section-title">বেশি <span>বিক্রি</span> করার কৌশল</h2>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h3>বান্ডেল অফার</h3>
+        <p>৩টি কিনলে ১টি ফ্রি, বা একসাথে কিনলে ডিসকাউন্ট দিন। AOV বাড়ে এবং স্টক দ্রুত শেষ হয়।</p>
+        <span class="card-tag tag-orange">AOV বাড়ায়</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">⬆️</div>
+        <h3>Upsell ও Cross-sell</h3>
+        <p>চেকআউটে "এটিও দেখুন" দেখান। শার্ট কিনলে ম্যাচিং প্যান্ট সাজেস্ট করুন। ১৫-২৫% অতিরিক্ত আয় হতে পারে।</p>
+        <span class="card-tag tag-blue">স্মার্ট সাজেশন</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏰</div>
+        <h3>Flash Sale ও FOMO</h3>
+        <p>Countdown timer দিন। "মাত্র ৫টি বাকি!" দেখান। Limited Edition তৈরি করুন। জরুরি অনুভূতি কাজ করে।</p>
+        <span class="card-tag tag-red">সাইকোলজি কৌশল</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <h3>রিটার্নিং কাস্টমার</h3>
+        <p>লয়্যালটি পয়েন্ট, মেম্বারশিপ কার্ড বা VIP ক্লাব চালু করুন। পুরানো কাস্টমার নতুনের চেয়ে ৫গুণ সস্তা।</p>
+        <span class="card-tag tag-green">রিটেনশন</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎁</div>
+        <h3>ফ্রি শিপিং থ্রেশহোল্ড</h3>
+        <p>৫০০ টাকার বেশি কিনলে ফ্রি ডেলিভারি দিন। কাস্টমার অতিরিক্ত পণ্য কিনবে শিপিং বাঁচাতে।</p>
+        <span class="card-tag tag-purple">AOV কৌশল</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">⭐</div>
+        <h3>রিভিউ ও সোশ্যাল প্রুফ</h3>
+        <p>কাস্টমারকে রিভিউ দিতে উৎসাহিত করুন। ছবিসহ রিভিউ সংগ্রহ করুন। ৯৫% ক্রেতা রিভিউ পড়ে।</p>
+        <span class="card-tag tag-gold">বিশ্বাস তৈরি</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛒</div>
+        <h3>Cart Abandonment Recovery</h3>
+        <p>কার্টে রেখে চলে যাওয়া কাস্টমারকে SMS বা email পাঠান। ডিসকাউন্ট কোড দিন। ১০-২০% ফিরে আসে।</p>
+        <span class="card-tag tag-blue">হারানো বিক্রি উদ্ধার</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">💬</div>
+        <h3>লাইভ সেলিং</h3>
+        <p>Facebook/YouTube Live করুন। সরাসরি পণ্য দেখান, প্রশ্নের উত্তর দিন। লাইভে এক্সক্লুসিভ অফার দিন।</p>
+        <span class="card-tag tag-orange">এনগেজমেন্ট বেশি</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h3>রেফারেল প্রোগ্রাম</h3>
+        <p>বন্ধুকে রেফার করলে ১০০ টাকা ডিসকাউন্ট দিন। কাস্টমার নিজেই বিক্রেতা হয়ে উঠবে।</p>
+        <span class="card-tag tag-green">ভাইরাল গ্রোথ</span>
+      </div>
+    </div>
+
+    <div class="highlight" style="margin-top:20px;">
+      <h3>🛍️ প্রোডাক্ট পেজ অপ্টিমাইজেশন</h3>
+      <ul>
+        <li><strong>মানসম্পন্ন ছবি:</strong> একাধিক কোণ থেকে ছবি, জুম ফিচার এবং ভিডিও যোগ করুন</li>
+        <li><strong>স্পষ্ট বিবরণ:</strong> মাপ, উপাদান, রং বিস্তারিত লিখুন। কাস্টমারের প্রশ্নের আগেই উত্তর দিন</li>
+        <li><strong>স্পষ্ট CTA বাটন:</strong> "এখনই কিনুন" বা "কার্টে যোগ করুন" বড় ও স্পষ্ট রাখুন</li>
+        <li><strong>বিশ্বাসযোগ্যতা:</strong> রিভিউ, রেটিং, কতজন কিনেছেন এবং নিরাপদ পেমেন্ট ব্যাজ দেখান</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 6: PROFIT -->
+  <section class="section" id="profit">
+    <div class="section-header">
+      <div class="section-icon icon-gold">💰</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৬</span>
+        <h2 class="section-title">সর্বোচ্চ <span>মুনাফা</span> অর্জন</h2>
+      </div>
+    </div>
+
+    <div class="formula">
+      💹 নেট মুনাফা = মোট আয় − পণ্যের খরচ − শিপিং − মার্কেটিং − অপারেশন − ট্যাক্স
+    </div>
+
+    <div class="profit-grid">
+      <div class="profit-card">
+        <span class="profit-num">৩০-৫০%</span>
+        <span class="profit-label">আদর্শ গ্রস মার্জিন</span>
+      </div>
+      <div class="profit-card">
+        <span class="profit-num">১০-২০%</span>
+        <span class="profit-label">আদর্শ নেট মার্জিন</span>
+      </div>
+      <div class="profit-card">
+        <span class="profit-num">৩x</span>
+        <span class="profit-label">ন্যূনতম ROAS লক্ষ্য</span>
+      </div>
+      <div class="profit-card">
+        <span class="profit-num">৪০%+</span>
+        <span class="profit-label">রিটার্নিং কাস্টমার লক্ষ্য</span>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:24px;">
+      <div class="card">
+        <div class="card-icon">✂️</div>
+        <h3>খরচ কমানোর উপায়</h3>
+        <p>বেশি অর্ডারে সাপ্লায়ারের সাথে দাম কমান। বাল্ক শিপিং নিন। অটোমেশন ব্যবহার করুন। অফিস খরচ নিয়ন্ত্রণ করুন।</p>
+        <span class="card-tag tag-green">মার্জিন বাড়ায়</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">💎</div>
+        <h3>প্রিমিয়াম প্রাইসিং</h3>
+        <p>ব্র্যান্ড তৈরি করুন। গল্প বলুন। প্যাকেজিং সুন্দর করুন। প্রিমিয়াম পণ্যে ৫০-৮০% মার্জিন সম্ভব।</p>
+        <span class="card-tag tag-gold">উচ্চ মুনাফা</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔁</div>
+        <h3>সাবস্ক্রিপশন মডেল</h3>
+        <p>মাসিক বাক্স বা সাবস্ক্রিপশন অফার করুন। স্থিতিশীল ক্যাশ ফ্লো তৈরি হয়। Predictable revenue পাবেন।</p>
+        <span class="card-tag tag-blue">Recurring Revenue</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏷️</div>
+        <h3>সঠিক মূল্য নির্ধারণ</h3>
+        <p>Cost + মুনাফা + প্রতিযোগিতা — এই তিনটি বিষয় মিলিয়ে দাম ঠিক করুন। খুব কম দামে বিক্রি ব্যবসার ক্ষতি করে।</p>
+        <span class="card-tag tag-orange">কৌশলগত</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📉</div>
+        <h3>রিটার্ন কমান</h3>
+        <p>সঠিক পণ্য বিবরণ লিখুন, মান নিয়ন্ত্রণ করুন, দ্রুত ডেলিভারি দিন। রিটার্ন ১০% এর নিচে রাখুন।</p>
+        <span class="card-tag tag-red">খরচ বাঁচায়</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>ডেটা বিশ্লেষণ</h3>
+        <p>Google Analytics, Meta Pixel ব্যবহার করুন। কোন পণ্য, কোন বিজ্ঞাপন, কোন দিন বেশি বিক্রি হয় জানুন।</p>
+        <span class="card-tag tag-purple">তথ্য-ভিত্তিক সিদ্ধান্ত</span>
+      </div>
+    </div>
+
+    <div class="card-wide" style="margin-top:20px;">
+      <h3>📈 মাসিক আর্থিক পরিকল্পনার ছক</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>খরচের ধরন</th><th>মোট আয়ের %</th><th>উদাহরণ</th></tr></thead>
+          <tbody>
+            <tr><td>পণ্যের খরচ (COGS)</td><td>৪০-৫৫%</td><td>পণ্য ক্রয়, প্যাকেজিং</td></tr>
+            <tr><td>মার্কেটিং ও বিজ্ঞাপন</td><td>১০-২০%</td><td>Facebook Ads, Google Ads</td></tr>
+            <tr><td>শিপিং ও লজিস্টিক্স</td><td>৮-১৫%</td><td>Pathao, Sundarban কুরিয়ার</td></tr>
+            <tr><td>অপারেশন খরচ</td><td>৫-১০%</td><td>বেতন, অফিস, সফটওয়্যার</td></tr>
+            <tr><td><strong>নেট মুনাফা (লক্ষ্য)</strong></td><td><strong>১৫-২৫%</strong></td><td>মালিকের লাভ + পুনর্বিনিয়োগ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip">প্রথম ৬ মাস মুনাফার ৫০% ব্যবসায় পুনরায় বিনিয়োগ করুন। দ্রুত বৃদ্ধি পেতে হলে রিইনভেস্টমেন্ট জরুরি।</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 7: LEGAL -->
+  <section class="section" id="legal">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⚖️</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৭</span>
+        <h2 class="section-title">আইনি ও <span>নিয়ন্ত্রক</span> বিষয়</h2>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🏢</div>
+        <h3>ব্যবসা নিবন্ধন</h3>
+        <p>RJSC থেকে কোম্পানি রেজিস্ট্রেশন করুন। Sole Proprietorship, Partnership বা Private Limited হতে পারে। ট্রেড লাইসেন্স নিন সিটি কর্পোরেশন থেকে।</p>
+        <span class="card-tag tag-orange">বাধ্যতামূলক</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧾</div>
+        <h3>ভ্যাট ও কর</h3>
+        <p>বার্ষিক টার্নওভার ৩০ লাখ+ হলে VAT নিবন্ধন বাধ্যতামূলক। নিয়মিত আয়কর রিটার্ন দিন। একজন অ্যাকাউন্ট্যান্ট রাখুন।</p>
+        <span class="card-tag tag-red">আইনি বাধ্যবাধকতা</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>ডেটা সুরক্ষা</h3>
+        <p>কাস্টমারের তথ্য নিরাপদ রাখুন। Privacy Policy প্রকাশ করুন। কাস্টমারের অনুমতি ছাড়া ডেটা শেয়ার করবেন না।</p>
+        <span class="card-tag tag-blue">বিশ্বাস রক্ষা</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <h3>রিফান্ড পলিসি</h3>
+        <p>স্পষ্ট রিফান্ড ও এক্সচেঞ্জ পলিসি রাখুন। ভোক্তা অধিকার আইন মেনে চলুন। পণ্যে সমস্যা হলে দ্রুত সমাধান দিন।</p>
+        <span class="card-tag tag-green">ভোক্তা অধিকার</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3>ডিজিটাল কমার্স নীতিমালা</h3>
+        <p>বাণিজ্য মন্ত্রণালয়ের ডিজিটাল কমার্স নির্দেশিকা ২০২১ অনুসরণ করুন। মিথ্যা বিজ্ঞাপন দেবেন না।</p>
+        <span class="card-tag tag-purple">সরকারি নিয়ম</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <h3>পেমেন্ট গেটওয়ে লাইসেন্স</h3>
+        <p>বাংলাদেশ ব্যাংক অনুমোদিত পেমেন্ট গেটওয়ে ব্যবহার করুন। কার্ড পেমেন্টের জন্য PCI DSS মান মেনে চলুন।</p>
+        <span class="card-tag tag-gold">আর্থিক নিরাপত্তা</span>
+      </div>
+    </div>
+
+    <div class="warning">পণ্যে মিথ্যা দাবি, নকল পণ্য বিক্রি বা ভোক্তা প্রতারণা বাংলাদেশ দণ্ডবিধি ও ভোক্তা অধিকার সংরক্ষণ আইনে শাস্তিযোগ্য অপরাধ।</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 8: CHECKLIST -->
+  <section class="section" id="checklist">
+    <div class="section-header">
+      <div class="section-icon icon-green">✅</div>
+      <div>
+        <span class="section-num">অধ্যায় ০৮</span>
+        <h2 class="section-title">লঞ্চের আগে <span>চেকলিস্ট</span></h2>
+      </div>
+    </div>
+
+    <h3 style="color:var(--accent2); margin-bottom:16px; font-family:'Noto Serif Bengali',serif;">🏗️ ব্যবসা প্রস্তুতি</h3>
+    <ul class="checklist" style="margin-bottom:28px;">
+      <li>ব্যবসার নাম ও ব্র্যান্ড পরিচয় তৈরি</li>
+      <li>ট্রেড লাইসেন্স ও ব্যবসা নিবন্ধন</li>
+      <li>ব্যাংক অ্যাকাউন্ট ও বিকাশ মার্চেন্ট</li>
+      <li>পণ্যের সাপ্লায়ার নিশ্চিত ও চুক্তি</li>
+      <li>প্রাথমিক স্টক ও ইনভেন্টরি প্রস্তুত</li>
+      <li>প্যাকেজিং উপকরণ সংগ্রহ</li>
+    </ul>
+
+    <h3 style="color:var(--accent2); margin-bottom:16px; font-family:'Noto Serif Bengali',serif;">💻 ডিজিটাল উপস্থিতি</h3>
+    <ul class="checklist" style="margin-bottom:28px;">
+      <li>ওয়েবসাইট লাইভ ও সব পেজ কার্যকর</li>
+      <li>SSL সার্টিফিকেট সক্রিয়</li>
+      <li>পেমেন্ট গেটওয়ে টেস্ট সম্পন্ন</li>
+      <li>Facebook Business Page তৈরি</li>
+      <li>Google Analytics ও Meta Pixel ইনস্টল</li>
+      <li>Privacy Policy ও Refund Policy পেজ</li>
+    </ul>
+
+    <h3 style="color:var(--accent2); margin-bottom:16px; font-family:'Noto Serif Bengali',serif;">📣 মার্কেটিং প্রস্তুতি</h3>
+    <ul class="checklist" style="margin-bottom:28px;">
+      <li>প্রথম ১ মাসের কন্টেন্ট ক্যালেন্ডার</li>
+      <li>লঞ্চ অফার ও প্রমোশন পরিকল্পনা</li>
+      <li>প্রোডাক্ট ছবি ও ভিডিও প্রস্তুত</li>
+      <li>ইনফ্লুয়েন্সার লিস্ট ও যোগাযোগ</li>
+      <li>বিজ্ঞাপন বাজেট বরাদ্দ</li>
+      <li>Email/SMS মার্কেটিং সেটআপ</li>
+    </ul>
+
+    <h3 style="color:var(--accent2); margin-bottom:16px; font-family:'Noto Serif Bengali',serif;">🚚 অপারেশন প্রস্তুতি</h3>
+    <ul class="checklist">
+      <li>কুরিয়ার পার্টনারশিপ নিশ্চিত</li>
+      <li>অর্ডার ম্যানেজমেন্ট প্রক্রিয়া নির্ধারণ</li>
+      <li>কাস্টমার সার্ভিস নম্বর ও টিম</li>
+      <li>গুদামঘর বা স্টোরেজ ব্যবস্থা</li>
+      <li>রিটার্ন/এক্সচেঞ্জ প্রক্রিয়া নির্ধারণ</li>
+      <li>মাসিক আর্থিক রিপোর্টিং সিস্টেম</li>
+    </ul>
+
+    <div class="highlight" style="margin-top:30px;">
+      <h3>🎯 সাফল্যের সংক্ষিপ্ত সূত্র</h3>
+      <ul>
+        <li><strong>সঠিক পণ্য + সঠিক দর্শক + সঠিক সময়</strong> = সফল বিক্রয়</li>
+        <li><strong>কম খরচে বেশি মান</strong> = বেশি মুনাফা</li>
+        <li><strong>দ্রুত ডেলিভারি + ভালো সেবা</strong> = পুনরায় কেনা</li>
+        <li><strong>ডেটা দেখুন + পরীক্ষা করুন + উন্নতি করুন</strong> = দীর্ঘমেয়াদী সাফল্য</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <h2>🚀 সফলতার পথে আপনার যাত্রা শুরু হোক আজই!</h2>
+  <p style="max-width:500px; margin:12px auto;">ই-কমার্স ব্যবসায় ধৈর্য, পরিশ্রম ও সঠিক কৌশল — এই তিনটি একসাথে থাকলে সাফল্য আসবেই।</p>
+  <p style="margin-top:24px; font-size:0.75rem; opacity:0.5;">বাংলাদেশ ই-কমার্স সম্পূর্ণ গাইডলাইন | ২০২৪-২০২৫</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--color-background-tertiary, #f5f4f0);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #1a3a5c 0%, #0f2540 100%);
+    color: #fff;
+    padding: 40px 32px 32px;
+    border-radius: 0 0 24px 24px;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .hero p {
+    font-size: 13px;
+    opacity: 0.75;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--color-border-secondary, #ccc);
+    background: var(--color-background-primary, #fff);
+    color: var(--color-text-secondary);
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .tab-btn.active {
+    background: #1a3a5c;
+    color: #fff;
+    border-color: #1a3a5c;
+  }
+
+  .tab-btn:hover:not(.active) {
+    background: var(--color-background-secondary, #f0efe9);
+  }
+
+  .section {
+    display: none;
+    padding: 0 20px 40px;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .card {
+    background: var(--color-background-primary, #fff);
+    border-radius: 14px;
+    border: 0.5px solid var(--color-border-tertiary, #e0dfd8);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .card h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-primary);
+  }
+
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+  }
+
+  .card p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    margin-bottom: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .badge-bd { background: #e8f4fd; color: #1a5c9a; }
+  .badge-foreign { background: #fdeee8; color: #9a3a1a; }
+  .badge-tip { background: #edf7ee; color: #1a6b22; }
+  .badge-warn { background: #fff8e6; color: #8b6400; }
+
+  .step-list {
+    counter-reset: steps;
+    list-style: none;
+    padding: 0;
+  }
+
+  .step-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+
+  .step-list li::before {
+    content: counter(steps);
+    min-width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #1a3a5c;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .budget-card {
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1.5px solid transparent;
+  }
+
+  .budget-5k { background: #fff8e6; border-color: #f5c842; }
+  .budget-50k { background: #e8f4fd; border-color: #4296f5; }
+  .budget-1l { background: #edf7ee; border-color: #42b547; }
+
+  .budget-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .budget-5k .budget-title { color: #7a5c00; }
+  .budget-50k .budget-title { color: #0a3d7a; }
+  .budget-1l .budget-title { color: #0a5c14; }
+
+  .budget-sub {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .budget-5k .budget-sub { color: #a87d00; }
+  .budget-50k .budget-sub { color: #1a5c9a; }
+  .budget-1l .budget-sub { color: #1a6b22; }
+
+  .feature-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .feature-pill {
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .pill-yes { background: rgba(66,181,71,0.15); color: #0a5c14; }
+  .pill-no { background: rgba(220,50,50,0.1); color: #7a1010; }
+  .pill-maybe { background: rgba(66,150,245,0.12); color: #0a3d7a; }
+
+  .time-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
+  .time-table th {
+    background: #1a3a5c;
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .time-table th:first-child { border-radius: 8px 0 0 0; }
+  .time-table th:last-child { border-radius: 0 8px 0 0; }
+
+  .time-table td {
+    padding: 8px 12px;
+    border-bottom: 0.5px solid var(--color-border-tertiary, #e0dfd8);
+    color: var(--color-text-secondary);
+  }
+
+  .time-table tr:nth-child(even) td {
+    background: var(--color-background-secondary, #f8f7f2);
+  }
+
+  .time-table .total-row td {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    background: #e8f4fd;
+  }
+
+  .highlight-box {
+    background: var(--color-background-secondary, #f8f7f2);
+    border-left: 3px solid #1a3a5c;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+
+  .vs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .vs-col {
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .vs-col h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .vs-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .vs-col ul li {
+    font-size: 13px;
+    padding: 3px 0;
+    color: var(--color-text-secondary);
+  }
+
+  .vs-col ul li::before {
+    margin-right: 6px;
+  }
+
+  .col-custom { background: #edf7ee; }
+  .col-custom h4 { color: #0a5c14; }
+  .col-custom ul li::before { content: "✓"; color: #42b547; }
+
+  .col-codecanyon { background: #fdeee8; }
+  .col-codecanyon h4 { color: #7a2010; }
+  .col-codecanyon ul li::before { content: "→"; color: #e05c30; }
+
+  .formula-box {
+    background: #0f2540;
+    color: #7ecbff;
+    border-radius: 10px;
+    padding: 16px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 2;
+    margin: 12px 0;
+  }
+
+  .formula-box .comment {
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+  }
+
+  .checklist li {
+    list-style: none;
+    padding: 5px 0;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .checklist li::before {
+    content: "✔";
+    color: #42b547;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  @media (max-width: 480px) {
+    .vs-grid { grid-template-columns: 1fr; }
+    .hero { padding: 28px 20px 24px; }
+    .section { padding: 0 14px 40px; }
+    .tabs { padding: 0 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>ওয়েব অ্যাপ ডেভেলপমেন্ট<br>ক্লায়েন্ট গাইড 🇧🇩</h1>
+  <p>বাংলাদেশি ও বিদেশি ক্লায়েন্ট — বাজেট, টাইম ও কোড কৌশল</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('client')">ক্লায়েন্ট টাইপ</button>
+  <button class="tab-btn" onclick="showTab('budget')">বাজেট প্ল্যান</button>
+  <button class="tab-btn" onclick="showTab('time')">সময় হিসাব</button>
+  <button class="tab-btn" onclick="showTab('codecanyon')">CodeCanyon বনাম কাস্টম</button>
+  <button class="tab-btn" onclick="showTab('tips')">প্রো টিপস</button>
+</div>
+
+<!-- TAB 1: CLIENT TYPES -->
+<div id="tab-client" class="section active">
+
+  <div class="card">
+    <span class="badge badge-bd">🇧🇩 বাংলাদেশি ক্লায়েন্ট</span>
+    <h2>দেশীয় ক্লায়েন্টের সাথে কাজ</h2>
+    <p>বাংলাদেশি ক্লায়েন্টরা সাধারণত বাজেট সচেতন, ফলাফল তাড়াতাড়ি চান এবং সরাসরি যোগাযোগ পছন্দ করেন। নিচে দেওয়া ধাপ অনুসরণ করুন:</p>
+
+    <ul class="step-list">
+      <li><strong>প্রথম মিটিং:</strong> ফোন বা সরাসরি দেখা করুন। প্রজেক্টের উদ্দেশ্য, টার্গেট ইউজার এবং তাদের বাজেট সম্পর্কে জানুন।</li>
+      <li><strong>রিকোয়ারমেন্ট:</strong> বাংলায় লিখে দিন কী কী ফিচার লাগবে। ক্লায়েন্টকে সাইন করাতে বা হোয়াটসঅ্যাপে কনফার্ম করাতে ভুলবেন না।</li>
+      <li><strong>পেমেন্ট স্ট্রাকচার:</strong> ৫০% অ্যাডভান্স, ২৫% মিডওয়ে, ২৫% ডেলিভারিতে। বিকাশ / নগদ / ব্যাংক যেটা সুবিধাজনক।</li>
+      <li><strong>ডেডলাইন:</strong> বাস্তবসম্মত সময় দিন। ক্লায়েন্ট তাড়া দিলেও প্রথমে সৎ থাকুন — বরং ধীরে দিলেও মানসম্মত কাজ দিন।</li>
+      <li><strong>রিভিশন নীতি:</strong> পরিষ্কার বলুন — "২ রাউন্ড ফ্রি রিভিশন, এর বেশি হলে চার্জ প্রযোজ্য।"</li>
+      <li><strong>ডেলিভারি:</strong> লাইভ ডেমো দেখান, হোস্টিং সেটআপ করুন, এবং একটা সংক্ষিপ্ত ব্যবহার গাইড দিন।</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <span class="badge badge-foreign">🌍 বিদেশি ক্লায়েন্ট</span>
+    <h2>ইন্টারন্যাশনাল ক্লায়েন্টের সাথে কাজ</h2>
+    <p>বিদেশি ক্লায়েন্টরা (Fiverr, Upwork, LinkedIn) সাধারণত বেশি বাজেটে কাজ করেন, কিন্তু প্রফেশনালিজম ও ডকুমেন্টেশন নিয়ে অনেক বেশি সিরিয়াস।</p>
+
+    <ul class="step-list">
+      <li><strong>প্রোফাইল ও পোর্টফোলিও:</strong> ইংরেজিতে পরিষ্কার প্রোফাইল, GitHub লিঙ্ক, এবং লাইভ প্রজেক্ট দেখান।</li>
+      <li><strong>প্রপোজাল:</strong> প্রজেক্ট স্কোপ, টাইমলাইন, ডেলিভারেবল এবং মূল্য — সব লিখিত আকারে পাঠান।</li>
+      <li><strong>কন্ট্র্যাক্ট:</strong> Upwork/Fiverr এর বিল্ট-ইন সিস্টেম ব্যবহার করুন। বাইরে কাজ করলে একটা সিম্পল NDA বা SoW দিন।</li>
+      <li><strong>পেমেন্ট:</strong> Wise, Payoneer বা Stripe ব্যবহার করুন। মিলস্টোন পেমেন্ট সবচেয়ে নিরাপদ।</li>
+      <li><strong>কমিউনিকেশন:</strong> প্রতিদিন বা সপ্তাহে একবার আপডেট দিন। Slack বা Notion ব্যবহার করলে ক্লায়েন্ট খুশি হন।</li>
+      <li><strong>টাইমজোন:</strong> ক্লায়েন্টের টাইমজোন মাথায় রেখে মিটিং নির্ধারণ করুন। Google Calendar শেয়ার করুন।</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- TAB 2: BUDGET PLANS -->
+<div id="tab-budget" class="section">
+
+  <div class="budget-card budget-5k">
+    <div class="budget-title">৳৫,০০০ বাজেট</div>
+    <div class="budget-sub">ছোট ব্যবসা / স্টুডেন্ট প্রজেক্ট</div>
+
+    <div class="feature-row">
+      <span class="feature-pill pill-yes">সিম্পল ল্যান্ডিং পেজ</span>
+      <span class="feature-pill pill-yes">CodeCanyon থিম</span>
+      <span class="feature-pill pill-no">কাস্টম ডিজাইন নয়</span>
+      <span class="feature-pill pill-no">ব্যাকএন্ড API নয়</span>
+    </div>
+
+    <p style="font-size:14px;color:#7a5c00;margin-top:4px;"><strong>কী দেওয়া সম্ভব:</strong> প্রিমেড থিম/টেমপ্লেট কাস্টমাইজ করে ১-৩ পেজের ওয়েবসাইট, বেসিক কন্টাক্ট ফর্ম, মোবাইল রেসপন্সিভ। হোস্টিং ক্লায়েন্ট নিজে কিনবেন।</p>
+    <p style="font-size:14px;color:#7a5c00;"><strong>পরামর্শ:</strong> এই বাজেটে সৎভাবে বলুন কী পাবেন, কী পাবেন না। Scope creep এড়িয়ে চলুন।</p>
+  </div>
+
+  <div class="budget-card budget-50k">
+    <div class="budget-title">৳৫০,০০০ বাজেট</div>
+    <div class="budget-sub">মিড-রেঞ্জ ব্যবসায়িক প্রজেক্ট</div>
+
+    <div class="feature-row">
+      <span class="feature-pill pill-yes">কাস্টম UI ডিজাইন</span>
+      <span class="feature-pill pill-yes">ব্যাকএন্ড + ডেটাবেজ</span>
+      <span class="feature-pill pill-yes">ইউজার লগইন সিস্টেম</span>
+      <span class="feature-pill pill-maybe">পেমেন্ট গেটওয়ে (আলাদা চার্জ)</span>
+    </div>
+
+    <p style="font-size:14px;color:#0a3d7a;margin-top:4px;"><strong>কী দেওয়া সম্ভব:</strong> ফুল-স্ট্যাক ওয়েব অ্যাপ — React/Next.js ফ্রন্টএন্ড, Node.js বা Laravel ব্যাকএন্ড, MySQL/MongoDB ডেটাবেজ, Admin Panel, ৩ মাসের বেসিক সাপোর্ট।</p>
+    <p style="font-size:14px;color:#0a3d7a;"><strong>পরামর্শ:</strong> মিলস্টোন ভিত্তিক কাজ করুন। প্রতি ২ সপ্তাহে একটা ডেমো দেখান।</p>
+  </div>
+
+  <div class="budget-card budget-1l">
+    <div class="budget-title">৳১,০০,০০০ বাজেট</div>
+    <div class="budget-sub">এন্টারপ্রাইজ / SaaS প্রজেক্ট</div>
+
+    <div class="feature-row">
+      <span class="feature-pill pill-yes">ফুল কাস্টম অ্যাপ</span>
+      <span class="feature-pill pill-yes">মোবাইল অ্যাপ</span>
+      <span class="feature-pill pill-yes">API ইন্টিগ্রেশন</span>
+      <span class="feature-pill pill-yes">ডিপ্লয়মেন্ট + DevOps</span>
+    </div>
+
+    <p style="font-size:14px;color:#0a5c14;margin-top:4px;"><strong>কী দেওয়া সম্ভব:</strong> সম্পূর্ণ কাস্টম সলিউশন — ডিজাইন সিস্টেম, মাইক্রোসার্ভিস আর্কিটেকচার, CI/CD পাইপলাইন, রিয়েল-টাইম ফিচার, অ্যানালিটিক্স ড্যাশবোর্ড, ৬+ মাসের সাপোর্ট।</p>
+    <p style="font-size:14px;color:#0a5c14;"><strong>পরামর্শ:</strong> এই বাজেটে একটা টিম নিন। একা সব করতে গেলে মান কমে যাবে।</p>
+  </div>
+
+  <div class="card">
+    <h3>💡 বাজেট নেগোশিয়েশন কৌশল</h3>
+    <div class="highlight-box">
+      ক্লায়েন্ট যদি বলেন "৳৫,০০০-এ সব কিছু চাই" — তাহলে শান্তভাবে বলুন:<br><br>
+      <em>"আপনার বাজেটে আমি X এবং Y করতে পারব। Z ফিচারটি পরে দ্বিতীয় ফেজে করা যাবে। এতে কি আপনি সন্তুষ্ট?"</em>
+    </div>
+    <p>কখনো বাজেটের নিচে কাজ করে নিজেকে ছোট করবেন না। মানসম্মত কাজের জন্য ন্যায্য মূল্য চাওয়া প্রফেশনালিজমের চিহ্ন।</p>
+  </div>
+
+</div>
+
+<!-- TAB 3: TIME CALCULATION -->
+<div id="tab-time" class="section">
+
+  <div class="card">
+    <h2>⏱ প্রজেক্ট টাইম হিসাব করুন</h2>
+    <p>একটি ওয়েব প্রজেক্টের সময় হিসাব করুন — প্রতিটি ফেজের ঘণ্টা যোগ করলেই মোট সময় পাবেন।</p>
+
+    <table class="time-table">
+      <thead>
+        <tr>
+          <th>ফেজ</th>
+          <th>কাজের ধরন</th>
+          <th>৳৫হাজার</th>
+          <th>৳৫০হাজার</th>
+          <th>৳১লাখ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>পরিকল্পনা</td><td>রিকোয়ারমেন্ট, ওয়্যারফ্রেম</td><td>2h</td><td>8h</td><td>20h</td></tr>
+        <tr><td>ডিজাইন</td><td>UI/UX, Figma</td><td>3h</td><td>16h</td><td>40h</td></tr>
+        <tr><td>ফ্রন্টএন্ড</td><td>HTML/CSS/JS বা React</td><td>8h</td><td>40h</td><td>80h</td></tr>
+        <tr><td>ব্যাকএন্ড</td><td>API, ডেটাবেজ, অথেন্টিকেশন</td><td>—</td><td>30h</td><td>80h</td></tr>
+        <tr><td>ইন্টিগ্রেশন</td><td>পেমেন্ট, ইমেইল, SMS</td><td>—</td><td>10h</td><td>30h</td></tr>
+        <tr><td>টেস্টিং</td><td>বাগ ফিক্স, QA</td><td>2h</td><td>12h</td><td>25h</td></tr>
+        <tr><td>ডেপ্লয়মেন্ট</td><td>হোস্টিং, DNS, SSL</td><td>2h</td><td>6h</td><td>15h</td></tr>
+        <tr><td>বাফার</td><td>অপ্রত্যাশিত সমস্যা (২০%)</td><td>3h</td><td>24h</td><td>58h</td></tr>
+        <tr class="total-row"><td colspan="2"><strong>মোট অনুমান</strong></td><td><strong>~20h</strong></td><td><strong>~146h</strong></td><td><strong>~348h</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🧮 ঘণ্টা থেকে মূল্য নির্ধারণ</h2>
+    <div class="formula-box">
+      <span class="comment">// আপনার ঘণ্টাপ্রতি রেট নির্ধারণ</span><br>
+      দেশীয় রেট = ৳৩০০ – ৳৮০০ / ঘণ্টা<br>
+      বিদেশি রেট = $১৫ – $৫০ / ঘণ্টা<br><br>
+      <span class="comment">// প্রজেক্ট মূল্য হিসাব</span><br>
+      মোট মূল্য = মোট ঘণ্টা × ঘণ্টাপ্রতি রেট<br><br>
+      <span class="comment">// উদাহরণ (৫০হাজার বাজেট)</span><br>
+      146h × ৳342/h ≈ ৳৫০,০০০ ✓
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📅 ডেডলাইন পরিকল্পনা</h2>
+
+    <div id="deadline-calc" style="margin-bottom:12px;">
+      <label style="font-size:13px;color:var(--color-text-secondary);display:block;margin-bottom:6px;">প্রতিদিন কত ঘণ্টা কাজ করবেন?</label>
+      <input type="range" min="2" max="10" value="5" id="hours-per-day" oninput="calcDeadline()" style="width:100%;margin-bottom:6px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);">
+        <span>২ঘণ্টা</span><span id="hpd-val" style="font-weight:600;color:var(--color-text-primary);">৫ঘণ্টা</span><span>১০ঘণ্টা</span>
+      </div>
+    </div>
+
+    <table class="time-table" style="margin-top:8px;">
+      <thead><tr><th>প্রজেক্ট</th><th>মোট ঘণ্টা</th><th>সম্ভাব্য দিন</th></tr></thead>
+      <tbody>
+        <tr><td>৳৫,০০০</td><td>~20h</td><td id="days-5k">4 দিন</td></tr>
+        <tr><td>৳৫০,০০০</td><td>~146h</td><td id="days-50k">29 দিন</td></tr>
+        <tr><td>৳১,০০,০০০</td><td>~348h</td><td id="days-1l">70 দিন</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 4: CODECANYON VS CUSTOM -->
+<div id="tab-codecanyon" class="section">
+
+  <div class="card">
+    <h2>CodeCanyon থিম/প্লাগিন কখন দেবেন?</h2>
+    <div class="vs-grid">
+      <div class="vs-col col-codecanyon">
+        <h4>📦 CodeCanyon ব্যবহার করুন যখন...</h4>
+        <ul>
+          <li>বাজেট ৳১০,০০০ এর কম</li>
+          <li>সময় মাত্র ১-২ সপ্তাহ</li>
+          <li>স্ট্যান্ডার্ড ফিচার চাই</li>
+          <li>ক্লায়েন্ট কাস্টম চান না</li>
+          <li>দ্রুত MVP দরকার</li>
+          <li>ওয়ার্ডপ্রেস সাইট</li>
+        </ul>
+      </div>
+      <div class="vs-col col-custom">
+        <h4>🔨 কাস্টম বিল্ড করুন যখন...</h4>
+        <ul>
+          <li>বাজেট ৳৩০,০০০+</li>
+          <li>ইউনিক ব্র্যান্ড আইডেন্টিটি</li>
+          <li>স্পেসিফিক লজিক লাগবে</li>
+          <li>থার্ড-পার্টি API দরকার</li>
+          <li>স্কেলেবিলিটি দরকার</li>
+          <li>বিদেশি ক্লায়েন্ট</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ CodeCanyon দেওয়ার সময় সৎ থাকুন</h3>
+    <div class="highlight-box">
+      ক্লায়েন্টকে জানান যে আপনি প্রিমেড থিম কাস্টমাইজ করছেন। "কাস্টম ডিজাইন" বলে CodeCanyon থিম দেওয়া অসৎ।<br><br>
+      বলুন: <em>"আমি আপনার ব্র্যান্ড অনুযায়ী একটি প্রিমিয়াম থিম কাস্টমাইজ করব — এতে খরচ কম, সময়ও কম।"</em>
+    </div>
+
+    <h3 style="margin-top:14px;">CodeCanyon ব্যবহারের নিয়ম</h3>
+    <ul class="checklist" style="list-style:none;padding:0;">
+      <li>থিমের লাইসেন্স কিনুন (Regular = ১ সাইট)</li>
+      <li>ক্লায়েন্টকে লাইসেন্স কপি দিন</li>
+      <li>থিমের ক্রেডিট ফুটার থেকে মুছবেন না (লাইসেন্স না থাকলে)</li>
+      <li>শুধু GPL/Extended লাইসেন্সেই ক্রেডিট সরানো সম্ভব</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- TAB 5: PRO TIPS -->
+<div id="tab-tips" class="section">
+
+  <div class="card">
+    <h2>🏆 প্রফেশনাল হওয়ার চেকলিস্ট</h2>
+    <ul class="checklist" style="list-style:none;padding:0;">
+      <li>প্রতিটি প্রজেক্টে লিখিত চুক্তি/কনফার্মেশন নিন</li>
+      <li>কাজ শুরুর আগে ৫০% অ্যাডভান্স নিন</li>
+      <li>প্রজেক্ট স্কোপ পরিষ্কারভাবে লিখুন</li>
+      <li>রিভিশনের সংখ্যা আগেই বলুন</li>
+      <li>ডেডলাইনে ২০% বাফার যোগ করুন</li>
+      <li>ডেলিভারির পর ৩০ দিন ফ্রি সাপোর্ট দিন</li>
+      <li>পোর্টফোলিওতে কাজ যোগ করতে পারমিশন নিন</li>
+      <li>ক্লায়েন্টের লগইন পাসওয়ার্ড নিরাপদ রাখুন</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>❌ কমন ভুল যা এড়াবেন</h2>
+    <ul class="step-list">
+      <li><strong>Scope Creep:</strong> প্রজেক্ট মাঝপথে নতুন ফিচার চাইলে আলাদা চার্জ করুন — না বলতে শিখুন।</li>
+      <li><strong>আন্ডারপ্রাইসিং:</strong> কম দামে কাজ নিলে মান কমে, নিজের ক্ষতি হয় এবং ইন্ডাস্ট্রির ক্ষতিও হয়।</li>
+      <li><strong>অ্যাডভান্স ছাড়া শুরু:</strong> কাজ শেষে ক্লায়েন্ট পেমেন্ট না দিলে সমস্যা — সবসময় আগে অর্থ নিন।</li>
+      <li><strong>ওভারপ্রমিস:</strong> যা পারবেন না তা বলবেন না। সততাই দীর্ঘমেয়াদী ব্যবসার ভিত্তি।</li>
+      <li><strong>ব্যাকআপ না রাখা:</strong> ক্লায়েন্টের ডেটা ও কোডের ব্যাকআপ সবসময় রাখুন।</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>💰 রেট বাড়ানোর কৌশল</h2>
+    <div class="highlight-box">
+      প্রতি ৬ মাসে নিজের রেট রিভিউ করুন। নতুন স্কিল শিখলে রেট বাড়ান। বিদেশি ক্লায়েন্টের কাছ থেকে ডলারে নিন — একই কাজে ৫-১০ গুণ বেশি আয় সম্ভব।
+    </div>
+    <p><strong>বাংলাদেশ:</strong> জুনিয়র ৳২০০-৳৪০০/ঘণ্টা · মিড ৳৫০০-৳৮০০/ঘণ্টা · সিনিয়র ৳১০০০+/ঘণ্টা</p>
+    <p><strong>আন্তর্জাতিক:</strong> জুনিয়র $১০-$২০/ঘণ্টা · মিড $২০-$৪০/ঘণ্টা · সিনিয়র $৫০+/ঘণ্টা</p>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function calcDeadline() {
+  const h = parseInt(document.getElementById('hours-per-day').value);
+  document.getElementById('hpd-val').textContent = h + 'ঘণ্টা';
+  document.getElementById('days-5k').textContent = Math.ceil(20/h) + ' দিন';
+  document.getElementById('days-50k').textContent = Math.ceil(146/h) + ' দিন';
+  document.getElementById('days-1l').textContent = Math.ceil(348/h) + ' দিন';
+}
+</script>
+
+</body>
+</html>
