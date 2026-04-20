@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify ওয়েব ডেভেলপমেন্ট - সম্পূর্ণ গাইড বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1f2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-bright: #f8fafc;
+    --shopify: #96bf48;
+    --shopify-dark: #5a8a00;
+    --danger: #ef4444;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ===== ANIMATED BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(150,191,72,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #111827 40%, #0d1a0d 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 60px,
+      rgba(150,191,72,0.02) 60px,
+      rgba(150,191,72,0.02) 61px
+    );
+  }
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 80px 20px 60px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(150,191,72,0.15), rgba(150,191,72,0.05));
+    border: 1px solid rgba(150,191,72,0.3);
+    color: var(--shopify);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    border-radius: 50px;
+    margin-bottom: 24px;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(150,191,72,0.2); }
+    50% { box-shadow: 0 0 30px rgba(150,191,72,0.5); }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #96bf48 40%, #00d4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-weight: 400;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--shopify);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 12px 0;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background: rgba(150,191,72,0.1);
+    border-color: rgba(150,191,72,0.3);
+    color: var(--shopify);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== TABLE OF CONTENTS ===== */
+  .toc-section {
+    padding: 60px 0 40px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .toc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .toc-card:hover {
+    border-color: var(--shopify);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(150,191,72,0.1);
+    background: var(--surface2);
+  }
+
+  .toc-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--shopify);
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .toc-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+  }
+
+  .toc-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .toc-level {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .level-basic { background: rgba(16,185,129,0.15); color: var(--accent3); }
+  .level-mid { background: rgba(245,158,11,0.15); color: var(--accent4); }
+  .level-advanced { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  /* ===== SECTION STYLING ===== */
+  .tutorial-section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--shopify);
+    background: rgba(150,191,72,0.1);
+    border: 1px solid rgba(150,191,72,0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.3;
+  }
+
+  /* ===== CONTENT CARDS ===== */
+  .content-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .content-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(to bottom, var(--shopify), transparent);
+  }
+
+  .content-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .content-card h3 .icon {
+    font-size: 1.2rem;
+  }
+
+  .content-card p {
+    color: var(--text);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    line-height: 1.9;
+  }
+
+  .content-card ul, .content-card ol {
+    padding-left: 20px;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .content-card li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+  }
+
+  .content-card li strong {
+    color: var(--shopify);
+  }
+
+  /* ===== CODE BLOCKS ===== */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid #1e2d3d;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 20px 0;
+    font-size: 0.85rem;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #161b22;
+    border-bottom: 1px solid #1e2d3d;
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--shopify);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .code-content {
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+    white-space: pre;
+    color: #abb2bf;
+  }
+
+  .kw { color: #c678dd; }    /* keywords */
+  .str { color: #98c379; }   /* strings */
+  .cm { color: #5c6370; font-style: italic; } /* comments */
+  .fn { color: #61afef; }    /* functions */
+  .var { color: #e06c75; }   /* variables */
+  .num { color: #d19a66; }   /* numbers */
+  .tag { color: #e06c75; }   /* HTML tags */
+  .attr { color: #d19a66; }  /* attributes */
+  .val { color: #98c379; }   /* values */
+  .liq { color: #c678dd; }   /* liquid tags */
+  .obj { color: #61afef; }   /* liquid objects */
+
+  /* ===== INFO BOXES ===== */
+  .info-box {
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .info-box .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  .info-box .text { font-size: 0.9rem; line-height: 1.8; }
+  .info-box .text strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+
+  .info-tip { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: #a0d8ef; }
+  .info-warning { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fcd48f; }
+  .info-success { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: #6ee7b7; }
+  .info-danger { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #fca5a5; }
+
+  /* ===== GRID LAYOUTS ===== */
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .three-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+  /* ===== FEATURE CARDS ===== */
+  .feature-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(150,191,72,0.3);
+    transform: translateY(-2px);
+  }
+
+  .feature-card .emoji { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .feature-card h4 { font-size: 1rem; font-weight: 600; color: var(--text-bright); margin-bottom: 8px; }
+  .feature-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ===== STEP LIST ===== */
+  .step-list { counter-reset: steps; }
+
+  .step-item {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    background: linear-gradient(135deg, var(--shopify), #5a8a00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: 0 4px 12px rgba(150,191,72,0.3);
+  }
+
+  .step-body h4 { font-size: 1rem; font-weight: 600; color: var(--text-bright); margin-bottom: 6px; }
+  .step-body p { font-size: 0.9rem; color: var(--text); line-height: 1.8; }
+
+  /* ===== TABLE ===== */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  thead {
+    background: var(--surface2);
+  }
+
+  th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--shopify);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 13px 18px;
+    border-bottom: 1px solid rgba(31,45,69,0.5);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(150,191,72,0.03); }
+
+  /* ===== TAG / BADGE ===== */
+  .tag-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 2px;
+  }
+
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-purple { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+
+  /* ===== SECTION DIVIDER ===== */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 40px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  .divider-text {
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 50px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+  }
+
+  footer p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 500px;
+    margin: 0 auto 24px;
+    line-height: 1.8;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .footer-link {
+    color: var(--shopify);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    border: 1px solid rgba(150,191,72,0.3);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .footer-link:hover {
+    background: rgba(150,191,72,0.1);
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--shopify), var(--accent));
+    z-index: 1000;
+    transition: width 0.1s;
+  }
+
+  /* ===== SCROLL TO TOP ===== */
+  .scroll-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--shopify), #5a8a00);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(150,191,72,0.4);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    opacity: 0;
+  }
+
+  .scroll-top.visible { opacity: 1; }
+  .scroll-top:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(150,191,72,0.5); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .hero { padding: 50px 16px 40px; }
+    .hero-stats { gap: 24px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .content-card { padding: 20px 16px; }
+  }
+
+  /* ===== HIGHLIGHT ===== */
+  .highlight { color: var(--shopify); font-weight: 600; }
+  .highlight-blue { color: var(--accent); }
+  .highlight-purple { color: #a78bfa; }
+
+  /* inline code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(150,191,72,0.1);
+    color: var(--shopify);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  h2.sub { font-size: 1.2rem; color: var(--text-bright); margin: 24px 0 14px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HERO -->
+<header>
+  <div class="hero">
+    <span class="hero-badge">🛍️ সম্পূর্ণ বাংলা গাইড</span>
+    <h1>Shopify ওয়েব ডেভেলপমেন্ট</h1>
+    <p class="hero-subtitle">বেসিক থেকে অ্যাডভান্সড পর্যন্ত — একটি সম্পূর্ণ বাংলা টিউটোরিয়াল</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-number">১২+</div>
+        <div class="stat-label">অধ্যায়</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">৫০+</div>
+        <div class="stat-label">কোড উদাহরণ</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">৩</div>
+        <div class="stat-label">স্তর</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">বাংলা</div>
+        <div class="stat-label">ভাষা</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="scrollToSection('intro')">ভূমিকা</button>
+    <button class="nav-btn" onclick="scrollToSection('setup')">সেটআপ</button>
+    <button class="nav-btn" onclick="scrollToSection('store')">স্টোর তৈরি</button>
+    <button class="nav-btn" onclick="scrollToSection('liquid')">Liquid</button>
+    <button class="nav-btn" onclick="scrollToSection('theme')">থিম ডেভ</button>
+    <button class="nav-btn" onclick="scrollToSection('sections')">Sections</button>
+    <button class="nav-btn" onclick="scrollToSection('api')">API</button>
+    <button class="nav-btn" onclick="scrollToSection('apps')">Apps</button>
+    <button class="nav-btn" onclick="scrollToSection('storefront')">Storefront API</button>
+    <button class="nav-btn" onclick="scrollToSection('performance')">পারফরম্যান্স</button>
+    <button class="nav-btn" onclick="scrollToSection('seo')">SEO</button>
+    <button class="nav-btn" onclick="scrollToSection('advanced')">অ্যাডভান্সড</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <section class="toc-section" id="toc">
+    <div class="section-header">
+      <span class="section-num">সূচিপত্র</span>
+      <h2 class="section-title">কি কি শিখবেন?</h2>
+    </div>
+    <div class="toc-grid">
+      <a href="#intro" class="toc-card">
+        <span class="toc-number">01</span>
+        <div class="toc-title">Shopify পরিচিতি</div>
+        <div class="toc-desc">Shopify কী, কেন ব্যবহার করবেন, ই-কমার্স ইকোসিস্টেম</div>
+        <span class="toc-level level-basic">বেসিক</span>
+      </a>
+      <a href="#setup" class="toc-card">
+        <span class="toc-number">02</span>
+        <div class="toc-title">ডেভেলপমেন্ট সেটআপ</div>
+        <div class="toc-desc">Shopify CLI, টুলস, ডেভেলপমেন্ট পরিবেশ তৈরি</div>
+        <span class="toc-level level-basic">বেসিক</span>
+      </a>
+      <a href="#store" class="toc-card">
+        <span class="toc-number">03</span>
+        <div class="toc-title">স্টোর তৈরি ও কাস্টমাইজ</div>
+        <div class="toc-desc">প্রথম স্টোর তৈরি, প্রোডাক্ট, কালেকশন, পেজেস</div>
+        <span class="toc-level level-basic">বেসিক</span>
+      </a>
+      <a href="#liquid" class="toc-card">
+        <span class="toc-number">04</span>
+        <div class="toc-title">Liquid টেমপ্লেটিং</div>
+        <div class="toc-desc">Liquid ট্যাগ, ফিল্টার, অবজেক্ট, লুপ, কন্ডিশন</div>
+        <span class="toc-level level-basic">বেসিক</span>
+      </a>
+      <a href="#theme" class="toc-card">
+        <span class="toc-number">05</span>
+        <div class="toc-title">থিম ডেভেলপমেন্ট</div>
+        <div class="toc-desc">থিম স্ট্রাকচার, লেআউট, টেমপ্লেট, স্নিপেটস</div>
+        <span class="toc-level level-mid">মধ্যবর্তী</span>
+      </a>
+      <a href="#sections" class="toc-card">
+        <span class="toc-number">06</span>
+        <div class="toc-title">Sections ও Blocks</div>
+        <div class="toc-desc">ড্র্যাগ-ড্রপ সেকশন, schema, settings, blocks</div>
+        <span class="toc-level level-mid">মধ্যবর্তী</span>
+      </a>
+      <a href="#api" class="toc-card">
+        <span class="toc-number">07</span>
+        <div class="toc-title">Admin API</div>
+        <div class="toc-desc">REST ও GraphQL Admin API, প্রোডাক্ট ম্যানেজমেন্ট</div>
+        <span class="toc-level level-mid">মধ্যবর্তী</span>
+      </a>
+      <a href="#apps" class="toc-card">
+        <span class="toc-number">08</span>
+        <div class="toc-title">App ডেভেলপমেন্ট</div>
+        <div class="toc-desc">Custom App, Public App, OAuth, Webhook</div>
+        <span class="toc-level level-mid">মধ্যবর্তী</span>
+      </a>
+      <a href="#storefront" class="toc-card">
+        <span class="toc-number">09</span>
+        <div class="toc-title">Storefront API</div>
+        <div class="toc-desc">Headless কমার্স, GraphQL, Hydrogen ফ্রেমওয়ার্ক</div>
+        <span class="toc-level level-advanced">অ্যাডভান্সড</span>
+      </a>
+      <a href="#performance" class="toc-card">
+        <span class="toc-number">10</span>
+        <div class="toc-title">পারফরম্যান্স অপ্টিমাইজেশন</div>
+        <div class="toc-desc">স্পিড অপ্টিমাইজেশন, লেজি লোডিং, CDN, ক্যাশিং</div>
+        <span class="toc-level level-advanced">অ্যাডভান্সড</span>
+      </a>
+      <a href="#seo" class="toc-card">
+        <span class="toc-number">11</span>
+        <div class="toc-title">SEO ও মার্কেটিং</div>
+        <div class="toc-desc">Structured Data, মেটা ট্যাগ, সাইটম্যাপ, OG ট্যাগ</div>
+        <span class="toc-level level-advanced">অ্যাডভান্সড</span>
+      </a>
+      <a href="#advanced" class="toc-card">
+        <span class="toc-number">12</span>
+        <div class="toc-title">অ্যাডভান্সড টপিক</div>
+        <div class="toc-desc">Metafields, Checkout Extensions, Multipass, B2B</div>
+        <span class="toc-level level-advanced">অ্যাডভান্সড</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 1: INTRO ========== -->
+  <section class="tutorial-section" id="intro">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০১</span>
+      <h2 class="section-title">Shopify পরিচিতি</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🛍️</span> Shopify কী?</h3>
+      <p>Shopify হলো বিশ্বের অন্যতম জনপ্রিয় ই-কমার্স প্ল্যাটফর্ম যা ব্যবহার করে যেকোনো ব্যক্তি বা প্রতিষ্ঠান অনলাইনে পণ্য বিক্রি করতে পারে। ২০০৬ সালে টোবিয়াস লুটকে কানাডায় এটি প্রতিষ্ঠা করেন। বর্তমানে বিশ্বজুড়ে <span class="highlight">১০ লক্ষেরও বেশি</span> ব্যবসা Shopify ব্যবহার করছে।</p>
+      <p>একজন ওয়েব ডেভেলপার হিসেবে Shopify শেখা আপনার ক্যারিয়ারে অনেক সুযোগ খুলে দেবে — থিম তৈরি থেকে শুরু করে কাস্টম অ্যাপ ডেভেলপমেন্ট পর্যন্ত।</p>
+    </div>
+
+    <div class="three-col">
+      <div class="feature-card">
+        <span class="emoji">🏪</span>
+        <h4>ই-কমার্স স্টোর</h4>
+        <p>সহজেই অনলাইন স্টোর তৈরি করুন, পণ্য যোগ করুন এবং পেমেন্ট নিন।</p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">🎨</span>
+        <h4>থিম কাস্টমাইজেশন</h4>
+        <p>Liquid ভাষায় কাস্টম থিম তৈরি করুন এবং স্টোরের ডিজাইন পরিবর্তন করুন।</p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">🔧</span>
+        <h4>App Development</h4>
+        <p>Shopify API ব্যবহার করে কাস্টম অ্যাপ তৈরি করুন এবং App Store-এ বিক্রি করুন।</p>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">📊</span> Shopify ইকোসিস্টেম</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>উপাদান</th>
+              <th>বিবরণ</th>
+              <th>ডেভেলপার রেলিভ্যান্স</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Theme Store</strong></td>
+              <td>ফ্রি ও পেইড থিম কিনুন বা বিক্রি করুন</td>
+              <td><span class="tag-badge tag-green">উচ্চ</span></td>
+            </tr>
+            <tr>
+              <td><strong>App Store</strong></td>
+              <td>১০,০০০+ অ্যাপ ইনস্টল বা তৈরি করুন</td>
+              <td><span class="tag-badge tag-green">উচ্চ</span></td>
+            </tr>
+            <tr>
+              <td><strong>Admin API</strong></td>
+              <td>স্টোর ডেটা ম্যানেজ করুন</td>
+              <td><span class="tag-badge tag-blue">মধ্যম</span></td>
+            </tr>
+            <tr>
+              <td><strong>Storefront API</strong></td>
+              <td>হেডলেস কমার্স তৈরি করুন</td>
+              <td><span class="tag-badge tag-purple">অ্যাডভান্সড</span></td>
+            </tr>
+            <tr>
+              <td><strong>Hydrogen</strong></td>
+              <td>React-ভিত্তিক হেডলেস ফ্রেমওয়ার্ক</td>
+              <td><span class="tag-badge tag-purple">অ্যাডভান্সড</span></td>
+            </tr>
+            <tr>
+              <td><strong>Oxygen</strong></td>
+              <td>Shopify-এর হোস্টিং প্ল্যাটফর্ম</td>
+              <td><span class="tag-badge tag-orange">ডিপ্লয়মেন্ট</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-box info-success">
+      <span class="icon">💡</span>
+      <div class="text">
+        <strong>ডেভেলপার হিসেবে Shopify-এ আয়ের সুযোগ</strong>
+        একজন দক্ষ Shopify ডেভেলপার প্রতি মাসে $২,০০০ থেকে $১০,০০০+ ডলার আয় করতে পারেন। থিম ডেভেলপমেন্ট, কাস্টম অ্যাপ তৈরি, এবং ফ্রিল্যান্স প্রজেক্টের মাধ্যমে ভালো আয় সম্ভব।
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 2: SETUP ========== -->
+  <section class="tutorial-section" id="setup">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০২</span>
+      <h2 class="section-title">ডেভেলপমেন্ট সেটআপ</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">💻</span> প্রয়োজনীয় টুলস</h3>
+      <ul>
+        <li><strong>Node.js (v18+):</strong> Shopify CLI চালাতে প্রয়োজন — nodejs.org থেকে ডাউনলোড করুন</li>
+        <li><strong>Shopify CLI:</strong> অফিসিয়াল কমান্ড লাইন টুল — থিম ও অ্যাপ ডেভেলপমেন্টের জন্য</li>
+        <li><strong>VS Code:</strong> কোড এডিটর — Shopify Liquid extension ইনস্টল করুন</li>
+        <li><strong>Git:</strong> ভার্সন কন্ট্রোলের জন্য প্রয়োজনীয়</li>
+        <li><strong>Shopify Partners Account:</strong> ডেভেলপমেন্ট স্টোর তৈরির জন্য ফ্রি অ্যাকাউন্ট</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Terminal / Command Line</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm"># Shopify CLI ইনস্টল করুন</span>
+npm install -g @shopify/cli @shopify/theme
+
+<span class="cm"># ভার্সন চেক করুন</span>
+shopify version
+
+<span class="cm"># Shopify CLI দিয়ে লগইন করুন</span>
+shopify auth login
+
+<span class="cm"># নতুন থিম তৈরি করুন</span>
+shopify theme init my-custom-theme
+
+<span class="cm"># ডেভেলপমেন্ট সার্ভার চালু করুন</span>
+cd my-custom-theme
+shopify theme dev --store=your-store.myshopify.com
+
+<span class="cm"># থিম পুশ করুন (লাইভ স্টোরে)</span>
+shopify theme push</pre></div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🏗️</span> Development Store তৈরি</h3>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">১</div>
+          <div class="step-body">
+            <h4>Partners Account খুলুন</h4>
+            <p><code>partners.shopify.com</code> এ যান এবং ফ্রি Partners Account তৈরি করুন। এটি ডেভেলপারদের জন্য বিশেষভাবে তৈরি।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">২</div>
+          <div class="step-body">
+            <h4>Development Store তৈরি করুন</h4>
+            <p>Dashboard থেকে "Stores" → "Add store" → "Development store" সিলেক্ট করুন। এই স্টোরে টেস্ট করা সম্পূর্ণ ফ্রি।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">৩</div>
+          <div class="step-body">
+            <h4>VS Code এক্সটেনশন ইনস্টল</h4>
+            <p>VS Code-এ "Shopify Liquid" এবং "Shopify Theme Check" এক্সটেনশন ইনস্টল করুন।</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">৪</div>
+          <div class="step-body">
+            <h4>Theme খুলুন ও এডিট শুরু করুন</h4>
+            <p><code>shopify theme dev</code> কমান্ড দিন এবং লাইভ প্রিভিউ দেখতে পাবেন।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">ℹ️</span>
+      <div class="text">
+        <strong>Theme Kit বনাম Shopify CLI</strong>
+        পুরনো Theme Kit এর বদলে এখন Shopify CLI ব্যবহার করুন। CLI অনেক বেশি ফিচার সমৃদ্ধ এবং অফিসিয়ালভাবে সাপোর্টেড।
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 3: STORE ========== -->
+  <section class="tutorial-section" id="store">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৩</span>
+      <h2 class="section-title">স্টোর তৈরি ও কাস্টমাইজেশন</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">📁</span> Shopify থিমের ফোল্ডার স্ট্রাকচার</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">Directory Structure</span>
+          <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        </div>
+        <div class="code-content"><pre>my-theme/
+├── <span class="fn">assets/</span>          <span class="cm"># CSS, JS, ইমেজ ফাইল</span>
+│   ├── theme.css
+│   ├── theme.js
+│   └── logo.png
+│
+├── <span class="fn">config/</span>          <span class="cm"># থিম সেটিংস</span>
+│   ├── settings_data.json
+│   └── settings_schema.json
+│
+├── <span class="fn">layout/</span>          <span class="cm"># মূল লেআউট ফাইল</span>
+│   ├── theme.liquid    <span class="cm"># প্রধান লেআউট</span>
+│   └── password.liquid
+│
+├── <span class="fn">locales/</span>         <span class="cm"># বহুভাষিক সাপোর্ট</span>
+│   └── en.default.json
+│
+├── <span class="fn">sections/</span>        <span class="cm"># ড্র্যাগ-ড্রপ সেকশন</span>
+│   ├── header.liquid
+│   ├── footer.liquid
+│   └── hero-banner.liquid
+│
+├── <span class="fn">snippets/</span>        <span class="cm"># পুনরায় ব্যবহারযোগ্য কোড</span>
+│   ├── product-card.liquid
+│   └── price.liquid
+│
+└── <span class="fn">templates/</span>       <span class="cm"># পেজ টেমপ্লেট</span>
+    ├── index.liquid    <span class="cm"># হোমপেজ</span>
+    ├── product.liquid  <span class="cm"># প্রোডাক্ট পেজ</span>
+    ├── collection.liquid
+    ├── cart.liquid
+    ├── page.liquid
+    └── blog.liquid</pre></div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🏷️</span> প্রোডাক্ট ও কালেকশন</h3>
+      <p>Shopify-এ পণ্য ম্যানেজমেন্টের মূল ধারণাগুলো:</p>
+      <ul>
+        <li><strong>Products:</strong> প্রতিটি পণ্যের title, description, price, images, variants থাকে</li>
+        <li><strong>Variants:</strong> একই পণ্যের বিভিন্ন সাইজ/রঙ (যেমন: Small/Red, Large/Blue)</li>
+        <li><strong>Collections:</strong> পণ্যের গ্রুপ — Manual বা Automated হতে পারে</li>
+        <li><strong>Metafields:</strong> কাস্টম ডেটা ফিল্ড যোগ করার সুবিধা</li>
+        <li><strong>Tags:</strong> পণ্য ফিল্টার ও অর্গানাইজেশনের জন্য</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 4: LIQUID ========== -->
+  <section class="tutorial-section" id="liquid">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৪</span>
+      <h2 class="section-title">Liquid টেমপ্লেটিং ভাষা</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">💧</span> Liquid কী?</h3>
+      <p>Liquid হলো Shopify-এর নিজস্ব টেমপ্লেটিং ভাষা যা Ruby-তে লেখা। এটি দিয়ে HTML-এর মধ্যে dynamic data দেখানো যায়। Liquid-এর তিনটি মূল উপাদান আছে:</p>
+      <ul>
+        <li><strong>Objects <code>{{ }}</code>:</strong> ডেটা দেখায় (output)</li>
+        <li><strong>Tags <code>{% %}</code>:</strong> লজিক নিয়ন্ত্রণ করে (if, for, assign)</li>
+        <li><strong>Filters <code>|</code>:</strong> ডেটা রূপান্তর করে (upcase, date, money)</li>
+      </ul>
+    </div>
+
+    <h2 class="sub">📌 Liquid Objects (অবজেক্ট)</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — Objects</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- প্রোডাক্ট তথ্য --&gt;</span>
+&lt;<span class="tag">h1</span>&gt;<span class="liq">{{ product.title }}</span>&lt;/<span class="tag">h1</span>&gt;
+&lt;<span class="tag">p</span>&gt;<span class="liq">{{ product.description }}</span>&lt;/<span class="tag">p</span>&gt;
+&lt;<span class="tag">span</span>&gt;<span class="liq">{{ product.price | money }}</span>&lt;/<span class="tag">span</span>&gt;
+
+<span class="cm">&lt;!-- শপ তথ্য --&gt;</span>
+&lt;<span class="tag">p</span>&gt;<span class="liq">{{ shop.name }}</span>&lt;/<span class="tag">p</span>&gt;
+&lt;<span class="tag">a</span> <span class="attr">href</span>="<span class="liq">{{ shop.url }}</span>"&gt;হোমপেজ&lt;/<span class="tag">a</span>&gt;
+
+<span class="cm">&lt;!-- কালেকশন --&gt;</span>
+<span class="liq">{% for product in collection.products %}</span>
+  &lt;<span class="tag">div</span>&gt;<span class="liq">{{ product.title }}</span>&lt;/<span class="tag">div</span>&gt;
+<span class="liq">{% endfor %}</span>
+
+<span class="cm">&lt;!-- কার্ট তথ্য --&gt;</span>
+&lt;<span class="tag">p</span>&gt;মোট পণ্য: <span class="liq">{{ cart.item_count }}</span>&lt;/<span class="tag">p</span>&gt;
+&lt;<span class="tag">p</span>&gt;মোট মূল্য: <span class="liq">{{ cart.total_price | money }}</span>&lt;/<span class="tag">p</span>&gt;</pre></div>
+    </div>
+
+    <h2 class="sub">📌 Liquid Tags (ট্যাগ)</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — Tags (Control Flow)</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- IF কন্ডিশন --&gt;</span>
+<span class="liq">{% if product.available %}</span>
+  &lt;<span class="tag">button</span>&gt;কার্টে যোগ করুন&lt;/<span class="tag">button</span>&gt;
+<span class="liq">{% elsif product.compare_at_price %}</span>
+  &lt;<span class="tag">span</span>&gt;সেলে আছে!&lt;/<span class="tag">span</span>&gt;
+<span class="liq">{% else %}</span>
+  &lt;<span class="tag">p</span>&gt;স্টক শেষ&lt;/<span class="tag">p</span>&gt;
+<span class="liq">{% endif %}</span>
+
+<span class="cm">&lt;!-- FOR লুপ --&gt;</span>
+<span class="liq">{% for image in product.images limit: 3 %}</span>
+  &lt;<span class="tag">img</span> <span class="attr">src</span>="<span class="liq">{{ image | img_url: '400x400' }}</span>" <span class="attr">alt</span>="<span class="liq">{{ image.alt }}</span>"&gt;
+<span class="liq">{% endfor %}</span>
+
+<span class="cm">&lt;!-- ASSIGN ভেরিয়েবল --&gt;</span>
+<span class="liq">{% assign sale_price = product.price | times: 0.8 %}</span>
+&lt;<span class="tag">span</span>&gt;ছাড়ের মূল্য: <span class="liq">{{ sale_price | money }}</span>&lt;/<span class="tag">span</span>&gt;
+
+<span class="cm">&lt;!-- CASE/WHEN --&gt;</span>
+<span class="liq">{% case product.type %}</span>
+  <span class="liq">{% when 'Shirt' %}</span>
+    &lt;<span class="tag">p</span>&gt;এটি একটি শার্ট&lt;/<span class="tag">p</span>&gt;
+  <span class="liq">{% when 'Pants' %}</span>
+    &lt;<span class="tag">p</span>&gt;এটি একটি প্যান্ট&lt;/<span class="tag">p</span>&gt;
+  <span class="liq">{% else %}</span>
+    &lt;<span class="tag">p</span>&gt;অন্যান্য পোশাক&lt;/<span class="tag">p</span>&gt;
+<span class="liq">{% endcase %}</span>
+
+<span class="cm">&lt;!-- CAPTURE --&gt;</span>
+<span class="liq">{% capture product_badge %}</span>
+  <span class="liq">{% if product.tags contains 'new' %}</span>নতুন<span class="liq">{% endif %}</span>
+<span class="liq">{% endcapture %}</span>
+&lt;<span class="tag">span</span> <span class="attr">class</span>="<span class="str">badge</span>"&gt;<span class="liq">{{ product_badge }}</span>&lt;/<span class="tag">span</span>&gt;</pre></div>
+    </div>
+
+    <h2 class="sub">📌 Liquid Filters (ফিল্টার)</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — Filters</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- মূল্য ফিল্টার --&gt;</span>
+<span class="liq">{{ product.price | money }}</span>              <span class="cm">&lt;!-- $19.99 --&gt;</span>
+<span class="liq">{{ product.price | money_with_currency }}</span> <span class="cm">&lt;!-- $19.99 USD --&gt;</span>
+
+<span class="cm">&lt;!-- ইমেজ ফিল্টার --&gt;</span>
+<span class="liq">{{ product.featured_image | img_url: '500x500' }}</span>
+<span class="liq">{{ product.featured_image | img_url: '500x500', crop: 'center' }}</span>
+<span class="liq">{{ image | image_url: width: 400 }}</span>  <span class="cm">&lt;!-- নতুন সিনট্যাক্স --&gt;</span>
+
+<span class="cm">&lt;!-- স্ট্রিং ফিল্টার --&gt;</span>
+<span class="liq">{{ product.title | upcase }}</span>           <span class="cm">&lt;!-- TITLE --&gt;</span>
+<span class="liq">{{ product.title | downcase }}</span>         <span class="cm">&lt;!-- title --&gt;</span>
+<span class="liq">{{ product.description | truncate: 100 }}</span>
+<span class="liq">{{ product.handle | replace: '-', ' ' }}</span>
+
+<span class="cm">&lt;!-- অ্যারে ফিল্টার --&gt;</span>
+<span class="liq">{{ product.tags | join: ', ' }}</span>        <span class="cm">&lt;!-- tag1, tag2, tag3 --&gt;</span>
+<span class="liq">{{ collection.products | map: 'title' | join: ' | ' }}</span>
+
+<span class="cm">&lt;!-- তারিখ ফিল্টার --&gt;</span>
+<span class="liq">{{ article.published_at | date: '%B %d, %Y' }}</span>
+<span class="liq">{{ 'now' | date: '%Y-%m-%d' }}</span>
+
+<span class="cm">&lt;!-- URL ফিল্টার --&gt;</span>
+<span class="liq">{{ 'theme.css' | asset_url }}</span>
+<span class="liq">{{ 'theme.js' | asset_url | script_tag }}</span></pre></div>
+    </div>
+
+    <div class="info-box info-warning">
+      <span class="icon">⚠️</span>
+      <div class="text">
+        <strong>গুরুত্বপূর্ণ: Liquid Performance টিপস</strong>
+        লুপের ভেতরে <code>include</code> বা ভারী অপারেশন এড়িয়ে চলুন। বেশি নেস্টেড লুপ থিমকে ধীর করতে পারে। সম্ভব হলে <code>{% render %}</code> ব্যবহার করুন (isolated scope সাহায্য করে)।
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 5: THEME DEV ========== -->
+  <section class="tutorial-section" id="theme">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৫</span>
+      <h2 class="section-title">থিম ডেভেলপমেন্ট</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🎨</span> theme.liquid — মূল লেআউট</h3>
+      <p><code>layout/theme.liquid</code> হলো সব পেজের মূল কাঠামো। এখানে <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code> ট্যাগ থাকে।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">layout/theme.liquid</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre>&lt;!<span class="kw">DOCTYPE</span> html&gt;
+&lt;<span class="tag">html</span> <span class="attr">lang</span>="<span class="liq">{{ request.locale.iso_code }}</span>"&gt;
+&lt;<span class="tag">head</span>&gt;
+  &lt;<span class="tag">meta</span> <span class="attr">charset</span>="<span class="str">UTF-8</span>"&gt;
+  &lt;<span class="tag">meta</span> <span class="attr">name</span>="<span class="str">viewport</span>" <span class="attr">content</span>="<span class="str">width=device-width, initial-scale=1.0</span>"&gt;
+
+  <span class="cm">&lt;!-- SEO Title --&gt;</span>
+  &lt;<span class="tag">title</span>&gt;
+    <span class="liq">{{ page_title }}</span>
+    <span class="liq">{% if current_tags %}</span> &amp;ndash; tagged "<span class="liq">{{ current_tags | join: ', ' }}</span>"<span class="liq">{% endif %}</span>
+    <span class="liq">{% unless page_title contains shop.name %}</span> &amp;ndash; <span class="liq">{{ shop.name }}</span><span class="liq">{% endunless %}</span>
+  &lt;/<span class="tag">title</span>&gt;
+
+  <span class="cm">&lt;!-- Meta Tags --&gt;</span>
+  <span class="liq">{% if page_description %}</span>
+    &lt;<span class="tag">meta</span> <span class="attr">name</span>="<span class="str">description</span>" <span class="attr">content</span>="<span class="liq">{{ page_description | escape }}</span>"&gt;
+  <span class="liq">{% endif %}</span>
+
+  <span class="cm">&lt;!-- Canonical URL --&gt;</span>
+  &lt;<span class="tag">link</span> <span class="attr">rel</span>="<span class="str">canonical</span>" <span class="attr">href</span>="<span class="liq">{{ canonical_url }}</span>"&gt;
+
+  <span class="cm">&lt;!-- CSS ফাইল --&gt;</span>
+  <span class="liq">{{ 'theme.css' | asset_url | stylesheet_tag }}</span>
+
+  <span class="cm">&lt;!-- Shopify প্রয়োজনীয় ট্যাগ --&gt;</span>
+  <span class="liq">{{ content_for_header }}</span>
+
+&lt;/<span class="tag">head</span>&gt;
+
+&lt;<span class="tag">body</span>&gt;
+  <span class="liq">{% section 'header' %}</span>
+
+  &lt;<span class="tag">main</span> <span class="attr">id</span>="<span class="str">MainContent</span>" <span class="attr">role</span>="<span class="str">main</span>"&gt;
+    <span class="liq">{{ content_for_layout }}</span>
+  &lt;/<span class="tag">main</span>&gt;
+
+  <span class="liq">{% section 'footer' %}</span>
+
+  <span class="cm">&lt;!-- JavaScript ফাইল --&gt;</span>
+  <span class="liq">{{ 'theme.js' | asset_url | script_tag }}</span>
+
+&lt;/<span class="tag">body</span>&gt;
+&lt;/<span class="tag">html</span>&gt;</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">templates/product.liquid</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- প্রোডাক্ট টেমপ্লেট --&gt;</span>
+&lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">product-page</span>"&gt;
+  &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">product-gallery</span>"&gt;
+    <span class="liq">{% for image in product.images %}</span>
+      &lt;<span class="tag">img</span>
+        <span class="attr">src</span>="<span class="liq">{{ image | image_url: width: 800 }}</span>"
+        <span class="attr">alt</span>="<span class="liq">{{ image.alt | escape }}</span>"
+        <span class="attr">loading</span>="<span class="str">lazy</span>"
+        <span class="attr">width</span>="<span class="str">800</span>" <span class="attr">height</span>="<span class="str">800</span>"
+      &gt;
+    <span class="liq">{% endfor %}</span>
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">product-info</span>"&gt;
+    &lt;<span class="tag">h1</span>&gt;<span class="liq">{{ product.title }}</span>&lt;/<span class="tag">h1</span>&gt;
+
+    &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">price</span>"&gt;
+      <span class="liq">{% if product.compare_at_price > product.price %}</span>
+        &lt;<span class="tag">span</span> <span class="attr">class</span>="<span class="str">original-price"</span>&gt;
+          <span class="liq">{{ product.compare_at_price | money }}</span>
+        &lt;/<span class="tag">span</span>&gt;
+      <span class="liq">{% endif %}</span>
+      &lt;<span class="tag">span</span> <span class="attr">class</span>="<span class="str">sale-price</span>"&gt;
+        <span class="liq">{{ product.price | money }}</span>
+      &lt;/<span class="tag">span</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+
+    <span class="liq">{% form 'product', product %}</span>
+      &lt;<span class="tag">select</span> <span class="attr">name</span>="<span class="str">id</span>"&gt;
+        <span class="liq">{% for variant in product.variants %}</span>
+          &lt;<span class="tag">option</span>
+            <span class="attr">value</span>="<span class="liq">{{ variant.id }}</span>"
+            <span class="liq">{% unless variant.available %}</span><span class="attr">disabled</span><span class="liq">{% endunless %}</span>
+          &gt;
+            <span class="liq">{{ variant.title }}</span> — <span class="liq">{{ variant.price | money }}</span>
+          &lt;/<span class="tag">option</span>&gt;
+        <span class="liq">{% endfor %}</span>
+      &lt;/<span class="tag">select</span>&gt;
+
+      &lt;<span class="tag">button</span> <span class="attr">type</span>="<span class="str">submit</span>"&gt;
+        <span class="liq">{% if product.available %}</span>
+          কার্টে যোগ করুন
+        <span class="liq">{% else %}</span>
+          স্টক শেষ
+        <span class="liq">{% endif %}</span>
+      &lt;/<span class="tag">button</span>&gt;
+    <span class="liq">{% endform %}</span>
+
+    &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">description</span>"&gt;
+      <span class="liq">{{ product.description }}</span>
+    &lt;/<span class="tag">div</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+&lt;/<span class="tag">div</span>&gt;</pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 6: SECTIONS ========== -->
+  <section class="tutorial-section" id="sections">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৬</span>
+      <h2 class="section-title">Sections ও Blocks</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🧩</span> Sections কী?</h3>
+      <p>Sections হলো Shopify Online Store Editor-এ ড্র্যাগ-ড্রপযোগ্য কম্পোনেন্ট। প্রতিটি Section-এ একটি <code>{% schema %}</code> ব্লক থাকে যা merchant-দের Shopify admin থেকে কাস্টমাইজ করতে দেয়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">sections/hero-banner.liquid</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- Hero Banner Section --&gt;</span>
+&lt;<span class="tag">div</span>
+  <span class="attr">class</span>="<span class="str">hero-banner</span>"
+  <span class="attr">style</span>="<span class="str">background-color: </span><span class="liq">{{ section.settings.bg_color }}</span><span class="str">;"</span>
+&gt;
+  <span class="liq">{% if section.settings.image %}</span>
+    &lt;<span class="tag">img</span>
+      <span class="attr">src</span>="<span class="liq">{{ section.settings.image | image_url: width: 1200 }}</span>"
+      <span class="attr">alt</span>="<span class="liq">{{ section.settings.image.alt }}</span>"
+    &gt;
+  <span class="liq">{% endif %}</span>
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">hero-content</span>"&gt;
+    &lt;<span class="tag">h2</span>&gt;<span class="liq">{{ section.settings.heading }}</span>&lt;/<span class="tag">h2</span>&gt;
+    &lt;<span class="tag">p</span>&gt;<span class="liq">{{ section.settings.subtext }}</span>&lt;/<span class="tag">p</span>&gt;
+
+    <span class="liq">{% if section.settings.button_label != blank %}</span>
+      &lt;<span class="tag">a</span> <span class="attr">href</span>="<span class="liq">{{ section.settings.button_url }}</span>" <span class="attr">class</span>="<span class="str">btn</span>"&gt;
+        <span class="liq">{{ section.settings.button_label }}</span>
+      &lt;/<span class="tag">a</span>&gt;
+    <span class="liq">{% endif %}</span>
+  &lt;/<span class="tag">div</span>&gt;
+&lt;/<span class="tag">div</span>&gt;
+
+<span class="cm">&lt;!-- Schema — Admin কাস্টমাইজেশন প্যানেল --&gt;</span>
+<span class="liq">{% schema %}</span>
+{
+  <span class="str">"name"</span>: <span class="str">"Hero Banner"</span>,
+  <span class="str">"tag"</span>: <span class="str">"section"</span>,
+  <span class="str">"settings"</span>: [
+    {
+      <span class="str">"type"</span>: <span class="str">"image_picker"</span>,
+      <span class="str">"id"</span>: <span class="str">"image"</span>,
+      <span class="str">"label"</span>: <span class="str">"ব্যানার ইমেজ"</span>
+    },
+    {
+      <span class="str">"type"</span>: <span class="str">"text"</span>,
+      <span class="str">"id"</span>: <span class="str">"heading"</span>,
+      <span class="str">"label"</span>: <span class="str">"হেডিং"</span>,
+      <span class="str">"default"</span>: <span class="str">"আমাদের কালেকশন দেখুন"</span>
+    },
+    {
+      <span class="str">"type"</span>: <span class="str">"textarea"</span>,
+      <span class="str">"id"</span>: <span class="str">"subtext"</span>,
+      <span class="str">"label"</span>: <span class="str">"সাবটেক্সট"</span>
+    },
+    {
+      <span class="str">"type"</span>: <span class="str">"url"</span>,
+      <span class="str">"id"</span>: <span class="str">"button_url"</span>,
+      <span class="str">"label"</span>: <span class="str">"বাটন লিংক"</span>
+    },
+    {
+      <span class="str">"type"</span>: <span class="str">"text"</span>,
+      <span class="str">"id"</span>: <span class="str">"button_label"</span>,
+      <span class="str">"label"</span>: <span class="str">"বাটন টেক্সট"</span>,
+      <span class="str">"default"</span>: <span class="str">"এখনই কিনুন"</span>
+    },
+    {
+      <span class="str">"type"</span>: <span class="str">"color"</span>,
+      <span class="str">"id"</span>: <span class="str">"bg_color"</span>,
+      <span class="str">"label"</span>: <span class="str">"ব্যাকগ্রাউন্ড রঙ"</span>,
+      <span class="str">"default"</span>: <span class="str">"#ffffff"</span>
+    }
+  ],
+  <span class="str">"presets"</span>: [
+    {
+      <span class="str">"name"</span>: <span class="str">"Hero Banner"</span>
+    }
+  ]
+}
+<span class="liq">{% endschema %}</span></pre></div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🔷</span> Blocks — Dynamic Content</h3>
+      <p>Blocks হলো Section-এর ভেতরে থাকা আরও ছোট কম্পোনেন্ট যা merchant ড্র্যাগ করে যোগ করতে পারেন।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">sections/features.liquid (Blocks সহ)</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre>&lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">features-grid</span>"&gt;
+  <span class="liq">{% for block in section.blocks %}</span>
+    &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">feature-item</span>" <span class="liq">{{ block.shopify_attributes }}</span>&gt;
+      <span class="liq">{% if block.type == 'feature' %}</span>
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="<span class="str">icon</span>"&gt;<span class="liq">{{ block.settings.icon }}</span>&lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">h3</span>&gt;<span class="liq">{{ block.settings.title }}</span>&lt;/<span class="tag">h3</span>&gt;
+        &lt;<span class="tag">p</span>&gt;<span class="liq">{{ block.settings.description }}</span>&lt;/<span class="tag">p</span>&gt;
+      <span class="liq">{% endif %}</span>
+    &lt;/<span class="tag">div</span>&gt;
+  <span class="liq">{% endfor %}</span>
+&lt;/<span class="tag">div</span>&gt;
+
+<span class="liq">{% schema %}</span>
+{
+  <span class="str">"name"</span>: <span class="str">"Features Section"</span>,
+  <span class="str">"blocks"</span>: [
+    {
+      <span class="str">"type"</span>: <span class="str">"feature"</span>,
+      <span class="str">"name"</span>: <span class="str">"Feature Item"</span>,
+      <span class="str">"settings"</span>: [
+        { <span class="str">"type"</span>: <span class="str">"text"</span>, <span class="str">"id"</span>: <span class="str">"icon"</span>, <span class="str">"label"</span>: <span class="str">"আইকন (emoji)"</span> },
+        { <span class="str">"type"</span>: <span class="str">"text"</span>, <span class="str">"id"</span>: <span class="str">"title"</span>, <span class="str">"label"</span>: <span class="str">"শিরোনাম"</span> },
+        { <span class="str">"type"</span>: <span class="str">"textarea"</span>, <span class="str">"id"</span>: <span class="str">"description"</span>, <span class="str">"label"</span>: <span class="str">"বিবরণ"</span> }
+      ]
+    }
+  ],
+  <span class="str">"max_blocks"</span>: <span class="num">6</span>
+}
+<span class="liq">{% endschema %}</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 7: API ========== -->
+  <section class="tutorial-section" id="api">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৭</span>
+      <h2 class="section-title">Shopify Admin API</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🔌</span> Admin API পরিচিতি</h3>
+      <p>Shopify Admin API দিয়ে স্টোরের সব ডেটা প্রোগ্রামেটিক্যালি অ্যাক্সেস করা যায়। দুটি ভার্সন আছে:</p>
+      <ul>
+        <li><strong>REST API:</strong> সহজ, প্রতিটি রিসোর্সের জন্য আলাদা endpoint</li>
+        <li><strong>GraphQL API:</strong> শক্তিশালী, একটি রিকোয়েস্টে অনেক ডেটা নেওয়া যায়</li>
+      </ul>
+    </div>
+
+    <h2 class="sub">REST API উদাহরণ</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">JavaScript — REST API</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="kw">const</span> <span class="var">SHOP</span> = <span class="str">'your-store.myshopify.com'</span>;
+<span class="kw">const</span> <span class="var">ACCESS_TOKEN</span> = <span class="str">'shpat_xxxxxxxxxxxx'</span>;
+
+<span class="cm">// সব প্রোডাক্ট পেতে</span>
+<span class="kw">async function</span> <span class="fn">getProducts</span>() {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(
+    <span class="str">`https://${<span class="var">SHOP</span>}/admin/api/2024-01/products.json`</span>,
+    {
+      <span class="attr">headers</span>: {
+        <span class="str">'X-Shopify-Access-Token'</span>: <span class="var">ACCESS_TOKEN</span>,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+      }
+    }
+  );
+  <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+  <span class="kw">return</span> data.products;
+}
+
+<span class="cm">// নতুন প্রোডাক্ট তৈরি করতে</span>
+<span class="kw">async function</span> <span class="fn">createProduct</span>(productData) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(
+    <span class="str">`https://${<span class="var">SHOP</span>}/admin/api/2024-01/products.json`</span>,
+    {
+      <span class="attr">method</span>: <span class="str">'POST'</span>,
+      <span class="attr">headers</span>: {
+        <span class="str">'X-Shopify-Access-Token'</span>: <span class="var">ACCESS_TOKEN</span>,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+      },
+      <span class="attr">body</span>: <span class="fn">JSON.stringify</span>({
+        <span class="attr">product</span>: {
+          <span class="attr">title</span>: <span class="str">'নতুন পণ্য'</span>,
+          <span class="attr">body_html</span>: <span class="str">'&lt;p&gt;পণ্যের বিবরণ&lt;/p&gt;'</span>,
+          <span class="attr">vendor</span>: <span class="str">'আমার ব্র্যান্ড'</span>,
+          <span class="attr">product_type</span>: <span class="str">'পোশাক'</span>,
+          <span class="attr">variants</span>: [{ <span class="attr">price</span>: <span class="str">'500.00'</span>, <span class="attr">sku</span>: <span class="str">'SKU001'</span> }]
+        }
+      })
+    }
+  );
+  <span class="kw">return</span> <span class="kw">await</span> response.<span class="fn">json</span>();
+}
+
+<span class="cm">// অর্ডার আপডেট করতে</span>
+<span class="kw">async function</span> <span class="fn">fulfillOrder</span>(orderId) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(
+    <span class="str">`https://${<span class="var">SHOP</span>}/admin/api/2024-01/orders/${orderId}/fulfillments.json`</span>,
+    {
+      <span class="attr">method</span>: <span class="str">'POST'</span>,
+      <span class="attr">headers</span>: { <span class="str">'X-Shopify-Access-Token'</span>: <span class="var">ACCESS_TOKEN</span> },
+      <span class="attr">body</span>: <span class="fn">JSON.stringify</span>({ <span class="attr">fulfillment</span>: { <span class="attr">notify_customer</span>: <span class="kw">true</span> } })
+    }
+  );
+  <span class="kw">return</span> <span class="kw">await</span> response.<span class="fn">json</span>();
+}</pre></div>
+    </div>
+
+    <h2 class="sub">GraphQL API উদাহরণ</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">GraphQL — Admin API</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">// GraphQL Query — প্রোডাক্ট ও তাদের ভ্যারিয়েন্ট</span>
+<span class="kw">const</span> <span class="var">PRODUCTS_QUERY</span> = <span class="str">`
+  query getProducts($first: Int!) {
+    products(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+          status
+          priceRangeV2 {
+            minVariantPrice { amount currencyCode }
+            maxVariantPrice { amount currencyCode }
+          }
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                price
+                inventoryQuantity
+                sku
+              }
+            }
+          }
+          featuredImage {
+            url
+            altText
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`</span>;
+
+<span class="kw">async function</span> <span class="fn">graphqlRequest</span>(query, variables = {}) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(
+    <span class="str">`https://${<span class="var">SHOP</span>}/admin/api/2024-01/graphql.json`</span>,
+    {
+      <span class="attr">method</span>: <span class="str">'POST'</span>,
+      <span class="attr">headers</span>: {
+        <span class="str">'X-Shopify-Access-Token'</span>: <span class="var">ACCESS_TOKEN</span>,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+      },
+      <span class="attr">body</span>: <span class="fn">JSON.stringify</span>({ query, variables })
+    }
+  );
+  <span class="kw">return</span> <span class="kw">await</span> response.<span class="fn">json</span>();
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">graphqlRequest</span>(<span class="var">PRODUCTS_QUERY</span>, { first: <span class="num">10</span> });</pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 8: APPS ========== -->
+  <section class="tutorial-section" id="apps">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৮</span>
+      <h2 class="section-title">Shopify App ডেভেলপমেন্ট</h2>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <h3><span class="icon">🔐</span> Custom App</h3>
+        <p>নির্দিষ্ট একটি স্টোরের জন্য তৈরি অ্যাপ। সহজে তৈরি করা যায়, Shopify Admin থেকেই Access Token পাওয়া যায়।</p>
+        <ul>
+          <li>একটি স্টোরের জন্যই সীমাবদ্ধ</li>
+          <li>OAuth প্রয়োজন নেই</li>
+          <li>App Store-এ প্রকাশ করা যায় না</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h3><span class="icon">🌐</span> Public App</h3>
+        <p>যেকোনো Shopify স্টোরে ইনস্টল করা যাবে এমন অ্যাপ। App Store-এ বিক্রি করা যায়।</p>
+        <ul>
+          <li>OAuth 2.0 authentication</li>
+          <li>Webhook সাপোর্ট</li>
+          <li>App Store-এ লিস্ট করা যায়</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Node.js — Shopify App (OAuth Flow)</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">// npm install @shopify/shopify-api express</span>
+<span class="kw">import</span> { shopifyApi, ApiVersion, Session } <span class="kw">from</span> <span class="str">'@shopify/shopify-api'</span>;
+<span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>;
+
+<span class="kw">const</span> shopify = <span class="fn">shopifyApi</span>({
+  <span class="attr">apiKey</span>: process.env.<span class="var">SHOPIFY_API_KEY</span>,
+  <span class="attr">apiSecretKey</span>: process.env.<span class="var">SHOPIFY_API_SECRET</span>,
+  <span class="attr">scopes</span>: [<span class="str">'read_products'</span>, <span class="str">'write_products'</span>, <span class="str">'read_orders'</span>],
+  <span class="attr">hostName</span>: process.env.<span class="var">HOST</span>,
+  <span class="attr">apiVersion</span>: ApiVersion.January24,
+  <span class="attr">isEmbeddedApp</span>: <span class="kw">true</span>
+});
+
+<span class="kw">const</span> app = <span class="fn">express</span>();
+
+<span class="cm">// OAuth শুরু করার route</span>
+app.<span class="fn">get</span>(<span class="str">'/auth'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">await</span> shopify.auth.<span class="fn">begin</span>({
+    <span class="attr">shop</span>: shopify.utils.<span class="fn">sanitizeShop</span>(req.query.shop, <span class="kw">true</span>),
+    <span class="attr">callbackPath</span>: <span class="str">'/auth/callback'</span>,
+    <span class="attr">isOnline</span>: <span class="kw">false</span>,
+    rawRequest: req,
+    rawResponse: res
+  });
+});
+
+<span class="cm">// OAuth callback</span>
+app.<span class="fn">get</span>(<span class="str">'/auth/callback'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> callback = <span class="kw">await</span> shopify.auth.<span class="fn">callback</span>({
+    rawRequest: req,
+    rawResponse: res
+  });
+  <span class="cm">// Session সেভ করুন ডাটাবেজে</span>
+  res.<span class="fn">redirect</span>(<span class="str">`/app?shop=${callback.session.shop}`</span>);
+});
+
+<span class="cm">// Webhook হ্যান্ডলার</span>
+app.<span class="fn">post</span>(<span class="str">'/webhooks/orders/create'</span>,
+  shopify.webhooks.<span class="fn">process</span>({
+    <span class="attr">callbackPath</span>: <span class="str">'/webhooks/orders/create'</span>,
+    <span class="attr">handlers</span>: {
+      <span class="str">ORDERS_CREATE</span>: {
+        <span class="fn">callback</span>: <span class="kw">async</span> (topic, shop, body) => {
+          <span class="kw">const</span> order = <span class="fn">JSON.parse</span>(body);
+          console.<span class="fn">log</span>(<span class="str">`নতুন অর্ডার: ${order.name} — ${shop}`</span>);
+        }
+      }
+    }
+  })
+);</pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 9: STOREFRONT API ========== -->
+  <section class="tutorial-section" id="storefront">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ০৯</span>
+      <h2 class="section-title">Storefront API ও Headless Commerce</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">⚡</span> Headless Commerce কী?</h3>
+      <p>Headless Commerce মানে Shopify-এর ব্যাকএন্ড (পণ্য, অর্ডার, পেমেন্ট) ব্যবহার করে নিজের কাস্টম ফ্রন্টএন্ড (React, Next.js, Vue) তৈরি করা। এতে সম্পূর্ণ ডিজাইন স্বাধীনতা পাওয়া যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">JavaScript — Storefront API (GraphQL)</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="kw">const</span> <span class="var">STOREFRONT_TOKEN</span> = <span class="str">'your-storefront-access-token'</span>;
+<span class="kw">const</span> <span class="var">STORE_URL</span> = <span class="str">'https://your-store.myshopify.com'</span>;
+
+<span class="cm">// Storefront API Client</span>
+<span class="kw">async function</span> <span class="fn">storefrontQuery</span>(query, variables = {}) {
+  <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${<span class="var">STORE_URL</span>}/api/2024-01/graphql.json`</span>, {
+    <span class="attr">method</span>: <span class="str">'POST'</span>,
+    <span class="attr">headers</span>: {
+      <span class="str">'X-Shopify-Storefront-Access-Token'</span>: <span class="var">STOREFRONT_TOKEN</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+    },
+    <span class="attr">body</span>: <span class="fn">JSON.stringify</span>({ query, variables })
+  });
+  <span class="kw">return</span> <span class="kw">await</span> response.<span class="fn">json</span>();
+}
+
+<span class="cm">// প্রোডাক্ট লিস্ট</span>
+<span class="kw">const</span> productsResult = <span class="kw">await</span> <span class="fn">storefrontQuery</span>(<span class="str">`
+  query {
+    products(first: 12) {
+      edges {
+        node {
+          id title handle
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+          featuredImage { url altText }
+        }
+      }
+    }
+  }
+`</span>);
+
+<span class="cm">// কার্টে পণ্য যোগ করা</span>
+<span class="kw">const</span> addToCart = <span class="kw">await</span> <span class="fn">storefrontQuery</span>(<span class="str">`
+  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        id totalQuantity
+        cost { totalAmount { amount currencyCode } }
+        lines(first: 10) {
+          edges {
+            node {
+              id quantity
+              merchandise {
+                ... on ProductVariant {
+                  id title
+                  product { title }
+                  price { amount }
+                }
+              }
+            }
+          }
+        }
+      }
+      userErrors { field message }
+    }
+  }
+`</span>, {
+  <span class="attr">cartId</span>: <span class="str">'gid://shopify/Cart/xxxx'</span>,
+  <span class="attr">lines</span>: [{ <span class="attr">merchandiseId</span>: <span class="str">'gid://shopify/ProductVariant/xxxx'</span>, <span class="attr">quantity</span>: <span class="num">1</span> }]
+});</pre></div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">⚛️</span> Hydrogen Framework</h3>
+      <p>Hydrogen হলো Shopify-এর অফিসিয়াল React ফ্রেমওয়ার্ক হেডলেস কমার্সের জন্য। এটি Remix-এর উপর ভিত্তি করে তৈরি।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Terminal — Hydrogen Project তৈরি</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm"># নতুন Hydrogen প্রজেক্ট তৈরি</span>
+npm create @shopify/hydrogen@latest
+
+<span class="cm"># অথবা Shopify CLI দিয়ে</span>
+shopify hydrogen create
+
+<span class="cm"># ডেভেলপমেন্ট সার্ভার</span>
+npm run dev
+
+<span class="cm"># Oxygen (Shopify Hosting) এ ডিপ্লয়</span>
+shopify hydrogen deploy</pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 10: PERFORMANCE ========== -->
+  <section class="tutorial-section" id="performance">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ১০</span>
+      <h2 class="section-title">পারফরম্যান্স অপ্টিমাইজেশন</h2>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <h3><span class="icon">🖼️</span> ইমেজ অপ্টিমাইজেশন</h3>
+        <ul>
+          <li>সবসময় <code>loading="lazy"</code> ব্যবহার করুন</li>
+          <li><code>width</code> ও <code>height</code> অ্যাট্রিবিউট দিন</li>
+          <li>সঠিক সাইজের ইমেজ URL ব্যবহার করুন</li>
+          <li>WebP ফরম্যাট পছন্দ করুন</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h3><span class="icon">📦</span> JavaScript অপ্টিমাইজেশন</h3>
+        <ul>
+          <li><code>defer</code> বা <code>async</code> ব্যবহার করুন</li>
+          <li>অপ্রয়োজনীয় third-party স্ক্রিপ্ট এড়িয়ে চলুন</li>
+          <li>JavaScript ছোট করুন (minify)</li>
+          <li>Critical CSS inline করুন</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — Performance Best Practices</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- ✅ সঠিক — Lazy loading ও সঠিক সাইজ --&gt;</span>
+&lt;<span class="tag">img</span>
+  <span class="attr">src</span>="<span class="liq">{{ product.featured_image | image_url: width: 600 }}</span>"
+  <span class="attr">srcset</span>="
+    <span class="liq">{{ product.featured_image | image_url: width: 300 }}</span> 300w,
+    <span class="liq">{{ product.featured_image | image_url: width: 600 }}</span> 600w,
+    <span class="liq">{{ product.featured_image | image_url: width: 900 }}</span> 900w
+  "
+  <span class="attr">sizes</span>="<span class="str">(max-width: 768px) 100vw, 50vw</span>"
+  <span class="attr">width</span>="<span class="str">600</span>" <span class="attr">height</span>="<span class="str">600</span>"
+  <span class="attr">loading</span>="<span class="str">lazy</span>"
+  <span class="attr">alt</span>="<span class="liq">{{ product.featured_image.alt | escape }}</span>"
+&gt;
+
+<span class="cm">&lt;!-- ✅ Render স্নিপেট (isolated scope) --&gt;</span>
+<span class="liq">{% render 'product-card', product: product %}</span>
+
+<span class="cm">&lt;!-- ❌ এড়িয়ে চলুন: include (deprecated) --&gt;</span>
+<span class="cm">&lt;!-- {% include 'product-card' %} --&gt;</span>
+
+<span class="cm">&lt;!-- ✅ Preload critical fonts --&gt;</span>
+&lt;<span class="tag">link</span> <span class="attr">rel</span>="<span class="str">preload</span>" <span class="attr">href</span>="<span class="liq">{{ 'theme.css' | asset_url }}</span>" <span class="attr">as</span>="<span class="str">style</span>"&gt;
+
+<span class="cm">&lt;!-- ✅ Defer non-critical JS --&gt;</span>
+&lt;<span class="tag">script</span> <span class="attr">src</span>="<span class="liq">{{ 'theme.js' | asset_url }}</span>" <span class="attr">defer</span>&gt;&lt;/<span class="tag">script</span>&gt;</pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 11: SEO ========== -->
+  <section class="tutorial-section" id="seo">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ১১</span>
+      <h2 class="section-title">SEO ও মার্কেটিং অপ্টিমাইজেশন</h2>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — SEO Meta Tags ও Structured Data</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- Open Graph Tags --&gt;</span>
+&lt;<span class="tag">meta</span> <span class="attr">property</span>="<span class="str">og:title</span>" <span class="attr">content</span>="<span class="liq">{{ page_title | escape }}</span>"&gt;
+&lt;<span class="tag">meta</span> <span class="attr">property</span>="<span class="str">og:description</span>" <span class="attr">content</span>="<span class="liq">{{ page_description | escape }}</span>"&gt;
+&lt;<span class="tag">meta</span> <span class="attr">property</span>="<span class="str">og:type</span>" <span class="attr">content</span>="<span class="str">website</span>"&gt;
+&lt;<span class="tag">meta</span> <span class="attr">property</span>="<span class="str">og:url</span>" <span class="attr">content</span>="<span class="liq">{{ canonical_url }}</span>"&gt;
+<span class="liq">{% if product.featured_image %}</span>
+  &lt;<span class="tag">meta</span> <span class="attr">property</span>="<span class="str">og:image</span>"
+    <span class="attr">content</span>="<span class="liq">{{ product.featured_image | image_url: width: 1200 }}</span>"&gt;
+<span class="liq">{% endif %}</span>
+
+<span class="cm">&lt;!-- Twitter Card --&gt;</span>
+&lt;<span class="tag">meta</span> <span class="attr">name</span>="<span class="str">twitter:card</span>" <span class="attr">content</span>="<span class="str">summary_large_image</span>"&gt;
+&lt;<span class="tag">meta</span> <span class="attr">name</span>="<span class="str">twitter:title</span>" <span class="attr">content</span>="<span class="liq">{{ page_title }}</span>"&gt;
+
+<span class="cm">&lt;!-- Product Structured Data (JSON-LD) --&gt;</span>
+<span class="liq">{% if template == 'product' %}</span>
+&lt;<span class="tag">script</span> <span class="attr">type</span>="<span class="str">application/ld+json</span>"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "<span class="liq">{{ product.title | escape }}</span>",
+  "description": "<span class="liq">{{ product.description | strip_html | escape }}</span>",
+  "brand": {
+    "@type": "Brand",
+    "name": "<span class="liq">{{ product.vendor | escape }}</span>"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "<span class="liq">{{ product.price | money_without_currency }}</span>",
+    "priceCurrency": "<span class="liq">{{ shop.currency }}</span>",
+    "availability": "<span class="liq">{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}</span>"
+  }
+  <span class="liq">{% if product.featured_image %}</span>,
+  "image": "<span class="liq">{{ product.featured_image | image_url: width: 800 }}</span>"
+  <span class="liq">{% endif %}</span>
+}
+&lt;/<span class="tag">script</span>&gt;
+<span class="liq">{% endif %}</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 12: ADVANCED ========== -->
+  <section class="tutorial-section" id="advanced">
+    <div class="section-header">
+      <span class="section-num">অধ্যায় ১২</span>
+      <h2 class="section-title">অ্যাডভান্সড টপিক</h2>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">📝</span> Metafields — কাস্টম ডেটা</h3>
+      <p>Metafields দিয়ে Shopify-এর যেকোনো অবজেক্টে কাস্টম ডেটা যোগ করা যায়। উদাহরণ: প্রোডাক্টে ভিডিও URL, উপাদানের তালিকা, বা বিশেষ স্পেসিফিকেশন।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Liquid — Metafields ব্যবহার</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="cm">&lt;!-- প্রোডাক্টের কাস্টম ভিডিও URL --&gt;</span>
+<span class="liq">{% if product.metafields.custom.video_url %}</span>
+  &lt;<span class="tag">video</span> <span class="attr">controls</span> <span class="attr">width</span>="<span class="str">100%</span>"&gt;
+    &lt;<span class="tag">source</span> <span class="attr">src</span>="<span class="liq">{{ product.metafields.custom.video_url }}</span>"&gt;
+  &lt;/<span class="tag">video</span>&gt;
+<span class="liq">{% endif %}</span>
+
+<span class="cm">&lt;!-- উপাদানের তালিকা (JSON list metafield) --&gt;</span>
+<span class="liq">{% assign ingredients = product.metafields.product.ingredients.value %}</span>
+<span class="liq">{% if ingredients %}</span>
+  &lt;<span class="tag">ul</span>&gt;
+    <span class="liq">{% for ingredient in ingredients %}</span>
+      &lt;<span class="tag">li</span>&gt;<span class="liq">{{ ingredient }}</span>&lt;/<span class="tag">li</span>&gt;
+    <span class="liq">{% endfor %}</span>
+  &lt;/<span class="tag">ul</span>&gt;
+<span class="liq">{% endif %}</span>
+
+<span class="cm">&lt;!-- Shop metafield --&gt;</span>
+&lt;<span class="tag">p</span>&gt;<span class="liq">{{ shop.metafields.global.announcement_text }}</span>&lt;/<span class="tag">p</span>&gt;</pre></div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">💳</span> Checkout Extensions</h3>
+      <p>Checkout Extensions দিয়ে Shopify-এর চেকআউট পেজ কাস্টমাইজ করা যায়। এটি Shopify Plus প্ল্যানে উপলব্ধ।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">React — Checkout UI Extension</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="kw">import</span> {
+  reactExtension,
+  Banner,
+  BlockStack,
+  Text,
+  useCartLines
+} <span class="kw">from</span> <span class="str">'@shopify/ui-extensions-react/checkout'</span>;
+
+<span class="cm">// Checkout-এ কাস্টম ব্যানার যোগ করা</span>
+<span class="kw">export default</span> <span class="fn">reactExtension</span>(
+  <span class="str">'purchase.checkout.block.render'</span>,
+  () => &lt;<span class="tag">CustomBanner</span> /&gt;
+);
+
+<span class="kw">function</span> <span class="fn">CustomBanner</span>() {
+  <span class="kw">const</span> lines = <span class="fn">useCartLines</span>();
+  <span class="kw">const</span> totalItems = lines.<span class="fn">reduce</span>((sum, line) => sum + line.quantity, <span class="num">0</span>);
+
+  <span class="kw">if</span> (totalItems >= <span class="num">3</span>) {
+    <span class="kw">return</span> (
+      &lt;<span class="tag">Banner</span> status="success"&gt;
+        &lt;<span class="tag">BlockStack</span>&gt;
+          &lt;<span class="tag">Text</span>&gt;🎉 ৩টি বা বেশি পণ্যে ১০% ছাড়!&lt;/<span class="tag">Text</span>&gt;
+        &lt;/<span class="tag">BlockStack</span>&gt;
+      &lt;/<span class="tag">Banner</span>&gt;
+    );
+  }
+  <span class="kw">return null</span>;
+}</pre></div>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="icon">🌐</span> Multipass — SSO Integration</h3>
+      <p>Multipass দিয়ে আপনার নিজের সিস্টেমের ইউজারকে সরাসরি Shopify-এ লগইন করানো যায় (Single Sign-On)। শুধুমাত্র Shopify Plus-এ পাওয়া যায়।</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Node.js — Multipass Token তৈরি</span>
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      </div>
+      <div class="code-content"><pre><span class="kw">import</span> crypto <span class="kw">from</span> <span class="str">'crypto'</span>;
+
+<span class="kw">function</span> <span class="fn">generateMultipassToken</span>(customerData, secret) {
+  <span class="cm">// দুটি 16-byte key তৈরি করুন</span>
+  <span class="kw">const</span> hash = crypto.<span class="fn">createHash</span>(<span class="str">'sha256'</span>).<span class="fn">update</span>(secret).<span class="fn">digest</span>();
+  <span class="kw">const</span> encryptionKey = hash.<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">16</span>);
+  <span class="kw">const</span> signingKey = hash.<span class="fn">slice</span>(<span class="num">16</span>, <span class="num">32</span>);
+
+  <span class="cm">// Customer data JSON</span>
+  <span class="kw">const</span> data = <span class="fn">JSON.stringify</span>({
+    ...customerData,
+    <span class="attr">created_at</span>: <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>()
+  });
+
+  <span class="cm">// AES-128-CBC এনক্রিপশন</span>
+  <span class="kw">const</span> iv = crypto.<span class="fn">randomBytes</span>(<span class="num">16</span>);
+  <span class="kw">const</span> cipher = crypto.<span class="fn">createCipheriv</span>(<span class="str">'aes-128-cbc'</span>, encryptionKey, iv);
+  <span class="kw">const</span> encrypted = Buffer.<span class="fn">concat</span>([iv, cipher.<span class="fn">update</span>(data), cipher.<span class="fn">final</span>()]);
+
+  <span class="cm">// HMAC-SHA256 সাইন</span>
+  <span class="kw">const</span> signature = crypto.<span class="fn">createHmac</span>(<span class="str">'sha256'</span>, signingKey).<span class="fn">update</span>(encrypted).<span class="fn">digest</span>();
+
+  <span class="kw">const</span> token = Buffer.<span class="fn">concat</span>([encrypted, signature]).<span class="fn">toString</span>(<span class="str">'base64url'</span>);
+  <span class="kw">return</span> <span class="str">`https://your-store.myshopify.com/account/login/multipass/${token}`</span>;
+}
+
+<span class="cm">// ব্যবহার</span>
+<span class="kw">const</span> url = <span class="fn">generateMultipassToken</span>({
+  <span class="attr">email</span>: <span class="str">'customer@example.com'</span>,
+  <span class="attr">first_name</span>: <span class="str">'রহিম'</span>,
+  <span class="attr">last_name</span>: <span class="str">'মিয়া'</span>,
+  <span class="attr">return_to</span>: <span class="str">'/collections/all'</span>
+}, process.env.<span class="var">MULTIPASS_SECRET</span>);</pre></div>
+    </div>
+
+    <div class="info-box info-success">
+      <span class="icon">🎯</span>
+      <div class="text">
+        <strong>পরবর্তী পদক্ষেপ কী?</strong>
+        এই টিউটোরিয়াল শেষ করার পর: (১) একটি রিয়েল Development Store তৈরি করুন, (২) Dawn বা Debut থিম দেখুন, (৩) Shopify Developers YouTube চ্যানেল ফলো করুন, (৪) একটি ছোট App বা Theme তৈরি করে পোর্টফোলিওতে যোগ করুন।
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">রিসোর্স ও রেফারেন্স</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="three-col">
+      <div class="feature-card">
+        <span class="emoji">📚</span>
+        <h4>Shopify Dev Docs</h4>
+        <p>অফিসিয়াল ডকুমেন্টেশন — সব API, Liquid অবজেক্ট এবং CLI কমান্ডের বিস্তারিত।</p>
+        <p><code>shopify.dev/docs</code></p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">🎓</span>
+        <h4>Shopify Partners Academy</h4>
+        <p>ফ্রি অনলাইন কোর্স — থিম ও App ডেভেলপমেন্টের সার্টিফিকেট পান।</p>
+        <p><code>partners.shopify.com/academy</code></p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">💬</span>
+        <h4>Shopify Community</h4>
+        <p>কমিউনিটি ফোরামে প্রশ্ন করুন এবং অন্যদের সাহায্য করুন।</p>
+        <p><code>community.shopify.com</code></p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <h3>🛍️ শুভ কামনা!</h3>
+  <p>এই গাইডটি পড়ার জন্য ধন্যবাদ। Shopify ডেভেলপমেন্ট একটি দারুণ ক্যারিয়ার পথ। অনুশীলন করতে থাকুন এবং প্রতিদিন নতুন কিছু শিখুন।</p>
+  <div class="footer-links">
+    <a href="#intro" class="footer-link">↑ শুরুতে ফিরুন</a>
+    <a href="#toc" class="footer-link">📋 সূচিপত্র</a>
+    <a href="#advanced" class="footer-link">🚀 অ্যাডভান্সড</a>
+  </div>
+  <p style="margin-top: 24px; font-size: 0.8rem; color: #334155;">তৈরি করা হয়েছে বাংলাদেশের ডেভেলপারদের জন্য ❤️</p>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+
+    // Scroll to top button
+    const btn = document.getElementById('scrollTop');
+    btn.classList.toggle('visible', scrollTop > 300);
+
+    // Active nav
+    const sections = document.querySelectorAll('.tutorial-section');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    let current = '';
+    sections.forEach(s => {
+      if (scrollTop >= s.offsetTop - 100) current = s.id;
+    });
+    navBtns.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(current)) {
+        btn.classList.add('active');
+      }
+    });
+  });
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

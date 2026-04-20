@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordPress সম্পূর্ণ গাইড — বেসিক থেকে অ্যাডভান্স | ১ দিনে ই-কমার্স</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1628;
+    --bg3: #151d35;
+    --card: #111827;
+    --card2: #1a2540;
+    --accent: #4f8cff;
+    --accent2: #7c3aed;
+    --accent3: #06d6a0;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --border: #1e2d4a;
+    --border2: #243352;
+    --glow: rgba(79,140,255,0.15);
+    --glow2: rgba(124,58,237,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,140,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 100%, rgba(124,58,237,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(6,214,160,0.07) 0%, transparent 70%);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,140,255,0.1);
+    border: 1px solid rgba(79,140,255,0.3);
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 28px;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .hero-badge::before { content: '🚀'; }
+
+  .hero h1 {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    animation: fadeDown 0.9s ease;
+    background: linear-gradient(135deg, #fff 0%, #a5c4ff 40%, #c4b5fd 70%, #6ee7b7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--text2);
+    max-width: 680px;
+    margin: 0 auto 40px;
+    animation: fadeDown 1s ease;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 1.1s ease;
+    margin-bottom: 48px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text3);
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeUp 1.2s ease;
+  }
+
+  .toc-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toc-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(79,140,255,0.07);
+    transform: translateY(-2px);
+  }
+
+  .toc-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent2);
+    min-width: 24px;
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 70px 24px;
+    position: relative;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .section-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: rgba(79,140,255,0.15); }
+  .icon-purple { background: rgba(124,58,237,0.15); }
+  .icon-green { background: rgba(6,214,160,0.15); }
+  .icon-orange { background: rgba(245,158,11,0.15); }
+  .icon-red { background: rgba(239,68,68,0.15); }
+  .icon-pink { background: rgba(236,72,153,0.15); }
+
+  .section-title {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 0 24px;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .card:hover::before { opacity: 1; }
+
+  .card-icon { font-size: 2rem; margin-bottom: 12px; }
+  .card-title { font-size: 1.05rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .card-desc { font-size: 0.9rem; color: var(--text2); line-height: 1.7; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 52px;
+    bottom: -24px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent2), transparent);
+  }
+
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 4px;
+    box-shadow: 0 0 20px rgba(79,140,255,0.3);
+  }
+
+  .step-content { padding-bottom: 32px; }
+  .step-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .step-desc { font-size: 0.92rem; color: var(--text2); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .code-body {
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #a9b8d0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .code-body .kw { color: #c792ea; }
+  .code-body .str { color: #c3e88d; }
+  .code-body .fn { color: #82aaff; }
+  .code-body .cm { color: #546e7a; font-style: italic; }
+  .code-body .var { color: #f78c6c; }
+  .code-body .tag { color: #89ddff; }
+  .code-body .atr { color: #ffcb6b; }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-left: 4px solid;
+    display: flex;
+    gap: 14px;
+  }
+
+  .highlight-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .highlight-content { }
+  .highlight-title { font-weight: 600; margin-bottom: 4px; }
+  .highlight-desc { font-size: 0.9rem; }
+
+  .hl-blue { background: rgba(79,140,255,0.08); border-color: var(--accent); }
+  .hl-blue .highlight-title { color: var(--accent); }
+  .hl-blue .highlight-desc { color: #93c5fd; }
+
+  .hl-green { background: rgba(6,214,160,0.08); border-color: var(--accent3); }
+  .hl-green .highlight-title { color: var(--accent3); }
+  .hl-green .highlight-desc { color: #6ee7b7; }
+
+  .hl-orange { background: rgba(245,158,11,0.08); border-color: var(--accent4); }
+  .hl-orange .highlight-title { color: var(--accent4); }
+  .hl-orange .highlight-desc { color: #fcd34d; }
+
+  .hl-purple { background: rgba(124,58,237,0.08); border-color: var(--accent2); }
+  .hl-purple .highlight-title { color: #a78bfa; }
+  .hl-purple .highlight-desc { color: #c4b5fd; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border); }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--card2); }
+  th { padding: 14px 20px; text-align: left; font-size: 0.85rem; color: var(--accent); font-weight: 600; letter-spacing: 0.5px; }
+  td { padding: 13px 20px; font-size: 0.88rem; color: var(--text2); border-top: 1px solid var(--border); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-free { background: rgba(6,214,160,0.15); color: var(--accent3); }
+  .badge-paid { background: rgba(245,158,11,0.15); color: var(--accent4); }
+  .badge-both { background: rgba(79,140,255,0.15); color: var(--accent); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 30px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3));
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 32px;
+    padding-left: 20px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .tl-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .tl-title { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .tl-desc { font-size: 0.88rem; color: var(--text2); }
+
+  /* PLUGIN LIST */
+  .plugin-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+
+  .plugin-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.3s;
+  }
+
+  .plugin-item:hover { border-color: var(--accent); }
+
+  .plugin-emoji { font-size: 1.6rem; }
+  .plugin-info { flex: 1; }
+  .plugin-name { font-weight: 600; color: #fff; font-size: 0.95rem; }
+  .plugin-desc { font-size: 0.83rem; color: var(--text2); margin-top: 2px; }
+  .plugin-badge { flex-shrink: 0; }
+
+  /* NAV */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    z-index: 99;
+    transition: width 0.1s;
+  }
+
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 60px 24px;
+    text-align: center;
+  }
+
+  .footer-inner { max-width: 600px; margin: 0 auto; }
+  .footer-logo { font-size: 2rem; margin-bottom: 12px; }
+  .footer-title { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .footer-sub { font-size: 0.9rem; color: var(--text3); }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-stats { gap: 20px; }
+  }
+
+  /* TAG LIST */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.92rem;
+    color: var(--text2);
+  }
+  .checklist li::before {
+    content: '✓';
+    color: var(--accent3);
+    font-weight: 700;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* SECTION BG variants */
+  .bg-alt { background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%); }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">🔷 <span>WP</span>গাইড বাংলা</div>
+    <div class="nav-links">
+      <a href="#basics" class="nav-link">বেসিক</a>
+      <a href="#themes" class="nav-link">থিম</a>
+      <a href="#plugins" class="nav-link">প্লাগিন</a>
+      <a href="#api" class="nav-link">API</a>
+      <a href="#ecommerce" class="nav-link">ই-কমার্স</a>
+      <a href="#admin" class="nav-link">অ্যাডমিন</a>
+      <a href="#advanced" class="nav-link">অ্যাডভান্স</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top: 100px;">
+  <div class="hero-badge">সম্পূর্ণ বাংলা গাইড ২০২৫</div>
+  <h1>WordPress ডেভেলপমেন্ট<br>বেসিক থেকে অ্যাডভান্স</h1>
+  <p class="hero-sub">ফ্রি ও পেইড থিম, API ইন্টিগ্রেশন, অ্যাডমিন প্যানেল ডিজাইন, কাস্টমাইজেশন এবং ১ দিনে সম্পূর্ণ ই-কমার্স ওয়েবসাইট তৈরির গাইড।</p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">১০+</div>
+      <div class="stat-label">অধ্যায়</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">৫০+</div>
+      <div class="stat-label">টিপস</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">১ দিন</div>
+      <div class="stat-label">ই-কমার্স</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">১০০%</div>
+      <div class="stat-label">বাংলায়</div>
+    </div>
+  </div>
+
+  <div class="toc-grid">
+    <a href="#basics" class="toc-item"><span class="num">০১</span> WordPress পরিচিতি ও ইনস্টল</a>
+    <a href="#themes" class="toc-item"><span class="num">০২</span> ফ্রি ও পেইড থিম</a>
+    <a href="#plugins" class="toc-item"><span class="num">০৩</span> প্লাগিন ম্যানেজমেন্ট</a>
+    <a href="#customization" class="toc-item"><span class="num">০৪</span> থিম কাস্টমাইজেশন</a>
+    <a href="#api" class="toc-item"><span class="num">০৫</span> API ইন্টিগ্রেশন</a>
+    <a href="#admin" class="toc-item"><span class="num">০৬</span> অ্যাডমিন প্যানেল ডিজাইন</a>
+    <a href="#ecommerce" class="toc-item"><span class="num">০৭</span> ১ দিনে ই-কমার্স</a>
+    <a href="#advanced" class="toc-item"><span class="num">০৮</span> অ্যাডভান্স ডেভেলপমেন্ট</a>
+    <a href="#security" class="toc-item"><span class="num">০৯</span> সিকিউরিটি ও পারফরমেন্স</a>
+    <a href="#deployment" class="toc-item"><span class="num">১০</span> ডিপ্লয়মেন্ট</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 1: BASICS -->
+<section class="section fade-in" id="basics">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🌐</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০১</span>
+      <h2 class="section-title">WordPress পরিচিতি ও ইনস্টলেশন</h2>
+    </div>
+  </div>
+
+  <div class="highlight hl-blue">
+    <span class="highlight-icon">💡</span>
+    <div class="highlight-content">
+      <div class="highlight-title">WordPress কী?</div>
+      <div class="highlight-desc">WordPress হলো বিশ্বের সবচেয়ে জনপ্রিয় CMS (Content Management System)। ইন্টারনেটের প্রায় ৪৩% ওয়েবসাইট WordPress দিয়ে তৈরি। এটি PHP ও MySQL দিয়ে তৈরি একটি ওপেন-সোর্স প্ল্যাটফর্ম।</div>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 32px;">
+    <div class="card">
+      <div class="card-icon">🖥️</div>
+      <div class="card-title">লোকাল ইনস্টলেশন (XAMPP)</div>
+      <div class="card-desc">প্রথমে XAMPP ডাউনলোড করুন। Apache ও MySQL চালু করুন। htdocs ফোল্ডারে WordPress কপি করুন। Browser-এ localhost/wordpress খুলুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">☁️</div>
+      <div class="card-title">হোস্টিংয়ে ইনস্টলেশন</div>
+      <div class="card-desc">cPanel থেকে Softaculous ব্যবহার করুন। ১ ক্লিকে WordPress ইনস্টল হবে। অথবা FTP দিয়ে ম্যানুয়ালি ইনস্টল করুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗄️</div>
+      <div class="card-title">ডেটাবেস সেটআপ</div>
+      <div class="card-desc">phpMyAdmin খুলুন। নতুন Database তৈরি করুন। wp-config.php ফাইলে DB_NAME, DB_USER, DB_PASSWORD সেট করুন।</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">wp-config.php</span>
+    </div>
+    <div class="code-body"><span class="cm">// ডেটাবেস কনফিগারেশন</span>
+<span class="kw">define</span>( <span class="str">'DB_NAME'</span>, <span class="str">'আপনার_ডেটাবেস_নাম'</span> );
+<span class="kw">define</span>( <span class="str">'DB_USER'</span>, <span class="str">'root'</span> );
+<span class="kw">define</span>( <span class="str">'DB_PASSWORD'</span>, <span class="str">'আপনার_পাসওয়ার্ড'</span> );
+<span class="kw">define</span>( <span class="str">'DB_HOST'</span>, <span class="str">'localhost'</span> );
+<span class="kw">define</span>( <span class="str">'DB_CHARSET'</span>, <span class="str">'utf8mb4'</span> );
+
+<span class="cm">// সিকিউরিটি কী (wordpress.org/secret-key থেকে নিন)</span>
+<span class="kw">define</span>( <span class="str">'AUTH_KEY'</span>, <span class="str">'unique-phrase-here'</span> );
+<span class="kw">define</span>( <span class="str">'SECURE_AUTH_KEY'</span>, <span class="str">'unique-phrase-here'</span> );
+
+<span class="cm">// ডিবাগ মোড (ডেভেলপমেন্টের সময়)</span>
+<span class="kw">define</span>( <span class="str">'WP_DEBUG'</span>, <span class="kw">true</span> );
+<span class="kw">define</span>( <span class="str">'WP_DEBUG_LOG'</span>, <span class="kw">true</span> );</div>
+  </div>
+
+  <h3 style="color:#fff; margin: 28px 0 16px; font-size: 1.15rem;">ফাইল স্ট্রাকচার বোঝা</h3>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">📁 মূল ফোল্ডার</div>
+      <div class="card-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 2;">
+        wp-admin/ → অ্যাডমিন প্যানেল<br>
+        wp-content/ → থিম, প্লাগিন, মিডিয়া<br>
+        wp-includes/ → Core ফাইল<br>
+        wp-config.php → কনফিগারেশন<br>
+        .htaccess → সার্ভার রুলস
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📁 wp-content ফোল্ডার</div>
+      <div class="card-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 2;">
+        themes/ → সব থিম<br>
+        plugins/ → সব প্লাগিন<br>
+        uploads/ → মিডিয়া ফাইল<br>
+        languages/ → ভাষা ফাইল<br>
+        mu-plugins/ → Must-use প্লাগিন
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: THEMES -->
+<section class="section fade-in bg-alt" id="themes">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🎨</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০২</span>
+      <h2 class="section-title">ফ্রি ও পেইড থিম সম্পূর্ণ গাইড</h2>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>থিমের নাম</th>
+          <th>ধরন</th>
+          <th>বিশেষত্ব</th>
+          <th>মূল্য</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Astra</strong></td><td><span class="badge badge-both">ফ্রি+পেইড</span></td><td>দ্রুত, WooCommerce রেডি, ১০০+ টেমপ্লেট</td><td>$০ / $৫৯/বছর</td></tr>
+        <tr><td><strong>OceanWP</strong></td><td><span class="badge badge-both">ফ্রি+পেইড</span></td><td>মাল্টিপারপাস, ই-কমার্স পারফেক্ট</td><td>$০ / $৪৩</td></tr>
+        <tr><td><strong>GeneratePress</strong></td><td><span class="badge badge-both">ফ্রি+পেইড</span></td><td>লাইটওয়েট, পারফরমেন্স ফোকাস</td><td>$০ / $৫৯</td></tr>
+        <tr><td><strong>Avada</strong></td><td><span class="badge badge-paid">পেইড</span></td><td>সবচেয়ে বেশি বিক্রিত থিম, ৯০+ ডেমো</td><td>$৬০ (ThemeForest)</td></tr>
+        <tr><td><strong>Divi</strong></td><td><span class="badge badge-paid">পেইড</span></td><td>ড্র্যাগ অ্যান্ড ড্রপ বিল্ডার সহ</td><td>$৮৯/বছর</td></tr>
+        <tr><td><strong>Twenty Twenty-Four</strong></td><td><span class="badge badge-free">ফ্রি</span></td><td>অফিশিয়াল WordPress থিম, ব্লক এডিটর</td><td>$০</td></tr>
+        <tr><td><strong>Storefront</strong></td><td><span class="badge badge-free">ফ্রি</span></td><td>WooCommerce এর অফিশিয়াল থিম</td><td>$০</td></tr>
+        <tr><td><strong>Flatsome</strong></td><td><span class="badge badge-paid">পেইড</span></td><td>WooCommerce স্পেশালাইজড, UX বিল্ডার</td><td>$৫৯</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#fff; margin: 32px 0 16px; font-size: 1.15rem;">নিজের থিম তৈরি — Child Theme</h3>
+
+  <div class="highlight hl-orange">
+    <span class="highlight-icon">⚠️</span>
+    <div class="highlight-content">
+      <div class="highlight-title">সবসময় Child Theme ব্যবহার করুন!</div>
+      <div class="highlight-desc">Parent Theme আপডেট হলে আপনার কাস্টম কোড মুছে যাবে না। Child Theme-এ কাস্টমাইজেশন করলে সব নিরাপদ থাকবে।</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">style.css (Child Theme)</span>
+    </div>
+    <div class="code-body"><span class="cm">/*
+Theme Name: আমার Child Theme
+Template: astra
+Description: Astra থিমের Child Theme
+Version: 1.0.0
+*/</span>
+
+<span class="cm">/* প্যারেন্ট থিম স্টাইল লোড হবে স্বয়ংক্রিয়ভাবে */</span>
+<span class="cm">/* এখানে কাস্টম CSS লিখুন */</span>
+
+<span class="var">.site-header</span> {
+    background-color: <span class="str">#1a1a2e</span>;
+    padding: <span class="str">20px 0</span>;
+}
+
+<span class="var">.site-title a</span> {
+    color: <span class="str">#fff</span> !important;
+    font-size: <span class="str">24px</span>;
+}</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">functions.php (Child Theme)</span>
+    </div>
+    <div class="code-body"><span class="tag">&lt;?php</span>
+<span class="cm">// প্যারেন্ট ও চাইল্ড থিমের স্টাইল লোড করা</span>
+<span class="fn">add_action</span>( <span class="str">'wp_enqueue_scripts'</span>, <span class="str">'child_theme_styles'</span> );
+
+<span class="kw">function</span> <span class="fn">child_theme_styles</span>() {
+    <span class="cm">// প্যারেন্ট থিম স্টাইল</span>
+    <span class="fn">wp_enqueue_style</span>(
+        <span class="str">'parent-style'</span>,
+        <span class="fn">get_template_directory_uri</span>() . <span class="str">'/style.css'</span>
+    );
+
+    <span class="cm">// চাইল্ড থিম স্টাইল</span>
+    <span class="fn">wp_enqueue_style</span>(
+        <span class="str">'child-style'</span>,
+        <span class="fn">get_stylesheet_uri</span>(),
+        [<span class="str">'parent-style'</span>],
+        <span class="fn">wp_get_theme</span>()->get(<span class="str">'Version'</span>)
+    );
+
+    <span class="cm">// কাস্টম JavaScript</span>
+    <span class="fn">wp_enqueue_script</span>(
+        <span class="str">'child-scripts'</span>,
+        <span class="fn">get_stylesheet_directory_uri</span>() . <span class="str">'/js/custom.js'</span>,
+        [<span class="str">'jquery'</span>], <span class="str">'1.0.0'</span>, <span class="kw">true</span>
+    );
+}</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: PLUGINS -->
+<section class="section fade-in" id="plugins">
+  <div class="section-header">
+    <div class="section-icon icon-green">🔌</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৩</span>
+      <h2 class="section-title">প্লাগিন ম্যানেজমেন্ট ও সেরা প্লাগিন</h2>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin-bottom: 16px; font-size: 1.1rem;">অপরিহার্য প্লাগিন সমূহ</h3>
+
+  <div class="plugin-list">
+    <div class="plugin-item">
+      <span class="plugin-emoji">🛒</span>
+      <div class="plugin-info">
+        <div class="plugin-name">WooCommerce</div>
+        <div class="plugin-desc">ই-কমার্স প্লাগিন। পণ্য ম্যানেজমেন্ট, পেমেন্ট গেটওয়ে, শিপিং সব কিছু সম্পূর্ণ।</div>
+      </div>
+      <span class="badge badge-free plugin-badge">ফ্রি</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">🔷</span>
+      <div class="plugin-info">
+        <div class="plugin-name">Elementor</div>
+        <div class="plugin-desc">ড্র্যাগ অ্যান্ড ড্রপ পেজ বিল্ডার। কোড না জেনেই সুন্দর পেজ ডিজাইন করুন।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">🔒</span>
+      <div class="plugin-info">
+        <div class="plugin-name">Wordfence Security</div>
+        <div class="plugin-desc">ওয়েবসাইট সুরক্ষার জন্য। Firewall, Malware Scanner, Login Security।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">⚡</span>
+      <div class="plugin-info">
+        <div class="plugin-name">WP Rocket / W3 Total Cache</div>
+        <div class="plugin-desc">ওয়েবসাইট দ্রুত করার জন্য Cache Plugin। Page Speed বাড়ায়।</div>
+      </div>
+      <span class="badge badge-paid plugin-badge">পেইড/ফ্রি</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">🔍</span>
+      <div class="plugin-info">
+        <div class="plugin-name">Yoast SEO / Rank Math</div>
+        <div class="plugin-desc">SEO অপ্টিমাইজেশন। Meta Tags, Sitemap, Schema Markup অটোমেটিক।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">💾</span>
+      <div class="plugin-info">
+        <div class="plugin-name">UpdraftPlus</div>
+        <div class="plugin-desc">ব্যাকআপ প্লাগিন। Google Drive, Dropbox-এ অটো ব্যাকআপ।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">📧</span>
+      <div class="plugin-info">
+        <div class="plugin-name">WPForms / Contact Form 7</div>
+        <div class="plugin-desc">ফর্ম বিল্ডার। Contact, Registration, Payment ফর্ম তৈরি করুন।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+    <div class="plugin-item">
+      <span class="plugin-emoji">🖼️</span>
+      <div class="plugin-info">
+        <div class="plugin-name">ShortPixel / Smush</div>
+        <div class="plugin-desc">ইমেজ অপ্টিমাইজেশন। ছবি ছোট করে সাইট দ্রুত করে।</div>
+      </div>
+      <span class="badge badge-both plugin-badge">ফ্রি+প্রো</span>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin: 32px 0 16px; font-size: 1.1rem;">নিজে প্লাগিন তৈরি করুন</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">my-plugin/my-plugin.php</span>
+    </div>
+    <div class="code-body"><span class="tag">&lt;?php</span>
+<span class="cm">/**
+ * Plugin Name: আমার প্রথম প্লাগিন
+ * Description: বাংলায় তৈরি কাস্টম WordPress প্লাগিন
+ * Version: 1.0.0
+ * Author: আপনার নাম
+ */</span>
+
+<span class="cm">// সরাসরি অ্যাক্সেস বন্ধ করুন</span>
+<span class="kw">if</span> ( ! <span class="fn">defined</span>( <span class="str">'ABSPATH'</span> ) ) {
+    <span class="kw">exit</span>;
+}
+
+<span class="cm">// অ্যাডমিন মেনু যোগ করা</span>
+<span class="fn">add_action</span>( <span class="str">'admin_menu'</span>, <span class="str">'my_plugin_menu'</span> );
+
+<span class="kw">function</span> <span class="fn">my_plugin_menu</span>() {
+    <span class="fn">add_menu_page</span>(
+        <span class="str">'আমার প্লাগিন'</span>,     <span class="cm">// পেজ টাইটেল</span>
+        <span class="str">'আমার প্লাগিন'</span>,     <span class="cm">// মেনু নাম</span>
+        <span class="str">'manage_options'</span>,    <span class="cm">// পারমিশন</span>
+        <span class="str">'my-plugin'</span>,         <span class="cm">// স্লাগ</span>
+        <span class="str">'my_plugin_page'</span>,    <span class="cm">// কলব্যাক ফাংশন</span>
+        <span class="str">'dashicons-admin-plugins'</span>,
+        <span class="str">'80'</span>
+    );
+}
+
+<span class="kw">function</span> <span class="fn">my_plugin_page</span>() {
+    <span class="kw">echo</span> <span class="str">'&lt;div class="wrap"&gt;'</span>;
+    <span class="kw">echo</span> <span class="str">'&lt;h1&gt;আমার প্লাগিন সেটিংস&lt;/h1&gt;'</span>;
+    <span class="kw">echo</span> <span class="str">'&lt;p&gt;স্বাগতম! এটি আমার কাস্টম প্লাগিন।&lt;/p&gt;'</span>;
+    <span class="kw">echo</span> <span class="str">'&lt;/div&gt;'</span>;
+}
+
+<span class="cm">// শর্টকোড তৈরি করা</span>
+<span class="fn">add_shortcode</span>( <span class="str">'my_shortcode'</span>, <span class="str">'my_shortcode_function'</span> );
+
+<span class="kw">function</span> <span class="fn">my_shortcode_function</span>( <span class="var">$atts</span> ) {
+    <span class="var">$atts</span> = <span class="fn">shortcode_atts</span>([
+        <span class="str">'text'</span> => <span class="str">'ডিফল্ট টেক্সট'</span>,
+        <span class="str">'color'</span> => <span class="str">'blue'</span>
+    ], <span class="var">$atts</span>);
+
+    <span class="kw">return</span> <span class="str">'&lt;span style="color:'</span> . <span class="fn">esc_attr</span>(<span class="var">$atts</span>[<span class="str">'color'</span>]) .
+           <span class="str">'"&gt;'</span> . <span class="fn">esc_html</span>(<span class="var">$atts</span>[<span class="str">'text'</span>]) . <span class="str">'&lt;/span&gt;'</span>;
+}</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4: CUSTOMIZATION -->
+<section class="section fade-in bg-alt" id="customization">
+  <div class="section-header">
+    <div class="section-icon icon-orange">⚙️</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৪</span>
+      <h2 class="section-title">থিম কাস্টমাইজেশন — গভীর গাইড</h2>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom: 28px;">
+    <div>
+      <h3 style="color:#fff; margin-bottom: 14px; font-size: 1.05rem;">🎨 Customizer API ব্যবহার</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="code-lang">functions.php</span>
+        </div>
+        <div class="code-body"><span class="fn">add_action</span>(<span class="str">'customize_register'</span>,
+    <span class="str">'my_theme_customizer'</span>);
+
+<span class="kw">function</span> <span class="fn">my_theme_customizer</span>(<span class="var">$wp_customize</span>) {
+    <span class="cm">// নতুন Section যোগ</span>
+    <span class="var">$wp_customize</span>-><span class="fn">add_section</span>(<span class="str">'my_section'</span>, [
+        <span class="str">'title'</span> => <span class="str">'আমার সেটিংস'</span>,
+        <span class="str">'priority'</span> => <span class="str">30</span>
+    ]);
+
+    <span class="cm">// Color Picker</span>
+    <span class="var">$wp_customize</span>-><span class="fn">add_setting</span>(
+        <span class="str">'header_bg_color'</span>,
+        [<span class="str">'default'</span> => <span class="str">'#ffffff'</span>]
+    );
+    <span class="var">$wp_customize</span>-><span class="fn">add_control</span>(
+        <span class="kw">new</span> <span class="fn">WP_Customize_Color_Control</span>(
+            <span class="var">$wp_customize</span>,
+            <span class="str">'header_bg_color'</span>,
+            [<span class="str">'label'</span> => <span class="str">'হেডার রঙ'</span>,
+             <span class="str">'section'</span> => <span class="str">'my_section'</span>]
+        )
+    );
+}</span></div>
+      </div>
+    </div>
+    <div>
+      <h3 style="color:#fff; margin-bottom: 14px; font-size: 1.05rem;">🧩 Custom Post Type তৈরি</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="code-lang">functions.php</span>
+        </div>
+        <div class="code-body"><span class="fn">add_action</span>(<span class="str">'init'</span>,
+    <span class="str">'create_portfolio_cpt'</span>);
+
+<span class="kw">function</span> <span class="fn">create_portfolio_cpt</span>() {
+    <span class="fn">register_post_type</span>(
+        <span class="str">'portfolio'</span>,
+        [
+            <span class="str">'labels'</span> => [
+                <span class="str">'name'</span> => <span class="str">'পোর্টফোলিও'</span>,
+                <span class="str">'singular_name'</span> =>
+                           <span class="str">'পোর্টফোলিও'</span>
+            ],
+            <span class="str">'public'</span> => <span class="kw">true</span>,
+            <span class="str">'has_archive'</span> => <span class="kw">true</span>,
+            <span class="str">'supports'</span> => [
+                <span class="str">'title'</span>, <span class="str">'editor'</span>,
+                <span class="str">'thumbnail'</span>
+            ],
+            <span class="str">'menu_icon'</span> =>
+                <span class="str">'dashicons-portfolio'</span>
+        ]
+    );
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin-bottom: 16px; font-size: 1.05rem;">🔧 Theme Options Page (Settings API)</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">theme-options.php</span>
+    </div>
+    <div class="code-body"><span class="cm">// Settings API দিয়ে থিম অপশন পেজ তৈরি</span>
+<span class="fn">add_action</span>( <span class="str">'admin_init'</span>, <span class="str">'register_theme_settings'</span> );
+<span class="fn">add_action</span>( <span class="str">'admin_menu'</span>, <span class="str">'add_theme_options_page'</span> );
+
+<span class="kw">function</span> <span class="fn">add_theme_options_page</span>() {
+    <span class="fn">add_theme_page</span>(
+        <span class="str">'থিম অপশন'</span>, <span class="str">'থিম অপশন'</span>,
+        <span class="str">'manage_options'</span>, <span class="str">'theme-options'</span>,
+        <span class="str">'theme_options_page_html'</span>
+    );
+}
+
+<span class="kw">function</span> <span class="fn">register_theme_settings</span>() {
+    <span class="fn">register_setting</span>( <span class="str">'theme_options_group'</span>, <span class="str">'theme_logo_url'</span> );
+    <span class="fn">register_setting</span>( <span class="str">'theme_options_group'</span>, <span class="str">'theme_primary_color'</span> );
+    <span class="fn">register_setting</span>( <span class="str">'theme_options_group'</span>, <span class="str">'theme_footer_text'</span> );
+
+    <span class="fn">add_settings_section</span>( <span class="str">'general_section'</span>, <span class="str">'সাধারণ সেটিংস'</span>, <span class="kw">null</span>, <span class="str">'theme-options'</span> );
+
+    <span class="fn">add_settings_field</span>( <span class="str">'theme_logo_url'</span>, <span class="str">'লোগো URL'</span>,
+        <span class="kw">function</span>() {
+            <span class="var">$val</span> = <span class="fn">get_option</span>( <span class="str">'theme_logo_url'</span> );
+            <span class="kw">echo</span> <span class="str">'&lt;input type="url" name="theme_logo_url" value="'</span> . <span class="fn">esc_url</span>(<span class="var">$val</span>) . <span class="str">'"&gt;'</span>;
+        },
+        <span class="str">'theme-options'</span>, <span class="str">'general_section'</span>
+    );
+}</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 5: API -->
+<section class="section fade-in" id="api">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🔗</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৫</span>
+      <h2 class="section-title">API ইন্টিগ্রেশন — REST API ও তৃতীয় পক্ষ</h2>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 32px;">
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <div class="card-title">WordPress REST API</div>
+      <div class="card-desc">WordPress-এর বিল্ট-ইন REST API। /wp-json/wp/v2/ দিয়ে পোস্ট, পেজ, ইউজার সব অ্যাক্সেস করুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💳</div>
+      <div class="card-title">পেমেন্ট গেটওয়ে API</div>
+      <div class="card-desc">SSLCommerz, bKash, Nagad, Stripe এবং PayPal API ইন্টিগ্রেশন সম্পূর্ণ গাইড।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📨</div>
+      <div class="card-title">Email API</div>
+      <div class="card-desc">SendGrid, Mailchimp API দিয়ে Transactional Email ও Newsletter পাঠান।</div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin-bottom: 16px; font-size: 1.05rem;">🔵 WordPress REST API — Custom Endpoint</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">functions.php — Custom REST API</span>
+    </div>
+    <div class="code-body"><span class="cm">// কাস্টম REST API Route তৈরি</span>
+<span class="fn">add_action</span>( <span class="str">'rest_api_init'</span>, <span class="str">'register_custom_routes'</span> );
+
+<span class="kw">function</span> <span class="fn">register_custom_routes</span>() {
+    <span class="fn">register_rest_route</span>( <span class="str">'my-api/v1'</span>, <span class="str">'/products'</span>, [
+        <span class="str">'methods'</span> => <span class="str">'GET'</span>,
+        <span class="str">'callback'</span> => <span class="str">'get_all_products'</span>,
+        <span class="str">'permission_callback'</span> => <span class="str">'__return_true'</span>
+    ]);
+
+    <span class="fn">register_rest_route</span>( <span class="str">'my-api/v1'</span>, <span class="str">'/create-order'</span>, [
+        <span class="str">'methods'</span> => <span class="str">'POST'</span>,
+        <span class="str">'callback'</span> => <span class="str">'create_new_order'</span>,
+        <span class="str">'permission_callback'</span> => <span class="kw">function</span>() {
+            <span class="kw">return</span> <span class="fn">is_user_logged_in</span>();
+        }
+    ]);
+}
+
+<span class="kw">function</span> <span class="fn">get_all_products</span>( <span class="var">$request</span> ) {
+    <span class="var">$products</span> = <span class="fn">wc_get_products</span>([
+        <span class="str">'status'</span> => <span class="str">'publish'</span>,
+        <span class="str">'limit'</span> => <span class="var">$request</span>[<span class="str">'per_page'</span>] ?? <span class="str">10</span>
+    ]);
+
+    <span class="var">$data</span> = [];
+    <span class="kw">foreach</span> ( <span class="var">$products</span> <span class="kw">as</span> <span class="var">$product</span> ) {
+        <span class="var">$data</span>[] = [
+            <span class="str">'id'</span>    => <span class="var">$product</span>-><span class="fn">get_id</span>(),
+            <span class="str">'name'</span>  => <span class="var">$product</span>-><span class="fn">get_name</span>(),
+            <span class="str">'price'</span> => <span class="var">$product</span>-><span class="fn">get_price</span>(),
+            <span class="str">'image'</span> => <span class="fn">wp_get_attachment_url</span>(
+                            <span class="var">$product</span>-><span class="fn">get_image_id</span>())
+        ];
+    }
+
+    <span class="kw">return</span> <span class="fn">rest_ensure_response</span>( <span class="var">$data</span> );
+}</div>
+  </div>
+
+  <h3 style="color:#fff; margin: 28px 0 16px; font-size: 1.05rem;">💳 SSLCommerz পেমেন্ট ইন্টিগ্রেশন (বাংলাদেশ)</h3>
+
+  <div class="highlight hl-green">
+    <span class="highlight-icon">🇧🇩</span>
+    <div class="highlight-content">
+      <div class="highlight-title">বাংলাদেশের জনপ্রিয় পেমেন্ট গেটওয়ে</div>
+      <div class="highlight-desc">SSLCommerz, bKash Payment Gateway, Nagad, ShurjoPay — এগুলো বাংলাদেশের ই-কমার্সে সবচেয়ে বেশি ব্যবহৃত হয়।</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">sslcommerz-payment.php</span>
+    </div>
+    <div class="code-body"><span class="cm">// SSLCommerz পেমেন্ট শুরু করা</span>
+<span class="kw">function</span> <span class="fn">initiate_ssl_payment</span>( <span class="var">$order_id</span> ) {
+    <span class="var">$order</span> = <span class="fn">wc_get_order</span>( <span class="var">$order_id</span> );
+
+    <span class="var">$post_data</span> = [
+        <span class="str">'store_id'</span>      => <span class="str">'আপনার_স্টোর_ID'</span>,
+        <span class="str">'store_passwd'</span>  => <span class="str">'আপনার_পাসওয়ার্ড'</span>,
+        <span class="str">'total_amount'</span>  => <span class="var">$order</span>-><span class="fn">get_total</span>(),
+        <span class="str">'currency'</span>      => <span class="str">'BDT'</span>,
+        <span class="str">'tran_id'</span>       => <span class="str">'TXN_'</span> . <span class="var">$order_id</span> . <span class="fn">time</span>(),
+        <span class="str">'success_url'</span>   => <span class="fn">site_url</span>(<span class="str">'/payment-success'</span>),
+        <span class="str">'fail_url'</span>      => <span class="fn">site_url</span>(<span class="str">'/payment-fail'</span>),
+        <span class="str">'cancel_url'</span>    => <span class="fn">site_url</span>(<span class="str">'/payment-cancel'</span>),
+
+        <span class="cm">// গ্রাহকের তথ্য</span>
+        <span class="str">'cus_name'</span>      => <span class="var">$order</span>-><span class="fn">get_billing_first_name</span>(),
+        <span class="str">'cus_email'</span>     => <span class="var">$order</span>-><span class="fn">get_billing_email</span>(),
+        <span class="str">'cus_phone'</span>     => <span class="var">$order</span>-><span class="fn">get_billing_phone</span>(),
+        <span class="str">'cus_add1'</span>      => <span class="var">$order</span>-><span class="fn">get_billing_address_1</span>(),
+
+        <span class="str">'product_name'</span>  => <span class="str">'Order #'</span> . <span class="var">$order_id</span>,
+        <span class="str">'product_category'</span> => <span class="str">'General'</span>,
+        <span class="str">'product_amount'</span>   => <span class="var">$order</span>-><span class="fn">get_total</span>(),
+        <span class="str">'shipping_method'</span>  => <span class="str">'NO'</span>,
+    ];
+
+    <span class="cm">// SSLCommerz API কল</span>
+    <span class="var">$response</span> = <span class="fn">wp_remote_post</span>(
+        <span class="str">'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'</span>,
+        [<span class="str">'body'</span> => <span class="var">$post_data</span>]
+    );
+
+    <span class="var">$result</span> = <span class="fn">json_decode</span>(<span class="fn">wp_remote_retrieve_body</span>(<span class="var">$response</span>));
+
+    <span class="kw">if</span> ( <span class="var">$result</span>->status === <span class="str">'SUCCESS'</span> ) {
+        <span class="kw">return</span> <span class="var">$result</span>->GatewayPageURL; <span class="cm">// পেমেন্ট পেজে রিডাইরেক্ট</span>
+    }
+}</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 6: ADMIN -->
+<section class="section fade-in bg-alt" id="admin">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🖥️</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৬</span>
+      <h2 class="section-title">কাস্টম অ্যাডমিন প্যানেল ডিজাইন</h2>
+    </div>
+  </div>
+
+  <div class="highlight hl-purple">
+    <span class="highlight-icon">🎨</span>
+    <div class="highlight-content">
+      <div class="highlight-title">অ্যাডমিন প্যানেল কাস্টমাইজ কেন?</div>
+      <div class="highlight-desc">ক্লায়েন্টের জন্য কাস্টম ড্যাশবোর্ড তৈরি করলে তারা সহজেই সাইট ম্যানেজ করতে পারবেন। অপ্রয়োজনীয় মেনু লুকিয়ে ইন্টারফেস সহজ করা যায়।</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">admin-customization.php</span>
+    </div>
+    <div class="code-body"><span class="cm">// ===== অ্যাডমিন মেনু কাস্টমাইজ =====</span>
+
+<span class="cm">// অপ্রয়োজনীয় মেনু লুকানো</span>
+<span class="fn">add_action</span>( <span class="str">'admin_menu'</span>, <span class="str">'hide_admin_menus'</span> );
+<span class="kw">function</span> <span class="fn">hide_admin_menus</span>() {
+    <span class="kw">if</span> ( ! <span class="fn">current_user_can</span>( <span class="str">'manage_options'</span> ) ) {
+        <span class="fn">remove_menu_page</span>( <span class="str">'tools.php'</span> );
+        <span class="fn">remove_menu_page</span>( <span class="str">'edit-comments.php'</span> );
+        <span class="fn">remove_menu_page</span>( <span class="str">'themes.php'</span> );
+    }
+}
+
+<span class="cm">// কাস্টম ড্যাশবোর্ড উইজেট যোগ</span>
+<span class="fn">add_action</span>( <span class="str">'wp_dashboard_setup'</span>, <span class="str">'custom_dashboard_widgets'</span> );
+<span class="kw">function</span> <span class="fn">custom_dashboard_widgets</span>() {
+    <span class="fn">wp_add_dashboard_widget</span>(
+        <span class="str">'custom_welcome_widget'</span>,
+        <span class="str">'🎉 স্বাগতম!'</span>,
+        <span class="kw">function</span>() {
+            <span class="var">$user</span> = <span class="fn">wp_get_current_user</span>();
+            <span class="kw">echo</span> <span class="str">'&lt;p&gt;হ্যালো, &lt;strong&gt;'</span> . <span class="fn">esc_html</span>(<span class="var">$user</span>->display_name) . <span class="str">'&lt;/strong&gt;!&lt;/p&gt;'</span>;
+            <span class="kw">echo</span> <span class="str">'&lt;p&gt;আজকের অর্ডার: &lt;strong&gt;'</span> . <span class="fn">wc_get_orders</span>([<span class="str">'date_created'</span>=><span class="str">'today'</span>]) . <span class="str">'&lt;/strong&gt;&lt;/p&gt;'</span>;
+        }
+    );
+}
+
+<span class="cm">// অ্যাডমিন কাস্টম CSS</span>
+<span class="fn">add_action</span>( <span class="str">'admin_head'</span>, <span class="str">'custom_admin_css'</span> );
+<span class="kw">function</span> <span class="fn">custom_admin_css</span>() {
+    <span class="kw">echo</span> <span class="str">'&lt;style&gt;
+        #wpadminbar { background: #1a1a2e !important; }
+        #adminmenu { background: #16213e !important; }
+        #adminmenu a { color: #a0aec0 !important; }
+        #adminmenu .wp-has-current-submenu a,
+        #adminmenu .current a {
+            color: #4f8cff !important;
+            background: rgba(79,140,255,0.1) !important;
+        }
+        .wrap h1 { color: #1a202c; font-size: 22px; }
+    &lt;/style&gt;'</span>;
+}
+
+<span class="cm">// লগইন পেজ কাস্টমাইজ</span>
+<span class="fn">add_action</span>( <span class="str">'login_enqueue_scripts'</span>, <span class="str">'custom_login_style'</span> );
+<span class="kw">function</span> <span class="fn">custom_login_style</span>() {
+    <span class="kw">echo</span> <span class="str">'&lt;style&gt;
+        body.login { background: linear-gradient(135deg, #0a0e1a, #1a1a2e); }
+        .login #loginform { border-radius: 12px; border: 1px solid #2d3748; }
+        .login h1 a { background-image: url("'</span> . <span class="fn">get_stylesheet_directory_uri</span>() . <span class="str">'/images/logo.png"); }
+    &lt;/style&gt;'</span>;
+}</div>
+  </div>
+
+  <h3 style="color:#fff; margin: 28px 0 16px; font-size: 1.05rem;">📊 কাস্টম অ্যাডমিন ড্যাশবোর্ড পেজ</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">admin-dashboard.php</span>
+    </div>
+    <div class="code-body"><span class="kw">function</span> <span class="fn">render_custom_dashboard</span>() {
+    <span class="var">$total_orders</span> = <span class="fn">wc_get_orders</span>([<span class="str">'limit'</span> => -<span class="str">1</span>, <span class="str">'return'</span> => <span class="str">'ids'</span>]);
+    <span class="var">$revenue</span> = <span class="fn">array_sum</span>(<span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="var">$id</span>) =>
+        <span class="fn">wc_get_order</span>(<span class="var">$id</span>)-><span class="fn">get_total</span>(), <span class="var">$total_orders</span>));
+    ?>
+    <span class="tag">&lt;div</span> <span class="atr">class</span>=<span class="str">"wrap"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;h1</span><span class="tag">&gt;</span>📊 ব্যবসার ড্যাশবোর্ড<span class="tag">&lt;/h1&gt;</span>
+        <span class="tag">&lt;div</span> <span class="atr">style</span>=<span class="str">"display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:20px 0"</span><span class="tag">&gt;</span>
+            <span class="tag">&lt;div</span> <span class="atr">style</span>=<span class="str">"background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)"</span><span class="tag">&gt;</span>
+                <span class="tag">&lt;h3</span> <span class="atr">style</span>=<span class="str">"color:#64748b;font-size:13px;margin:0 0 8px"</span><span class="tag">&gt;</span>মোট অর্ডার<span class="tag">&lt;/h3&gt;</span>
+                <span class="tag">&lt;p</span> <span class="atr">style</span>=<span class="str">"font-size:32px;font-weight:700;color:#1a202c;margin:0"</span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;?php</span> <span class="kw">echo</span> <span class="fn">count</span>(<span class="var">$total_orders</span>); <span class="tag">?&gt;</span>
+                <span class="tag">&lt;/p&gt;</span>
+            <span class="tag">&lt;/div&gt;</span>
+            <span class="tag">&lt;div</span> <span class="atr">style</span>=<span class="str">"background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)"</span><span class="tag">&gt;</span>
+                <span class="tag">&lt;h3</span> <span class="atr">style</span>=<span class="str">"color:#64748b;font-size:13px;margin:0 0 8px"</span><span class="tag">&gt;</span>মোট আয়<span class="tag">&lt;/h3&gt;</span>
+                <span class="tag">&lt;p</span> <span class="atr">style</span>=<span class="str">"font-size:32px;font-weight:700;color:#059669;margin:0"</span><span class="tag">&gt;</span>
+                    ৳<span class="tag">&lt;?php</span> <span class="kw">echo</span> <span class="fn">number_format</span>(<span class="var">$revenue</span>); <span class="tag">?&gt;</span>
+                <span class="tag">&lt;/p&gt;</span>
+            <span class="tag">&lt;/div&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <?php
+}</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 7: ECOMMERCE -->
+<section class="section fade-in" id="ecommerce">
+  <div class="section-header">
+    <div class="section-icon icon-green">🛒</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৭</span>
+      <h2 class="section-title">১ দিনে সম্পূর্ণ ই-কমার্স ওয়েবসাইট</h2>
+    </div>
+  </div>
+
+  <div class="highlight hl-green">
+    <span class="highlight-icon">🏆</span>
+    <div class="highlight-content">
+      <div class="highlight-title">লক্ষ্য: ১ দিনে প্রফেশনাল ই-কমার্স সাইট!</div>
+      <div class="highlight-desc">সঠিক পরিকল্পনা ও টুলস ব্যবহার করলে মাত্র ৮-১০ ঘন্টায় একটি সম্পূর্ণ ই-কমার্স সাইট তৈরি করা সম্ভব।</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">সকাল ৮:০০ — ৯:৩০ (১.৫ ঘন্টা)</div>
+      <div class="tl-title">🛠️ WordPress ও WooCommerce ইনস্টল</div>
+      <div class="tl-desc">হোস্টিং সেটআপ করুন। WordPress ইনস্টল করুন। WooCommerce প্লাগিন ইনস্টল করে Setup Wizard সম্পন্ন করুন। মুদ্রা BDT সেট করুন। শিপিং জোন বাংলাদেশ যোগ করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">সকাল ৯:৩০ — ১১:০০ (১.৫ ঘন্টা)</div>
+      <div class="tl-title">🎨 থিম সেটআপ ও ডিজাইন</div>
+      <div class="tl-desc">Flatsome বা Astra থিম ইনস্টল করুন। হোমপেজ ডিজাইন করুন — Hero Banner, Featured Products, Categories। লোগো ও ব্র্যান্ড কালার সেট করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">সকাল ১১:০০ — ১:০০ (২ ঘন্টা)</div>
+      <div class="tl-title">📦 পণ্য যোগ করা</div>
+      <div class="tl-desc">ক্যাটাগরি তৈরি করুন। কমপক্ষে ১০-২০টি পণ্য যোগ করুন। পণ্যের ছবি, বর্ণনা, মূল্য, স্টক সেট করুন। Variable Product (সাইজ/রঙ) কনফিগার করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">দুপুর ১:০০ — ২:০০ (১ ঘন্টা)</div>
+      <div class="tl-title">🍽️ বিরতি ও পর্যালোচনা</div>
+      <div class="tl-desc">সাইট পুরো একবার চেক করুন। মোবাইল ভিউ দেখুন। প্রয়োজনীয় পরিবর্তন করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">দুপুর ২:০০ — ৩:৩০ (১.৫ ঘন্টা)</div>
+      <div class="tl-title">💳 পেমেন্ট গেটওয়ে ও শিপিং</div>
+      <div class="tl-desc">SSLCommerz বা bKash পেমেন্ট গেটওয়ে সংযুক্ত করুন। Cash on Delivery (COD) চালু করুন। শিপিং চার্জ নির্ধারণ করুন। ট্যাক্স কনফিগার করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">বিকেল ৩:৩০ — ৫:০০ (১.৫ ঘন্টা)</div>
+      <div class="tl-title">🔍 SEO ও পারফরমেন্স অপ্টিমাইজেশন</div>
+      <div class="tl-desc">Rank Math SEO সেটআপ করুন। সব পেজের Meta Title/Description লিখুন। WP Rocket বা LiteSpeed Cache চালু করুন। Google Analytics যুক্ত করুন।</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">বিকেল ৫:০০ — ৬:৩০ (১.৫ ঘন্টা)</div>
+      <div class="tl-title">🔒 সিকিউরিটি ও ফাইনাল চেক</div>
+      <div class="tl-desc">Wordfence Security ইনস্টল করুন। SSL সার্টিফিকেট নিশ্চিত করুন। UpdraftPlus দিয়ে ব্যাকআপ নিন। টেস্ট অর্ডার দিয়ে পেমেন্ট চেক করুন। লাইভ করুন! 🎉</div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin: 32px 0 16px; font-size: 1.1rem;">📋 অবশ্যই ইনস্টল করুন — ই-কমার্স প্লাগিন</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>প্লাগিন</th><th>কাজ</th><th>ধরন</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>WooCommerce</strong></td><td>ই-কমার্স ইঞ্জিন</td><td><span class="badge badge-free">ফ্রি</span></td></tr>
+        <tr><td><strong>YITH WooCommerce Wishlist</strong></td><td>উইশলিস্ট ফিচার</td><td><span class="badge badge-both">ফ্রি+প্রো</span></td></tr>
+        <tr><td><strong>WooCommerce PDF Invoices</strong></td><td>ইনভয়েস তৈরি</td><td><span class="badge badge-free">ফ্রি</span></td></tr>
+        <tr><td><strong>Booster for WooCommerce</strong></td><td>১০০+ WC ফিচার</td><td><span class="badge badge-both">ফ্রি+প্রো</span></td></tr>
+        <tr><td><strong>WP-SMS</strong></td><td>SMS নোটিফিকেশন</td><td><span class="badge badge-both">ফ্রি+প্রো</span></td></tr>
+        <tr><td><strong>LiveChat / Tidio</strong></td><td>লাইভ চ্যাট</td><td><span class="badge badge-both">ফ্রি+প্রো</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 8: ADVANCED -->
+<section class="section fade-in bg-alt" id="advanced">
+  <div class="section-header">
+    <div class="section-icon icon-red">🚀</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৮</span>
+      <h2 class="section-title">অ্যাডভান্স WordPress ডেভেলপমেন্ট</h2>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 28px;">
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">WordPress Hooks</div>
+      <div class="card-desc">Actions ও Filters দিয়ে WordPress core পরিবর্তন না করে ফাংশনালিটি যোগ বা পরিবর্তন করুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <div class="card-title">Custom Taxonomies</div>
+      <div class="card-desc">নিজস্ব ট্যাক্সোনমি তৈরি করুন। যেমন: Brand, Season, Collection ইত্যাদি।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">User Roles & Permissions</div>
+      <div class="card-desc">কাস্টম user role তৈরি করুন। নির্দিষ্ট পারমিশন দিন। Multi-vendor সিস্টেম বানান।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">WP-CLI ব্যবহার</div>
+      <div class="card-desc">Command Line থেকে WordPress ম্যানেজ করুন। দ্রুত আপডেট, ব্যাকআপ, ডেটা ইমপোর্ট করুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <div class="card-title">Headless WordPress</div>
+      <div class="card-desc">WordPress কে backend হিসেবে ব্যবহার করুন। React/Next.js দিয়ে frontend তৈরি করুন।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">WordPress Cron Jobs</div>
+      <div class="card-desc">নির্দিষ্ট সময়ে অটোমেটিক কাজ করান। ইমেইল পাঠানো, ডেটা আপডেট ইত্যাদি।</div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin-bottom: 16px; font-size: 1.05rem;">🔄 Advanced Hooks — Actions ও Filters</h3>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">advanced-hooks.php</span>
+    </div>
+    <div class="code-body"><span class="cm">// ===== ACTION HOOKS =====</span>
+
+<span class="cm">// অর্ডার সম্পন্ন হলে SMS পাঠানো</span>
+<span class="fn">add_action</span>( <span class="str">'woocommerce_order_status_completed'</span>, <span class="str">'send_order_sms'</span> );
+<span class="kw">function</span> <span class="fn">send_order_sms</span>( <span class="var">$order_id</span> ) {
+    <span class="var">$order</span> = <span class="fn">wc_get_order</span>( <span class="var">$order_id</span> );
+    <span class="var">$phone</span> = <span class="var">$order</span>-><span class="fn">get_billing_phone</span>();
+    <span class="var">$message</span> = <span class="str">'আপনার অর্ডার #'</span> . <span class="var">$order_id</span> . <span class="str">' ডেলিভারি দেওয়া হয়েছে। ধন্যবাদ!'</span>;
+    <span class="fn">send_sms_via_api</span>( <span class="var">$phone</span>, <span class="var">$message</span> );
+}
+
+<span class="cm">// নতুন ইউজার রেজিস্ট্রেশনে ওয়েলকাম ইমেইল</span>
+<span class="fn">add_action</span>( <span class="str">'user_register'</span>, <span class="str">'send_welcome_email'</span> );
+<span class="kw">function</span> <span class="fn">send_welcome_email</span>( <span class="var">$user_id</span> ) {
+    <span class="var">$user</span> = <span class="fn">get_userdata</span>( <span class="var">$user_id</span> );
+    <span class="fn">wp_mail</span>(
+        <span class="var">$user</span>->user_email,
+        <span class="str">'স্বাগতম আমাদের সাইটে!'</span>,
+        <span class="str">'হ্যালো '</span> . <span class="var">$user</span>->display_name . <span class="str">', আপনাকে স্বাগতম!'</span>
+    );
+}
+
+<span class="cm">// ===== FILTER HOOKS =====</span>
+
+<span class="cm">// পণ্যের মূল্য পরিবর্তন</span>
+<span class="fn">add_filter</span>( <span class="str">'woocommerce_product_get_price'</span>, <span class="str">'apply_member_discount'</span>, <span class="str">10</span>, <span class="str">2</span> );
+<span class="kw">function</span> <span class="fn">apply_member_discount</span>( <span class="var">$price</span>, <span class="var">$product</span> ) {
+    <span class="kw">if</span> ( <span class="fn">is_user_logged_in</span>() && <span class="fn">current_user_can</span>( <span class="str">'vip_member'</span> ) ) {
+        <span class="kw">return</span> <span class="var">$price</span> * <span class="str">0.9</span>; <span class="cm">// ১০% ছাড়</span>
+    }
+    <span class="kw">return</span> <span class="var">$price</span>;
+}
+
+<span class="cm">// পোস্টের শিরোনামে কাস্টম টেক্সট যোগ</span>
+<span class="fn">add_filter</span>( <span class="str">'the_title'</span>, <span class="str">'add_custom_title_prefix'</span> );
+<span class="kw">function</span> <span class="fn">add_custom_title_prefix</span>( <span class="var">$title</span> ) {
+    <span class="kw">if</span> ( <span class="fn">is_singular</span>( <span class="str">'product'</span> ) ) {
+        <span class="kw">return</span> <span class="str">'🛍️ '</span> . <span class="var">$title</span>;
+    }
+    <span class="kw">return</span> <span class="var">$title</span>;
+}
+
+<span class="cm">// WP-CLI কমান্ড উদাহরণ</span>
+<span class="cm">// wp plugin list              → ইনস্টল প্লাগিন তালিকা</span>
+<span class="cm">// wp plugin update --all      → সব প্লাগিন আপডেট</span>
+<span class="cm">// wp db export backup.sql     → ডেটাবেস ব্যাকআপ</span>
+<span class="cm">// wp media regenerate         → মিডিয়া থাম্বনেইল পুনরায় তৈরি</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 9: SECURITY -->
+<section class="section fade-in" id="security">
+  <div class="section-header">
+    <div class="section-icon icon-red">🔐</div>
+    <div>
+      <span class="section-num">অধ্যায় — ০৯</span>
+      <h2 class="section-title">সিকিউরিটি ও পারফরমেন্স অপ্টিমাইজেশন</h2>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="color:#fff; margin-bottom: 14px; font-size: 1.05rem;">🔒 সিকিউরিটি চেকলিস্ট</h3>
+      <ul class="checklist">
+        <li>ডিফল্ট "admin" ইউজারনেম পরিবর্তন করুন</li>
+        <li>শক্তিশালী পাসওয়ার্ড ব্যবহার করুন</li>
+        <li>Two-Factor Authentication (2FA) চালু করুন</li>
+        <li>WordPress, থিম ও প্লাগিন নিয়মিত আপডেট করুন</li>
+        <li>SSL সার্টিফিকেট নিশ্চিত করুন (HTTPS)</li>
+        <li>লগইন URL পরিবর্তন করুন (WPS Hide Login)</li>
+        <li>XML-RPC বন্ধ করুন</li>
+        <li>File Editing অ্যাডমিন থেকে বন্ধ করুন</li>
+        <li>নিয়মিত ব্যাকআপ নিন (UpdraftPlus)</li>
+        <li>Wordfence Firewall চালু রাখুন</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:#fff; margin-bottom: 14px; font-size: 1.05rem;">⚡ পারফরমেন্স চেকলিস্ট</h3>
+      <ul class="checklist">
+        <li>Quality হোস্টিং ব্যবহার করুন (SSD, LiteSpeed)</li>
+        <li>CDN ব্যবহার করুন (Cloudflare ফ্রি)</li>
+        <li>Cache Plugin ব্যবহার করুন (WP Rocket)</li>
+        <li>ছবি অপ্টিমাইজ করুন (WebP ফরম্যাট)</li>
+        <li>Lazy Loading চালু করুন</li>
+        <li>Unused প্লাগিন মুছে ফেলুন</li>
+        <li>Database পরিষ্কার রাখুন (WP-Optimize)</li>
+        <li>Minify CSS ও JavaScript করুন</li>
+        <li>GZIP Compression চালু করুন</li>
+        <li>PageSpeed Insights দিয়ে নিয়মিত চেক করুন</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top: 28px;">
+    <div class="code-header">
+      <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="code-lang">.htaccess — সিকিউরিটি রুলস</span>
+    </div>
+    <div class="code-body"><span class="cm"># wp-config.php রক্ষা করুন</span>
+<span class="tag">&lt;files wp-config.php&gt;</span>
+order allow,deny
+deny from all
+<span class="tag">&lt;/files&gt;</span>
+
+<span class="cm"># XML-RPC বন্ধ করুন</span>
+<span class="tag">&lt;files xmlrpc.php&gt;</span>
+order allow,deny
+deny from all
+<span class="tag">&lt;/files&gt;</span>
+
+<span class="cm"># .htaccess নিজে রক্ষা করুন</span>
+<span class="tag">&lt;Files .htaccess&gt;</span>
+order allow,deny
+deny from all
+<span class="tag">&lt;/Files&gt;</span>
+
+<span class="cm"># ব্রাউজার ক্যাশিং</span>
+<span class="tag">&lt;IfModule mod_expires.c&gt;</span>
+ExpiresActive On
+ExpiresByType image/jpg "access 1 year"
+ExpiresByType image/png "access 1 year"
+ExpiresByType text/css "access 1 month"
+ExpiresByType text/javascript "access 1 month"
+<span class="tag">&lt;/IfModule&gt;</span>
+
+<span class="cm"># GZIP কম্প্রেশন</span>
+<span class="tag">&lt;IfModule mod_deflate.c&gt;</span>
+AddOutputFilterByType DEFLATE text/html text/css
+AddOutputFilterByType DEFLATE application/javascript
+<span class="tag">&lt;/IfModule&gt;</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 10: DEPLOYMENT -->
+<section class="section fade-in bg-alt" id="deployment">
+  <div class="section-header">
+    <div class="section-icon icon-pink">🚀</div>
+    <div>
+      <span class="section-num">অধ্যায় — ১০</span>
+      <h2 class="section-title">ডিপ্লয়মেন্ট ও লাইভ করার গাইড</h2>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 28px;">
+    <div class="card">
+      <div class="card-icon">☁️</div>
+      <div class="card-title">বাংলাদেশি হোস্টিং</div>
+      <div class="card-desc">ExonHost, Hosting Bangladesh, Shuttle Hosting — দেশীয় সাপোর্ট, কম লেটেন্সি, BDT পেমেন্ট সুবিধা।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <div class="card-title">আন্তর্জাতিক হোস্টিং</div>
+      <div class="card-desc">SiteGround, Kinsta, WP Engine — সর্বোচ্চ পারফরমেন্স, WordPress Managed Hosting।</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">লোকাল থেকে লাইভ মাইগ্রেশন</div>
+      <div class="card-desc">Duplicator বা All-in-One WP Migration প্লাগিন দিয়ে সহজেই লোকাল সাইট লাইভে নিয়ে যান।</div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff; margin-bottom: 16px; font-size: 1.05rem;">📋 লাইভ করার ধাপে ধাপে</h3>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">১</div>
+      <div class="step-content">
+        <div class="step-title">হোস্টিং ও ডোমেইন কিনুন</div>
+        <div class="step-desc">ডোমেইন নাম নির্বাচন করুন। DNS সেটআপ করুন। SSL সার্টিফিকেট চালু করুন (বেশিরভাগ হোস্টিংয়ে ফ্রি)।</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">২</div>
+      <div class="step-content">
+        <div class="step-title">Duplicator দিয়ে ব্যাকআপ নিন</div>
+        <div class="step-desc">লোকাল সাইট থেকে Duplicator package তৈরি করুন। installer.php ও archive.zip ফাইল ডাউনলোড করুন।</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">৩</div>
+      <div class="step-content">
+        <div class="step-title">হোস্টিং সার্ভারে আপলোড করুন</div>
+        <div class="step-desc">FTP বা cPanel File Manager দিয়ে দুটো ফাইল public_html-এ আপলোড করুন।</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">৪</div>
+      <div class="step-content">
+        <div class="step-title">ডেটাবেস তৈরি ও ইনস্টল</div>
+        <div class="step-desc">cPanel-এ নতুন MySQL ডেটাবেস তৈরি করুন। yoursite.com/installer.php খুলে ইনস্টলেশন সম্পন্ন করুন।</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">৫</div>
+      <div class="step-content">
+        <div class="step-title">URL ও পারমালিংক ঠিক করুন</div>
+        <div class="step-desc">WordPress Settings → General-এ সাইটের URL আপডেট করুন। Settings → Permalinks-এ Save changes করুন।</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">৬</div>
+      <div class="step-content">
+        <div class="step-title">ফাইনাল টেস্ট ও লঞ্চ! 🎉</div>
+        <div class="step-desc">সব পেজ চেক করুন। পেমেন্ট টেস্ট করুন। Contact Form টেস্ট করুন। Google Search Console-এ সাইট যোগ করুন। সোশ্যাল মিডিয়ায় ঘোষণা দিন!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight hl-blue" style="margin-top: 32px;">
+    <span class="highlight-icon">📚</span>
+    <div class="highlight-content">
+      <div class="highlight-title">আরও শিখতে চান?</div>
+      <div class="highlight-desc">WordPress.org Documentation, WooCommerce Docs, YouTube-এ বাংলা টিউটোরিয়াল, এবং WordPress Community বাংলাদেশ Facebook Group-এ যোগ দিন।</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🔷</div>
+    <div class="footer-title">WordPress সম্পূর্ণ গাইড বাংলায়</div>
+    <div class="footer-sub" style="margin-top: 12px;">বেসিক থেকে অ্যাডভান্স · ফ্রি ও পেইড থিম · API ইন্টিগ্রেশন · অ্যাডমিন ডিজাইন · ১ দিনে ই-কমার্স</div>
+    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <span class="tag">WordPress 6.x</span>
+      <span class="tag">WooCommerce 8.x</span>
+      <span class="tag">PHP 8.x</span>
+      <span class="tag">MySQL 8.x</span>
+      <span class="tag">REST API</span>
+    </div>
+    <div style="margin-top: 24px; color: var(--text3); font-size: 0.82rem;">
+      © ২০২৫ · সম্পূর্ণ বাংলায় তৈরি
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Progress Bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Fade In Observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
