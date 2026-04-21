@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="LumeAura Pro Skincare - Premium organic skincare collection. Shop now with free shipping on orders over $50.">
+<meta name="keywords" content="skincare, organic, premium, beauty, LumeAura">
+<meta property="og:title" content="LumeAura Pro – Premium Skincare">
+<meta property="og:description" content="Transform your skin with nature's finest ingredients. Clinically tested, dermatologist approved.">
+<title>LumeAura Pro – Premium Skincare Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & THEME
+   ============================================================ */
+:root {
+  --gold: #c9a96e;
+  --gold-light: #e8cc9a;
+  --gold-dark: #9a7a45;
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-bn: 'Noto Sans Bengali', sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0c0f;
+  --bg2: #111318;
+  --bg3: #181b22;
+  --surface: #1e2130;
+  --surface2: #252a3a;
+  --border: #2e3347;
+  --text: #f0ede8;
+  --text2: #9da3b8;
+  --text3: #5a6080;
+  --shadow: 0 8px 40px rgba(0,0,0,0.5);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.3);
+  --nav-bg: rgba(11,12,15,0.85);
+  --overlay: rgba(0,0,0,0.6);
+}
+
+[data-theme="light"] {
+  --bg: #faf9f6;
+  --bg2: #f2ede6;
+  --bg3: #ebe4d9;
+  --surface: #ffffff;
+  --surface2: #f7f3ee;
+  --border: #e0d8cc;
+  --text: #1a1714;
+  --text2: #5a5248;
+  --text3: #a09488;
+  --shadow: 0 8px 40px rgba(0,0,0,0.12);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.08);
+  --nav-bg: rgba(250,249,246,0.9);
+  --overlay: rgba(0,0,0,0.35);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+[data-lang="bn"] { font-family: var(--font-bn); }
+[data-lang="bn"] .en-text { display: none !important; }
+[data-lang="bn"] .bn-text { display: inline !important; }
+[data-lang="en"] .bn-text { display: none !important; }
+[data-lang="en"] .en-text { display: inline !important; }
+.bn-block { display: none; }
+[data-lang="bn"] .bn-block { display: block; }
+[data-lang="bn"] .en-block { display: none; }
+[data-lang="en"] .en-block { display: block; }
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+::selection { background: var(--gold); color: #fff; }
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-pad { padding: 96px 0; }
+.text-gold { color: var(--gold); }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff; font-weight: 600; font-size: 15px;
+  padding: 14px 32px; border-radius: 50px;
+  transition: var(--transition); letter-spacing: 0.3px;
+  box-shadow: 0 4px 20px rgba(201,169,110,0.35);
+  position: relative; overflow: hidden;
+}
+.btn-primary::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0; transition: var(--transition);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,169,110,0.5); }
+.btn-primary:hover::after { opacity: 1; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--gold); color: var(--gold);
+  font-weight: 600; font-size: 15px; padding: 13px 30px;
+  border-radius: 50px; transition: var(--transition);
+}
+.btn-outline:hover { background: var(--gold); color: #fff; transform: translateY(-2px); }
+
+.badge {
+  display: inline-block; padding: 4px 14px; border-radius: 50px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+}
+.badge-gold { background: rgba(201,169,110,0.15); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
+.badge-sale { background: #e53e3e; color: #fff; }
+.badge-new  { background: #38a169; color: #fff; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; max-width: 1200px; margin: 0 auto;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 32px; list-style: none;
+}
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--text2);
+  transition: var(--transition); position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 1.5px; background: var(--gold); transform: scaleX(0);
+  transition: var(--transition);
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-controls { display: flex; align-items: center; gap: 8px; }
+.ctrl-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 15px;
+  border: 1px solid var(--border);
+  background: var(--surface); transition: var(--transition);
+  cursor: pointer;
+}
+.ctrl-btn:hover { color: var(--gold); border-color: var(--gold); }
+.lang-btn {
+  padding: 6px 14px; border-radius: 50px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text2);
+  transition: var(--transition); cursor: pointer;
+}
+.lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+.cart-btn { position: relative; }
+.cart-count {
+  position: absolute; top: -6px; right: -6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gold); color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.hamburger span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: var(--transition); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  position: relative; overflow: hidden;
+  background: var(--bg);
+  padding-top: 80px;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse 70% 80% at 70% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(201,169,110,0.05) 0%, transparent 50%);
+}
+[data-theme="light"] .hero-bg {
+  background:
+    radial-gradient(ellipse 70% 80% at 70% 50%, rgba(201,169,110,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(201,169,110,0.08) 0%, transparent 50%);
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 60px;
+  position: relative; z-index: 1;
+}
+.hero-tag { margin-bottom: 20px; }
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 5.5vw, 72px);
+  font-weight: 700; line-height: 1.1;
+  margin-bottom: 20px;
+}
+[data-lang="bn"] .hero-title { font-family: var(--font-bn); font-size: clamp(32px, 4vw, 54px); }
+.hero-title em { font-style: italic; color: var(--gold); }
+.hero-desc { font-size: 17px; color: var(--text2); max-width: 480px; margin-bottom: 32px; line-height: 1.8; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-stats { display: flex; gap: 32px; }
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 700; color: var(--gold);
+  display: block;
+}
+.stat-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+
+.hero-visual { position: relative; }
+.hero-img-wrap {
+  position: relative; border-radius: 28px; overflow: hidden;
+  box-shadow: var(--shadow);
+  aspect-ratio: 4/5;
+}
+.hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.hero-float-card {
+  position: absolute; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 18px; box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+.hero-float-1 { bottom: 30px; left: -30px; }
+.hero-float-2 { top: 40px; right: -20px; }
+.float-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.float-val { font-size: 16px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; }
+
+/* ============================================================
+   ANNOUNCEMENT BAR
+   ============================================================ */
+.announce-bar {
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+  color: #fff; text-align: center;
+  padding: 10px 24px; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.5px; position: relative; z-index: 999;
+}
+.announce-bar a { color: #fff; text-decoration: underline; }
+
+/* ============================================================
+   TRUST STRIP
+   ============================================================ */
+.trust-strip {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); padding: 20px 0;
+}
+.trust-items { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+}
+.trust-icon { font-size: 20px; }
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+.gallery-section { background: var(--bg); }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+  margin-bottom: 12px; line-height: 1.2;
+}
+[data-lang="bn"] .section-title { font-family: var(--font-bn); font-size: clamp(26px, 3.5vw, 42px); }
+.section-sub { font-size: 16px; color: var(--text2); max-width: 520px; margin: 0 auto; }
+
+.gallery-main { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.gallery-left { display: grid; gap: 16px; }
+.gallery-big { border-radius: 20px; overflow: hidden; aspect-ratio: 4/3; cursor: pointer; position: relative; }
+.gallery-big img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-big:hover img { transform: scale(1.05); }
+.gallery-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.gallery-sm { border-radius: 16px; overflow: hidden; aspect-ratio: 1; cursor: pointer; position: relative; }
+.gallery-sm img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-sm:hover img { transform: scale(1.08); }
+.gallery-right { border-radius: 20px; overflow: hidden; cursor: pointer; position: relative; }
+.gallery-right img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-right:hover img { transform: scale(1.05); }
+.gallery-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  opacity: 0; transition: var(--transition);
+  display: flex; align-items: flex-end; padding: 20px;
+}
+.gallery-big:hover .gallery-overlay,
+.gallery-sm:hover .gallery-overlay,
+.gallery-right:hover .gallery-overlay { opacity: 1; }
+.gallery-caption { color: #fff; font-size: 13px; font-weight: 600; }
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.95);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.lightbox.open { opacity: 1; pointer-events: all; }
+.lightbox-img { max-width: 90vw; max-height: 85vh; border-radius: 12px; object-fit: contain; }
+.lightbox-close {
+  position: absolute; top: 24px; right: 24px;
+  color: #fff; font-size: 32px; cursor: pointer; line-height: 1;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(255,255,255,0.1);
+  transition: var(--transition);
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.25); }
+.lightbox-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: #fff; font-size: 28px; cursor: pointer;
+  width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(255,255,255,0.1);
+  transition: var(--transition);
+}
+.lightbox-nav:hover { background: rgba(201,169,110,0.4); }
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+
+/* ============================================================
+   PRODUCT DETAIL
+   ============================================================ */
+.product-section { background: var(--bg2); }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+.product-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+.thumb {
+  border-radius: 10px; overflow: hidden; aspect-ratio: 1; cursor: pointer;
+  border: 2px solid transparent; transition: var(--transition);
+}
+.thumb.active { border-color: var(--gold); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+.thumb:hover { border-color: var(--gold-light); }
+.main-product-img {
+  border-radius: 20px; overflow: hidden; aspect-ratio: 3/4;
+  position: relative; background: var(--surface);
+}
+.main-product-img img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s; }
+.sale-badge-img {
+  position: absolute; top: 16px; left: 16px;
+  background: #e53e3e; color: #fff;
+  font-size: 13px; font-weight: 800;
+  padding: 6px 14px; border-radius: 50px; letter-spacing: 0.5px;
+}
+
+.product-info { padding-top: 8px; }
+.product-brand { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.product-name {
+  font-family: var(--font-display); font-size: clamp(28px, 3vw, 42px);
+  font-weight: 700; line-height: 1.2; margin-bottom: 16px;
+}
+[data-lang="bn"] .product-name { font-family: var(--font-bn); font-size: clamp(22px, 2.5vw, 34px); }
+.rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.rating-count { font-size: 13px; color: var(--text3); }
+.price-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.price-current {
+  font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--gold);
+}
+.price-original { font-size: 20px; color: var(--text3); text-decoration: line-through; }
+.price-save { font-size: 13px; font-weight: 700; background: rgba(229,62,62,0.15); color: #e53e3e; padding: 3px 10px; border-radius: 50px; }
+
+.product-desc { color: var(--text2); font-size: 15px; line-height: 1.8; margin-bottom: 24px; }
+
+.variant-label { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.variants { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+.variant-btn {
+  padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500;
+  border: 1.5px solid var(--border); color: var(--text2);
+  background: var(--surface); transition: var(--transition); cursor: pointer;
+}
+.variant-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.1); }
+.variant-btn:hover { border-color: var(--gold-light); color: var(--text); }
+
+.qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.qty-control { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+.qty-btn { width: 40px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text2); transition: var(--transition); cursor: pointer; }
+.qty-btn:hover { background: var(--surface2); color: var(--gold); }
+.qty-num { width: 48px; text-align: center; font-size: 16px; font-weight: 700; color: var(--text); background: transparent; border: none; outline: none; }
+
+.add-actions { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn-cart {
+  flex: 1; min-width: 180px; padding: 16px 24px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff; font-weight: 700; font-size: 16px; border-radius: 12px;
+  transition: var(--transition); box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-cart:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,169,110,0.5); }
+.btn-wish {
+  width: 54px; height: 54px; border-radius: 12px;
+  border: 1.5px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; transition: var(--transition); cursor: pointer;
+  color: var(--text2);
+}
+.btn-wish:hover { border-color: #e53e3e; color: #e53e3e; }
+.btn-wish.active { border-color: #e53e3e; color: #e53e3e; background: rgba(229,62,62,0.1); }
+
+.product-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.meta-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); }
+.meta-icon { font-size: 16px; }
+
+/* ============================================================
+   FEATURES / WHY US
+   ============================================================ */
+.features-section { background: var(--bg); }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.feature-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 32px 28px;
+  transition: var(--transition); position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transform: scaleX(0); transition: var(--transition);
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(201,169,110,0.3); }
+.feature-card:hover::before { transform: scaleX(1); }
+.feature-icon { font-size: 36px; margin-bottom: 16px; }
+.feature-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.feature-desc { font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testimonials-section { background: var(--bg2); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.testimonial-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px;
+  transition: var(--transition);
+}
+.testimonial-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.testimonial-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.testimonial-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--gold);
+}
+.testimonial-name { font-weight: 700; font-size: 15px; }
+.testimonial-location { font-size: 12px; color: var(--text3); }
+.testimonial-text { font-size: 14px; color: var(--text2); line-height: 1.75; font-style: italic; }
+.testimonial-text::before { content: '"'; font-size: 40px; color: var(--gold); line-height: 0; vertical-align: -16px; margin-right: 4px; }
+
+/* ============================================================
+   ORDER / CHECKOUT
+   ============================================================ */
+.order-section {
+  background: var(--bg);
+  padding: 96px 0;
+}
+.order-wrap {
+  display: grid; grid-template-columns: 1fr 420px;
+  gap: 40px; align-items: start;
+}
+.order-form-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 40px; box-shadow: var(--shadow);
+}
+.form-section-title {
+  font-size: 18px; font-weight: 700; margin-bottom: 24px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.form-section-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff; font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1/-1; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--text2); }
+.form-input {
+  padding: 12px 16px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: var(--bg);
+  color: var(--text); font-family: inherit; font-size: 15px;
+  transition: var(--transition); outline: none;
+}
+.form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.15); }
+.form-input::placeholder { color: var(--text3); }
+select.form-input { cursor: pointer; }
+
+.payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.pay-method {
+  border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px; text-align: center; cursor: pointer;
+  transition: var(--transition); background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.pay-method:hover { border-color: var(--gold-light); }
+.pay-method.active { border-color: var(--gold); background: rgba(201,169,110,0.08); }
+.pay-icon { font-size: 22px; }
+.pay-label { font-size: 11px; font-weight: 600; color: var(--text2); }
+
+.order-summary {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 32px; position: sticky; top: 100px;
+  box-shadow: var(--shadow);
+}
+.summary-title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+[data-lang="bn"] .summary-title { font-family: var(--font-bn); font-size: 20px; }
+.summary-product {
+  display: flex; gap: 14px; margin-bottom: 20px;
+  padding-bottom: 20px; border-bottom: 1px solid var(--border);
+}
+.summary-img { width: 72px; height: 80px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.summary-product-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.summary-product-variant { font-size: 12px; color: var(--text3); }
+.summary-product-price { font-size: 16px; font-weight: 700; color: var(--gold); margin-top: 6px; }
+.summary-rows { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.summary-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text2); }
+.summary-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: var(--text); border-top: 1px solid var(--border); padding-top: 16px; margin-bottom: 20px; }
+.total-amount { color: var(--gold); }
+.coupon-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.coupon-input { flex: 1; }
+.btn-coupon { padding: 12px 20px; border-radius: 10px; background: var(--bg2); color: var(--text); font-weight: 600; font-size: 14px; border: 1.5px solid var(--border); cursor: pointer; transition: var(--transition); }
+.btn-coupon:hover { border-color: var(--gold); color: var(--gold); }
+.btn-order {
+  width: 100%; padding: 18px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff; font-weight: 800; font-size: 18px;
+  box-shadow: 0 4px 24px rgba(201,169,110,0.4);
+  transition: var(--transition); cursor: pointer; border: none;
+  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-order:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,169,110,0.6); }
+.secure-note { text-align: center; font-size: 12px; color: var(--text3); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* Coupon success */
+.coupon-applied { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; background: rgba(56,161,105,0.1); border: 1px solid rgba(56,161,105,0.3); color: #38a169; font-size: 13px; font-weight: 600; margin-top: 8px; }
+
+/* ============================================================
+   SUCCESS MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0.7); display: flex;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  padding: 20px;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 48px 40px; text-align: center;
+  max-width: 440px; width: 100%;
+  transform: scale(0.9); transition: transform 0.3s;
+}
+.modal-overlay.open .modal-box { transform: scale(1); }
+.modal-icon { font-size: 64px; margin-bottom: 20px; }
+.modal-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+[data-lang="bn"] .modal-title { font-family: var(--font-bn); font-size: 22px; }
+.modal-sub { font-size: 15px; color: var(--text2); margin-bottom: 28px; line-height: 1.7; }
+.modal-order-id { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 13px; color: var(--text3); margin-bottom: 28px; font-family: monospace; }
+
+/* ============================================================
+   SEO / INGREDIENTS
+   ============================================================ */
+.ingredients-section { background: var(--bg2); }
+.ingredients-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ingredient-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px; text-align: center;
+  transition: var(--transition);
+}
+.ingredient-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); border-color: rgba(201,169,110,0.3); }
+.ingredient-emoji { font-size: 40px; margin-bottom: 12px; }
+.ingredient-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.ingredient-benefit { font-size: 13px; color: var(--text2); }
+
+/* ============================================================
+   FAQ / SEO CONTENT
+   ============================================================ */
+.faq-section { background: var(--bg); }
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.faq-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; transition: var(--transition);
+}
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; cursor: pointer; font-size: 15px; font-weight: 600;
+  gap: 12px;
+}
+.faq-arrow { font-size: 18px; color: var(--gold); transition: var(--transition); flex-shrink: 0; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { padding: 0 22px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; font-size: 14px; color: var(--text2); line-height: 1.8; }
+.faq-item.open .faq-a { max-height: 200px; padding: 0 22px 18px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 60px 0 32px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand { }
+.footer-logo {
+  font-family: var(--font-display); font-size: 28px; font-weight: 700;
+  color: var(--gold); margin-bottom: 14px; display: block;
+}
+.footer-desc { font-size: 14px; color: var(--text3); line-height: 1.8; max-width: 260px; margin-bottom: 20px; }
+.social-links { display: flex; gap: 10px; }
+.social-link {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text3); transition: var(--transition);
+}
+.social-link:hover { border-color: var(--gold); color: var(--gold); }
+.footer-col-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text); margin-bottom: 16px; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 14px; color: var(--text3); transition: var(--transition); }
+.footer-links a:hover { color: var(--gold); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-copy { font-size: 13px; color: var(--text3); }
+.footer-cards { display: flex; gap: 8px; }
+.card-icon { font-size: 22px; opacity: 0.6; }
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+.mobile-menu {
+  position: fixed; top: 0; right: 0; width: 280px; height: 100vh; z-index: 2000;
+  background: var(--surface); border-left: 1px solid var(--border);
+  padding: 80px 32px 32px; transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow);
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.mobile-menu-links a { display: block; padding: 12px 0; font-size: 16px; font-weight: 500; color: var(--text2); border-bottom: 1px solid var(--border); transition: var(--transition); }
+.mobile-menu-links a:hover { color: var(--gold); }
+.mobile-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--border); cursor: pointer; font-size: 18px; color: var(--text2); }
+.mobile-overlay { position: fixed; inset: 0; z-index: 1999; background: var(--overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.mobile-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.fade-up { animation: fadeUp 0.7s ease both; }
+.float-anim { animation: float 4s ease-in-out infinite; }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9990; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 20px;
+  box-shadow: var(--shadow); font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px; max-width: 320px;
+  transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  border-left: 4px solid var(--gold);
+}
+.toast.show { transform: translateX(0); }
+
+/* ============================================================
+   HIGHLIGHTED SALE SECTION
+   ============================================================ */
+.sale-section {
+  background: linear-gradient(135deg, #1a0e02, #2d1a05);
+  position: relative; overflow: hidden; padding: 80px 0;
+}
+[data-theme="light"] .sale-section { background: linear-gradient(135deg, #f5e8d0, #f0d9aa); }
+.sale-section::before {
+  content: ''; position: absolute;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,169,110,0.2) 0%, transparent 70%);
+  top: -100px; right: -100px; pointer-events: none;
+}
+.sale-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+.sale-badge-big {
+  display: inline-block; padding: 8px 22px; border-radius: 50px;
+  background: rgba(201,169,110,0.2); border: 1px solid rgba(201,169,110,0.5);
+  color: var(--gold-light); font-size: 13px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+[data-theme="light"] .sale-badge-big { background: rgba(201,169,110,0.25); }
+.sale-title {
+  font-family: var(--font-display); font-size: clamp(36px, 4vw, 56px); font-weight: 700;
+  color: #fff; line-height: 1.15; margin-bottom: 16px;
+}
+[data-theme="light"] .sale-title { color: #1a0e02; }
+[data-lang="bn"] .sale-title { font-family: var(--font-bn); font-size: clamp(28px, 3.5vw, 44px); }
+.sale-desc { color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 28px; line-height: 1.8; }
+[data-theme="light"] .sale-desc { color: rgba(26,14,2,0.65); }
+.sale-countdown { display: flex; gap: 20px; margin-bottom: 32px; }
+.countdown-item { text-align: center; }
+.countdown-num {
+  font-family: var(--font-display); font-size: 42px; font-weight: 700; color: var(--gold);
+  display: block; line-height: 1;
+}
+.countdown-unit { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+[data-theme="light"] .countdown-unit { color: rgba(26,14,2,0.5); }
+.sale-right { position: relative; }
+.sale-img-wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+.sale-img-wrap img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.sale-price-tag {
+  position: absolute; top: -20px; right: -20px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(201,169,110,0.4);
+}
+.sale-price-off { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); }
+.sale-price-pct { font-size: 28px; font-weight: 900; color: #fff; line-height: 1; }
+
+/* ============================================================
+   PROGRESS BAR (stock)
+   ============================================================ */
+.stock-bar { margin: 16px 0; }
+.stock-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.stock-label span { color: #e53e3e; font-weight: 700; }
+.progress-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #e53e3e); border-radius: 3px; transition: width 1s ease; }
+
+/* ============================================================
+   SCROLL TO TOP
+   ============================================================ */
+.scroll-top {
+  position: fixed; bottom: 24px; left: 24px; z-index: 999;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(201,169,110,0.4); cursor: pointer;
+  opacity: 0; transform: translateY(10px); transition: var(--transition);
+}
+.scroll-top.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-desc { margin: 0 auto 32px; }
+  .hero-actions, .hero-stats { justify-content: center; }
+  .hero-float-1, .hero-float-2 { display: none; }
+  .hero-img-wrap { max-width: 480px; margin: 0 auto; aspect-ratio: 3/4; }
+  .product-grid { grid-template-columns: 1fr; gap: 40px; }
+  .order-wrap { grid-template-columns: 1fr; }
+  .order-summary { position: static; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .sale-inner { grid-template-columns: 1fr; }
+  .sale-right { display: none; }
+}
+
+@media (max-width: 768px) {
+  .section-pad { padding: 64px 0; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-title { font-size: clamp(32px, 7vw, 48px); }
+  .hero-stats { gap: 20px; }
+  .gallery-main { grid-template-columns: 1fr; }
+  .gallery-right { display: none; }
+  .gallery-row { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .ingredients-grid { grid-template-columns: 1fr 1fr; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .form-grid { grid-template-columns: 1fr; }
+  .product-meta { grid-template-columns: 1fr; }
+  .sale-countdown { gap: 12px; }
+  .countdown-num { font-size: 30px; }
+  .trust-items { gap: 20px; }
+  .sale-section { padding: 60px 0; }
+  .order-form-card { padding: 24px; }
+}
+
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; align-items: center; }
+  .gallery-big { aspect-ratio: 4/3; }
+  .payment-methods { grid-template-columns: 1fr 1fr; }
+  .sale-countdown { flex-wrap: wrap; justify-content: center; }
+  .add-actions { flex-direction: column; }
+  .btn-wish { width: 100%; height: 54px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE BAR -->
+<div class="announce-bar">
+  <span class="en-text">🎁 FREE SHIPPING on orders over $50 | Use code <strong>GLOW20</strong> for 20% off | Limited time!</span>
+  <span class="bn-text">🎁 $৫০-এর উপর অর্ডারে বিনামূল্যে ডেলিভারি | <strong>GLOW20</strong> কোড দিয়ে ২০% ছাড় | সীমিত সময়!</span>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">LumeAura</div>
+    <ul class="nav-links">
+      <li><a href="#product"><span class="en-text">Product</span><span class="bn-text">পণ্য</span></a></li>
+      <li><a href="#gallery"><span class="en-text">Gallery</span><span class="bn-text">গ্যালারি</span></a></li>
+      <li><a href="#features"><span class="en-text">Benefits</span><span class="bn-text">সুবিধা</span></a></li>
+      <li><a href="#reviews"><span class="en-text">Reviews</span><span class="bn-text">রিভিউ</span></a></li>
+      <li><a href="#order" class="text-gold"><span class="en-text">Order Now</span><span class="bn-text">অর্ডার করুন</span></a></li>
+    </ul>
+    <div class="nav-controls">
+      <button class="lang-btn" id="langToggle" onclick="toggleLang()">বাং</button>
+      <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+      <button class="ctrl-btn cart-btn" onclick="scrollToOrder()">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <div class="hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-close" onclick="toggleMobileMenu()">✕</div>
+  <ul class="mobile-menu-links">
+    <li><a href="#product" onclick="toggleMobileMenu()"><span class="en-text">Product</span><span class="bn-text">পণ্য</span></a></li>
+    <li><a href="#gallery" onclick="toggleMobileMenu()"><span class="en-text">Gallery</span><span class="bn-text">গ্যালারি</span></a></li>
+    <li><a href="#features" onclick="toggleMobileMenu()"><span class="en-text">Benefits</span><span class="bn-text">সুবিধা</span></a></li>
+    <li><a href="#reviews" onclick="toggleMobileMenu()"><span class="en-text">Reviews</span><span class="bn-text">রিভিউ</span></a></li>
+    <li><a href="#order" onclick="toggleMobileMenu()"><span class="en-text">Order Now</span><span class="bn-text">অর্ডার করুন</span></a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content fade-up">
+        <div class="hero-tag">
+          <span class="badge badge-gold">
+            <span class="en-text">✨ Clinically Proven Formula</span>
+            <span class="bn-text">✨ ক্লিনিক্যালি প্রমাণিত ফর্মুলা</span>
+          </span>
+        </div>
+        <h1 class="hero-title">
+          <span class="en-text">Radiant Skin<br>Starts with<br><em>Nature's Best</em></span>
+          <span class="bn-text">উজ্জ্বল ত্বকের<br>শুরু হয় <em>প্রকৃতির</em><br>সেরা উপাদানে</span>
+        </h1>
+        <p class="hero-desc en-text">Transform your skincare routine with LumeAura Pro — crafted from 100% organic botanicals, scientifically formulated for visibly younger, healthier skin in just 28 days.</p>
+        <p class="hero-desc bn-text">LumeAura Pro দিয়ে আপনার ত্বকের যত্নকে রূপান্তরিত করুন — ১০০% জৈব উদ্ভিজ্জ উপাদান থেকে তৈরি, বৈজ্ঞানিকভাবে মাত্র ২৮ দিনে দৃশ্যমান তারুণ্যময় ত্বকের জন্য।</p>
+        <div class="hero-actions">
+          <a href="#order" class="btn-primary">
+            <span class="en-text">🛍️ Shop Now — Save 30%</span>
+            <span class="bn-text">🛍️ এখনই কিনুন — ৩০% সাশ্রয়</span>
+          </a>
+          <a href="#gallery" class="btn-outline">
+            <span class="en-text">View Gallery</span>
+            <span class="bn-text">গ্যালারি দেখুন</span>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">50K+</span>
+            <span class="stat-label"><span class="en-text">Happy Customers</span><span class="bn-text">সন্তুষ্ট গ্রাহক</span></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">4.9★</span>
+            <span class="stat-label"><span class="en-text">Average Rating</span><span class="bn-text">গড় রেটিং</span></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">100%</span>
+            <span class="stat-label"><span class="en-text">Organic</span><span class="bn-text">অর্গানিক</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual float-anim">
+        <div class="hero-img-wrap">
+          <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=750&fit=crop" alt="LumeAura Pro Skincare Product" loading="eager">
+        </div>
+        <div class="hero-float-card hero-float-1">
+          <div class="float-label"><span class="en-text">Customer Rating</span><span class="bn-text">রেটিং</span></div>
+          <div class="stars">★★★★★</div>
+          <div class="float-val">4.9 / 5.0</div>
+        </div>
+        <div class="hero-float-card hero-float-2">
+          <div class="float-label"><span class="en-text">Limited Offer</span><span class="bn-text">সীমিত অফার</span></div>
+          <div class="float-val" style="color:var(--gold)">30% <span style="font-size:12px;font-weight:400" class="en-text">OFF Today</span><span style="font-size:12px;font-weight:400" class="bn-text">ছাড়</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="container">
+    <div class="trust-items">
+      <div class="trust-item"><span class="trust-icon">🚚</span><span class="en-text">Free Shipping $50+</span><span class="bn-text">বিনামূল্যে শিপিং</span></div>
+      <div class="trust-item"><span class="trust-icon">↩️</span><span class="en-text">30-Day Returns</span><span class="bn-text">৩০ দিনের রিটার্ন</span></div>
+      <div class="trust-item"><span class="trust-icon">🔒</span><span class="en-text">Secure Checkout</span><span class="bn-text">নিরাপদ চেকআউট</span></div>
+      <div class="trust-item"><span class="trust-icon">🌿</span><span class="en-text">100% Vegan & Organic</span><span class="bn-text">১০০% ভেগান ও অর্গানিক</span></div>
+      <div class="trust-item"><span class="trust-icon">🏆</span><span class="en-text">Award Winning Formula</span><span class="bn-text">পুরস্কারজয়ী ফর্মুলা</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section section-pad" id="gallery">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">Photo Gallery</span><span class="bn-text">ফটো গ্যালারি</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">See It to <em style="font-style:italic;color:var(--gold)">Believe It</em></span>
+        <span class="bn-text">দেখুন এবং <em style="font-style:italic;color:var(--gold)">বিশ্বাস করুন</em></span>
+      </h2>
+      <p class="section-sub">
+        <span class="en-text">Real results from real people. Browse our gallery of transformed skin and beautiful products.</span>
+        <span class="bn-text">বাস্তব মানুষদের বাস্তব ফলাফল। রূপান্তরিত ত্বক এবং সুন্দর পণ্যের গ্যালারি দেখুন।</span>
+      </p>
+    </div>
+    <div class="gallery-main">
+      <div class="gallery-left">
+        <div class="gallery-big" onclick="openLightbox(0)">
+          <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=700&h=500&fit=crop" alt="LumeAura Pro Face Serum">
+          <div class="gallery-overlay"><span class="gallery-caption">🌿 <span class="en-text">Revitalizing Serum</span><span class="bn-text">রিভাইটালাইজিং সিরাম</span></span></div>
+        </div>
+        <div class="gallery-row">
+          <div class="gallery-sm" onclick="openLightbox(1)">
+            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=400&fit=crop" alt="Skincare ingredients">
+            <div class="gallery-overlay"><span class="gallery-caption">🌸 <span class="en-text">Rose Extract</span><span class="bn-text">গোলাপ নির্যাস</span></span></div>
+          </div>
+          <div class="gallery-sm" onclick="openLightbox(2)">
+            <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=400&h=400&fit=crop" alt="Skincare routine">
+            <div class="gallery-overlay"><span class="gallery-caption">✨ <span class="en-text">Daily Glow</span><span class="bn-text">দৈনিক উজ্জ্বলতা</span></span></div>
+          </div>
+          <div class="gallery-sm" onclick="openLightbox(3)">
+            <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop" alt="Natural skincare">
+            <div class="gallery-overlay"><span class="gallery-caption">🧴 <span class="en-text">Moisturizer</span><span class="bn-text">ময়েশ্চারাইজার</span></span></div>
+          </div>
+          <div class="gallery-sm" onclick="openLightbox(4)">
+            <img src="https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=400&h=400&fit=crop" alt="Beauty routine">
+            <div class="gallery-overlay"><span class="gallery-caption">💆 <span class="en-text">Beauty Ritual</span><span class="bn-text">বিউটি রিচুয়াল</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-right" onclick="openLightbox(5)">
+        <img src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500&h=700&fit=crop" alt="Premium skincare collection">
+        <div class="gallery-overlay"><span class="gallery-caption">💎 <span class="en-text">Premium Collection</span><span class="bn-text">প্রিমিয়াম কালেকশন</span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+  <div class="lightbox-nav lightbox-prev" onclick="changeLightbox(-1)">‹</div>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-nav lightbox-next" onclick="changeLightbox(1)">›</div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<section class="product-section section-pad" id="product">
+  <div class="container">
+    <div class="product-grid">
+      <div class="product-images">
+        <div class="main-product-img" id="mainProductImg">
+          <img id="mainImg" src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=800&fit=crop" alt="LumeAura Pro Serum">
+          <div class="sale-badge-img">SALE 30% OFF</div>
+        </div>
+        <div class="product-thumbnails">
+          <div class="thumb active" onclick="changeMainImg(this,'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=800&fit=crop')">
+            <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=150&h=150&fit=crop" alt="">
+          </div>
+          <div class="thumb" onclick="changeMainImg(this,'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&h=800&fit=crop')">
+            <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=150&h=150&fit=crop" alt="">
+          </div>
+          <div class="thumb" onclick="changeMainImg(this,'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&h=800&fit=crop')">
+            <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=150&h=150&fit=crop" alt="">
+          </div>
+          <div class="thumb" onclick="changeMainImg(this,'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&h=800&fit=crop')">
+            <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=150&h=150&fit=crop" alt="">
+          </div>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <div class="product-brand">LumeAura Pro</div>
+        <h1 class="product-name">
+          <span class="en-text">Radiance Revival Serum<br>with Vitamin C & Retinol</span>
+          <span class="bn-text">রেডিয়্যান্স রিভাইভাল সিরাম<br>ভিটামিন সি ও রেটিনল সহ</span>
+        </h1>
+        <div class="rating-row">
+          <span class="stars">★★★★★</span>
+          <span class="rating-count">4.9 (<span class="en-text">2,847 reviews</span><span class="bn-text">২,৮৪৭ রিভিউ</span>)</span>
+          <span class="badge badge-new"><span class="en-text">BESTSELLER</span><span class="bn-text">বেস্টসেলার</span></span>
+        </div>
+        <div class="price-row">
+          <span class="price-current">$69.99</span>
+          <span class="price-original">$99.99</span>
+          <span class="price-save"><span class="en-text">Save $30</span><span class="bn-text">$৩০ সাশ্রয়</span></span>
+        </div>
+
+        <div class="stock-bar">
+          <div class="stock-label">
+            <span class="en-text">🔥 Only <span>23 items</span> left in stock!</span>
+            <span class="bn-text">🔥 মাত্র <span>২৩টি</span> বাকি আছে!</span>
+            <span>77%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:77%"></div></div>
+        </div>
+
+        <p class="product-desc en-text">Our breakthrough Radiance Revival Serum combines 20% Vitamin C with 0.5% Retinol and hyaluronic acid for triple-action brightening. Clinically proven to reduce dark spots by 78%, fine lines by 62%, and boost radiance by 89% in just 4 weeks.</p>
+        <p class="product-desc bn-text">আমাদের যুগান্তকারী রেডিয়্যান্স রিভাইভাল সিরাম ২০% ভিটামিন সি, ০.৫% রেটিনল এবং হায়ালুরোনিক অ্যাসিড একত্রিত করে ট্রিপল-অ্যাকশন ব্রাইটেনিং দেয়। মাত্র ৪ সপ্তাহে ডার্ক স্পট ৭৮%, ফাইন লাইন ৬২% কমায়।</p>
+
+        <div class="variant-label"><span class="en-text">Size</span><span class="bn-text">সাইজ</span></div>
+        <div class="variants">
+          <button class="variant-btn active" onclick="selectVariant(this)">30ml</button>
+          <button class="variant-btn" onclick="selectVariant(this)">50ml</button>
+          <button class="variant-btn" onclick="selectVariant(this)">100ml <span style="font-size:11px;color:var(--gold)">BEST VALUE</span></button>
+        </div>
+
+        <div class="variant-label"><span class="en-text">Skin Type</span><span class="bn-text">ত্বকের ধরন</span></div>
+        <div class="variants">
+          <button class="variant-btn active" onclick="selectVariant(this)"><span class="en-text">All Types</span><span class="bn-text">সব ধরন</span></button>
+          <button class="variant-btn" onclick="selectVariant(this)"><span class="en-text">Dry Skin</span><span class="bn-text">শুষ্ক ত্বক</span></button>
+          <button class="variant-btn" onclick="selectVariant(this)"><span class="en-text">Oily Skin</span><span class="bn-text">তৈলাক্ত ত্বক</span></button>
+        </div>
+
+        <div class="qty-row">
+          <div class="qty-control">
+            <div class="qty-btn" onclick="changeQty(-1)">−</div>
+            <input class="qty-num" id="qtyInput" type="number" value="1" min="1" max="10" readonly>
+            <div class="qty-btn" onclick="changeQty(1)">+</div>
+          </div>
+          <span style="font-size:13px;color:var(--text3)"><span class="en-text">Max 10 per order</span><span class="bn-text">সর্বোচ্চ ১০টি</span></span>
+        </div>
+
+        <div class="add-actions">
+          <button class="btn-cart" onclick="addToCart()">
+            🛒 <span class="en-text">Add to Cart</span><span class="bn-text">কার্টে যোগ করুন</span>
+          </button>
+          <button class="btn-wish" id="wishBtn" onclick="toggleWish()">🤍</button>
+        </div>
+
+        <div class="product-meta">
+          <div class="meta-item"><span class="meta-icon">🌿</span><span class="en-text">100% Vegan</span><span class="bn-text">১০০% ভেগান</span></div>
+          <div class="meta-item"><span class="meta-icon">🐰</span><span class="en-text">Cruelty Free</span><span class="bn-text">ক্রুয়েলটি ফ্রি</span></div>
+          <div class="meta-item"><span class="meta-icon">🔬</span><span class="en-text">Dermatologist Tested</span><span class="bn-text">ডার্মাটোলজিস্ট পরীক্ষিত</span></div>
+          <div class="meta-item"><span class="meta-icon">♻️</span><span class="en-text">Eco Packaging</span><span class="bn-text">পরিবেশবান্ধব প্যাকেজিং</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SALE / HIGHLIGHTED SECTION -->
+<section class="sale-section" id="offer">
+  <div class="container">
+    <div class="sale-inner">
+      <div class="sale-content">
+        <div class="sale-badge-big">⚡ <span class="en-text">Flash Sale — Today Only</span><span class="bn-text">ফ্ল্যাশ সেল — শুধু আজই</span></div>
+        <h2 class="sale-title">
+          <span class="en-text">Don't Miss the<br>Biggest Sale<br>of the Year</span>
+          <span class="bn-text">বছরের সবচেয়ে বড়<br>সেল মিস করবেন না</span>
+        </h2>
+        <p class="sale-desc">
+          <span class="en-text">Get 30% off on the complete LumeAura Pro bundle. Free gift with every order. While stocks last!</span>
+          <span class="bn-text">সম্পূর্ণ LumeAura Pro বান্ডেলে ৩০% ছাড়। প্রতিটি অর্ডারে বিনামূল্যে উপহার। স্টক শেষ হওয়া পর্যন্ত!</span>
+        </p>
+        <div class="sale-countdown">
+          <div class="countdown-item">
+            <span class="countdown-num" id="cdHours">08</span>
+            <span class="countdown-unit"><span class="en-text">Hours</span><span class="bn-text">ঘণ্টা</span></span>
+          </div>
+          <div class="countdown-item" style="font-size:32px;color:var(--gold);padding-top:4px">:</div>
+          <div class="countdown-item">
+            <span class="countdown-num" id="cdMins">45</span>
+            <span class="countdown-unit"><span class="en-text">Minutes</span><span class="bn-text">মিনিট</span></span>
+          </div>
+          <div class="countdown-item" style="font-size:32px;color:var(--gold);padding-top:4px">:</div>
+          <div class="countdown-item">
+            <span class="countdown-num" id="cdSecs">33</span>
+            <span class="countdown-unit"><span class="en-text">Seconds</span><span class="bn-text">সেকেন্ড</span></span>
+          </div>
+        </div>
+        <a href="#order" class="btn-primary" style="font-size:17px;padding:17px 40px">
+          <span class="en-text">🔥 Claim My 30% Discount</span>
+          <span class="bn-text">🔥 ৩০% ছাড় নিন</span>
+        </a>
+      </div>
+      <div class="sale-right">
+        <div class="sale-img-wrap">
+          <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&h=450&fit=crop" alt="Sale product">
+        </div>
+        <div class="sale-price-tag">
+          <span class="sale-price-off">SAVE</span>
+          <span class="sale-price-pct">30%</span>
+          <span class="sale-price-off">OFF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section section-pad" id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">Why LumeAura</span><span class="bn-text">কেন LumeAura</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">Backed by Science,<br>Powered by Nature</span>
+        <span class="bn-text">বিজ্ঞান দ্বারা সমর্থিত,<br>প্রকৃতি দ্বারা চালিত</span>
+      </h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <h3 class="feature-title"><span class="en-text">Clinically Tested</span><span class="bn-text">ক্লিনিক্যালি পরীক্ষিত</span></h3>
+        <p class="feature-desc"><span class="en-text">Every formula is rigorously tested by leading dermatologists and proven effective in clinical trials with thousands of participants.</span><span class="bn-text">প্রতিটি ফর্মুলা শীর্ষ ডার্মাটোলজিস্টদের দ্বারা কঠোরভাবে পরীক্ষিত এবং হাজার হাজার অংশগ্রহণকারীর সাথে ক্লিনিক্যাল ট্রায়ালে প্রমাণিত।</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌿</div>
+        <h3 class="feature-title"><span class="en-text">100% Organic Botanicals</span><span class="bn-text">১০০% জৈব উপাদান</span></h3>
+        <p class="feature-desc"><span class="en-text">Sourced from certified organic farms across the globe. No harmful chemicals, parabens, sulfates or synthetic fragrances.</span><span class="bn-text">বিশ্বজুড়ে সার্টিফাইড অর্গানিক ফার্ম থেকে সংগ্রহ করা। কোনো ক্ষতিকর রাসায়নিক, প্যারাবেন বা সিন্থেটিক সুগন্ধ নেই।</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title"><span class="en-text">Fast Visible Results</span><span class="bn-text">দ্রুত দৃশ্যমান ফলাফল</span></h3>
+        <p class="feature-desc"><span class="en-text">94% of users report visible improvement in just 2 weeks. See brighter, smoother, and firmer skin faster than any competitor.</span><span class="bn-text">৯৪% ব্যবহারকারী মাত্র ২ সপ্তাহেই দৃশ্যমান উন্নতি রিপোর্ট করেন। যেকোনো প্রতিযোগীর চেয়ে দ্রুত উজ্জ্বল, মসৃণ ত্বক দেখুন।</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🐰</div>
+        <h3 class="feature-title"><span class="en-text">Cruelty-Free</span><span class="bn-text">ক্রুয়েলটি ফ্রি</span></h3>
+        <p class="feature-desc"><span class="en-text">We never test on animals. Certified by PETA and Leaping Bunny. Beauty that feels good inside and out.</span><span class="bn-text">আমরা কখনো প্রাণীদের উপর পরীক্ষা করি না। PETA এবং Leaping Bunny সার্টিফাইড।</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h3 class="feature-title"><span class="en-text">Luxury Formulation</span><span class="bn-text">লাক্সারি ফর্মুলেশন</span></h3>
+        <p class="feature-desc"><span class="en-text">Premium grade active ingredients at concentrations that actually work. No filler ingredients, no diluted formulas.</span><span class="bn-text">কার্যকর ঘনত্বে প্রিমিয়াম গ্রেড সক্রিয় উপাদান। কোনো ফিলার উপাদান বা পাতলা ফর্মুলা নেই।</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">♻️</div>
+        <h3 class="feature-title"><span class="en-text">Sustainable Packaging</span><span class="bn-text">টেকসই প্যাকেজিং</span></h3>
+        <p class="feature-desc"><span class="en-text">100% recyclable glass bottles and biodegradable packaging. Our commitment to beauty that protects our planet.</span><span class="bn-text">১০০% পুনর্ব্যবহারযোগ্য কাচের বোতল এবং বায়োডিগ্রেডেবল প্যাকেজিং। আমাদের গ্রহ রক্ষার প্রতিশ্রুতি।</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INGREDIENTS (SEO) -->
+<section class="ingredients-section section-pad">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">Key Ingredients</span><span class="bn-text">মূল উপাদান</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">Nature's Most Powerful<br>Skin Actives</span>
+        <span class="bn-text">প্রকৃতির সবচেয়ে শক্তিশালী<br>স্কিন অ্যাক্টিভস</span>
+      </h2>
+    </div>
+    <div class="ingredients-grid">
+      <div class="ingredient-card">
+        <div class="ingredient-emoji">🍊</div>
+        <h3 class="ingredient-name"><span class="en-text">Vitamin C 20%</span><span class="bn-text">ভিটামিন সি ২০%</span></h3>
+        <p class="ingredient-benefit"><span class="en-text">Brightens skin & reduces dark spots by up to 78%</span><span class="bn-text">ত্বক উজ্জ্বল করে ও ডার্ক স্পট ৭৮% কমায়</span></p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-emoji">⚗️</div>
+        <h3 class="ingredient-name"><span class="en-text">Retinol 0.5%</span><span class="bn-text">রেটিনল ০.৫%</span></h3>
+        <p class="ingredient-benefit"><span class="en-text">Anti-aging powerhouse that reduces fine lines by 62%</span><span class="bn-text">ফাইন লাইন ৬২% কমায়, বয়সের ছাপ দূর করে</span></p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-emoji">💧</div>
+        <h3 class="ingredient-name"><span class="en-text">Hyaluronic Acid</span><span class="bn-text">হায়ালুরোনিক অ্যাসিড</span></h3>
+        <p class="ingredient-benefit"><span class="en-text">Holds 1000x its weight in water for deep hydration</span><span class="bn-text">গভীর আর্দ্রতার জন্য নিজের ওজনের ১০০০ গুণ পানি ধরে</span></p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-emoji">🌹</div>
+        <h3 class="ingredient-name"><span class="en-text">Rose Hip Oil</span><span class="bn-text">রোজহিপ অয়েল</span></h3>
+        <p class="ingredient-benefit"><span class="en-text">Rich in essential fatty acids to repair skin barrier</span><span class="bn-text">ত্বকের বাধা মেরামত করতে অপরিহার্য ফ্যাটি অ্যাসিড সমৃদ্ধ</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section section-pad" id="reviews">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">Customer Reviews</span><span class="bn-text">গ্রাহকদের রিভিউ</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">50,000+ Happy Customers<br>Can't Be Wrong</span>
+        <span class="bn-text">৫০,০০০+ সন্তুষ্ট গ্রাহক<br>ভুল হতে পারেন না</span>
+      </h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-top">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop&crop=face" alt="Sarah M">
+          <div>
+            <div class="testimonial-name">Sarah M.</div>
+            <div class="testimonial-location">New York, USA</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="testimonial-text en-text">I've tried dozens of serums and nothing compares to LumeAura Pro. In just 3 weeks my dark spots have faded dramatically and my skin glows like never before. Worth every penny!</p>
+        <p class="testimonial-text bn-text">আমি ডজনখানেক সিরাম চেষ্টা করেছি কিন্তু কিছুই LumeAura Pro-এর সাথে তুলনীয় নয়। মাত্র ৩ সপ্তাহে আমার ডার্ক স্পট নাটকীয়ভাবে কমে গেছে!</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-top">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1546961342-ea5f73b193e4?w=100&h=100&fit=crop&crop=face" alt="Priya K">
+          <div>
+            <div class="testimonial-name">Priya K.</div>
+            <div class="testimonial-location">London, UK</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="testimonial-text en-text">The texture is luxurious and absorbs instantly. My fine lines around my eyes have visibly reduced. My dermatologist was actually impressed by the improvement in 4 weeks!</p>
+        <p class="testimonial-text bn-text">টেক্সচার বিলাসবহুল এবং তাৎক্ষণিকভাবে শোষিত হয়। চোখের চারপাশের ফাইন লাইন দৃশ্যমানভাবে কমে গেছে। আমার ডার্মাটোলজিস্ট সত্যিই প্রভাবিত হয়েছেন!</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-top">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=100&h=100&fit=crop&crop=face" alt="Yuki T">
+          <div>
+            <div class="testimonial-name">Yuki T.</div>
+            <div class="testimonial-location">Tokyo, Japan</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="testimonial-text en-text">I was skeptical at first but after one bottle I'm completely converted. My skin has never looked this clear and radiant. Fast shipping, beautiful packaging, incredible product!</p>
+        <p class="testimonial-text bn-text">প্রথমে সন্দিহান ছিলাম কিন্তু একটি বোতলের পরে সম্পূর্ণ রূপান্তরিত হয়েছি। আমার ত্বক কখনো এত পরিষ্কার ও উজ্জ্বল দেখায়নি!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ (SEO) -->
+<section class="faq-section section-pad">
+  <div class="container">
+    <div class="section-header">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">Frequently Asked Questions</span><span class="bn-text">সচরাচর জিজ্ঞাসা</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">Got Questions?<br>We've Got Answers</span>
+        <span class="bn-text">প্রশ্ন আছে?<br>আমাদের কাছে উত্তর আছে</span>
+      </h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="en-text">How soon will I see results?</span>
+          <span class="bn-text">কত দিনে ফলাফল দেখব?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a">
+          <span class="en-text">Most customers see initial brightening within 1-2 weeks. Significant improvement in dark spots and fine lines typically appears by week 4. For best results, use consistently for 8-12 weeks.</span>
+          <span class="bn-text">বেশিরভাগ গ্রাহক ১-২ সপ্তাহের মধ্যে প্রাথমিক উজ্জ্বলতা দেখেন। ডার্ক স্পট ও ফাইন লাইনে উল্লেখযোগ্য উন্নতি সাধারণত ৪র্থ সপ্তাহে দেখা যায়।</span>
+        </div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="en-text">Is it suitable for sensitive skin?</span>
+          <span class="bn-text">সংবেদনশীল ত্বকের জন্য কি উপযুক্ত?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a">
+          <span class="en-text">Yes! LumeAura Pro is dermatologist-tested and formulated to be gentle on sensitive skin. The buffered Vitamin C and encapsulated Retinol minimize irritation while maximizing efficacy.</span>
+          <span class="bn-text">হ্যাঁ! LumeAura Pro ডার্মাটোলজিস্ট-পরীক্ষিত এবং সংবেদনশীল ত্বকে মৃদু হওয়ার জন্য ফর্মুলেট করা হয়েছে।</span>
+        </div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="en-text">Can I use it with other skincare products?</span>
+          <span class="bn-text">অন্য স্কিনকেয়ার পণ্যের সাথে ব্যবহার করা যাবে?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a">
+          <span class="en-text">Absolutely. Apply LumeAura Pro after cleansing and toning, before moisturizer and SPF. Avoid combining with other high-concentration acids on the same application.</span>
+          <span class="bn-text">অবশ্যই। ক্লিনজিং ও টোনিংয়ের পরে, ময়েশ্চারাইজার ও SPF-এর আগে LumeAura Pro লাগান।</span>
+        </div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="en-text">What is your return policy?</span>
+          <span class="bn-text">রিটার্ন পলিসি কী?</span>
+          <span class="faq-arrow">⌄</span>
+        </div>
+        <div class="faq-a">
+          <span class="en-text">We offer a 30-day money-back guarantee. If you're not completely satisfied, return the product (even opened) within 30 days for a full refund. No questions asked.</span>
+          <span class="bn-text">আমরা ৩০ দিনের মানি-ব্যাক গ্যারান্টি অফার করি। সম্পূর্ণ সন্তুষ্ট না হলে ৩০ দিনের মধ্যে পণ্য ফেরত দিন।</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER / CHECKOUT -->
+<section class="order-section" id="order">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:48px">
+      <span class="badge badge-gold" style="margin-bottom:14px;display:inline-block">
+        <span class="en-text">🔒 Secure Checkout</span><span class="bn-text">🔒 নিরাপদ চেকআউট</span>
+      </span>
+      <h2 class="section-title">
+        <span class="en-text">Complete Your Order</span>
+        <span class="bn-text">আপনার অর্ডার সম্পন্ন করুন</span>
+      </h2>
+      <p class="section-sub">
+        <span class="en-text">SSL encrypted. Your information is completely safe with us.</span>
+        <span class="bn-text">SSL এনক্রিপ্টেড। আপনার তথ্য সম্পূর্ণ নিরাপদ।</span>
+      </p>
+    </div>
+
+    <div class="order-wrap">
+      <!-- FORM -->
+      <div class="order-form-card">
+        <!-- Contact -->
+        <div class="form-section-title">
+          <div class="form-section-num">1</div>
+          <span class="en-text">Contact Information</span><span class="bn-text">যোগাযোগের তথ্য</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label"><span class="en-text">First Name</span><span class="bn-text">প্রথম নাম</span></label>
+            <input class="form-input" type="text" placeholder="John" id="firstName">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><span class="en-text">Last Name</span><span class="bn-text">শেষ নাম</span></label>
+            <input class="form-input" type="text" placeholder="Doe" id="lastName">
+          </div>
+          <div class="form-group full">
+            <label class="form-label"><span class="en-text">Email Address</span><span class="bn-text">ইমেইল</span></label>
+            <input class="form-input" type="email" placeholder="john@example.com" id="email">
+          </div>
+          <div class="form-group full">
+            <label class="form-label"><span class="en-text">Phone Number</span><span class="bn-text">ফোন নম্বর</span></label>
+            <input class="form-input" type="tel" placeholder="+1 (555) 000-0000" id="phone">
+          </div>
+        </div>
+
+        <!-- Shipping -->
+        <div class="form-section-title">
+          <div class="form-section-num">2</div>
+          <span class="en-text">Shipping Address</span><span class="bn-text">শিপিং ঠিকানা</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label"><span class="en-text">Street Address</span><span class="bn-text">রাস্তার ঠিকানা</span></label>
+            <input class="form-input" type="text" placeholder="123 Main Street" id="address">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><span class="en-text">City</span><span class="bn-text">শহর</span></label>
+            <input class="form-input" type="text" placeholder="New York" id="city">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><span class="en-text">ZIP Code</span><span class="bn-text">পোস্টাল কোড</span></label>
+            <input class="form-input" type="text" placeholder="10001" id="zip">
+          </div>
+          <div class="form-group full">
+            <label class="form-label"><span class="en-text">Country</span><span class="bn-text">দেশ</span></label>
+            <select class="form-input" id="country">
+              <option value="">Select Country / দেশ নির্বাচন</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Bangladesh</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>India</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section-title">
+          <div class="form-section-num">3</div>
+          <span class="en-text">Payment Method</span><span class="bn-text">পেমেন্ট পদ্ধতি</span>
+        </div>
+        <div class="payment-methods">
+          <div class="pay-method active" onclick="selectPayment(this)">
+            <div class="pay-icon">💳</div>
+            <div class="pay-label"><span class="en-text">Credit Card</span><span class="bn-text">ক্রেডিট কার্ড</span></div>
+          </div>
+          <div class="pay-method" onclick="selectPayment(this)">
+            <div class="pay-icon">🏦</div>
+            <div class="pay-label">bKash / Nagad</div>
+          </div>
+          <div class="pay-method" onclick="selectPayment(this)">
+            <div class="pay-icon">🅿️</div>
+            <div class="pay-label">PayPal</div>
+          </div>
+        </div>
+
+        <div class="form-grid" id="cardFields">
+          <div class="form-group full">
+            <label class="form-label"><span class="en-text">Card Number</span><span class="bn-text">কার্ড নম্বর</span></label>
+            <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNum" oninput="formatCard(this)">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><span class="en-text">Expiry Date</span><span class="bn-text">মেয়াদ শেষের তারিখ</span></label>
+            <input class="form-input" type="text" placeholder="MM/YY" maxlength="5" id="expiry" oninput="formatExpiry(this)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input class="form-input" type="text" placeholder="123" maxlength="4" id="cvv">
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-summary">
+        <div class="summary-title">
+          <span class="en-text">🛒 Order Summary</span><span class="bn-text">🛒 অর্ডার সারসংক্ষেপ</span>
+        </div>
+        <div class="summary-product">
+          <img class="summary-img" src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=150&h=200&fit=crop" alt="LumeAura Pro">
+          <div>
+            <div class="summary-product-name">LumeAura Pro Radiance Revival Serum</div>
+            <div class="summary-product-variant"><span class="en-text">Size: 30ml • All Skin Types</span><span class="bn-text">সাইজ: ৩০ml • সব ত্বকের ধরন</span></div>
+            <div class="summary-product-variant"><span class="en-text">Qty:</span><span class="bn-text">পরিমাণ:</span> <span id="summaryQty">1</span></div>
+            <div class="summary-product-price" id="summaryPrice">$69.99</div>
+          </div>
+        </div>
+
+        <div class="coupon-row">
+          <input class="form-input coupon-input" type="text" placeholder="Coupon code / কুপন কোড" id="couponInput">
+          <button class="btn-coupon" onclick="applyCoupon()">
+            <span class="en-text">Apply</span><span class="bn-text">প্রয়োগ</span>
+          </button>
+        </div>
+        <div id="couponMsg" style="display:none" class="coupon-applied">✅ <span class="en-text">GLOW20 applied — 20% extra off!</span><span class="bn-text">GLOW20 প্রয়োগ হয়েছে — অতিরিক্ত ২০% ছাড়!</span></div>
+
+        <div class="summary-rows">
+          <div class="summary-row">
+            <span><span class="en-text">Subtotal</span><span class="bn-text">সাবটোটাল</span></span>
+            <span id="subtotalVal">$69.99</span>
+          </div>
+          <div class="summary-row">
+            <span><span class="en-text">Discount (30%)</span><span class="bn-text">ছাড় (৩০%)</span></span>
+            <span style="color:var(--gold)">-$30.00</span>
+          </div>
+          <div class="summary-row">
+            <span><span class="en-text">Coupon</span><span class="bn-text">কুপন</span></span>
+            <span id="couponVal" style="color:var(--gold)">-$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span><span class="en-text">Shipping</span><span class="bn-text">শিপিং</span></span>
+            <span style="color:#38a169"><span class="en-text">FREE</span><span class="bn-text">বিনামূল্যে</span></span>
+          </div>
+        </div>
+        <div class="summary-total">
+          <span><span class="en-text">Total</span><span class="bn-text">মোট</span></span>
+          <span class="total-amount" id="totalVal">$69.99</span>
+        </div>
+
+        <button class="btn-order" onclick="placeOrder()">
+          🔒 <span class="en-text">Place Order Securely</span><span class="bn-text">নিরাপদে অর্ডার দিন</span>
+        </button>
+        <div class="secure-note">
+          🔒 <span class="en-text">SSL Encrypted · 100% Secure Payment</span><span class="bn-text">SSL এনক্রিপ্টেড · ১০০% নিরাপদ</span>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:16px;font-size:24px;opacity:0.5">
+          💳 🅿️ 🏦 🔐
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">LumeAura</span>
+        <p class="footer-desc"><span class="en-text">Premium organic skincare crafted from nature's finest botanicals. Science-backed formulas for radiant, healthy skin.</span><span class="bn-text">প্রকৃতির সেরা উদ্ভিজ্জ উপাদান থেকে তৈরি প্রিমিয়াম অর্গানিক স্কিনকেয়ার।</span></p>
+        <div class="social-links">
+          <a class="social-link" href="#">📘</a>
+          <a class="social-link" href="#">📸</a>
+          <a class="social-link" href="#">🐦</a>
+          <a class="social-link" href="#">▶️</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="en-text">Products</span><span class="bn-text">পণ্য</span></div>
+        <ul class="footer-links">
+          <li><a href="#"><span class="en-text">Serums</span><span class="bn-text">সিরাম</span></a></li>
+          <li><a href="#"><span class="en-text">Moisturizers</span><span class="bn-text">ময়েশ্চারাইজার</span></a></li>
+          <li><a href="#"><span class="en-text">Eye Creams</span><span class="bn-text">আই ক্রিম</span></a></li>
+          <li><a href="#"><span class="en-text">Bundles</span><span class="bn-text">বান্ডেল</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="en-text">Support</span><span class="bn-text">সহায়তা</span></div>
+        <ul class="footer-links">
+          <li><a href="#"><span class="en-text">Contact Us</span><span class="bn-text">যোগাযোগ</span></a></li>
+          <li><a href="#"><span class="en-text">Shipping Info</span><span class="bn-text">শিপিং তথ্য</span></a></li>
+          <li><a href="#"><span class="en-text">Returns</span><span class="bn-text">রিটার্ন</span></a></li>
+          <li><a href="#"><span class="en-text">Track Order</span><span class="bn-text">অর্ডার ট্র্যাক</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="en-text">Company</span><span class="bn-text">কোম্পানি</span></div>
+        <ul class="footer-links">
+          <li><a href="#"><span class="en-text">About Us</span><span class="bn-text">আমাদের সম্পর্কে</span></a></li>
+          <li><a href="#"><span class="en-text">Blog</span><span class="bn-text">ব্লগ</span></a></li>
+          <li><a href="#"><span class="en-text">Privacy Policy</span><span class="bn-text">গোপনীয়তা নীতি</span></a></li>
+          <li><a href="#"><span class="en-text">Terms</span><span class="bn-text">শর্তাবলী</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 LumeAura Pro. <span class="en-text">All rights reserved.</span><span class="bn-text">সর্বস্বত্ব সংরক্ষিত।</span></p>
+      <div class="footer-cards">
+        <span class="card-icon">💳</span>
+        <span class="card-icon">🅿️</span>
+        <span class="card-icon">📲</span>
+        <span class="card-icon">🔐</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon">🎉</div>
+    <h3 class="modal-title"><span class="en-text">Order Placed Successfully!</span><span class="bn-text">অর্ডার সফলভাবে দেওয়া হয়েছে!</span></h3>
+    <p class="modal-sub"><span class="en-text">Thank you for your order! You'll receive a confirmation email shortly with your tracking details.</span><span class="bn-text">আপনার অর্ডারের জন্য ধন্যবাদ! ট্র্যাকিং বিবরণ সহ শীঘ্রই একটি নিশ্চিতকরণ ইমেইল পাবেন।</span></p>
+    <div class="modal-order-id" id="modalOrderId">Order #LM-2025-00000</div>
+    <button class="btn-primary" onclick="closeModal()" style="width:100%;justify-content:center">
+      <span class="en-text">🛍️ Continue Shopping</span><span class="bn-text">🛍️ কেনাকাটা চালিয়ে যান</span>
+    </button>
+  </div>
+</div>
+
+<!-- SCROLL TOP -->
+<div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+// ============================================================
+// THEME TOGGLE
+// ============================================================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('theme', html.dataset.theme);
+}
+
+// ============================================================
+// LANGUAGE TOGGLE
+// ============================================================
+function toggleLang() {
+  const html = document.documentElement;
+  const isEn = html.dataset.lang === 'en';
+  html.dataset.lang = isEn ? 'bn' : 'en';
+  document.getElementById('langToggle').textContent = isEn ? 'EN' : 'বাং';
+  localStorage.setItem('lang', html.dataset.lang);
+}
+
+// ============================================================
+// INIT FROM STORAGE
+// ============================================================
+(function() {
+  const theme = localStorage.getItem('theme') || 'dark';
+  const lang  = localStorage.getItem('lang')  || 'en';
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.lang  = lang;
+  document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+  document.getElementById('langToggle').textContent  = lang  === 'en'   ? 'বাং' : 'EN';
+})();
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('mobileOverlay').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+}
+
+// ============================================================
+// GALLERY LIGHTBOX
+// ============================================================
+const galleryImages = [
+  'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1200&h=900&fit=crop',
+  'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=1200&h=900&fit=crop',
+  'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=1200&h=900&fit=crop',
+  'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=1200&h=900&fit=crop',
+  'https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=1200&h=900&fit=crop',
+  'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=1200&h=900&fit=crop',
+];
+let currentLightbox = 0;
+
+function openLightbox(idx) {
+  currentLightbox = idx;
+  document.getElementById('lightboxImg').src = galleryImages[idx];
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function changeLightbox(dir) {
+  currentLightbox = (currentLightbox + dir + galleryImages.length) % galleryImages.length;
+  document.getElementById('lightboxImg').src = galleryImages[currentLightbox];
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') changeLightbox(-1);
+  if (e.key === 'ArrowRight') changeLightbox(1);
+});
+
+// ============================================================
+// PRODUCT IMAGES
+// ============================================================
+function changeMainImg(thumb, src) {
+  document.getElementById('mainImg').src = src;
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
+// ============================================================
+// VARIANT SELECTION
+// ============================================================
+function selectVariant(btn) {
+  btn.closest('.variants').querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ============================================================
+// QUANTITY
+// ============================================================
+let qty = 1;
+function changeQty(dir) {
+  qty = Math.max(1, Math.min(10, qty + dir));
+  document.getElementById('qtyInput').value = qty;
+  document.getElementById('summaryQty').textContent = qty;
+  updateOrderTotal();
+}
+
+// ============================================================
+// WISHLIST
+// ============================================================
+let wished = false;
+function toggleWish() {
+  wished = !wished;
+  const btn = document.getElementById('wishBtn');
+  btn.textContent = wished ? '❤️' : '🤍';
+  btn.classList.toggle('active', wished);
+  showToast(wished
+    ? (document.documentElement.dataset.lang === 'bn' ? '❤️ উইশলিস্টে যোগ হয়েছে!' : '❤️ Added to Wishlist!')
+    : (document.documentElement.dataset.lang === 'bn' ? 'উইশলিস্ট থেকে সরানো হয়েছে' : 'Removed from Wishlist')
+  );
+}
+
+// ============================================================
+// ADD TO CART
+// ============================================================
+let cartCount = 0;
+function addToCart() {
+  cartCount += qty;
+  document.getElementById('cartCount').textContent = cartCount;
+  const lang = document.documentElement.dataset.lang;
+  showToast(lang === 'bn'
+    ? `🛒 ${qty}টি পণ্য কার্টে যোগ হয়েছে!`
+    : `🛒 ${qty} item${qty > 1 ? 's' : ''} added to cart!`
+  );
+}
+
+function scrollToOrder() {
+  document.getElementById('order').scrollIntoView({behavior:'smooth'});
+}
+
+// ============================================================
+// COUPON
+// ============================================================
+let couponApplied = false;
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if (code === 'GLOW20' && !couponApplied) {
+    couponApplied = true;
+    document.getElementById('couponMsg').style.display = 'flex';
+    updateOrderTotal();
+    showToast('✅ Coupon applied! 20% extra off!');
+  } else if (couponApplied) {
+    showToast('⚠️ Coupon already applied!');
+  } else {
+    showToast('❌ Invalid coupon code');
+  }
+}
+
+function updateOrderTotal() {
+  const base = 69.99 * qty;
+  const coupon = couponApplied ? base * 0.20 : 0;
+  const total = base - coupon;
+  document.getElementById('subtotalVal').textContent = '$' + base.toFixed(2);
+  document.getElementById('couponVal').textContent = '-$' + coupon.toFixed(2);
+  document.getElementById('totalVal').textContent = '$' + total.toFixed(2);
+  document.getElementById('summaryPrice').textContent = '$' + base.toFixed(2);
+}
+
+// ============================================================
+// PAYMENT METHOD
+// ============================================================
+function selectPayment(el) {
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  const idx = Array.from(document.querySelectorAll('.pay-method')).indexOf(el);
+  document.getElementById('cardFields').style.display = idx === 0 ? 'grid' : 'none';
+}
+
+// ============================================================
+// FORM FORMATTING
+// ============================================================
+function formatCard(el) {
+  let v = el.value.replace(/\D/g, '').slice(0,16);
+  el.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g, '').slice(0,4);
+  if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+  el.value = v;
+}
+
+// ============================================================
+// PLACE ORDER
+// ============================================================
+function placeOrder() {
+  const lang = document.documentElement.dataset.lang;
+  const firstName = document.getElementById('firstName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const address = document.getElementById('address').value.trim();
+
+  if (!firstName || !email || !address) {
+    showToast(lang === 'bn'
+      ? '⚠️ অনুগ্রহ করে সব তথ্য পূরণ করুন!'
+      : '⚠️ Please fill in all required fields!'
+    );
+    return;
+  }
+
+  if (email && !email.includes('@')) {
+    showToast(lang === 'bn' ? '⚠️ বৈধ ইমেইল দিন!' : '⚠️ Please enter a valid email!');
+    return;
+  }
+
+  // Show success
+  const orderId = 'LM-2025-' + Math.floor(10000 + Math.random() * 90000);
+  document.getElementById('modalOrderId').textContent = 'Order #' + orderId;
+  document.getElementById('successModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  cartCount = 0;
+  document.getElementById('cartCount').textContent = '0';
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Reset form
+  ['firstName','lastName','email','phone','address','city','zip','country','cardNum','expiry','cvv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => { t.classList.add('show'); });
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 400);
+  }, 3000);
+}
+
+// ============================================================
+// FAQ ACCORDION
+// ============================================================
+function toggleFaq(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+// ============================================================
+// COUNTDOWN TIMER
+// ============================================================
+function startCountdown() {
+  let end = localStorage.getItem('saleEnd');
+  if (!end || Date.now() > parseInt(end)) {
+    end = Date.now() + 8 * 3600000 + 45 * 60000;
+    localStorage.setItem('saleEnd', end);
+  }
+  function tick() {
+    const diff = parseInt(end) - Date.now();
+    if (diff <= 0) { startCountdown(); return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cdMins').textContent  = String(m).padStart(2,'0');
+    document.getElementById('cdSecs').textContent  = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+startCountdown();
+
+// ============================================================
+// SCROLL TOP BUTTON
+// ============================================================
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 500);
+});
+
+// ============================================================
+// INTERSECTION OBSERVER (fade-in on scroll)
+// ============================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature-card, .testimonial-card, .ingredient-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

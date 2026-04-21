@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নিলাম বিডি — বাংলাদেশের সেরা অনলাইন নিলাম প্ল্যাটফর্ম</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ===================== CSS VARIABLES ===================== */
+:root {
+  --gold: #f5a623;
+  --gold2: #e8920f;
+  --gold-light: #ffd680;
+  --red: #e53935;
+  --green: #00c853;
+  --blue: #1565c0;
+  --font-main: 'Noto Sans Bengali', sans-serif;
+  --font-display: 'Tiro Bangla', serif;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.18);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.28);
+  --transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* DARK THEME */
+[data-theme="dark"] {
+  --bg: #0f0f14;
+  --bg2: #17171f;
+  --bg3: #1e1e28;
+  --bg4: #25252f;
+  --surface: #1a1a24;
+  --surface2: #22222e;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(245,166,35,0.2);
+  --text: #f0ede8;
+  --text2: #b0a99e;
+  --text3: #6e6a63;
+  --accent: #f5a623;
+  --accent-glow: rgba(245,166,35,0.15);
+  --live-bg: rgba(229,57,53,0.12);
+  --live-border: rgba(229,57,53,0.4);
+  --card-bg: #1c1c26;
+  --nav-bg: rgba(15,15,20,0.95);
+  --hero-overlay: rgba(15,15,20,0.75);
+  --badge-live: #e53935;
+  --inp-bg: #22222e;
+  --inp-border: rgba(255,255,255,0.1);
+  --modal-bg: #1a1a24;
+}
+
+/* LIGHT THEME */
+[data-theme="light"] {
+  --bg: #f5f0e8;
+  --bg2: #ede8de;
+  --bg3: #e4ddd0;
+  --bg4: #d9d1c4;
+  --surface: #ffffff;
+  --surface2: #f8f4ed;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(245,166,35,0.3);
+  --text: #1a1614;
+  --text2: #5a5450;
+  --text3: #9a9490;
+  --accent: #c67c00;
+  --accent-glow: rgba(245,166,35,0.1);
+  --live-bg: rgba(229,57,53,0.06);
+  --live-border: rgba(229,57,53,0.3);
+  --card-bg: #ffffff;
+  --nav-bg: rgba(245,240,232,0.97);
+  --hero-overlay: rgba(245,240,232,0.55);
+  --badge-live: #c62828;
+  --inp-bg: #f0ece4;
+  --inp-border: rgba(0,0,0,0.12);
+  --modal-bg: #ffffff;
+}
+
+/* ===================== RESET & BASE ===================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-main);line-height:1.75;overflow-x:hidden;transition:background 0.35s,color 0.35s}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+input,button,select,textarea{font-family:inherit}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+button{cursor:pointer}
+
+/* ===================== NAVBAR ===================== */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  transition:var(--transition);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;gap:16px;
+  padding:0 20px;height:68px;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-size:1.4rem;font-weight:700;
+  color:var(--accent);white-space:nowrap;
+}
+.nav-logo-icon{
+  width:40px;height:40px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  box-shadow:0 2px 12px rgba(245,166,35,0.35);
+}
+.nav-search{
+  flex:1;max-width:420px;
+  display:flex;align-items:center;
+  background:var(--inp-bg);
+  border:1px solid var(--inp-border);
+  border-radius:50px;
+  padding:0 16px;gap:8px;
+  transition:var(--transition);
+}
+.nav-search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}
+.nav-search input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-size:14px;padding:10px 0;
+}
+.nav-search input::placeholder{color:var(--text3)}
+.nav-search svg{color:var(--text3);flex-shrink:0}
+.nav-links{
+  display:flex;align-items:center;gap:4px;margin-left:auto;
+}
+.nav-link{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:8px;
+  font-size:13.5px;font-weight:500;color:var(--text2);
+  transition:var(--transition);white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{background:var(--accent-glow);color:var(--accent)}
+.nav-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:50px;
+  font-size:13.5px;font-weight:600;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;border:none;
+  box-shadow:0 2px 12px rgba(245,166,35,0.3);
+  transition:var(--transition);
+}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,166,35,0.45)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:40px;height:40px;border-radius:10px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);font-size:18px;transition:var(--transition);
+  position:relative;cursor:pointer;
+}
+.icon-btn:hover{border-color:var(--gold);color:var(--accent);background:var(--accent-glow)}
+.notif-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:16px;height:16px;background:var(--red);
+  border-radius:50%;font-size:9px;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;
+}
+.theme-toggle{
+  width:40px;height:40px;border-radius:10px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--transition);cursor:pointer;
+}
+.theme-toggle:hover{border-color:var(--gold);background:var(--accent-glow)}
+
+/* ===================== HERO ===================== */
+.hero{
+  margin-top:68px;
+  background:var(--bg2);
+  position:relative;overflow:hidden;
+  min-height:520px;
+  display:flex;align-items:center;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 50%,rgba(245,166,35,0.12) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 20% 80%,rgba(21,101,192,0.08) 0%,transparent 60%);
+}
+.hero-pattern{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);
+  background-size:32px 32px;opacity:0.5;
+}
+.hero-inner{
+  max-width:1400px;margin:0 auto;padding:60px 20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;width:100%;position:relative;z-index:1;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--live-bg);border:1px solid var(--live-border);
+  color:var(--badge-live);padding:5px 14px;border-radius:50px;
+  font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:20px;
+}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--badge-live);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,4.5vw,3.4rem);
+  font-weight:700;line-height:1.25;
+  margin-bottom:18px;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{font-size:15px;color:var(--text2);margin-bottom:32px;max-width:480px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;font-weight:700;font-size:15px;
+  box-shadow:0 4px 20px rgba(245,166,35,0.4);
+  transition:var(--transition);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,166,35,0.5)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:50px;
+  border:1.5px solid var(--border2);
+  color:var(--accent);font-weight:600;font-size:15px;
+  background:var(--accent-glow);transition:var(--transition);
+}
+.btn-outline:hover{border-color:var(--accent);background:rgba(245,166,35,0.15)}
+.hero-stats{
+  display:flex;gap:28px;margin-top:36px;flex-wrap:wrap;
+}
+.stat-item{text-align:center}
+.stat-num{
+  font-family:var(--font-display);font-size:1.8rem;font-weight:700;
+  color:var(--accent);display:block;
+}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+
+/* Featured card in hero */
+.hero-card{
+  background:var(--card-bg);
+  border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;box-shadow:var(--shadow-lg);
+  position:relative;animation:floatCard 4s ease-in-out infinite;
+}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero-card-img{
+  height:220px;
+  background:linear-gradient(135deg,#2a1a00 0%,#4a2800 50%,#1a1000 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;position:relative;
+}
+.hero-card-live-badge{
+  position:absolute;top:14px;left:14px;
+  background:var(--badge-live);color:#fff;
+  padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;
+  display:flex;align-items:center;gap:5px;
+}
+.hero-card-body{padding:20px}
+.hero-card-title{font-weight:700;font-size:1rem;margin-bottom:6px}
+.hero-card-seller{font-size:12px;color:var(--text3);margin-bottom:14px}
+.hero-card-bid{
+  display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px
+}
+.bid-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.bid-amount{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--accent)}
+.countdown-mini{
+  background:var(--bg3);border-radius:10px;padding:10px;
+  display:flex;gap:8px;justify-content:center;margin-bottom:14px;
+}
+.cdown-box{text-align:center;min-width:44px}
+.cdown-num{
+  display:block;font-family:var(--font-display);font-size:1.2rem;font-weight:700;
+  background:var(--bg4);border-radius:6px;padding:4px 8px;color:var(--accent);
+}
+.cdown-lbl{font-size:9px;color:var(--text3);margin-top:2px;text-transform:uppercase}
+.bid-progress{
+  height:4px;background:var(--bg3);border-radius:2px;margin-bottom:14px;overflow:hidden;
+}
+.bid-progress-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:width 0.5s ease;
+}
+
+/* ===================== TICKER ===================== */
+.ticker{
+  background:linear-gradient(90deg,var(--gold2),var(--gold));
+  padding:9px 0;overflow:hidden;
+}
+.ticker-inner{
+  display:flex;gap:0;white-space:nowrap;
+  animation:tickerScroll 40s linear infinite;
+}
+.ticker-inner:hover{animation-play-state:paused}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0 24px;font-size:13px;font-weight:600;color:#000;
+}
+.ticker-dot{width:5px;height:5px;background:#000;border-radius:50%;opacity:0.5}
+
+/* ===================== SECTION HEADER ===================== */
+.section-wrap{padding:60px 20px}
+.section-inner{max-width:1400px;margin:0 auto}
+.section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:32px;flex-wrap:wrap;gap:16px;
+}
+.section-title{
+  font-family:var(--font-display);font-size:1.6rem;font-weight:700;
+  display:flex;align-items:center;gap:10px;
+}
+.section-title span{color:var(--accent)}
+.section-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;margin-left:8px;
+}
+.badge-live-label{background:var(--live-bg);border:1px solid var(--live-border);color:var(--badge-live)}
+.badge-hot{background:rgba(245,166,35,0.12);border:1px solid var(--border2);color:var(--accent)}
+.see-all{
+  display:flex;align-items:center;gap:6px;
+  font-size:13.5px;font-weight:600;color:var(--accent);
+  padding:8px 16px;border-radius:8px;border:1px solid var(--border2);
+  transition:var(--transition);
+}
+.see-all:hover{background:var(--accent-glow)}
+
+/* ===================== AUCTION CARD ===================== */
+.auction-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:20px;
+}
+.auction-card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:var(--transition);position:relative;
+  display:flex;flex-direction:column;
+}
+.auction-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-lg);
+}
+.card-img{
+  position:relative;height:200px;overflow:hidden;
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:64px;
+}
+.card-img-bg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;
+  opacity:0.15;
+}
+.card-badges{
+  position:absolute;top:12px;left:12px;display:flex;gap:6px;flex-direction:column;
+}
+.card-badge{
+  padding:4px 10px;border-radius:50px;font-size:10px;font-weight:700;
+  letter-spacing:0.5px;backdrop-filter:blur(8px);
+}
+.badge-live-card{background:rgba(229,57,53,0.9);color:#fff;display:flex;align-items:center;gap:4px}
+.badge-upcoming{background:rgba(21,101,192,0.9);color:#fff}
+.badge-hot-card{background:rgba(245,166,35,0.9);color:#000}
+.badge-ending{background:rgba(229,57,53,0.85);color:#fff}
+.badge-resale{background:rgba(0,200,83,0.85);color:#fff}
+.card-wishlist{
+  position:absolute;top:12px;right:12px;
+  width:34px;height:34px;border-radius:8px;
+  background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:var(--transition);
+  color:#fff;
+}
+.card-wishlist:hover,.card-wishlist.active{background:rgba(229,57,53,0.8);border-color:transparent}
+.card-body{padding:16px;flex:1;display:flex;flex-direction:column;gap:10px}
+.card-category{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.card-title{font-weight:700;font-size:15px;line-height:1.4;color:var(--text)}
+.card-seller{
+  display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);
+}
+.seller-avatar{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:700;
+}
+.verified-icon{color:var(--blue);font-size:12px}
+.card-price-row{display:flex;justify-content:space-between;align-items:flex-end}
+.price-block{}
+.price-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.price-current{
+  font-family:var(--font-display);font-size:1.35rem;font-weight:700;color:var(--accent);
+}
+.price-start{font-size:11px;color:var(--text3);text-decoration:line-through}
+.bid-count{
+  text-align:right;font-size:11px;color:var(--text3);
+}
+.bid-count strong{display:block;font-size:13px;color:var(--text2);font-weight:600}
+.card-countdown{
+  background:var(--bg3);border-radius:8px;padding:8px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.countdown-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.countdown-time{
+  font-family:var(--font-display);font-size:14px;font-weight:700;
+  color:var(--accent);display:flex;gap:4px;align-items:center;
+}
+.countdown-time.urgent{color:var(--red)}
+.card-actions{display:flex;gap:8px;margin-top:auto}
+.btn-bid{
+  flex:1;padding:11px;border-radius:8px;border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;font-weight:700;font-size:14px;
+  transition:var(--transition);
+}
+.btn-bid:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,0.4)}
+.btn-watch{
+  width:42px;height:42px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);font-size:16px;transition:var(--transition);
+}
+.btn-watch:hover{border-color:var(--accent);color:var(--accent)}
+.btn-buy-now{
+  flex:1;padding:11px;border-radius:8px;
+  border:1.5px solid var(--green);background:rgba(0,200,83,0.08);
+  color:var(--green);font-weight:700;font-size:13px;
+  transition:var(--transition);
+}
+.btn-buy-now:hover{background:rgba(0,200,83,0.15)}
+
+/* ===================== CATEGORIES ===================== */
+.cat-grid{
+  display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;
+}
+.cat-card{
+  flex-shrink:0;background:var(--card-bg);border:1px solid var(--border);
+  border-radius:14px;padding:18px 22px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  min-width:110px;transition:var(--transition);cursor:pointer;text-align:center;
+}
+.cat-card:hover,.cat-card.active{
+  border-color:var(--border2);background:var(--accent-glow);
+}
+.cat-icon{font-size:28px;line-height:1}
+.cat-name{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap}
+.cat-count{font-size:10px;color:var(--text3)}
+
+/* ===================== FILTERS BAR ===================== */
+.filter-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-bottom:24px;
+}
+.filter-chip{
+  padding:7px 16px;border-radius:50px;
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12.5px;color:var(--text2);cursor:pointer;transition:var(--transition);
+}
+.filter-chip:hover,.filter-chip.active{
+  border-color:var(--gold);background:var(--accent-glow);color:var(--accent);
+}
+.filter-select{
+  padding:8px 14px;border-radius:8px;
+  border:1px solid var(--border);background:var(--inp-bg);
+  color:var(--text);font-size:13px;outline:none;cursor:pointer;
+  transition:var(--transition);
+}
+.filter-select:focus{border-color:var(--gold)}
+
+/* ===================== UPCOMING SECTION ===================== */
+.upcoming-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;
+}
+.upcoming-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  display:flex;gap:16px;align-items:center;
+  transition:var(--transition);
+}
+.upcoming-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.upcoming-thumb{
+  width:72px;height:72px;border-radius:10px;flex-shrink:0;
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:32px;
+  border:1px solid var(--border);
+}
+.upcoming-info{flex:1}
+.upcoming-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.upcoming-meta{font-size:12px;color:var(--text3);margin-bottom:8px}
+.upcoming-starts{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.starts-label{font-size:11px;color:var(--text3)}
+.starts-time{
+  font-size:11px;font-weight:600;color:var(--blue);
+  background:rgba(21,101,192,0.1);border:1px solid rgba(21,101,192,0.2);
+  padding:2px 8px;border-radius:50px;
+}
+.btn-remind{
+  padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;
+  border:1.5px solid var(--border2);background:var(--accent-glow);color:var(--accent);
+  transition:var(--transition);cursor:pointer;white-space:nowrap;
+}
+.btn-remind:hover{background:rgba(245,166,35,0.2)}
+
+/* ===================== HOW IT WORKS ===================== */
+.how-bg{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.steps-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;
+  margin-top:40px;
+}
+.step-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px 22px;text-align:center;position:relative;transition:var(--transition);
+}
+.step-card:hover{border-color:var(--border2);transform:translateY(-4px)}
+.step-num{
+  width:50px;height:50px;border-radius:14px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:#000;
+  margin:0 auto 16px;
+}
+.step-icon{font-size:28px;margin-bottom:12px}
+.step-title{font-weight:700;font-size:15px;margin-bottom:8px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.step-connector{
+  position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+  font-size:22px;color:var(--accent);z-index:2;
+}
+
+/* ===================== BID MODAL ===================== */
+.modal-overlay{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.active{display:flex;animation:fadeIn 0.25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:var(--modal-bg);border:1px solid var(--border);border-radius:20px;
+  width:100%;max-width:480px;overflow:hidden;box-shadow:var(--shadow-lg);
+  animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700}
+.modal-close{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;color:var(--text2);transition:var(--transition);
+}
+.modal-close:hover{background:var(--live-bg);color:var(--red);border-color:var(--red)}
+.modal-body{padding:24px}
+.modal-item-info{
+  display:flex;gap:14px;align-items:center;
+  background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:20px;
+}
+.modal-item-thumb{
+  width:60px;height:60px;border-radius:10px;
+  background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:26px;
+  flex-shrink:0;
+}
+.modal-item-name{font-weight:700;font-size:14px;margin-bottom:4px}
+.modal-item-price{font-size:12px;color:var(--text3)}
+.modal-item-current{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--accent)}
+.bid-input-wrap{margin-bottom:16px}
+.bid-input-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;display:block}
+.bid-input-row{
+  display:flex;align-items:center;
+  border:2px solid var(--inp-border);border-radius:12px;
+  overflow:hidden;background:var(--inp-bg);transition:var(--transition);
+}
+.bid-input-row:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}
+.bid-currency{
+  padding:0 16px;font-weight:700;font-size:16px;color:var(--accent);
+  border-right:1px solid var(--inp-border);
+}
+.bid-input-row input{
+  flex:1;padding:14px 16px;background:none;border:none;outline:none;
+  font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--text);
+}
+.bid-quick-amounts{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.quick-amt{
+  flex:1;min-width:80px;padding:8px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--surface2);
+  color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;
+  transition:var(--transition);text-align:center;
+}
+.quick-amt:hover{border-color:var(--gold);color:var(--accent);background:var(--accent-glow)}
+.bid-info-box{
+  background:var(--bg3);border-radius:10px;padding:12px 14px;
+  font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.8;
+}
+.bid-info-row{display:flex;justify-content:space-between}
+.bid-info-row strong{color:var(--text);font-weight:600}
+.btn-submit-bid{
+  width:100%;padding:15px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;font-weight:700;font-size:16px;
+  box-shadow:0 4px 16px rgba(245,166,35,0.4);
+  transition:var(--transition);
+}
+.btn-submit-bid:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(245,166,35,0.5)}
+
+/* ===================== SELL MODAL ===================== */
+.sell-form{display:grid;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:12.5px;font-weight:600;color:var(--text2)}
+.form-input,.form-select,.form-textarea{
+  padding:12px 16px;border-radius:10px;
+  border:1.5px solid var(--inp-border);background:var(--inp-bg);
+  color:var(--text);font-size:14px;outline:none;transition:var(--transition);
+  font-family:var(--font-main);
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)
+}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.7}
+.form-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-note{font-size:11px;color:var(--text3)}
+.upload-area{
+  border:2px dashed var(--inp-border);border-radius:10px;padding:24px;
+  text-align:center;cursor:pointer;transition:var(--transition);color:var(--text3);
+  font-size:13px;
+}
+.upload-area:hover{border-color:var(--gold);color:var(--accent);background:var(--accent-glow)}
+.upload-icon{font-size:28px;margin-bottom:8px}
+
+/* ===================== LIVE AUCTION SPOTLIGHT ===================== */
+.spotlight-wrap{
+  background:var(--bg2);border-top:1px solid var(--border);
+}
+.spotlight-inner{
+  max-width:1400px;margin:0 auto;padding:60px 20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.spotlight-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--live-bg);border:1px solid var(--live-border);
+  color:var(--badge-live);padding:5px 14px;border-radius:50px;
+  font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:16px;
+}
+.spotlight-title{
+  font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);
+  font-weight:700;margin-bottom:12px;line-height:1.3;
+}
+.spotlight-desc{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.8}
+.spotlight-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;
+}
+.sstat{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;
+}
+.sstat-val{
+  font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--accent);
+  display:block;margin-bottom:2px;
+}
+.sstat-key{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.bid-history{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;
+}
+.bid-history-head{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  font-weight:700;font-size:14px;
+}
+.bh-list{max-height:260px;overflow-y:auto}
+.bh-item{
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  animation:slideInRight 0.4s ease;
+}
+@keyframes slideInRight{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.bh-item:last-child{border-bottom:none}
+.bh-item.top-bid{background:rgba(245,166,35,0.05)}
+.bh-avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#000;flex-shrink:0;
+}
+.bh-name{font-size:13px;font-weight:600;flex:1}
+.bh-time{font-size:11px;color:var(--text3)}
+.bh-amount{
+  font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent);
+}
+.bh-top-icon{color:var(--gold);font-size:14px}
+
+/* ===================== RESELLING ===================== */
+.resell-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;
+}
+.resell-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:var(--transition);
+}
+.resell-card:hover{border-color:rgba(0,200,83,0.3);transform:translateY(-3px)}
+.resell-card-img{
+  height:160px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:56px;
+  position:relative;
+}
+.resell-badge{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,200,83,0.9);color:#fff;
+  padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700;
+}
+.resell-body{padding:14px}
+.resell-title{font-weight:700;font-size:14px;margin-bottom:6px}
+.resell-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.resell-orig{font-size:11px;color:var(--text3)}
+.resell-profit{
+  font-size:11px;font-weight:700;color:var(--green);
+  background:rgba(0,200,83,0.1);padding:2px 8px;border-radius:50px;
+}
+.resell-price{
+  font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--accent);
+  margin-bottom:12px;
+}
+.btn-resell{
+  width:100%;padding:10px;border-radius:8px;border:none;
+  background:rgba(0,200,83,0.12);border:1.5px solid rgba(0,200,83,0.3);
+  color:var(--green);font-weight:700;font-size:13px;
+  transition:var(--transition);cursor:pointer;
+}
+.btn-resell:hover{background:rgba(0,200,83,0.2)}
+
+/* ===================== WINNER BANNER ===================== */
+.winner-banner{
+  background:linear-gradient(135deg,#1a1200,#2a1e00,#1a1200);
+  border:1px solid rgba(245,166,35,0.3);
+  border-radius:var(--radius);padding:20px 24px;
+  display:flex;align-items:center;gap:20px;
+  margin-bottom:24px;position:relative;overflow:hidden;
+}
+[data-theme="light"] .winner-banner{
+  background:linear-gradient(135deg,#fffbf0,#fff7e0,#fffbf0);
+}
+.winner-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 50%,rgba(245,166,35,0.15),transparent 60%);
+}
+.winner-icon{font-size:40px;flex-shrink:0;position:relative;z-index:1}
+.winner-text{position:relative;z-index:1;flex:1}
+.winner-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.winner-name{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--accent)}
+.winner-item{font-size:13px;color:var(--text2)}
+
+/* ===================== MARQUEE BIDS ===================== */
+.bid-marquee{
+  background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:10px 0;overflow:hidden;
+}
+.bid-marquee-inner{
+  display:flex;gap:0;white-space:nowrap;
+  animation:tickerScroll 30s linear infinite;
+}
+.bid-event{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0 28px;font-size:12px;color:var(--text2);
+}
+.bid-event strong{color:var(--accent)}
+.bid-event-icon{font-size:14px}
+
+/* ===================== FOOTER ===================== */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:48px 20px 24px;
+}
+.footer-inner{max-width:1400px;margin:0 auto}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;
+}
+.footer-brand{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.footer-desc{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.8;max-width:280px}
+.footer-socials{display:flex;gap:8px}
+.social-btn{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:var(--transition);cursor:pointer;
+}
+.social-btn:hover{border-color:var(--gold);background:var(--accent-glow)}
+.footer-col-title{font-weight:700;font-size:14px;margin-bottom:16px;color:var(--text)}
+.footer-links{display:flex;flex-direction:column;gap:10px}
+.footer-links a{font-size:13px;color:var(--text3);transition:var(--transition)}
+.footer-links a:hover{color:var(--accent)}
+.footer-bottom{
+  border-top:1px solid var(--border);padding-top:20px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  font-size:12px;color:var(--text3);
+}
+.footer-payment{display:flex;gap:8px;align-items:center}
+.pay-badge{
+  background:var(--surface);border:1px solid var(--border);
+  padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;color:var(--text2);
+}
+
+/* ===================== TAB SYSTEM ===================== */
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--surface);border-radius:12px;padding:4px;border:1px solid var(--border);width:fit-content}
+.tab{padding:9px 20px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:var(--transition);color:var(--text3)}
+.tab.active{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000}
+.tab:hover:not(.active){color:var(--text);background:var(--bg3)}
+
+/* ===================== NOTIFICATION TOAST ===================== */
+.toast-container{
+  position:fixed;bottom:24px;right:24px;z-index:3000;
+  display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  background:var(--modal-bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+  box-shadow:var(--shadow-lg);min-width:280px;max-width:340px;
+  animation:toastIn 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast-icon{font-size:20px;flex-shrink:0}
+.toast-text{flex:1;font-size:13px}
+.toast-title{font-weight:700;margin-bottom:2px}
+.toast-desc{color:var(--text2);font-size:12px}
+.toast.success{border-left:3px solid var(--green)}
+.toast.warning{border-left:3px solid var(--gold)}
+.toast.error{border-left:3px solid var(--red)}
+
+/* ===================== DASHBOARD PREVIEW ===================== */
+.dash-wrap{background:var(--bg2);border-top:1px solid var(--border)}
+.dash-stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;
+}
+.dash-stat{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:18px 20px;
+  display:flex;align-items:center;gap:14px;transition:var(--transition);
+}
+.dash-stat:hover{border-color:var(--border2)}
+.dash-stat-icon{font-size:26px;flex-shrink:0}
+.dash-stat-val{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--accent);line-height:1}
+.dash-stat-key{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:32px}
+  .hero-card{max-width:440px}
+  .spotlight-inner{grid-template-columns:1fr;gap:32px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-search{display:none}
+  .hero{min-height:auto}
+  .hero h1{font-size:1.8rem}
+  .auction-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .form-grid2{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .spotlight-stats{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .auction-grid{grid-template-columns:1fr}
+  .upcoming-grid{grid-template-columns:1fr}
+  .dash-stats-row{grid-template-columns:1fr 1fr}
+}
+
+/* ===================== ANIMATIONS ===================== */
+.fade-in{animation:fadeIn 0.5s ease both}
+.slide-up{animation:slideUp 0.5s ease both}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">🏺</div>
+      নিলাম বিডি
+    </a>
+    <div class="nav-search">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="পণ্য খুঁজুন...">
+    </div>
+    <div class="nav-links">
+      <a href="#" class="nav-link active">🏠 হোম</a>
+      <a href="#live" class="nav-link">🔴 লাইভ নিলাম</a>
+      <a href="#upcoming" class="nav-link">📅 আসছে</a>
+      <a href="#resell" class="nav-link">♻️ পুনরায় বিক্রয়</a>
+      <a href="#" class="nav-link">📊 ড্যাশবোর্ড</a>
+    </div>
+    <div class="nav-actions">
+      <div class="icon-btn" onclick="showToast('নতুন বিড আপডেট!','রহিম সাহেব ৳৮৫,০০০ বিড করেছেন','warning')">
+        🔔
+        <span class="notif-badge">৫</span>
+      </div>
+      <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</div>
+      <button class="nav-btn" onclick="openModal('sellModal')">+ পণ্য বিক্রি করুন</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== TICKER ========== -->
+<div style="margin-top:68px">
+<div class="ticker">
+  <div class="ticker-inner" id="tickerInner">
+    <div class="ticker-item"><span>🔴</span> LIVE: পুরনো সোনার গহনা — সর্বোচ্চ বিড ৳৩,২০,০০০</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">🏆 নিলাম শেষ: রাফায়েল চিত্রকর্ম — বিজয়ী: করিম হোসেন</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">⏰ শেষ হচ্ছে: ভিনটেজ কার ১৯৬৫ — মাত্র ২ ঘণ্টা বাকি</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">🆕 নতুন: দুষ্প্রাপ্য মুঘল মুদ্রা সংগ্রহ নিলামে এসেছে</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">💰 আজকের সর্বোচ্চ বিক্রয়: ৳১৮,৫০,০০০ — হীরার নেকলেস</div>
+    <div class="ticker-dot"></div>
+    <!-- repeat for seamless loop -->
+    <div class="ticker-item"><span>🔴</span> LIVE: পুরনো সোনার গহনা — সর্বোচ্চ বিড ৳৩,২০,০০০</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">🏆 নিলাম শেষ: রাফায়েল চিত্রকর্ম — বিজয়ী: করিম হোসেন</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">⏰ শেষ হচ্ছে: ভিনটেজ কার ১৯৬৫ — মাত্র ২ ঘণ্টা বাকি</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">🆕 নতুন: দুষ্প্রাপ্য মুঘল মুদ্রা সংগ্রহ নিলামে এসেছে</div>
+    <div class="ticker-dot"></div>
+    <div class="ticker-item">💰 আজকের সর্বোচ্চ বিক্রয়: ৳১৮,৫০,০০০ — হীরার নেকলেস</div>
+  </div>
+</div>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div class="fade-in">
+      <div class="hero-tag"><span class="live-dot"></span> ১২৪টি নিলাম এখন চলছে</div>
+      <h1>বাংলাদেশের<br><span>সেরা অনলাইন</span><br>নিলাম প্ল্যাটফর্ম</h1>
+      <p class="hero-desc">ঘরে বসেই বিড করুন, পণ্য বিক্রি করুন এবং দুর্লভ পণ্য সংগ্রহ করুন। নিলাম বিডি — যেখানে প্রতিটি বিড একটি সুযোগ।</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="document.getElementById('live').scrollIntoView({behavior:'smooth'})">🔴 লাইভ নিলাম দেখুন</button>
+        <button class="btn-outline" onclick="openModal('sellModal')">+ পণ্য বিক্রি করুন</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">৪৮,২০০+</span><span class="stat-label">সফল নিলাম</span></div>
+        <div class="stat-item"><span class="stat-num">১.২ লক্ষ+</span><span class="stat-label">নিবন্ধিত বিডার</span></div>
+        <div class="stat-item"><span class="stat-num">৳৩৮ কোটি+</span><span class="stat-label">মোট বিক্রয়</span></div>
+      </div>
+    </div>
+    <div class="hero-card slide-up" style="animation-delay:0.2s">
+      <div class="hero-card-img">
+        🏺
+        <div class="hero-card-live-badge"><span class="live-dot"></span> LIVE</div>
+      </div>
+      <div class="hero-card-body">
+        <div class="hero-card-title">মুঘল আমলের দুষ্প্রাপ্য তামার পাত্র (১৭শ শতাব্দী)</div>
+        <div class="hero-card-seller">বিক্রেতা: আন্টিকস বাজার, ঢাকা ✓</div>
+        <div class="hero-card-bid">
+          <div><div class="bid-label">বর্তমান সর্বোচ্চ বিড</div>
+          <div class="bid-amount" id="heroPrice">৳৩,২০,০০০</div></div>
+          <div style="text-align:right;font-size:12px;color:var(--text3)">৪৭ জন বিড করেছেন</div>
+        </div>
+        <div class="bid-progress"><div class="bid-progress-fill" style="width:73%"></div></div>
+        <div class="countdown-mini">
+          <div class="cdown-box"><span class="cdown-num" id="hH">০২</span><div class="cdown-lbl">ঘণ্টা</div></div>
+          <div style="font-size:20px;color:var(--text3);padding-top:4px">:</div>
+          <div class="cdown-box"><span class="cdown-num" id="hM">৩৪</span><div class="cdown-lbl">মিনিট</div></div>
+          <div style="font-size:20px;color:var(--text3);padding-top:4px">:</div>
+          <div class="cdown-box"><span class="cdown-num" id="hS">১২</span><div class="cdown-lbl">সেকেন্ড</div></div>
+        </div>
+        <button class="btn-bid" onclick="openModal('bidModal')">🔨 এখনই বিড করুন</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BID MARQUEE ========== -->
+<div class="bid-marquee">
+  <div class="bid-marquee-inner">
+    <div class="bid-event">🏅 <strong>রহিম@ঢাকা</strong> সোনার চেইনে ৳৮৫,০০০ বিড করেছেন</div>
+    <div class="bid-event">🔥 <strong>করিম@চট্টগ্রাম</strong> পুরনো ক্যামেরায় ৳৩২,০০০ বিড করেছেন</div>
+    <div class="bid-event">⚡ <strong>সুমাইয়া@সিলেট</strong> হস্তশিল্পে ৳১২,৫০০ বিড করেছেন</div>
+    <div class="bid-event">🎯 <strong>আরিফ@রাজশাহী</strong> ভিনটেজ ঘড়িতে ৳৪৫,০০০ বিড করেছেন</div>
+    <div class="bid-event">💎 <strong>নাদিয়া@খুলনা</strong> হীরার আংটিতে ৳২,১০,০০০ বিড করেছেন</div>
+    <!-- repeat -->
+    <div class="bid-event">🏅 <strong>রহিম@ঢাকা</strong> সোনার চেইনে ৳৮৫,০০০ বিড করেছেন</div>
+    <div class="bid-event">🔥 <strong>করিম@চট্টগ্রাম</strong> পুরনো ক্যামেরায় ৳৩২,০০০ বিড করেছেন</div>
+    <div class="bid-event">⚡ <strong>সুমাইয়া@সিলেট</strong> হস্তশিল্পে ৳১২,৫০০ বিড করেছেন</div>
+    <div class="bid-event">🎯 <strong>আরিফ@রাজশাহী</strong> ভিনটেজ ঘড়িতে ৳৪৫,০০০ বিড করেছেন</div>
+  </div>
+</div>
+
+<!-- ========== CATEGORIES ========== -->
+<div class="section-wrap" style="padding-bottom:20px">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">ক্যাটাগরি অনুযায়ী খুঁজুন</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card active" onclick="setActiveCat(this,'সব')"><div class="cat-icon">🛒</div><div class="cat-name">সব পণ্য</div><div class="cat-count">১২৪টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'গহনা')"><div class="cat-icon">💍</div><div class="cat-name">গহনা</div><div class="cat-count">৩৮টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'পুরাকীর্তি')"><div class="cat-icon">🏺</div><div class="cat-name">পুরাকীর্তি</div><div class="cat-count">২৪টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'শিল্পকর্ম')"><div class="cat-icon">🎨</div><div class="cat-name">শিল্পকর্ম</div><div class="cat-count">১৮টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'ইলেকট্রনিক্স')"><div class="cat-icon">📱</div><div class="cat-name">ইলেকট্রনিক্স</div><div class="cat-count">১৫টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'গাড়ি')"><div class="cat-icon">🚗</div><div class="cat-name">গাড়ি</div><div class="cat-count">৯টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'বই')"><div class="cat-icon">📚</div><div class="cat-name">দুষ্প্রাপ্য বই</div><div class="cat-count">২২টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'ঘড়ি')"><div class="cat-icon">⌚</div><div class="cat-name">ভিনটেজ ঘড়ি</div><div class="cat-count">১৬টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'কারুশিল্প')"><div class="cat-icon">🪔</div><div class="cat-name">কারুশিল্প</div><div class="cat-count">২০টি</div></div>
+      <div class="cat-card" onclick="setActiveCat(this,'মুদ্রা')"><div class="cat-icon">🪙</div><div class="cat-name">পুরনো মুদ্রা</div><div class="cat-count">১৩টি</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LIVE AUCTIONS ========== -->
+<section class="section-wrap" id="live">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">
+        🔴 লাইভ নিলাম
+        <span class="section-badge badge-live-label"><span class="live-dot"></span> LIVE</span>
+      </h2>
+      <a href="#" class="see-all">সব দেখুন →</a>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-chip active" onclick="toggleFilter(this)">সব</div>
+      <div class="filter-chip" onclick="toggleFilter(this)">শেষ হচ্ছে</div>
+      <div class="filter-chip" onclick="toggleFilter(this)">সর্বোচ্চ বিড</div>
+      <div class="filter-chip" onclick="toggleFilter(this)">নতুন</div>
+      <select class="filter-select">
+        <option>মূল্য: কম থেকে বেশি</option>
+        <option>মূল্য: বেশি থেকে কম</option>
+        <option>বিড সংখ্যা</option>
+        <option>সময় শেষ</option>
+      </select>
+    </div>
+
+    <div class="auction-grid">
+
+      <!-- Card 1 -->
+      <div class="auction-card">
+        <div class="card-img">
+          <div class="card-img-bg">💍</div>
+          💍
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+            <div class="card-badge badge-ending">⏰ শেষ হচ্ছে</div>
+          </div>
+          <div class="card-wishlist" onclick="toggleWishlist(this)">🤍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">গহনা · ঢাকা</div>
+          <div class="card-title">২২ ক্যারেট সোনার চেইন (৪০ গ্রাম) — বিসমিল্লাহ জুয়েলার্স</div>
+          <div class="card-seller">
+            <div class="seller-avatar">বি</div>
+            বিসমিল্লাহ জুয়েলার্স
+            <span class="verified-icon">✓</span>
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current" id="p1">৳৩,৪৫,০০০</div>
+              <div class="price-start">শুরু: ৳২,৮০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>৫৮</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time urgent" id="cd1">০১:৪৫:২২</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:85%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('সোনার চেইন','৳৩,৪৫,০০০')">🔨 বিড করুন</button>
+            <button class="btn-buy-now" onclick="showToast('সরাসরি ক্রয়','মূল্য: ৳৩,৮০,০০০ নিশ্চিত করতে যোগাযোগ করুন','warning')">⚡ এখনই কিনুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="auction-card">
+        <div class="card-img" style="font-size:56px">
+          🏺
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+            <div class="card-badge badge-hot-card">🔥 হট</div>
+          </div>
+          <div class="card-wishlist active" onclick="toggleWishlist(this)">❤️</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">পুরাকীর্তি · চট্টগ্রাম</div>
+          <div class="card-title">মুঘল আমলের তামার পাত্র সংগ্রহ (৫ পিস) — হেরিটেজ অ্যান্টিকস</div>
+          <div class="card-seller">
+            <div class="seller-avatar">হে</div>
+            হেরিটেজ অ্যান্টিকস
+            <span class="verified-icon">✓</span>
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current">৳৮,২০,০০০</div>
+              <div class="price-start">শুরু: ৳৫,০০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>৮৩</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time urgent">০০:৩২:১৮</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:92%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('মুঘল তামার পাত্র','৳৮,২০,০০০')">🔨 বিড করুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="auction-card">
+        <div class="card-img" style="font-size:56px">
+          🎨
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+          </div>
+          <div class="card-wishlist" onclick="toggleWishlist(this)">🤍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">শিল্পকর্ম · ঢাকা</div>
+          <div class="card-title">জয়নুল আবেদিনের হাতের আঁকা চিত্র (১৯৫৮) — রাজসিক আর্ট গ্যালারি</div>
+          <div class="card-seller">
+            <div class="seller-avatar">রা</div>
+            রাজসিক আর্ট গ্যালারি
+            <span class="verified-icon">✓</span>
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current">৳১৮,৫০,০০০</div>
+              <div class="price-start">শুরু: ৳১২,০০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>১২৪</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time">০৫:১৮:৪৪</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:64%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('জয়নুল চিত্র','৳১৮,৫০,০০০')">🔨 বিড করুন</button>
+            <button class="btn-buy-now">⚡ এখনই কিনুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="auction-card">
+        <div class="card-img" style="font-size:56px">
+          ⌚
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+          </div>
+          <div class="card-wishlist" onclick="toggleWishlist(this)">🤍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">ভিনটেজ ঘড়ি · সিলেট</div>
+          <div class="card-title">Rolex Datejust 1965 — অরিজিনাল বাংলাদেশি সংগ্রাহকের কাছ থেকে</div>
+          <div class="card-seller">
+            <div class="seller-avatar">ব</div>
+            বর্ণিল কালেকশন
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current">৳৪৫,০০০</div>
+              <div class="price-start">শুরু: ৳৩০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>২৯</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time">০৩:২২:০৫</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:55%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('Rolex ঘড়ি','৳৪৫,০০০')">🔨 বিড করুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="auction-card">
+        <div class="card-img" style="font-size:56px">
+          🪙
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+            <div class="card-badge badge-hot-card">🔥 হট</div>
+          </div>
+          <div class="card-wishlist" onclick="toggleWishlist(this)">🤍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">পুরনো মুদ্রা · রাজশাহী</div>
+          <div class="card-title">ব্রিটিশ ভারতীয় রৌপ্য মুদ্রা সংগ্রহ (৫০ পিস, ১৮৫০-১৯৪৭)</div>
+          <div class="card-seller">
+            <div class="seller-avatar">ন</div>
+            নুমিসমেটিক বাংলাদেশ
+            <span class="verified-icon">✓</span>
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current">৳১,২৫,০০০</div>
+              <div class="price-start">শুরু: ৳৮০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>৪১</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time">০৮:০০:১৫</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:48%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('রৌপ্য মুদ্রা সংগ্রহ','৳১,২৫,০০০')">🔨 বিড করুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="auction-card">
+        <div class="card-img" style="font-size:56px">
+          📸
+          <div class="card-badges">
+            <div class="card-badge badge-live-card"><span class="live-dot"></span> LIVE</div>
+          </div>
+          <div class="card-wishlist" onclick="toggleWishlist(this)">🤍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-category">ভিনটেজ ইলেকট্রনিক্স · খুলনা</div>
+          <div class="card-title">Leica M3 ক্যামেরা (১৯৫৪) সম্পূর্ণ কার্যকর — ক্যামেরা হাউস বিডি</div>
+          <div class="card-seller">
+            <div class="seller-avatar">ক্</div>
+            ক্যামেরা হাউস বিডি
+          </div>
+          <div class="card-price-row">
+            <div class="price-block">
+              <div class="price-label">বর্তমান সর্বোচ্চ বিড</div>
+              <div class="price-current">৳৩২,০০০</div>
+              <div class="price-start">শুরু: ৳২০,০০০</div>
+            </div>
+            <div class="bid-count"><strong>১৭</strong>জন বিড</div>
+          </div>
+          <div class="card-countdown">
+            <span class="countdown-label">বাকি সময়</span>
+            <span class="countdown-time">১১:৪৮:৫৫</span>
+          </div>
+          <div class="bid-progress"><div class="bid-progress-fill" style="width:38%"></div></div>
+          <div class="card-actions">
+            <button class="btn-bid" onclick="openBidModal('Leica ক্যামেরা','৳৩২,০০০')">🔨 বিড করুন</button>
+            <button class="btn-buy-now">⚡ এখনই কিনুন</button>
+            <button class="btn-watch">👁</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== LIVE SPOTLIGHT ========== -->
+<div class="spotlight-wrap" id="spotlight">
+  <div class="spotlight-inner">
+    <div>
+      <div class="spotlight-tag"><span class="live-dot"></span> ফিচার নিলাম</div>
+      <div class="spotlight-title">হীরার নেকলেস সেট — ঐতিহাসিক নিলাম চলছে</div>
+      <p class="spotlight-desc">১৮ ক্যারেট সোনায় তৈরি ১০০টি হীরা দিয়ে গড়া এই অসাধারণ নেকলেস সেটটি একটি রাজপরিবারের সংগ্রহ থেকে এসেছে। এই ধরনের নিলাম বাংলাদেশে বিরল।</p>
+      <div class="spotlight-stats">
+        <div class="sstat"><span class="sstat-val">৳২,১০,০০০</span><div class="sstat-key">সর্বোচ্চ বিড</div></div>
+        <div class="sstat"><span class="sstat-val">৯৭</span><div class="sstat-key">মোট বিড</div></div>
+        <div class="sstat"><span class="sstat-val">০৪:১২</span><div class="sstat-key">বাকি সময়</div></div>
+      </div>
+      <div class="winner-banner">
+        <div class="winner-icon">🏆</div>
+        <div class="winner-text">
+          <div class="winner-label">বর্তমান শীর্ষ বিডার</div>
+          <div class="winner-name">নাদিয়া ইসলাম, ঢাকা</div>
+          <div class="winner-item">বিড: ৳২,১০,০০০ — ৩ মিনিট আগে</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="openBidModal('হীরার নেকলেস সেট','৳২,১০,০০০')" style="width:100%">🔨 এই নিলামে অংশ নিন</button>
+    </div>
+    <div class="bid-history">
+      <div class="bid-history-head">
+        বিড ইতিহাস
+        <span style="font-size:11px;color:var(--text3);font-weight:400">রিয়েল-টাইম আপডেট</span>
+      </div>
+      <div class="bh-list" id="bidHistoryList">
+        <div class="bh-item top-bid">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#f5a623,#e8920f)">না</div>
+          <div><div class="bh-name">নাদিয়া ইসলাম</div><div class="bh-time">৩ মিনিট আগে · ঢাকা</div></div>
+          <span class="bh-top-icon">👑</span>
+          <div class="bh-amount">৳২,১০,০০০</div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">আ</div>
+          <div><div class="bh-name">আরিফ হোসেন</div><div class="bh-time">৭ মিনিট আগে · চট্টগ্রাম</div></div>
+          <div class="bh-amount">৳২,০০,০০০</div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">সা</div>
+          <div><div class="bh-name">সাবরিনা আক্তার</div><div class="bh-time">১২ মিনিট আগে · ঢাকা</div></div>
+          <div class="bh-amount">৳১,৯০,০০০</div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">ক</div>
+          <div><div class="bh-name">করিম মোল্লা</div><div class="bh-time">১৮ মিনিট আগে · সিলেট</div></div>
+          <div class="bh-amount">৳১,৭৫,০০০</div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#ec4899,#be185d)">রা</div>
+          <div><div class="bh-name">রাহেলা বেগম</div><div class="bh-time">২৫ মিনিট আগে · রাজশাহী</div></div>
+          <div class="bh-amount">৳১,৬০,০০০</div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">তা</div>
+          <div><div class="bh-name">তানভীর আহমেদ</div><div class="bh-time">৩২ মিনিট আগে · খুলনা</div></div>
+          <div class="bh-amount">৳১,৪৫,০০০</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== UPCOMING ========== -->
+<section class="section-wrap" id="upcoming">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">📅 আসন্ন নিলাম</h2>
+      <a href="#" class="see-all">সব দেখুন →</a>
+    </div>
+    <div class="upcoming-grid">
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">🚗</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">Toyota Crown 1980 — কালেক্টর'স এডিশন</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳৮,৫০,০০০ · গাড়ি বিভাগ</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">আগামীকাল সকাল ১০:০০</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','Toyota Crown নিলামের জন্য আপনাকে জানানো হবে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">📚</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">রবীন্দ্রনাথের স্বহস্তে লেখা পাণ্ডুলিপি</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳৩৫,০০,০০০ · দুষ্প্রাপ্য বই</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">৩ দিন পরে · বিকাল ৩:০০</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','রবীন্দ্র পাণ্ডুলিপি নিলামের জন্য রিমাইন্ডার সেট হয়েছে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">💎</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">নীলা পাথরের সেট (Burma Sapphire)</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳৫,০০,০০০ · গহনা</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">৫ দিন পরে · সন্ধ্যা ৬:০০</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','নীলা পাথর নিলামের জন্য রিমাইন্ডার সেট হয়েছে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">🏛️</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">পাকিস্তান আমলের সরকারি মানচিত্র সংগ্রহ</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳৭৫,০০০ · পুরাকীর্তি</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">১ সপ্তাহ পরে</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','মানচিত্র নিলামের জন্য রিমাইন্ডার সেট হয়েছে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">🎭</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">শিল্পী এসএম সুলতানের মূল চিত্রকর্ম</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳২৫,০০,০০০ · শিল্পকর্ম</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">১০ দিন পরে · সকাল ১১:০০</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','সুলতান চিত্রকর্ম নিলামের জন্য রিমাইন্ডার সেট হয়েছে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="upcoming-card">
+        <div class="upcoming-thumb">🪔</div>
+        <div class="upcoming-info">
+          <div class="upcoming-title">ঐতিহ্যবাহী নকশিকাঁথা সংগ্রহ (হাতে তৈরি)</div>
+          <div class="upcoming-meta">শুরুর মূল্য: ৳৪৫,০০০ · কারুশিল্প</div>
+          <div class="upcoming-starts">
+            <span class="starts-label">শুরু হবে:</span>
+            <span class="starts-time">১২ দিন পরে</span>
+            <button class="btn-remind" onclick="showToast('রিমাইন্ডার সেট','নকশিকাঁথা নিলামের জন্য রিমাইন্ডার সেট হয়েছে','success')">🔔 মনে করিয়ে দিন</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== RESELLING ========== -->
+<section class="section-wrap" id="resell" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">♻️ পুনরায় বিক্রয় বাজার <span class="section-badge badge-hot">নতুন সুবিধা</span></h2>
+      <a href="#" class="see-all">সব দেখুন →</a>
+    </div>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:24px;max-width:600px">নিলামে কেনা পণ্য আবার নিলামে বিক্রি করুন! মুনাফা করুন বা সংগ্রহ বদলান — সম্পূর্ণ বৈধ এবং নিরাপদ প্রক্রিয়ায়।</p>
+
+    <div class="resell-grid">
+      <div class="resell-card">
+        <div class="resell-card-img">💍<div class="resell-badge">♻️ পুনরায় বিক্রয়</div></div>
+        <div class="resell-body">
+          <div class="resell-title">সোনার আংটি সেট — পুনরায় নিলামে</div>
+          <div class="resell-meta">
+            <div class="resell-orig">কেনা হয়েছিল: ৳৬৫,০০০</div>
+            <div class="resell-profit">+৩২% মুনাফা</div>
+          </div>
+          <div class="resell-price">৳৮৫,০০০ থেকে শুরু</div>
+          <button class="btn-resell" onclick="openBidModal('সোনার আংটি সেট (পুনরায়)','৳৮৫,০০০')">🔨 বিড করুন</button>
+        </div>
+      </div>
+      <div class="resell-card">
+        <div class="resell-card-img">🏺<div class="resell-badge">♻️ পুনরায় বিক্রয়</div></div>
+        <div class="resell-body">
+          <div class="resell-title">পুরনো চীনামাটির থালা সেট</div>
+          <div class="resell-meta">
+            <div class="resell-orig">কেনা হয়েছিল: ৳১২,০০০</div>
+            <div class="resell-profit">+৫৮% মুনাফা</div>
+          </div>
+          <div class="resell-price">৳১৮,৯০০ থেকে শুরু</div>
+          <button class="btn-resell" onclick="openBidModal('চীনামাটির থালা (পুনরায়)','৳১৮,৯০০')">🔨 বিড করুন</button>
+        </div>
+      </div>
+      <div class="resell-card">
+        <div class="resell-card-img">⌚<div class="resell-badge">♻️ পুনরায় বিক্রয়</div></div>
+        <div class="resell-body">
+          <div class="resell-title">Omega Seamaster ভিনটেজ ঘড়ি</div>
+          <div class="resell-meta">
+            <div class="resell-orig">কেনা হয়েছিল: ৳৩৮,০০০</div>
+            <div class="resell-profit">+২১% মুনাফা</div>
+          </div>
+          <div class="resell-price">৳৪৬,০০০ থেকে শুরু</div>
+          <button class="btn-resell" onclick="openBidModal('Omega ঘড়ি (পুনরায়)','৳৪৬,০০০')">🔨 বিড করুন</button>
+        </div>
+      </div>
+      <div class="resell-card">
+        <div class="resell-card-img">🎨<div class="resell-badge">♻️ পুনরায় বিক্রয়</div></div>
+        <div class="resell-body">
+          <div class="resell-title">স্থানীয় শিল্পীর তেলচিত্র — পুনরায়</div>
+          <div class="resell-meta">
+            <div class="resell-orig">কেনা হয়েছিল: ৳৪৫,০০০</div>
+            <div class="resell-profit">+৮৯% মুনাফা</div>
+          </div>
+          <div class="resell-price">৳৮৫,০০০ থেকে শুরু</div>
+          <button class="btn-resell" onclick="openBidModal('তেলচিত্র (পুনরায়)','৳৮৫,০০০')">🔨 বিড করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;background:var(--card-bg);border:1px solid var(--border2);border-radius:var(--radius);padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div style="font-size:32px">♻️</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:15px;margin-bottom:4px">আপনার কেনা পণ্য পুনরায় বিক্রি করুন</div>
+        <div style="font-size:13px;color:var(--text2)">নিলাম বিডি থেকে কেনা যেকোনো পণ্য পুনরায় নিলামে দিতে পারবেন। মাত্র ৩% সার্ভিস চার্জ।</div>
+      </div>
+      <button class="btn-primary" onclick="openModal('sellModal')">এখনই শুরু করুন →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== DASHBOARD PREVIEW ========== -->
+<div class="dash-wrap">
+  <div class="section-wrap">
+    <div class="section-inner">
+      <div class="section-head">
+        <h2 class="section-title">📊 আপনার ড্যাশবোর্ড</h2>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this)">আমার বিড</div>
+        <div class="tab" onclick="switchTab(this)">আমার পণ্য</div>
+        <div class="tab" onclick="switchTab(this)">জয়ী নিলাম</div>
+        <div class="tab" onclick="switchTab(this)">উইশলিস্ট</div>
+      </div>
+      <div class="dash-stats-row">
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🔨</div>
+          <div><div class="dash-stat-val">১২</div><div class="dash-stat-key">সক্রিয় বিড</div></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🏆</div>
+          <div><div class="dash-stat-val">৫</div><div class="dash-stat-key">জয়ী নিলাম</div></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🛒</div>
+          <div><div class="dash-stat-val">৩</div><div class="dash-stat-key">চলমান পণ্য</div></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">💰</div>
+          <div><div class="dash-stat-val">৳৪.৮ লক্ষ</div><div class="dash-stat-key">মোট বিক্রয়</div></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">❤️</div>
+          <div><div class="dash-stat-val">২৮</div><div class="dash-stat-key">উইশলিস্ট</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== HOW IT WORKS ========== -->
+<div class="how-bg">
+  <div class="section-wrap">
+    <div class="section-inner">
+      <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;align-items:center">
+        <h2 class="section-title">কিভাবে কাজ করে?</h2>
+        <p style="color:var(--text2);font-size:14px;max-width:500px;margin-top:8px">৩টি সহজ ধাপে নিলামে অংশ নিন এবং আপনার পণ্য বিক্রি করুন</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">১</div>
+          <div class="step-icon">📝</div>
+          <div class="step-title">নিবন্ধন করুন</div>
+          <div class="step-desc">বিনামূল্যে অ্যাকাউন্ট তৈরি করুন। NID যাচাই করলে ভেরিফাইড ব্যাজ পাবেন।</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">২</div>
+          <div class="step-icon">👁</div>
+          <div class="step-title">পণ্য দেখুন</div>
+          <div class="step-desc">হাজারো পণ্যের মধ্য থেকে পছন্দেরটি বেছে নিন। ছবি ও বিবরণ যাচাই করুন।</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">৩</div>
+          <div class="step-icon">🔨</div>
+          <div class="step-title">বিড করুন</div>
+          <div class="step-desc">আপনার পছন্দের মূল্যে বিড করুন। সর্বোচ্চ বিডার জিতলেন!</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">৪</div>
+          <div class="step-icon">💳</div>
+          <div class="step-title">পেমেন্ট করুন</div>
+          <div class="step-desc">বিকাশ, নগদ, রকেট বা কার্ডে পেমেন্ট করুন। ১০০% নিরাপদ।</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">৫</div>
+          <div class="step-icon">📦</div>
+          <div class="step-title">ডেলিভারি পান</div>
+          <div class="step-desc">ঢাকার মধ্যে ২৪ ঘণ্টা, সারা বাংলাদেশে ৩-৫ কার্যদিবসে ডেলিভারি।</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">৬</div>
+          <div class="step-icon">♻️</div>
+          <div class="step-title">পুনরায় বিক্রি করুন</div>
+          <div class="step-desc">কেনা পণ্য আবার নিলামে দিন। মুনাফা করুন বা নতুন পণ্য কিনুন।</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">🏺 নিলাম বিডি</div>
+        <p class="footer-desc">বাংলাদেশের সবচেয়ে বিশ্বস্ত অনলাইন নিলাম প্ল্যাটফর্ম। ২০১৮ সাল থেকে লক্ষাধিক বাংলাদেশিদের সেবা দিয়ে আসছি।</p>
+        <div class="footer-socials">
+          <div class="social-btn">📘</div>
+          <div class="social-btn">📸</div>
+          <div class="social-btn">🐦</div>
+          <div class="social-btn">▶️</div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">প্ল্যাটফর্ম</div>
+        <div class="footer-links">
+          <a href="#">লাইভ নিলাম</a>
+          <a href="#">আসন্ন নিলাম</a>
+          <a href="#">পুনরায় বিক্রয়</a>
+          <a href="#">পণ্য বিক্রি করুন</a>
+          <a href="#">বিডার গাইড</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">সহায়তা</div>
+        <div class="footer-links">
+          <a href="#">সাহায্য কেন্দ্র</a>
+          <a href="#">নিরাপত্তা নীতি</a>
+          <a href="#">রিটার্ন পলিসি</a>
+          <a href="#">বিক্রেতা গাইড</a>
+          <a href="#">যোগাযোগ করুন</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">যোগাযোগ</div>
+        <div class="footer-links">
+          <a href="#">📞 ০১৮০০-NILAM-BD</a>
+          <a href="#">📧 support@nilambd.com.bd</a>
+          <a href="#">📍 ধানমন্ডি, ঢাকা ১২০৫</a>
+          <a href="#">🕐 সকাল ৯টা — রাত ১০টা</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© ২০২৫ নিলাম বিডি। সর্বস্বত্ব সংরক্ষিত।</div>
+      <div class="footer-payment">
+        <span style="font-size:11px;color:var(--text3)">পেমেন্ট:</span>
+        <div class="pay-badge">বিকাশ</div>
+        <div class="pay-badge">নগদ</div>
+        <div class="pay-badge">রকেট</div>
+        <div class="pay-badge">VISA</div>
+        <div class="pay-badge">MasterCard</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== BID MODAL ========== -->
+<div class="modal-overlay" id="bidModal" onclick="closeOnOverlay(event,'bidModal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">🔨 বিড করুন</div>
+      <div class="modal-close" onclick="closeModal('bidModal')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-item-info">
+        <div class="modal-item-thumb">💍</div>
+        <div>
+          <div class="modal-item-name" id="bidItemName">পণ্যের নাম</div>
+          <div class="modal-item-price">বর্তমান বিড: <span class="modal-item-current" id="bidCurrentPrice">৳০</span></div>
+        </div>
+      </div>
+      <div class="bid-input-wrap">
+        <label class="bid-input-label">আপনার বিড পরিমাণ (টাকায়)</label>
+        <div class="bid-input-row">
+          <div class="bid-currency">৳</div>
+          <input type="number" id="bidAmount" placeholder="০" oninput="updateBidInfo()">
+        </div>
+      </div>
+      <div class="bid-quick-amounts">
+        <div class="quick-amt" onclick="setBidQuick(this)">+৫,০০০</div>
+        <div class="quick-amt" onclick="setBidQuick(this)">+১০,০০০</div>
+        <div class="quick-amt" onclick="setBidQuick(this)">+২৫,০০০</div>
+        <div class="quick-amt" onclick="setBidQuick(this)">+৫০,০০০</div>
+      </div>
+      <div class="bid-info-box">
+        <div class="bid-info-row"><span>নূন্যতম বিড পরিমাণ</span><strong id="minBid">৳৩,৫০,০০০</strong></div>
+        <div class="bid-info-row"><span>প্ল্যাটফর্ম ফি (৩%)</span><strong id="platformFee">৳০</strong></div>
+        <div class="bid-info-row"><span>মোট দিতে হবে (জিতলে)</span><strong id="totalPay">৳০</strong></div>
+      </div>
+      <button class="btn-submit-bid" onclick="submitBid()">🔨 বিড নিশ্চিত করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SELL MODAL ========== -->
+<div class="modal-overlay" id="sellModal" onclick="closeOnOverlay(event,'sellModal')">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-head">
+      <div class="modal-title">📦 পণ্য নিলামে দিন</div>
+      <div class="modal-close" onclick="closeModal('sellModal')">✕</div>
+    </div>
+    <div class="modal-body" style="max-height:75vh;overflow-y:auto">
+      <div class="sell-form">
+        <div class="form-group">
+          <label class="form-label">পণ্যের নাম *</label>
+          <input class="form-input" placeholder="পণ্যের সম্পূর্ণ নাম লিখুন">
+        </div>
+        <div class="form-grid2">
+          <div class="form-group">
+            <label class="form-label">ক্যাটাগরি *</label>
+            <select class="form-select">
+              <option>ক্যাটাগরি বেছে নিন</option>
+              <option>গহনা</option>
+              <option>পুরাকীর্তি</option>
+              <option>শিল্পকর্ম</option>
+              <option>ইলেকট্রনিক্স</option>
+              <option>গাড়ি</option>
+              <option>দুষ্প্রাপ্য বই</option>
+              <option>ভিনটেজ ঘড়ি</option>
+              <option>কারুশিল্প</option>
+              <option>পুরনো মুদ্রা</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">অবস্থা *</label>
+            <select class="form-select">
+              <option>অবস্থা নির্বাচন</option>
+              <option>নতুন</option>
+              <option>মিন্ট কন্ডিশন</option>
+              <option>ভালো অবস্থায়</option>
+              <option>ব্যবহৃত</option>
+              <option>পুরনো/ভিনটেজ</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">পণ্যের বিবরণ *</label>
+          <textarea class="form-textarea" placeholder="পণ্যের বয়স, উৎস, বিশেষ বৈশিষ্ট্য, প্রামাণিকতা ইত্যাদি বিস্তারিত লিখুন..."></textarea>
+        </div>
+        <div class="form-grid2">
+          <div class="form-group">
+            <label class="form-label">শুরুর মূল্য (৳) *</label>
+            <input class="form-input" type="number" placeholder="৳ ০">
+          </div>
+          <div class="form-group">
+            <label class="form-label">রিজার্ভ মূল্য (৳)</label>
+            <input class="form-input" type="number" placeholder="না থাকলে খালি রাখুন">
+            <span class="form-note">এর কম হলে নিলাম বাতিল হবে</span>
+          </div>
+        </div>
+        <div class="form-grid2">
+          <div class="form-group">
+            <label class="form-label">নিলাম শেষের তারিখ *</label>
+            <input class="form-input" type="date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">নিলামের ধরন</label>
+            <select class="form-select">
+              <option>স্বাভাবিক নিলাম</option>
+              <option>সরাসরি ক্রয় আছে</option>
+              <option>লাইভ নিলাম</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">সরাসরি ক্রয় মূল্য (৳) — ঐচ্ছিক</label>
+          <input class="form-input" type="number" placeholder="এই মূল্যে তাৎক্ষণিক কিনতে পারবে">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ছবি আপলোড করুন *</label>
+          <div class="upload-area" onclick="showToast('ছবি আপলোড','ছবি আপলোড ফিচার প্রস্তুত','warning')">
+            <div class="upload-icon">📷</div>
+            <div>ছবি টেনে এখানে ছাড়ুন বা ক্লিক করুন</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">সর্বোচ্চ ১০টি ছবি · JPG/PNG · ৫MB পর্যন্ত</div>
+          </div>
+        </div>
+        <div class="form-grid2">
+          <div class="form-group">
+            <label class="form-label">বিক্রেতার অবস্থান *</label>
+            <select class="form-select">
+              <option>জেলা বেছে নিন</option>
+              <option>ঢাকা</option>
+              <option>চট্টগ্রাম</option>
+              <option>সিলেট</option>
+              <option>রাজশাহী</option>
+              <option>খুলনা</option>
+              <option>বরিশাল</option>
+              <option>ময়মনসিংহ</option>
+              <option>রংপুর</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ডেলিভারি পদ্ধতি</label>
+            <select class="form-select">
+              <option>কুরিয়ার সার্ভিস</option>
+              <option>সরাসরি হস্তান্তর</option>
+              <option>উভয়</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%" onclick="closeModal('sellModal');showToast('পণ্য জমা দেওয়া হয়েছে','আমাদের টিম ২৪ ঘণ্টার মধ্যে পর্যালোচনা করবে','success')">
+          📤 নিলামে জমা দিন
+        </button>
+        <div style="text-align:center;font-size:11px;color:var(--text3)">জমা দিলে আমাদের <a href="#" style="color:var(--accent)">শর্তাবলি</a> মেনে নেওয়া হবে। সফল বিক্রয়ে ৩% কমিশন প্রযোজ্য।</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOAST CONTAINER ========== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  if (html.dataset.theme === 'dark') {
+    html.dataset.theme = 'light';
+    btn.textContent = '☀️';
+  } else {
+    html.dataset.theme = 'dark';
+    btn.textContent = '🌙';
+  }
+}
+
+// ===== HERO COUNTDOWN =====
+let heroSeconds = 2 * 3600 + 34 * 60 + 12;
+function updateHeroCountdown() {
+  if (heroSeconds <= 0) return;
+  heroSeconds--;
+  const h = Math.floor(heroSeconds / 3600);
+  const m = Math.floor((heroSeconds % 3600) / 60);
+  const s = heroSeconds % 60;
+  const toB = n => String(n).split('').map(d => '০১২৩৪৫৬৭৮৯'[d]).join('');
+  document.getElementById('hH').textContent = toB(String(h).padStart(2,'0'));
+  document.getElementById('hM').textContent = toB(String(m).padStart(2,'0'));
+  document.getElementById('hS').textContent = toB(String(s).padStart(2,'0'));
+}
+setInterval(updateHeroCountdown, 1000);
+
+// ===== LIVE BID PRICE UPDATE =====
+let heroPrice = 320000;
+function liveHeroPriceUpdate() {
+  heroPrice += Math.floor(Math.random() * 2000 + 500);
+  const formatted = '৳' + heroPrice.toLocaleString('bn-BD');
+  document.getElementById('heroPrice').textContent = formatted;
+}
+setInterval(liveHeroPriceUpdate, 7000);
+
+// ===== LIVE BID HISTORY =====
+const bidders = [
+  {name:'মোহাম্মদ আলী', city:'ঢাকা', color:'#f5a623,#e8920f', short:'মো'},
+  {name:'ফারহান আহমেদ', city:'চট্টগ্রাম', color:'#3b82f6,#1d4ed8', short:'ফা'},
+  {name:'সুমাইয়া বেগম', city:'সিলেট', color:'#ec4899,#be185d', short:'সু'},
+  {name:'তানজিলা ইসলাম', city:'রাজশাহী', color:'#10b981,#059669', short:'তা'},
+  {name:'হাসানুল হক', city:'খুলনা', color:'#8b5cf6,#6d28d9', short:'হা'},
+];
+let priceBase = 210000;
+function addBidHistory() {
+  const list = document.getElementById('bidHistoryList');
+  if (!list) return;
+  const b = bidders[Math.floor(Math.random() * bidders.length)];
+  priceBase += Math.floor(Math.random() * 5000 + 2000);
+  const f = '৳' + priceBase.toLocaleString('bn-BD');
+  const el = document.createElement('div');
+  el.className = 'bh-item';
+  el.innerHTML = `
+    <div class="bh-avatar" style="background:linear-gradient(135deg,${b.color})">${b.short}</div>
+    <div><div class="bh-name">${b.name}</div><div class="bh-time">এইমাত্র · ${b.city}</div></div>
+    <div class="bh-amount">${f}</div>`;
+  list.insertBefore(el, list.firstChild);
+  if (list.children.length > 8) list.removeChild(list.lastChild);
+  list.firstChild.firstElementChild.nextElementSibling.firstElementChild.style.color = 'var(--accent)';
+}
+setInterval(addBidHistory, 5500);
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+function closeOnOverlay(e, id) {
+  if (e.target.id === id) closeModal(id);
+}
+function openBidModal(name, price) {
+  document.getElementById('bidItemName').textContent = name;
+  document.getElementById('bidCurrentPrice').textContent = price;
+  const num = parseInt(price.replace(/[৳,]/g, '').replace(/[০-৯]/g, d => '0123456789'['০১২৩৪৫৬৭৮৯'.indexOf(d)]));
+  const min = num + 5000;
+  document.getElementById('minBid').textContent = '৳' + min.toLocaleString();
+  document.getElementById('bidAmount').value = '';
+  document.getElementById('platformFee').textContent = '৳০';
+  document.getElementById('totalPay').textContent = '৳০';
+  openModal('bidModal');
+}
+function updateBidInfo() {
+  const v = parseInt(document.getElementById('bidAmount').value) || 0;
+  const fee = Math.round(v * 0.03);
+  document.getElementById('platformFee').textContent = '৳' + fee.toLocaleString();
+  document.getElementById('totalPay').textContent = '৳' + (v + fee).toLocaleString();
+}
+function setBidQuick(el) {
+  const add = parseInt(el.textContent.replace(/[+,৳]/g,'').replace(/[০-৯]/g, d => '0123456789'['০১২৩৪৫৬৭৮৯'.indexOf(d)]));
+  const inp = document.getElementById('bidAmount');
+  inp.value = (parseInt(inp.value) || 0) + add;
+  updateBidInfo();
+}
+function submitBid() {
+  const v = document.getElementById('bidAmount').value;
+  if (!v || parseInt(v) <= 0) {
+    showToast('ত্রুটি','সঠিক বিড পরিমাণ লিখুন','error');
+    return;
+  }
+  closeModal('bidModal');
+  showToast('বিড সফল! 🎉', `আপনি ৳${parseInt(v).toLocaleString()} বিড করেছেন। সর্বোচ্চ বিডার হিসেবে আপনি এগিয়ে আছেন।`, 'success');
+}
+
+// ===== WISHLIST =====
+function toggleWishlist(btn) {
+  if (btn.textContent === '🤍') {
+    btn.textContent = '❤️';
+    btn.classList.add('active');
+    showToast('উইশলিস্টে যোগ','পণ্যটি আপনার উইশলিস্টে যোগ হয়েছে','success');
+  } else {
+    btn.textContent = '🤍';
+    btn.classList.remove('active');
+  }
+}
+
+// ===== FILTER CHIPS =====
+function toggleFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== CATEGORY =====
+function setActiveCat(el) {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== TABS =====
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== TOAST =====
+function showToast(title, desc, type = 'success') {
+  const icons = {success: '✅', warning: '⚠️', error: '❌'};
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<div class="toast-icon">${icons[type]}</div><div class="toast-text"><div class="toast-title">${title}</div><div class="toast-desc">${desc}</div></div>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3800);
+}
+
+// ===== KEYBOARD CLOSE =====
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['bidModal','sellModal'].forEach(id => closeModal(id));
+  }
+});
+
+// ===== WELCOME TOAST =====
+setTimeout(() => showToast('স্বাগতম! 🎉','নিলাম বিডি-তে আপনাকে স্বাগতম। এখন ১২৪টি নিলাম চলছে।','success'), 1500);
+setTimeout(() => showToast('🔴 নতুন বিড!', 'রাফায়েল চিত্রকর্মে নতুন সর্বোচ্চ বিড: ৳১৮,৭০,০০০', 'warning'), 4000);
+</script>
+</body>
+</html>
