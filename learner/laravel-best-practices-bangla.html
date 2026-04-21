@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel Clean Code & Best Practices — বাংলা গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #1e2d45;
+  --accent: #00d9a6;
+  --accent2: #3b82f6;
+  --accent3: #f59e0b;
+  --accent4: #ec4899;
+  --text: #e2e8f0;
+  --text-muted: #64748b;
+  --code-bg: #0d1117;
+  --green: #10b981;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 15px;
+  line-height: 1.9;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #0f1f3d 50%, #0a1628 100%);
+  padding: 80px 20px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,217,166,0.15) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(59,130,246,0.1) 0%, transparent 60%);
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(0,217,166,0.1);
+  border: 1px solid rgba(0,217,166,0.3);
+  color: var(--accent);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #00d9a6, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+/* TOC Nav */
+.toc {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+
+.toc-inner {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  max-width: 1400px;
+  margin: 0 auto;
+  scrollbar-width: none;
+}
+.toc-inner::-webkit-scrollbar { display: none; }
+
+.toc-inner a {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 14px 18px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.toc-inner a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(0,217,166,0.05);
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* Section */
+.section {
+  margin-bottom: 80px;
+  scroll-margin-top: 60px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(0,217,166,0.1);
+  border: 1px solid rgba(0,217,166,0.2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.section-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: rgba(0,217,166,0.2); }
+
+.card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card h3 .icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(0,217,166,0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.card p { color: var(--text-muted); margin-bottom: 16px; font-size: 14px; }
+
+/* Code blocks */
+.code-wrap {
+  margin: 16px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.code-header {
+  background: #161b22;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.code-lang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent3);
+  letter-spacing: 1px;
+}
+
+.code-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+pre {
+  background: var(--code-bg);
+  padding: 20px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.code-wrap code { color: #e6edf3; }
+
+/* Inline code */
+.inline-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(0,217,166,0.08);
+  border: 1px solid rgba(0,217,166,0.15);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* Syntax colors */
+.kw { color: #ff79c6; }
+.fn { color: #50fa7b; }
+.str { color: #f1fa8c; }
+.cm { color: #6272a4; font-style: italic; }
+.var { color: #bd93f9; }
+.num { color: #ffb86c; }
+.cls { color: #8be9fd; }
+.tag { color: #ff5555; }
+.atr { color: #50fa7b; }
+.pun { color: #f8f8f2; }
+.op { color: #ff79c6; }
+
+/* Good/Bad comparison */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+@media (max-width: 700px) {
+  .compare { grid-template-columns: 1fr; }
+}
+
+.compare-bad .code-header { background: rgba(239,68,68,0.1); border-bottom-color: rgba(239,68,68,0.2); }
+.compare-bad { border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; overflow: hidden; }
+.compare-good .code-header { background: rgba(16,185,129,0.1); border-bottom-color: rgba(16,185,129,0.2); }
+.compare-good { border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; overflow: hidden; }
+
+.compare-bad .code-lang { color: var(--red); }
+.compare-good .code-lang { color: var(--green); }
+
+/* Info boxes */
+.info-box {
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin: 16px 0;
+  border-left: 3px solid;
+  font-size: 14px;
+}
+
+.info-box.tip { background: rgba(0,217,166,0.06); border-color: var(--accent); color: #a7f3d0; }
+.info-box.warn { background: rgba(245,158,11,0.06); border-color: var(--accent3); color: #fcd34d; }
+.info-box.danger { background: rgba(239,68,68,0.06); border-color: var(--red); color: #fca5a5; }
+.info-box.info { background: rgba(59,130,246,0.06); border-color: var(--accent2); color: #93c5fd; }
+
+.info-box strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Steps */
+.steps { counter-reset: step; list-style: none; }
+.steps li {
+  counter-increment: step;
+  padding: 12px 16px 12px 52px;
+  position: relative;
+  margin-bottom: 8px;
+  background: var(--surface2);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  background: var(--accent);
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.badge-green { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+.badge-yellow { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.badge-purple { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.2); }
+.badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.badge-pink { background: rgba(236,72,153,0.15); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+
+/* Grid */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* Topic pills */
+.topic-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+  justify-content: center;
+}
+
+.topic-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.topic-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0,217,166,0.05);
+}
+
+/* Flow diagram */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: var(--code-bg);
+  border-radius: 10px;
+  margin: 16px 0;
+}
+
+.flow-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.flow-arrow { color: var(--text-muted); font-size: 18px; }
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+th {
+  background: var(--surface2);
+  color: var(--accent);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30,45,69,0.5);
+  color: var(--text-muted);
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+footer strong { color: var(--accent); }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section { animation: fadeInUp 0.5s ease both; }
+
+/* Highlight bar */
+.highlight-bar {
+  background: linear-gradient(90deg, rgba(0,217,166,0.1), rgba(59,130,246,0.1));
+  border: 1px solid rgba(0,217,166,0.15);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.highlight-bar h4 {
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Laravel · Vue.js · Vite · Inertia.js</div>
+  <h1>Clean Code & Best Practices<br>সম্পূর্ণ বাংলা গাইড</h1>
+  <p>Laravel, Vue.js, Vite, Inertia.js — পরিষ্কার কোড লেখার নিয়ম, ক্যাশ ম্যানেজমেন্ট, Artisan অপ্টিমাইজেশন এবং আরো অনেক কিছু</p>
+
+  <div class="topic-pills">
+    <div class="topic-pill">Clean Code</div>
+    <div class="topic-pill">Laravel API</div>
+    <div class="topic-pill">Vue.js + Vite</div>
+    <div class="topic-pill">Inertia.js</div>
+    <div class="topic-pill">npm build</div>
+    <div class="topic-pill">Cache</div>
+    <div class="topic-pill">Config</div>
+    <div class="topic-pill">Artisan Optimize</div>
+    <div class="topic-pill">Bootstrap Cache</div>
+  </div>
+</section>
+
+<!-- STICKY NAV -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#clean-code">🧹 Clean Code</a>
+    <a href="#naming">📝 Naming</a>
+    <a href="#solid">⚡ SOLID</a>
+    <a href="#laravel-api">🔌 Laravel API</a>
+    <a href="#inertia">🌐 Inertia.js</a>
+    <a href="#vue-vite">⚡ Vue + Vite</a>
+    <a href="#npm-build">📦 npm build</a>
+    <a href="#cache">💾 Cache</a>
+    <a href="#config">⚙️ Config</a>
+    <a href="#bootstrap-cache">🚀 Bootstrap Cache</a>
+    <a href="#artisan">🎯 Artisan Optimize</a>
+    <a href="#security">🔒 Security</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ===== SECTION 1: CLEAN CODE ===== -->
+<section class="section" id="clean-code">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>🧹 পরিষ্কার কোড (Clean Code) — মূল নীতিমালা</h2>
+  </div>
+
+  <div class="info-box tip">
+    <strong>💡 মূল কথা</strong>
+    Clean Code মানে এমন কোড যা মানুষ সহজে পড়তে, বুঝতে এবং পরিবর্তন করতে পারে। "কোড একবার লেখা হয়, কিন্তু বহুবার পড়া হয়।" — Robert C. Martin
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3><span class="icon">✅</span> পরিষ্কার কোডের বৈশিষ্ট্য</h3>
+      <ul style="list-style:none;font-size:14px;color:var(--text-muted)">
+        <li>✦ সহজ ও স্পষ্ট নামকরণ</li>
+        <li>✦ একটি ফাংশন = একটি কাজ</li>
+        <li>✦ কম জটিলতা, বেশি পঠনযোগ্যতা</li>
+        <li>✦ DRY (Don't Repeat Yourself)</li>
+        <li>✦ SOLID নীতি মেনে চলা</li>
+        <li>✦ উপযুক্ত মন্তব্য/ডকুমেন্টেশন</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">❌</span> যা এড়িয়ে চলতে হবে</h3>
+      <ul style="list-style:none;font-size:14px;color:var(--text-muted)">
+        <li>✦ জাদুকরী সংখ্যা (Magic Numbers)</li>
+        <li>✦ দীর্ঘ ফাংশন (God Functions)</li>
+        <li>✦ কপি-পেস্ট কোড</li>
+        <li>✦ অর্থহীন ভেরিয়েবল নাম (x, y, temp)</li>
+        <li>✦ গভীর nested if/else</li>
+        <li>✦ অপ্রয়োজনীয় মন্তব্য</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="code-header">
+        <span class="code-lang">❌ খারাপ কোড</span>
+      </div>
+      <pre><code><span class="cm">// কোনো অর্থ বোঝা যায় না</span>
+<span class="kw">function</span> <span class="fn">calc</span>(<span class="var">$x</span>, <span class="var">$y</span>) {
+  <span class="kw">if</span> (<span class="var">$x</span> > <span class="num">18</span>) {
+    <span class="kw">return</span> <span class="var">$x</span> * <span class="num">0.15</span>;
+  } <span class="kw">else</span> {
+    <span class="kw">return</span> <span class="var">$y</span> * <span class="num">0.10</span>;
+  }
+}</code></pre>
+    </div>
+    <div class="compare-good">
+      <div class="code-header">
+        <span class="code-lang">✅ ভালো কোড</span>
+      </div>
+      <pre><code><span class="cm">// পরিষ্কার ও বোধগম্য</span>
+<span class="kw">const</span> <span class="var">ADULT_TAX_RATE</span> = <span class="num">0.15</span>;
+<span class="kw">const</span> <span class="var">MINOR_TAX_RATE</span> = <span class="num">0.10</span>;
+<span class="kw">const</span> <span class="var">ADULT_AGE</span> = <span class="num">18</span>;
+
+<span class="kw">function</span> <span class="fn">calculateTax</span>(
+  <span class="var">$age</span>, <span class="var">$income</span>
+) {
+  <span class="kw">return</span> <span class="var">$age</span> > <span class="var">ADULT_AGE</span>
+    ? <span class="var">$income</span> * <span class="var">ADULT_TAX_RATE</span>
+    : <span class="var">$income</span> * <span class="var">MINOR_TAX_RATE</span>;
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: NAMING ===== -->
+<section class="section" id="naming">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>📝 নামকরণ কনভেনশন (Naming Conventions)</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🏷️</span> Laravel-এ নামকরণের নিয়ম</h3>
+    <table>
+      <tr><th>উপাদান</th><th>স্টাইল</th><th>উদাহরণ</th></tr>
+      <tr><td>Controller</td><td><span class="badge badge-blue">PascalCase</span></td><td><code class="inline-code">UserController</code></td></tr>
+      <tr><td>Model</td><td><span class="badge badge-blue">PascalCase</span></td><td><code class="inline-code">BlogPost</code></td></tr>
+      <tr><td>Method</td><td><span class="badge badge-green">camelCase</span></td><td><code class="inline-code">getUserById()</code></td></tr>
+      <tr><td>Variable</td><td><span class="badge badge-green">camelCase</span></td><td><code class="inline-code">$userEmail</code></td></tr>
+      <tr><td>Constant</td><td><span class="badge badge-yellow">UPPER_SNAKE</span></td><td><code class="inline-code">MAX_RETRY_COUNT</code></td></tr>
+      <tr><td>Table</td><td><span class="badge badge-purple">snake_case plural</span></td><td><code class="inline-code">blog_posts</code></td></tr>
+      <tr><td>Migration</td><td><span class="badge badge-purple">snake_case</span></td><td><code class="inline-code">create_blog_posts_table</code></td></tr>
+      <tr><td>Route</td><td><span class="badge badge-pink">kebab-case</span></td><td><code class="inline-code">user-profile</code></td></tr>
+      <tr><td>Vue Component</td><td><span class="badge badge-blue">PascalCase</span></td><td><code class="inline-code">UserProfile.vue</code></td></tr>
+    </table>
+  </div>
+
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="code-header">
+        <span class="code-lang">❌ ভুল নামকরণ</span>
+      </div>
+      <pre><code><span class="cm">// PHP (Laravel)</span>
+<span class="kw">class</span> <span class="cls">user_controller</span> {
+  <span class="kw">public function</span> <span class="fn">GetUser</span>() {}
+  <span class="kw">public function</span> <span class="fn">del</span>() {}
+}
+
+<span class="cm">// Vue.js</span>
+<span class="kw">const</span> <span class="var">u</span> = ref(<span class="num">0</span>)
+<span class="kw">const</span> <span class="var">temp</span> = computed(() => {})
+</code></pre>
+    </div>
+    <div class="compare-good">
+      <div class="code-header">
+        <span class="code-lang">✅ সঠিক নামকরণ</span>
+      </div>
+      <pre><code><span class="cm">// PHP (Laravel)</span>
+<span class="kw">class</span> <span class="cls">UserController</span> {
+  <span class="kw">public function</span> <span class="fn">show</span>() {}
+  <span class="kw">public function</span> <span class="fn">destroy</span>() {}
+}
+
+<span class="cm">// Vue.js</span>
+<span class="kw">const</span> <span class="var">userCount</span> = ref(<span class="num">0</span>)
+<span class="kw">const</span> <span class="var">activeUsers</span> = computed(
+  () => {}
+)
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: SOLID ===== -->
+<section class="section" id="solid">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>⚡ SOLID নীতিমালা — Laravel উদাহরণ</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">S</span> S — Single Responsibility Principle (একক দায়িত্ব)</h3>
+    <p>একটি ক্লাস শুধুমাত্র একটি কাজের জন্য দায়িত্বশীল হবে।</p>
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="code-header"><span class="code-lang">❌ ভুল</span></div>
+        <pre><code><span class="kw">class</span> <span class="cls">UserController</span> {
+  <span class="kw">public function</span> <span class="fn">store</span>(<span class="var">$request</span>) {
+    <span class="cm">// Validation</span>
+    <span class="cm">// Database save</span>
+    <span class="cm">// Email send</span>
+    <span class="cm">// Log write</span>
+    <span class="cm">// সব একই ক্লাসে!</span>
+  }
+}</code></pre>
+      </div>
+      <div class="compare-good">
+        <div class="code-header"><span class="code-lang">✅ সঠিক</span></div>
+        <pre><code><span class="kw">class</span> <span class="cls">UserController</span> {
+  <span class="kw">public function</span> <span class="fn">store</span>(
+    <span class="cls">StoreUserRequest</span> <span class="var">$request</span>
+  ) {
+    <span class="var">$user</span> = <span class="cls">UserService</span>::<span class="fn">create</span>(
+      <span class="var">$request</span>-><span class="fn">validated</span>()
+    );
+    <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(
+      <span class="str">'users.show'</span>, <span class="var">$user</span>
+    );
+  }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">O</span> O — Open/Closed Principle (খোলা/বন্ধ নীতি)</h3>
+    <p>কোড সম্প্রসারণের জন্য খোলা, কিন্তু পরিবর্তনের জন্য বন্ধ।</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">Payment Processor</span></div>
+      <pre><code><span class="cm">// Interface তৈরি করুন</span>
+<span class="kw">interface</span> <span class="cls">PaymentGatewayInterface</span> {
+  <span class="kw">public function</span> <span class="fn">pay</span>(<span class="cls">float</span> <span class="var">$amount</span>): <span class="cls">bool</span>;
+}
+
+<span class="cm">// নতুন payment method যোগ করতে পুরনো কোড বদলাতে হবে না</span>
+<span class="kw">class</span> <span class="cls">BkashPayment</span> <span class="kw">implements</span> <span class="cls">PaymentGatewayInterface</span> {
+  <span class="kw">public function</span> <span class="fn">pay</span>(<span class="cls">float</span> <span class="var">$amount</span>): <span class="cls">bool</span> {
+    <span class="kw">return</span> <span class="cls">BkashAPI</span>::<span class="fn">charge</span>(<span class="var">$amount</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="cls">NagadPayment</span> <span class="kw">implements</span> <span class="cls">PaymentGatewayInterface</span> {
+  <span class="kw">public function</span> <span class="fn">pay</span>(<span class="cls">float</span> <span class="var">$amount</span>): <span class="cls">bool</span> {
+    <span class="kw">return</span> <span class="cls">NagadAPI</span>::<span class="fn">charge</span>(<span class="var">$amount</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="cls">OrderController</span> {
+  <span class="kw">public function</span> <span class="fn">__construct</span>(
+    <span class="kw">private</span> <span class="cls">PaymentGatewayInterface</span> <span class="var">$payment</span>
+  ) {}
+
+  <span class="kw">public function</span> <span class="fn">checkout</span>(<span class="cls">float</span> <span class="var">$amount</span>) {
+    <span class="var">$this</span>-><span class="var">payment</span>-><span class="fn">pay</span>(<span class="var">$amount</span>);
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">D</span> D — Dependency Inversion (নির্ভরতা উল্টানো)</h3>
+    <p>উচ্চ-স্তরের মডিউল নিম্ন-স্তরের উপর নির্ভর করবে না, উভয়ই abstraction-এর উপর নির্ভর করবে।</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">Service Provider</span></div>
+      <pre><code><span class="cm">// AppServiceProvider.php তে binding করুন</span>
+<span class="kw">class</span> <span class="cls">AppServiceProvider</span> <span class="kw">extends</span> <span class="cls">ServiceProvider</span> {
+  <span class="kw">public function</span> <span class="fn">register</span>(): <span class="cls">void</span> {
+    <span class="var">$this</span>-><span class="var">app</span>-><span class="fn">bind</span>(
+      <span class="cls">PaymentGatewayInterface</span>::<span class="kw">class</span>,
+      <span class="cls">BkashPayment</span>::<span class="kw">class</span>
+    );
+  }
+}
+
+<span class="cm">// এখন Controller-এ automatic injection হবে</span>
+<span class="kw">class</span> <span class="cls">OrderController</span> <span class="kw">extends</span> <span class="cls">Controller</span> {
+  <span class="kw">public function</span> <span class="fn">__construct</span>(
+    <span class="kw">private readonly</span> <span class="cls">PaymentGatewayInterface</span> <span class="var">$payment</span>
+  ) {}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: LARAVEL API ===== -->
+<section class="section" id="laravel-api">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>🔌 Laravel RESTful API — Best Practices</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🗺️</span> API Route কাঠামো</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">routes/api.php</span></div>
+      <pre><code><span class="cm">// routes/api.php — পরিষ্কার API Route গঠন</span>
+<span class="kw">use</span> <span class="cls">Illuminate\Support\Facades\Route</span>;
+<span class="kw">use</span> <span class="cls">App\Http\Controllers\Api\V1\ProductController</span>;
+<span class="kw">use</span> <span class="cls">App\Http\Controllers\Api\V1\OrderController</span>;
+
+<span class="cm">// Versioned API — ভার্সন ব্যবহার করুন</span>
+<span class="cls">Route</span>::<span class="fn">prefix</span>(<span class="str">'v1'</span>)-><span class="fn">middleware</span>(<span class="str">'auth:sanctum'</span>)-><span class="fn">group</span>(<span class="kw">function</span>() {
+  <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'products'</span>, <span class="cls">ProductController</span>::<span class="kw">class</span>);
+  <span class="cls">Route</span>::<span class="fn">apiResource</span>(<span class="str">'orders'</span>, <span class="cls">OrderController</span>::<span class="kw">class</span>);
+
+  <span class="cm">// Nested resource — পণ্যের রিভিউ</span>
+  <span class="cls">Route</span>::<span class="fn">apiResource</span>(
+    <span class="str">'products.reviews'</span>,
+    <span class="cls">ProductReviewController</span>::<span class="kw">class</span>
+  );
+});
+
+<span class="cm">// Public routes — authentication ছাড়া</span>
+<span class="cls">Route</span>::<span class="fn">prefix</span>(<span class="str">'v1'</span>)-><span class="fn">group</span>(<span class="kw">function</span>() {
+  <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/login'</span>, [<span class="cls">AuthController</span>::<span class="kw">class</span>, <span class="str">'login'</span>]);
+  <span class="cls">Route</span>::<span class="fn">post</span>(<span class="str">'auth/register'</span>, [<span class="cls">AuthController</span>::<span class="kw">class</span>, <span class="str">'register'</span>]);
+});</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📦</span> API Controller — সঠিক গঠন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">ProductController.php</span></div>
+      <pre><code><span class="kw">namespace</span> <span class="cls">App\Http\Controllers\Api\V1</span>;
+
+<span class="kw">class</span> <span class="cls">ProductController</span> <span class="kw">extends</span> <span class="cls">Controller</span> {
+  <span class="kw">public function</span> <span class="fn">__construct</span>(
+    <span class="kw">private readonly</span> <span class="cls">ProductService</span> <span class="var">$productService</span>
+  ) {}
+
+  <span class="cm">// তালিকা দেখানো</span>
+  <span class="kw">public function</span> <span class="fn">index</span>(<span class="cls">IndexProductRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$products</span> = <span class="var">$this</span>-><span class="var">productService</span>-><span class="fn">paginate</span>(
+      <span class="var">$request</span>-><span class="fn">validated</span>()
+    );
+
+    <span class="kw">return</span> <span class="cls">ProductResource</span>::<span class="fn">collection</span>(<span class="var">$products</span>)
+      -><span class="fn">response</span>()-><span class="fn">setStatusCode</span>(<span class="num">200</span>);
+  }
+
+  <span class="cm">// নতুন পণ্য তৈরি</span>
+  <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">StoreProductRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$product</span> = <span class="var">$this</span>-><span class="var">productService</span>-><span class="fn">create</span>(
+      <span class="var">$request</span>-><span class="fn">validated</span>()
+    );
+
+    <span class="kw">return</span> (<span class="kw">new</span> <span class="cls">ProductResource</span>(<span class="var">$product</span>))
+      -><span class="fn">response</span>()
+      -><span class="fn">setStatusCode</span>(<span class="num">201</span>);
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎨</span> API Resource — Response গঠন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">ProductResource.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">ProductResource</span> <span class="kw">extends</span> <span class="cls">JsonResource</span> {
+  <span class="kw">public function</span> <span class="fn">toArray</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">array</span> {
+    <span class="kw">return</span> [
+      <span class="str">'id'</span>         => <span class="var">$this</span>-><span class="var">id</span>,
+      <span class="str">'name'</span>       => <span class="var">$this</span>-><span class="var">name</span>,
+      <span class="str">'price'</span>      => <span class="fn">number_format</span>(<span class="var">$this</span>-><span class="var">price</span>, <span class="num">2</span>),
+      <span class="str">'category'</span>   => <span class="kw">new</span> <span class="cls">CategoryResource</span>(<span class="var">$this</span>-><span class="var">category</span>),
+      <span class="str">'created_at'</span> => <span class="var">$this</span>-><span class="var">created_at</span>-><span class="fn">toDateTimeString</span>(),
+      <span class="str">'links'</span>      => [
+        <span class="str">'self'</span> => <span class="fn">route</span>(<span class="str">'api.products.show'</span>, <span class="var">$this</span>-><span class="var">id</span>),
+      ],
+    ];
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🛡️</span> Form Request Validation</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">StoreProductRequest.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">StoreProductRequest</span> <span class="kw">extends</span> <span class="cls">FormRequest</span> {
+  <span class="kw">public function</span> <span class="fn">authorize</span>(): <span class="cls">bool</span> {
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">user</span>()-><span class="fn">can</span>(<span class="str">'create'</span>, <span class="cls">Product</span>::<span class="kw">class</span>);
+  }
+
+  <span class="kw">public function</span> <span class="fn">rules</span>(): <span class="cls">array</span> {
+    <span class="kw">return</span> [
+      <span class="str">'name'</span>     => [<span class="str">'required'</span>, <span class="str">'string'</span>, <span class="str">'max:255'</span>],
+      <span class="str">'price'</span>    => [<span class="str">'required'</span>, <span class="str">'numeric'</span>, <span class="str">'min:0'</span>],
+      <span class="str">'category_id'</span> => [<span class="str">'required'</span>, <span class="str">'exists:categories,id'</span>],
+      <span class="str">'stock'</span>    => [<span class="str">'required'</span>, <span class="str">'integer'</span>, <span class="str">'min:0'</span>],
+    ];
+  }
+
+  <span class="kw">public function</span> <span class="fn">messages</span>(): <span class="cls">array</span> {
+    <span class="kw">return</span> [
+      <span class="str">'name.required'</span> => <span class="str">'পণ্যের নাম আবশ্যক'</span>,
+      <span class="str">'price.min'</span>     => <span class="str">'মূল্য ঋণাত্মক হতে পারবে না'</span>,
+    ];
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎯</span> Service Layer — Business Logic আলাদা করুন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">ProductService.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">ProductService</span> {
+  <span class="kw">public function</span> <span class="fn">__construct</span>(
+    <span class="kw">private readonly</span> <span class="cls">ProductRepository</span> <span class="var">$repository</span>
+  ) {}
+
+  <span class="kw">public function</span> <span class="fn">create</span>(<span class="cls">array</span> <span class="var">$data</span>): <span class="cls">Product</span> {
+    <span class="cm">// ব্যবসায়িক নিয়ম এখানে থাকবে</span>
+    <span class="var">$data</span>[<span class="str">'slug'</span>] = <span class="cls">Str</span>::<span class="fn">slug</span>(<span class="var">$data</span>[<span class="str">'name'</span>]);
+    <span class="var">$data</span>[<span class="str">'sku'</span>] = <span class="var">$this</span>-><span class="fn">generateSku</span>(<span class="var">$data</span>[<span class="str">'name'</span>]);
+
+    <span class="var">$product</span> = <span class="var">$this</span>-><span class="var">repository</span>-><span class="fn">create</span>(<span class="var">$data</span>);
+
+    <span class="cm">// Event fire করুন</span>
+    <span class="fn">event</span>(<span class="kw">new</span> <span class="cls">ProductCreated</span>(<span class="var">$product</span>));
+
+    <span class="kw">return</span> <span class="var">$product</span>;
+  }
+
+  <span class="kw">private function</span> <span class="fn">generateSku</span>(<span class="cls">string</span> <span class="var">$name</span>): <span class="cls">string</span> {
+    <span class="kw">return</span> <span class="fn">strtoupper</span>(<span class="fn">substr</span>(<span class="var">$name</span>, <span class="num">0</span>, <span class="num">3</span>))
+      . <span class="fn">time</span>();
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: INERTIA ===== -->
+<section class="section" id="inertia">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>🌐 Inertia.js — Laravel + Vue.js সংযোগ</h2>
+  </div>
+
+  <div class="info-box info">
+    <strong>📌 Inertia.js কি?</strong>
+    Inertia.js হলো একটি "modern monolith" framework যা Laravel backend এবং Vue.js frontend-কে API ছাড়াই একসাথে কাজ করতে দেয়। এটি SPA-এর মতো কাজ করে কিন্তু পুরনো server-side routing ব্যবহার করে।
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚙️</span> Inertia ইন্সটলেশন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># Server-side (Laravel)</span>
+composer require inertiajs/inertia-laravel
+
+<span class="cm"># Client-side (Vue.js)</span>
+npm install @inertiajs/vue3
+
+<span class="cm"># Middleware publish করুন</span>
+php artisan inertia:middleware
+
+<span class="cm"># app.blade.php তে যোগ করুন</span>
+php artisan vendor:publish --provider="Inertia\ServiceProvider"</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> app.blade.php সেটআপ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">HTML</span><span class="code-label">resources/views/app.blade.php</span></div>
+      <pre><code><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="str">"bn"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="atr">charset</span>=<span class="str">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="atr">name</span>=<span class="str">"viewport"</span> <span class="atr">content</span>=<span class="str">"width=device-width"</span><span class="tag">&gt;</span>
+  @vite([<span class="str">'resources/css/app.css'</span>, <span class="str">'resources/js/app.js'</span>])
+  @inertiaHead
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  @inertia
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🚀</span> app.js — Vue + Inertia বুটস্ট্র্যাপ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JS</span><span class="code-label">resources/js/app.js</span></div>
+      <pre><code><span class="kw">import</span> { <span class="var">createApp</span>, <span class="var">h</span> } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> { <span class="var">createInertiaApp</span> } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { <span class="var">resolvePageComponent</span> } <span class="kw">from</span> <span class="str">'laravel-vite-plugin/inertia-helpers'</span>
+<span class="kw">import</span> <span class="str">'../css/app.css'</span>
+
+<span class="fn">createInertiaApp</span>({
+  <span class="cm">// Page title সেটআপ</span>
+  <span class="fn">title</span>: (<span class="var">title</span>) => `<span class="var">${title}</span> — আমার অ্যাপ`,
+
+  <span class="cm">// Vue কম্পোনেন্ট লোড করার নিয়ম</span>
+  <span class="fn">resolve</span>: (<span class="var">name</span>) => <span class="fn">resolvePageComponent</span>(
+    `./Pages/<span class="var">${name}</span>.vue`,
+    <span class="fn">import</span>.<span class="fn">meta</span>.<span class="fn">glob</span>(<span class="str">'./Pages/**/*.vue'</span>)
+  ),
+
+  <span class="fn">setup</span>({ <span class="var">el</span>, <span class="var">App</span>, <span class="var">props</span>, <span class="var">plugin</span> }) {
+    <span class="fn">createApp</span>({ <span class="fn">render</span>: () => <span class="fn">h</span>(<span class="var">App</span>, <span class="var">props</span>) })
+      .<span class="fn">use</span>(<span class="var">plugin</span>)
+      .<span class="fn">mount</span>(<span class="var">el</span>)
+  },
+})</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎯</span> Inertia Controller — Data পাঠানো</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">UserController.php</span></div>
+      <pre><code><span class="kw">use</span> <span class="cls">Inertia\Inertia</span>;
+
+<span class="kw">class</span> <span class="cls">UserController</span> <span class="kw">extends</span> <span class="cls">Controller</span> {
+  <span class="kw">public function</span> <span class="fn">index</span>(): <span class="cls">Response</span> {
+    <span class="kw">return</span> <span class="cls">Inertia</span>::<span class="fn">render</span>(<span class="str">'Users/Index'</span>, [
+      <span class="cm">// Lazy loading — প্রয়োজনে লোড হবে</span>
+      <span class="str">'users'</span> => <span class="cls">Inertia</span>::<span class="fn">lazy</span>(
+        <span class="kw">fn</span>() => <span class="cls">UserResource</span>::<span class="fn">collection</span>(
+          <span class="cls">User</span>::<span class="fn">with</span>(<span class="str">'roles'</span>)-><span class="fn">paginate</span>(<span class="num">15</span>)
+        )
+      ),
+      <span class="str">'filters'</span> => <span class="fn">request</span>()-><span class="fn">only</span>([<span class="str">'search'</span>, <span class="str">'role'</span>]),
+    ]);
+  }
+
+  <span class="kw">public function</span> <span class="fn">store</span>(<span class="cls">StoreUserRequest</span> <span class="var">$request</span>) {
+    <span class="cls">User</span>::<span class="fn">create</span>(<span class="var">$request</span>-><span class="fn">validated</span>());
+
+    <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'users.index'</span>)
+      -><span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'ব্যবহারকারী তৈরি হয়েছে!'</span>);
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🖥️</span> Vue Page Component — Inertia সহ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">VUE</span><span class="code-label">resources/js/Pages/Users/Index.vue</span></div>
+      <pre><code><span class="tag">&lt;script setup&gt;</span>
+<span class="kw">import</span> { <span class="var">Head</span>, <span class="var">Link</span>, <span class="var">router</span> } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+<span class="kw">import</span> { <span class="var">ref</span>, <span class="var">watch</span> } <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="cm">// Props — Laravel থেকে আসা data</span>
+<span class="kw">const</span> <span class="var">props</span> = <span class="fn">defineProps</span>({
+  <span class="var">users</span>: <span class="cls">Object</span>,
+  <span class="var">filters</span>: <span class="cls">Object</span>,
+})
+
+<span class="kw">const</span> <span class="var">search</span> = <span class="fn">ref</span>(<span class="var">props</span>.<span class="var">filters</span>.<span class="var">search</span>)
+
+<span class="cm">// Search বদলালে নতুন request পাঠাও</span>
+<span class="fn">watch</span>(<span class="var">search</span>, (<span class="var">value</span>) => {
+  <span class="var">router</span>.<span class="fn">get</span>(<span class="fn">route</span>(<span class="str">'users.index'</span>), { <span class="var">search</span>: <span class="var">value</span> }, {
+    <span class="var">preserveState</span>: <span class="kw">true</span>,
+    <span class="var">replace</span>: <span class="kw">true</span>,
+  })
+})
+
+<span class="kw">function</span> <span class="fn">deleteUser</span>(<span class="var">userId</span>) {
+  <span class="kw">if</span> (<span class="fn">confirm</span>(<span class="str">'ব্যবহারকারী মুছবেন?'</span>)) {
+    <span class="var">router</span>.<span class="fn">delete</span>(<span class="fn">route</span>(<span class="str">'users.destroy'</span>, <span class="var">userId</span>))
+  }
+}
+<span class="tag">&lt;/script&gt;</span>
+
+<span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;Head</span> <span class="atr">title</span>=<span class="str">"ব্যবহারকারী তালিকা"</span> <span class="tag">/&gt;</span>
+
+  <span class="tag">&lt;div&gt;</span>
+    <span class="tag">&lt;input</span> <span class="atr">v-model</span>=<span class="str">"search"</span> <span class="atr">placeholder</span>=<span class="str">"খুঁজুন..."</span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;div</span> <span class="atr">v-for</span>=<span class="str">"user in users.data"</span> <span class="atr">:key</span>=<span class="str">"user.id"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;span&gt;</span>{{ user.name }}<span class="tag">&lt;/span&gt;</span>
+      <span class="tag">&lt;Link</span> <span class="atr">:href</span>=<span class="str">"route('users.edit', user.id)"</span><span class="tag">&gt;</span>সম্পাদনা<span class="tag">&lt;/Link&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">@click</span>=<span class="str">"deleteUser(user.id)"</span><span class="tag">&gt;</span>মুছুন<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/template&gt;</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔗</span> Shared Data — Global Props</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">HandleInertiaRequests.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">HandleInertiaRequests</span> <span class="kw">extends</span> <span class="cls">Middleware</span> {
+  <span class="kw">public function</span> <span class="fn">share</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">array</span> {
+    <span class="kw">return</span> <span class="fn">array_merge</span>(<span class="kw">parent</span>::<span class="fn">share</span>(<span class="var">$request</span>), [
+      <span class="cm">// সব page-এ auth user পাওয়া যাবে</span>
+      <span class="str">'auth'</span> => [
+        <span class="str">'user'</span> => <span class="var">$request</span>-><span class="fn">user</span>() ? [
+          <span class="str">'id'</span>    => <span class="var">$request</span>-><span class="fn">user</span>()-><span class="var">id</span>,
+          <span class="str">'name'</span>  => <span class="var">$request</span>-><span class="fn">user</span>()-><span class="var">name</span>,
+          <span class="str">'email'</span> => <span class="var">$request</span>-><span class="fn">user</span>()-><span class="var">email</span>,
+        ] : <span class="kw">null</span>,
+      ],
+      <span class="cm">// Flash message সব page-এ পাবে</span>
+      <span class="str">'flash'</span> => [
+        <span class="str">'success'</span> => <span class="fn">session</span>(<span class="str">'success'</span>),
+        <span class="str">'error'</span>   => <span class="fn">session</span>(<span class="str">'error'</span>),
+      ],
+    ]);
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 6: VUE + VITE ===== -->
+<section class="section" id="vue-vite">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>⚡ Vue.js + Vite — Component Best Practices</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🧩</span> Composable — পুনর্ব্যবহারযোগ্য লজিক</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JS</span><span class="code-label">resources/js/composables/useProducts.js</span></div>
+      <pre><code><span class="kw">import</span> { <span class="var">ref</span>, <span class="var">computed</span>, <span class="var">onMounted</span> } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> { <span class="var">useForm</span> } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+
+<span class="cm">// পণ্য সংক্রান্ত সব লজিক এখানে থাকবে</span>
+<span class="kw">export function</span> <span class="fn">useProducts</span>() {
+  <span class="kw">const</span> <span class="var">products</span> = <span class="fn">ref</span>([])
+  <span class="kw">const</span> <span class="var">isLoading</span> = <span class="fn">ref</span>(<span class="kw">false</span>)
+  <span class="kw">const</span> <span class="var">error</span> = <span class="fn">ref</span>(<span class="kw">null</span>)
+
+  <span class="kw">const</span> <span class="var">totalProducts</span> = <span class="fn">computed</span>(
+    () => <span class="var">products</span>.<span class="var">value</span>.<span class="var">length</span>
+  )
+
+  <span class="kw">async function</span> <span class="fn">fetchProducts</span>() {
+    <span class="var">isLoading</span>.<span class="var">value</span> = <span class="kw">true</span>
+    <span class="kw">try</span> {
+      <span class="kw">const</span> <span class="var">response</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/v1/products'</span>)
+      <span class="var">products</span>.<span class="var">value</span> = <span class="kw">await</span> <span class="var">response</span>.<span class="fn">json</span>()
+    } <span class="kw">catch</span> (<span class="var">err</span>) {
+      <span class="var">error</span>.<span class="var">value</span> = <span class="str">'পণ্য লোড করতে সমস্যা হয়েছে'</span>
+    } <span class="kw">finally</span> {
+      <span class="var">isLoading</span>.<span class="var">value</span> = <span class="kw">false</span>
+    }
+  }
+
+  <span class="fn">onMounted</span>(<span class="fn">fetchProducts</span>)
+
+  <span class="kw">return</span> { <span class="var">products</span>, <span class="var">isLoading</span>, <span class="var">error</span>, <span class="var">totalProducts</span> }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📝</span> Form Handling — useForm সহ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">VUE</span><span class="code-label">CreateProduct.vue</span></div>
+      <pre><code><span class="tag">&lt;script setup&gt;</span>
+<span class="kw">import</span> { <span class="var">useForm</span> } <span class="kw">from</span> <span class="str">'@inertiajs/vue3'</span>
+
+<span class="cm">// Inertia useForm — automatic error handling</span>
+<span class="kw">const</span> <span class="var">form</span> = <span class="fn">useForm</span>({
+  <span class="var">name</span>: <span class="str">''</span>,
+  <span class="var">price</span>: <span class="str">''</span>,
+  <span class="var">category_id</span>: <span class="kw">null</span>,
+  <span class="var">description</span>: <span class="str">''</span>,
+})
+
+<span class="kw">function</span> <span class="fn">submitForm</span>() {
+  <span class="var">form</span>.<span class="fn">post</span>(<span class="fn">route</span>(<span class="str">'products.store'</span>), {
+    <span class="fn">onSuccess</span>: () => <span class="var">form</span>.<span class="fn">reset</span>(),
+    <span class="fn">onError</span>: (<span class="var">errors</span>) => {
+      <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'ভুল হয়েছে:'</span>, <span class="var">errors</span>)
+    },
+  })
+}
+<span class="tag">&lt;/script&gt;</span>
+
+<span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;form</span> <span class="atr">@submit.prevent</span>=<span class="str">"submitForm"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">v-model</span>=<span class="str">"form.name"</span> <span class="atr">type</span>=<span class="str">"text"</span><span class="tag">&gt;</span>
+      <span class="cm">&lt;!-- Error দেখানো --&gt;</span>
+      <span class="tag">&lt;span</span> <span class="atr">v-if</span>=<span class="str">"form.errors.name"</span><span class="tag">&gt;</span>
+        {{ form.errors.name }}
+      <span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+    <span class="tag">&lt;button</span>
+      <span class="atr">type</span>=<span class="str">"submit"</span>
+      <span class="atr">:disabled</span>=<span class="str">"form.processing"</span>
+    <span class="tag">&gt;</span>
+      {{ form.processing ? 'সংরক্ষণ হচ্ছে...' : 'সংরক্ষণ করুন' }}
+    <span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;/form&gt;</span>
+<span class="tag">&lt;/template&gt;</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> vite.config.js — সেটআপ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JS</span><span class="code-label">vite.config.js</span></div>
+      <pre><code><span class="kw">import</span> { <span class="var">defineConfig</span> } <span class="kw">from</span> <span class="str">'vite'</span>
+<span class="kw">import</span> <span class="var">laravel</span> <span class="kw">from</span> <span class="str">'laravel-vite-plugin'</span>
+<span class="kw">import</span> <span class="var">vue</span> <span class="kw">from</span> <span class="str">'@vitejs/plugin-vue'</span>
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  <span class="var">plugins</span>: [
+    <span class="fn">laravel</span>({
+      <span class="cm">// Entry point গুলো এখানে দিন</span>
+      <span class="var">input</span>: [
+        <span class="str">'resources/css/app.css'</span>,
+        <span class="str">'resources/js/app.js'</span>,
+      ],
+      <span class="var">refresh</span>: <span class="kw">true</span>, <span class="cm">// Hot reload সক্রিয়</span>
+    }),
+    <span class="fn">vue</span>({
+      <span class="var">template</span>: {
+        <span class="var">transformAssetUrls</span>: {
+          <span class="var">base</span>: <span class="kw">null</span>,
+          <span class="var">includeAbsolute</span>: <span class="kw">false</span>,
+        },
+      },
+    }),
+  ],
+
+  <span class="cm">// Path alias — পরিষ্কার import এর জন্য</span>
+  <span class="var">resolve</span>: {
+    <span class="var">alias</span>: {
+      <span class="str">'@'</span>: <span class="str">'/resources/js'</span>,
+    },
+  },
+})</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 7: NPM BUILD ===== -->
+<section class="section" id="npm-build">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>📦 npm build — কিভাবে কাজ করে</h2>
+  </div>
+
+  <div class="info-box info">
+    <strong>📌 Vite Build Process</strong>
+    npm run build → Vite → Rollup → Minified Assets → public/build/ ফোল্ডারে সংরক্ষিত হয়।
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚡</span> npm Commands</h3>
+    <table>
+      <tr><th>Command</th><th>কাজ</th><th>কখন ব্যবহার</th></tr>
+      <tr>
+        <td><code class="inline-code">npm run dev</code></td>
+        <td>Development server চালু — HMR সক্রিয়</td>
+        <td>Local development-এ</td>
+      </tr>
+      <tr>
+        <td><code class="inline-code">npm run build</code></td>
+        <td>Production build তৈরি — minify + optimize</td>
+        <td>Server-এ deploy করার আগে</td>
+      </tr>
+      <tr>
+        <td><code class="inline-code">npm run preview</code></td>
+        <td>Build preview locally</td>
+        <td>Build পরীক্ষা করতে</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔄</span> npm build-এর ধাপগুলো</h3>
+    <div class="flow">
+      <div class="flow-box">npm run build</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">Vite Config পড়ে</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">JS/CSS Parse</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">Tree Shaking</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">Code Split</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">Minify</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-box">public/build/</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal Output</span></div>
+      <pre><code><span class="cm"># npm run build চালালে যা হয়</span>
+$ npm run build
+
+> vite build
+
+vite v5.x.x building for production...
+✓ 87 modules transformed.
+
+<span class="cm"># Output ফাইলগুলো</span>
+public/build/manifest.json              <span class="cm"># Asset mapping</span>
+public/build/assets/app-Bx7Kq9jN.css   <span class="cm"># Minified CSS</span>
+public/build/assets/app-CdP3kQwL.js    <span class="cm"># Minified JS</span>
+
+✓ built in 3.45s</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📋</span> manifest.json — Asset Versioning</h3>
+    <p>Vite একটি manifest.json তৈরি করে যা Laravel ব্যবহার করে সঠিক হ্যাশড ফাইল লোড করতে।</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JSON</span><span class="code-label">public/build/manifest.json</span></div>
+      <pre><code>{
+  <span class="str">"resources/js/app.js"</span>: {
+    <span class="str">"file"</span>: <span class="str">"assets/app-CdP3kQwL.js"</span>,
+    <span class="str">"name"</span>: <span class="str">"app"</span>,
+    <span class="str">"src"</span>: <span class="str">"resources/js/app.js"</span>,
+    <span class="str">"isEntry"</span>: <span class="kw">true</span>,
+    <span class="str">"css"</span>: [<span class="str">"assets/app-Bx7Kq9jN.css"</span>]
+  }
+}
+<span class="cm">// Laravel @vite() directive এই ফাইল পড়ে
+// সঠিক হ্যাশড ফাইল লোড করে</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚙️</span> package.json — Script সেটআপ</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JSON</span><span class="code-label">package.json</span></div>
+      <pre><code>{
+  <span class="str">"private"</span>: <span class="kw">true</span>,
+  <span class="str">"type"</span>: <span class="str">"module"</span>,
+  <span class="str">"scripts"</span>: {
+    <span class="str">"dev"</span>: <span class="str">"vite"</span>,
+    <span class="str">"build"</span>: <span class="str">"vite build"</span>,
+    <span class="str">"preview"</span>: <span class="str">"vite preview"</span>
+  },
+  <span class="str">"devDependencies"</span>: {
+    <span class="str">"@vitejs/plugin-vue"</span>: <span class="str">"^5.0.0"</span>,
+    <span class="str">"laravel-vite-plugin"</span>: <span class="str">"^1.0.0"</span>,
+    <span class="str">"vite"</span>: <span class="str">"^5.0.0"</span>,
+    <span class="str">"vue"</span>: <span class="str">"^3.4.0"</span>
+  },
+  <span class="str">"dependencies"</span>: {
+    <span class="str">"@inertiajs/vue3"</span>: <span class="str">"^1.0.0"</span>,
+    <span class="str">"axios"</span>: <span class="str">"^1.7.0"</span>
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="info-box warn">
+    <strong>⚠️ গুরুত্বপূর্ণ</strong>
+    Production server-এ deploy করার পর অবশ্যই <code class="inline-code">npm run build</code> চালাতে হবে। node_modules ফোল্ডার server-এ push করবেন না — শুধু package.json push করুন এবং server-এ <code class="inline-code">npm ci</code> চালান।
+  </div>
+</section>
+
+<!-- ===== SECTION 8: CACHE ===== -->
+<section class="section" id="cache">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>💾 Cache System — Laravel ক্যাশ ম্যানেজমেন্ট</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> Cache Driver কনফিগারেশন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">ENV</span><span class="code-label">.env</span></div>
+      <pre><code><span class="cm"># Cache driver বেছে নিন</span>
+CACHE_DRIVER=redis    <span class="cm"># Production এ Redis</span>
+CACHE_DRIVER=file     <span class="cm"># ছোট প্রজেক্টে</span>
+CACHE_DRIVER=array    <span class="cm"># Testing এ</span>
+CACHE_DRIVER=memcached <span class="cm"># High performance</span>
+CACHE_PREFIX=myapp    <span class="cm"># Cache key prefix</span>
+
+<span class="cm"># Redis কনফিগ</span>
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📚</span> Cache ব্যবহার — সব পদ্ধতি</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">Cache Operations</span></div>
+      <pre><code><span class="kw">use</span> <span class="cls">Illuminate\Support\Facades\Cache</span>;
+
+<span class="cm">// ১. সংরক্ষণ করা (TTL: 60 মিনিট)</span>
+<span class="cls">Cache</span>::<span class="fn">put</span>(<span class="str">'মোট_পণ্য'</span>, <span class="num">100</span>, <span class="fn">now</span>()-><span class="fn">addMinutes</span>(<span class="num">60</span>));
+
+<span class="cm">// ২. পড়া (না থাকলে null)</span>
+<span class="var">$count</span> = <span class="cls">Cache</span>::<span class="fn">get</span>(<span class="str">'মোট_পণ্য'</span>);
+
+<span class="cm">// ৩. remember — না থাকলে DB থেকে আনো এবং সংরক্ষণ করো</span>
+<span class="var">$products</span> = <span class="cls">Cache</span>::<span class="fn">remember</span>(
+  <span class="str">'সক্রিয়_পণ্য'</span>,
+  <span class="fn">now</span>()-><span class="fn">addHour</span>(),
+  <span class="kw">fn</span>() => <span class="cls">Product</span>::<span class="fn">where</span>(<span class="str">'active'</span>, <span class="kw">true</span>)-><span class="fn">get</span>()
+);
+
+<span class="cm">// ৪. rememberForever — মেয়াদ নেই</span>
+<span class="var">$settings</span> = <span class="cls">Cache</span>::<span class="fn">rememberForever</span>(
+  <span class="str">'সিস্টেম_সেটিংস'</span>,
+  <span class="kw">fn</span>() => <span class="cls">Setting</span>::<span class="fn">all</span>()-><span class="fn">pluck</span>(<span class="str">'value'</span>, <span class="str">'key'</span>)
+);
+
+<span class="cm">// ৫. মুছে ফেলা</span>
+<span class="cls">Cache</span>::<span class="fn">forget</span>(<span class="str">'সক্রিয়_পণ্য'</span>);
+
+<span class="cm">// ৬. আছে কিনা যাচাই</span>
+<span class="kw">if</span> (<span class="cls">Cache</span>::<span class="fn">has</span>(<span class="str">'মোট_পণ্য'</span>)) {
+  <span class="cm">// cache আছে</span>
+}
+
+<span class="cm">// ৭. Tag দিয়ে গ্রুপ করা (Redis/Memcached)</span>
+<span class="cls">Cache</span>::<span class="fn">tags</span>([<span class="str">'পণ্য'</span>, <span class="str">'ক্যাটাগরি'</span>])
+  -><span class="fn">put</span>(<span class="str">'featured'</span>, <span class="var">$products</span>, <span class="num">3600</span>);
+
+<span class="cm">// ৮. পুরো tag flush করা</span>
+<span class="cls">Cache</span>::<span class="fn">tags</span>(<span class="str">'পণ্য'</span>)-><span class="fn">flush</span>();
+
+<span class="cm">// ৯. পুরো cache clear</span>
+<span class="cls">Cache</span>::<span class="fn">flush</span>();
+<span class="cm">// অথবা Artisan দিয়ে:</span>
+<span class="cm">// php artisan cache:clear</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎯</span> Cache Strategy — Best Practices</h3>
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="code-header"><span class="code-lang">❌ ভুল পদ্ধতি</span></div>
+        <pre><code><span class="cm">// প্রতিবার DB hit করা</span>
+<span class="kw">public function</span> <span class="fn">index</span>() {
+  <span class="var">$products</span> = <span class="cls">Product</span>::
+    <span class="fn">with</span>(<span class="str">'category'</span>)
+    -><span class="fn">where</span>(<span class="str">'active'</span>, <span class="kw">true</span>)
+    -><span class="fn">get</span>();
+
+  <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'products'</span>,
+    <span class="fn">compact</span>(<span class="str">'products'</span>)
+  );
+}</code></pre>
+      </div>
+      <div class="compare-good">
+        <div class="code-header"><span class="code-lang">✅ Cache ব্যবহার</span></div>
+        <pre><code><span class="cm">// Cache দিয়ে DB চাপ কমানো</span>
+<span class="kw">public function</span> <span class="fn">index</span>() {
+  <span class="var">$products</span> = <span class="cls">Cache</span>::<span class="fn">remember</span>(
+    <span class="str">'পণ্য_তালিকা'</span>,
+    <span class="fn">now</span>()-><span class="fn">addHours</span>(<span class="num">2</span>),
+    <span class="kw">fn</span>() => <span class="cls">Product</span>::
+      <span class="fn">with</span>(<span class="str">'category'</span>)
+      -><span class="fn">where</span>(<span class="str">'active'</span>, <span class="kw">true</span>)
+      -><span class="fn">get</span>()
+  );
+
+  <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'products'</span>,
+    <span class="fn">compact</span>(<span class="str">'products'</span>)
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔄</span> Cache Invalidation — Model Observer দিয়ে</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">ProductObserver.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">ProductObserver</span> {
+  <span class="cm">// পণ্য তৈরি হলে cache মুছো</span>
+  <span class="kw">public function</span> <span class="fn">created</span>(<span class="cls">Product</span> <span class="var">$product</span>): <span class="cls">void</span> {
+    <span class="var">$this</span>-><span class="fn">clearProductCache</span>();
+  }
+
+  <span class="cm">// পণ্য আপডেট হলে cache মুছো</span>
+  <span class="kw">public function</span> <span class="fn">updated</span>(<span class="cls">Product</span> <span class="var">$product</span>): <span class="cls">void</span> {
+    <span class="cls">Cache</span>::<span class="fn">forget</span>(<span class="str">"পণ্য_"</span> . <span class="var">$product</span>-><span class="var">id</span>);
+    <span class="var">$this</span>-><span class="fn">clearProductCache</span>();
+  }
+
+  <span class="kw">private function</span> <span class="fn">clearProductCache</span>(): <span class="cls">void</span> {
+    <span class="cls">Cache</span>::<span class="fn">forget</span>(<span class="str">'পণ্য_তালিকা'</span>);
+    <span class="cls">Cache</span>::<span class="fn">tags</span>(<span class="str">'পণ্য'</span>)-><span class="fn">flush</span>();
+  }
+}
+
+<span class="cm">// AppServiceProvider.php তে register করুন</span>
+<span class="cls">Product</span>::<span class="fn">observe</span>(<span class="cls">ProductObserver</span>::<span class="kw">class</span>);</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 9: CONFIG ===== -->
+<section class="section" id="config">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2>⚙️ Config System — কনফিগারেশন ব্যবস্থাপনা</h2>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📁</span> কাস্টম Config ফাইল তৈরি</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">config/shop.php</span></div>
+      <pre><code><span class="cm">// config/shop.php — নিজের কনফিগ তৈরি করুন</span>
+<span class="kw">return</span> [
+  <span class="str">'নাম'</span> => <span class="fn">env</span>(<span class="str">'SHOP_NAME'</span>, <span class="str">'আমার দোকান'</span>),
+
+  <span class="str">'কমিশন'</span> => [
+    <span class="str">'বিক্রেতা'</span>  => <span class="fn">env</span>(<span class="str">'SELLER_COMMISSION'</span>, <span class="num">10</span>),
+    <span class="str">'রেফারেল'</span>  => <span class="fn">env</span>(<span class="str">'REFERRAL_COMMISSION'</span>, <span class="num">5</span>),
+  ],
+
+  <span class="str">'পেমেন্ট'</span> => [
+    <span class="str">'সক্রিয়'</span>   => [<span class="str">'bkash'</span>, <span class="str">'nagad'</span>, <span class="str">'card'</span>],
+    <span class="str">'ডিফল্ট'</span>  => <span class="fn">env</span>(<span class="str">'DEFAULT_PAYMENT'</span>, <span class="str">'bkash'</span>),
+  ],
+
+  <span class="str">'মুদ্রা'</span> => [
+    <span class="str">'কোড'</span>    => <span class="str">'BDT'</span>,
+    <span class="str">'প্রতীক'</span> => <span class="str">'৳'</span>,
+  ],
+];</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔍</span> Config পড়ার নিয়ম</h3>
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="code-header"><span class="code-lang">❌ ভুল</span></div>
+        <pre><code><span class="cm">// সরাসরি env() ব্যবহার করবেন না</span>
+<span class="cm">// Config cache হলে কাজ করে না!</span>
+<span class="var">$name</span> = <span class="fn">env</span>(<span class="str">'APP_NAME'</span>);</code></pre>
+      </div>
+      <div class="compare-good">
+        <div class="code-header"><span class="code-lang">✅ সঠিক</span></div>
+        <pre><code><span class="cm">// config() helper ব্যবহার করুন</span>
+<span class="var">$name</span> = <span class="fn">config</span>(<span class="str">'app.name'</span>);
+
+<span class="cm">// নিজের config পড়া</span>
+<span class="var">$commission</span> = <span class="fn">config</span>(
+  <span class="str">'shop.কমিশন.বিক্রেতা'</span>
+);</code></pre>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <strong>⚠️ সতর্কতা</strong>
+      Production-এ <code class="inline-code">php artisan config:cache</code> চালানোর পর <code class="inline-code">env()</code> কাজ করে না। সবসময় <code class="inline-code">config()</code> ব্যবহার করুন।
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔄</span> Runtime Config পরিবর্তন</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">Runtime Config</span></div>
+      <pre><code><span class="cm">// শুধু current request এর জন্য config পরিবর্তন</span>
+<span class="fn">config</span>([<span class="str">'mail.default'</span> => <span class="str">'smtp'</span>]);
+
+<span class="cm">// Tenant-based dynamic config (Multi-tenant app)</span>
+<span class="kw">class</span> <span class="cls">TenantMiddleware</span> {
+  <span class="kw">public function</span> <span class="fn">handle</span>(<span class="var">$request</span>, <span class="var">$next</span>) {
+    <span class="var">$tenant</span> = <span class="cls">Tenant</span>::<span class="fn">findByDomain</span>(
+      <span class="var">$request</span>-><span class="fn">getHost</span>()
+    );
+
+    <span class="cm">// সেই tenant এর database ব্যবহার করো</span>
+    <span class="fn">config</span>([
+      <span class="str">'database.connections.tenant.database'</span>
+        => <span class="var">$tenant</span>-><span class="var">database</span>,
+    ]);
+
+    <span class="kw">return</span> <span class="var">$next</span>(<span class="var">$request</span>);
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 10: BOOTSTRAP CACHE ===== -->
+<section class="section" id="bootstrap-cache">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2>🚀 Bootstrap Cache — Config, Route, View Cache</h2>
+  </div>
+
+  <div class="info-box info">
+    <strong>📌 Bootstrap Cache কি?</strong>
+    Laravel প্রতিটি request-এ configuration, routes, services লোড করে। Bootstrap Cache এই প্রক্রিয়াকে একবার করে ফাইলে সংরক্ষণ করে, পরবর্তী request-এ দ্রুত লোড হয়।
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚙️</span> Config Cache</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># সব config ফাইল একটি ফাইলে combine করে</span>
+php artisan config:cache
+
+<span class="cm"># ফলাফল: bootstrap/cache/config.php তৈরি হয়</span>
+<span class="cm"># এতে config/ ফোল্ডারের সব ফাইল merge থাকে</span>
+
+<span class="cm"># Config cache মুছতে</span>
+php artisan config:clear
+
+<span class="cm"># Cache আছে কিনা দেখতে</span>
+ls bootstrap/cache/</code></pre>
+    </div>
+
+    <div class="highlight-bar">
+      <h4>কিভাবে কাজ করে?</h4>
+      <p style="font-size:13px;color:var(--text-muted)">
+        <code class="inline-code">config:cache</code> → সব config ফাইল → একটি PHP array → <code class="inline-code">bootstrap/cache/config.php</code><br>
+        পরের request → এই একটি ফাইল লোড → অনেক দ্রুত!
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🗺️</span> Route Cache</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># সব route compile করে cache করে</span>
+php artisan route:cache
+
+<span class="cm"># ফলাফল: bootstrap/cache/routes-v7.php তৈরি হয়</span>
+
+<span class="cm"># Route cache মুছতে</span>
+php artisan route:clear
+
+<span class="cm"># Route তালিকা দেখতে</span>
+php artisan route:list
+
+<span class="cm"># ⚠️ সতর্কতা: Route cache করলে</span>
+<span class="cm"># Closure-based routes কাজ করে না!</span>
+<span class="cm"># সবসময় Controller ব্যবহার করুন</span></code></pre>
+    </div>
+
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="code-header"><span class="code-lang">❌ Cache বন্ধু নয়</span></div>
+        <pre><code><span class="cm">// Closure route — cache হয় না</span>
+<span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'/home'</span>, <span class="kw">function</span>() {
+  <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'home'</span>);
+});</code></pre>
+      </div>
+      <div class="compare-good">
+        <div class="code-header"><span class="code-lang">✅ Cache বন্ধু</span></div>
+        <pre><code><span class="cm">// Controller route — cache হয়</span>
+<span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'/home'</span>, [
+  <span class="cls">HomeController</span>::<span class="kw">class</span>,
+  <span class="str">'index'</span>
+]);</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🖼️</span> View Cache</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># Blade template pre-compile করে</span>
+php artisan view:cache
+
+<span class="cm"># ফলাফল: storage/framework/views/ এ PHP ফাইল তৈরি</span>
+
+<span class="cm"># View cache মুছতে</span>
+php artisan view:clear</code></pre>
+    </div>
+
+    <div class="info-box tip">
+      <strong>💡 টিপস</strong>
+      View cache করলে প্রতিটি request-এ Blade template compile করতে হয় না। Production-এ এটি লক্ষণীয় performance উন্নতি দেয়।
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔧</span> Event Cache</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># Event-Listener mapping cache করে</span>
+php artisan event:cache
+
+<span class="cm"># Event cache মুছতে</span>
+php artisan event:clear
+
+<span class="cm"># কোন event কোন listener handle করে দেখতে</span>
+php artisan event:list</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 11: ARTISAN OPTIMIZE ===== -->
+<section class="section" id="artisan">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2>🎯 Artisan Optimize — সম্পূর্ণ গাইড</h2>
+  </div>
+
+  <div class="info-box tip">
+    <strong>🚀 php artisan optimize কি করে?</strong>
+    Laravel 11+ এ <code class="inline-code">artisan optimize</code> এক কমান্ডে সব cache একসাথে করে — config, events, routes, views।
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚡</span> artisan optimize — ভেতরে কি হয়</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">BASH</span><span class="code-label">Terminal</span></div>
+      <pre><code><span class="cm"># এই একটি কমান্ড সব করে</span>
+php artisan optimize
+
+<span class="cm"># ভেতরে যা চলে:</span>
+INFO  Caching framework bootstrap files.
+config ............................................DONE
+events ............................................DONE
+routes ............................................DONE
+views .............................................DONE
+
+<span class="cm"># অথবা সব clear করতে</span>
+php artisan optimize:clear
+
+<span class="cm"># ভেতরে যা চলে:</span>
+INFO  Clearing cached bootstrap files.
+config ............................................DONE
+events ............................................DONE
+routes ............................................DONE
+views .............................................DONE
+cache .............................................DONE</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🗺️</span> Deploy Checklist — সঠিক ক্রম</h3>
+    <div class="flow" style="flex-direction:column;align-items:flex-start;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px">১. git pull</div>
+        <span style="color:var(--text-muted);font-size:13px">সর্বশেষ কোড আনুন</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px">২. composer install</div>
+        <span style="color:var(--text-muted);font-size:13px">PHP dependency আপডেট</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px">৩. npm ci && npm run build</div>
+        <span style="color:var(--text-muted);font-size:13px">Frontend asset build</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px">৪. php artisan migrate</div>
+        <span style="color:var(--text-muted);font-size:13px">Database migration চালান</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px" style="border-color:var(--accent)">৫. php artisan optimize</div>
+        <span style="color:var(--accent);font-size:13px">✅ সব cache করুন</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="flow-box" style="min-width:200px">৬. php artisan queue:restart</div>
+        <span style="color:var(--text-muted);font-size:13px">Queue worker পুনরায় চালু</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📋</span> সমস্ত Cache Command একনজরে</h3>
+    <table>
+      <tr><th>Command</th><th>কাজ</th><th>ফাইল তৈরি হয়</th></tr>
+      <tr><td><code class="inline-code">config:cache</code></td><td>Config cache</td><td>bootstrap/cache/config.php</td></tr>
+      <tr><td><code class="inline-code">config:clear</code></td><td>Config cache মুছো</td><td>—</td></tr>
+      <tr><td><code class="inline-code">route:cache</code></td><td>Route cache</td><td>bootstrap/cache/routes-v7.php</td></tr>
+      <tr><td><code class="inline-code">route:clear</code></td><td>Route cache মুছো</td><td>—</td></tr>
+      <tr><td><code class="inline-code">view:cache</code></td><td>Blade compile</td><td>storage/framework/views/</td></tr>
+      <tr><td><code class="inline-code">view:clear</code></td><td>Compiled view মুছো</td><td>—</td></tr>
+      <tr><td><code class="inline-code">event:cache</code></td><td>Event-Listener cache</td><td>bootstrap/cache/events.php</td></tr>
+      <tr><td><code class="inline-code">cache:clear</code></td><td>Application cache মুছো</td><td>—</td></tr>
+      <tr><td><code class="inline-code">optimize</code></td><td>সব cache (Laravel 11+)</td><td>উপরের সব</td></tr>
+      <tr><td><code class="inline-code">optimize:clear</code></td><td>সব cache মুছো</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🤖</span> স্বয়ংক্রিয় Deployment — Composer Script</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">JSON</span><span class="code-label">composer.json</span></div>
+      <pre><code>{
+  <span class="str">"scripts"</span>: {
+    <span class="str">"post-autoload-dump"</span>: [
+      <span class="str">"Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"</span>,
+      <span class="str">"@php artisan package:discover --ansi"</span>
+    ],
+    <span class="cm">// Deploy script — composer run deploy</span>
+    <span class="str">"deploy"</span>: [
+      <span class="str">"@php artisan migrate --force"</span>,
+      <span class="str">"@php artisan optimize"</span>,
+      <span class="str">"@php artisan queue:restart"</span>
+    ]
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 12: SECURITY ===== -->
+<section class="section" id="security">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2>🔒 Security Best Practices</h2>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3><span class="icon">🛡️</span> SQL Injection রোধ</h3>
+      <div class="compare">
+        <div class="compare-bad">
+          <div class="code-header"><span class="code-lang">❌</span></div>
+          <pre><code><span class="cm">// বিপজ্জনক!</span>
+<span class="cls">DB</span>::<span class="fn">select</span>(
+  <span class="str">"SELECT * FROM users
+   WHERE name = '</span><span class="var">$name</span><span class="str">'"</span>
+);</code></pre>
+        </div>
+        <div class="compare-good">
+          <div class="code-header"><span class="code-lang">✅</span></div>
+          <pre><code><span class="cm">// নিরাপদ</span>
+<span class="cls">User</span>::<span class="fn">where</span>(
+  <span class="str">'name'</span>, <span class="var">$name</span>
+)-><span class="fn">first</span>();
+<span class="cm">// অথবা</span>
+<span class="cls">DB</span>::<span class="fn">select</span>(
+  <span class="str">'SELECT * FROM users
+   WHERE name = ?'</span>,
+  [<span class="var">$name</span>]
+);</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔑</span> Mass Assignment রোধ</h3>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">PHP</span></div>
+        <pre><code><span class="kw">class</span> <span class="cls">User</span> <span class="kw">extends</span> <span class="cls">Model</span> {
+  <span class="cm">// শুধু এই field fill হবে</span>
+  <span class="kw">protected</span> <span class="var">$fillable</span> = [
+    <span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'phone'</span>
+  ];
+
+  <span class="cm">// এগুলো কখনো fill হবে না</span>
+  <span class="kw">protected</span> <span class="var">$guarded</span> = [
+    <span class="str">'is_admin'</span>, <span class="str">'role'</span>
+  ];
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔐</span> Sanctum API Authentication</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">AuthController.php</span></div>
+      <pre><code><span class="kw">class</span> <span class="cls">AuthController</span> <span class="kw">extends</span> <span class="cls">Controller</span> {
+  <span class="kw">public function</span> <span class="fn">login</span>(<span class="cls">LoginRequest</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="kw">if</span> (! <span class="cls">Auth</span>::<span class="fn">attempt</span>(<span class="var">$request</span>-><span class="fn">only</span>(<span class="str">'email'</span>, <span class="str">'password'</span>))) {
+      <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+        <span class="str">'message'</span> => <span class="str">'ইমেইল বা পাসওয়ার্ড ভুল'</span>,
+      ], <span class="num">401</span>);
+    }
+
+    <span class="var">$user</span> = <span class="var">$request</span>-><span class="fn">user</span>();
+
+    <span class="cm">// পুরনো token মুছো (Single device login)</span>
+    <span class="var">$user</span>-><span class="fn">tokens</span>()-><span class="fn">delete</span>();
+
+    <span class="cm">// নতুন token তৈরি করো</span>
+    <span class="var">$token</span> = <span class="var">$user</span>-><span class="fn">createToken</span>(
+      <span class="str">'auth_token'</span>,
+      [<span class="str">'*'</span>], <span class="cm">// abilities</span>
+      <span class="fn">now</span>()-><span class="fn">addDays</span>(<span class="num">30</span>) <span class="cm">// expiry</span>
+    );
+
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+      <span class="str">'user'</span>  => <span class="kw">new</span> <span class="cls">UserResource</span>(<span class="var">$user</span>),
+      <span class="str">'token'</span> => <span class="var">$token</span>-><span class="var">plainTextToken</span>,
+    ]);
+  }
+
+  <span class="kw">public function</span> <span class="fn">logout</span>(<span class="cls">Request</span> <span class="var">$request</span>): <span class="cls">JsonResponse</span> {
+    <span class="var">$request</span>-><span class="fn">user</span>()-><span class="fn">currentAccessToken</span>()-><span class="fn">delete</span>();
+    <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+      <span class="str">'message'</span> => <span class="str">'সফলভাবে লগআউট হয়েছেন'</span>
+    ]);
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚡</span> Rate Limiting</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">PHP</span><span class="code-label">AppServiceProvider.php</span></div>
+      <pre><code><span class="kw">use</span> <span class="cls">Illuminate\Cache\RateLimiting\Limit</span>;
+<span class="kw">use</span> <span class="cls">Illuminate\Support\Facades\RateLimiter</span>;
+
+<span class="cm">// API Rate Limiting</span>
+<span class="cls">RateLimiter</span>::<span class="fn">for</span>(<span class="str">'api'</span>, <span class="kw">function</span>(<span class="cls">Request</span> <span class="var">$request</span>) {
+  <span class="kw">return</span> <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="num">60</span>)
+    -><span class="fn">by</span>(<span class="var">$request</span>-><span class="fn">user</span>()?-><span class="var">id</span> ?: <span class="var">$request</span>-><span class="var">ip</span>());
+});
+
+<span class="cm">// Login এর জন্য আলাদা limit</span>
+<span class="cls">RateLimiter</span>::<span class="fn">for</span>(<span class="str">'login'</span>, <span class="kw">function</span>(<span class="cls">Request</span> <span class="var">$request</span>) {
+  <span class="kw">return</span> [
+    <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="num">5</span>)-><span class="fn">by</span>(<span class="var">$request</span>-><span class="var">ip</span>()),
+    <span class="cm">// প্রতি email এ 5 বার</span>
+    <span class="cls">Limit</span>::<span class="fn">perMinute</span>(<span class="num">5</span>)
+      -><span class="fn">by</span>(<span class="var">$request</span>-><span class="fn">input</span>(<span class="str">'email'</span>)),
+  ];
+});</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY BOX -->
+<section class="section">
+  <div class="highlight-bar">
+    <h4>📌 সংক্ষিপ্ত সার — মনে রাখার মতো বিষয়</h4>
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent)">Clean Code:</strong> এক ফাংশন = এক কাজ, অর্থবহ নাম, DRY নীতি</p>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent)">Inertia.js:</strong> API ছাড়া Laravel + Vue সংযোগ, useForm দিয়ে form handle</p>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent)">npm build:</strong> Vite → Rollup → minify → public/build/</p>
+        <p style="font-size:13px;color:var(--text-muted)"><strong style="color:var(--accent)">Cache:</strong> Cache::remember() দিয়ে DB চাপ কমান, Observer দিয়ে invalidate করুন</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent2)">Config:</strong> সবসময় config() ব্যবহার করুন, কখনো env() নয়</p>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent2)">artisan optimize:</strong> Deploy এ একবার চালান — সব cache হয়</p>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px"><strong style="color:var(--accent2)">Route Cache:</strong> Closure route ব্যবহার করবেন না, Controller route ব্যবহার করুন</p>
+        <p style="font-size:13px;color:var(--text-muted)"><strong style="color:var(--accent2)">Security:</strong> $fillable দিন, Sanctum token ব্যবহার করুন, Rate Limit সেট করুন</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>তৈরি করা হয়েছে <strong>Laravel · Vue.js · Vite · Inertia.js</strong> শিক্ষার্থীদের জন্য</p>
+  <p style="margin-top:8px;font-size:12px">সম্পূর্ণ বাংলা ভাষায় · Clean Code · Best Practices · Production Ready</p>
+</footer>
+
+</body>
+</html>
