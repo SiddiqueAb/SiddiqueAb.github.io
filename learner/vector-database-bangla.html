@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ভেক্টর ডেটাবেস - সম্পূর্ণ গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1526;
+    --bg3: #141c33;
+    --card: #111827;
+    --accent: #6c63ff;
+    --accent2: #00d4ff;
+    --accent3: #ff6584;
+    --accent4: #43e97b;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: #1e2a45;
+    --glow: rgba(108,99,255,0.3);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(108,99,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(67,233,123,0.04) 0%, transparent 70%);
+  }
+
+  /* GRID OVERLAY */
+  body::after {
+    content:'';
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: sticky; top:0; z-index:100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items:center; justify-content:space-between;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem; font-weight:700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+  }
+
+  .nav-links {
+    display:flex; gap:1.5rem; list-style:none;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: var(--muted); text-decoration:none; font-size:.85rem;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--accent2); }
+
+  /* HERO */
+  .hero {
+    text-align:center;
+    padding: 7rem 2rem 5rem;
+    position:relative;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: #a89cff;
+    padding: .3rem 1rem; border-radius:999px;
+    font-size:.8rem; letter-spacing:2px; text-transform:uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeDown .8s ease both;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.15; margin-bottom: 1.5rem;
+    animation: fadeDown .8s .1s ease both;
+  }
+
+  .hero p {
+    font-size: 1.15rem; color: var(--muted);
+    max-width: 640px; margin: 0 auto 2.5rem;
+    animation: fadeDown .8s .2s ease both;
+  }
+
+  .hero-stats {
+    display:flex; justify-content:center; gap:3rem; flex-wrap:wrap;
+    animation: fadeDown .8s .3s ease both;
+  }
+
+  .stat {
+    text-align:center;
+  }
+  .stat-num {
+    font-size:2rem; font-weight:700;
+    background: linear-gradient(135deg, var(--accent2), var(--accent4));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .stat-label { font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  /* SECTIONS */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+  section { padding: 4rem 0; }
+
+  .section-header {
+    display:flex; align-items:center; gap:1rem; margin-bottom: 2.5rem;
+  }
+
+  .section-num {
+    width:42px; height:42px; border-radius:10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:.9rem;
+    flex-shrink:0;
+  }
+
+  .section-header h2 {
+    font-size: 1.8rem; font-weight: 700;
+    color: #fff;
+  }
+
+  .section-divider {
+    height:1px; background: linear-gradient(90deg, var(--accent) 0%, transparent 80%);
+    margin-bottom: 2.5rem; opacity:.4;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    position:relative; overflow:hidden;
+    transition: border-color .3s, transform .3s;
+  }
+
+  .card:hover {
+    border-color: rgba(108,99,255,0.4);
+    transform: translateY(-3px);
+  }
+
+  .card::before {
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(135deg, rgba(108,99,255,0.05), transparent);
+    opacity:0; transition:opacity .3s;
+  }
+  .card:hover::before { opacity:1; }
+
+  .card h3 {
+    font-size:1.15rem; font-weight:600; color:#fff;
+    margin-bottom:.75rem; display:flex; align-items:center; gap:.6rem;
+  }
+
+  .card p { color:var(--muted); font-size:.95rem; line-height:1.8; }
+
+  .grid-2 { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem; }
+  .grid-3 { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem; }
+
+  /* ICON BADGE */
+  .icon { font-size:1.5rem; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #050810;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow:hidden;
+    margin: 1.25rem 0;
+  }
+
+  .code-header {
+    background: var(--bg3);
+    padding: .6rem 1rem;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family:'JetBrains Mono', monospace;
+    font-size:.75rem; color:var(--accent2);
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  .code-dots { display:flex; gap:.4rem; }
+  .dot { width:10px; height:10px; border-radius:50%; }
+  .dot-r { background:#ff5f57; }
+  .dot-y { background:#febc2e; }
+  .dot-g { background:#28c840; }
+
+  pre {
+    padding: 1.25rem 1.5rem;
+    overflow-x:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.83rem;
+    line-height: 1.75;
+    color: #cdd6f4;
+  }
+
+  .kw { color: #cba6f7; }
+  .fn { color: #89b4fa; }
+  .str { color: #a6e3a1; }
+  .num { color: #fab387; }
+  .cm { color: #585b70; font-style:italic; }
+  .var { color: #f38ba8; }
+  .op { color: #89dceb; }
+
+  /* CALLOUT */
+  .callout {
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    margin: 1.25rem 0;
+    border-left: 4px solid;
+    display:flex; gap:1rem; align-items:flex-start;
+  }
+
+  .callout-info { background: rgba(0,212,255,0.07); border-color: var(--accent2); }
+  .callout-warn { background: rgba(255,193,7,0.07); border-color: #ffc107; }
+  .callout-success { background: rgba(67,233,123,0.07); border-color: var(--accent4); }
+  .callout-danger { background: rgba(255,101,132,0.07); border-color: var(--accent3); }
+
+  .callout-icon { font-size:1.3rem; flex-shrink:0; margin-top:.1rem; }
+  .callout-body { font-size:.93rem; color:var(--muted); }
+  .callout-body strong { color:#fff; display:block; margin-bottom:.3rem; }
+
+  /* TABLE */
+  .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+
+  thead { background: var(--bg3); }
+  thead th {
+    padding: .85rem 1.25rem; text-align:left;
+    font-weight:600; color: var(--accent2);
+    font-size:.8rem; text-transform:uppercase; letter-spacing:1px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr { transition: background .2s; }
+  tbody tr:hover { background: rgba(108,99,255,0.05); }
+
+  tbody td {
+    padding: .85rem 1.25rem;
+    border-bottom: 1px solid rgba(30,42,69,0.5);
+    color: var(--muted);
+  }
+
+  tbody tr:last-child td { border-bottom:none; }
+
+  td strong { color:#fff; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display:flex; align-items:center; gap:.5rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+  }
+
+  .flow-step {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .75rem 1.25rem;
+    font-size:.88rem; color:#fff;
+    display:flex; align-items:center; gap:.5rem;
+    transition: border-color .3s;
+  }
+
+  .flow-step:hover { border-color: var(--accent); }
+
+  .flow-arrow {
+    color: var(--accent);
+    font-size:1.2rem;
+  }
+
+  /* VECTOR VIZ */
+  .vector-viz {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:16px;
+    padding: 2rem;
+    text-align:center;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .vector-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    max-width:400px; margin: 1.5rem auto;
+  }
+
+  .vec-cell {
+    aspect-ratio:1;
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.65rem;
+    font-weight:700;
+    transition: all .3s;
+    cursor:default;
+  }
+
+  .vec-cell:hover { transform:scale(1.15); z-index:2; }
+
+  /* APP CARDS */
+  .app-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: all .3s;
+    position:relative; overflow:hidden;
+  }
+
+  .app-card::after {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:3px;
+    opacity:0; transition:opacity .3s;
+  }
+
+  .app-card:hover { border-color: rgba(108,99,255,.5); }
+  .app-card:hover::after { opacity:1; }
+
+  .app-card.purple::after { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .app-card.cyan::after { background: linear-gradient(90deg, var(--accent2), var(--accent4)); }
+  .app-card.green::after { background: linear-gradient(90deg, var(--accent4), #43e97b); }
+  .app-card.red::after { background: linear-gradient(90deg, var(--accent3), #ff6b9d); }
+
+  .app-card h3 { color:#fff; font-size:1.05rem; margin-bottom:.5rem; }
+  .app-card p { color:var(--muted); font-size:.88rem; }
+
+  /* TAG */
+  .tag {
+    display:inline-block;
+    padding: .2rem .65rem; border-radius:999px;
+    font-size:.72rem; font-weight:600; letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+
+  .tag-purple { background:rgba(108,99,255,.15); color:#a89cff; border:1px solid rgba(108,99,255,.3); }
+  .tag-cyan { background:rgba(0,212,255,.12); color:#4dd9f0; border:1px solid rgba(0,212,255,.25); }
+  .tag-green { background:rgba(67,233,123,.12); color:#5aed8f; border:1px solid rgba(67,233,123,.25); }
+  .tag-red { background:rgba(255,101,132,.12); color:#ff8fa8; border:1px solid rgba(255,101,132,.25); }
+
+  /* COMPARISON */
+  .compare-row {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:1rem; align-items:stretch;
+  }
+  .compare-col { border-radius:12px; padding:1.25rem; }
+  .compare-col.topic { background:var(--bg3); border:1px solid var(--border); }
+  .compare-col.traditional { background:rgba(255,101,132,0.07); border:1px solid rgba(255,101,132,.2); }
+  .compare-col.vector { background:rgba(67,233,123,0.07); border:1px solid rgba(67,233,123,.2); }
+  .compare-col h4 { font-size:.8rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:.75rem; }
+  .compare-col.topic h4 { color:var(--muted); }
+  .compare-col.traditional h4 { color:var(--accent3); }
+  .compare-col.vector h4 { color:var(--accent4); }
+  .compare-col p { font-size:.88rem; color:var(--muted); }
+
+  /* TIMELINE */
+  .timeline { position:relative; padding-left:2rem; }
+  .timeline::before {
+    content:''; position:absolute; left:.5rem; top:.5rem; bottom:.5rem;
+    width:2px; background:linear-gradient(180deg, var(--accent), var(--accent2), var(--accent4));
+    border-radius:999px;
+  }
+
+  .timeline-item { position:relative; margin-bottom:2rem; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-1.6rem; top:.4rem;
+    width:12px; height:12px; border-radius:50%;
+    background: var(--accent); border:2px solid var(--bg);
+    box-shadow: 0 0 10px var(--glow);
+  }
+
+  .timeline-item h3 { color:#fff; font-size:1rem; margin-bottom:.35rem; }
+  .timeline-item p { color:var(--muted); font-size:.9rem; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 3rem 0 2rem;
+    text-align:center;
+  }
+
+  footer p { color:var(--muted); font-size:.85rem; }
+  footer .footer-logo {
+    font-size:1.4rem; font-weight:700; margin-bottom:.5rem;
+    background:linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(108,99,255,.4); }
+    50% { box-shadow: 0 0 0 12px rgba(108,99,255,0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .pulse { animation: pulse 2s infinite; }
+  .float { animation: float 3s ease-in-out infinite; }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity:0; transform:translateY(30px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* TOC */
+  .toc {
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding: 1.75rem;
+    position:sticky; top:80px;
+  }
+
+  .toc h4 { color:#fff; font-size:.9rem; margin-bottom:1rem; letter-spacing:1px; text-transform:uppercase; }
+  .toc ol { padding-left:1.2rem; }
+  .toc li { margin-bottom:.5rem; }
+  .toc a { color:var(--muted); text-decoration:none; font-size:.85rem; transition:color .2s; }
+  .toc a:hover { color: var(--accent2); }
+
+  /* LAYOUT WITH SIDEBAR */
+  .layout-with-toc {
+    display:grid;
+    grid-template-columns:1fr 220px;
+    gap:2rem;
+    align-items:start;
+  }
+
+  @media(max-width:900px) {
+    .layout-with-toc { grid-template-columns:1fr; }
+    .toc { display:none; }
+    .compare-row { grid-template-columns:1fr; }
+    nav .nav-links { display:none; }
+  }
+
+  /* HIGHLIGHT */
+  .highlight {
+    background: linear-gradient(135deg, rgba(108,99,255,.12), rgba(0,212,255,.08));
+    border:1px solid rgba(108,99,255,.25);
+    border-radius:12px;
+    padding:1.5rem;
+    margin: 1.25rem 0;
+  }
+
+  /* NUMBERED LIST */
+  .num-list { counter-reset:nl; list-style:none; padding:0; }
+  .num-list li {
+    counter-increment:nl;
+    padding:.6rem 0 .6rem 3rem;
+    position:relative;
+    color:var(--muted);
+    border-bottom:1px solid rgba(30,42,69,.5);
+    font-size:.93rem;
+  }
+  .num-list li:last-child { border-bottom:none; }
+  .num-list li::before {
+    content:counter(nl);
+    position:absolute; left:0; top:.5rem;
+    width:24px; height:24px; border-radius:6px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color:#fff; font-size:.7rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* DISTANCE VISUAL */
+  .dist-viz {
+    display:flex; flex-wrap:wrap; gap:1.25rem; margin:1.25rem 0;
+  }
+  .dist-card {
+    flex:1; min-width:200px;
+    background:var(--bg3); border:1px solid var(--border);
+    border-radius:12px; padding:1.25rem; text-align:center;
+  }
+  .dist-card .formula {
+    font-family:'JetBrains Mono', monospace;
+    font-size:1rem; color:var(--accent2);
+    margin:.5rem 0;
+  }
+  .dist-card p { font-size:.82rem; color:var(--muted); }
+
+  /* ALGO VIZ */
+  .algo-steps {
+    display:grid; gap:.75rem; margin:1.25rem 0;
+  }
+  .algo-step {
+    display:flex; gap:1rem; align-items:flex-start;
+    background:var(--bg3); border:1px solid var(--border);
+    border-radius:10px; padding:1rem;
+  }
+  .algo-step-num {
+    width:28px; height:28px; border-radius:8px;
+    background: rgba(108,99,255,.2); border:1px solid rgba(108,99,255,.4);
+    color:var(--accent); font-family:'JetBrains Mono',monospace;
+    font-size:.75rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .algo-step-content h4 { color:#fff; font-size:.9rem; margin-bottom:.25rem; }
+  .algo-step-content p { color:var(--muted); font-size:.85rem; }
+
+  /* SVG Canvas */
+  svg text { font-family:'Hind Siliguri', sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⟨ VectorDB বাংলা ⟩</div>
+  <ul class="nav-links">
+    <li><a href="#intro">পরিচিতি</a></li>
+    <li><a href="#vector">ভেক্টর কী</a></li>
+    <li><a href="#how">কীভাবে কাজ করে</a></li>
+    <li><a href="#algo">অ্যালগরিদম</a></li>
+    <li><a href="#tools">টুলস</a></li>
+    <li><a href="#usecases">ব্যবহার</a></li>
+    <li><a href="#code">কোড</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🇧🇩 সম্পূর্ণ বাংলা গাইড</div>
+  <h1>ভেক্টর ডেটাবেস<br>মাস্টারক্লাস</h1>
+  <p>AI-এর যুগে ডেটা সংরক্ষণ ও অনুসন্ধানের সবচেয়ে শক্তিশালী পদ্ধতি — শূন্য থেকে এক্সপার্ট পর্যন্ত সম্পূর্ণ গাইড</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">১২+</div><div class="stat-label">টপিক</div></div>
+    <div class="stat"><div class="stat-num">৩০+</div><div class="stat-label">উদাহরণ</div></div>
+    <div class="stat"><div class="stat-num">১০০%</div><div class="stat-label">বাংলায়</div></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+<div class="layout-with-toc">
+
+<!-- LEFT CONTENT -->
+<div>
+
+<!-- ============================
+     SECTION 1: INTRO
+     ============================ -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-num">০১</div>
+    <h2>ভেক্টর ডেটাবেস কী?</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem; font-size:1rem;">
+      সাধারণ ডেটাবেস সংখ্যা ও টেক্সট সংরক্ষণ করে। কিন্তু AI, ছবি, শব্দ, ভিডিও — এই জটিল ডেটা কীভাবে সংরক্ষণ ও খোঁজা হবে? উত্তর হলো <strong style="color:var(--accent2)">ভেক্টর ডেটাবেস</strong>।
+    </p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>সহজ সংজ্ঞা</strong>
+        ভেক্টর ডেটাবেস এমন একটি বিশেষ ডেটাবেস যা ডেটাকে সংখ্যার তালিকা (ভেক্টর/এম্বেডিং) হিসেবে সংরক্ষণ করে এবং <em>অর্থগত মিল</em> (semantic similarity) খুঁজে বের করতে পারে।
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.5rem;">
+      <div class="card">
+        <h3><span class="icon">🗄️</span> সাধারণ ডেটাবেস</h3>
+        <p>হুবহু মিলের উপর ভিত্তি করে খোঁজে। "বিড়াল" লিখলে শুধু "বিড়াল"ই পাবে, "ক্যাট" বা "পোষা প্রাণী" পাবে না।</p>
+      </div>
+      <div class="card">
+        <h3><span class="icon">🧠</span> ভেক্টর ডেটাবেস</h3>
+        <p>অর্থগত মিলের উপর ভিত্তি করে খোঁজে। "বিড়াল" লিখলে "ক্যাট", "পোষা প্রাণী", "মিউ" — সব অর্থগতভাবে কাছের ডেটাই পাবে।</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALOGY -->
+  <div class="reveal" style="margin-top:2rem;">
+    <div class="highlight">
+      <h3 style="color:#fff; margin-bottom:.75rem;">🎯 বাস্তব জীবনের উদাহরণ</h3>
+      <p style="color:var(--muted);">
+        ধরুন আপনি একটি বইয়ের দোকানে গেছেন। সাধারণ ডেটাবেস হলো সেই দোকান যেখানে শুধু নাম দিয়ে বই খোঁজা যায়।
+        কিন্তু ভেক্টর ডেটাবেস হলো একজন বিশেষজ্ঞ দোকানদার যে বুঝতে পারে — "আপনি যদি 'হ্যারি পটার' পছন্দ করেন, তাহলে 'নার্নিয়ার গল্প'ও আপনার ভালো লাগবে!"
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 2: WHAT IS VECTOR
+     ============================ -->
+<section id="vector">
+  <div class="section-header">
+    <div class="section-num">০২</div>
+    <h2>ভেক্টর ও এম্বেডিং কী?</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem;">
+      AI যখন কোনো ডেটা (টেক্সট, ছবি, শব্দ) প্রক্রিয়া করে, সে তাকে একটি সংখ্যার তালিকায় রূপান্তরিত করে। এই তালিকাকেই বলা হয় <strong style="color:var(--accent2)">ভেক্টর</strong> বা <strong style="color:var(--accent2)">এম্বেডিং</strong>।
+    </p>
+
+    <div class="vector-viz">
+      <h3 style="color:#fff; margin-bottom:.5rem;">"বিড়াল" → ভেক্টর রূপান্তর</h3>
+      <p style="color:var(--muted); font-size:.85rem;">একটি শব্দ কীভাবে ৩৮৪-মাত্রার ভেক্টরে পরিণত হয়</p>
+      <div class="vector-grid" id="vecGrid"></div>
+      <p style="color:var(--muted); font-size:.78rem; margin-top:.5rem;">প্রতিটি ঘর একটি মাত্রা (dimension) — রং যত গাঢ়, মান তত বেশি</p>
+    </div>
+
+    <div class="code-block" style="margin-top:1.5rem;">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="code-lang">Python</div>
+      </div>
+      <pre><span class="cm"># "বিড়াল" শব্দটিকে ভেক্টরে রূপান্তর করা</span>
+<span class="kw">from</span> sentence_transformers <span class="kw">import</span> SentenceTransformer
+
+model = SentenceTransformer(<span class="str">'all-MiniLM-L6-v2'</span>)
+
+<span class="cm"># একটি বাক্যকে এম্বেড করো</span>
+sentence = <span class="str">"বিড়াল একটি সুন্দর প্রাণী"</span>
+embedding = model.encode(sentence)
+
+<span class="fn">print</span>(<span class="str">f"ভেক্টরের আকার: {embedding.shape}"</span>)
+<span class="cm"># আউটপুট: ভেক্টরের আকার: (384,)</span>
+<span class="cm"># মানে ৩৮৪টি সংখ্যার একটি তালিকা!</span>
+
+<span class="fn">print</span>(embedding[:<span class="num">5</span>])
+<span class="cm"># আউটপুট: [-0.0234, 0.0891, -0.1234, 0.0567, 0.0923]</span></pre>
+    </div>
+  </div>
+
+  <!-- WHY VECTORS WORK -->
+  <div class="reveal" style="margin-top:2rem;">
+    <h3 style="color:#fff; margin-bottom:1rem;">কেন ভেক্টর কাজ করে?</h3>
+    <p style="color:var(--muted); margin-bottom:1.25rem;">ভেক্টর স্পেসে কাছাকাছি শব্দগুলো একই ধরনের অর্থ বহন করে:</p>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem;">
+      <svg viewBox="0 0 600 300" width="100%" style="max-width:600px; display:block; margin:0 auto;">
+        <!-- Grid lines -->
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e2a45" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="300" fill="url(#grid)" rx="8"/>
+
+        <!-- Axes -->
+        <line x1="50" y1="250" x2="550" y2="250" stroke="#1e2a45" stroke-width="2"/>
+        <line x1="50" y1="250" x2="50" y2="30" stroke="#1e2a45" stroke-width="2"/>
+        <text x="560" y="255" fill="#585b70" font-size="12">x</text>
+        <text x="55" y="20" fill="#585b70" font-size="12">y</text>
+
+        <!-- Animal cluster -->
+        <circle cx="180" cy="120" r="50" fill="rgba(108,99,255,0.08)" stroke="rgba(108,99,255,0.3)" stroke-width="1" stroke-dasharray="4"/>
+        <circle cx="160" cy="110" r="6" fill="#6c63ff"/>
+        <text x="165" y="100" fill="#a89cff" font-size="13" font-weight="bold">বিড়াল</text>
+        <circle cx="195" cy="130" r="6" fill="#6c63ff"/>
+        <text x="200" y="125" fill="#a89cff" font-size="13" font-weight="bold">Cat</text>
+        <circle cx="175" cy="145" r="6" fill="#6c63ff"/>
+        <text x="180" y="140" fill="#a89cff" font-size="13" font-weight="bold">কুকুর</text>
+        <text x="135" y="170" fill="#585b70" font-size="11">প্রাণী গ্রুপ</text>
+
+        <!-- Food cluster -->
+        <circle cx="420" cy="160" r="50" fill="rgba(0,212,255,0.07)" stroke="rgba(0,212,255,0.25)" stroke-width="1" stroke-dasharray="4"/>
+        <circle cx="400" cy="150" r="6" fill="#00d4ff"/>
+        <text x="405" y="142" fill="#4dd9f0" font-size="13" font-weight="bold">ভাত</text>
+        <circle cx="440" cy="165" r="6" fill="#00d4ff"/>
+        <text x="445" y="158" fill="#4dd9f0" font-size="13" font-weight="bold">রুটি</text>
+        <circle cx="415" cy="185" r="6" fill="#00d4ff"/>
+        <text x="420" y="180" fill="#4dd9f0" font-size="13" font-weight="bold">খাবার</text>
+        <text x="390" y="207" fill="#585b70" font-size="11">খাদ্য গ্রুপ</text>
+
+        <!-- Legend -->
+        <circle cx="70" cy="285" r="5" fill="#6c63ff"/>
+        <text x="80" y="289" fill="#8892b0" font-size="11">প্রাণী</text>
+        <circle cx="140" cy="285" r="5" fill="#00d4ff"/>
+        <text x="150" y="289" fill="#8892b0" font-size="11">খাদ্য</text>
+      </svg>
+    </div>
+
+    <div class="callout callout-success" style="margin-top:1rem;">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <strong>মূল ধারণা</strong>
+        একই ধরনের অর্থের শব্দগুলো ভেক্টর স্পেসে কাছাকাছি থাকে। তাই "বিড়াল" খুঁজলে "কুকুর"ও পাওয়া যায়, কারণ দুটোই প্রাণী — একই "এলাকায়" থাকে!
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 3: HOW IT WORKS
+     ============================ -->
+<section id="how">
+  <div class="section-header">
+    <div class="section-num">০৩</div>
+    <h2>ভেক্টর ডেটাবেস কীভাবে কাজ করে?</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem;">পুরো সিস্টেমটি কয়েকটি ধাপে কাজ করে:</p>
+
+    <div class="flow">
+      <div class="flow-step">🔤 কাঁচা ডেটা</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🤖 এম্বেডিং মডেল</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">📊 ভেক্টর</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🗄️ ডেটাবেসে সংরক্ষণ</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🔍 ANN সার্চ</div>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-top:1.5rem;">
+    <div class="algo-steps">
+      <div class="algo-step">
+        <div class="algo-step-num">১</div>
+        <div class="algo-step-content">
+          <h4>ডেটা প্রস্তুতি (Ingestion)</h4>
+          <p>প্রতিটি ডকুমেন্ট/ছবি/শব্দকে একটি AI মডেলের মাধ্যমে ভেক্টরে রূপান্তরিত করা হয়। যেমন: OpenAI-এর text-embedding-ada-002 বা BERT মডেল।</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-step-num">২</div>
+        <div class="algo-step-content">
+          <h4>ইন্ডেক্স তৈরি (Indexing)</h4>
+          <p>লক্ষ লক্ষ ভেক্টর দ্রুত খোঁজার জন্য বিশেষ ইন্ডেক্স তৈরি করা হয় (HNSW, IVF, LSH ইত্যাদি অ্যালগরিদম ব্যবহার করে)।</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-step-num">৩</div>
+        <div class="algo-step-content">
+          <h4>কোয়েরি প্রক্রিয়াকরণ (Query)</h4>
+          <p>ব্যবহারকারীর প্রশ্নটিকেও একই মডেল দিয়ে ভেক্টরে রূপান্তরিত করা হয়।</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-step-num">৪</div>
+        <div class="algo-step-content">
+          <h4>নিকটতম প্রতিবেশী খোঁজা (ANN Search)</h4>
+          <p>কোয়েরি ভেক্টরের সবচেয়ে কাছের K টি ভেক্টর খুঁজে বের করা হয় (Approximate Nearest Neighbor)।</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-step-num">৫</div>
+        <div class="algo-step-content">
+          <h4>ফলাফল প্রদান (Results)</h4>
+          <p>সবচেয়ে মিলসম্পন্ন ডকুমেন্টগুলো স্কোর সহ ফেরত দেওয়া হয়।</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 4: DISTANCE METRICS
+     ============================ -->
+<section id="distance">
+  <div class="section-header">
+    <div class="section-num">০৪</div>
+    <h2>দূরত্ব পরিমাপ (Distance Metrics)</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem;">দুটো ভেক্টর কতটা কাছাকাছি তা মাপার কয়েকটি পদ্ধতি আছে:</p>
+
+    <div class="dist-viz">
+      <div class="dist-card">
+        <div style="font-size:2rem;">📐</div>
+        <h4 style="color:#fff; margin:.5rem 0 .25rem;">Cosine Similarity</h4>
+        <div class="formula">cos(θ) = A·B / ‖A‖‖B‖</div>
+        <p>দুটো ভেক্টরের মধ্যবর্তী কোণ মাপে। টেক্সট সিমিলারিটির জন্য সেরা। মান: -১ থেকে ১ (১ = সম্পূর্ণ একই)</p>
+        <span class="tag tag-green" style="margin-top:.5rem;">টেক্সটের জন্য সেরা</span>
+      </div>
+      <div class="dist-card">
+        <div style="font-size:2rem;">📏</div>
+        <h4 style="color:#fff; margin:.5rem 0 .25rem;">Euclidean Distance</h4>
+        <div class="formula">d = √Σ(aᵢ-bᵢ)²</div>
+        <p>সরল রেখার দূরত্ব মাপে। ছবি ও অডিওর জন্য ভালো। মান: ০ (একই) থেকে বড়।</p>
+        <span class="tag tag-cyan" style="margin-top:.5rem;">ছবির জন্য সেরা</span>
+      </div>
+      <div class="dist-card">
+        <div style="font-size:2rem;">🔢</div>
+        <h4 style="color:#fff; margin:.5rem 0 .25rem;">Dot Product</h4>
+        <div class="formula">A·B = Σ(aᵢ × bᵢ)</div>
+        <p>দ্রুততম গণনা। OpenAI এম্বেডিংয়ের জন্য আদর্শ। নর্মালাইজড ভেক্টরে Cosine-এর সমান।</p>
+        <span class="tag tag-purple" style="margin-top:.5rem;">দ্রুততম</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="code-lang">Python - দূরত্ব গণনা</div>
+      </div>
+      <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># দুটো ভেক্টর</span>
+<span class="var">birat</span> = np.array([<span class="num">0.8</span>, <span class="num">0.2</span>, <span class="num">0.1</span>])  <span class="cm"># "বিড়াল"</span>
+<span class="var">kukhur</span> = np.array([<span class="num">0.7</span>, <span class="num">0.3</span>, <span class="num">0.15</span>]) <span class="cm"># "কুকুর"</span>
+<span class="var">vat</span> = np.array([<span class="num">0.1</span>, <span class="num">0.9</span>, <span class="num">0.8</span>])    <span class="cm"># "ভাত"</span>
+
+<span class="cm"># Cosine Similarity</span>
+<span class="kw">def</span> <span class="fn">cosine_sim</span>(a, b):
+    <span class="kw">return</span> np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+<span class="fn">print</span>(<span class="str">f"বিড়াল-কুকুর মিল: {cosine_sim(birat, kukhur):.3f}"</span>)
+<span class="cm"># আউটপুট: বিড়াল-কুকুর মিল: 0.994 (খুব কাছে!)</span>
+
+<span class="fn">print</span>(<span class="str">f"বিড়াল-ভাত মিল: {cosine_sim(birat, vat):.3f}"</span>)
+<span class="cm"># আউটপুট: বিড়াল-ভাত মিল: 0.312 (দূরে!)</span></pre>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 5: INDEXING ALGORITHMS
+     ============================ -->
+<section id="algo">
+  <div class="section-header">
+    <div class="section-num">০৫</div>
+    <h2>ইন্ডেক্সিং অ্যালগরিদম</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem;">কোটি কোটি ভেক্টরের মধ্যে দ্রুত খোঁজার জন্য বিশেষ অ্যালগরিদম ব্যবহার করা হয়:</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>🕸️ HNSW</h3>
+        <h4 style="color:var(--accent2); font-size:.8rem; margin-bottom:.5rem;">Hierarchical Navigable Small World</h4>
+        <p>গ্রাফ-ভিত্তিক অ্যালগরিদম। অনেক স্তরের নেটওয়ার্ক তৈরি করে দ্রুত নেভিগেট করে। সবচেয়ে জনপ্রিয় — Pinecone, Weaviate, Qdrant ব্যবহার করে।</p>
+        <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+          <span class="tag tag-green">সবচেয়ে দ্রুত</span>
+          <span class="tag tag-purple">উচ্চ নির্ভুলতা</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📦 IVF</h3>
+        <h4 style="color:var(--accent2); font-size:.8rem; margin-bottom:.5rem;">Inverted File Index</h4>
+        <p>ভেক্টরগুলোকে ক্লাস্টারে ভাগ করে। প্রথমে ক্লাস্টার খোঁজো, তারপর সেই ক্লাস্টারে বিস্তারিত খোঁজো। কম মেমোরিতে কাজ করে।</p>
+        <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+          <span class="tag tag-cyan">কম মেমোরি</span>
+          <span class="tag tag-purple">বড় ডেটার জন্য</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>#️⃣ LSH</h3>
+        <h4 style="color:var(--accent2); font-size:.8rem; margin-bottom:.5rem;">Locality Sensitive Hashing</h4>
+        <p>কাছাকাছি ভেক্টরগুলোকে একই হ্যাশ বাকেটে রাখে। খুবই দ্রুত কিন্তু নির্ভুলতা কম। প্রাথমিক ফিল্টারিংয়ে ব্যবহার হয়।</p>
+        <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+          <span class="tag tag-red">কম নির্ভুলতা</span>
+          <span class="tag tag-green">অতি দ্রুত</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🔢 PQ</h3>
+        <h4 style="color:var(--accent2); font-size:.8rem; margin-bottom:.5rem;">Product Quantization</h4>
+        <p>ভেক্টরকে ছোট ছোট অংশে কম্প্রেস করে। স্টোরেজ ৯৭% কমিয়ে আনে। IVF-এর সাথে একসাথে ব্যবহার হয় (IVF+PQ)।</p>
+        <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+          <span class="tag tag-cyan">৯৭% কম স্টোরেজ</span>
+          <span class="tag tag-purple">FAISS-এ জনপ্রিয়</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HNSW VISUAL -->
+  <div class="reveal" style="margin-top:1.5rem;">
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem;">
+      <h4 style="color:#fff; margin-bottom:1rem;">HNSW কীভাবে কাজ করে:</h4>
+      <svg viewBox="0 0 600 240" width="100%">
+        <!-- Layer 3 (top) -->
+        <text x="20" y="35" fill="#585b70" font-size="11">স্তর ৩</text>
+        <circle cx="200" cy="30" r="12" fill="#6c63ff" opacity=".9"/>
+        <circle cx="400" cy="30" r="12" fill="#6c63ff" opacity=".9"/>
+        <line x1="200" y1="30" x2="400" y2="30" stroke="#6c63ff" stroke-width="1.5" opacity=".5"/>
+        <text x="196" y="34" fill="white" font-size="9" text-anchor="middle">A</text>
+        <text x="396" y="34" fill="white" font-size="9" text-anchor="middle">E</text>
+
+        <!-- Layer 2 -->
+        <text x="20" y="115" fill="#585b70" font-size="11">স্তর ২</text>
+        <circle cx="150" cy="110" r="12" fill="#6c63ff" opacity=".7"/>
+        <circle cx="250" cy="110" r="12" fill="#6c63ff" opacity=".7"/>
+        <circle cx="350" cy="110" r="12" fill="#6c63ff" opacity=".7"/>
+        <circle cx="450" cy="110" r="12" fill="#6c63ff" opacity=".7"/>
+        <line x1="150" y1="110" x2="250" y2="110" stroke="#6c63ff" stroke-width="1.2" opacity=".4"/>
+        <line x1="250" y1="110" x2="350" y2="110" stroke="#6c63ff" stroke-width="1.2" opacity=".4"/>
+        <line x1="350" y1="110" x2="450" y2="110" stroke="#6c63ff" stroke-width="1.2" opacity=".4"/>
+        <line x1="200" y1="30" x2="150" y2="110" stroke="#a89cff" stroke-width="1" stroke-dasharray="4" opacity=".4"/>
+        <line x1="400" y1="30" x2="450" y2="110" stroke="#a89cff" stroke-width="1" stroke-dasharray="4" opacity=".4"/>
+        <text x="146" y="114" fill="white" font-size="9" text-anchor="middle">B</text>
+        <text x="246" y="114" fill="white" font-size="9" text-anchor="middle">C</text>
+        <text x="346" y="114" fill="white" font-size="9" text-anchor="middle">D</text>
+        <text x="446" y="114" fill="white" font-size="9" text-anchor="middle">E</text>
+
+        <!-- Layer 1 (bottom) -->
+        <text x="20" y="200" fill="#585b70" font-size="11">স্তর ১</text>
+        <circle cx="100" cy="195" r="10" fill="#00d4ff" opacity=".7"/>
+        <circle cx="175" cy="195" r="10" fill="#00d4ff" opacity=".7"/>
+        <circle cx="250" cy="195" r="10" fill="#00d4ff" opacity=".7"/>
+        <circle cx="325" cy="195" r="10" fill="#00d4ff" opacity=".7"/>
+        <circle cx="400" cy="195" r="10" fill="#ff6584" opacity=".9"/>
+        <circle cx="475" cy="195" r="10" fill="#00d4ff" opacity=".7"/>
+        <line x1="100" y1="195" x2="175" y2="195" stroke="#00d4ff" stroke-width="1" opacity=".3"/>
+        <line x1="175" y1="195" x2="250" y2="195" stroke="#00d4ff" stroke-width="1" opacity=".3"/>
+        <line x1="250" y1="195" x2="325" y2="195" stroke="#00d4ff" stroke-width="1" opacity=".3"/>
+        <line x1="325" y1="195" x2="400" y2="195" stroke="#ff6584" stroke-width="2" opacity=".7"/>
+        <line x1="400" y1="195" x2="475" y2="195" stroke="#00d4ff" stroke-width="1" opacity=".3"/>
+
+        <!-- Search path arrow -->
+        <text x="400" y="230" fill="#ff6584" font-size="11" text-anchor="middle">← লক্ষ্য নোড</text>
+      </svg>
+      <p style="color:var(--muted); font-size:.82rem; margin-top:.5rem;">উপরের স্তরে দ্রুত "লাফিয়ে" যাও, নিচের স্তরে সূক্ষ্মভাবে খোঁজো — এভাবেই HNSW মিলিয়ন নোড থেকে মিলিসেকেন্ডে উত্তর দেয়!</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 6: COMPARISON
+     ============================ -->
+<section id="compare">
+  <div class="section-header">
+    <div class="section-num">০৬</div>
+    <h2>ঐতিহ্যবাহী vs ভেক্টর ডেটাবেস</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>বৈশিষ্ট্য</th>
+            <th>SQL/NoSQL</th>
+            <th>ভেক্টর ডেটাবেস</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ডেটা ফরম্যাট</strong></td>
+            <td>সারি ও কলাম / JSON</td>
+            <td>উচ্চ-মাত্রিক ভেক্টর</td>
+          </tr>
+          <tr>
+            <td><strong>খোঁজার পদ্ধতি</strong></td>
+            <td>হুবহু মিল (Exact match)</td>
+            <td>অর্থগত মিল (Semantic)</td>
+          </tr>
+          <tr>
+            <td><strong>কোয়েরি ভাষা</strong></td>
+            <td>SQL / API</td>
+            <td>ভেক্টর কোয়েরি</td>
+          </tr>
+          <tr>
+            <td><strong>স্কেলিং</strong></td>
+            <td>ভার্টিকাল/হরিজন্টাল</td>
+            <td>বিশেষভাবে ভেক্টরের জন্য</td>
+          </tr>
+          <tr>
+            <td><strong>ব্যবহারক্ষেত্র</strong></td>
+            <td>ট্রানজ্যাকশন, রিপোর্ট</td>
+            <td>AI, সিমিলারিটি সার্চ</td>
+          </tr>
+          <tr>
+            <td><strong>উদাহরণ</strong></td>
+            <td>MySQL, MongoDB, PostgreSQL</td>
+            <td>Pinecone, Weaviate, Qdrant</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:1.25rem;">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>সতর্কতা</strong>
+        ভেক্টর ডেটাবেস ঐতিহ্যবাহী ডেটাবেসকে প্রতিস্থাপন করে না, বরং সম্পূরক হিসেবে কাজ করে। বেশিরভাগ সিস্টেমে দুটোই একসাথে ব্যবহার হয়।
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 7: POPULAR TOOLS
+     ============================ -->
+<section id="tools">
+  <div class="section-header">
+    <div class="section-num">০৭</div>
+    <h2>জনপ্রিয় ভেক্টর ডেটাবেস</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <div class="grid-2">
+      <div class="app-card purple">
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem;">
+          <div style="font-size:2rem;">🌲</div>
+          <div>
+            <h3>Pinecone</h3>
+            <span class="tag tag-purple">ক্লাউড-ম্যানেজড</span>
+          </div>
+        </div>
+        <p>সবচেয়ে জনপ্রিয় ম্যানেজড ভেক্টর ডেটাবেস। সেটআপ শূন্য, স্কেল করা সহজ। স্টার্টআপ ও এন্টারপ্রাইজ উভয়ের জন্য।</p>
+        <ul style="margin-top:.75rem; padding-left:1.2rem; color:var(--muted); font-size:.85rem;">
+          <li>HNSW ইন্ডেক্স</li>
+          <li>ফ্রি টায়ার উপলব্ধ</li>
+          <li>LangChain ইন্টিগ্রেশন</li>
+        </ul>
+      </div>
+      <div class="app-card cyan">
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem;">
+          <div style="font-size:2rem;">🔷</div>
+          <div>
+            <h3>Weaviate</h3>
+            <span class="tag tag-cyan">ওপেন-সোর্স</span>
+          </div>
+        </div>
+        <p>গ্রাফকিউএল সাপোর্ট সহ ওপেন-সোর্স। নিজস্ব সার্ভারে চালানো যায়। মডুলার আর্কিটেকচার।</p>
+        <ul style="margin-top:.75rem; padding-left:1.2rem; color:var(--muted); font-size:.85rem;">
+          <li>GraphQL API</li>
+          <li>বিল্ট-ইন মডেল সাপোর্ট</li>
+          <li>মাল্টি-মডেল সার্চ</li>
+        </ul>
+      </div>
+      <div class="app-card green">
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem;">
+          <div style="font-size:2rem;">🎯</div>
+          <div>
+            <h3>Qdrant</h3>
+            <span class="tag tag-green">Rust-ভিত্তিক</span>
+          </div>
+        </div>
+        <p>Rust দিয়ে তৈরি, তাই অত্যন্ত দ্রুত ও মেমোরি-দক্ষ। ফিল্টারিং ও পেলোড সাপোর্ট চমৎকার।</p>
+        <ul style="margin-top:.75rem; padding-left:1.2rem; color:var(--muted); font-size:.85rem;">
+          <li>সবচেয়ে দ্রুত পারফরম্যান্স</li>
+          <li>উন্নত ফিল্টারিং</li>
+          <li>Docker সাপোর্ট</li>
+        </ul>
+      </div>
+      <div class="app-card red">
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem;">
+          <div style="font-size:2rem;">🦙</div>
+          <div>
+            <h3>Chroma</h3>
+            <span class="tag tag-red">ডেভেলপার-ফার্স্ট</span>
+          </div>
+        </div>
+        <p>ডেভেলপারদের জন্য সবচেয়ে সহজ। লোকালি চালানো যায়, কোনো সেটআপ ছাড়াই। র‍্যাপিড প্রোটোটাইপিংয়ের জন্য আদর্শ।</p>
+        <ul style="margin-top:.75rem; padding-left:1.2rem; color:var(--muted); font-size:.85rem;">
+          <li>পাইথনে ৩ লাইনে শুরু</li>
+          <li>LangChain/LlamaIndex সাপোর্ট</li>
+          <li>ইন-মেমোরি মোড</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAISS -->
+    <div class="card" style="margin-top:1.25rem;">
+      <h3>⚡ FAISS (Facebook AI Similarity Search)</h3>
+      <p>Meta-র তৈরি লাইব্রেরি। ডেটাবেস নয়, লাইব্রেরি — তবে সবচেয়ে শক্তিশালী। GPU সাপোর্ট আছে। বিলিয়ন ভেক্টর হ্যান্ডেল করতে পারে। রিসার্চ ও প্রোডাকশন উভয়ে জনপ্রিয়।</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 8: USE CASES
+     ============================ -->
+<section id="usecases">
+  <div class="section-header">
+    <div class="section-num">০৮</div>
+    <h2>ব্যবহারের ক্ষেত্র</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <div class="grid-3">
+      <div class="card">
+        <h3>🤖 RAG সিস্টেম</h3>
+        <p>Retrieval-Augmented Generation — ChatGPT-এর মতো AI-কে নিজের ডেটাবেস থেকে তথ্য দিয়ে আরও স্মার্ট করা।</p>
+      </div>
+      <div class="card">
+        <h3>🔍 সিমান্টিক সার্চ</h3>
+        <p>"সস্তায় ভালো হোটেল" লিখলেই সংশ্লিষ্ট হোটেল পাওয়া — শুধু কীওয়ার্ড মিল না, অর্থ বুঝে খোঁজা।</p>
+      </div>
+      <div class="card">
+        <h3>🎬 রেকমেন্ডেশন</h3>
+        <p>Netflix, Spotify, Amazon — "তুমি এটা পছন্দ করলে, এটাও পছন্দ করবে" সিস্টেম।</p>
+      </div>
+      <div class="card">
+        <h3>🖼️ ছবি খোঁজা</h3>
+        <p>একটি ছবি দিয়ে মিল সম্পন্ন ছবি খোঁজা — Google Lens যেভাবে কাজ করে।</p>
+      </div>
+      <div class="card">
+        <h3>🚨 অ্যানোমালি ডিটেকশন</h3>
+        <p>ব্যাংকিং জালিয়াতি, সাইবার আক্রমণ শনাক্তকরণ — স্বাভাবিক প্যাটার্ন থেকে বিচ্যুতি ধরা।</p>
+      </div>
+      <div class="card">
+        <h3>👤 ফেস রিকগনিশন</h3>
+        <p>মুখের ছবিকে ভেক্টরে রূপান্তরিত করে মিলিয়ন মুখের মধ্যে থেকে খুঁজে বের করা।</p>
+      </div>
+      <div class="card">
+        <h3>💬 চ্যাটবট মেমোরি</h3>
+        <p>কথোপকথনের ইতিহাস ভেক্টরে সংরক্ষণ করে AI-কে দীর্ঘমেয়াদী স্মৃতি দেওয়া।</p>
+      </div>
+      <div class="card">
+        <h3>📄 ডকুমেন্ট মিল</h3>
+        <p>একটি ডকুমেন্টের মতো অন্য ডকুমেন্ট খোঁজা — আইনি বা একাডেমিক রিসার্চে।</p>
+      </div>
+      <div class="card">
+        <h3>🧬 বায়োইনফরম্যাটিক্স</h3>
+        <p>প্রোটিন সিকোয়েন্স, জিনোম ডেটা বিশ্লেষণ — মিল সম্পন্ন জৈবিক কাঠামো খোঁজা।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 9: CODE EXAMPLES
+     ============================ -->
+<section id="code">
+  <div class="section-header">
+    <div class="section-num">০৯</div>
+    <h2>হাতে-কলমে কোড উদাহরণ</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <!-- CHROMA EXAMPLE -->
+  <div class="reveal">
+    <h3 style="color:#fff; margin-bottom:1rem;">🟣 Chroma দিয়ে শুরু (সবচেয়ে সহজ)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="code-lang">Python - Chroma</div>
+      </div>
+      <pre><span class="kw">import</span> chromadb
+<span class="kw">from</span> chromadb.utils <span class="kw">import</span> embedding_functions
+
+<span class="cm"># ১. Chroma ক্লায়েন্ট তৈরি করো</span>
+client = chromadb.Client()
+
+<span class="cm"># ২. একটি কালেকশন তৈরি করো</span>
+collection = client.create_collection(
+    name=<span class="str">"বাংলা_ডকুমেন্ট"</span>,
+    embedding_function=embedding_functions.DefaultEmbeddingFunction()
+)
+
+<span class="cm"># ৩. কিছু ডকুমেন্ট যোগ করো</span>
+collection.add(
+    documents=[
+        <span class="str">"বিড়াল একটি পোষা প্রাণী যে মাছ খেতে ভালোবাসে"</span>,
+        <span class="str">"কুকুর মানুষের সবচেয়ে বিশ্বস্ত বন্ধু"</span>,
+        <span class="str">"ভাত বাংলাদেশের প্রধান খাবার"</span>,
+        <span class="str">"বাংলাদেশের জাতীয় ফুল শাপলা"</span>,
+        <span class="str">"পাখি আকাশে উড়তে পারে কারণ তাদের পালক আছে"</span>,
+    ],
+    ids=[<span class="str">"doc1"</span>, <span class="str">"doc2"</span>, <span class="str">"doc3"</span>, <span class="str">"doc4"</span>, <span class="str">"doc5"</span>]
+)
+
+<span class="cm"># ৪. সিমান্টিক সার্চ করো</span>
+results = collection.query(
+    query_texts=[<span class="str">"কোন প্রাণী মানুষের কাছের?"</span>],
+    n_results=<span class="num">2</span>
+)
+
+<span class="fn">print</span>(results[<span class="str">'documents'</span>])
+<span class="cm"># আউটপুট: [['কুকুর মানুষের সবচেয়ে বিশ্বস্ত বন্ধু',
+#            'বিড়াল একটি পোষা প্রাণী যে মাছ খেতে ভালোবাসে']]</span></pre>
+    </div>
+  </div>
+
+  <!-- RAG EXAMPLE -->
+  <div class="reveal" style="margin-top:2rem;">
+    <h3 style="color:#fff; margin-bottom:1rem;">🤖 সহজ RAG সিস্টেম (LangChain + Chroma)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="code-lang">Python - RAG System</div>
+      </div>
+      <pre><span class="kw">from</span> langchain_community.vectorstores <span class="kw">import</span> Chroma
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings, ChatOpenAI
+<span class="kw">from</span> langchain.chains <span class="kw">import</span> RetrievalQA
+<span class="kw">from</span> langchain.schema <span class="kw">import</span> Document
+
+<span class="cm"># ১. আমাদের জ্ঞানভাণ্ডার তৈরি করো</span>
+docs = [
+    Document(page_content=<span class="str">"বাংলাদেশ ১৯৭১ সালে স্বাধীনতা লাভ করে"</span>),
+    Document(page_content=<span class="str">"ঢাকা বাংলাদেশের রাজধানী এবং বৃহত্তম শহর"</span>),
+    Document(page_content=<span class="str">"পদ্মা সেতু বাংলাদেশের সবচেয়ে দীর্ঘ সেতু"</span>),
+    Document(page_content=<span class="str">"বাংলাদেশের জাতীয় পাখি দোয়েল"</span>),
+]
+
+<span class="cm"># ২. ভেক্টর স্টোর তৈরি করো</span>
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(
+    documents=docs,
+    embedding=embeddings
+)
+
+<span class="cm"># ৩. RAG চেইন তৈরি করো</span>
+llm = ChatOpenAI(model=<span class="str">"gpt-3.5-turbo"</span>)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: <span class="num">2</span>})
+)
+
+<span class="cm"># ৪. প্রশ্ন করো!</span>
+answer = qa_chain.invoke(<span class="str">"বাংলাদেশের রাজধানী কোথায়?"</span>)
+<span class="fn">print</span>(answer[<span class="str">'result'</span>])
+<span class="cm"># আউটপুট: বাংলাদেশের রাজধানী ঢাকা।</span></pre>
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">🎉</div>
+      <div class="callout-body">
+        <strong>RAG কেন গুরুত্বপূর্ণ?</strong>
+        ChatGPT ২০২৩ সালের পর কিছু জানে না। কিন্তু RAG দিয়ে তুমি AI-কে তোমার নিজের ডেটাবেস থেকে উত্তর দিতে শেখাতে পারো — যেকোনো ডকুমেন্ট, ওয়েবসাইট, বা ডেটা থেকে!
+      </div>
+    </div>
+  </div>
+
+  <!-- PINECONE EXAMPLE -->
+  <div class="reveal" style="margin-top:2rem;">
+    <h3 style="color:#fff; margin-bottom:1rem;">🌲 Pinecone উদাহরণ</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="code-lang">Python - Pinecone</div>
+      </div>
+      <pre><span class="kw">from</span> pinecone <span class="kw">import</span> Pinecone, ServerlessSpec
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ১. Pinecone সংযোগ</span>
+pc = Pinecone(api_key=<span class="str">"তোমার-API-কী"</span>)
+
+<span class="cm"># ২. ইন্ডেক্স তৈরি করো</span>
+pc.create_index(
+    name=<span class="str">"bangla-search"</span>,
+    dimension=<span class="num">1536</span>,  <span class="cm"># OpenAI embedding সাইজ</span>
+    metric=<span class="str">"cosine"</span>,
+    spec=ServerlessSpec(cloud=<span class="str">"aws"</span>, region=<span class="str">"us-east-1"</span>)
+)
+
+index = pc.Index(<span class="str">"bangla-search"</span>)
+
+<span class="cm"># ৩. ডেটা আপলোড করো (ভেক্টর + মেটাডেটা)</span>
+vectors = [
+    {
+        <span class="str">"id"</span>: <span class="str">"প্রোডাক্ট-০০১"</span>,
+        <span class="str">"values"</span>: np.random.rand(<span class="num">1536</span>).tolist(),  <span class="cm"># আসলে এম্বেডিং</span>
+        <span class="str">"metadata"</span>: {
+            <span class="str">"নাম"</span>: <span class="str">"নীল শাড়ি"</span>,
+            <span class="str">"দাম"</span>: <span class="num">1500</span>,
+            <span class="str">"ক্যাটাগরি"</span>: <span class="str">"পোশাক"</span>
+        }
+    }
+]
+index.upsert(vectors=vectors)
+
+<span class="cm"># ৪. সার্চ করো + ফিল্টার করো</span>
+results = index.query(
+    vector=np.random.rand(<span class="num">1536</span>).tolist(),
+    top_k=<span class="num">5</span>,
+    filter={<span class="str">"দাম"</span>: {<span class="str">"$lt"</span>: <span class="num">2000</span>}},  <span class="cm"># ২০০০ টাকার কম</span>
+    include_metadata=<span class="kw">True</span>
+)
+
+<span class="kw">for</span> match <span class="kw">in</span> results.matches:
+    <span class="fn">print</span>(<span class="str">f"স্কোর: {match.score:.3f} | {match.metadata['নাম']}"</span>)</pre>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 10: RAG DEEP DIVE
+     ============================ -->
+<section id="rag">
+  <div class="section-header">
+    <div class="section-num">১০</div>
+    <h2>RAG — রিট্রিভাল অগমেন্টেড জেনারেশন</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <p style="color:var(--muted); margin-bottom:1.5rem;">RAG হলো ভেক্টর ডেটাবেসের সবচেয়ে গুরুত্বপূর্ণ ব্যবহার। AI-কে তোমার নিজের ডেটা দিয়ে স্মার্ট করে তোলা।</p>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.75rem;">
+      <h4 style="color:#fff; margin-bottom:1.25rem;">RAG-এর সম্পূর্ণ প্রবাহ:</h4>
+      <div style="display:grid; gap:.75rem;">
+        <div style="display:flex; gap:.75rem; align-items:center;">
+          <div style="background:rgba(108,99,255,.2); border:1px solid rgba(108,99,255,.4); border-radius:8px; padding:.5rem .85rem; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:700; min-width:100px; text-align:center;">ব্যবহারকারী</div>
+          <div style="color:var(--accent); font-size:1.2rem;">→</div>
+          <div style="color:var(--muted); font-size:.9rem;">প্রশ্ন করে: "পদ্মা সেতু কখন নির্মিত হয়?"</div>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:center;">
+          <div style="background:rgba(0,212,255,.15); border:1px solid rgba(0,212,255,.3); border-radius:8px; padding:.5rem .85rem; color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:700; min-width:100px; text-align:center;">এম্বেডিং</div>
+          <div style="color:var(--accent2); font-size:1.2rem;">→</div>
+          <div style="color:var(--muted); font-size:.9rem;">প্রশ্নটি ভেক্টরে রূপান্তরিত হয়</div>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:center;">
+          <div style="background:rgba(67,233,123,.12); border:1px solid rgba(67,233,123,.25); border-radius:8px; padding:.5rem .85rem; color:var(--accent4); font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:700; min-width:100px; text-align:center;">ভেক্টর DB</div>
+          <div style="color:var(--accent4); font-size:1.2rem;">→</div>
+          <div style="color:var(--muted); font-size:.9rem;">মিল সম্পন্ন ডকুমেন্ট খুঁজে আনা হয়</div>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:center;">
+          <div style="background:rgba(255,101,132,.12); border:1px solid rgba(255,101,132,.25); border-radius:8px; padding:.5rem .85rem; color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:700; min-width:100px; text-align:center;">LLM</div>
+          <div style="color:var(--accent3); font-size:1.2rem;">→</div>
+          <div style="color:var(--muted); font-size:.9rem;">প্রসঙ্গ + প্রশ্ন দিয়ে উত্তর তৈরি করে</div>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:center;">
+          <div style="background:rgba(108,99,255,.2); border:1px solid rgba(108,99,255,.4); border-radius:8px; padding:.5rem .85rem; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:700; min-width:100px; text-align:center;">উত্তর</div>
+          <div style="color:var(--accent); font-size:1.2rem;">→</div>
+          <div style="color:var(--muted); font-size:.9rem;">নির্ভুল, সোর্সসহ উত্তর প্রদান</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 11: BEST PRACTICES
+     ============================ -->
+<section id="best">
+  <div class="section-header">
+    <div class="section-num">১১</div>
+    <h2>সেরা অনুশীলন ও টিপস</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <div class="grid-2">
+      <div>
+        <h3 style="color:var(--accent4); margin-bottom:1rem;">✅ করণীয়</h3>
+        <ul class="num-list">
+          <li>একই মডেল দিয়ে ইনজেশন ও কোয়েরি উভয় এম্বেডিং তৈরি করো</li>
+          <li>ডকুমেন্ট চাংকিংয়ে ওভারল্যাপ রাখো (৫০-১০০ টোকেন)</li>
+          <li>মেটাডেটা ফিল্টারিং ব্যবহার করো নির্ভুলতা বাড়াতে</li>
+          <li>নিয়মিত ইন্ডেক্স আপডেট করো</li>
+          <li>হাইব্রিড সার্চ ব্যবহার করো (কীওয়ার্ড + ভেক্টর)</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--accent3); margin-bottom:1rem;">❌ যা এড়িয়ে চলবে</h3>
+        <ul class="num-list">
+          <li>খুব বড় চাংক (৫০০ শব্দের বেশি) — প্রাসঙ্গিকতা কমে</li>
+          <li>ভিন্ন মডেলে ইনজেশন ও কোয়েরি করা</li>
+          <li>একটি ভেক্টর DB-তে সব ধরনের ডেটা মেশানো</li>
+          <li>ইন্ডেক্স ছাড়া ব্রুট ফোর্স সার্চ (ডেটা বাড়লে ধীর হবে)</li>
+          <li>মেটাডেটা ছাড়া ডেটা স্টোর করা</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     SECTION 12: FUTURE
+     ============================ -->
+<section id="future">
+  <div class="section-header">
+    <div class="section-num">১২</div>
+    <h2>ভবিষ্যৎ ও উদীয়মান ট্রেন্ড</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="reveal">
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3>মাল্টিমোডাল ভেক্টর</h3>
+        <p>একই ডেটাবেসে টেক্সট, ছবি, অডিও — সবকিছু একসাথে খোঁজা। OpenAI CLIP মডেল এটি সম্ভব করছে।</p>
+      </div>
+      <div class="timeline-item">
+        <h3>হাইব্রিড সার্চ (BM25 + ভেক্টর)</h3>
+        <p>কীওয়ার্ড সার্চ ও সিমান্টিক সার্চ একসাথে মিলিয়ে আরও নির্ভুল ফলাফল।</p>
+      </div>
+      <div class="timeline-item">
+        <h3>Sparse + Dense ভেক্টর</h3>
+        <p>SPLADE-এর মতো স্পার্স ভেক্টর ও ঘন ভেক্টর একত্রে ব্যবহার — বিশেষজ্ঞ ডোমেইনে দারুণ কার্যকর।</p>
+      </div>
+      <div class="timeline-item">
+        <h3>PostgreSQL + pgvector</h3>
+        <p>সাধারণ SQL ডেটাবেসেই ভেক্টর সার্চ — আলাদা ডেটাবেস ছাড়াই! ছোট প্রজেক্টের জন্য আদর্শ।</p>
+      </div>
+      <div class="timeline-item">
+        <h3>Agentic AI + ভেক্টর DB</h3>
+        <p>AI এজেন্টরা নিজেই ডেটাবেসে লিখবে, পড়বে, আপডেট করবে — সম্পূর্ণ স্বায়ত্তশাসিত সিস্টেম।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section>
+  <div class="highlight" style="border-radius:16px; padding:2rem;">
+    <h3 style="color:#fff; font-size:1.4rem; margin-bottom:1rem;">📚 সারসংক্ষেপ</h3>
+    <div class="grid-2">
+      <div>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent2);">■</span> ভেক্টর ডেটাবেস ডেটাকে সংখ্যার তালিকায় রূপান্তরিত করে সংরক্ষণ করে</p>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent2);">■</span> অর্থগত মিল খুঁজে পেতে দূরত্ব/কোণ পরিমাপ ব্যবহার করে</p>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent2);">■</span> HNSW অ্যালগরিদম দ্রুততম ও সবচেয়ে জনপ্রিয়</p>
+      </div>
+      <div>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent4);">■</span> RAG সিস্টেমে ভেক্টর ডেটাবেস অপরিহার্য</p>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent4);">■</span> Chroma দিয়ে শুরু করো, Pinecone/Qdrant প্রোডাকশনে</p>
+        <p style="color:var(--muted); font-size:.9rem; margin-bottom:.75rem;"><span style="color:var(--accent4);">■</span> ভবিষ্যতে AI-এর মেরুদণ্ড হবে ভেক্টর ডেটাবেস</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end left content -->
+
+<!-- TABLE OF CONTENTS SIDEBAR -->
+<div>
+  <div class="toc">
+    <h4>📋 বিষয়সূচি</h4>
+    <ol>
+      <li><a href="#intro">ভেক্টর ডেটাবেস কী?</a></li>
+      <li><a href="#vector">ভেক্টর ও এম্বেডিং</a></li>
+      <li><a href="#how">কীভাবে কাজ করে</a></li>
+      <li><a href="#distance">দূরত্ব পরিমাপ</a></li>
+      <li><a href="#algo">ইন্ডেক্সিং অ্যালগরিদম</a></li>
+      <li><a href="#compare">তুলনা</a></li>
+      <li><a href="#tools">জনপ্রিয় টুলস</a></li>
+      <li><a href="#usecases">ব্যবহারের ক্ষেত্র</a></li>
+      <li><a href="#code">কোড উদাহরণ</a></li>
+      <li><a href="#rag">RAG সিস্টেম</a></li>
+      <li><a href="#best">সেরা অনুশীলন</a></li>
+      <li><a href="#future">ভবিষ্যৎ ট্রেন্ড</a></li>
+    </ol>
+  </div>
+</div>
+
+</div><!-- end layout-with-toc -->
+</div><!-- end container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">⟨ VectorDB বাংলা ⟩</div>
+    <p>সম্পূর্ণ বাংলায় ভেক্টর ডেটাবেস শেখার গাইড</p>
+    <p style="margin-top:.5rem; font-size:.75rem; opacity:.5;">Claude দ্বারা তৈরি • ২০২৫</p>
+  </div>
+</footer>
+
+<script>
+// Vector grid animation
+const grid = document.getElementById('vecGrid');
+if(grid) {
+  for(let i=0; i<36; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'vec-cell';
+    const val = (Math.random() * 2 - 1).toFixed(2);
+    const intensity = Math.abs(parseFloat(val));
+    const hue = parseFloat(val) > 0 ? 220 : 340;
+    cell.style.background = `hsla(${hue}, 80%, ${30 + intensity*50}%, ${0.3 + intensity*0.7})`;
+    cell.style.color = intensity > 0.5 ? '#fff' : 'transparent';
+    cell.title = val;
+    grid.appendChild(cell);
+  }
+}
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+
+// Smooth TOC highlight
+const sections = document.querySelectorAll('section[id]');
+const tocLinks = document.querySelectorAll('.toc a');
+
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => {
+    if(window.scrollY >= s.offsetTop - 120) cur = s.id;
+  });
+  tocLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+cur ? '#00d4ff' : '';
+  });
+});
+</script>
+
+</body>
+</html>

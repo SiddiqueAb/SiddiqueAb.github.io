@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oracle Database সম্পূর্ণ কোর্স — বাংলায়</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0c0c0e;
+  --bg2:      #111114;
+  --bg3:      #18181d;
+  --card:     #14141a;
+  --border:   #25252f;
+  --oracle:   #c74634;
+  --gold:     #f0a500;
+  --silver:   #b0bec5;
+  --cyan:     #29b6f6;
+  --green:    #66bb6a;
+  --purple:   #ab47bc;
+  --text:     #e8e8f0;
+  --muted:    #7a7a90;
+  --glow-r:   rgba(199,70,52,0.25);
+  --glow-g:   rgba(240,165,0,0.2);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Hind Siliguri',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+
+/* BG FX */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(199,70,52,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 85%, rgba(240,165,0,0.05) 0%, transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;
+  background-image:
+    linear-gradient(rgba(199,70,52,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199,70,52,0.025) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ===== TOPBAR ===== */
+#topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(12,12,14,0.96);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;
+}
+.tb-logo{
+  display:flex;align-items:center;gap:.7rem;
+  font-weight:700;font-size:1.05rem;letter-spacing:.5px;
+}
+.tb-logo-icon{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--oracle),#e05a40);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;box-shadow:0 0 16px var(--glow-r);
+}
+.tb-logo span{background:linear-gradient(90deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tb-progress{
+  display:flex;align-items:center;gap:1rem;font-size:.8rem;color:var(--muted);
+}
+.prog-bar{width:140px;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--oracle),var(--gold));border-radius:99px;transition:width .4s;}
+
+/* ===== SIDEBAR ===== */
+#sidebar{
+  position:fixed;left:0;top:60px;bottom:0;
+  width:260px;z-index:100;
+  background:rgba(17,17,20,0.98);
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:1.25rem 0 2rem;
+}
+#sidebar::-webkit-scrollbar{width:4px;}
+#sidebar::-webkit-scrollbar-track{background:transparent;}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+
+.sb-label{
+  font-size:.68rem;color:var(--muted);letter-spacing:2px;
+  text-transform:uppercase;padding:.5rem 1.25rem .3rem;
+  margin-top:.75rem;
+}
+
+.sb-item{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.55rem 1.25rem;cursor:pointer;
+  font-size:.88rem;color:var(--muted);
+  border-left:3px solid transparent;
+  transition:all .2s;position:relative;
+}
+.sb-item:hover{color:var(--text);background:rgba(199,70,52,0.06);}
+.sb-item.active{
+  color:#fff;background:rgba(199,70,52,0.1);
+  border-left-color:var(--oracle);
+}
+.sb-item .sb-num{
+  width:20px;height:20px;border-radius:5px;
+  background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-family:'JetBrains Mono',monospace;
+  color:var(--muted);flex-shrink:0;
+}
+.sb-item.active .sb-num{background:var(--oracle);color:#fff;}
+.sb-badge{
+  margin-left:auto;font-size:.62rem;padding:.1rem .45rem;
+  border-radius:99px;background:rgba(199,70,52,.15);
+  color:var(--oracle);border:1px solid rgba(199,70,52,.25);
+}
+
+/* ===== MAIN ===== */
+#main{
+  margin-left:260px;
+  min-height:100vh;
+}
+
+/* ===== HERO ===== */
+#hero{
+  padding:5rem 3rem 4rem;
+  position:relative;overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+#hero::before{
+  content:'ORACLE';
+  position:absolute;right:-2rem;top:50%;transform:translateY(-50%);
+  font-size:14rem;font-weight:900;letter-spacing:-8px;
+  color:rgba(199,70,52,0.04);line-height:1;pointer-events:none;
+  font-family:'JetBrains Mono',monospace;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(199,70,52,.1);border:1px solid rgba(199,70,52,.25);
+  color:#e07060;padding:.3rem 1rem;border-radius:99px;
+  font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:1.5rem;animation:slideIn .7s ease both;
+}
+#hero h1{
+  font-size:clamp(2.2rem,5vw,4rem);font-weight:700;line-height:1.15;
+  margin-bottom:1.25rem;animation:slideIn .7s .1s ease both;
+}
+#hero h1 span{
+  background:linear-gradient(135deg,var(--oracle) 0%,var(--gold) 60%,#fff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+#hero p{
+  font-size:1.05rem;color:var(--muted);max-width:600px;
+  margin-bottom:2rem;animation:slideIn .7s .2s ease both;
+}
+.hero-chips{
+  display:flex;flex-wrap:wrap;gap:.6rem;
+  animation:slideIn .7s .3s ease both;
+}
+.chip{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:.4rem .85rem;font-size:.8rem;color:var(--silver);
+  transition:border-color .2s;
+}
+.chip:hover{border-color:rgba(199,70,52,.4);}
+.chip-icon{font-size:1rem;}
+
+.hero-stats{
+  display:flex;gap:2.5rem;flex-wrap:wrap;
+  margin-top:2.5rem;padding-top:2rem;
+  border-top:1px solid var(--border);
+  animation:slideIn .7s .4s ease both;
+}
+.hstat-num{
+  font-size:2.2rem;font-weight:700;
+  background:linear-gradient(135deg,var(--oracle),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.hstat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:.25rem;}
+
+/* ===== SECTIONS ===== */
+.lesson{
+  padding:3rem;
+  border-bottom:1px solid var(--border);
+  display:none;
+}
+.lesson.active-lesson{display:block;}
+
+.lesson-header{
+  display:flex;align-items:flex-start;gap:1.25rem;
+  margin-bottom:2rem;padding-bottom:1.5rem;
+  border-bottom:1px solid var(--border);
+}
+.lesson-num-badge{
+  width:52px;height:52px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--oracle),#e05a40);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem;
+  box-shadow:0 4px 20px var(--glow-r);
+}
+.lesson-title-area h2{font-size:1.7rem;font-weight:700;color:#fff;line-height:1.2;}
+.lesson-title-area p{color:var(--muted);font-size:.9rem;margin-top:.4rem;}
+.lesson-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;}
+
+/* ===== TYPOGRAPHY ===== */
+h3.sh{
+  font-size:1.2rem;font-weight:600;color:#fff;
+  margin:2rem 0 1rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+h3.sh::before{
+  content:'';display:block;width:4px;height:18px;
+  background:linear-gradient(180deg,var(--oracle),var(--gold));
+  border-radius:99px;
+}
+p.body{color:var(--muted);font-size:.95rem;line-height:1.9;margin-bottom:1rem;}
+
+/* ===== CODE ===== */
+.codeblock{
+  background:#08080b;border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin:1.25rem 0;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.cb-header{
+  background:var(--bg3);padding:.65rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.cb-title{font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
+.cb-lang{font-size:.7rem;color:var(--oracle);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;}
+.cb-dots{display:flex;gap:.35rem;}
+.cbd{width:10px;height:10px;border-radius:50%;}
+.cbd-r{background:#ff5f57;}.cbd-y{background:#febc2e;}.cbd-g{background:#28c840;}
+pre{padding:1.4rem 1.6rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.8;color:#cdd6f4;}
+.kw{color:#c792ea;}
+.fn{color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.cm{color:#546e7a;font-style:italic;}
+.op{color:#89ddff;}
+.tb2{color:#ffcb6b;}
+.kw2{color:#f07178;}
+
+/* ===== CALLOUTS ===== */
+.callout{
+  padding:1.1rem 1.4rem;border-radius:12px;
+  margin:1.25rem 0;display:flex;gap:.9rem;align-items:flex-start;
+}
+.cl-info{background:rgba(41,182,246,.07);border-left:3px solid var(--cyan);}
+.cl-warn{background:rgba(240,165,0,.07);border-left:3px solid var(--gold);}
+.cl-ok{background:rgba(102,187,106,.07);border-left:3px solid var(--green);}
+.cl-err{background:rgba(199,70,52,.07);border-left:3px solid var(--oracle);}
+.cl-body{font-size:.9rem;color:var(--muted);}
+.cl-body strong{color:#fff;display:block;margin-bottom:.2rem;}
+.cl-ico{font-size:1.2rem;flex-shrink:0;}
+
+/* ===== TABLES ===== */
+.twrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin:1.25rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+thead{background:var(--bg3);}
+thead th{padding:.8rem 1.1rem;text-align:left;color:var(--gold);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);}
+tbody tr:hover{background:rgba(199,70,52,.04);}
+tbody td{padding:.8rem 1.1rem;border-bottom:1px solid rgba(37,37,47,.6);color:var(--muted);}
+tbody tr:last-child td{border-bottom:none;}
+td strong{color:#fff;}
+
+/* ===== CARDS ===== */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.1rem;margin:1.25rem 0;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.25rem 0;}
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem;
+  transition:border-color .25s,transform .25s;
+  position:relative;overflow:hidden;
+}
+.card:hover{border-color:rgba(199,70,52,.4);transform:translateY(-2px);}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(199,70,52,.04),transparent);opacity:0;transition:.25s;}
+.card:hover::before{opacity:1;}
+.card h4{color:#fff;font-size:1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+.card p{color:var(--muted);font-size:.87rem;line-height:1.75;}
+
+/* ===== TAGS ===== */
+.tag{display:inline-block;padding:.15rem .6rem;border-radius:99px;font-size:.7rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.tag-r{background:rgba(199,70,52,.12);color:#e07060;border:1px solid rgba(199,70,52,.25);}
+.tag-g{background:rgba(102,187,106,.1);color:#81c784;border:1px solid rgba(102,187,106,.2);}
+.tag-b{background:rgba(41,182,246,.1);color:#4dd0e1;border:1px solid rgba(41,182,246,.2);}
+.tag-y{background:rgba(240,165,0,.1);color:#ffca28;border:1px solid rgba(240,165,0,.2);}
+.tag-p{background:rgba(171,71,188,.1);color:#ce93d8;border:1px solid rgba(171,71,188,.2);}
+
+/* ===== HIGHLIGHT BOX ===== */
+.hbox{
+  background:linear-gradient(135deg,rgba(199,70,52,.08),rgba(240,165,0,.06));
+  border:1px solid rgba(199,70,52,.2);
+  border-radius:14px;padding:1.5rem;margin:1.25rem 0;
+}
+
+/* ===== STEPS ===== */
+.steps{display:grid;gap:.75rem;margin:1.25rem 0;}
+.step{
+  display:flex;gap:.9rem;align-items:flex-start;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:1.1rem;
+}
+.step-n{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--oracle),#e05a40);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;color:#fff;
+  font-family:'JetBrains Mono',monospace;
+}
+.step-body h4{color:#fff;font-size:.92rem;margin-bottom:.25rem;}
+.step-body p{color:var(--muted);font-size:.85rem;}
+
+/* ===== FLOW ===== */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin:1.25rem 0;}
+.flow-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:.6rem 1.1rem;font-size:.85rem;color:#fff;
+  transition:border-color .2s;
+}
+.flow-box:hover{border-color:var(--oracle);}
+.flow-arr{color:var(--oracle);font-size:1.2rem;}
+
+/* ===== SQL RESULT TABLE ===== */
+.sql-result{
+  background:#05050a;border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;margin:.75rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+}
+.sql-result .sr-header{
+  background:rgba(199,70,52,.1);
+  padding:.5rem 1rem;
+  display:flex;gap:2rem;color:var(--oracle);
+  font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  font-size:.72rem;border-bottom:1px solid var(--border);
+}
+.sql-result .sr-row{
+  padding:.45rem 1rem;display:flex;gap:2rem;
+  border-bottom:1px solid rgba(37,37,47,.4);color:var(--silver);
+}
+.sql-result .sr-row:last-child{border-bottom:none;}
+.sql-result .sr-row:hover{background:rgba(199,70,52,.04);}
+.sr-cell{min-width:100px;}
+
+/* ===== ARCH DIAGRAM ===== */
+.arch-svg{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin:1.25rem 0;}
+
+/* ===== QUIZ ===== */
+.quiz-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:1.75rem;margin:2rem 0;
+}
+.quiz-q{color:#fff;font-size:1rem;margin-bottom:1.1rem;font-weight:600;}
+.quiz-opts{display:grid;gap:.6rem;}
+.quiz-opt{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:.75rem 1.1rem;cursor:pointer;
+  color:var(--muted);font-size:.9rem;
+  transition:all .2s;display:flex;align-items:center;gap:.75rem;
+}
+.quiz-opt:hover{border-color:rgba(199,70,52,.4);color:#fff;}
+.quiz-opt.correct{background:rgba(102,187,106,.1);border-color:var(--green);color:var(--green);}
+.quiz-opt.wrong{background:rgba(199,70,52,.1);border-color:var(--oracle);color:var(--oracle);}
+.quiz-opt-mark{width:22px;height:22px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.quiz-feedback{margin-top:.75rem;padding:.75rem 1rem;border-radius:8px;font-size:.88rem;display:none;}
+.quiz-btn{
+  margin-top:1rem;background:linear-gradient(135deg,var(--oracle),#e05a40);
+  color:#fff;border:none;padding:.65rem 1.75rem;border-radius:10px;
+  font-size:.9rem;cursor:pointer;font-family:inherit;
+  transition:opacity .2s;
+}
+.quiz-btn:hover{opacity:.85;}
+
+/* ===== PREV/NEXT ===== */
+.lesson-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2rem 3rem;border-top:1px solid var(--border);
+  background:var(--bg2);
+}
+.lnav-btn{
+  display:flex;align-items:center;gap:.6rem;
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text);padding:.65rem 1.25rem;border-radius:10px;
+  cursor:pointer;font-family:inherit;font-size:.88rem;
+  transition:all .2s;
+}
+.lnav-btn:hover{border-color:var(--oracle);color:#fff;}
+.lnav-btn.primary{background:linear-gradient(135deg,var(--oracle),#e05a40);border-color:transparent;color:#fff;}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideIn{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+
+/* ===== MOBILE ===== */
+#mob-menu-btn{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;padding:.25rem;}
+
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);transition:transform .3s;}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  .lesson{padding:1.5rem;}
+  #hero{padding:3rem 1.5rem 2.5rem;}
+  .lesson-nav{padding:1.5rem;}
+  #hero::before{display:none;}
+  #mob-menu-btn{display:block;}
+}
+
+/* scrollbar global */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-icon">🔶</div>
+    <span>Oracle DB বাংলা কোর্স</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="tb-progress">
+      <span id="prog-text">০/১৫ মডিউল</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <button id="mob-menu-btn" onclick="toggleSidebar()">☰</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-label">শুরু করুন</div>
+  <div class="sb-item active" onclick="showLesson(0)" id="sb-0">
+    <div class="sb-num">🏠</div> ভূমিকা ও ওভারভিউ
+  </div>
+
+  <div class="sb-label">মডিউল ১ — মূল ধারণা</div>
+  <div class="sb-item" onclick="showLesson(1)" id="sb-1">
+    <div class="sb-num">01</div> Oracle পরিচিতি <span class="sb-badge">Basic</span>
+  </div>
+  <div class="sb-item" onclick="showLesson(2)" id="sb-2">
+    <div class="sb-num">02</div> ইনস্টলেশন ও সেটআপ
+  </div>
+  <div class="sb-item" onclick="showLesson(3)" id="sb-3">
+    <div class="sb-num">03</div> আর্কিটেকচার
+  </div>
+
+  <div class="sb-label">মডিউল ২ — SQL মূল বিষয়</div>
+  <div class="sb-item" onclick="showLesson(4)" id="sb-4">
+    <div class="sb-num">04</div> DDL — টেবিল তৈরি
+  </div>
+  <div class="sb-item" onclick="showLesson(5)" id="sb-5">
+    <div class="sb-num">05</div> DML — ডেটা ম্যানিপুলেশন
+  </div>
+  <div class="sb-item" onclick="showLesson(6)" id="sb-6">
+    <div class="sb-num">06</div> SELECT ও ফাংশন <span class="sb-badge">Important</span>
+  </div>
+  <div class="sb-item" onclick="showLesson(7)" id="sb-7">
+    <div class="sb-num">07</div> JOIN অপারেশন
+  </div>
+
+  <div class="sb-label">মডিউল ৩ — উন্নত SQL</div>
+  <div class="sb-item" onclick="showLesson(8)" id="sb-8">
+    <div class="sb-num">08</div> সাবকোয়েরি
+  </div>
+  <div class="sb-item" onclick="showLesson(9)" id="sb-9">
+    <div class="sb-num">09</div> ভিউ ও ইন্ডেক্স
+  </div>
+  <div class="sb-item" onclick="showLesson(10)" id="sb-10">
+    <div class="sb-num">10</div> ট্রানজ্যাকশন ও TCL
+  </div>
+
+  <div class="sb-label">মডিউল ৪ — PL/SQL</div>
+  <div class="sb-item" onclick="showLesson(11)" id="sb-11">
+    <div class="sb-num">11</div> PL/SQL ভূমিকা <span class="sb-badge">Advanced</span>
+  </div>
+  <div class="sb-item" onclick="showLesson(12)" id="sb-12">
+    <div class="sb-num">12</div> Procedure ও Function
+  </div>
+  <div class="sb-item" onclick="showLesson(13)" id="sb-13">
+    <div class="sb-num">13</div> Trigger ও Cursor
+  </div>
+
+  <div class="sb-label">মডিউল ৫ — DBA</div>
+  <div class="sb-item" onclick="showLesson(14)" id="sb-14">
+    <div class="sb-num">14</div> ব্যাকআপ ও রিকভারি
+  </div>
+  <div class="sb-item" onclick="showLesson(15)" id="sb-15">
+    <div class="sb-num">15</div> পারফরম্যান্স টিউনিং
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ===== LESSON 0: HERO / INTRO ===== -->
+<div id="lesson-0" class="lesson active-lesson">
+<div id="hero">
+  <div class="hero-eyebrow">🇧🇩 সম্পূর্ণ বাংলা কোর্স</div>
+  <h1>Oracle Database<br><span>মাস্টারক্লাস</span></h1>
+  <p>শূন্য থেকে শুরু করে পেশাদার Oracle DBA ও ডেভেলপার হওয়ার সম্পূর্ণ গাইড — DDL, DML, PL/SQL, আর্কিটেকচার, পারফরম্যান্স সবকিছু একসাথে</p>
+  <div class="hero-chips">
+    <div class="chip"><span class="chip-icon">🗄️</span> Oracle 21c / 19c</div>
+    <div class="chip"><span class="chip-icon">💻</span> SQL Developer</div>
+    <div class="chip"><span class="chip-icon">📚</span> ১৫টি মডিউল</div>
+    <div class="chip"><span class="chip-icon">🔷</span> PL/SQL</div>
+    <div class="chip"><span class="chip-icon">🔧</span> DBA টিপস</div>
+    <div class="chip"><span class="chip-icon">⚡</span> পারফরম্যান্স</div>
+  </div>
+  <div class="hero-stats">
+    <div><div class="hstat-num">১৫+</div><div class="hstat-label">মডিউল</div></div>
+    <div><div class="hstat-num">৬০+</div><div class="hstat-label">কোড উদাহরণ</div></div>
+    <div><div class="hstat-num">১৯৭৭</div><div class="hstat-label">সালে প্রতিষ্ঠিত</div></div>
+    <div><div class="hstat-num">#১</div><div class="hstat-label">এন্টারপ্রাইজ DB</div></div>
+  </div>
+</div>
+
+<div style="padding:2.5rem 3rem;">
+  <h3 class="sh">কোর্সের রূপরেখা</h3>
+  <div class="grid3">
+    <div class="card"><h4>🧱 মডিউল ১–৩</h4><p>Oracle পরিচিতি, আর্কিটেকচার, ইনস্টলেশন — মূল ভিত্তি গড়া।</p></div>
+    <div class="card"><h4>📝 মডিউল ৪–৭</h4><p>SQL মূল বিষয় — DDL, DML, SELECT, JOIN — প্রতিদিনের কাজের ভাষা।</p></div>
+    <div class="card"><h4>🔗 মডিউল ৮–১০</h4><p>উন্নত SQL — সাবকোয়েরি, ভিউ, ইন্ডেক্স, ট্রানজ্যাকশন।</p></div>
+    <div class="card"><h4>⚙️ মডিউল ১১–১৩</h4><p>PL/SQL — Procedure, Function, Trigger, Cursor দিয়ে জটিল লজিক।</p></div>
+    <div class="card"><h4>🛡️ মডিউল ১৪–১৫</h4><p>DBA দক্ষতা — ব্যাকআপ, রিকভারি, পারফরম্যান্স টিউনিং।</p></div>
+    <div class="card"><h4>🎯 কুইজ ও অনুশীলন</h4><p>প্রতিটি মডিউলে ইন্টারেক্টিভ কুইজ ও হাতে-কলমে অনুশীলন।</p></div>
+  </div>
+  <div class="callout cl-info"><div class="cl-ico">💡</div><div class="cl-body"><strong>কীভাবে পড়বেন?</strong>বাম দিকের মেনু থেকে যেকোনো মডিউলে যান। প্রতিটি পাঠ শেষে কুইজ দিন এবং কোড নিজে টাইপ করে অনুশীলন করুন।</div></div>
+</div>
+</div>
+
+<!-- ===== LESSON 1: ORACLE INTRO ===== -->
+<div id="lesson-1" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">01</div>
+  <div class="lesson-title-area">
+    <h2>Oracle Database পরিচিতি</h2>
+    <p>Oracle কী, কেন ব্যবহার হয়, এবং এর ইতিহাস</p>
+    <div class="lesson-tags"><span class="tag tag-g">Beginner</span><span class="tag tag-b">Theory</span></div>
+  </div>
+</div>
+
+<h3 class="sh">Oracle Database কী?</h3>
+<p class="body">Oracle Database হলো বিশ্বের সবচেয়ে শক্তিশালী ও জনপ্রিয় <strong style="color:#fff">Relational Database Management System (RDBMS)</strong>। এটি Oracle Corporation দ্বারা তৈরি এবং ১৯৭৭ সাল থেকে ব্যবহৃত হয়ে আসছে। ব্যাংক, হাসপাতাল, সরকারি প্রতিষ্ঠান, বড় কোম্পানি — সবাই Oracle ব্যবহার করে কারণ এটি অত্যন্ত নির্ভরযোগ্য, দ্রুত ও সুরক্ষিত।</p>
+
+<div class="hbox">
+  <p style="color:var(--muted);"><strong style="color:var(--gold);">সহজ উদাহরণ:</strong> একটি বড় ব্যাংকের কথা ভাবুন — প্রতিদিন কোটি কোটি লেনদেন হয়। একটিও ভুল হলে বিপদ। Oracle Database এই কাজটি নিখুঁতভাবে করে — কোনো ডেটা হারায় না, কোনো ভুল হয় না।</p>
+</div>
+
+<h3 class="sh">কোথায় ব্যবহার হয়?</h3>
+<div class="grid3">
+  <div class="card"><h4>🏦 ব্যাংকিং</h4><p>HSBC, CitiBank সহ বিশ্বের ৯৮% বড় ব্যাংক Oracle ব্যবহার করে।</p></div>
+  <div class="card"><h4>🏥 স্বাস্থ্যসেবা</h4><p>রোগীর রেকর্ড, ওষুধের ডেটা, হাসপাতাল ব্যবস্থাপনা।</p></div>
+  <div class="card"><h4>🛒 ই-কমার্স</h4><p>Amazon, eBay সহ বড় অনলাইন শপিং প্ল্যাটফর্ম।</p></div>
+  <div class="card"><h4>✈️ এয়ারলাইন</h4><p>ফ্লাইট বুকিং, টিকেট সিস্টেম, যাত্রী ডেটা।</p></div>
+  <div class="card"><h4>🏛️ সরকার</h4><p>জাতীয় পরিচয়পত্র, ভোটার তালিকা, কর ব্যবস্থাপনা।</p></div>
+  <div class="card"><h4>📱 টেলিকম</h4><p>গ্রামীণফোন, রবি সহ টেলিকম কোম্পানির বিলিং সিস্টেম।</p></div>
+</div>
+
+<h3 class="sh">Oracle বনাম অন্য ডেটাবেস</h3>
+<div class="twrap">
+<table>
+  <thead><tr><th>বৈশিষ্ট্য</th><th>Oracle</th><th>MySQL</th><th>SQL Server</th><th>PostgreSQL</th></tr></thead>
+  <tbody>
+    <tr><td><strong>মূল্য</strong></td><td>প্রিমিয়াম (XE ফ্রি)</td><td>ফ্রি/কম খরচ</td><td>Microsoft লাইসেন্স</td><td>ফ্রি (OSS)</td></tr>
+    <tr><td><strong>এন্টারপ্রাইজ</strong></td><td>সেরা ✅</td><td>মাঝামাঝি</td><td>ভালো</td><td>ভালো</td></tr>
+    <tr><td><strong>PL/SQL</strong></td><td>হ্যাঁ ✅</td><td>না</td><td>T-SQL</td><td>PL/pgSQL</td></tr>
+    <tr><td><strong>পারফরম্যান্স</strong></td><td>সর্বোচ্চ ✅</td><td>মাঝামাঝি</td><td>ভালো</td><td>ভালো</td></tr>
+    <tr><td><strong>RAC ক্লাস্টার</strong></td><td>হ্যাঁ ✅</td><td>সীমিত</td><td>হ্যাঁ</td><td>সীমিত</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 class="sh">Oracle-এর সংস্করণসমূহ</h3>
+<div class="grid2">
+  <div class="card"><h4>🆓 Oracle XE (Express Edition)</h4><p>সম্পূর্ণ বিনামূল্যে। শেখার ও ছোট প্রজেক্টের জন্য আদর্শ। সীমাবদ্ধতা: ২GB ডেটা, ১ CPU।</p><span class="tag tag-g" style="margin-top:.5rem">ফ্রি</span></div>
+  <div class="card"><h4>🏢 Oracle Standard Edition</h4><p>ছোট-মাঝারি ব্যবসার জন্য। মৌলিক এন্টারপ্রাইজ ফিচার সহ।</p><span class="tag tag-b" style="margin-top:.5rem">পেইড</span></div>
+  <div class="card"><h4>🏭 Oracle Enterprise Edition</h4><p>পূর্ণ ফিচার সহ। বড় ব্যাংক ও কর্পোরেশনের জন্য। RAC, Partitioning, Advanced Security।</p><span class="tag tag-r" style="margin-top:.5rem">প্রিমিয়াম</span></div>
+  <div class="card"><h4>☁️ Oracle Cloud (OCI)</h4><p>ক্লাউডে Oracle — AWS-এর মতো। Autonomous Database সহ।</p><span class="tag tag-p" style="margin-top:.5rem">ক্লাউড</span></div>
+</div>
+
+<div class="quiz-box">
+  <div class="quiz-q">🧠 কুইজ: Oracle Database কোন ধরনের সিস্টেম?</div>
+  <div class="quiz-opts">
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ক</div> Object-Oriented Database</div>
+    <div class="quiz-opt" onclick="checkQ(this,'correct')"><div class="quiz-opt-mark">খ</div> Relational Database Management System (RDBMS)</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">গ</div> NoSQL Database</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ঘ</div> Graph Database</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== LESSON 2: INSTALLATION ===== -->
+<div id="lesson-2" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">02</div>
+  <div class="lesson-title-area">
+    <h2>ইনস্টলেশন ও সেটআপ</h2>
+    <p>Oracle XE ও SQL Developer ইনস্টল করা এবং প্রথম সংযোগ</p>
+    <div class="lesson-tags"><span class="tag tag-g">Beginner</span><span class="tag tag-r">Setup</span></div>
+  </div>
+</div>
+
+<h3 class="sh">কী কী লাগবে?</h3>
+<div class="grid3">
+  <div class="card"><h4>💻 Oracle XE 21c</h4><p>ফ্রি ডেটাবেস সার্ভার। oracle.com থেকে ডাউনলোড।</p></div>
+  <div class="card"><h4>🖥️ SQL Developer</h4><p>ফ্রি GUI টুল। SQL লেখা ও রান করার জন্য।</p></div>
+  <div class="card"><h4>🐳 Docker (বিকল্প)</h4><p>ইনস্টল ঝামেলা এড়াতে Docker ব্যবহার করুন।</p></div>
+</div>
+
+<h3 class="sh">Docker দিয়ে সহজ সেটআপ (সবচেয়ে সহজ)</h3>
+<div class="callout cl-ok"><div class="cl-ico">✅</div><div class="cl-body"><strong>সুপারিশ</strong>শিক্ষার্থীদের জন্য Docker পদ্ধতি সবচেয়ে সহজ। কোনো জটিল ইনস্টলেশন নেই।</div></div>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Docker — Oracle XE চালানো</div><div class="cb-lang">Shell</div></div>
+  <pre><span class="cm"># ১. Oracle XE Docker image ডাউনলোড করুন</span>
+docker pull container-registry.oracle.com/database/express:21.3.0-xe
+
+<span class="cm"># ২. Container চালু করুন</span>
+docker run -d \
+  --name oracle-xe \
+  -p 1521:1521 \
+  -p 5500:5500 \
+  -e ORACLE_PWD=<span class="str">MyPassword123</span> \
+  container-registry.oracle.com/database/express:21.3.0-xe
+
+<span class="cm"># ৩. Container-এ ঢোকা</span>
+docker exec -it oracle-xe bash
+
+<span class="cm"># ৪. SQL*Plus দিয়ে সংযোগ</span>
+sqlplus sys/MyPassword123@//localhost:1521/XE <span class="kw">as</span> sysdba</pre>
+</div>
+
+<h3 class="sh">Windows-এ সরাসরি ইনস্টলেশন</h3>
+<div class="steps">
+  <div class="step"><div class="step-n">১</div><div class="step-body"><h4>oracle.com/database/technologies/xe-downloads.html</h4><p>এই লিংকে গিয়ে Oracle Database 21c Express Edition (Windows) ডাউনলোড করুন। ফাইলটি প্রায় ১.৫ GB।</p></div></div>
+  <div class="step"><div class="step-n">২</div><div class="step-body"><h4>OracleXE213_Win64.zip আনজিপ করুন</h4><p>আনজিপ করার পর setup.exe ফাইলটি চালু করুন।</p></div></div>
+  <div class="step"><div class="step-n">৩</div><div class="step-body"><h4>ইনস্টলেশন উইজার্ড</h4><p>Next → Next → পাসওয়ার্ড দিন (মনে রাখুন!) → Install। ইনস্টল সময় ৫-১০ মিনিট।</p></div></div>
+  <div class="step"><div class="step-n">৪</div><div class="step-body"><h4>SQL Developer ইনস্টল</h4><p>oracle.com থেকে SQL Developer ডাউনলোড করুন (Java সহ ভার্সন)। আনজিপ করে sqldeveloper.exe চালু করুন।</p></div></div>
+  <div class="step"><div class="step-n">৫</div><div class="step-body"><h4>প্রথম সংযোগ তৈরি</h4><p>SQL Developer → New Connection → Name: MyOracle, User: system, Password: (আপনার পাসওয়ার্ড), Hostname: localhost, Port: 1521, SID: xe → Test → Connect।</p></div></div>
+</div>
+
+<h3 class="sh">SQL*Plus দিয়ে প্রথম কমান্ড</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">SQL*Plus — প্রথম কমান্ড</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- SQL*Plus চালু করুন এবং সংযোগ করুন</span>
+sqlplus system/password@localhost:1521/xe
+
+<span class="cm">-- Oracle version দেখুন</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> v$version;
+
+<span class="cm">-- বর্তমান ব্যবহারকারী দেখুন</span>
+<span class="kw">SELECT</span> USER <span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- বর্তমান তারিখ দেখুন</span>
+<span class="kw">SELECT</span> SYSDATE <span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- সব টেবিল দেখুন</span>
+<span class="kw">SELECT</span> table_name <span class="kw">FROM</span> user_tables;
+
+<span class="cm">-- SQL*Plus থেকে বের হওয়া</span>
+EXIT;</pre>
+</div>
+
+<div class="callout cl-warn"><div class="cl-ico">⚠️</div><div class="cl-body"><strong>গুরুত্বপূর্ণ</strong>SYS এবং SYSTEM হলো Oracle-এর ডিফল্ট সুপার ইউজার। ইনস্টলেশনের সময় যে পাসওয়ার্ড দিয়েছেন সেটি মনে রাখুন। ভুলে গেলে পুনরায় ইনস্টল করতে হতে পারে।</div></div>
+
+<h3 class="sh">নতুন ব্যবহারকারী তৈরি (ভালো অনুশীলন)</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">নতুন User ও Schema তৈরি</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- SYSDBA হিসেবে লগইন করে নতুন user তৈরি</span>
+<span class="kw">CREATE USER</span> student <span class="kw">IDENTIFIED BY</span> <span class="str">student123</span>;
+
+<span class="cm">-- প্রয়োজনীয় অনুমতি দিন</span>
+<span class="kw">GRANT</span> CONNECT, RESOURCE, DBA <span class="kw">TO</span> student;
+<span class="kw">GRANT</span> CREATE SESSION <span class="kw">TO</span> student;
+<span class="kw">GRANT</span> UNLIMITED TABLESPACE <span class="kw">TO</span> student;
+
+<span class="cm">-- এখন student user দিয়ে লগইন করুন</span>
+<span class="cm">-- SQL Developer: user=student, password=student123</span></pre>
+</div>
+</div>
+
+<!-- ===== LESSON 3: ARCHITECTURE ===== -->
+<div id="lesson-3" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">03</div>
+  <div class="lesson-title-area">
+    <h2>Oracle আর্কিটেকচার</h2>
+    <p>Oracle-এর ভেতরের কাঠামো — Instance, Database, Memory, Process</p>
+    <div class="lesson-tags"><span class="tag tag-y">Intermediate</span><span class="tag tag-b">Architecture</span></div>
+  </div>
+</div>
+
+<p class="body">Oracle Database বোঝার জন্য এর আর্কিটেকচার জানা অত্যন্ত জরুরি। এটি দুটি প্রধান অংশে বিভক্ত: <strong style="color:var(--gold)">Oracle Instance</strong> (মেমোরি + প্রক্রিয়া) এবং <strong style="color:var(--gold)">Oracle Database</strong> (ডিস্কের ফাইল)।</p>
+
+<div class="arch-svg">
+<svg viewBox="0 0 700 400" width="100%">
+  <defs>
+    <linearGradient id="og1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c74634;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#e05a40;stop-opacity:0.6"/>
+    </linearGradient>
+    <linearGradient id="og2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a22;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#14141a;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="700" height="400" fill="#0c0c0e" rx="12"/>
+  <!-- Instance box -->
+  <rect x="20" y="20" width="400" height="240" rx="10" fill="none" stroke="#c74634" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="30" y="38" fill="#c74634" font-size="11" font-family="JetBrains Mono">ORACLE INSTANCE</text>
+  <!-- SGA box -->
+  <rect x="35" y="48" width="260" height="195" rx="8" fill="rgba(199,70,52,0.07)" stroke="#c74634" stroke-width="1" opacity=".7"/>
+  <text x="45" y="66" fill="#f0a500" font-size="10" font-family="JetBrains Mono">SGA (System Global Area)</text>
+  <!-- SGA components -->
+  <rect x="45" y="74" width="110" height="45" rx="6" fill="rgba(240,165,0,0.12)" stroke="#f0a500" stroke-width="1"/>
+  <text x="100" y="93" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Shared Pool</text>
+  <text x="100" y="108" fill="#7a7a90" font-size="8" text-anchor="middle">Library/Dict Cache</text>
+  <rect x="170" y="74" width="110" height="45" rx="6" fill="rgba(41,182,246,0.1)" stroke="#29b6f6" stroke-width="1"/>
+  <text x="225" y="93" fill="#29b6f6" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Buffer Cache</text>
+  <text x="225" y="108" fill="#7a7a90" font-size="8" text-anchor="middle">Data Block Buffer</text>
+  <rect x="45" y="130" width="110" height="40" rx="6" fill="rgba(102,187,106,0.1)" stroke="#66bb6a" stroke-width="1"/>
+  <text x="100" y="153" fill="#66bb6a" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Redo Log Buffer</text>
+  <rect x="170" y="130" width="110" height="40" rx="6" fill="rgba(171,71,188,0.1)" stroke="#ab47bc" stroke-width="1"/>
+  <text x="225" y="153" fill="#ab47bc" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Large Pool</text>
+  <!-- PGA -->
+  <rect x="310" y="74" width="95" height="165" rx="8" fill="rgba(41,182,246,0.06)" stroke="#29b6f6" stroke-width="1" opacity=".7"/>
+  <text x="357" y="92" fill="#29b6f6" font-size="9" text-anchor="middle" font-family="JetBrains Mono">PGA</text>
+  <text x="357" y="107" fill="#7a7a90" font-size="8" text-anchor="middle">Process Global</text>
+  <text x="357" y="120" fill="#7a7a90" font-size="8" text-anchor="middle">Area</text>
+  <!-- Background Processes -->
+  <text x="45" y="197" fill="#f0a500" font-size="9" font-family="JetBrains Mono">Background Processes:</text>
+  <rect x="45" y="204" width="50" height="22" rx="4" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1"/>
+  <text x="70" y="218" fill="#e07060" font-size="8" text-anchor="middle">DBWn</text>
+  <rect x="100" y="204" width="50" height="22" rx="4" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1"/>
+  <text x="125" y="218" fill="#e07060" font-size="8" text-anchor="middle">LGWR</text>
+  <rect x="155" y="204" width="50" height="22" rx="4" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1"/>
+  <text x="180" y="218" fill="#e07060" font-size="8" text-anchor="middle">CKPT</text>
+  <rect x="210" y="204" width="50" height="22" rx="4" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1"/>
+  <text x="235" y="218" fill="#e07060" font-size="8" text-anchor="middle">SMON</text>
+  <rect x="265" y="204" width="50" height="22" rx="4" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1"/>
+  <text x="290" y="218" fill="#e07060" font-size="8" text-anchor="middle">PMON</text>
+  <!-- Database box -->
+  <rect x="440" y="20" width="240" height="240" rx="10" fill="none" stroke="#f0a500" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="450" y="38" fill="#f0a500" font-size="11" font-family="JetBrains Mono">ORACLE DATABASE</text>
+  <!-- Data files -->
+  <rect x="455" y="48" width="100" height="60" rx="6" fill="rgba(240,165,0,0.08)" stroke="#f0a500" stroke-width="1"/>
+  <text x="505" y="68" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Data Files</text>
+  <text x="505" y="82" fill="#7a7a90" font-size="7.5" text-anchor="middle">(.dbf)</text>
+  <text x="505" y="96" fill="#7a7a90" font-size="7.5" text-anchor="middle">Tables, Indexes</text>
+  <!-- Control files -->
+  <rect x="565" y="48" width="100" height="60" rx="6" fill="rgba(41,182,246,0.08)" stroke="#29b6f6" stroke-width="1"/>
+  <text x="615" y="68" fill="#29b6f6" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Control Files</text>
+  <text x="615" y="82" fill="#7a7a90" font-size="7.5" text-anchor="middle">(.ctl)</text>
+  <text x="615" y="96" fill="#7a7a90" font-size="7.5" text-anchor="middle">DB Structure</text>
+  <!-- Redo logs -->
+  <rect x="455" y="120" width="100" height="60" rx="6" fill="rgba(102,187,106,0.08)" stroke="#66bb6a" stroke-width="1"/>
+  <text x="505" y="140" fill="#66bb6a" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Redo Log Files</text>
+  <text x="505" y="155" fill="#7a7a90" font-size="7.5" text-anchor="middle">(.log)</text>
+  <text x="505" y="168" fill="#7a7a90" font-size="7.5" text-anchor="middle">Transaction Log</text>
+  <!-- Archive logs -->
+  <rect x="565" y="120" width="100" height="60" rx="6" fill="rgba(171,71,188,0.08)" stroke="#ab47bc" stroke-width="1"/>
+  <text x="615" y="140" fill="#ab47bc" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Archive Logs</text>
+  <text x="615" y="155" fill="#7a7a90" font-size="7.5" text-anchor="middle">Backup</text>
+  <text x="615" y="168" fill="#7a7a90" font-size="7.5" text-anchor="middle">Recovery</text>
+  <!-- Parameter file -->
+  <rect x="455" y="195" width="210" height="50" rx="6" fill="rgba(199,70,52,0.07)" stroke="#c74634" stroke-width="1"/>
+  <text x="560" y="218" fill="#e07060" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Parameter File (SPFILE/PFILE)</text>
+  <text x="560" y="233" fill="#7a7a90" font-size="7.5" text-anchor="middle">DB Configuration Settings</text>
+  <!-- Arrows -->
+  <line x1="420" y1="130" x2="440" y2="130" stroke="#c74634" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- User process -->
+  <rect x="30" y="290" width="120" height="50" rx="8" fill="rgba(41,182,246,0.08)" stroke="#29b6f6" stroke-width="1"/>
+  <text x="90" y="313" fill="#29b6f6" font-size="9" text-anchor="middle" font-family="JetBrains Mono">User Process</text>
+  <text x="90" y="328" fill="#7a7a90" font-size="8" text-anchor="middle">SQL Developer</text>
+  <!-- Listener -->
+  <rect x="200" y="290" width="120" height="50" rx="8" fill="rgba(240,165,0,0.08)" stroke="#f0a500" stroke-width="1"/>
+  <text x="260" y="313" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Listener</text>
+  <text x="260" y="328" fill="#7a7a90" font-size="8" text-anchor="middle">Port: 1521</text>
+  <!-- Server process -->
+  <rect x="370" y="290" width="120" height="50" rx="8" fill="rgba(102,187,106,0.08)" stroke="#66bb6a" stroke-width="1"/>
+  <text x="430" y="313" fill="#66bb6a" font-size="9" text-anchor="middle" font-family="JetBrains Mono">Server Process</text>
+  <text x="430" y="328" fill="#7a7a90" font-size="8" text-anchor="middle">Dedicated/Shared</text>
+  <!-- Connection arrows -->
+  <line x1="150" y1="315" x2="200" y2="315" stroke="#7a7a90" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="320" y1="315" x2="370" y2="315" stroke="#7a7a90" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="430" y1="290" x2="250" y2="260" stroke="#7a7a90" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- Labels -->
+  <text x="350" y="390" fill="#546e7a" font-size="9" text-anchor="middle">Oracle Database Architecture — সম্পূর্ণ কাঠামো</text>
+</svg>
+</div>
+
+<h3 class="sh">SGA-এর উপাদানগুলো</h3>
+<div class="twrap">
+<table>
+  <thead><tr><th>উপাদান</th><th>কাজ</th><th>গুরুত্ব</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Shared Pool</strong></td><td>SQL কোড ও ডেটা ডিকশনারি ক্যাশ করে</td><td>পুনরায় পার্সিং এড়ানো</td></tr>
+    <tr><td><strong>Buffer Cache</strong></td><td>ডিস্ক থেকে পড়া ডেটা ব্লক মেমোরিতে রাখে</td><td>I/O কমানো</td></tr>
+    <tr><td><strong>Redo Log Buffer</strong></td><td>পরিবর্তনের লগ অস্থায়ীভাবে রাখে</td><td>রিকভারি নিশ্চিত করা</td></tr>
+    <tr><td><strong>Large Pool</strong></td><td>বড় মেমোরি অপারেশনের জন্য</td><td>RMAN ব্যাকআপ</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 class="sh">Background Processes</h3>
+<div class="grid3">
+  <div class="card"><h4>📝 DBWn (Database Writer)</h4><p>Buffer Cache থেকে পরিবর্তিত ডেটা ডিস্কে লেখে।</p></div>
+  <div class="card"><h4>✏️ LGWR (Log Writer)</h4><p>Redo Log Buffer থেকে Redo Log ফাইলে লেখে।</p></div>
+  <div class="card"><h4>🔄 CKPT (Checkpoint)</h4><p>Checkpoint তৈরি করে — ডেটা সামঞ্জস্য নিশ্চিত করে।</p></div>
+  <div class="card"><h4>🔧 SMON (System Monitor)</h4><p>Instance ক্র্যাশ রিকভারি ও তৈরি স্থান পরিষ্কার।</p></div>
+  <div class="card"><h4>👤 PMON (Process Monitor)</h4><p>ব্যর্থ ব্যবহারকারী প্রক্রিয়া পরিষ্কার করে।</p></div>
+  <div class="card"><h4>🔒 ARCH (Archiver)</h4><p>পুরোনো Redo Log ফাইল আর্কাইভ করে।</p></div>
+</div>
+</div>
+
+<!-- ===== LESSON 4: DDL ===== -->
+<div id="lesson-4" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">04</div>
+  <div class="lesson-title-area">
+    <h2>DDL — ডেটা সংজ্ঞায়ন ভাষা</h2>
+    <p>টেবিল, সীমাবদ্ধতা, সিকোয়েন্স তৈরি ও পরিবর্তন</p>
+    <div class="lesson-tags"><span class="tag tag-g">Beginner</span><span class="tag tag-r">SQL</span></div>
+  </div>
+</div>
+
+<p class="body">DDL (Data Definition Language) হলো সেই SQL কমান্ড যা ডেটাবেসের কাঠামো তৈরি ও পরিবর্তন করে। মূল DDL কমান্ড: <strong style="color:var(--oracle)">CREATE, ALTER, DROP, TRUNCATE, RENAME</strong>।</p>
+
+<h3 class="sh">ডেটা টাইপসমূহ</h3>
+<div class="twrap">
+<table>
+  <thead><tr><th>ডেটা টাইপ</th><th>বিবরণ</th><th>উদাহরণ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>VARCHAR2(n)</strong></td><td>পরিবর্তনশীল দৈর্ঘ্যের টেক্সট (সর্বোচ্চ ৪০০০)</td><td>নাম, ঠিকানা</td></tr>
+    <tr><td><strong>CHAR(n)</strong></td><td>নির্দিষ্ট দৈর্ঘ্যের টেক্সট</td><td>লিঙ্গ ('M','F')</td></tr>
+    <tr><td><strong>NUMBER(p,s)</strong></td><td>সংখ্যা (p=মোট সংখ্যা, s=দশমিক)</td><td>বেতন, বয়স</td></tr>
+    <tr><td><strong>DATE</strong></td><td>তারিখ ও সময়</td><td>জন্মতারিখ</td></tr>
+    <tr><td><strong>TIMESTAMP</strong></td><td>সময়সহ সূক্ষ্ম তারিখ</td><td>লেনদেনের সময়</td></tr>
+    <tr><td><strong>CLOB</strong></td><td>বড় টেক্সট (৪GB পর্যন্ত)</td><td>নিবন্ধ, মন্তব্য</td></tr>
+    <tr><td><strong>BLOB</strong></td><td>বাইনারি ডেটা (ছবি, ফাইল)</td><td>ফটো, পিডিএফ</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 class="sh">টেবিল তৈরি — CREATE TABLE</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">কর্মচারী ডেটাবেস তৈরি</div><div class="cb-lang">SQL — DDL</div></div>
+  <pre><span class="cm">-- বিভাগ টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tb2">department</span> (
+    dept_id     <span class="fn">NUMBER</span>(5)       <span class="kw">PRIMARY KEY</span>,
+    dept_name   <span class="fn">VARCHAR2</span>(100)   <span class="kw">NOT NULL</span>,
+    location    <span class="fn">VARCHAR2</span>(150),
+    budget      <span class="fn">NUMBER</span>(12,2)    <span class="kw">DEFAULT</span> <span class="num">0</span>
+);
+
+<span class="cm">-- কর্মচারী টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tb2">employee</span> (
+    emp_id      <span class="fn">NUMBER</span>(6)       <span class="kw">PRIMARY KEY</span>,
+    emp_name    <span class="fn">VARCHAR2</span>(100)   <span class="kw">NOT NULL</span>,
+    email       <span class="fn">VARCHAR2</span>(200)   <span class="kw">UNIQUE</span>,
+    phone       <span class="fn">VARCHAR2</span>(20),
+    hire_date   <span class="fn">DATE</span>            <span class="kw">DEFAULT</span> SYSDATE,
+    salary      <span class="fn">NUMBER</span>(10,2)    <span class="kw">CHECK</span> (salary > <span class="num">0</span>),
+    dept_id     <span class="fn">NUMBER</span>(5)       <span class="kw">REFERENCES</span> <span class="tb2">department</span>(dept_id),
+    gender      <span class="fn">CHAR</span>(1)         <span class="kw">CHECK</span> (gender <span class="kw">IN</span> (<span class="str">'M'</span>, <span class="str">'F'</span>))
+);
+
+<span class="cm">-- পণ্য টেবিল</span>
+<span class="kw">CREATE TABLE</span> <span class="tb2">product</span> (
+    product_id   <span class="fn">NUMBER</span>(8)      <span class="kw">PRIMARY KEY</span>,
+    product_name <span class="fn">VARCHAR2</span>(200)  <span class="kw">NOT NULL</span>,
+    category     <span class="fn">VARCHAR2</span>(50),
+    price        <span class="fn">NUMBER</span>(10,2)   <span class="kw">NOT NULL</span>,
+    stock_qty    <span class="fn">NUMBER</span>(8)      <span class="kw">DEFAULT</span> <span class="num">0</span>,
+    created_at   <span class="fn">TIMESTAMP</span>     <span class="kw">DEFAULT</span> SYSTIMESTAMP
+);</pre>
+</div>
+
+<h3 class="sh">সীমাবদ্ধতা (Constraints)</h3>
+<div class="grid2">
+  <div class="card"><h4>🔑 PRIMARY KEY</h4><p>প্রতিটি সারিকে অনন্যভাবে চিহ্নিত করে। NOT NULL + UNIQUE একসাথে।</p></div>
+  <div class="card"><h4>🔗 FOREIGN KEY</h4><p>অন্য টেবিলের সাথে সম্পর্ক তৈরি করে। রেফারেন্সিয়াল ইন্টেগ্রিটি নিশ্চিত করে।</p></div>
+  <div class="card"><h4>🚫 NOT NULL</h4><p>কলামে NULL মান রাখা যাবে না। বাধ্যতামূলক ক্ষেত্রের জন্য।</p></div>
+  <div class="card"><h4>✅ CHECK</h4><p>মানের বৈধতা পরীক্ষা করে। যেমন: salary > 0।</p></div>
+  <div class="card"><h4>🔄 UNIQUE</h4><p>সব মান আলাদা হতে হবে। NULL মান একাধিক হতে পারে।</p></div>
+  <div class="card"><h4>📌 DEFAULT</h4><p>কোনো মান না দিলে ডিফল্ট মান ব্যবহার হবে।</p></div>
+</div>
+
+<h3 class="sh">ALTER TABLE — টেবিল পরিবর্তন</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">ALTER TABLE উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- নতুন কলাম যোগ করা</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span>
+<span class="kw">ADD</span> (address <span class="fn">VARCHAR2</span>(<span class="num">300</span>), bonus <span class="fn">NUMBER</span>(<span class="num">8</span>,<span class="num">2</span>));
+
+<span class="cm">-- কলামের ডেটা টাইপ পরিবর্তন</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span>
+<span class="kw">MODIFY</span> (phone <span class="fn">VARCHAR2</span>(<span class="num">30</span>));
+
+<span class="cm">-- কলাম মুছে ফেলা</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span>
+<span class="kw">DROP COLUMN</span> address;
+
+<span class="cm">-- কলামের নাম পরিবর্তন</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span>
+<span class="kw">RENAME COLUMN</span> emp_name <span class="kw">TO</span> full_name;
+
+<span class="cm">-- নতুন Constraint যোগ</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span>
+<span class="kw">ADD CONSTRAINT</span> ck_salary <span class="kw">CHECK</span> (salary <span class="kw">BETWEEN</span> <span class="num">5000</span> <span class="kw">AND</span> <span class="num">500000</span>);</pre>
+</div>
+
+<h3 class="sh">SEQUENCE — অটো নম্বর</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">SEQUENCE তৈরি ও ব্যবহার</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- Sequence তৈরি (অটো ID-এর জন্য)</span>
+<span class="kw">CREATE SEQUENCE</span> emp_seq
+    START WITH <span class="num">1000</span>
+    INCREMENT BY <span class="num">1</span>
+    MAXVALUE <span class="num">999999</span>
+    NOCYCLE
+    CACHE <span class="num">20</span>;
+
+<span class="cm">-- Sequence ব্যবহার</span>
+<span class="kw">INSERT INTO</span> <span class="tb2">employee</span> (emp_id, emp_name, salary)
+<span class="kw">VALUES</span> (emp_seq.<span class="op">NEXTVAL</span>, <span class="str">'আহমেদ রাহেলা'</span>, <span class="num">45000</span>);
+
+<span class="cm">-- বর্তমান মান দেখা</span>
+<span class="kw">SELECT</span> emp_seq.<span class="op">CURRVAL</span> <span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- Oracle 12c+: IDENTITY কলাম (সহজ পদ্ধতি)</span>
+<span class="kw">CREATE TABLE</span> <span class="tb2">orders</span> (
+    order_id  <span class="fn">NUMBER</span> <span class="kw">GENERATED ALWAYS AS IDENTITY</span>,
+    item      <span class="fn">VARCHAR2</span>(<span class="num">100</span>)
+);</pre>
+</div>
+
+<div class="quiz-box">
+  <div class="quiz-q">🧠 কুইজ: কোন Constraint টেবিলের দুটি কলামের মধ্যে সম্পর্ক তৈরি করে?</div>
+  <div class="quiz-opts">
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ক</div> PRIMARY KEY</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">খ</div> UNIQUE</div>
+    <div class="quiz-opt" onclick="checkQ(this,'correct')"><div class="quiz-opt-mark">গ</div> FOREIGN KEY</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ঘ</div> CHECK</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== LESSON 5: DML ===== -->
+<div id="lesson-5" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">05</div>
+  <div class="lesson-title-area">
+    <h2>DML — ডেটা ম্যানিপুলেশন</h2>
+    <p>INSERT, UPDATE, DELETE, MERGE দিয়ে ডেটা পরিবর্তন</p>
+    <div class="lesson-tags"><span class="tag tag-g">Beginner</span><span class="tag tag-r">SQL</span></div>
+  </div>
+</div>
+
+<p class="body">DML (Data Manipulation Language) হলো সেই কমান্ড যা ডেটা যোগ, পরিবর্তন ও মুছে ফেলে। মূল DML কমান্ড: <strong style="color:var(--oracle)">INSERT, UPDATE, DELETE, MERGE</strong>।</p>
+
+<h3 class="sh">INSERT — ডেটা যোগ করা</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">INSERT উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- একটি সারি যোগ করা</span>
+<span class="kw">INSERT INTO</span> <span class="tb2">department</span> (dept_id, dept_name, location)
+<span class="kw">VALUES</span> (<span class="num">10</span>, <span class="str">'আইটি বিভাগ'</span>, <span class="str">'ঢাকা'</span>);
+
+<span class="kw">INSERT INTO</span> <span class="tb2">department</span> <span class="kw">VALUES</span> (<span class="num">20</span>, <span class="str">'হিসাব বিভাগ'</span>, <span class="str">'চট্টগ্রাম'</span>, <span class="num">500000</span>);
+
+<span class="cm">-- একাধিক সারি একসাথে (Oracle 23c)</span>
+<span class="kw">INSERT ALL</span>
+    <span class="kw">INTO</span> <span class="tb2">employee</span> (emp_id, emp_name, salary, dept_id)
+        <span class="kw">VALUES</span> (<span class="num">1001</span>, <span class="str">'করিম মোহাম্মদ'</span>, <span class="num">55000</span>, <span class="num">10</span>)
+    <span class="kw">INTO</span> <span class="tb2">employee</span> (emp_id, emp_name, salary, dept_id)
+        <span class="kw">VALUES</span> (<span class="num">1002</span>, <span class="str">'রহিমা বেগম'</span>, <span class="num">48000</span>, <span class="num">20</span>)
+    <span class="kw">INTO</span> <span class="tb2">employee</span> (emp_id, emp_name, salary, dept_id)
+        <span class="kw">VALUES</span> (<span class="num">1003</span>, <span class="str">'সালাম আক্তার'</span>, <span class="num">62000</span>, <span class="num">10</span>)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- অন্য টেবিল থেকে ডেটা কপি করা</span>
+<span class="kw">INSERT INTO</span> <span class="tb2">employee_archive</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span>
+<span class="kw">WHERE</span> hire_date < <span class="fn">TO_DATE</span>(<span class="str">'01-01-2020'</span>, <span class="str">'DD-MM-YYYY'</span>);</pre>
+</div>
+
+<h3 class="sh">UPDATE — ডেটা পরিবর্তন করা</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">UPDATE উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- একটি নির্দিষ্ট কর্মচারীর বেতন বাড়ানো</span>
+<span class="kw">UPDATE</span> <span class="tb2">employee</span>
+<span class="kw">SET</span> salary = <span class="num">60000</span>
+<span class="kw">WHERE</span> emp_id = <span class="num">1001</span>;
+
+<span class="cm">-- শতাংশ হিসেবে বেতন বৃদ্ধি</span>
+<span class="kw">UPDATE</span> <span class="tb2">employee</span>
+<span class="kw">SET</span> salary = salary * <span class="num">1.10</span>    <span class="cm">-- ১০% বৃদ্ধি</span>
+<span class="kw">WHERE</span> dept_id = <span class="num">10</span>;
+
+<span class="cm">-- একসাথে একাধিক কলাম পরিবর্তন</span>
+<span class="kw">UPDATE</span> <span class="tb2">employee</span>
+<span class="kw">SET</span>
+    salary  = salary + <span class="num">5000</span>,
+    bonus   = salary * <span class="num">0.05</span>,
+    email   = <span class="fn">LOWER</span>(emp_name) || <span class="str">'@company.com'</span>
+<span class="kw">WHERE</span> emp_id = <span class="num">1002</span>;
+
+<span class="cm">-- সাবকোয়েরি ব্যবহার করে UPDATE</span>
+<span class="kw">UPDATE</span> <span class="tb2">employee</span> e
+<span class="kw">SET</span> e.salary = (
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(salary) * <span class="num">1.2</span>
+    <span class="kw">FROM</span>   <span class="tb2">employee</span>
+    <span class="kw">WHERE</span>  dept_id = e.dept_id
+)
+<span class="kw">WHERE</span> salary < <span class="num">30000</span>;</pre>
+</div>
+
+<h3 class="sh">DELETE — ডেটা মুছে ফেলা</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">DELETE উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- নির্দিষ্ট সারি মুছে ফেলা</span>
+<span class="kw">DELETE FROM</span> <span class="tb2">employee</span>
+<span class="kw">WHERE</span> emp_id = <span class="num">1003</span>;
+
+<span class="cm">-- শর্ত অনুযায়ী মুছে ফেলা</span>
+<span class="kw">DELETE FROM</span> <span class="tb2">employee</span>
+<span class="kw">WHERE</span> hire_date < <span class="fn">ADD_MONTHS</span>(SYSDATE, <span class="op">-</span><span class="num">120</span>)  <span class="cm">-- ১০ বছরের বেশি আগে যোগদান</span>
+  <span class="kw">AND</span> salary < <span class="num">20000</span>;
+
+<span class="cm">-- ⚠️ সতর্কতা: WHERE ছাড়া সব ডেটা মুছে যাবে!</span>
+<span class="cm">-- DELETE FROM employee;  -- সব ডেটা মুছে ফেলবে, ROLLBACK করা যাবে</span>
+<span class="cm">-- TRUNCATE TABLE employee; -- দ্রুত কিন্তু ROLLBACK করা যাবে না</span></pre>
+</div>
+
+<h3 class="sh">MERGE — INSERT + UPDATE একসাথে (Upsert)</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">MERGE উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- target টেবিলে source টেবিল থেকে ডেটা মার্জ করা</span>
+<span class="kw">MERGE INTO</span> <span class="tb2">employee</span> target
+<span class="kw">USING</span> <span class="tb2">new_employee_data</span> source
+<span class="kw">ON</span> (target.emp_id = source.emp_id)
+<span class="kw">WHEN MATCHED THEN</span>
+    <span class="kw">UPDATE SET</span>
+        target.salary   = source.salary,
+        target.dept_id  = source.dept_id
+<span class="kw">WHEN NOT MATCHED THEN</span>
+    <span class="kw">INSERT</span> (emp_id, emp_name, salary, dept_id)
+    <span class="kw">VALUES</span> (source.emp_id, source.emp_name, source.salary, source.dept_id);
+<span class="cm">-- মিল থাকলে UPDATE, না থাকলে INSERT — দুটো কাজ একসাথে!</span></pre>
+</div>
+
+<div class="callout cl-warn"><div class="cl-ico">⚠️</div><div class="cl-body"><strong>DELETE vs TRUNCATE</strong>DELETE রোলব্যাক করা যায় এবং WHERE ক্লজ ব্যবহার করা যায়। TRUNCATE অনেক দ্রুত কিন্তু রোলব্যাক করা যায় না এবং সব ডেটা মুছে ফেলে।</div></div>
+</div>
+
+<!-- ===== LESSON 6: SELECT & FUNCTIONS ===== -->
+<div id="lesson-6" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">06</div>
+  <div class="lesson-title-area">
+    <h2>SELECT ও Oracle ফাংশন</h2>
+    <p>ডেটা পড়া, ফিল্টার করা এবং বিল্ট-ইন ফাংশন ব্যবহার</p>
+    <div class="lesson-tags"><span class="tag tag-y">Important</span><span class="tag tag-r">SQL</span></div>
+  </div>
+</div>
+
+<h3 class="sh">SELECT-এর সম্পূর্ণ সিনট্যাক্স</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">SELECT সম্পূর্ণ সিনট্যাক্স</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="kw">SELECT</span>   column1, column2, expression    <span class="cm">-- কী দেখাবে</span>
+<span class="kw">FROM</span>     table_name                       <span class="cm">-- কোথা থেকে</span>
+<span class="kw">WHERE</span>    condition                        <span class="cm">-- কোন শর্তে</span>
+<span class="kw">GROUP BY</span> column1                         <span class="cm">-- কীভাবে গ্রুপ করবে</span>
+<span class="kw">HAVING</span>   group_condition                 <span class="cm">-- গ্রুপের শর্ত</span>
+<span class="kw">ORDER BY</span> column1 <span class="kw">ASC</span>/<span class="kw">DESC</span>              <span class="cm">-- কীভাবে সাজাবে</span>
+<span class="kw">FETCH FIRST</span> <span class="num">10</span> <span class="kw">ROWS ONLY</span>;              <span class="cm">-- কয়টি সারি (Oracle 12c+)</span>
+
+<span class="cm">-- বাস্তব উদাহরণ</span>
+<span class="kw">SELECT</span>
+    emp_id,
+    emp_name,
+    salary,
+    salary * <span class="num">0.1</span>  <span class="kw">AS</span> bonus,
+    <span class="fn">ROUND</span>(salary / <span class="num">12</span>, <span class="num">2</span>) <span class="kw">AS</span> monthly_salary
+<span class="kw">FROM</span>   <span class="tb2">employee</span>
+<span class="kw">WHERE</span>  dept_id = <span class="num">10</span>
+  <span class="kw">AND</span>  salary > <span class="num">30000</span>
+<span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+<span class="kw">FETCH FIRST</span> <span class="num">5</span> <span class="kw">ROWS ONLY</span>;</pre>
+</div>
+
+<h3 class="sh">WHERE ক্লজের অপারেটর</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">WHERE অপারেটর</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- BETWEEN: পরিসীমার মধ্যে</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> salary <span class="kw">BETWEEN</span> <span class="num">30000</span> <span class="kw">AND</span> <span class="num">60000</span>;
+
+<span class="cm">-- IN: নির্দিষ্ট মানগুলোর মধ্যে</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> dept_id <span class="kw">IN</span> (<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>);
+
+<span class="cm">-- LIKE: প্যাটার্ন মিল (% = যেকোনো অক্ষর, _ = একটি অক্ষর)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> emp_name <span class="kw">LIKE</span> <span class="str">'%করিম%'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> email <span class="kw">LIKE</span> <span class="str">'%.com'</span>;
+
+<span class="cm">-- IS NULL / IS NOT NULL</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> bonus <span class="kw">IS NULL</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> phone <span class="kw">IS NOT NULL</span>;
+
+<span class="cm">-- NOT IN</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> dept_id <span class="kw">NOT IN</span> (<span class="num">10</span>, <span class="num">20</span>);</pre>
+</div>
+
+<h3 class="sh">GROUP BY ও HAVING</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">GROUP BY ও Aggregate Functions</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- বিভাগ অনুযায়ী কর্মচারীর সংখ্যা ও গড় বেতন</span>
+<span class="kw">SELECT</span>
+    d.dept_name,
+    <span class="fn">COUNT</span>(e.emp_id)      <span class="kw">AS</span> total_employees,
+    <span class="fn">AVG</span>(e.salary)        <span class="kw">AS</span> avg_salary,
+    <span class="fn">MAX</span>(e.salary)        <span class="kw">AS</span> max_salary,
+    <span class="fn">MIN</span>(e.salary)        <span class="kw">AS</span> min_salary,
+    <span class="fn">SUM</span>(e.salary)        <span class="kw">AS</span> total_salary
+<span class="kw">FROM</span>       <span class="tb2">employee</span>   e
+<span class="kw">JOIN</span>       <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id
+<span class="kw">GROUP BY</span>   d.dept_name
+<span class="kw">HAVING</span>     <span class="fn">COUNT</span>(e.emp_id) > <span class="num">2</span>   <span class="cm">-- শুধু ২-এর বেশি কর্মচারী আছে এমন বিভাগ</span>
+<span class="kw">ORDER BY</span>   avg_salary <span class="kw">DESC</span>;</pre>
+</div>
+
+<div class="sql-result">
+  <div class="sr-header"><div class="sr-cell">DEPT_NAME</div><div class="sr-cell">TOTAL_EMP</div><div class="sr-cell">AVG_SALARY</div><div class="sr-cell">MAX_SALARY</div></div>
+  <div class="sr-row"><div class="sr-cell">আইটি বিভাগ</div><div class="sr-cell">5</div><div class="sr-cell">58,500</div><div class="sr-cell">75,000</div></div>
+  <div class="sr-row"><div class="sr-cell">হিসাব বিভাগ</div><div class="sr-cell">3</div><div class="sr-cell">52,000</div><div class="sr-cell">65,000</div></div>
+  <div class="sr-row"><div class="sr-cell">বিক্রয় বিভাগ</div><div class="sr-cell">4</div><div class="sr-cell">47,250</div><div class="sr-cell">60,000</div></div>
+</div>
+
+<h3 class="sh">Oracle বিল্ট-ইন ফাংশন</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">String ফাংশন</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- String ফাংশন</span>
+<span class="kw">SELECT</span>
+    <span class="fn">UPPER</span>(<span class="str">'hello'</span>),           <span class="cm">-- HELLO</span>
+    <span class="fn">LOWER</span>(<span class="str">'WORLD'</span>),           <span class="cm">-- world</span>
+    <span class="fn">LENGTH</span>(<span class="str">'Oracle'</span>),          <span class="cm">-- 6</span>
+    <span class="fn">SUBSTR</span>(<span class="str">'Oracle DB'</span>,<span class="num">1</span>,<span class="num">6</span>),   <span class="cm">-- Oracle</span>
+    <span class="fn">INSTR</span>(<span class="str">'Hello World'</span>,<span class="str">'o'</span>),  <span class="cm">-- 5 (প্রথম 'o'-এর অবস্থান)</span>
+    <span class="fn">REPLACE</span>(<span class="str">'Hello'</span>,<span class="str">'l'</span>,<span class="str">'L'</span>), <span class="cm">-- HeLLo</span>
+    <span class="fn">TRIM</span>(<span class="str">'  Oracle  '</span>),        <span class="cm">-- 'Oracle'</span>
+    <span class="fn">LPAD</span>(<span class="str">'5'</span>,<span class="num">3</span>,<span class="str">'0'</span>),           <span class="cm">-- '005'</span>
+    <span class="fn">CONCAT</span>(<span class="str">'Hello'</span>,<span class="str">' World'</span>)   <span class="cm">-- Hello World</span>
+<span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- Number ফাংশন</span>
+<span class="kw">SELECT</span>
+    <span class="fn">ROUND</span>(<span class="num">3.14159</span>, <span class="num">2</span>),   <span class="cm">-- 3.14</span>
+    <span class="fn">TRUNC</span>(<span class="num">3.9999</span>, <span class="num">0</span>),    <span class="cm">-- 3</span>
+    <span class="fn">CEIL</span>(<span class="num">4.1</span>),            <span class="cm">-- 5</span>
+    <span class="fn">FLOOR</span>(<span class="num">4.9</span>),           <span class="cm">-- 4</span>
+    <span class="fn">ABS</span>(<span class="op">-</span><span class="num">25</span>),             <span class="cm">-- 25</span>
+    <span class="fn">MOD</span>(<span class="num">17</span>, <span class="num">5</span>),           <span class="cm">-- 2</span>
+    <span class="fn">POWER</span>(<span class="num">2</span>, <span class="num">10</span>)          <span class="cm">-- 1024</span>
+<span class="kw">FROM</span> DUAL;
+
+<span class="cm">-- Date ফাংশন</span>
+<span class="kw">SELECT</span>
+    SYSDATE,                              <span class="cm">-- বর্তমান তারিখ ও সময়</span>
+    <span class="fn">TO_CHAR</span>(SYSDATE, <span class="str">'DD-MON-YYYY'</span>),    <span class="cm">-- 25-JAN-2025</span>
+    <span class="fn">TO_DATE</span>(<span class="str">'25-01-2025'</span>,<span class="str">'DD-MM-YYYY'</span>), <span class="cm">-- DATE টাইপে রূপান্তর</span>
+    <span class="fn">ADD_MONTHS</span>(SYSDATE, <span class="num">6</span>),             <span class="cm">-- ৬ মাস পরের তারিখ</span>
+    <span class="fn">MONTHS_BETWEEN</span>(SYSDATE, hire_date), <span class="cm">-- কত মাস আগে</span>
+    <span class="fn">NEXT_DAY</span>(SYSDATE, <span class="str">'FRIDAY'</span>),       <span class="cm">-- পরবর্তী শুক্রবার</span>
+    <span class="fn">LAST_DAY</span>(SYSDATE)                   <span class="cm">-- এই মাসের শেষ দিন</span>
+<span class="kw">FROM</span> <span class="tb2">employee</span>;
+
+<span class="cm">-- NULL ফাংশন</span>
+<span class="kw">SELECT</span>
+    <span class="fn">NVL</span>(bonus, <span class="num">0</span>),              <span class="cm">-- bonus NULL হলে 0</span>
+    <span class="fn">NVL2</span>(bonus, bonus, <span class="num">500</span>),    <span class="cm">-- NULL হলে 500, নয়তো bonus</span>
+    <span class="fn">COALESCE</span>(bonus,salary*<span class="num">0.05</span>,<span class="num">0</span>) <span class="cm">-- প্রথম non-NULL মান</span>
+<span class="kw">FROM</span> <span class="tb2">employee</span>;
+
+<span class="cm">-- CASE WHEN (শর্তসাপেক্ষ লজিক)</span>
+<span class="kw">SELECT</span>
+    emp_name,
+    salary,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> salary >= <span class="num">60000</span> <span class="kw">THEN</span> <span class="str">'উচ্চ বেতন'</span>
+        <span class="kw">WHEN</span> salary >= <span class="num">40000</span> <span class="kw">THEN</span> <span class="str">'মধ্যম বেতন'</span>
+        <span class="kw">ELSE</span>                       <span class="str">'নিম্ন বেতন'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> salary_category
+<span class="kw">FROM</span> <span class="tb2">employee</span>;</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 7: JOIN ===== -->
+<div id="lesson-7" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">07</div>
+  <div class="lesson-title-area">
+    <h2>JOIN অপারেশন</h2>
+    <p>একাধিক টেবিল থেকে ডেটা একসাথে আনা</p>
+    <div class="lesson-tags"><span class="tag tag-y">Important</span><span class="tag tag-r">SQL</span></div>
+  </div>
+</div>
+
+<p class="body">JOIN হলো একাধিক টেবিলকে একত্রিত করার পদ্ধতি। এটি SQL-এর সবচেয়ে শক্তিশালী বৈশিষ্ট্যগুলোর একটি। Oracle-এ বিভিন্ন ধরনের JOIN আছে।</p>
+
+<div class="arch-svg">
+<svg viewBox="0 0 680 200" width="100%">
+  <rect width="680" height="200" fill="#0c0c0e" rx="10"/>
+  <!-- INNER JOIN -->
+  <circle cx="80" cy="100" r="45" fill="rgba(199,70,52,0.15)" stroke="#c74634" stroke-width="1.5"/>
+  <circle cx="115" cy="100" r="45" fill="rgba(41,182,246,0.15)" stroke="#29b6f6" stroke-width="1.5"/>
+  <ellipse cx="97" cy="100" rx="18" ry="35" fill="rgba(255,165,0,0.3)"/>
+  <text x="97" y="165" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">INNER JOIN</text>
+  <text x="97" y="178" fill="#7a7a90" font-size="8" text-anchor="middle">মিল আছে এমন</text>
+  <!-- LEFT JOIN -->
+  <circle cx="230" cy="100" r="45" fill="rgba(199,70,52,0.3)" stroke="#c74634" stroke-width="1.5"/>
+  <circle cx="265" cy="100" r="45" fill="rgba(41,182,246,0.1)" stroke="#29b6f6" stroke-width="1.5"/>
+  <ellipse cx="247" cy="100" rx="18" ry="35" fill="rgba(199,70,52,0.2)"/>
+  <text x="247" y="165" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">LEFT JOIN</text>
+  <text x="247" y="178" fill="#7a7a90" font-size="8" text-anchor="middle">বাম টেবিল সব</text>
+  <!-- RIGHT JOIN -->
+  <circle cx="380" cy="100" r="45" fill="rgba(199,70,52,0.1)" stroke="#c74634" stroke-width="1.5"/>
+  <circle cx="415" cy="100" r="45" fill="rgba(41,182,246,0.3)" stroke="#29b6f6" stroke-width="1.5"/>
+  <ellipse cx="397" cy="100" rx="18" ry="35" fill="rgba(41,182,246,0.2)"/>
+  <text x="397" y="165" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">RIGHT JOIN</text>
+  <text x="397" y="178" fill="#7a7a90" font-size="8" text-anchor="middle">ডান টেবিল সব</text>
+  <!-- FULL JOIN -->
+  <circle cx="530" cy="100" r="45" fill="rgba(199,70,52,0.2)" stroke="#c74634" stroke-width="1.5"/>
+  <circle cx="565" cy="100" r="45" fill="rgba(41,182,246,0.2)" stroke="#29b6f6" stroke-width="1.5"/>
+  <ellipse cx="547" cy="100" rx="18" ry="35" fill="rgba(102,187,106,0.2)"/>
+  <text x="547" y="165" fill="#f0a500" font-size="9" text-anchor="middle" font-family="JetBrains Mono">FULL OUTER</text>
+  <text x="547" y="178" fill="#7a7a90" font-size="8" text-anchor="middle">উভয় টেবিল সব</text>
+  <!-- Labels A/B -->
+  <text x="65" y="105" fill="#c74634" font-size="10" text-anchor="middle" font-weight="bold">A</text>
+  <text x="130" y="105" fill="#29b6f6" font-size="10" text-anchor="middle" font-weight="bold">B</text>
+  <text x="215" y="105" fill="#c74634" font-size="10" text-anchor="middle" font-weight="bold">A</text>
+  <text x="280" y="105" fill="#29b6f6" font-size="10" text-anchor="middle" font-weight="bold">B</text>
+  <text x="365" y="105" fill="#c74634" font-size="10" text-anchor="middle" font-weight="bold">A</text>
+  <text x="430" y="105" fill="#29b6f6" font-size="10" text-anchor="middle" font-weight="bold">B</text>
+  <text x="515" y="105" fill="#c74634" font-size="10" text-anchor="middle" font-weight="bold">A</text>
+  <text x="580" y="105" fill="#29b6f6" font-size="10" text-anchor="middle" font-weight="bold">B</text>
+</svg>
+</div>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">সব ধরনের JOIN উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- INNER JOIN: উভয় টেবিলে মিল আছে এমন ডেটা</span>
+<span class="kw">SELECT</span> e.emp_name, e.salary, d.dept_name
+<span class="kw">FROM</span>   <span class="tb2">employee</span>   e
+<span class="kw">INNER JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id;
+
+<span class="cm">-- LEFT JOIN: employee-এর সব ডেটা (dept না থাকলেও)</span>
+<span class="kw">SELECT</span> e.emp_name, <span class="fn">NVL</span>(d.dept_name, <span class="str">'বিভাগ নেই'</span>) dept
+<span class="kw">FROM</span>   <span class="tb2">employee</span>   e
+<span class="kw">LEFT JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id;
+
+<span class="cm">-- RIGHT JOIN: department-এর সব ডেটা (কর্মচারী না থাকলেও)</span>
+<span class="kw">SELECT</span> <span class="fn">NVL</span>(e.emp_name,<span class="str">'কর্মচারী নেই'</span>), d.dept_name
+<span class="kw">FROM</span>   <span class="tb2">employee</span>   e
+<span class="kw">RIGHT JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id;
+
+<span class="cm">-- FULL OUTER JOIN: উভয়ের সব ডেটা</span>
+<span class="kw">SELECT</span> e.emp_name, d.dept_name
+<span class="kw">FROM</span>   <span class="tb2">employee</span>   e
+<span class="kw">FULL OUTER JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id;
+
+<span class="cm">-- SELF JOIN: একই টেবিলের সাথে নিজের JOIN</span>
+<span class="cm">-- কর্মচারী ও তার ম্যানেজারের নাম</span>
+<span class="kw">SELECT</span>
+    e.emp_name    <span class="kw">AS</span> employee,
+    m.emp_name    <span class="kw">AS</span> manager
+<span class="kw">FROM</span>      <span class="tb2">employee</span> e
+<span class="kw">LEFT JOIN</span> <span class="tb2">employee</span> m <span class="kw">ON</span> e.manager_id = m.emp_id;
+
+<span class="cm">-- তিনটি টেবিল JOIN করা</span>
+<span class="kw">SELECT</span>
+    e.emp_name,
+    d.dept_name,
+    p.project_name
+<span class="kw">FROM</span>       <span class="tb2">employee</span>    e
+<span class="kw">JOIN</span>       <span class="tb2">department</span>  d <span class="kw">ON</span> e.dept_id    = d.dept_id
+<span class="kw">JOIN</span>       <span class="tb2">emp_project</span> p <span class="kw">ON</span> e.emp_id     = p.emp_id;</pre>
+</div>
+
+<div class="quiz-box">
+  <div class="quiz-q">🧠 কুইজ: LEFT JOIN কী করে যখন ডান টেবিলে মিল পাওয়া যায় না?</div>
+  <div class="quiz-opts">
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ক</div> সেই সারিটি বাদ দিয়ে দেয়</div>
+    <div class="quiz-opt" onclick="checkQ(this,'correct')"><div class="quiz-opt-mark">খ</div> ডান টেবিলের কলামগুলো NULL দিয়ে পূরণ করে</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">গ</div> Error দেয়</div>
+    <div class="quiz-opt" onclick="checkQ(this,'wrong')"><div class="quiz-opt-mark">ঘ</div> ডিফল্ট মান ব্যবহার করে</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== LESSON 8: SUBQUERY ===== -->
+<div id="lesson-8" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">08</div>
+  <div class="lesson-title-area">
+    <h2>সাবকোয়েরি ও CTE</h2>
+    <p>কোয়েরির ভেতরে কোয়েরি এবং WITH ক্লজ</p>
+    <div class="lesson-tags"><span class="tag tag-y">Intermediate</span><span class="tag tag-r">SQL</span></div>
+  </div>
+</div>
+
+<h3 class="sh">সাবকোয়েরি কী?</h3>
+<p class="body">সাবকোয়েরি হলো একটি SQL কোয়েরির ভেতরে আরেকটি SQL কোয়েরি। এটি জটিল প্রশ্নের উত্তর দিতে ব্যবহার হয়।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">সাবকোয়েরি উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- গড়ের চেয়ে বেশি বেতন পায় এমন কর্মচারী</span>
+<span class="kw">SELECT</span> emp_name, salary
+<span class="kw">FROM</span>   <span class="tb2">employee</span>
+<span class="kw">WHERE</span>  salary > (
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(salary) <span class="kw">FROM</span> <span class="tb2">employee</span>   <span class="cm">-- সাবকোয়েরি</span>
+);
+
+<span class="cm">-- সর্বোচ্চ বেতনধারী কর্মচারী</span>
+<span class="kw">SELECT</span> emp_name, salary
+<span class="kw">FROM</span>   <span class="tb2">employee</span>
+<span class="kw">WHERE</span>  salary = (<span class="kw">SELECT</span> <span class="fn">MAX</span>(salary) <span class="kw">FROM</span> <span class="tb2">employee</span>);
+
+<span class="cm">-- IN সাবকোয়েরি: আইটি বিভাগের সব কর্মচারী</span>
+<span class="kw">SELECT</span> emp_name
+<span class="kw">FROM</span>   <span class="tb2">employee</span>
+<span class="kw">WHERE</span>  dept_id <span class="kw">IN</span> (
+    <span class="kw">SELECT</span> dept_id
+    <span class="kw">FROM</span>   <span class="tb2">department</span>
+    <span class="kw">WHERE</span>  dept_name <span class="kw">LIKE</span> <span class="str">'%আইটি%'</span>
+);
+
+<span class="cm">-- EXISTS সাবকোয়েরি</span>
+<span class="kw">SELECT</span> dept_name
+<span class="kw">FROM</span>   <span class="tb2">department</span> d
+<span class="kw">WHERE</span>  <span class="kw">EXISTS</span> (
+    <span class="kw">SELECT</span> <span class="num">1</span> <span class="kw">FROM</span> <span class="tb2">employee</span> e
+    <span class="kw">WHERE</span>  e.dept_id = d.dept_id
+      <span class="kw">AND</span>  e.salary > <span class="num">50000</span>
+);
+
+<span class="cm">-- Inline View (FROM-এ সাবকোয়েরি)</span>
+<span class="kw">SELECT</span> dept_name, avg_sal
+<span class="kw">FROM</span> (
+    <span class="kw">SELECT</span> d.dept_name, <span class="fn">AVG</span>(e.salary) avg_sal
+    <span class="kw">FROM</span>   <span class="tb2">employee</span> e <span class="kw">JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id=d.dept_id
+    <span class="kw">GROUP BY</span> d.dept_name
+) dept_stats
+<span class="kw">WHERE</span> avg_sal > <span class="num">50000</span>;</pre>
+</div>
+
+<h3 class="sh">CTE — WITH ক্লজ (পাঠযোগ্য কোড)</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">CTE (Common Table Expression)</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- CTE দিয়ে পাঠযোগ্য কোড</span>
+<span class="kw">WITH</span>
+<span class="tb2">dept_stats</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        dept_id,
+        <span class="fn">AVG</span>(salary)  <span class="kw">AS</span> avg_salary,
+        <span class="fn">COUNT</span>(*)     <span class="kw">AS</span> emp_count
+    <span class="kw">FROM</span> <span class="tb2">employee</span>
+    <span class="kw">GROUP BY</span> dept_id
+),
+<span class="tb2">high_pay_depts</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> dept_id
+    <span class="kw">FROM</span>   <span class="tb2">dept_stats</span>
+    <span class="kw">WHERE</span>  avg_salary > <span class="num">50000</span>
+)
+<span class="kw">SELECT</span>
+    e.emp_name,
+    e.salary,
+    d.dept_name
+<span class="kw">FROM</span>      <span class="tb2">employee</span>       e
+<span class="kw">JOIN</span>      <span class="tb2">department</span>     d  <span class="kw">ON</span> e.dept_id = d.dept_id
+<span class="kw">JOIN</span>      <span class="tb2">high_pay_depts</span> h  <span class="kw">ON</span> e.dept_id = h.dept_id
+<span class="kw">ORDER BY</span>  e.salary <span class="kw">DESC</span>;
+
+<span class="cm">-- Recursive CTE (হায়ারার্কি ট্রিভার্স)</span>
+<span class="kw">WITH</span> <span class="tb2">org_chart</span> (emp_id, emp_name, manager_id, level_num) <span class="kw">AS</span> (
+    <span class="cm">-- Anchor: সিইও (ম্যানেজার নেই)</span>
+    <span class="kw">SELECT</span> emp_id, emp_name, manager_id, <span class="num">1</span>
+    <span class="kw">FROM</span>   <span class="tb2">employee</span>
+    <span class="kw">WHERE</span>  manager_id <span class="kw">IS NULL</span>
+    <span class="kw">UNION ALL</span>
+    <span class="cm">-- Recursive: অধীনস্থ কর্মচারী</span>
+    <span class="kw">SELECT</span> e.emp_id, e.emp_name, e.manager_id, o.level_num+<span class="num">1</span>
+    <span class="kw">FROM</span>   <span class="tb2">employee</span> e
+    <span class="kw">JOIN</span>   <span class="tb2">org_chart</span> o <span class="kw">ON</span> e.manager_id = o.emp_id
+)
+<span class="kw">SELECT</span> <span class="fn">LPAD</span>(<span class="str">' '</span>, level_num*<span class="num">2</span>) || emp_name <span class="kw">AS</span> hierarchy
+<span class="kw">FROM</span>   <span class="tb2">org_chart</span>
+<span class="kw">ORDER BY</span> level_num;</pre>
+</div>
+
+<h3 class="sh">Analytic Functions (Window Functions)</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Analytic / Window Functions</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- বিভাগ অনুযায়ী বেতনের র‍্যাংকিং</span>
+<span class="kw">SELECT</span>
+    emp_name,
+    dept_id,
+    salary,
+    <span class="fn">RANK</span>()        <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> dept_rank,
+    <span class="fn">DENSE_RANK</span>()  <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> dense_rank,
+    <span class="fn">ROW_NUMBER</span>()  <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> row_num,
+    <span class="fn">SUM</span>(salary)   <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> dept_id) <span class="kw">AS</span> dept_total,
+    <span class="fn">AVG</span>(salary)   <span class="kw">OVER</span> () <span class="kw">AS</span> company_avg
+<span class="kw">FROM</span> <span class="tb2">employee</span>;</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 9: VIEW & INDEX ===== -->
+<div id="lesson-9" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">09</div>
+  <div class="lesson-title-area">
+    <h2>ভিউ ও ইন্ডেক্স</h2>
+    <p>ভার্চুয়াল টেবিল এবং দ্রুত অনুসন্ধানের কৌশল</p>
+    <div class="lesson-tags"><span class="tag tag-y">Intermediate</span><span class="tag tag-b">Performance</span></div>
+  </div>
+</div>
+
+<h3 class="sh">VIEW — ভার্চুয়াল টেবিল</h3>
+<p class="body">VIEW হলো একটি সংরক্ষিত SELECT কোয়েরি যা টেবিলের মতো ব্যবহার করা যায়। এটি ডেটা সুরক্ষা, জটিলতা লুকানো এবং পুনর্ব্যবহারযোগ্যতার জন্য ব্যবহার হয়।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">VIEW তৈরি ও ব্যবহার</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- সহজ VIEW তৈরি</span>
+<span class="kw">CREATE OR REPLACE VIEW</span> <span class="tb2">v_employee_dept</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span>
+    e.emp_id, e.emp_name, e.salary,
+    d.dept_name, d.location
+<span class="kw">FROM</span>  <span class="tb2">employee</span>   e
+<span class="kw">JOIN</span>  <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id;
+
+<span class="cm">-- VIEW ব্যবহার (টেবিলের মতোই)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">v_employee_dept</span> <span class="kw">WHERE</span> salary > <span class="num">50000</span>;
+
+<span class="cm">-- নিরাপত্তার জন্য VIEW (পাসওয়ার্ড লুকানো)</span>
+<span class="kw">CREATE OR REPLACE VIEW</span> <span class="tb2">v_public_employee</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span> emp_id, emp_name, dept_id
+<span class="kw">FROM</span>   <span class="tb2">employee</span>
+<span class="kw">WHERE</span>  active_status = <span class="str">'Y'</span>
+<span class="kw">WITH READ ONLY</span>;  <span class="cm">-- এই VIEW থেকে পরিবর্তন করা যাবে না</span>
+
+<span class="cm">-- Materialized View (ক্যাশড, দ্রুত)</span>
+<span class="kw">CREATE MATERIALIZED VIEW</span> <span class="tb2">mv_dept_summary</span>
+<span class="kw">REFRESH COMPLETE ON DEMAND</span>
+<span class="kw">AS</span>
+<span class="kw">SELECT</span>
+    dept_id,
+    <span class="fn">COUNT</span>(*) emp_count,
+    <span class="fn">SUM</span>(salary) total_salary,
+    <span class="fn">AVG</span>(salary) avg_salary
+<span class="kw">FROM</span> <span class="tb2">employee</span>
+<span class="kw">GROUP BY</span> dept_id;
+
+<span class="cm">-- Materialized View রিফ্রেশ করা</span>
+<span class="kw">EXEC</span> DBMS_MVIEW.REFRESH(<span class="str">'MV_DEPT_SUMMARY'</span>);</pre>
+</div>
+
+<h3 class="sh">INDEX — দ্রুত অনুসন্ধান</h3>
+<p class="body">Index হলো ডেটাবেসের "বইয়ের সূচি"। এটি ছাড়া Oracle প্রতিটি সারি দেখে (Full Table Scan), Index থাকলে সরাসরি লাফিয়ে যায়।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">INDEX তৈরি ও পরিচালনা</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- সাধারণ B-Tree Index</span>
+<span class="kw">CREATE INDEX</span> idx_emp_name <span class="kw">ON</span> <span class="tb2">employee</span>(emp_name);
+
+<span class="cm">-- Composite Index (একাধিক কলাম)</span>
+<span class="kw">CREATE INDEX</span> idx_emp_dept_sal <span class="kw">ON</span> <span class="tb2">employee</span>(dept_id, salary);
+
+<span class="cm">-- Unique Index</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_emp_email <span class="kw">ON</span> <span class="tb2">employee</span>(email);
+
+<span class="cm">-- Function-Based Index</span>
+<span class="kw">CREATE INDEX</span> idx_emp_upper_name <span class="kw">ON</span> <span class="tb2">employee</span>(<span class="fn">UPPER</span>(emp_name));
+<span class="cm">-- এখন UPPER(emp_name) = 'KARIM' দ্রুত কাজ করবে</span>
+
+<span class="cm">-- Bitmap Index (কম unique মানের জন্য)</span>
+<span class="kw">CREATE BITMAP INDEX</span> idx_gender <span class="kw">ON</span> <span class="tb2">employee</span>(gender);
+
+<span class="cm">-- Index দেখা</span>
+<span class="kw">SELECT</span> index_name, index_type, status
+<span class="kw">FROM</span>   user_indexes
+<span class="kw">WHERE</span>  table_name = <span class="str">'EMPLOYEE'</span>;
+
+<span class="cm">-- Index মুছে ফেলা</span>
+<span class="kw">DROP INDEX</span> idx_emp_name;</pre>
+</div>
+
+<div class="grid2">
+  <div class="callout cl-ok"><div class="cl-ico">✅</div><div class="cl-body"><strong>Index কখন করবেন?</strong>WHERE, JOIN, ORDER BY-তে বারবার ব্যবহৃত কলামে। বড় টেবিলে (১০,০০০+ সারি)। Primary Key ও Foreign Key-তে।</div></div>
+  <div class="callout cl-warn"><div class="cl-ico">⚠️</div><div class="cl-body"><strong>Index কখন এড়াবেন?</strong>ছোট টেবিলে। INSERT/UPDATE/DELETE বেশি হলে (Index maintain করতে সময় লাগে)। কম unique মান থাকলে (M/F)।</div></div>
+</div>
+</div>
+
+<!-- ===== LESSON 10: TRANSACTION ===== -->
+<div id="lesson-10" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">10</div>
+  <div class="lesson-title-area">
+    <h2>ট্রানজ্যাকশন ও TCL</h2>
+    <p>COMMIT, ROLLBACK, SAVEPOINT — ডেটার নিরাপত্তা</p>
+    <div class="lesson-tags"><span class="tag tag-y">Intermediate</span><span class="tag tag-r">Database</span></div>
+  </div>
+</div>
+
+<h3 class="sh">ACID বৈশিষ্ট্য</h3>
+<div class="grid2">
+  <div class="card"><h4>⚛️ Atomicity (পরমাণুত্ব)</h4><p>ট্রানজ্যাকশনের সব অপারেশন হয় সম্পূর্ণ হবে, নয়তো কিছুই হবে না।</p></div>
+  <div class="card"><h4>✅ Consistency (সামঞ্জস্য)</h4><p>ট্রানজ্যাকশনের আগে ও পরে ডেটাবেস সঠিক অবস্থায় থাকবে।</p></div>
+  <div class="card"><h4>🔒 Isolation (বিচ্ছিন্নতা)</h4><p>একটি ট্রানজ্যাকশন অন্যটির উপর প্রভাব ফেলবে না।</p></div>
+  <div class="card"><h4>💾 Durability (স্থায়িত্ব)</h4><p>COMMIT-এর পর ডেটা স্থায়ীভাবে সংরক্ষিত থাকবে।</p></div>
+</div>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">TCL — Transaction Control</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- ব্যাংক ট্রান্সফারের উদাহরণ</span>
+<span class="kw">BEGIN</span>
+    <span class="cm">-- হিসাব ১ থেকে টাকা কাটা</span>
+    <span class="kw">UPDATE</span> <span class="tb2">accounts</span>
+    <span class="kw">SET</span>    balance = balance - <span class="num">10000</span>
+    <span class="kw">WHERE</span>  account_no = <span class="str">'ACC001'</span>;
+
+    <span class="cm">-- হিসাব ২-এ টাকা যোগ</span>
+    <span class="kw">UPDATE</span> <span class="tb2">accounts</span>
+    <span class="kw">SET</span>    balance = balance + <span class="num">10000</span>
+    <span class="kw">WHERE</span>  account_no = <span class="str">'ACC002'</span>;
+
+    <span class="cm">-- সব ঠিক থাকলে স্থায়ী করুন</span>
+    <span class="kw">COMMIT</span>;
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN OTHERS THEN</span>
+        <span class="cm">-- কোনো সমস্যা হলে সব বাতিল</span>
+        <span class="kw">ROLLBACK</span>;
+        RAISE;
+<span class="kw">END</span>;
+
+<span class="cm">-- SAVEPOINT ব্যবহার</span>
+<span class="kw">SAVEPOINT</span> before_update;
+<span class="kw">UPDATE</span> <span class="tb2">employee</span> <span class="kw">SET</span> salary = salary * <span class="num">2</span>;  <span class="cm">-- ভুল হয়ে গেছে!</span>
+<span class="kw">ROLLBACK TO</span> before_update;                    <span class="cm">-- Savepoint-এ ফিরে যাও</span>
+
+<span class="cm">-- লক দেখা</span>
+<span class="kw">SELECT</span> username, lockwait, status <span class="kw">FROM</span> v$session <span class="kw">WHERE</span> username <span class="kw">IS NOT NULL</span>;</pre>
+</div>
+
+<div class="callout cl-info"><div class="cl-ico">ℹ️</div><div class="cl-body"><strong>Oracle-এর Auto COMMIT নেই</strong>MySQL-এ Auto COMMIT চালু থাকে, কিন্তু Oracle-এ নেই। তাই Oracle-এ INSERT/UPDATE/DELETE করলে অবশ্যই COMMIT দিতে হবে। DDL কমান্ড (CREATE, DROP) স্বয়ংক্রিয়ভাবে COMMIT করে।</div></div>
+</div>
+
+<!-- ===== LESSON 11: PL/SQL INTRO ===== -->
+<div id="lesson-11" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">11</div>
+  <div class="lesson-title-area">
+    <h2>PL/SQL পরিচিতি</h2>
+    <p>Oracle-এর প্রোগ্রামিং ভাষা — ভেরিয়েবল, লুপ, শর্ত</p>
+    <div class="lesson-tags"><span class="tag tag-r">Advanced</span><span class="tag tag-p">PL/SQL</span></div>
+  </div>
+</div>
+
+<p class="body">PL/SQL (Procedural Language / SQL) হলো Oracle-এর নিজস্ব প্রোগ্রামিং ভাষা যা SQL-এর সাথে প্রোগ্রামিং ক্ষমতা যোগ করে। এটি দিয়ে জটিল ব্যবসায়িক লজিক ডেটাবেসের ভেতরেই লেখা যায়।</p>
+
+<h3 class="sh">PL/SQL ব্লকের কাঠামো</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">PL/SQL Block Structure</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="kw">DECLARE</span>
+    <span class="cm">-- ভেরিয়েবল ঘোষণা</span>
+    v_name      <span class="fn">VARCHAR2</span>(<span class="num">100</span>);
+    v_salary    <span class="fn">NUMBER</span>(<span class="num">10</span>,<span class="num">2</span>);
+    v_count     <span class="fn">NUMBER</span>  := <span class="num">0</span>;        <span class="cm">-- প্রাথমিক মান</span>
+    c_tax_rate  <span class="kw">CONSTANT</span> <span class="fn">NUMBER</span> := <span class="num">0.15</span>;  <span class="cm">-- ধ্রুবক</span>
+    v_emp_rec   <span class="tb2">employee</span>%ROWTYPE;      <span class="cm">-- পুরো সারির টাইপ</span>
+    v_dept_id   <span class="tb2">employee</span>.dept_id%TYPE; <span class="cm">-- কলামের টাইপ</span>
+
+<span class="kw">BEGIN</span>
+    <span class="cm">-- লজিক এখানে</span>
+    <span class="kw">SELECT</span> emp_name, salary
+    <span class="kw">INTO</span>   v_name, v_salary
+    <span class="kw">FROM</span>   <span class="tb2">employee</span>
+    <span class="kw">WHERE</span>  emp_id = <span class="num">1001</span>;
+
+    <span class="cm">-- আউটপুট</span>
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'নাম: '</span> || v_name);
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'বেতন: '</span> || v_salary);
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'কর: '</span> || v_salary * c_tax_rate);
+
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN NO_DATA_FOUND THEN</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'কর্মচারী পাওয়া যায়নি!'</span>);
+    <span class="kw">WHEN TOO_MANY_ROWS THEN</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'একাধিক ফলাফল পাওয়া গেছে!'</span>);
+    <span class="kw">WHEN OTHERS THEN</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'ত্রুটি: '</span> || SQLERRM);
+<span class="kw">END</span>;
+/  <span class="cm">-- / দিয়ে PL/SQL ব্লক সম্পন্ন করুন</span></pre>
+</div>
+
+<h3 class="sh">শর্ত ও লুপ</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">IF-ELSIF এবং LOOP</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="kw">DECLARE</span>
+    v_salary <span class="fn">NUMBER</span> := <span class="num">55000</span>;
+    v_grade  <span class="fn">VARCHAR2</span>(<span class="num">20</span>);
+    v_counter <span class="fn">NUMBER</span> := <span class="num">1</span>;
+<span class="kw">BEGIN</span>
+    <span class="cm">-- IF-ELSIF-ELSE</span>
+    <span class="kw">IF</span>    v_salary >= <span class="num">70000</span> <span class="kw">THEN</span>  v_grade := <span class="str">'A'</span>;
+    <span class="kw">ELSIF</span> v_salary >= <span class="num">50000</span> <span class="kw">THEN</span>  v_grade := <span class="str">'B'</span>;
+    <span class="kw">ELSIF</span> v_salary >= <span class="num">30000</span> <span class="kw">THEN</span>  v_grade := <span class="str">'C'</span>;
+    <span class="kw">ELSE</span>                            v_grade := <span class="str">'D'</span>;
+    <span class="kw">END IF</span>;
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'গ্রেড: '</span> || v_grade);
+
+    <span class="cm">-- FOR LOOP</span>
+    <span class="kw">FOR</span> i <span class="kw">IN</span> <span class="num">1</span>..<span class="num">5</span> <span class="kw">LOOP</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'সংখ্যা: '</span> || i);
+    <span class="kw">END LOOP</span>;
+
+    <span class="cm">-- WHILE LOOP</span>
+    <span class="kw">WHILE</span> v_counter <= <span class="num">3</span> <span class="kw">LOOP</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'কাউন্টার: '</span> || v_counter);
+        v_counter := v_counter + <span class="num">1</span>;
+    <span class="kw">END LOOP</span>;
+
+    <span class="cm">-- FOR LOOP টেবিলের উপর (Implicit Cursor)</span>
+    <span class="kw">FOR</span> emp_rec <span class="kw">IN</span> (<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> dept_id = <span class="num">10</span>)
+    <span class="kw">LOOP</span>
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(emp_rec.emp_name || ': ' || emp_rec.salary);
+    <span class="kw">END LOOP</span>;
+<span class="kw">END</span>;
+/</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 12: PROCEDURE & FUNCTION ===== -->
+<div id="lesson-12" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">12</div>
+  <div class="lesson-title-area">
+    <h2>Stored Procedure ও Function</h2>
+    <p>পুনর্ব্যবহারযোগ্য ডেটাবেস প্রোগ্রাম তৈরি</p>
+    <div class="lesson-tags"><span class="tag tag-r">Advanced</span><span class="tag tag-p">PL/SQL</span></div>
+  </div>
+</div>
+
+<h3 class="sh">Stored Procedure</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Procedure তৈরি ও কল করা</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="cm">-- Procedure তৈরি</span>
+<span class="kw">CREATE OR REPLACE PROCEDURE</span> <span class="fn">raise_salary</span> (
+    p_emp_id    <span class="kw">IN</span>  <span class="fn">NUMBER</span>,
+    p_percent   <span class="kw">IN</span>  <span class="fn">NUMBER</span>,
+    p_new_sal   <span class="kw">OUT</span> <span class="fn">NUMBER</span>
+) <span class="kw">AS</span>
+    v_old_salary <span class="fn">NUMBER</span>;
+<span class="kw">BEGIN</span>
+    <span class="kw">SELECT</span> salary <span class="kw">INTO</span> v_old_salary
+    <span class="kw">FROM</span>   <span class="tb2">employee</span>
+    <span class="kw">WHERE</span>  emp_id = p_emp_id;
+
+    p_new_sal := v_old_salary * (<span class="num">1</span> + p_percent/<span class="num">100</span>);
+
+    <span class="kw">UPDATE</span> <span class="tb2">employee</span>
+    <span class="kw">SET</span>    salary = p_new_sal
+    <span class="kw">WHERE</span>  emp_id = p_emp_id;
+
+    <span class="kw">COMMIT</span>;
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'পুরোনো বেতন: '</span> || v_old_salary);
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'নতুন বেতন: '</span> || p_new_sal);
+
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN NO_DATA_FOUND THEN</span>
+        <span class="kw">RAISE_APPLICATION_ERROR</span>(<span class="op">-</span><span class="num">20001</span>, <span class="str">'কর্মচারী পাওয়া যায়নি: '</span> || p_emp_id);
+<span class="kw">END</span> raise_salary;
+/
+
+<span class="cm">-- Procedure কল করা</span>
+<span class="kw">DECLARE</span>
+    v_new NUMBER;
+<span class="kw">BEGIN</span>
+    <span class="fn">raise_salary</span>(<span class="num">1001</span>, <span class="num">15</span>, v_new);  <span class="cm">-- ১৫% বেতন বাড়ানো</span>
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'ফলাফল: '</span> || v_new);
+<span class="kw">END</span>;
+/</pre>
+</div>
+
+<h3 class="sh">Function</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Function তৈরি ও ব্যবহার</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="cm">-- Function তৈরি (মান ফেরত দেয়)</span>
+<span class="kw">CREATE OR REPLACE FUNCTION</span> <span class="fn">get_annual_salary</span> (
+    p_emp_id <span class="kw">IN</span> <span class="fn">NUMBER</span>
+) <span class="kw">RETURN NUMBER</span> <span class="kw">IS</span>
+    v_salary     <span class="fn">NUMBER</span>;
+    v_bonus      <span class="fn">NUMBER</span>;
+    v_annual     <span class="fn">NUMBER</span>;
+<span class="kw">BEGIN</span>
+    <span class="kw">SELECT</span> salary, <span class="fn">NVL</span>(bonus, <span class="num">0</span>)
+    <span class="kw">INTO</span>   v_salary, v_bonus
+    <span class="kw">FROM</span>   <span class="tb2">employee</span>
+    <span class="kw">WHERE</span>  emp_id = p_emp_id;
+
+    v_annual := (v_salary * <span class="num">12</span>) + v_bonus;
+    <span class="kw">RETURN</span> v_annual;
+
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN NO_DATA_FOUND THEN</span>
+        <span class="kw">RETURN NULL</span>;
+<span class="kw">END</span>;
+/
+
+<span class="cm">-- Function SQL-এ ব্যবহার</span>
+<span class="kw">SELECT</span>
+    emp_name,
+    salary,
+    <span class="fn">get_annual_salary</span>(emp_id) <span class="kw">AS</span> annual_income
+<span class="kw">FROM</span> <span class="tb2">employee</span>;
+
+<span class="cm">-- Package: Procedure + Function একসাথে</span>
+<span class="kw">CREATE OR REPLACE PACKAGE</span> <span class="fn">emp_pkg</span> <span class="kw">AS</span>
+    <span class="kw">PROCEDURE</span> add_employee(p_name <span class="fn">VARCHAR2</span>, p_salary <span class="fn">NUMBER</span>, p_dept <span class="fn">NUMBER</span>);
+    <span class="kw">FUNCTION</span>  get_count(p_dept <span class="fn">NUMBER</span>) <span class="kw">RETURN NUMBER</span>;
+<span class="kw">END</span> emp_pkg;
+/
+
+<span class="kw">CREATE OR REPLACE PACKAGE BODY</span> <span class="fn">emp_pkg</span> <span class="kw">AS</span>
+    <span class="kw">PROCEDURE</span> <span class="fn">add_employee</span>(p_name <span class="fn">VARCHAR2</span>, p_salary <span class="fn">NUMBER</span>, p_dept <span class="fn">NUMBER</span>) <span class="kw">IS</span>
+    <span class="kw">BEGIN</span>
+        <span class="kw">INSERT INTO</span> <span class="tb2">employee</span> (emp_id, emp_name, salary, dept_id)
+        <span class="kw">VALUES</span> (emp_seq.NEXTVAL, p_name, p_salary, p_dept);
+        <span class="kw">COMMIT</span>;
+    <span class="kw">END</span>;
+
+    <span class="kw">FUNCTION</span> <span class="fn">get_count</span>(p_dept <span class="fn">NUMBER</span>) <span class="kw">RETURN NUMBER</span> <span class="kw">IS</span>
+        v_cnt <span class="fn">NUMBER</span>;
+    <span class="kw">BEGIN</span>
+        <span class="kw">SELECT COUNT</span>(*) <span class="kw">INTO</span> v_cnt <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> dept_id = p_dept;
+        <span class="kw">RETURN</span> v_cnt;
+    <span class="kw">END</span>;
+<span class="kw">END</span> emp_pkg;
+/
+
+<span class="cm">-- Package কল করা</span>
+<span class="kw">EXEC</span> emp_pkg.add_employee(<span class="str">'নাসরিন আক্তার'</span>, <span class="num">52000</span>, <span class="num">10</span>);
+<span class="kw">SELECT</span> emp_pkg.get_count(<span class="num">10</span>) <span class="kw">FROM</span> DUAL;</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 13: TRIGGER & CURSOR ===== -->
+<div id="lesson-13" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">13</div>
+  <div class="lesson-title-area">
+    <h2>Trigger ও Cursor</h2>
+    <p>স্বয়ংক্রিয় ক্রিয়া এবং সারি-সারি প্রক্রিয়াকরণ</p>
+    <div class="lesson-tags"><span class="tag tag-r">Advanced</span><span class="tag tag-p">PL/SQL</span></div>
+  </div>
+</div>
+
+<h3 class="sh">Trigger — স্বয়ংক্রিয় ক্রিয়া</h3>
+<p class="body">Trigger হলো একটি PL/SQL ব্লক যা কোনো ঘটনা ঘটলে (INSERT, UPDATE, DELETE) স্বয়ংক্রিয়ভাবে চালু হয়।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Trigger তৈরি</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="cm">-- Audit Trigger: পরিবর্তনের লগ রাখা</span>
+<span class="kw">CREATE TABLE</span> <span class="tb2">salary_audit</span> (
+    audit_id    <span class="fn">NUMBER</span> <span class="kw">GENERATED ALWAYS AS IDENTITY</span>,
+    emp_id      <span class="fn">NUMBER</span>,
+    old_salary  <span class="fn">NUMBER</span>,
+    new_salary  <span class="fn">NUMBER</span>,
+    changed_by  <span class="fn">VARCHAR2</span>(<span class="num">100</span>),
+    changed_at  <span class="fn">TIMESTAMP</span> <span class="kw">DEFAULT</span> SYSTIMESTAMP
+);
+
+<span class="kw">CREATE OR REPLACE TRIGGER</span> <span class="fn">trg_salary_audit</span>
+<span class="kw">AFTER UPDATE OF</span> salary <span class="kw">ON</span> <span class="tb2">employee</span>
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">INSERT INTO</span> <span class="tb2">salary_audit</span> (emp_id, old_salary, new_salary, changed_by)
+    <span class="kw">VALUES</span> (:OLD.emp_id, :OLD.salary, :NEW.salary, USER);
+<span class="kw">END</span>;
+/
+
+<span class="cm">-- BEFORE INSERT Trigger: ডেটা বৈধতা</span>
+<span class="kw">CREATE OR REPLACE TRIGGER</span> <span class="fn">trg_emp_validate</span>
+<span class="kw">BEFORE INSERT OR UPDATE ON</span> <span class="tb2">employee</span>
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+    <span class="cm">-- ইমেইল ছোট হাতে রাখা</span>
+    :NEW.email := <span class="fn">LOWER</span>(:NEW.email);
+
+    <span class="cm">-- নেতিবাচক বেতন ঠেকানো</span>
+    <span class="kw">IF</span> :NEW.salary < <span class="num">0</span> <span class="kw">THEN</span>
+        <span class="kw">RAISE_APPLICATION_ERROR</span>(<span class="op">-</span><span class="num">20002</span>, <span class="str">'বেতন ঋণাত্মক হতে পারে না!'</span>);
+    <span class="kw">END IF</span>;
+
+    <span class="cm">-- hire_date ডিফল্ট</span>
+    <span class="kw">IF</span> :NEW.hire_date <span class="kw">IS NULL THEN</span>
+        :NEW.hire_date := SYSDATE;
+    <span class="kw">END IF</span>;
+<span class="kw">END</span>;
+/
+
+<span class="cm">-- INSTEAD OF Trigger (VIEW-এর উপর)</span>
+<span class="kw">CREATE OR REPLACE TRIGGER</span> <span class="fn">trg_instead_of_view</span>
+<span class="kw">INSTEAD OF INSERT ON</span> <span class="tb2">v_employee_dept</span>
+<span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">INSERT INTO</span> <span class="tb2">employee</span> (emp_name, dept_id)
+    <span class="kw">VALUES</span> (:NEW.emp_name, :NEW.dept_id);
+<span class="kw">END</span>;
+/</pre>
+</div>
+
+<h3 class="sh">Explicit Cursor</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Cursor ব্যবহার</div><div class="cb-lang">PL/SQL</div></div>
+  <pre><span class="kw">DECLARE</span>
+    <span class="cm">-- Cursor ঘোষণা</span>
+    <span class="kw">CURSOR</span> c_emp (p_dept <span class="fn">NUMBER</span>) <span class="kw">IS</span>
+        <span class="kw">SELECT</span> emp_id, emp_name, salary
+        <span class="kw">FROM</span>   <span class="tb2">employee</span>
+        <span class="kw">WHERE</span>  dept_id = p_dept
+        <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>;
+
+    v_emp_id    <span class="fn">NUMBER</span>;
+    v_emp_name  <span class="fn">VARCHAR2</span>(<span class="num">100</span>);
+    v_salary    <span class="fn">NUMBER</span>;
+    v_total     <span class="fn">NUMBER</span> := <span class="num">0</span>;
+
+<span class="kw">BEGIN</span>
+    <span class="fn">OPEN</span> c_emp(<span class="num">10</span>);     <span class="cm">-- Cursor খোলা</span>
+
+    <span class="kw">LOOP</span>
+        <span class="fn">FETCH</span> c_emp <span class="kw">INTO</span> v_emp_id, v_emp_name, v_salary;  <span class="cm">-- সারি পড়া</span>
+        <span class="kw">EXIT WHEN</span> c_emp%NOTFOUND;  <span class="cm">-- আর সারি নেই?</span>
+
+        v_total := v_total + v_salary;
+        DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(v_emp_name || ': ' || v_salary);
+    <span class="kw">END LOOP</span>;
+
+    <span class="fn">CLOSE</span> c_emp;    <span class="cm">-- Cursor বন্ধ</span>
+    DBMS_OUTPUT.<span class="fn">PUT_LINE</span>(<span class="str">'মোট বেতন: '</span> || v_total);
+
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN OTHERS THEN</span>
+        <span class="kw">IF</span> c_emp%ISOPEN <span class="kw">THEN</span> <span class="fn">CLOSE</span> c_emp; <span class="kw">END IF</span>;
+        RAISE;
+<span class="kw">END</span>;
+/</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 14: BACKUP & RECOVERY ===== -->
+<div id="lesson-14" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">14</div>
+  <div class="lesson-title-area">
+    <h2>ব্যাকআপ ও রিকভারি</h2>
+    <p>RMAN, Export/Import, ডেটা সুরক্ষা</p>
+    <div class="lesson-tags"><span class="tag tag-r">DBA</span><span class="tag tag-b">Operations</span></div>
+  </div>
+</div>
+
+<h3 class="sh">RMAN — Oracle-এর ব্যাকআপ টুল</h3>
+<p class="body">RMAN (Recovery Manager) হলো Oracle-এর অফিসিয়াল ব্যাকআপ ও রিকভারি টুল। এটি ডেটা ফাইল, কন্ট্রোল ফাইল এবং আর্কাইভ লগ ব্যাকআপ নেয়।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">RMAN ব্যাকআপ ও রিকভারি</div><div class="cb-lang">Shell / RMAN</div></div>
+  <pre><span class="cm"># RMAN-এ সংযোগ</span>
+rman target /
+
+<span class="cm">-- সম্পূর্ণ ডেটাবেস ব্যাকআপ</span>
+<span class="kw">BACKUP DATABASE PLUS ARCHIVELOG</span>;
+
+<span class="cm">-- নির্দিষ্ট টেবিলস্পেস ব্যাকআপ</span>
+<span class="kw">BACKUP TABLESPACE</span> users;
+
+<span class="cm">-- Incremental ব্যাকআপ (শুধু পরিবর্তিত অংশ)</span>
+<span class="kw">BACKUP INCREMENTAL LEVEL</span> <span class="num">0</span> DATABASE;  <span class="cm">-- Base backup</span>
+<span class="kw">BACKUP INCREMENTAL LEVEL</span> <span class="num">1</span> DATABASE;  <span class="cm">-- পরিবর্তিত অংশ</span>
+
+<span class="cm">-- ব্যাকআপ তালিকা দেখা</span>
+<span class="kw">LIST BACKUP</span>;
+<span class="kw">LIST BACKUP OF DATABASE</span>;
+
+<span class="cm">-- সম্পূর্ণ রিকভারি</span>
+<span class="kw">SHUTDOWN IMMEDIATE</span>;
+<span class="kw">STARTUP MOUNT</span>;
+<span class="kw">RESTORE DATABASE</span>;
+<span class="kw">RECOVER DATABASE</span>;
+<span class="kw">ALTER DATABASE OPEN RESETLOGS</span>;
+
+<span class="cm">-- Point-in-Time Recovery (নির্দিষ্ট সময়ে ফেরা)</span>
+<span class="kw">RUN</span> {
+    <span class="kw">SET UNTIL TIME</span> <span class="str">"TO_DATE('2025-01-15 10:30:00','YYYY-MM-DD HH24:MI:SS')"</span>;
+    <span class="kw">RESTORE DATABASE</span>;
+    <span class="kw">RECOVER DATABASE</span>;
+    <span class="kw">ALTER DATABASE OPEN RESETLOGS</span>;
+}</pre>
+</div>
+
+<h3 class="sh">Data Pump (expdp/impdp) — দ্রুত Export/Import</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Data Pump Export ও Import</div><div class="cb-lang">Shell</div></div>
+  <pre><span class="cm"># সম্পূর্ণ Schema Export</span>
+expdp student/student123@localhost:1521/xe \
+    SCHEMAS=student \
+    DIRECTORY=DATA_PUMP_DIR \
+    DUMPFILE=student_backup.dmp \
+    LOGFILE=student_export.log
+
+<span class="cm"># নির্দিষ্ট টেবিল Export</span>
+expdp student/student123@localhost:1521/xe \
+    TABLES=employee,department \
+    DIRECTORY=DATA_PUMP_DIR \
+    DUMPFILE=tables_backup.dmp
+
+<span class="cm"># Schema Import</span>
+impdp student/student123@localhost:1521/xe \
+    SCHEMAS=student \
+    DIRECTORY=DATA_PUMP_DIR \
+    DUMPFILE=student_backup.dmp \
+    LOGFILE=student_import.log
+
+<span class="cm"># অন্য Schema-তে Import (remap)</span>
+impdp system/oracle@localhost:1521/xe \
+    REMAP_SCHEMA=student:new_student \
+    DIRECTORY=DATA_PUMP_DIR \
+    DUMPFILE=student_backup.dmp</pre>
+</div>
+
+<h3 class="sh">Flashback Technology</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Flashback — ভুল পূর্বাবস্থায় ফেরা</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- ভুলে DELETE করেছেন? Flashback দিয়ে ফেরত আনুন!</span>
+
+<span class="cm">-- ৩০ মিনিট আগের ডেটা দেখুন</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span>
+<span class="kw">AS OF</span> TIMESTAMP (SYSTIMESTAMP - INTERVAL <span class="str">'30'</span> MINUTE);
+
+<span class="cm">-- মুছে যাওয়া ডেটা ফেরত আনুন</span>
+<span class="kw">INSERT INTO</span> <span class="tb2">employee</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span>
+<span class="kw">AS OF</span> TIMESTAMP (SYSTIMESTAMP - INTERVAL <span class="str">'30'</span> MINUTE)
+<span class="kw">MINUS</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span>;
+
+<span class="cm">-- পুরো টেবিল Flashback (DBA)</span>
+<span class="kw">ALTER TABLE</span> <span class="tb2">employee</span> <span class="kw">ENABLE ROW MOVEMENT</span>;
+<span class="kw">FLASHBACK TABLE</span> <span class="tb2">employee</span> <span class="kw">TO</span> TIMESTAMP
+    (SYSTIMESTAMP - INTERVAL <span class="str">'1'</span> HOUR);
+
+<span class="cm">-- Recycle Bin (DROP করা টেবিল ফেরত)</span>
+<span class="kw">SHOW RECYCLEBIN</span>;
+<span class="kw">FLASHBACK TABLE</span> <span class="tb2">employee</span> <span class="kw">TO BEFORE DROP</span>;</pre>
+</div>
+</div>
+
+<!-- ===== LESSON 15: PERFORMANCE ===== -->
+<div id="lesson-15" class="lesson">
+<div class="lesson-header">
+  <div class="lesson-num-badge">15</div>
+  <div class="lesson-title-area">
+    <h2>পারফরম্যান্স টিউনিং</h2>
+    <p>Execution Plan, Optimizer, AWR ও সাধারণ টিপস</p>
+    <div class="lesson-tags"><span class="tag tag-r">DBA</span><span class="tag tag-b">Performance</span></div>
+  </div>
+</div>
+
+<h3 class="sh">Execution Plan দেখা</h3>
+<p class="body">Execution Plan দেখে বোঝা যায় Oracle কীভাবে একটি কোয়েরি চালাচ্ছে এবং কোথায় সময় বেশি লাগছে।</p>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">Execution Plan বিশ্লেষণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- Execution Plan দেখার সহজ পদ্ধতি</span>
+<span class="kw">EXPLAIN PLAN FOR</span>
+<span class="kw">SELECT</span> e.emp_name, d.dept_name
+<span class="kw">FROM</span>  <span class="tb2">employee</span> e <span class="kw">JOIN</span> <span class="tb2">department</span> d <span class="kw">ON</span> e.dept_id = d.dept_id
+<span class="kw">WHERE</span> e.salary > <span class="num">50000</span>;
+
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> TABLE(DBMS_XPLAN.<span class="fn">DISPLAY</span>());
+
+<span class="cm">-- SQL Developer-এ: F10 চাপুন</span>
+<span class="cm">-- আউটপুটে দেখুন:</span>
+<span class="cm">-- TABLE ACCESS FULL  = Index নেই, ধীর</span>
+<span class="cm">-- INDEX RANGE SCAN   = Index ব্যবহার হচ্ছে, দ্রুত</span>
+<span class="cm">-- HASH JOIN          = বড় টেবিলের JOIN, স্বাভাবিক</span>
+
+<span class="cm">-- Autotrace চালু করা</span>
+<span class="kw">SET</span> AUTOTRACE ON EXPLAIN STATISTICS;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> salary > <span class="num">50000</span>;
+<span class="kw">SET</span> AUTOTRACE OFF;
+
+<span class="cm">-- Hint ব্যবহার (Optimizer-কে নির্দেশ)</span>
+<span class="kw">SELECT</span> <span class="cm">/*+ INDEX(e idx_emp_dept_sal) PARALLEL(4) */</span>
+    e.emp_name, e.salary
+<span class="kw">FROM</span> <span class="tb2">employee</span> e
+<span class="kw">WHERE</span> e.dept_id = <span class="num">10</span>;</pre>
+</div>
+
+<h3 class="sh">AWR — Automatic Workload Repository</h3>
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">AWR রিপোর্ট</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- AWR Snapshot তৈরি</span>
+<span class="kw">EXEC</span> DBMS_WORKLOAD_REPOSITORY.CREATE_SNAPSHOT();
+
+<span class="cm">-- AWR রিপোর্ট তৈরি</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> TABLE(
+    DBMS_WORKLOAD_REPOSITORY.<span class="fn">AWR_REPORT_HTML</span>(
+        l_dbid      => (<span class="kw">SELECT</span> dbid <span class="kw">FROM</span> v$database),
+        l_inst_num  => <span class="num">1</span>,
+        l_bid       => <span class="num">100</span>,   <span class="cm">-- শুরু snapshot id</span>
+        l_eid       => <span class="num">101</span>    <span class="cm">-- শেষ snapshot id</span>
+    )
+);
+
+<span class="cm">-- সবচেয়ে ধীর SQL দেখা</span>
+<span class="kw">SELECT</span>
+    sql_id,
+    <span class="fn">ROUND</span>(elapsed_time/<span class="num">1000000</span>,<span class="num">2</span>) elapsed_sec,
+    executions,
+    <span class="fn">ROUND</span>(elapsed_time/executions/<span class="num">1000000</span>,<span class="num">3</span>) sec_per_exec,
+    <span class="fn">SUBSTR</span>(sql_text,<span class="num">1</span>,<span class="num">80</span>) sql_text
+<span class="kw">FROM</span>   v$sql
+<span class="kw">WHERE</span>  executions > <span class="num">0</span>
+<span class="kw">ORDER BY</span> elapsed_time <span class="kw">DESC</span>
+<span class="kw">FETCH FIRST</span> <span class="num">10</span> <span class="kw">ROWS ONLY</span>;</pre>
+</div>
+
+<h3 class="sh">পারফরম্যান্স টিউনিং টিপস</h3>
+<div class="grid2">
+  <div class="card"><h4>✅ করণীয়</h4>
+    <ul style="color:var(--muted);font-size:.85rem;padding-left:1.2rem;line-height:2;">
+      <li>WHERE কলামে Index রাখুন</li>
+      <li>SELECT * এড়িয়ে নির্দিষ্ট কলাম লিখুন</li>
+      <li>Bind Variables ব্যবহার করুন</li>
+      <li>নিয়মিত Statistics আপডেট করুন</li>
+      <li>পার্টিশনিং বড় টেবিলে ব্যবহার করুন</li>
+    </ul>
+  </div>
+  <div class="card"><h4>❌ এড়িয়ে চলুন</h4>
+    <ul style="color:var(--muted);font-size:.85rem;padding-left:1.2rem;line-height:2;">
+      <li>WHERE-এ ফাংশন ব্যবহার (Index বাতিল)</li>
+      <li>Implicit Type Conversion</li>
+      <li>বড় LIKE '%text%' কোয়েরি</li>
+      <li>অতিরিক্ত Subquery</li>
+      <li>HAVING-এ WHERE-এর মতো ফিল্টার</li>
+    </ul>
+  </div>
+</div>
+
+<div class="codeblock">
+  <div class="cb-header"><div class="cb-dots"><div class="cbd cbd-r"></div><div class="cbd cbd-y"></div><div class="cbd cbd-g"></div></div><div class="cb-title">সাধারণ অপ্টিমাইজেশন উদাহরণ</div><div class="cb-lang">SQL</div></div>
+  <pre><span class="cm">-- ❌ খারাপ: Index ব্যবহার হবে না</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> <span class="fn">UPPER</span>(emp_name) = <span class="str">'KARIM'</span>;
+<span class="cm">-- ✅ ভালো: Function-Based Index বা এভাবে</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb2">employee</span> <span class="kw">WHERE</span> emp_name = <span class="str">'Karim'</span>;
+
+<span class="cm">-- ❌ খারাপ: Implicit conversion</span>
+<span class="kw">WHERE</span> emp_id = <span class="str">'1001'</span>  <span class="cm">-- VARCHAR vs NUMBER তুলনা</span>
+<span class="cm">-- ✅ ভালো:</span>
+<span class="kw">WHERE</span> emp_id = <span class="num">1001</span>
+
+<span class="cm">-- ❌ খারাপ: NOT IN with NULL</span>
+<span class="kw">WHERE</span> dept_id <span class="kw">NOT IN</span> (<span class="kw">SELECT</span> dept_id <span class="kw">FROM</span> department <span class="kw">WHERE</span> budget > <span class="num">0</span>)
+<span class="cm">-- ✅ ভালো: NOT EXISTS ব্যবহার করুন</span>
+<span class="kw">WHERE NOT EXISTS</span> (<span class="kw">SELECT</span> <span class="num">1</span> <span class="kw">FROM</span> department d
+                  <span class="kw">WHERE</span> d.dept_id = e.dept_id <span class="kw">AND</span> d.budget > <span class="num">0</span>)
+
+<span class="cm">-- Statistics আপডেট করা</span>
+<span class="kw">EXEC</span> DBMS_STATS.GATHER_TABLE_STATS(<span class="str">'STUDENT'</span>, <span class="str">'EMPLOYEE'</span>,
+    cascade => TRUE,
+    estimate_percent => DBMS_STATS.AUTO_SAMPLE_SIZE
+);</pre>
+</div>
+
+<div class="hbox" style="margin-top:2rem;">
+  <h3 style="color:var(--gold);margin-bottom:1rem;">🎓 কোর্স সম্পন্ন! পরবর্তী পদক্ষেপ</h3>
+  <div class="grid3" style="margin-top:.75rem;">
+    <div><strong style="color:#fff;">Oracle Certification</strong><br><span style="color:var(--muted);font-size:.85rem;">OCA, OCP পরীক্ষা দিন</span></div>
+    <div><strong style="color:#fff;">Oracle Live SQL</strong><br><span style="color:var(--muted);font-size:.85rem;">livesql.oracle.com-এ অনুশীলন</span></div>
+    <div><strong style="color:#fff;">Oracle Docs</strong><br><span style="color:var(--muted);font-size:.85rem;">docs.oracle.com রেফারেন্স</span></div>
+  </div>
+</div>
+
+</div><!-- lesson-15 end -->
+
+<!-- LESSON NAV -->
+<div class="lesson-nav" id="lesson-nav">
+  <button class="lnav-btn" id="btn-prev" onclick="navigate(-1)">← পূর্ববর্তী</button>
+  <span id="lesson-indicator" style="color:var(--muted);font-size:.85rem;">পাঠ ০ / ১৫</span>
+  <button class="lnav-btn primary" id="btn-next" onclick="navigate(1)">পরবর্তী →</button>
+</div>
+
+</main><!-- end main -->
+
+<script>
+// ========== STATE ==========
+let currentLesson = 0;
+const TOTAL = 15;
+
+const lessonNames = [
+  'ভূমিকা','Oracle পরিচিতি','ইনস্টলেশন','আর্কিটেকচার',
+  'DDL','DML','SELECT ও ফাংশন','JOIN',
+  'সাবকোয়েরি','ভিউ ও ইন্ডেক্স','ট্রানজ্যাকশন',
+  'PL/SQL ভূমিকা','Procedure ও Function','Trigger ও Cursor',
+  'ব্যাকআপ','পারফরম্যান্স'
+];
+
+function showLesson(n) {
+  document.querySelectorAll('.lesson').forEach(el => el.classList.remove('active-lesson'));
+  document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+
+  const lesson = document.getElementById('lesson-' + n);
+  if (lesson) lesson.classList.add('active-lesson');
+
+  const sbItem = document.getElementById('sb-' + n);
+  if (sbItem) sbItem.classList.add('active');
+
+  currentLesson = n;
+  updateNav();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Hide hero stats section when not on lesson-0
+  if (n === 0) {
+    document.getElementById('lesson-nav').style.display = 'none';
+  } else {
+    document.getElementById('lesson-nav').style.display = 'flex';
+  }
+}
+
+function navigate(dir) {
+  const next = currentLesson + dir;
+  if (next >= 0 && next <= TOTAL) showLesson(next);
+}
+
+function updateNav() {
+  const ind = document.getElementById('lesson-indicator');
+  if (ind) ind.textContent = `পাঠ ${currentLesson} / ${TOTAL}`;
+  const prev = document.getElementById('btn-prev');
+  const next = document.getElementById('btn-next');
+  if (prev) prev.disabled = currentLesson <= 1;
+  if (next) next.disabled = currentLesson >= TOTAL;
+}
+
+function updateProgress() {
+  const pct = currentLesson === 0 ? 0 : Math.round((currentLesson / TOTAL) * 100);
+  const fill = document.getElementById('prog-fill');
+  const txt = document.getElementById('prog-text');
+  if (fill) fill.style.width = pct + '%';
+  if (txt) txt.textContent = currentLesson + '/' + TOTAL + ' মডিউল';
+}
+
+// Quiz
+function checkQ(el, result) {
+  const box = el.closest('.quiz-box');
+  box.querySelectorAll('.quiz-opt').forEach(o => {
+    o.style.pointerEvents = 'none';
+    if (o.dataset.result === 'correct' || o === el) {
+      // handled below
+    }
+  });
+  el.classList.add(result);
+  // Also highlight correct on wrong
+  if (result === 'wrong') {
+    box.querySelectorAll('.quiz-opt').forEach(o => {
+      if (o.onclick.toString().includes("'correct'")) o.classList.add('correct');
+    });
+  }
+  box.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+}
+
+// Mobile sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Scroll reveal
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// Init
+showLesson(0);
+</script>
+
+</body>
+</html>

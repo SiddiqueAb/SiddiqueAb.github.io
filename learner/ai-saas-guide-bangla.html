@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI দিয়ে SaaS ব্যবসা — সম্পূর্ণ গাইড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1628;
+    --bg3: #141d35;
+    --card: #111827;
+    --card2: #1a2540;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --border: #1e293b;
+    --border2: #2d3f5e;
+    --glow: rgba(0,212,255,0.15);
+    --glow2: rgba(124,58,237,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border2);
+    z-index: 1000;
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .orb1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
+    top: 10%; left: -10%;
+    animation: float1 8s ease-in-out infinite;
+  }
+
+  .orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
+    bottom: 10%; right: -5%;
+    animation: float2 10s ease-in-out infinite;
+  }
+
+  .orb3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    animation: float3 12s ease-in-out infinite;
+  }
+
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-30px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,20px)} }
+  @keyframes float3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-48%,-52%)} }
+
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1));
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .hero h1 {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .hero h1 .line1 { color: var(--text); display: block; }
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    color: var(--text2);
+    font-size: 1.05rem;
+    max-width: 650px;
+    margin: 0 auto 2.5rem;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #0099bb);
+    color: #000;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,212,255,0.5); }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--accent2); background: rgba(124,58,237,0.1); }
+
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    background: var(--card2);
+    border-top: 1px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
+    padding: 1.5rem 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .stats-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label { font-size: 0.75rem; color: var(--text3); margin-top: 4px; }
+
+  /* ===== MAIN CONTAINER ===== */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+
+  /* ===== SECTION ===== */
+  section { padding: 5rem 0; }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .section-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-desc {
+    color: var(--text2);
+    font-size: 1rem;
+    max-width: 600px;
+    margin-bottom: 3rem;
+    line-height: 1.9;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-text {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  /* ===== CODE BLOCK ===== */
+  .code-wrap {
+    background: #0d1117;
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .code-header {
+    background: #161b22;
+    border-bottom: 1px solid var(--border2);
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .code-dots { display:flex; gap:6px; }
+  .code-dots span {
+    width:10px; height:10px; border-radius:50%;
+  }
+  .dot-r{background:#ff5f57} .dot-y{background:#febc2e} .dot-g{background:#28c840}
+
+  .code-lang {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    background: var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .code-body {
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: #e6edf3;
+  }
+
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .var { color: #79c0ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .num { color: #f8c555; }
+  .arr { color: #56d364; }
+
+  /* ===== GRID LAYOUTS ===== */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+  .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.2rem; }
+
+  /* ===== STEP CARDS ===== */
+  .steps { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .step {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    align-items: flex-start;
+    transition: border-color 0.3s;
+  }
+
+  .step:hover { border-color: rgba(0,212,255,0.3); }
+
+  .step-num {
+    min-width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .step-content h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-content p {
+    font-size: 0.87rem;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  /* ===== SAAS IDEAS ===== */
+  .saas-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .saas-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .saas-card:hover::before { opacity: 1; }
+  .saas-card:hover {
+    border-color: rgba(0,212,255,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .saas-emoji { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+
+  .saas-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .saas-desc {
+    font-size: 0.83rem;
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .saas-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .tag-green { color: var(--accent3); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.07); }
+  .tag-blue { color: var(--accent); border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.07); }
+  .tag-yellow { color: var(--accent4); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.07); }
+  .tag-purple { color: #a78bfa; border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.07); }
+  .tag-red { color: var(--accent5); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.07); }
+
+  /* ===== PRICING ===== */
+  .pricing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(0,212,255,0.15);
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+  }
+
+  .pricing-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .pricing-plan { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+  .pricing-price {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+    line-height: 1;
+  }
+
+  .pricing-period { font-size: 0.75rem; color: var(--text3); margin-bottom: 1.5rem; }
+  .pricing-features { list-style: none; text-align: left; margin-bottom: 1.5rem; }
+  .pricing-features li {
+    font-size: 0.82rem;
+    color: var(--text2);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pricing-features li::before { content: '✓'; color: var(--accent3); font-weight: 700; }
+
+  /* ===== CLIENT HUNT TIPS ===== */
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    transition: all 0.3s;
+  }
+
+  .tip-card:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+  .tip-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .tip-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+  .tip-text { font-size: 0.83rem; color: var(--text2); line-height: 1.8; }
+
+  /* ===== PLATFORM TABLE ===== */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    background: var(--bg3);
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text2);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  td {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.83rem;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ===== HIGHLIGHT BOX ===== */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .highlight-box h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .highlight-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .highlight-box ul li {
+    font-size: 0.87rem;
+    color: var(--text2);
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.8;
+  }
+
+  .highlight-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ===== WARNING / INFO BOXES ===== */
+  .info-box {
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .info-box.info { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); }
+  .info-box.warn { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); }
+  .info-box.success { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+  .info-box.danger { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); }
+
+  .info-box-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .info-box-text { font-size: 0.85rem; color: var(--text2); line-height: 1.8; }
+  .info-box-text strong { color: var(--text); }
+
+  /* ===== ROADMAP ===== */
+  .roadmap {
+    position: relative;
+    padding-left: 3rem;
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 16px; top: 24px; bottom: 24px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  }
+
+  .roadmap-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+  }
+
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -2.6rem;
+    top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+  }
+
+  .roadmap-phase {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .roadmap-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+  .roadmap-text { font-size: 0.85rem; color: var(--text2); line-height: 1.8; }
+
+  /* ===== PLATFORM CARDS ===== */
+  .platform-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+
+  .platform-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .platform-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+  .platform-logo { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .platform-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+  .platform-desc { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
+
+  /* ===== SECTION SEPARATORS ===== */
+  .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 0;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border2);
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+
+  .footer-logo {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-text { font-size: 0.82rem; color: var(--text3); line-height: 1.8; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:768px) {
+    .grid2,.grid3,.grid4 { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: 1fr 1fr; }
+    .platform-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .step { flex-direction: column; }
+  }
+
+  @media(max-width:480px) {
+    .stats-inner { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.9rem; }
+    .platform-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Section BG alternates */
+  .sec-alt { background: var(--bg2); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">AI<span>SaaS</span> গাইড</div>
+    <ul class="nav-links">
+      <li><a href="#integration">ইন্টিগ্রেশন</a></li>
+      <li><a href="#laravel">Laravel</a></li>
+      <li><a href="#saas">SaaS আইডিয়া</a></li>
+      <li><a href="#pricing">প্রাইসিং</a></li>
+      <li><a href="#client">ক্লায়েন্ট হান্ট</a></li>
+      <li><a href="#roadmap">রোডম্যাপ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🚀 বাংলাদেশের ডেভেলপারদের জন্য সম্পূর্ণ গাইড</div>
+    <h1>
+      <span class="line1">AI API দিয়ে বানাও</span>
+      <span class="line2">লক্ষ টাকার SaaS ব্যবসা</span>
+    </h1>
+    <p class="hero-sub">
+      OpenAI, Claude, Gemini — যেকোনো AI API কিভাবে Laravel, Node.js বা অন্য যেকোনো প্রজেক্টে integrate করবে এবং বাংলাদেশে কিভাবে ক্লায়েন্ট পাবে — সব কিছু এক জায়গায়।
+    </p>
+    <div class="hero-btns">
+      <a href="#integration" class="btn-primary">গাইড শুরু করো →</a>
+      <a href="#saas" class="btn-secondary">SaaS আইডিয়া দেখো</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div>
+      <span class="stat-num">৫+</span>
+      <div class="stat-label">AI API Provider</div>
+    </div>
+    <div>
+      <span class="stat-num">১৫+</span>
+      <div class="stat-label">SaaS আইডিয়া</div>
+    </div>
+    <div>
+      <span class="stat-num">২০+</span>
+      <div class="stat-label">ক্লায়েন্ট হান্ট টিপস</div>
+    </div>
+    <div>
+      <span class="stat-num">৳৳৳</span>
+      <div class="stat-label">মাসিক আয়ের সুযোগ</div>
+    </div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ===== SECTION 1: AI API কী ===== -->
+<section id="integration">
+  <div class="container">
+    <div class="section-label">প্রথম ধাপ</div>
+    <div class="divider"></div>
+    <h2 class="section-title">AI API কী এবং কেন <span>দরকার?</span></h2>
+    <p class="section-desc">
+      AI API হলো একটা interface যার মাধ্যমে তুমি তোমার যেকোনো web app, mobile app বা software-এ Artificial Intelligence এর শক্তি যোগ করতে পারো — নিজে AI model train না করেই।
+    </p>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-icon" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2)">🤖</div>
+        <div class="card-title">প্রধান AI API Provider সমূহ</div>
+        <div class="card-text">
+          <strong style="color:var(--accent)">OpenAI GPT-4o</strong> — সবচেয়ে জনপ্রিয়, text + vision<br><br>
+          <strong style="color:var(--accent2)">Anthropic Claude</strong> — দীর্ঘ context, নির্ভরযোগ্য<br><br>
+          <strong style="color:#4285f4">Google Gemini</strong> — multimodal, কম খরচ<br><br>
+          <strong style="color:var(--accent3)">Groq</strong> — অতি দ্রুত inference<br><br>
+          <strong style="color:var(--accent4)">Mistral AI</strong> — open-source friendly
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2)">⚡</div>
+        <div class="card-title">AI API দিয়ে কী কী করা যায়?</div>
+        <div class="card-text">
+          ✦ Text generation ও summarization<br>
+          ✦ Image analysis ও generation<br>
+          ✦ Chatbot ও customer support<br>
+          ✦ Code generation ও review<br>
+          ✦ Translation ও localization<br>
+          ✦ Sentiment analysis<br>
+          ✦ Data extraction from PDF/images<br>
+          ✦ Voice-to-text, text-to-voice
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">💰</div>
+        <div class="card-title">AI API pricing মডেল</div>
+        <div class="card-text">
+          API সাধারণত <strong style="color:var(--accent3)">per token</strong> বা <strong style="color:var(--accent3)">per request</strong> charge করে।<br><br>
+          <strong>Token কী?</strong> প্রায় ৩/৪টা শব্দ = ১ token<br><br>
+          উদাহরণ: GPT-4o তে ১M input token = $২.৫০, output = $১০<br><br>
+          তোমার SaaS-এ markup যোগ করে প্রতি ব্যবহারকারীকে charge করতে পারো।
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:2rem">
+      <h3>💡 মূল কনসেপ্ট: API কীভাবে কাজ করে?</h3>
+      <ul>
+        <li>তুমি AI কোম্পানির কাছে একটা API Key নিবে (সাধারণত বিনামূল্যে শুরু করা যায়)</li>
+        <li>তোমার কোড থেকে HTTP request পাঠাবে API endpoint-এ (REST API)</li>
+        <li>AI model তোমার prompt প্রসেস করে response দেবে JSON ফরম্যাটে</li>
+        <li>তুমি সেই response তোমার app-এ display করবে ব্যবহারকারীকে</li>
+        <li>ব্যবহারকারী প্রতি মাসে তোমাকে subscription fee দেবে</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== SECTION 2: LARAVEL INTEGRATION ===== -->
+<section id="laravel" class="sec-alt">
+  <div class="container">
+    <div class="section-label">কোড টিউটোরিয়াল</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Laravel-এ <span>AI API Integration</span></h2>
+    <p class="section-desc">Step by step Laravel প্রজেক্টে OpenAI ও Claude API যোগ করার সম্পূর্ণ প্রক্রিয়া।</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">১</div>
+        <div class="step-content">
+          <h3>Composer দিয়ে OpenAI PHP Package install করো</h3>
+          <div class="code-wrap">
+            <div class="code-header">
+              <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+              <span class="code-lang">bash</span>
+            </div>
+            <div class="code-body">
+<span class="cm"># OpenAI Official PHP SDK</span>
+composer require openai-php/laravel
+
+<span class="cm"># অথবা HTTP client দিয়েও করা যায়</span>
+composer require guzzlehttp/guzzle
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">২</div>
+        <div class="step-content">
+          <h3>.env ফাইলে API Key যোগ করো</h3>
+          <div class="code-wrap">
+            <div class="code-header">
+              <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+              <span class="code-lang">.env</span>
+            </div>
+            <div class="code-body">
+<span class="cm"># OpenAI</span>
+<span class="var">OPENAI_API_KEY</span>=sk-proj-xxxxxxxxxxxxxxxxxxxx
+<span class="var">OPENAI_ORGANIZATION</span>=org-xxxxxxxxxx
+
+<span class="cm"># Anthropic Claude</span>
+<span class="var">ANTHROPIC_API_KEY</span>=sk-ant-xxxxxxxxxxxxxxxxxxxx
+
+<span class="cm"># Google Gemini</span>
+<span class="var">GEMINI_API_KEY</span>=AIzaSyxxxxxxxxxxxxxxxxxx
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">৩</div>
+        <div class="step-content">
+          <h3>OpenAI Service Class তৈরি করো</h3>
+          <div class="code-wrap">
+            <div class="code-header">
+              <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+              <span class="code-lang">PHP — app/Services/OpenAIService.php</span>
+            </div>
+            <div class="code-body">
+<span class="kw">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Services;
+
+<span class="kw">use</span> <span class="fn">OpenAI</span>;
+<span class="kw">use</span> Illuminate\Support\Facades\Cache;
+
+<span class="kw">class</span> <span class="fn">OpenAIService</span>
+{
+    <span class="kw">protected</span> $client;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">$this</span>->client = OpenAI::client(
+            config(<span class="str">'openai.api_key'</span>)
+        );
+    }
+
+    <span class="cm">/**
+     * যেকোনো text generate করো
+     */</span>
+    <span class="kw">public function</span> <span class="fn">generateText</span>(<span class="kw">string</span> $prompt): <span class="kw">string</span>
+    {
+        $response = <span class="kw">$this</span>->client->chat()->create([
+            <span class="str">'model'</span>    => <span class="str">'gpt-4o'</span>,
+            <span class="str">'messages'</span> => [
+                [
+                    <span class="str">'role'</span>    => <span class="str">'system'</span>,
+                    <span class="str">'content'</span> => <span class="str">'তুমি একজন সহায়ক AI assistant।'</span>
+                ],
+                [
+                    <span class="str">'role'</span>    => <span class="str">'user'</span>,
+                    <span class="str">'content'</span> => $prompt
+                ],
+            ],
+            <span class="str">'max_tokens'</span> => <span class="num">1000</span>,
+            <span class="str">'temperature'</span> => <span class="num">0.7</span>,
+        ]);
+
+        <span class="kw">return</span> $response->choices[<span class="num">0</span>]->message->content;
+    }
+
+    <span class="cm">/**
+     * Streaming response (real-time output)
+     */</span>
+    <span class="kw">public function</span> <span class="fn">streamText</span>(<span class="kw">string</span> $prompt): iterable
+    {
+        <span class="kw">return</span> <span class="kw">$this</span>->client->chat()->createStreamed([
+            <span class="str">'model'</span>    => <span class="str">'gpt-4o'</span>,
+            <span class="str">'messages'</span> => [[<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => $prompt]],
+        ]);
+    }
+
+    <span class="cm">/**
+     * Image analyze করো
+     */</span>
+    <span class="kw">public function</span> <span class="fn">analyzeImage</span>(<span class="kw">string</span> $imageUrl, <span class="kw">string</span> $question): <span class="kw">string</span>
+    {
+        $response = <span class="kw">$this</span>->client->chat()->create([
+            <span class="str">'model'</span> => <span class="str">'gpt-4o'</span>,
+            <span class="str">'messages'</span> => [[
+                <span class="str">'role'</span> => <span class="str">'user'</span>,
+                <span class="str">'content'</span> => [
+                    [<span class="str">'type'</span> => <span class="str">'text'</span>, <span class="str">'text'</span> => $question],
+                    [<span class="str">'type'</span> => <span class="str">'image_url'</span>,
+                     <span class="str">'image_url'</span> => [<span class="str">'url'</span> => $imageUrl]],
+                ],
+            ]],
+        ]);
+
+        <span class="kw">return</span> $response->choices[<span class="num">0</span>]->message->content;
+    }
+}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">৪</div>
+        <div class="step-content">
+          <h3>Controller তৈরি করো</h3>
+          <div class="code-wrap">
+            <div class="code-header">
+              <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+              <span class="code-lang">PHP — app/Http/Controllers/AIController.php</span>
+            </div>
+            <div class="code-body">
+<span class="kw">&lt;?php</span>
+
+<span class="kw">namespace</span> App\Http\Controllers;
+
+<span class="kw">use</span> App\Services\OpenAIService;
+<span class="kw">use</span> Illuminate\Http\Request;
+<span class="kw">use</span> Illuminate\Http\Response;
+
+<span class="kw">class</span> <span class="fn">AIController</span> <span class="kw">extends</span> Controller
+{
+    <span class="kw">public function</span> <span class="fn">__construct</span>(
+        <span class="kw">private</span> OpenAIService $aiService
+    ) {}
+
+    <span class="cm">// Content generate করো</span>
+    <span class="kw">public function</span> <span class="fn">generate</span>(Request $request): Response
+    {
+        $request->validate([
+            <span class="str">'prompt'</span> => <span class="str">'required|string|max:2000'</span>,
+            <span class="str">'type'</span>   => <span class="str">'required|in:blog,email,social,product'</span>,
+        ]);
+
+        <span class="cm">// Token usage track করো per user</span>
+        $user = auth()->user();
+        <span class="kw">if</span> ($user->monthly_tokens_used >= $user->plan->token_limit) {
+            <span class="kw">return</span> response()->json([
+                <span class="str">'error'</span> => <span class="str">'মাসিক limit শেষ। Upgrade করুন।'</span>
+            ], <span class="num">429</span>);
+        }
+
+        $systemPrompt = <span class="kw">match</span>($request->type) {
+            <span class="str">'blog'</span>    => <span class="str">'তুমি একজন বাংলা ব্লগ লেখক।'</span>,
+            <span class="str">'email'</span>   => <span class="str">'তুমি professional email লেখক।'</span>,
+            <span class="str">'social'</span>  => <span class="str">'তুমি social media content creator।'</span>,
+            <span class="str">'product'</span> => <span class="str">'তুমি product description লেখক।'</span>,
+        };
+
+        $content = <span class="kw">$this</span>->aiService->generateText(
+            $systemPrompt . <span class="str">"\n\n"</span> . $request->prompt
+        );
+
+        <span class="cm">// Token count save করো</span>
+        $user->increment(<span class="str">'monthly_tokens_used'</span>, strlen($content) / <span class="num">4</span>);
+
+        <span class="kw">return</span> response()->json([
+            <span class="str">'content'</span> => $content,
+            <span class="str">'tokens_left'</span> => $user->plan->token_limit - $user->monthly_tokens_used,
+        ]);
+    }
+}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">৫</div>
+        <div class="step-content">
+          <h3>Claude API Integration (সরাসরি HTTP)</h3>
+          <div class="code-wrap">
+            <div class="code-header">
+              <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+              <span class="code-lang">PHP — Claude API সরাসরি</span>
+            </div>
+            <div class="code-body">
+<span class="kw">use</span> Illuminate\Support\Facades\Http;
+
+<span class="kw">class</span> <span class="fn">ClaudeService</span>
+{
+    <span class="kw">private string</span> $apiKey;
+    <span class="kw">private string</span> $baseUrl = <span class="str">'https://api.anthropic.com/v1'</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>()
+    {
+        <span class="kw">$this</span>->apiKey = config(<span class="str">'services.anthropic.key'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">chat</span>(<span class="kw">string</span> $message, <span class="kw">string</span> $model = <span class="str">'claude-sonnet-4-5'</span>): <span class="kw">string</span>
+    {
+        $response = Http::withHeaders([
+            <span class="str">'x-api-key'</span>         => <span class="kw">$this</span>->apiKey,
+            <span class="str">'anthropic-version'</span> => <span class="str">'2023-06-01'</span>,
+            <span class="str">'content-type'</span>      => <span class="str">'application/json'</span>,
+        ])->post(<span class="str">"{$this->baseUrl}/messages"</span>, [
+            <span class="str">'model'</span>      => $model,
+            <span class="str">'max_tokens'</span> => <span class="num">2048</span>,
+            <span class="str">'messages'</span>   => [
+                [<span class="str">'role'</span> => <span class="str">'user'</span>, <span class="str">'content'</span> => $message]
+            ],
+        ]);
+
+        <span class="kw">if</span> ($response->failed()) {
+            <span class="kw">throw new</span> \Exception(<span class="str">'Claude API Error: '</span> . $response->body());
+        }
+
+        <span class="kw">return</span> $response->json(<span class="str">'content.0.text'</span>);
+    }
+}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info" style="margin-top:2rem">
+      <div class="info-box-icon">ℹ️</div>
+      <div class="info-box-text">
+        <strong>Pro Tip:</strong> Production-এ সবসময় API calls cache করো। একই prompt দুইবার call করলে অর্থ নষ্ট হয়।
+        Laravel Cache ব্যবহার করো: <code style="background:rgba(0,212,255,0.1);padding:2px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:0.8rem">Cache::remember('ai_'.md5($prompt), 3600, fn() => $ai->generate($prompt))</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== NODE.JS / OTHER FRAMEWORKS ===== -->
+<section>
+  <div class="container">
+    <div class="section-label">অন্য Framework</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Node.js, Python, <span>অন্য ভাষায় Integration</span></h2>
+
+    <div class="grid2" style="margin-bottom:2rem">
+      <div>
+        <h3 style="color:var(--accent3);margin-bottom:1rem;font-size:0.95rem">📦 Node.js / Express.js</h3>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <span class="code-lang">JavaScript</span>
+          </div>
+          <div class="code-body">
+<span class="kw">import</span> OpenAI <span class="kw">from</span> <span class="str">'openai'</span>;
+
+<span class="kw">const</span> <span class="var">openai</span> = <span class="kw">new</span> <span class="fn">OpenAI</span>({
+  apiKey: process.env.<span class="var">OPENAI_API_KEY</span>
+});
+
+<span class="cm">// Express route</span>
+app.<span class="fn">post</span>(<span class="str">'/api/generate'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { prompt } = req.body;
+
+    <span class="kw">const</span> stream = <span class="kw">await</span> openai.chat.completions.<span class="fn">create</span>({
+      model: <span class="str">'gpt-4o'</span>,
+      messages: [{ role: <span class="str">'user'</span>, content: prompt }],
+      stream: <span class="arr">true</span>,
+    });
+
+    <span class="cm">// Streaming response</span>
+    res.<span class="fn">setHeader</span>(<span class="str">'Content-Type'</span>, <span class="str">'text/event-stream'</span>);
+    <span class="kw">for await</span> (<span class="kw">const</span> chunk <span class="kw">of</span> stream) {
+      <span class="kw">const</span> text = chunk.choices[<span class="num">0</span>]?.delta?.content || <span class="str">''</span>;
+      res.<span class="fn">write</span>(<span class="str">`data: ${text}\n\n`</span>);
+    }
+    res.<span class="fn">end</span>();
+
+  } <span class="kw">catch</span> (err) {
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: err.message });
+  }
+});
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="color:var(--accent4);margin-bottom:1rem;font-size:0.95rem">🐍 Python / FastAPI / Django</h3>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <div class="code-body">
+<span class="kw">from</span> openai <span class="kw">import</span> AsyncOpenAI
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+<span class="kw">import</span> anthropic
+
+app = <span class="fn">FastAPI</span>()
+client = <span class="fn">AsyncOpenAI</span>()
+claude = anthropic.<span class="fn">Anthropic</span>()
+
+<span class="arr">@app.post</span>(<span class="str">"/generate"</span>)
+<span class="kw">async def</span> <span class="fn">generate</span>(prompt: str):
+    response = <span class="kw">await</span> client.chat.completions.<span class="fn">create</span>(
+        model=<span class="str">"gpt-4o"</span>,
+        messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: prompt}],
+        max_tokens=<span class="num">1000</span>
+    )
+    <span class="kw">return</span> {<span class="str">"content"</span>: response.choices[<span class="num">0</span>].message.content}
+
+<span class="cm"># Claude API</span>
+<span class="arr">@app.post</span>(<span class="str">"/claude"</span>)
+<span class="kw">async def</span> <span class="fn">use_claude</span>(prompt: str):
+    msg = claude.messages.<span class="fn">create</span>(
+        model=<span class="str">"claude-sonnet-4-5"</span>,
+        max_tokens=<span class="num">1024</span>,
+        messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: prompt}]
+    )
+    <span class="kw">return</span> {<span class="str">"content"</span>: msg.content[<span class="num">0</span>].text}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h3>🔑 যেকোনো Framework-এ AI Integration এর মূল ধাপ</h3>
+      <ul>
+        <li>API Key .env তে রাখো — কখনো code-এ hardcode করবে না</li>
+        <li>Rate limiting যোগ করো — per user per minute request সীমা দাও</li>
+        <li>Error handling করো — API down থাকলে fallback দাও</li>
+        <li>Response cache করো Redis বা Memcached দিয়ে</li>
+        <li>Token usage database-এ save করো billing-এর জন্য</li>
+        <li>Retry logic যোগ করো (exponential backoff)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== SECTION: SAAS IDEAS ===== -->
+<section id="saas" class="sec-alt">
+  <div class="container">
+    <div class="section-label">ব্যবসার আইডিয়া</div>
+    <div class="divider"></div>
+    <h2 class="section-title">বাংলাদেশে বিক্রি হবে এমন <span>১৫টি AI SaaS আইডিয়া</span></h2>
+    <p class="section-desc">এই আইডিয়াগুলো বিশেষভাবে বাংলাদেশের বাজার মাথায় রেখে বাছাই করা হয়েছে।</p>
+
+    <div class="grid3">
+      <!-- 1 -->
+      <div class="saas-card">
+        <span class="saas-emoji">✍️</span>
+        <div class="saas-title">AI Content Writer (বাংলা + ইংরেজি)</div>
+        <div class="saas-desc">Blog post, Facebook post, product description, email — সব AI দিয়ে লেখো ১ ক্লিকে। বাংলা ও ইংরেজি দুই ভাষায়।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">সহজ বিক্রয়</span>
+          <span class="tag tag-blue">৳৫০০-২০০০/মাস</span>
+          <span class="tag tag-yellow">E-commerce</span>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🎧</span>
+        <div class="saas-title">AI Customer Support Chatbot</div>
+        <div class="saas-desc">যেকোনো ব্যবসার website বা Facebook-এ AI chatbot। ২৪/৭ customer support, order tracking, FAQ answer।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">হাই ডিমান্ড</span>
+          <span class="tag tag-blue">৳২০০০-১০০০০/মাস</span>
+          <span class="tag tag-purple">SME</span>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🖼️</span>
+        <div class="saas-title">AI Product Photo Enhancer</div>
+        <div class="saas-desc">E-commerce seller-দের জন্য। সাধারণ ছবি AI দিয়ে professional করো। Background remove, enhance quality।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">সহজ বিক্রয়</span>
+          <span class="tag tag-blue">৳৩০০-১৫০০/মাস</span>
+          <span class="tag tag-yellow">Daraz সেলার</span>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="saas-card">
+        <span class="saas-emoji">📄</span>
+        <div class="saas-title">AI CV / Resume Builder</div>
+        <div class="saas-desc">চাকরিপ্রার্থীদের জন্য AI-powered CV তৈরির tool। Job description দিলে optimized CV বের হবে।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">বড় মার্কেট</span>
+          <span class="tag tag-blue">৳৯৯-৪৯৯/মাস</span>
+          <span class="tag tag-purple">Job Seekers</span>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🏥</span>
+        <div class="saas-title">AI Medical Report Reader</div>
+        <div class="saas-desc">রোগীরা তাদের medical report upload করলে AI সহজ বাংলায় ব্যাখ্যা করবে। Doctor-patient gap কমাবে।</div>
+        <div class="saas-meta">
+          <span class="tag tag-red">উচ্চ মূল্য</span>
+          <span class="tag tag-blue">৳৫০০-৩০০০/মাস</span>
+          <span class="tag tag-yellow">Healthcare</span>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="saas-card">
+        <span class="saas-emoji">⚖️</span>
+        <div class="saas-title">AI Legal Document Analyzer</div>
+        <div class="saas-desc">চুক্তিপত্র, নোটিশ, legal document বাংলায় সহজে বুঝতে AI সাহায্য করবে। আইনজীবীদের জন্যও।</div>
+        <div class="saas-meta">
+          <span class="tag tag-red">Premium</span>
+          <span class="tag tag-blue">৳৩০০০-১৫০০০/মাস</span>
+          <span class="tag tag-purple">Law Firms</span>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="saas-card">
+        <span class="saas-emoji">📊</span>
+        <div class="saas-title">AI Social Media Manager</div>
+        <div class="saas-desc">Facebook, Instagram, LinkedIn — সব প্ল্যাটফর্মের জন্য AI content calendar ও post তৈরি। বাংলাদেশি ব্র্যান্ডের জন্য।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">সহজ বিক্রয়</span>
+          <span class="tag tag-blue">৳১০০০-৫০০০/মাস</span>
+          <span class="tag tag-yellow">Agency</span>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🏫</span>
+        <div class="saas-title">AI Tutor for Students</div>
+        <div class="saas-desc">SSC/HSC ছাত্রছাত্রীদের জন্য AI tutor। বাংলায় যেকোনো বিষয়ের প্রশ্নের উত্তর, ব্যাখ্যা, MCQ practice।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">বিশাল মার্কেট</span>
+          <span class="tag tag-blue">৳১৯৯-৪৯৯/মাস</span>
+          <span class="tag tag-purple">Education</span>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🌐</span>
+        <div class="saas-title">AI Website Builder</div>
+        <div class="saas-desc">Description দিলে AI পুরো website তৈরি করে দেবে। ছোট ব্যবসা ও freelancer-দের জন্য ideal।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">ট্রেন্ডিং</span>
+          <span class="tag tag-blue">৳২০০০-৮০০০/মাস</span>
+          <span class="tag tag-yellow">SME</span>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🎯</span>
+        <div class="saas-title">AI Ad Copy Generator</div>
+        <div class="saas-desc">Facebook Ads, Google Ads এর জন্য হাই-কনভার্টিং copy AI দিয়ে তৈরি করো। A/B test variation সহ।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">সহজ বিক্রয়</span>
+          <span class="tag tag-blue">৳৮০০-৩০০০/মাস</span>
+          <span class="tag tag-purple">Marketers</span>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="saas-card">
+        <span class="saas-emoji">📦</span>
+        <div class="saas-title">AI Inventory & Demand Predictor</div>
+        <div class="saas-desc">দোকান বা warehouse-এর জন্য AI দিয়ে stock prediction। কখন কী order করতে হবে AI বলে দেবে।</div>
+        <div class="saas-meta">
+          <span class="tag tag-red">B2B</span>
+          <span class="tag tag-blue">৳৫০০০-২০০০০/মাস</span>
+          <span class="tag tag-yellow">Retail</span>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🗣️</span>
+        <div class="saas-title">AI Voice Call Summary</div>
+        <div class="saas-desc">Sales call বা meeting record করলে AI summary, action items ও sentiment analysis দেবে।</div>
+        <div class="saas-meta">
+          <span class="tag tag-red">Enterprise</span>
+          <span class="tag tag-blue">৳৩০০০-১০০০০/মাস</span>
+          <span class="tag tag-purple">Sales Teams</span>
+        </div>
+      </div>
+
+      <!-- 13 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🌾</span>
+        <div class="saas-title">AI কৃষি পরামর্শ</div>
+        <div class="saas-desc">কৃষকদের জন্য ফসলের রোগ detection (ছবি থেকে), আবহাওয়া ভিত্তিক পরামর্শ, সার ব্যবস্থাপনা।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">ইউনিক</span>
+          <span class="tag tag-blue">৳২০০-৫০০/মাস</span>
+          <span class="tag tag-yellow">Agriculture</span>
+        </div>
+      </div>
+
+      <!-- 14 -->
+      <div class="saas-card">
+        <span class="saas-emoji">💬</span>
+        <div class="saas-title">AI WhatsApp Business Bot</div>
+        <div class="saas-desc">WhatsApp Business API + AI। Order নেওয়া, tracking দেওয়া, support দেওয়া সব auto। SME-দের জন্য।</div>
+        <div class="saas-meta">
+          <span class="tag tag-green">হট প্রোডাক্ট</span>
+          <span class="tag tag-blue">৳২০০০-৮০০০/মাস</span>
+          <span class="tag tag-purple">E-commerce</span>
+        </div>
+      </div>
+
+      <!-- 15 -->
+      <div class="saas-card">
+        <span class="saas-emoji">🧾</span>
+        <div class="saas-title">AI Accounting Assistant</div>
+        <div class="saas-desc">ছোট ব্যবসার জন্য। Invoice scan করলে AI entry করবে, expense categorize করবে, P&L দেখাবে।</div>
+        <div class="saas-meta">
+          <span class="tag tag-red">High Value</span>
+          <span class="tag tag-blue">৳৫০০-৩০০০/মাস</span>
+          <span class="tag tag-yellow">SME Finance</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box success" style="margin-top:2.5rem">
+      <div class="info-box-icon">✅</div>
+      <div class="info-box-text">
+        <strong>সেরা শুরু:</strong> Content Writer বা Chatbot দিয়ে শুরু করো। এই দুটোর ক্লায়েন্ট সবচেয়ে সহজে পাওয়া যায় এবং মার্কেট সবচেয়ে বড়। প্রথম ১০ ক্লায়েন্ট পেলে বাকিটা মুখে মুখে ছড়িয়ে যাবে।
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== SECTION: SaaS Architecture ===== -->
+<section>
+  <div class="container">
+    <div class="section-label">টেকনিক্যাল আর্কিটেকচার</div>
+    <div class="divider"></div>
+    <h2 class="section-title">SaaS প্রজেক্টের <span>সম্পূর্ণ কাঠামো</span></h2>
+
+    <div class="grid2" style="gap:2rem;align-items:start">
+      <div>
+        <h3 style="color:var(--text);font-size:1rem;margin-bottom:1rem">🏗️ প্রযুক্তি Stack (Recommended)</h3>
+        <div class="steps">
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">UI</div>
+            <div class="step-content">
+              <h3>Frontend</h3>
+              <p>Next.js বা Vue.js — Tailwind CSS দিয়ে modern UI। React Query দিয়ে API calls।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">API</div>
+            <div class="step-content">
+              <h3>Backend</h3>
+              <p>Laravel 11 বা Node.js/Express। REST API বা GraphQL। JWT authentication।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">DB</div>
+            <div class="step-content">
+              <h3>Database</h3>
+              <p>MySQL/PostgreSQL মূল ডেটার জন্য। Redis cache + queue। Pinecone vector DB AI context-এর জন্য।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">💳</div>
+            <div class="step-content">
+              <h3>Payment</h3>
+              <p>বাংলাদেশে: bKash/Nagad API + SSLCommerz। International: Stripe বা Paddle।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="color:var(--text);font-size:1rem;margin-bottom:1rem">🗃️ Database Schema (মূল টেবিল)</h3>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <span class="code-lang">SQL — Laravel Migration</span>
+          </div>
+          <div class="code-body">
+<span class="cm">-- ব্যবহারকারী টেবিল</span>
+<span class="kw">CREATE TABLE</span> users (
+  id <span class="fn">BIGINT PRIMARY KEY</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">255</span>),
+  email <span class="fn">VARCHAR</span>(<span class="num">255</span>) <span class="kw">UNIQUE</span>,
+  plan_id <span class="fn">BIGINT</span>,
+  tokens_used_this_month <span class="fn">INT DEFAULT</span> <span class="num">0</span>,
+  tokens_reset_at <span class="fn">TIMESTAMP</span>,
+  trial_ends_at <span class="fn">TIMESTAMP</span>
+);
+
+<span class="cm">-- Subscription plan</span>
+<span class="kw">CREATE TABLE</span> plans (
+  id <span class="fn">BIGINT PRIMARY KEY</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">100</span>),  <span class="cm">-- Basic, Pro, Enterprise</span>
+  price <span class="fn">DECIMAL</span>(<span class="num">10,2</span>),
+  token_limit <span class="fn">INT</span>,
+  features <span class="fn">JSON</span>
+);
+
+<span class="cm">-- AI Usage log</span>
+<span class="kw">CREATE TABLE</span> ai_usage_logs (
+  id <span class="fn">BIGINT PRIMARY KEY</span>,
+  user_id <span class="fn">BIGINT</span>,
+  feature <span class="fn">VARCHAR</span>(<span class="num">100</span>),
+  tokens_used <span class="fn">INT</span>,
+  model <span class="fn">VARCHAR</span>(<span class="num">50</span>),
+  cost_usd <span class="fn">DECIMAL</span>(<span class="num">10,6</span>),
+  created_at <span class="fn">TIMESTAMP</span>
+);
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== PRICING MODEL ===== -->
+<section id="pricing" class="sec-alt">
+  <div class="container">
+    <div class="section-label">প্রাইসিং স্ট্র্যাটেজি</div>
+    <div class="divider"></div>
+    <h2 class="section-title">বাংলাদেশ মার্কেটের জন্য <span>প্রাইসিং মডেল</span></h2>
+    <p class="section-desc">সঠিক দাম ঠিক করা SaaS সাফল্যের অন্যতম মূল চাবিকাঠি।</p>
+
+    <div class="grid3" style="margin-bottom:2.5rem">
+      <div class="pricing-card">
+        <div class="pricing-plan">Starter</div>
+        <div class="pricing-price">৳৪৯৯</div>
+        <div class="pricing-period">প্রতি মাসে</div>
+        <ul class="pricing-features">
+          <li>৫০,০০০ token/মাস</li>
+          <li>৩টি AI feature</li>
+          <li>Email support</li>
+          <li>১ user seat</li>
+          <li>Basic analytics</li>
+        </ul>
+        <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:0.75rem;font-size:0.8rem;color:var(--text3)">
+          🎯 Target: ফ্রিল্যান্সার, ছোট ব্যবসা
+        </div>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">সবচেয়ে জনপ্রিয়</div>
+        <div class="pricing-plan">Professional</div>
+        <div class="pricing-price">৳১,৪৯৯</div>
+        <div class="pricing-period">প্রতি মাসে</div>
+        <ul class="pricing-features">
+          <li>২,০০,০০০ token/মাস</li>
+          <li>সব AI feature</li>
+          <li>Priority support</li>
+          <li>৩ user seat</li>
+          <li>Advanced analytics</li>
+          <li>API access</li>
+          <li>Custom prompts</li>
+        </ul>
+        <div style="background:rgba(0,212,255,0.08);border-radius:8px;padding:0.75rem;font-size:0.8rem;color:var(--accent)">
+          🎯 Target: Agency, মাঝারি ব্যবসা
+        </div>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-plan">Enterprise</div>
+        <div class="pricing-price">৳৪,৯৯৯</div>
+        <div class="pricing-period">প্রতি মাসে</div>
+        <ul class="pricing-features">
+          <li>Unlimited tokens</li>
+          <li>সব feature + Custom</li>
+          <li>Dedicated support</li>
+          <li>Unlimited seats</li>
+          <li>White-label option</li>
+          <li>Custom AI training</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:0.75rem;font-size:0.8rem;color:var(--text3)">
+          🎯 Target: বড় কোম্পানি, Bank, NGO
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="highlight-box">
+        <h3>💡 Freemium Strategy (বেস্ট কাজ করে)</h3>
+        <ul>
+          <li>Free plan দাও — প্রতিদিন ১০টা generation free</li>
+          <li>Credit card ছাড়াই signup করতে দাও</li>
+          <li>Free user-দের limit হলে upgrade prompt দাও</li>
+          <li>৭ বা ১৪ দিন free trial দাও Pro plan-এর</li>
+          <li>বাংলাদেশে annual plan-এ ২০-৩০% discount দাও</li>
+        </ul>
+      </div>
+      <div class="highlight-box" style="border-color:rgba(245,158,11,0.2);background:linear-gradient(135deg,rgba(245,158,11,0.05),rgba(239,68,68,0.05))">
+        <h3 style="color:var(--accent4)">💰 Revenue Calculation উদাহরণ</h3>
+        <ul>
+          <li>GPT-4o cost: ১M token ≈ $5 (≈ ৳৫৫০)</li>
+          <li>Pro plan-এ তুমি পাও: ৳১,৪৯৯</li>
+          <li>User খরচ করে max ৳৪৫০ (200K token)</li>
+          <li>তোমার profit margin: ~৭০%</li>
+          <li>১০০ Pro user = ৳১,৪৯,৯০০ মাসে!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== CLIENT HUNTING ===== -->
+<section id="client">
+  <div class="container">
+    <div class="section-label">বাংলাদেশ ক্লায়েন্ট</div>
+    <div class="divider"></div>
+    <h2 class="section-title">বাংলাদেশে ক্লায়েন্ট পাওয়ার <span>সেরা কৌশল</span></h2>
+    <p class="section-desc">বাংলাদেশের মার্কেট বোঝা মানে সহজেই ক্লায়েন্ট পাওয়া। এই tips গুলো tested এবং proven।</p>
+
+    <div style="margin-bottom:2.5rem">
+      <h3 style="color:var(--accent);font-size:1rem;margin-bottom:1.5rem;font-weight:700">🎯 সরাসরি B2B ক্লায়েন্ট হান্ট</h3>
+      <div class="grid2">
+        <div class="tip-card">
+          <div class="tip-icon">👥</div>
+          <div>
+            <div class="tip-title">Facebook Group-এ টার্গেট করো</div>
+            <div class="tip-text">
+              বাংলাদেশের Facebook-এ লক্ষ লক্ষ business group আছে। "বাংলাদেশ ই-কমার্স", "Daraz Seller", "Facebook Business BD" — এই গ্রুপে জয়েন করো। Value দাও, product pitch করো। প্রতিদিন ৩-৫টা helpful পোস্ট করো।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🤝</div>
+          <div>
+            <div class="tip-title">Agency Partnership করো</div>
+            <div class="tip-text">
+              ঢাকার digital marketing agency-গুলোর সাথে white-label partnership করো। তোমার AI tool তারা resell করবে। ৩০-৪০% commission দাও। একটা agency মানেই অনেক ক্লায়েন্ট একসাথে।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🎪</div>
+          <div>
+            <div class="tip-title">IT Expo ও Business Fair</div>
+            <div class="tip-text">
+              Dhaka IT Expo, BASIS Softexpo, SME Fair — এসব জায়গায় স্টল নাও বা visit করো। সরাসরি decision maker-দের সাথে কথা বলার সুযোগ। Business card ও demo laptop নিয়ে যাও।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📱</div>
+          <div>
+            <div class="tip-title">LinkedIn BD Community</div>
+            <div class="tip-text">
+              বাংলাদেশে LinkedIn-এ CEO, CTO, Marketing Director-রা active। প্রতিদিন AI নিয়ে thought leadership post দাও। Connection request + personalised message পাঠাও। ১৫% response rate পাওয়া সম্ভব।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📞</div>
+          <div>
+            <div class="tip-title">Cold Calling (বাংলায়)</div>
+            <div class="tip-text">
+              Yellow pages, Google Maps থেকে local business list বানাও। বাংলায় script তৈরি করো। "আপনার ব্যবসায় AI ব্যবহার করলে ৫০% সময় বাঁচবে" — এই angle দিয়ে কথা শুরু করো। ১০০ call এ ৫-১০ lead আসবে।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🎁</div>
+          <div>
+            <div class="tip-title">Free Demo / Pilot Program</div>
+            <div class="tip-text">
+              ৫-১০টা ব্যবসাকে ১ মাস একদম free-তে দাও। তারপর result দেখিয়ে paid করো। বাংলাদেশি ক্লায়েন্টরা "দেখে-শুনে" কিনতে ভালোবাসে। একটা success story পেলে referral এ অনেক আসবে।
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:2.5rem">
+      <h3 style="color:var(--accent3);font-size:1rem;margin-bottom:1.5rem;font-weight:700">🌐 Digital Marketing দিয়ে ক্লায়েন্ট আনো</h3>
+      <div class="grid2">
+        <div class="tip-card" style="border-color:rgba(16,185,129,0.2)">
+          <div class="tip-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3)">📺</div>
+          <div>
+            <div class="tip-title">YouTube Tutorial (বাংলায়)</div>
+            <div class="tip-text">
+              "AI দিয়ে ব্যবসা করুন", "ChatGPT দিয়ে content তৈরি" — এই ধরনের বাংলা tutorial বানাও। Video-র শেষে তোমার product mention করো। বাংলাদেশে AI বিষয়ক YouTube content এখনো অনেক কম — opportunity বিশাল।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card" style="border-color:rgba(16,185,129,0.2)">
+          <div class="tip-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3)">📝</div>
+          <div>
+            <div class="tip-title">SEO বাংলা ব্লগ</div>
+            <div class="tip-text">
+              বাংলায় AI সম্পর্কিত articles লেখো। "AI দিয়ে ব্যবসা বাড়ানো", "ChatGPT বাংলা" — এসব keyword-এ Google-এ rank করো। Organic traffic থেকে free signup পাবে।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card" style="border-color:rgba(16,185,129,0.2)">
+          <div class="tip-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3)">💸</div>
+          <div>
+            <div class="tip-title">Facebook & Google Ads</div>
+            <div class="tip-text">
+              ৳৫০০০/মাস budget দিয়ে শুরু করো। Retargeting ad সবচেয়ে effective। Free trial offer দিয়ে lead capture করো। Lookalike audience তৈরি করো existing customer থেকে।
+            </div>
+          </div>
+        </div>
+        <div class="tip-card" style="border-color:rgba(16,185,129,0.2)">
+          <div class="tip-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3)">🤳</div>
+          <div>
+            <div class="tip-title">Influencer Marketing</div>
+            <div class="tip-text">
+              Tech YouTuber ও Facebook page-গুলোকে affiliate দাও। প্রতি sale-এ ২০-৩০% commission। ১ লক্ষ followers-এর page-ও যথেষ্ট। বাংলাদেশে micro-influencer অনেক সস্তা ও effective।
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="color:var(--accent4);font-size:1rem;margin-bottom:1.5rem;font-weight:700">🏢 সহজ ক্লায়েন্ট পাবে কোথায়?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>সেক্টর</th>
+              <th>কেন সহজ?</th>
+              <th>AI Solution</th>
+              <th>মাসিক বাজেট</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--text);font-weight:600">🛍️ E-commerce ব্যবসা</td>
+              <td>Content দরকার, সময় নেই</td>
+              <td>Product description, Chatbot</td>
+              <td style="color:var(--accent3)">৳৫০০-৩০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">🍕 Restaurant & Food</td>
+              <td>Social media struggle করে</td>
+              <td>Content Generator, Menu AI</td>
+              <td style="color:var(--accent3)">৳৮০০-২০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">🏥 Clinic & Pharmacy</td>
+              <td>Patient communication দুর্বল</td>
+              <td>Appointment bot, Health info</td>
+              <td style="color:var(--accent3)">৳২০০০-৮০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">🏫 School & Coaching</td>
+              <td>Content ও admin problem</td>
+              <td>AI Tutor, Question Generator</td>
+              <td style="color:var(--accent3)">৳১০০০-৫০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">🏗️ Real Estate Agency</td>
+              <td>Listing ও description চাই</td>
+              <td>Property description AI</td>
+              <td style="color:var(--accent3)">৳৩০০০-১০০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">📊 Digital Agency</td>
+              <td>Scale করতে চায়</td>
+              <td>White-label AI tools</td>
+              <td style="color:var(--accent3)">৳৫০০০-২০০০০</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text);font-weight:600">👔 Garments & Export</td>
+              <td>English communication কঠিন</td>
+              <td>Email Writer, Translator</td>
+              <td style="color:var(--accent3)">৳৩০০০-১৫০০০</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== COLD OUTREACH TEMPLATES ===== -->
+<section class="sec-alt">
+  <div class="container">
+    <div class="section-label">মেসেজ টেমপ্লেট</div>
+    <div class="divider"></div>
+    <h2 class="section-title">কাজ করে এমন <span>Cold Message Template</span></h2>
+
+    <div class="grid2">
+      <div>
+        <h3 style="color:var(--accent);font-size:0.95rem;margin-bottom:1rem">📱 Facebook Message (E-commerce Owner)</h3>
+        <div class="card" style="border-color:rgba(0,212,255,0.2)">
+          <div class="card-text" style="font-size:0.87rem;line-height:2;color:var(--text)">
+            আস্সালামুয়ালাইকুম ভাই/আপু,<br><br>
+            আপনার পেইজটা দেখলাম, product গুলো অনেক সুন্দর! 🌟<br><br>
+            আমি লক্ষ্য করলাম আপনার product description ও posts নিজে লিখতে হয় — এতে অনেক সময় নষ্ট হয় নিশ্চয়ই।<br><br>
+            আমাদের AI tool দিয়ে আপনি প্রতিটা product-এর জন্য ৩০ সেকেন্ডে professional description ও Facebook post তৈরি করতে পারবেন।<br><br>
+            ৭ দিন একদম <strong>FREE</strong> ব্যবহার করে দেখুন? কোনো card লাগবে না।<br><br>
+            আগ্রহী হলে জানাবেন 🙂
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="color:var(--accent2);font-size:0.95rem;margin-bottom:1rem">💼 LinkedIn Message (Business Owner)</h3>
+        <div class="card" style="border-color:rgba(124,58,237,0.2)">
+          <div class="card-text" style="font-size:0.87rem;line-height:2;color:var(--text)">
+            Hi [Name],<br><br>
+            আপনার company-র কাজ দেখে impressed হলাম। [specific কিছু mention করুন]<br><br>
+            আমরা [Company Name] — AI-powered tools বানাই যেটা বাংলাদেশি business-এর customer service ও content creation ৬০% faster করে।<br><br>
+            আমাদের [Industry Name]-এর কিছু client আছেন যারা প্রতি মাসে ৩০+ ঘণ্টা বাঁচাচ্ছেন।<br><br>
+            ১৫ মিনিটের একটা demo call করবেন? আপনার business-এর জন্য কীভাবে কাজ করবে দেখাই।
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box warn" style="margin-top:2rem">
+      <div class="info-box-icon">⚠️</div>
+      <div class="info-box-text">
+        <strong>গুরুত্বপূর্ণ:</strong> Spam করবে না। প্রতিদিন max ২০-৩০ জনকে message করো। Personalize করো প্রতিটা message। Response না আসলে ৩-৫ দিন পর once follow-up করো। তারপর এগিয়ে যাও।
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== ROADMAP ===== -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-label">শুরুর পথ</div>
+    <div class="divider"></div>
+    <h2 class="section-title">০ থেকে <span>প্রথম ৫০ ক্লায়েন্ট</span> পর্যন্ত রোডম্যাপ</h2>
+
+    <div class="grid2" style="gap:3rem;align-items:start">
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <div class="roadmap-phase">সপ্তাহ ১-২</div>
+          <div class="roadmap-title">আইডিয়া Validate করো</div>
+          <div class="roadmap-text">একটা নির্দিষ্ট niche বেছে নাও। ৫০ জন potential ক্লায়েন্টের সাথে কথা বলো। তারা টাকা দিতে রাজি কিনা জানো। Build করার আগে validate করো।</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-phase">সপ্তাহ ৩-৬</div>
+          <div class="roadmap-title">MVP তৈরি করো</div>
+          <div class="roadmap-text">শুধু মূল feature রাখো। Laravel + AI API + Simple UI। Payment integration (bKash/SSLCommerz)। Beta users-দের কাছে পৌঁছাও।</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-phase">মাস ২-৩</div>
+          <div class="roadmap-title">প্রথম ১০ Paid User</div>
+          <div class="roadmap-text">Free trial দিয়ে শুরু করো। Feedback নাও, সমস্যা ঠিক করো। Case study বানাও। Referral program চালু করো।</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-phase">মাস ৪-৬</div>
+          <div class="roadmap-title">Growth শুরু</div>
+          <div class="roadmap-text">Content marketing শুরু করো। Facebook Ads run করো। Agency partnership করো। ২-৩ জন sales person নাও।</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-phase">মাস ৬+</div>
+          <div class="roadmap-title">৫০+ ক্লায়েন্ট ও Scale</div>
+          <div class="roadmap-text">Team build করো। Feature add করো। Enterprise plan launch করো। বাংলাদেশের বাইরে যাওয়ার কথা ভাবো।</div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="color:var(--text);font-size:1rem;margin-bottom:1.5rem">🛠️ শুরু করার জন্য যা যা লাগবে</h3>
+
+        <div class="steps">
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">✅</div>
+            <div class="step-content">
+              <h3>Domain + Hosting</h3>
+              <p>Hostinger বা Cloudways-এ ৳২,০০০-৫,০০০/মাস। VPS নাও না শুরুতে — shared hosting যথেষ্ট।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">✅</div>
+            <div class="step-content">
+              <h3>AI API Account</h3>
+              <p>OpenAI বা Claude-এ account খোলো। শুরুতে $২০-৫০ credit রাখো। API key নাও।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">✅</div>
+            <div class="step-content">
+              <h3>Payment Gateway</h3>
+              <p>SSLCommerz বা Shurjopay দিয়ে শুরু করো। bKash/Nagad সংযুক্ত করো। Local payment জরুরি।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">✅</div>
+            <div class="step-content">
+              <h3>Business Registration</h3>
+              <p>Trade License নাও — RJSC তে company register করো। ট্যাক্স ও legal সমস্যা এড়াতে।</p>
+            </div>
+          </div>
+          <div class="step" style="padding:1.25rem">
+            <div class="step-num" style="font-size:0.8rem;min-width:38px;height:38px">✅</div>
+            <div class="step-content">
+              <h3>Customer Support System</h3>
+              <p>Crisp বা Freshdesk free plan। WhatsApp Business number। Facebook Page।</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box success" style="margin-top:1.5rem">
+          <div class="info-box-icon">💡</div>
+          <div class="info-box-text">
+            <strong>মোট শুরুর খরচ:</strong> মাত্র ৳১৫,০০০-৩০,০০০ দিয়ে একটা AI SaaS শুরু করা সম্ভব। প্রথম মাসেই break-even করা সম্ভব যদি ১০-২০ জন paid user পাও।
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== TOOLS & RESOURCES ===== -->
+<section class="sec-alt">
+  <div class="container">
+    <div class="section-label">টুলস ও রিসোর্স</div>
+    <div class="divider"></div>
+    <h2 class="section-title">কাজে লাগবে এমন <span>প্ল্যাটফর্ম</span></h2>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="platform-logo">🤖</div>
+        <div class="platform-name">OpenAI Platform</div>
+        <div class="platform-desc">platform.openai.com — API key, usage</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">🧠</div>
+        <div class="platform-name">Anthropic Console</div>
+        <div class="platform-desc">console.anthropic.com — Claude API</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">💎</div>
+        <div class="platform-name">Google AI Studio</div>
+        <div class="platform-desc">aistudio.google.com — Gemini API</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">⚡</div>
+        <div class="platform-name">Groq Cloud</div>
+        <div class="platform-desc">console.groq.com — Fast inference</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">🚀</div>
+        <div class="platform-name">Vercel</div>
+        <div class="platform-desc">Frontend deploy করো free-তে</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">☁️</div>
+        <div class="platform-name">Cloudways</div>
+        <div class="platform-desc">Laravel hosting — সহজ ও দ্রুত</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">💳</div>
+        <div class="platform-name">SSLCommerz</div>
+        <div class="platform-desc">বাংলাদেশ payment gateway</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">📧</div>
+        <div class="platform-name">Resend / Mailgun</div>
+        <div class="platform-desc">Transactional email পাঠাও</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-logo">📊</div>
+        <div class="platform-name">Mixpanel / PostHog</div>
+        <div class="platform-desc">User analytics track করো</div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:2.5rem">
+      <div class="info-box danger">
+        <div class="info-box-icon">🚫</div>
+        <div class="info-box-text">
+          <strong>যে ভুলগুলো করবে না:</strong> AI API-এর উপর নির্ভরশীল হয়ে feature বানানো যেটার উপর তোমার control নেই। শুধু ChatGPT wrapper বানিও না — value add করো। API cost monitor না করলে loss হবে। Data security ও privacy নিশ্চিত করো।
+        </div>
+      </div>
+      <div class="info-box success">
+        <div class="info-box-icon">🏆</div>
+        <div class="info-box-text">
+          <strong>সাফল্যের মূল রহস্য:</strong> একটা specific problem solve করো, একটা specific audience-কে target করো। চেষ্টা করো local language (বাংলা) ও local context বুঝে কাজ করতে। বাংলাদেশি ব্যবহারকারীদের pain point গুলো বিদেশি টুলগুলো solve করে না — এটাই তোমার সুযোগ।
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-logo">AI SaaS বাংলাদেশ গাইড</div>
+  <div class="footer-text">
+    এই গাইডটি বাংলাদেশের উদ্যোক্তা ও ডেভেলপারদের জন্য তৈরি।<br>
+    AI API ব্যবহার করে স্থানীয় সমস্যার সমাধান করো এবং সফল ব্যবসা গড়ো।<br><br>
+    <span style="color:var(--text3);font-size:0.75rem">তথ্য: OpenAI, Anthropic, Google AI Documentation অনুযায়ী। মূল্য পরিবর্তনশীল।</span>
+  </div>
+</footer>
+
+<script>
+  // Smooth active nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        navLinks.forEach(l => l.style.color = '');
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if(link) link.style.color = 'var(--accent)';
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Card entrance animation on scroll
+  const cards = document.querySelectorAll('.card, .saas-card, .tip-card, .step, .pricing-card, .platform-card');
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(c => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(20px)';
+    c.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s';
+    cardObserver.observe(c);
+  });
+</script>
+</body>
+</html>
