@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MODESTA — Premium Islamic Women's Fashion</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* Core palette: Deep Emerald + Warm Gold + Ivory + Onyx */
+  --onyx:#0d0d0d;
+  --deep-green:#0a2218;
+  --forest:#0f3a28;
+  --emerald:#1a5c3a;
+  --sage:#2d7a52;
+  --mint:#3da670;
+  --gold:#c8952a;
+  --amber:#e4a832;
+  --pale-gold:#f0ca6e;
+  --cream:#faf5eb;
+  --ivory:#f5ede0;
+  --sand:#e8d9c0;
+  --rust:#8b3a1f;
+  --blush:#d4896a;
+  --white:#ffffff;
+  --text-dark:#1a1208;
+  --text-mid:#3d2e1a;
+  --text-light:#7a6a52;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .08s,width .3s,height .3s;mix-blend-mode:multiply}
+.cursor-ring{position:fixed;width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,opacity .3s;opacity:.5}
+body:hover .cursor-ring{opacity:.8}
+
+/* PRELOADER */
+#preloader{position:fixed;inset:0;background:var(--onyx);z-index:99997;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:30px;transition:opacity .9s ease,transform .9s ease}
+#preloader.out{opacity:0;pointer-events:none}
+.pre-wordmark{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,8vw,5rem);color:var(--cream);font-weight:700;letter-spacing:.25em;text-transform:uppercase;position:relative}
+.pre-wordmark span{color:var(--gold)}
+.pre-tagline{font-family:'Lora',serif;font-style:italic;font-size:clamp(.75rem,2vw,1rem);color:rgba(250,245,235,.4);letter-spacing:.35em}
+.pre-line{width:180px;height:1px;background:rgba(255,255,255,.12);overflow:hidden;position:relative}
+.pre-line::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:preload 1.6s ease-in-out infinite}
+@keyframes preload{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;transition:all .4s ease}
+nav.scrolled{background:rgba(10,34,24,.97);backdrop-filter:blur(20px);padding:14px 5%;box-shadow:0 4px 40px rgba(0,0,0,.3)}
+.nav-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:.18em;color:var(--cream);text-decoration:none;text-transform:uppercase}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:clamp(20px,3vw,44px);list-style:none}
+.nav-links a{text-decoration:none;color:rgba(250,245,235,.7);font-family:'Oswald',sans-serif;font-size:13px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;transition:color .3s;position:relative;padding-bottom:4px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--gold);transition:width .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:var(--gold);color:var(--onyx);padding:10px 26px;font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:none;transition:all .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+.nav-cta:hover{background:var(--amber);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,149,42,.4)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:none;background:none;border:none;padding:4px}
+.hamburger span{width:26px;height:1.5px;background:var(--cream);transition:all .35s;display:block}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+
+/* MOBILE MENU */
+.mob-menu{position:fixed;inset:0;background:var(--onyx);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.175,1)}
+.mob-menu.open{transform:translateX(0)}
+.mob-menu a{font-family:'Oswald',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:600;color:var(--cream);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;opacity:0;transform:translateX(50px);transition:all .4s ease}
+.mob-menu.open a{opacity:1;transform:translateX(0)}
+.mob-menu.open a:nth-child(1){transition-delay:.08s}
+.mob-menu.open a:nth-child(2){transition-delay:.13s}
+.mob-menu.open a:nth-child(3){transition-delay:.18s}
+.mob-menu.open a:nth-child(4){transition-delay:.23s}
+.mob-menu.open a:nth-child(5){transition-delay:.28s}
+.mob-menu a:hover{color:var(--gold)}
+
+/* ===================== HERO ===================== */
+.hero{height:100vh;min-height:640px;position:relative;overflow:hidden;background:var(--deep-green);display:flex;align-items:center}
+/* Big decorative background text */
+.hero-bg-word{position:absolute;font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(100px,22vw,280px);color:rgba(255,255,255,.025);text-transform:uppercase;letter-spacing:-.02em;white-space:nowrap;pointer-events:none;top:50%;transform:translateY(-50%);right:-2%;line-height:1;z-index:0;animation:bgword-drift 12s ease-in-out infinite}
+@keyframes bgword-drift{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-52%) translateX(-15px)}}
+/* Hero left content */
+.hero-left{position:relative;z-index:2;padding:0 5%;width:55%;display:flex;flex-direction:column;justify-content:center}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(200,149,42,.15);border:1px solid rgba(200,149,42,.3);padding:8px 18px;margin-bottom:28px;width:fit-content;animation:fadein .8s .4s both}
+.hero-badge span{font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:.35em;text-transform:uppercase;color:var(--gold)}
+.hero-badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse-dot 2s ease infinite}
+@keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+.hero-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2.8rem,8vw,7rem);text-transform:uppercase;line-height:.95;letter-spacing:-.01em;color:var(--cream);margin-bottom:12px;animation:fadein .9s .6s both}
+.hero-title .hl{color:var(--gold);font-style:italic;font-weight:300;font-family:'Lora',serif;text-transform:none;font-size:.75em}
+.hero-title .stroke{-webkit-text-stroke:1.5px var(--cream);color:transparent}
+.hero-sub{font-family:'Oswald',sans-serif;font-weight:300;font-size:clamp(1.1rem,2.5vw,1.6rem);text-transform:uppercase;letter-spacing:.25em;color:var(--gold);margin-bottom:24px;animation:fadein .9s .75s both}
+.hero-desc{font-family:'Nunito',sans-serif;font-size:clamp(13px,1.6vw,15px);color:rgba(250,245,235,.55);line-height:1.85;max-width:420px;margin-bottom:40px;animation:fadein .9s .9s both;font-weight:300}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadein .9s 1.05s both}
+.btn-gold{background:var(--gold);color:var(--onyx);padding:clamp(13px,2vw,17px) clamp(28px,4vw,44px);font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;border:none;cursor:none;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);transition:all .4s cubic-bezier(.23,1,.32,1);text-decoration:none;display:inline-flex;align-items:center;gap:12px}
+.btn-gold:hover{background:var(--amber);transform:translateY(-3px);box-shadow:0 20px 40px rgba(200,149,42,.4)}
+.btn-outline{background:transparent;color:var(--cream);padding:clamp(13px,2vw,17px) clamp(28px,4vw,44px);font-family:'Oswald',sans-serif;font-size:12px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;border:1.5px solid rgba(250,245,235,.25);cursor:none;transition:all .4s;text-decoration:none;display:inline-flex;align-items:center;gap:12px}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+/* Hero side images */
+.hero-right{position:absolute;right:0;top:0;bottom:0;width:48%;z-index:1;display:flex;gap:0}
+.hero-img-col{flex:1;overflow:hidden;position:relative}
+.hero-img-col img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease;filter:brightness(.75) contrast(1.05)}
+.hero-img-col:hover img{transform:scale(1.04)}
+.hero-img-col:nth-child(1){border-left:2px solid var(--gold)}
+.hero-img-col:nth-child(2){transform:scaleY(.95);transform-origin:bottom;transition:transform .8s}
+.hero-img-col:hover{transform:scaleY(1)!important}
+.hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to right,var(--deep-green) 0%,transparent 30%),linear-gradient(to top,var(--deep-green) 0%,transparent 40%);pointer-events:none}
+/* Only on leftmost col */
+.hero-img-col:first-child .hero-img-overlay{background:linear-gradient(to right,var(--deep-green) 0%,transparent 40%),linear-gradient(to top,var(--deep-green) 0%,transparent 35%)}
+.hero-img-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);white-space:nowrap;border-top:1px solid rgba(200,149,42,.4);padding-top:8px}
+.hero-scroll{position:absolute;bottom:36px;left:5%;display:flex;align-items:center;gap:14px;z-index:3;animation:fadein .9s 1.3s both}
+.scroll-text{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:rgba(250,245,235,.4)}
+.scroll-bar{width:50px;height:1px;background:rgba(250,245,235,.15);position:relative;overflow:hidden}
+.scroll-bar::after{content:'';position:absolute;inset:0;background:var(--gold);animation:scrollbar 2s ease-in-out infinite}
+@keyframes scrollbar{0%{transform:translateX(-100%);opacity:1}100%{transform:translateX(100%);opacity:0}}
+@keyframes fadein{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===================== MARQUEE ===================== */
+.marquee-wrap{background:var(--gold);overflow:hidden;padding:13px 0;border-top:1px solid var(--amber);border-bottom:1px solid var(--amber)}
+.marquee-track{display:flex;white-space:nowrap;animation:marquee 22s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.m-item{display:inline-flex;align-items:center;gap:22px;padding:0 22px;font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--onyx)}
+.m-star{color:var(--forest);font-size:8px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===================== COLLECTIONS ===================== */
+.section-pad{padding:clamp(60px,10vw,120px) 5%}
+.sec-eyebrow{font-family:'Oswald',sans-serif;font-size:11px;font-weight:400;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}
+.sec-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,4.5rem);text-transform:uppercase;line-height:.95;letter-spacing:-.01em;color:var(--text-dark)}
+.sec-title .hl{color:var(--emerald);font-family:'Lora',serif;font-style:italic;font-weight:400;font-size:.8em;text-transform:none;-webkit-text-stroke:0}
+.sec-title .stroke{-webkit-text-stroke:1.5px var(--text-dark);color:transparent}
+.sec-divider{width:80px;height:2px;background:linear-gradient(to right,var(--gold),var(--emerald));margin:20px 0 0;display:block}
+
+/* Big vertical side text */
+.side-text{position:absolute;writing-mode:vertical-rl;text-orientation:mixed;font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(50px,10vw,120px);text-transform:uppercase;letter-spacing:-.02em;pointer-events:none;opacity:.06;line-height:1;color:var(--forest)}
+.side-text-right{right:-20px;bottom:0;top:0;display:flex;align-items:center}
+.side-text-left{left:-20px;bottom:0;top:0;display:flex;align-items:center}
+
+.collections-bg{background:var(--ivory);position:relative;overflow:hidden}
+.collections-bg .side-text{color:var(--emerald)}
+
+.coll-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:clamp(36px,5vw,64px)}
+.coll-count{font-family:'Oswald',sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:700;color:var(--sage);opacity:.18;line-height:1}
+
+/* Product Cards */
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.prod-card{position:relative;cursor:none;overflow:hidden;background:var(--white)}
+.prod-img-wrap{position:relative;overflow:hidden;aspect-ratio:3/4}
+.prod-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.23,1,.32,1),filter .5s}
+.prod-card:hover .prod-img-wrap img{transform:scale(1.08);filter:brightness(.88)}
+.prod-badge{position:absolute;top:16px;left:16px;font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:5px 14px;z-index:2}
+.badge-new{background:var(--emerald);color:var(--cream)}
+.badge-hot{background:var(--rust);color:var(--cream)}
+.badge-sale{background:var(--gold);color:var(--onyx)}
+.prod-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,34,24,.85) 0%,transparent 50%);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:20px;z-index:3}
+.prod-card:hover .prod-overlay{opacity:1}
+.prod-quick{background:var(--gold);color:var(--onyx);border:none;padding:11px 22px;font-family:'Oswald',sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:none;transform:translateY(16px);transition:transform .35s .05s,box-shadow .3s;width:100%}
+.prod-card:hover .prod-quick{transform:translateY(0)}
+.prod-quick:hover{background:var(--amber);box-shadow:0 8px 24px rgba(200,149,42,.5)}
+.prod-info{padding:16px 4px 4px}
+.prod-cat{font-family:'Oswald',sans-serif;font-size:10px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;display:block}
+.prod-name{font-family:'Oswald',sans-serif;font-size:clamp(1rem,2.5vw,1.35rem);font-weight:600;color:var(--text-dark);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;line-height:1.1}
+.prod-price{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--emerald);font-weight:500;letter-spacing:.05em}
+.prod-price s{color:var(--text-light);font-weight:300;margin-left:6px;font-size:.85rem}
+
+/* ===================== FEATURE BAND ===================== */
+.feature-band{background:var(--forest);padding:clamp(40px,6vw,70px) 5%;position:relative;overflow:hidden}
+.feature-band .side-text{color:#fff;opacity:.03;font-size:clamp(80px,16vw,200px)}
+.feature-band-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.feat-item{padding:clamp(20px,3vw,40px) clamp(16px,2.5vw,32px);border-right:1px solid rgba(250,245,235,.08);text-align:center}
+.feat-item:last-child{border-right:none}
+.feat-icon{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:14px;display:block}
+.feat-title{font-family:'Oswald',sans-serif;font-size:clamp(.85rem,2vw,1.1rem);font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--cream);margin-bottom:8px}
+.feat-desc{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.5vw,13px);color:rgba(250,245,235,.45);line-height:1.7;font-weight:300}
+
+/* ===================== FEATURED / HERO PRODUCT ===================== */
+.featured-sec{background:var(--onyx);position:relative;overflow:hidden;padding:0}
+.featured-sec .side-text{color:#fff;opacity:.03;font-size:clamp(80px,18vw,220px)}
+.feat-prod-inner{display:grid;grid-template-columns:1fr 1fr;min-height:90vh}
+.feat-prod-visual{position:relative;overflow:hidden}
+.feat-prod-visual img{width:100%;height:100%;object-fit:cover;filter:brightness(.8) contrast(1.1);transition:transform .8s ease}
+.feat-prod-visual:hover img{transform:scale(1.04)}
+.feat-prod-visual-overlay{position:absolute;inset:0;background:linear-gradient(to right,var(--onyx) 0%,transparent 25%),linear-gradient(to top,var(--onyx) 0%,transparent 35%)}
+.feat-prod-tag{position:absolute;top:40px;right:40px;background:var(--gold);color:var(--onyx);padding:8px 20px;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.feat-prod-content{padding:clamp(40px,7vw,90px) clamp(30px,5vw,70px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.feat-prod-number{font-family:'Oswald',sans-serif;font-size:clamp(5rem,14vw,12rem);font-weight:700;color:rgba(200,149,42,.08);line-height:1;position:absolute;top:20px;right:20px;pointer-events:none}
+.feat-eyebrow{font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.feat-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.feat-title-big{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2.5rem,6vw,5.5rem);text-transform:uppercase;letter-spacing:-.01em;line-height:.95;color:var(--cream);margin-bottom:10px}
+.feat-title-big .hl{font-family:'Lora',serif;font-style:italic;font-weight:400;color:var(--gold);font-size:.8em;text-transform:none;display:block}
+.feat-desc{font-family:'Nunito',sans-serif;font-size:clamp(12px,1.5vw,14px);color:rgba(250,245,235,.5);line-height:1.9;max-width:380px;margin-bottom:32px;font-weight:300}
+.feat-specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:36px;border:1px solid rgba(250,245,235,.07)}
+.feat-spec{padding:16px 20px;border-right:1px solid rgba(250,245,235,.07);border-bottom:1px solid rgba(250,245,235,.07)}
+.feat-spec:nth-child(2n){border-right:none}
+.feat-spec:nth-last-child(-n+2){border-bottom:none}
+.feat-spec-label{font-family:'Oswald',sans-serif;font-size:9px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:rgba(200,149,42,.7);margin-bottom:5px}
+.feat-spec-val{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:500;color:var(--cream);letter-spacing:.05em}
+.feat-price{font-family:'Oswald',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--gold);letter-spacing:.05em;margin-bottom:28px}
+.feat-price small{font-size:.45em;font-weight:300;color:rgba(250,245,235,.4);letter-spacing:.15em;text-transform:uppercase;margin-left:8px;vertical-align:middle}
+
+/* ===================== 3-PIECE SHOWCASE ===================== */
+.threep-sec{background:var(--cream);position:relative;overflow:hidden}
+.threep-sec .side-text-right{color:var(--emerald)}
+.threep-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr 1.2fr;gap:16px;align-items:end;margin-top:clamp(36px,5vw,60px)}
+.threep-card{position:relative;overflow:hidden;cursor:none}
+.threep-card.tall{align-self:stretch}
+.threep-img-wrap{position:relative;overflow:hidden}
+.threep-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease,filter .4s;display:block}
+.threep-card:hover .threep-img-wrap img{transform:scale(1.06);filter:brightness(.8)}
+.threep-card .prod-overlay{border-top:3px solid var(--gold)}
+.threep-info{padding:14px 0 4px}
+.threep-num{font-family:'Oswald',sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:700;color:rgba(10,34,24,.06);position:absolute;top:8px;left:12px;line-height:1;pointer-events:none;z-index:5}
+
+/* 3-piece set label */
+.set-label{background:var(--forest);color:var(--gold);display:inline-flex;align-items:center;gap:8px;padding:8px 18px;margin-bottom:clamp(16px,2.5vw,24px);font-family:'Oswald',sans-serif;font-size:11px;font-weight:500;letter-spacing:.28em;text-transform:uppercase}
+.set-label-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse-dot 1.8s ease infinite}
+
+/* ===================== STATS BAND ===================== */
+.stats-sec{background:var(--gold);position:relative;overflow:hidden;padding:clamp(40px,6vw,70px) 5%}
+.stats-sec .side-text{color:var(--onyx);opacity:.07;font-size:clamp(80px,18vw,200px)}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat-cell{padding:clamp(20px,3vw,36px) 20px;text-align:center;border-right:2px solid rgba(10,34,24,.12)}
+.stat-cell:last-child{border-right:none}
+.stat-num{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;color:var(--onyx);line-height:1;display:block}
+.stat-lbl{font-family:'Oswald',sans-serif;font-size:11px;font-weight:300;letter-spacing:.28em;text-transform:uppercase;color:rgba(10,34,24,.6);margin-top:8px;display:block}
+
+/* ===================== ORDER SECTION ===================== */
+.order-sec{background:var(--ivory);position:relative;overflow:hidden}
+.order-sec-watermark{position:absolute;font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(80px,20vw,300px);text-transform:uppercase;letter-spacing:-.02em;color:var(--forest);opacity:.03;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;line-height:1}
+.order-inner{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(40px,6vw,80px);align-items:start;position:relative;z-index:1}
+.order-info .sec-title{color:var(--text-dark)}
+.order-desc{font-size:clamp(12px,1.6vw,14px);color:var(--text-light);line-height:1.85;margin-top:20px;max-width:400px;font-weight:300}
+.order-steps{margin-top:40px;display:flex;flex-direction:column}
+.ord-step{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid rgba(26,18,8,.06)}
+.ord-step:last-child{border-bottom:none}
+.ord-num{font-family:'Oswald',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:var(--emerald);opacity:.22;line-height:1;min-width:54px;flex-shrink:0}
+.ord-text-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dark);margin-bottom:5px}
+.ord-text-desc{font-size:12px;color:var(--text-light);line-height:1.7;font-weight:300}
+
+/* Order Form */
+.order-form-box{background:var(--forest);padding:clamp(28px,4vw,48px);position:relative;overflow:hidden}
+.order-form-box::after{content:'';position:absolute;bottom:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(200,149,42,.15) 0%,transparent 70%);pointer-events:none}
+.form-head{font-family:'Oswald',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--cream);margin-bottom:6px}
+.form-sub{font-family:'Nunito',sans-serif;font-size:12px;color:rgba(250,245,235,.4);margin-bottom:32px;font-weight:300}
+.fg{margin-bottom:18px;position:relative}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.flabel{display:block;font-family:'Oswald',sans-serif;font-size:9px;font-weight:400;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;opacity:.85}
+.finput,.fselect,.ftextarea{width:100%;background:rgba(250,245,235,.04);border:1px solid rgba(250,245,235,.1);border-bottom:1px solid rgba(250,245,235,.2);color:var(--cream);padding:11px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:300;transition:all .3s;outline:none;appearance:none;-webkit-appearance:none;letter-spacing:.03em}
+.finput::placeholder{color:rgba(250,245,235,.2)}
+.finput:focus,.fselect:focus,.ftextarea:focus{border-color:var(--gold);background:rgba(250,245,235,.07);box-shadow:0 0 0 3px rgba(200,149,42,.1)}
+.fselect{cursor:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c8952a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.fselect option{background:var(--forest);color:var(--cream)}
+.ftextarea{resize:none;min-height:74px;line-height:1.7}
+/* Size selector */
+.size-row{display:flex;gap:7px;flex-wrap:wrap}
+.sz-btn{width:44px;height:44px;background:rgba(250,245,235,.04);border:1px solid rgba(250,245,235,.12);color:rgba(250,245,235,.55);font-family:'Oswald',sans-serif;font-size:12px;font-weight:400;letter-spacing:.05em;cursor:none;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.sz-btn:hover,.sz-btn.on{background:var(--gold);border-color:var(--gold);color:var(--onyx)}
+/* Color swatches */
+.color-row{display:flex;gap:9px;flex-wrap:wrap}
+.csw{width:30px;height:30px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .3s;position:relative}
+.csw:hover,.csw.on{transform:scale(1.18);box-shadow:0 0 0 3px rgba(200,149,42,.5)}
+.csw.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+/* Qty */
+.qty-wrap{display:flex;align-items:center;border:1px solid rgba(250,245,235,.12)}
+.qty-b{width:40px;height:40px;background:rgba(250,245,235,.04);border:none;color:var(--cream);font-size:20px;cursor:none;transition:all .3s;font-family:'Oswald',sans-serif;line-height:1}
+.qty-b:hover{background:var(--gold);color:var(--onyx)}
+.qty-d{width:52px;height:40px;background:none;border:none;border-left:1px solid rgba(250,245,235,.1);border-right:1px solid rgba(250,245,235,.1);color:var(--cream);text-align:center;font-family:'Oswald',sans-serif;font-size:15px;font-weight:500}
+.submit-wrap{margin-top:8px;position:relative;overflow:hidden}
+.sub-btn{width:100%;background:var(--gold);color:var(--onyx);border:none;padding:17px;font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;cursor:none;transition:all .4s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+.sub-btn:hover{background:var(--amber);transform:translateY(-2px);box-shadow:0 14px 36px rgba(200,149,42,.45)}
+.sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.form-note{font-family:'Nunito',sans-serif;font-size:10px;color:rgba(250,245,235,.25);text-align:center;margin-top:14px;line-height:1.7;font-weight:300}
+/* Success */
+.success-box{display:none;text-align:center;padding:40px 20px}
+.success-box.show{display:block}
+.success-icon{font-size:52px;margin-bottom:18px;display:block;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-t{font-family:'Oswald',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;text-transform:uppercase;color:var(--cream);letter-spacing:.1em;margin-bottom:10px}
+.success-p{font-family:'Nunito',sans-serif;font-size:13px;color:rgba(250,245,235,.5);line-height:1.7;font-weight:300}
+
+/* ===================== TESTIMONIALS ===================== */
+.test-sec{background:var(--sand);position:relative;overflow:hidden}
+.test-sec .side-text{color:var(--emerald)}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:clamp(36px,5vw,60px)}
+.test-card{background:var(--white);padding:clamp(20px,3vw,36px);border-bottom:3px solid var(--gold);transition:all .4s cubic-bezier(.23,1,.32,1);position:relative}
+.test-card::before{content:'❝';font-family:'Lora',serif;font-size:4rem;color:var(--gold);opacity:.1;position:absolute;top:12px;right:20px;line-height:1}
+.test-card:hover{transform:translateY(-8px);box-shadow:0 28px 60px rgba(15,58,40,.12)}
+.test-stars{color:var(--gold);font-size:13px;letter-spacing:3px;margin-bottom:14px}
+.test-q{font-family:'Lora',serif;font-size:clamp(.9rem,2vw,1.05rem);color:var(--text-dark);line-height:1.7;font-style:italic;margin-bottom:20px}
+.test-who{display:flex;align-items:center;gap:12px}
+.test-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--emerald),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;color:var(--cream);flex-shrink:0}
+.test-name{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dark)}
+.test-role{font-family:'Nunito',sans-serif;font-size:11px;color:var(--gold);margin-top:2px;font-weight:300}
+
+/* ===================== FOOTER ===================== */
+footer{background:var(--onyx);padding:clamp(50px,8vw,90px) 5% 28px;position:relative;overflow:hidden}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--forest),var(--gold),var(--forest))}
+.foot-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:clamp(24px,4vw,60px);margin-bottom:clamp(40px,5vw,60px)}
+.foot-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.5rem,3.5vw,2.2rem);letter-spacing:.18em;color:var(--cream);text-decoration:none;text-transform:uppercase;display:block;margin-bottom:16px}
+.foot-logo span{color:var(--gold)}
+.foot-desc{font-family:'Nunito',sans-serif;font-size:12px;color:rgba(250,245,235,.35);line-height:1.8;max-width:260px;font-weight:300}
+.foot-col-title{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.foot-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+.foot-links a{font-family:'Nunito',sans-serif;font-size:12px;color:rgba(250,245,235,.35);text-decoration:none;transition:color .3s;font-weight:300;letter-spacing:.04em}
+.foot-links a:hover{color:var(--gold)}
+.foot-bottom{border-top:1px solid rgba(250,245,235,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.foot-copy{font-family:'Nunito',sans-serif;font-size:11px;color:rgba(250,245,235,.2);letter-spacing:.08em;font-weight:300}
+.foot-socials{display:flex;gap:12px}
+.soc-btn{width:38px;height:38px;border:1px solid rgba(250,245,235,.1);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;color:rgba(250,245,235,.35);text-decoration:none;transition:all .3s;letter-spacing:0}
+.soc-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--forest);color:var(--cream);padding:14px 24px;font-family:'Oswald',sans-serif;font-size:12px;font-weight:400;letter-spacing:.15em;text-transform:uppercase;border-left:3px solid var(--gold);z-index:9999;transform:translateX(140%);transition:transform .45s cubic-bezier(.23,1,.32,1);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+.toast.show{transform:translateX(0)}
+
+/* SCROLL REVEAL */
+.rev{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.rev-l{opacity:0;transform:translateX(-36px);transition:opacity .75s ease,transform .75s ease}
+.rev-r{opacity:0;transform:translateX(36px);transition:opacity .75s ease,transform .75s ease}
+.rev.in,.rev-l.in,.rev-r.in{opacity:1;transform:translate(0)}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .coll-grid{grid-template-columns:repeat(2,1fr)}
+  .feat-prod-inner{grid-template-columns:1fr}
+  .feat-prod-visual{height:55vw;max-height:500px}
+  .threep-grid{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:900px){
+  .hero-right{width:42%}
+  .hero-left{width:62%}
+  .feature-band-inner{grid-template-columns:repeat(2,1fr)}
+  .feat-item{border-bottom:1px solid rgba(250,245,235,.06)}
+  .feat-item:nth-child(2n){border-right:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .stat-cell:nth-child(2){border-right:none}
+  .stat-cell:nth-child(3){border-right:1px solid rgba(10,34,24,.12);border-top:2px solid rgba(10,34,24,.12)}
+  .stat-cell:nth-child(4){border-top:2px solid rgba(10,34,24,.12)}
+  .order-inner{grid-template-columns:1fr}
+  .test-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .hero-right{display:none}
+  .hero-left{width:100%}
+  .coll-grid{grid-template-columns:1fr 1fr}
+  .threep-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .fr{grid-template-columns:1fr}
+  .foot-bottom{flex-direction:column;text-align:center}
+}
+@media(max-width:500px){
+  .coll-grid{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column}
+  .btn-gold,.btn-outline{justify-content:center}
+  .stats-inner{grid-template-columns:1fr}
+  .stat-cell{border-right:none;border-bottom:2px solid rgba(10,34,24,.1)}
+  .stat-cell:last-child{border-bottom:none}
+  .feature-band-inner{grid-template-columns:1fr}
+  .feat-item{border-right:none}
+  .foot-grid{grid-template-columns:1fr}
+  .threep-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+<div class="toast" id="toast">✦ Your order has been received!</div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-wordmark">MOD<span>ESTA</span></div>
+  <div class="pre-tagline">Modest Fashion · Premium Quality · Handcrafted</div>
+  <div class="pre-line"></div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#collections">Collections</a>
+  <a href="#featured">Featured</a>
+  <a href="#threepiece">3-Piece Sets</a>
+  <a href="#order">Order Now</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">MOD<span>ESTA</span></a>
+  <ul class="nav-links">
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#threepiece">3-Piece</a></li>
+    <li><a href="#order">Order</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">Order Now</button>
+  <button class="hamburger" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg-word">MODESTA</div>
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span>New Arrivals 2025 — Eid Collection</span>
+    </div>
+    <h1 class="hero-title">
+      MODEST<br>
+      <span class="hl">is Beautiful</span><br>
+      <span class="stroke">FASHION</span>
+    </h1>
+    <div class="hero-sub">Premium Burkha · Abaya · 3-Piece Sets</div>
+    <p class="hero-desc">Discover handcrafted Islamic women's fashion that honours your faith while celebrating your style. From flowing abayas to elegant burkhas, every piece is crafted for the modern Muslim woman.</p>
+    <div class="hero-btns">
+      <a href="#collections" class="btn-gold">Explore Collection →</a>
+      <a href="#order" class="btn-outline">Order Now ↓</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-col">
+      <div class="hero-img-overlay"></div>
+      <img src="https://images.unsplash.com/photo-1622557850710-e4b7b7c53a62?w=600&q=85&auto=format&fit=crop" alt="Elegant abaya fashion" loading="eager">
+      <div class="hero-img-label">Luxury Abaya</div>
+    </div>
+    <div class="hero-img-col">
+      <div class="hero-img-overlay"></div>
+      <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&q=85&auto=format&fit=crop" alt="Islamic modest fashion" loading="eager">
+      <div class="hero-img-label">3-Piece Set</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll Down</span>
+    <div class="scroll-bar"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="m-item">✦ Premium Abaya <span class="m-star">★</span></span>
+    <span class="m-item">Luxury Burkha <span class="m-star">★</span></span>
+    <span class="m-item">3-Piece Sets <span class="m-star">★</span></span>
+    <span class="m-item">Eid Special Collection <span class="m-star">★</span></span>
+    <span class="m-item">Free Delivery Dhaka <span class="m-star">★</span></span>
+    <span class="m-item">Handmade Bangladesh <span class="m-star">★</span></span>
+    <span class="m-item">Custom Sizing Available <span class="m-star">★</span></span>
+    <span class="m-item">✦ Premium Abaya <span class="m-star">★</span></span>
+    <span class="m-item">Luxury Burkha <span class="m-star">★</span></span>
+    <span class="m-item">3-Piece Sets <span class="m-star">★</span></span>
+    <span class="m-item">Eid Special Collection <span class="m-star">★</span></span>
+    <span class="m-item">Free Delivery Dhaka <span class="m-star">★</span></span>
+    <span class="m-item">Handmade Bangladesh <span class="m-star">★</span></span>
+    <span class="m-item">Custom Sizing Available <span class="m-star">★</span></span>
+  </div>
+</div>
+
+<!-- ===== COLLECTIONS ===== -->
+<section class="section-pad collections-bg" id="collections">
+  <div class="side-text side-text-right">FASHION</div>
+  <div class="coll-header rev">
+    <div>
+      <span class="sec-eyebrow">Our Collections</span>
+      <h2 class="sec-title">THE <span class="hl">Signature</span><br>EDIT</h2>
+      <span class="sec-divider"></span>
+    </div>
+    <div class="coll-count">06</div>
+  </div>
+  <div class="coll-grid">
+    <!-- Card 1: Burkha -->
+    <div class="prod-card rev" data-d="0">
+      <div class="prod-img-wrap" style="aspect-ratio:3/4">
+        <img src="https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=700&q=85&auto=format&fit=crop&crop=center" alt="Premium Black Burkha" loading="lazy">
+        <div class="prod-badge badge-new">New</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Classic Black Burkha')">Quick Order</button>
+        </div>
+      </div>
+      <div class="prod-info">
+        <span class="prod-cat">Burkha</span>
+        <div class="prod-name">Classic Black Burkha</div>
+        <div class="prod-price">৳ 3,200 <s>৳ 4,000</s></div>
+      </div>
+    </div>
+    <!-- Card 2: Abaya -->
+    <div class="prod-card rev" data-d="120">
+      <div class="prod-img-wrap" style="aspect-ratio:3/4">
+        <img src="https://images.unsplash.com/photo-1580651315530-69c8e0026377?w=700&q=85&auto=format&fit=crop&crop=center" alt="Luxury Open Abaya" loading="lazy">
+        <div class="prod-badge badge-hot">Hot</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Dubai Open Abaya')">Quick Order</button>
+        </div>
+      </div>
+      <div class="prod-info">
+        <span class="prod-cat">Abaya</span>
+        <div class="prod-name">Dubai Open Abaya</div>
+        <div class="prod-price">৳ 5,800 <s>৳ 7,200</s></div>
+      </div>
+    </div>
+    <!-- Card 3: 3-Piece -->
+    <div class="prod-card rev" data-d="240">
+      <div class="prod-img-wrap" style="aspect-ratio:3/4">
+        <img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=700&q=85&auto=format&fit=crop&crop=center" alt="Premium 3-Piece Set" loading="lazy">
+        <div class="prod-badge badge-sale">Sale</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Elegant 3-Piece Set')">Quick Order</button>
+        </div>
+      </div>
+      <div class="prod-info">
+        <span class="prod-cat">3-Piece Set</span>
+        <div class="prod-name">Elegant 3-Piece Set</div>
+        <div class="prod-price">৳ 6,500 <s>৳ 8,800</s></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURE BAND ===== -->
+<section class="feature-band">
+  <div class="side-text side-text-left">MODESTA</div>
+  <div class="feature-band-inner">
+    <div class="feat-item rev" data-d="0">
+      <span class="feat-icon">🌿</span>
+      <div class="feat-title">Ethically Crafted</div>
+      <p class="feat-desc">Every piece handmade by skilled artisans in Bangladesh using sustainable, premium fabrics.</p>
+    </div>
+    <div class="feat-item rev" data-d="100">
+      <span class="feat-icon">📐</span>
+      <div class="feat-title">Custom Sizing</div>
+      <p class="feat-desc">Standard or fully custom measurements — perfect fit guaranteed for every body type.</p>
+    </div>
+    <div class="feat-item rev" data-d="200">
+      <span class="feat-icon">🚚</span>
+      <div class="feat-title">Fast Delivery</div>
+      <p class="feat-desc">Free delivery across Dhaka. Nationwide shipping within 5–7 business days.</p>
+    </div>
+    <div class="feat-item rev" data-d="300">
+      <span class="feat-icon">💫</span>
+      <div class="feat-title">Premium Quality</div>
+      <p class="feat-desc">Chiffon, silk, georgette and premium cotton — luxurious fabrics at honest prices.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED PRODUCT ===== -->
+<section class="featured-sec" id="featured">
+  <div class="side-text side-text-right">LUXURY</div>
+  <div class="feat-prod-inner">
+    <div class="feat-prod-visual rev-l">
+      <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=900&q=85&auto=format&fit=crop&crop=center" alt="Luxury Signature Abaya" loading="lazy">
+      <div class="feat-prod-visual-overlay"></div>
+      <div class="feat-prod-tag">★ Best Seller</div>
+    </div>
+    <div class="feat-prod-content rev-r">
+      <div class="feat-prod-number">01</div>
+      <div class="feat-eyebrow">Featured Piece</div>
+      <h2 class="feat-title-big">SIGNATURE<br><span class="hl">Luxury Abaya</span></h2>
+      <p class="feat-desc">A statement in modesty. This floor-length open abaya is crafted from whisper-soft chiffon with hand-embroidered gold trim along the cuffs and hem. Worn with or without the matching inner dress — it is an emblem of refined Islamic fashion.</p>
+      <div class="feat-specs-grid">
+        <div class="feat-spec"><div class="feat-spec-label">Fabric</div><div class="feat-spec-val">Premium Chiffon</div></div>
+        <div class="feat-spec"><div class="feat-spec-label">Closure</div><div class="feat-spec-val">Button Front</div></div>
+        <div class="feat-spec"><div class="feat-spec-label">Embroidery</div><div class="feat-spec-val">Gold Hand-sewn</div></div>
+        <div class="feat-spec"><div class="feat-spec-label">Delivery</div><div class="feat-spec-val">5–7 Days</div></div>
+      </div>
+      <div class="feat-price">৳ 12,500 <small>Free Delivery</small></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <button class="btn-gold" onclick="quickOrder('Signature Luxury Abaya')" style="cursor:none">Order This Piece →</button>
+        <a href="#collections" class="btn-outline" style="cursor:none">View More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3-PIECE SHOWCASE ===== -->
+<section class="section-pad threep-sec" id="threepiece">
+  <div class="side-text side-text-right">3PIECE</div>
+  <div class="rev">
+    <div class="set-label"><div class="set-label-dot"></div>Exclusive Collection</div>
+    <span class="sec-eyebrow">Premium Sets</span>
+    <h2 class="sec-title">THE <span class="hl">3-Piece</span><br><span class="stroke">COLLECTION</span></h2>
+    <span class="sec-divider"></span>
+  </div>
+  <div class="threep-grid">
+    <!-- Card 1 tall -->
+    <div class="threep-card tall rev" data-d="0">
+      <div class="threep-num">01</div>
+      <div class="threep-img-wrap" style="height:clamp(320px,50vw,540px)">
+        <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=85&auto=format&fit=crop&crop=center" alt="Eid Special 3-Piece" loading="lazy">
+        <div class="prod-badge badge-new">Eid Special</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Eid Pastel 3-Piece Set')">Quick Order</button>
+        </div>
+      </div>
+      <div class="threep-info">
+        <span class="prod-cat">3-Piece Set</span>
+        <div class="prod-name">Eid Pastel Collection</div>
+        <div class="prod-price">৳ 8,200</div>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="threep-card rev" data-d="120">
+      <div class="threep-num">02</div>
+      <div class="threep-img-wrap" style="height:clamp(240px,38vw,420px)">
+        <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&q=85&auto=format&fit=crop&crop=top" alt="Royal 3-Piece Set" loading="lazy">
+        <div class="prod-badge badge-hot">Royal</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Royal Embroidered 3-Piece')">Quick Order</button>
+        </div>
+      </div>
+      <div class="threep-info">
+        <span class="prod-cat">3-Piece Set</span>
+        <div class="prod-name">Royal Embroidered Set</div>
+        <div class="prod-price">৳ 9,800</div>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="threep-card rev" data-d="200">
+      <div class="threep-num">03</div>
+      <div class="threep-img-wrap" style="height:clamp(240px,38vw,420px)">
+        <img src="https://images.unsplash.com/photo-1617019114583-affb34d1b3cd?w=600&q=85&auto=format&fit=crop&crop=center" alt="Casual 3-Piece Set" loading="lazy">
+        <div class="prod-badge badge-sale">Bestseller</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Everyday Casual 3-Piece')">Quick Order</button>
+        </div>
+      </div>
+      <div class="threep-info">
+        <span class="prod-cat">3-Piece Set</span>
+        <div class="prod-name">Everyday Casual Set</div>
+        <div class="prod-price">৳ 5,400</div>
+      </div>
+    </div>
+    <!-- Card 4 tall -->
+    <div class="threep-card tall rev" data-d="300">
+      <div class="threep-num">04</div>
+      <div class="threep-img-wrap" style="height:clamp(320px,50vw,540px)">
+        <img src="https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=600&q=85&auto=format&fit=crop&crop=center" alt="Luxury Burkha Set" loading="lazy">
+        <div class="prod-badge badge-new">New</div>
+        <div class="prod-overlay">
+          <button class="prod-quick" onclick="quickOrder('Premium Burkha Full Set')">Quick Order</button>
+        </div>
+      </div>
+      <div class="threep-info">
+        <span class="prod-cat">Burkha Set</span>
+        <div class="prod-name">Premium Burkha Full Set</div>
+        <div class="prod-price">৳ 7,600</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats-sec">
+  <div class="side-text side-text-left">TRUSTED</div>
+  <div class="stats-inner">
+    <div class="stat-cell rev" data-d="0">
+      <span class="stat-num" data-t="15000">0</span>
+      <span class="stat-lbl">Happy Customers</span>
+    </div>
+    <div class="stat-cell rev" data-d="100">
+      <span class="stat-num" data-t="320">0</span>
+      <span class="stat-lbl">Unique Designs</span>
+    </div>
+    <div class="stat-cell rev" data-d="200">
+      <span class="stat-num" data-t="8">0</span>
+      <span class="stat-lbl">Years of Craft</span>
+    </div>
+    <div class="stat-cell rev" data-d="300">
+      <span class="stat-num" data-t="98">0</span>
+      <span class="stat-lbl">% Satisfaction</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ORDER SECTION ===== -->
+<section class="section-pad order-sec" id="order">
+  <div class="order-sec-watermark">ORDER</div>
+  <div class="order-inner">
+    <div class="order-info">
+      <span class="sec-eyebrow">Place Your Order</span>
+      <h2 class="sec-title rev-l">RESERVE YOUR<br><span class="hl">Dream Piece</span></h2>
+      <span class="sec-divider" style="margin-top:18px"></span>
+      <p class="order-desc">Fill out the form and our team will contact you within 24 hours to confirm your order, discuss customization, and arrange delivery. No advance payment required.</p>
+      <div class="order-steps">
+        <div class="ord-step rev-l" data-d="100">
+          <span class="ord-num">01</span>
+          <div><div class="ord-text-title">Choose Your Style</div><div class="ord-text-desc">Browse our curated selection of abayas, burkhas, and 3-piece sets. Each available in custom sizes.</div></div>
+        </div>
+        <div class="ord-step rev-l" data-d="180">
+          <span class="ord-num">02</span>
+          <div><div class="ord-text-title">Submit Your Details</div><div class="ord-text-desc">Provide your measurements, color preference, and delivery area. We handle the rest.</div></div>
+        </div>
+        <div class="ord-step rev-l" data-d="260">
+          <span class="ord-num">03</span>
+          <div><div class="ord-text-title">Receive with Joy</div><div class="ord-text-desc">Your piece arrives beautifully packaged within 5–10 days. Free delivery across Dhaka.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM BOX -->
+    <div class="order-form-box rev-r">
+      <div id="formBody">
+        <div class="form-head">Order Form</div>
+        <div class="form-sub">Our team confirms within 24 hours — no upfront payment</div>
+
+        <div class="fg">
+          <label class="flabel">Full Name *</label>
+          <input type="text" class="finput" id="fn" placeholder="Your full name">
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label class="flabel">Phone *</label>
+            <input type="tel" class="finput" id="fp" placeholder="+880 17XX XXXXXX">
+          </div>
+          <div class="fg">
+            <label class="flabel">Email</label>
+            <input type="email" class="finput" id="fe" placeholder="email@example.com">
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flabel">Select Item *</label>
+          <select class="fselect finput" id="fi">
+            <option value="">Choose a piece...</option>
+            <optgroup label="— Burkha">
+              <option value="burkha-classic">Classic Black Burkha — ৳ 3,200</option>
+              <option value="burkha-premium">Premium Burkha Full Set — ৳ 7,600</option>
+            </optgroup>
+            <optgroup label="— Abaya">
+              <option value="abaya-dubai">Dubai Open Abaya — ৳ 5,800</option>
+              <option value="abaya-signature">Signature Luxury Abaya — ৳ 12,500</option>
+            </optgroup>
+            <optgroup label="— 3-Piece Sets">
+              <option value="3p-eid">Eid Pastel 3-Piece Set — ৳ 8,200</option>
+              <option value="3p-royal">Royal Embroidered Set — ৳ 9,800</option>
+              <option value="3p-casual">Everyday Casual Set — ৳ 5,400</option>
+              <option value="3p-elegant">Elegant 3-Piece Set — ৳ 6,500</option>
+            </optgroup>
+            <option value="custom">Custom Design (Consultation)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flabel">Size</label>
+          <div class="size-row">
+            <button type="button" class="sz-btn" onclick="selSz(this,'XS')">XS</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'S')">S</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'M')">M</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'L')">L</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'XL')">XL</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'XXL')">XXL</button>
+            <button type="button" class="sz-btn" onclick="selSz(this,'Custom')" style="width:auto;padding:0 12px">Custom</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flabel">Color Preference</label>
+          <div class="color-row">
+            <div class="csw" style="background:#0d0d0d" title="Black" onclick="selClr(this,'Black')"></div>
+            <div class="csw" style="background:#1a3d2b" title="Dark Green" onclick="selClr(this,'Dark Green')"></div>
+            <div class="csw" style="background:#2d1a6e" title="Navy Blue" onclick="selClr(this,'Navy Blue')"></div>
+            <div class="csw" style="background:#8b2252" title="Maroon" onclick="selClr(this,'Maroon')"></div>
+            <div class="csw" style="background:#c8952a" title="Gold" onclick="selClr(this,'Gold')"></div>
+            <div class="csw" style="background:#e8d5b7" title="Cream" onclick="selClr(this,'Cream');this.querySelector('::after')" style="border:1px solid rgba(255,255,255,.15)"></div>
+            <div class="csw" style="background:#8b6358" title="Brown" onclick="selClr(this,'Brown')"></div>
+            <div class="csw" style="background:#d4c5e2" title="Lilac" onclick="selClr(this,'Lilac')"></div>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label class="flabel">Quantity</label>
+            <div class="qty-wrap">
+              <button type="button" class="qty-b" onclick="chQ(-1)">−</button>
+              <input type="number" class="qty-d" id="fq" value="1" min="1" max="20" readonly>
+              <button type="button" class="qty-b" onclick="chQ(1)">+</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="flabel">Delivery Area</label>
+            <select class="fselect finput" id="fdel">
+              <option value="">Select area...</option>
+              <option>Dhaka City (Free)</option>
+              <option>Chittagong</option>
+              <option>Sylhet</option>
+              <option>Rajshahi</option>
+              <option>Khulna</option>
+              <option>Cumilla</option>
+              <option>Other Districts</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flabel">Special Instructions</label>
+          <textarea class="ftextarea finput" id="fnote" placeholder="Measurements, custom embroidery, occasion details, colour requests..."></textarea>
+        </div>
+        <div class="submit-wrap">
+          <button type="button" class="sub-btn" id="subBtn" onclick="submitOrder()">
+            ✦ PLACE MY ORDER
+          </button>
+        </div>
+        <div class="form-note">By ordering, our team calls you within 24 hours to confirm. Zero upfront payment required.</div>
+      </div>
+
+      <div class="success-box" id="succBox">
+        <span class="success-icon">✦</span>
+        <div class="success-t">Order Received!</div>
+        <p class="success-p" id="succMsg">Thank you! We'll contact you within 24 hours.</p>
+        <button class="btn-gold" style="margin-top:28px;cursor:none" onclick="resetForm()">Place Another Order →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section-pad test-sec" id="reviews">
+  <div class="side-text side-text-left">REVIEWS</div>
+  <div class="rev" style="text-align:center;max-width:600px;margin:0 auto">
+    <span class="sec-eyebrow">Client Stories</span>
+    <h2 class="sec-title">WORDS <span class="hl">of Love</span></h2>
+    <span class="sec-divider" style="margin:18px auto 0"></span>
+  </div>
+  <div class="test-grid">
+    <div class="test-card rev" data-d="0">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-q">"The Signature Luxury Abaya was everything I dreamed of for my walimah. Every guest asked where I got it. Truly a masterpiece — the embroidery is breathtaking."</div>
+      <div class="test-who">
+        <div class="test-av">FA</div>
+        <div><div class="test-name">Fatema Akter</div><div class="test-role">Bride · Dhaka</div></div>
+      </div>
+    </div>
+    <div class="test-card rev" data-d="150">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-q">"Ordered the Eid 3-Piece Set for the whole family. Delivery was on time, packaging was beautiful, and the fabric quality is far beyond the price. Will reorder always!"</div>
+      <div class="test-who">
+        <div class="test-av">SR</div>
+        <div><div class="test-name">Sadia Rahman</div><div class="test-role">Loyal Customer · Chittagong</div></div>
+      </div>
+    </div>
+    <div class="test-card rev" data-d="300">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-q">"My custom burkha fits perfectly. They called me to confirm measurements and were so professional. This is what shopping for modest fashion should feel like everywhere."</div>
+      <div class="test-who">
+        <div class="test-av">NK</div>
+        <div><div class="test-name">Nafisa Khan</div><div class="test-role">Fashion Blogger · Sylhet</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer id="contact">
+  <div class="foot-grid">
+    <div>
+      <a href="#" class="foot-logo">MOD<span>ESTA</span></a>
+      <p class="foot-desc">Where Islamic modesty meets modern elegance. Handcrafted in Bangladesh for the faithful, stylish Muslim woman of today.</p>
+    </div>
+    <div>
+      <div class="foot-col-title">Collections</div>
+      <ul class="foot-links">
+        <li><a href="#">Premium Burkha</a></li>
+        <li><a href="#">Open Abayas</a></li>
+        <li><a href="#">3-Piece Sets</a></li>
+        <li><a href="#">Eid Collection</a></li>
+        <li><a href="#">Bridal Sets</a></li>
+        <li><a href="#">Custom Design</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="foot-col-title">Company</div>
+      <ul class="foot-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Artisans</a></li>
+        <li><a href="#">Halal Sourcing</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Return Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="foot-col-title">Contact</div>
+      <ul class="foot-links">
+        <li><a href="tel:+8801711234567">+880 171 123 4567</a></li>
+        <li><a href="https://wa.me/8801711234567">WhatsApp Order</a></li>
+        <li><a href="mailto:hello@modesta.com.bd">hello@modesta.com.bd</a></li>
+        <li><a href="#">Gulshan-2, Dhaka</a></li>
+        <li><a href="#">Track My Order</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div class="foot-copy">© 2025 Modesta Fashion. All rights reserved. Made with ♥ in Bangladesh.</div>
+    <div class="foot-socials">
+      <a class="soc-btn" href="#" title="Facebook">F</a>
+      <a class="soc-btn" href="#" title="Instagram">IN</a>
+      <a class="soc-btn" href="#" title="Pinterest">P</a>
+      <a class="soc-btn" href="#" title="WhatsApp">W</a>
+      <a class="soc-btn" href="#" title="YouTube">YT</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── PRELOADER ───
+window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('preloader').classList.add('out');setTimeout(()=>document.getElementById('preloader').style.display='none',950)},1400)});
+
+// ─── CURSOR ───
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function anim(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.prod-card,.threep-card,.test-card,.sz-btn,.csw').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';curR.style.width='56px';curR.style.height='56px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';curR.style.width='38px';curR.style.height='38px'});
+});
+
+// ─── NAV ───
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60)});
+
+// ─── HAMBURGER ───
+const hbg=document.getElementById('hbg'),mob=document.getElementById('mobMenu');
+hbg.addEventListener('click',()=>{hbg.classList.toggle('active');mob.classList.toggle('open')});
+mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{hbg.classList.remove('active');mob.classList.remove('open')}));
+
+// ─── SCROLL REVEAL ───
+const els=document.querySelectorAll('.rev,.rev-l,.rev-r');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const d=entry.target.dataset.d||0;
+      setTimeout(()=>entry.target.classList.add('in'),Number(d));
+      obs.unobserve(entry.target);
+    }
+  });
+},{threshold:.12});
+els.forEach(e=>obs.observe(e));
+
+// ─── COUNTER ───
+function counter(el,target){
+  const dur=2200,start=performance.now();
+  const suffix=target===98?'%':target>=5000?'+':'';
+  (function tick(now){
+    const p=Math.min((now-start)/dur,1);
+    const v=Math.floor((1-Math.pow(1-p,3))*target);
+    el.textContent=v.toLocaleString()+suffix;
+    if(p<1)requestAnimationFrame(tick);
+    else el.textContent=target.toLocaleString()+suffix;
+  })(start);
+}
+const statObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){counter(e.target,+e.target.dataset.t);statObs.unobserve(e.target)}});
+},{threshold:.5});
+document.querySelectorAll('.stat-num[data-t]').forEach(e=>statObs.observe(e));
+
+// ─── HERO PARALLAX ───
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY,hl=document.querySelector('.hero-left');
+  if(hl&&s<window.innerHeight){hl.style.transform=`translateY(${s*.28}px)`;hl.style.opacity=1-(s/(window.innerHeight*.75))}
+});
+
+// ─── FORM STATE ───
+let sz='',clr='';
+function selSz(btn,v){document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');sz=v}
+function selClr(el,v){document.querySelectorAll('.csw').forEach(s=>s.classList.remove('on'));el.classList.add('on');clr=v}
+function chQ(d){const i=document.getElementById('fq');const v=+i.value+d;if(v>=1&&v<=20)i.value=v}
+
+function quickOrder(item){
+  document.getElementById('order').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{
+    const map={'Classic Black Burkha':'burkha-classic','Dubai Open Abaya':'abaya-dubai','Elegant 3-Piece Set':'3p-elegant','Signature Luxury Abaya':'abaya-signature','Eid Pastel 3-Piece Set':'3p-eid','Royal Embroidered 3-Piece':'3p-royal','Everyday Casual 3-Piece':'3p-casual','Premium Burkha Full Set':'burkha-premium'};
+    const sel=document.getElementById('fi');
+    const v=map[item];
+    if(v)Array.from(sel.options).forEach(o=>{if(o.value===v)o.selected=true});
+  },900);
+}
+
+function submitOrder(){
+  const name=document.getElementById('fn').value.trim();
+  const phone=document.getElementById('fp').value.trim();
+  const item=document.getElementById('fi').value;
+  if(!name)return alert('Please enter your full name.');
+  if(!phone)return alert('Please enter your phone number.');
+  if(!item)return alert('Please select an item.');
+  const btn=document.getElementById('subBtn');
+  btn.textContent='Processing...';btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('formBody').style.display='none';
+    const s=document.getElementById('succBox');s.classList.add('show');
+    document.getElementById('succMsg').textContent=`Assalamu Alaikum, ${name}! We will call ${phone} within 24 hours to confirm your order. Jazakallah Khair! ✦`;
+    showToast();
+  },1600);
+}
+function resetForm(){
+  ['fn','fp','fe','fnote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fi').value='';document.getElementById('fq').value=1;
+  document.getElementById('fdel').value='';
+  sz='';clr='';
+  document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.csw').forEach(s=>s.classList.remove('on'));
+  const btn=document.getElementById('subBtn');btn.textContent='✦ PLACE MY ORDER';btn.disabled=false;
+  document.getElementById('formBody').style.display='block';
+  document.getElementById('succBox').classList.remove('show');
+}
+function showToast(){
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
+}
+</script>
+</body>
+</html>
