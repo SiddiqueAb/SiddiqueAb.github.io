@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ডিজন্টো বিডি — গ্যাজেট বিক্রির কমপ্লিট গাইড</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116;
+    --bg-soft:#151A22;
+    --card:#1B212B;
+    --card-hi:#212836;
+    --line:#2A3341;
+    --text:#E9ECF1;
+    --muted:#8E97A6;
+    --pink:#E2136E;
+    --pink-soft:#3A1526;
+    --cyan:#22D3EE;
+    --cyan-soft:#132A31;
+    --amber:#FFB020;
+    --green:#3DDC84;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Noto Sans Bengali','Hind Siliguri',sans-serif;
+    line-height:1.8;
+    font-size:16px;
+  }
+  h1,h2,h3,.eyebrow,.step-num{font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ===== Layout shell ===== */
+  .shell{display:flex; max-width:1280px; margin:0 auto;}
+  .toc{
+    width:270px; flex-shrink:0; position:sticky; top:0; height:100vh;
+    padding:32px 18px 32px 28px; overflow-y:auto; border-right:1px solid var(--line);
+  }
+  .toc-brand{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+  .toc-brand .dot{width:10px;height:10px;border-radius:50%;background:var(--pink); box-shadow:0 0 12px var(--pink);}
+  .toc-brand span{font-weight:700; letter-spacing:.3px; font-size:15px;}
+  .toc-list{list-style:none; margin:0; padding:0; position:relative;}
+  .toc-list::before{
+    content:""; position:absolute; left:11px; top:6px; bottom:6px; width:1px;
+    background:linear-gradient(var(--pink), var(--cyan));
+    opacity:.35;
+  }
+  .toc-list li{margin:2px 0;}
+  .toc-list a{
+    display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--muted);
+    font-size:13.5px; padding:7px 8px 7px 0; border-radius:8px; transition:color .15s;
+  }
+  .toc-list a:hover{color:var(--text);}
+  .toc-list .num{
+    width:23px; height:23px; border-radius:50%; background:var(--card); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:10.5px; flex-shrink:0; z-index:1;
+    font-family:'JetBrains Mono',monospace; color:var(--muted);
+  }
+  main{flex:1; min-width:0;}
+
+  /* ===== Hero ===== */
+  .hero{
+    padding:72px 56px 56px; border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(600px 260px at 85% -10%, var(--pink-soft), transparent 60%),
+      radial-gradient(500px 240px at 10% 0%, var(--cyan-soft), transparent 55%);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--cyan);
+    background:var(--cyan-soft); border:1px solid rgba(34,211,238,.25); padding:6px 14px;
+    border-radius:999px; margin-bottom:22px; font-family:'JetBrains Mono',monospace; letter-spacing:.5px;
+  }
+  .hero h1{font-size:40px; line-height:1.35; margin:0 0 18px; font-weight:700; max-width:820px;}
+  .hero h1 em{font-style:normal; color:var(--pink);}
+  .hero p.lead{color:var(--muted); font-size:17px; max-width:680px; margin:0 0 30px;}
+  .hero-stats{display:flex; gap:14px; flex-wrap:wrap;}
+  .stat{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 20px; min-width:150px;
+  }
+  .stat .n{font-family:'JetBrains Mono',monospace; font-size:22px; color:var(--pink); font-weight:600;}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:4px;}
+
+  /* ===== Sections ===== */
+  section{padding:52px 56px; border-bottom:1px solid var(--line); scroll-margin-top:20px;}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px;}
+  .step-num{
+    font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--pink); border:1px solid var(--pink);
+    border-radius:8px; padding:3px 10px; flex-shrink:0;
+  }
+  section h2{font-size:25px; margin:0; font-weight:700;}
+  .sec-sub{color:var(--muted); font-size:14.5px; margin:10px 0 28px; max-width:720px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px;}
+  .card h3{margin:0 0 10px; font-size:16px; color:var(--text); display:flex; align-items:center; gap:8px;}
+  .card p{margin:0; color:var(--muted); font-size:14.5px;}
+  .card ul{margin:10px 0 0; padding-right:0; padding-left:18px; color:var(--muted); font-size:14.5px;}
+  .card li{margin-bottom:6px;}
+
+  .checklist{list-style:none; margin:0; padding:0;}
+  .checklist li{
+    display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px dashed var(--line);
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .chk{
+    width:20px; height:20px; border-radius:6px; border:1.5px solid var(--green); flex-shrink:0; margin-top:2px;
+    display:flex; align-items:center; justify-content:center; color:var(--green); font-size:12px;
+  }
+
+  .tip-box{
+    background:var(--cyan-soft); border:1px solid rgba(34,211,238,.3); border-radius:12px; padding:16px 18px;
+    font-size:14.5px; color:var(--text); margin-top:20px;
+  }
+  .tip-box b{color:var(--cyan);}
+  .warn-box{
+    background:var(--pink-soft); border:1px solid rgba(226,19,110,.35); border-radius:12px; padding:16px 18px;
+    font-size:14.5px; color:var(--text); margin-top:20px;
+  }
+  .warn-box b{color:var(--pink);}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin-top:6px;}
+  th,td{text-align:right; padding:12px 14px; border-bottom:1px solid var(--line);}
+  th{color:var(--muted); font-weight:600; font-size:13px; font-family:'JetBrains Mono',monospace;}
+  td:first-child, th:first-child{text-align:right;}
+  tr:hover td{background:var(--card-hi);}
+
+  .pill-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;}
+  .pill{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:999px; padding:8px 16px;
+    font-size:13.5px; color:var(--text);
+  }
+  .pill.pink{border-color:var(--pink); color:var(--pink);}
+  .pill.green{border-color:var(--green); color:var(--green);}
+
+  .timeline{position:relative; padding-right:0; padding-left:0; margin-top:10px;}
+  .tstep{display:flex; gap:16px; padding:16px 0;}
+  .tstep .dotcol{display:flex; flex-direction:column; align-items:center;}
+  .tstep .dotball{width:12px;height:12px;border-radius:50%; background:var(--pink); box-shadow:0 0 10px var(--pink);}
+  .tstep .dotline{flex:1; width:1px; background:var(--line); margin-top:4px;}
+  .tstep:last-child .dotline{display:none;}
+  .tstep .tcontent b{display:block; margin-bottom:4px;}
+  .tstep .tcontent{color:var(--muted); font-size:14.5px;}
+
+  footer{padding:40px 56px; text-align:center; color:var(--muted); font-size:13px;}
+  footer .brand{color:var(--pink); font-weight:600;}
+
+  /* Mobile */
+  .toc-toggle{display:none;}
+  @media(max-width:980px){
+    .toc{display:none;}
+    .hero,section,footer{padding-left:22px; padding-right:22px;}
+    .hero h1{font-size:28px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== TOC ===== -->
+  <nav class="toc">
+    <div class="toc-brand"><span class="dot"></span><span>DIGONTO BD</span></div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="num">১</span> শুরুর প্রস্তুতি</a></li>
+      <li><a href="#s2"><span class="num">২</span> প্রাইসিং স্ট্র্যাটেজি</a></li>
+      <li><a href="#s3"><span class="num">৩</span> পেজ অপটিমাইজেশন</a></li>
+      <li><a href="#s4"><span class="num">৪</span> অর্গানিক কনটেন্ট</a></li>
+      <li><a href="#s5"><span class="num">৫</span> কম বাজেটে বুস্ট</a></li>
+      <li><a href="#s6"><span class="num">৬</span> অর্ডার ও ফাঁকা অর্ডার</a></li>
+      <li><a href="#s7"><span class="num">৭</span> পেমেন্ট মেথড</a></li>
+      <li><a href="#s8"><span class="num">৮</span> কুরিয়ার ও ডেলিভারি</a></li>
+      <li><a href="#s9"><span class="num">৯</span> কাস্টমার সার্ভিস</a></li>
+      <li><a href="#s10"><span class="num">১০</span> রিপিট কাস্টমার</a></li>
+      <li><a href="#s11"><span class="num">১১</span> দ্রুত বিক্রির ট্রিকস</a></li>
+      <li><a href="#s12"><span class="num">১২</span> সাধারণ ভুল</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <section class="hero" style="border-bottom:1px solid var(--line);">
+      <div class="eyebrow">● DIGONTOBD.COM — ফেসবুক পেজ সেলিং গাইড</div>
+      <h1>কম খরচে, দ্রুত ও বিশ্বাসযোগ্যভাবে <em>গ্যাজেট বিক্রির</em> পূর্ণাঙ্গ রোডম্যাপ</h1>
+      <p class="lead">প্রোডাক্ট সোর্সিং আপনার হাতে আছে — এই গাইড শুধু বিক্রির অংশ নিয়ে। পেজ সেটআপ থেকে অর্ডার কনফার্ম, পেমেন্ট, কুরিয়ার, রিভিউ পর্যন্ত বাংলাদেশের বাস্তবতা অনুযায়ী প্র্যাকটিক্যাল স্টেপ।</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="n">১২</div><div class="l">স্টেপ-বাই-স্টেপ সেকশন</div></div>
+        <div class="stat"><div class="n">০ টাকা</div><div class="l">প্রথম ধাপে অ্যাড বাজেট ছাড়াই শুরু</div></div>
+        <div class="stat"><div class="n">bKash / Nagad</div><div class="l">লোকাল পেমেন্ট সেটআপ</div></div>
+        <div class="stat"><div class="n">Pathao / Steadfast</div><div class="l">কুরিয়ার তুলনা</div></div>
+      </div>
+    </section>
+
+    <!-- ===== 1. শুরুর প্রস্তুতি ===== -->
+    <section id="s1">
+      <div class="sec-head"><span class="step-num">০১</span><h2>শুরুর প্রস্তুতি — বিশ্বাসযোগ্যতা তৈরি</h2></div>
+      <p class="sec-sub">বাংলাদেশে অনলাইন কেনাকাটায় সবচেয়ে বড় বাধা হলো "স্ক্যাম" ভয়। বিক্রি শুরু করার আগে এই বিশ্বাসের ভিত্তিটা তৈরি করে নিন — এতে টাকা লাগে না, শুধু সময় লাগে।</p>
+      <ul class="checklist">
+        <li><span class="chk">✓</span><div><b>পেজ নেম ও ইউজারনেম মিলিয়ে নিন</b> — Facebook পেজ নেম, ইউজারনেম (facebook.com/digontobd), ওয়েবসাইট digontobd.com — সব জায়গায় একই নাম রাখুন যাতে সার্চে সহজে পাওয়া যায়।</div></li>
+        <li><span class="chk">✓</span><div><b>About সেকশন সম্পূর্ণ পূরণ করুন</b> — ঠিকানা, ফোন নাম্বার, ব্যবসার ধরন (E-commerce Website), ডেলিভারি এলাকা, কাজের সময় — সব দিন।</div></li>
+        <li><span class="chk">✓</span><div><b>প্রোফাইল ও কভার ফটো প্রফেশনাল রাখুন</b> — লোগো ক্লিয়ার হতে হবে; কভার ফটোতে "সারা বাংলাদেশে হোম ডেলিভারি", "১০০% অরিজিনাল প্রোডাক্ট", "ক্যাশ অন ডেলিভারি" এই ধরনের ট্রাস্ট মেসেজ রাখুন।</div></li>
+        <li><span class="chk">✓</span><div><b>Facebook Page Verification / Meta Verified চেষ্টা করুন</b> — ব্লু ব্যাজ সম্ভব না হলেও, পেজের ট্রান্সপারেন্সি সেকশনে সঠিক তথ্য থাকা জরুরি — কাস্টমার এখন এটা চেক করে কেনার আগে।</div></li>
+        <li><span class="chk">✓</span><div><b>প্রথম ১৫-২০টা প্রোডাক্ট পোস্ট রেডি করুন</b> — ভালো ছবি (দিনের আলোয় বা রিং লাইটে তোলা), ক্লিয়ার প্রাইস, স্টক আছে কিনা লিখুন — খালি পেজে কাস্টমার আসলে বিশ্বাস করে না।</div></li>
+        <li><span class="chk">✓</span><div><b>রিভিউ কালেক্ট করার প্ল্যান রাখুন</b> — শুরুতে পরিচিত/আত্মীয়দের কাছে ১-২টা প্রোডাক্ট কম দামে দিয়ে সত্যিকারের রিভিউ (ছবি/ভিডিওসহ) নিয়ে পেজে পিন করে রাখুন।</div></li>
+      </ul>
+      <div class="tip-box"><b>টিপ:</b> পেজে একটা "Pinned Post" রাখুন যেখানে থাকবে — ডেলিভারি চার্জ, পেমেন্ট মেথড, রিটার্ন পলিসি, ও যোগাযোগের নাম্বার। এতে বারবার একই প্রশ্নের উত্তর দিতে হবে না, সময় বাঁচবে।</div>
+    </section>
+
+    <!-- ===== 2. প্রাইসিং ===== -->
+    <section id="s2">
+      <div class="sec-head"><span class="step-num">০২</span><h2>প্রাইসিং স্ট্র্যাটেজি</h2></div>
+      <p class="sec-sub">গ্যাজেট আইটেমে প্রতিযোগিতা অনেক বেশি, তাই দামের সাথে সাথে "value perception" তৈরি করাটাই আসল খেলা।</p>
+      <table>
+        <tr><th>প্রাইসিং মডেল</th><th>কখন ব্যবহার করবেন</th><th>মার্জিন গাইড</th></tr>
+        <tr><td>কম্পিটিটিভ প্রাইসিং</td><td>Daraz/অন্য পেজে যে প্রোডাক্ট সহজে খুঁজে পাওয়া যায় (চার্জার, কেবল)</td><td>১৫–২৫%</td></tr>
+        <tr><td>বান্ডল প্রাইসিং</td><td>ইয়ারফোন + কেস, চার্জার + কেবল একসাথে অফার</td><td>২৫–৩৫%</td></tr>
+        <tr><td>প্রিমিয়াম/নিশ প্রাইসিং</td><td>কম প্রতিদ্বন্দ্বী থাকা ইউনিক গ্যাজেট (গ্যাজেট গিফট আইটেম)</td><td>৩৫–৫০%+</td></tr>
+        <tr><td>লস-লিডার</td><td>একটা সস্তা হাই-ডিমান্ড আইটেম দিয়ে পেজে ট্রাফিক আনা</td><td>৫–১০% (আপসেলের জন্য)</td></tr>
+      </table>
+      <div class="tip-box"><b>টিপ:</b> দামের সাথে সবসময় ডেলিভারি চার্জ স্পষ্ট লিখুন (ঢাকার ভিতরে/বাইরে আলাদা করে)। "মূল্য নিয়ে ইনবক্স করুন" — এটা এখনকার কাস্টমার পছন্দ করে না, এতে বাউন্স রেট বাড়ে।</div>
+    </section>
+
+    <!-- ===== 3. পেজ অপটিমাইজেশন ===== -->
+    <section id="s3">
+      <div class="sec-head"><span class="step-num">০৩</span><h2>ফেসবুক পেজ অপটিমাইজেশন</h2></div>
+      <p class="sec-sub">পেজকে এমনভাবে সাজান যেন একজন নতুন ভিজিটর ৩০ সেকেন্ডেই বুঝে যায় — আপনি কী বিক্রি করেন, দাম কত, আর কেন আপনার কাছ থেকে কিনবে।</p>
+      <div class="grid3">
+        <div class="card"><h3>🏷️ Shop / Product tab চালু করুন</h3><p>Facebook Shop ফিচার ব্যবহার করে ক্যাটালগ সাজান — কাস্টমার স্ক্রল করে সব প্রোডাক্ট এক জায়গায় দেখতে পারবে, বারবার মেসেজ করতে হবে না।</p></div>
+        <div class="card"><h3>💬 Auto-reply ও Quick Replies</h3><p>Meta Business Suite থেকে ইনস্ট্যান্ট রিপ্লাই সেট করুন ("ধন্যবাদ, ৫ মিনিটের মধ্যে রিপ্লাই পাবেন") — রেসপন্স টাইম কম দেখালে অর্ডার হারানোর হার কমে।</p></div>
+        <div class="card"><h3>📌 হাইলাইট স্টোরিতে ক্যাটাগরি</h3><p>Instagram-স্টাইল হাইলাইট না থাকলেও, Featured Photos/Video সেকশনে ক্যাটাগরি ভিত্তিক ছবি সাজান — Charger, Earbuds, Smartwatch, Gift Items।</p></div>
+      </div>
+      <div class="warn-box"><b>মনে রাখবেন:</b> পেজের নাম বারবার পরিবর্তন করবেন না — এতে ফেসবুকের অ্যালগরিদম পুরনো রিচ/ফলোয়ার ভ্যালু কমিয়ে দেয় এবং কাস্টমার কনফিউজড হয়।</div>
+    </section>
+
+    <!-- ===== 4. অর্গানিক কনটেন্ট ===== -->
+    <section id="s4">
+      <div class="sec-head"><span class="step-num">০৪</span><h2>টাকা খরচ ছাড়া অর্গানিক কনটেন্ট (Tips & Tricks)</h2></div>
+      <p class="sec-sub">বাজেট কম থাকলে এই অংশটাই আপনার সবচেয়ে বড় হাতিয়ার। কনসিস্টেন্সি এখানে অ্যালগরিদমের চেয়ে বেশি গুরুত্বপূর্ণ।</p>
+      <div class="grid2">
+        <div class="card">
+          <h3>📸 কনটেন্ট ফরম্যাট মিক্স</h3>
+          <ul>
+            <li><b>আনবক্সিং রিলস</b> — সবচেয়ে বেশি ভিউ আনে, ১৫-৩০ সেকেন্ড রাখুন</li>
+            <li><b>Use-case ভিডিও</b> — পণ্যটা রিয়েল লাইফে কীভাবে কাজ করে দেখান</li>
+            <li><b>Before/After বা Problem-Solution</b> — সমস্যা দেখিয়ে সমাধান হিসেবে প্রোডাক্ট</li>
+            <li><b>Carousel পোস্ট</b> — মাল্টি-অ্যাঙ্গেল ছবি, ফিচার হাইলাইট</li>
+            <li><b>কাস্টমার রিভিউ শেয়ার</b> — স্ক্রিনশট বা ভিডিও টেস্টিমোনিয়াল</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🗓️ পোস্টিং রুটিন</h3>
+          <ul>
+            <li>দিনে ১টা রিল/ভিডিও + ১টা ছবি পোস্ট — সপ্তাহে ৫-৬ দিন</li>
+            <li>সেরা সময়: দুপুর ১-২টা এবং রাত ৮-১১টা (বাংলাদেশ সময়)</li>
+            <li>প্রতিটা পোস্টে CTA দিন — "ইনবক্স করুন" / "কমেন্টে দাম জানতে চাইলে '১' লিখুন"</li>
+            <li>Trending অডিও/হ্যাশট্যাগ ব্যবহার করুন রিলে</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tip-box"><b>টিপ:</b> "কমেন্টে ১ লিখুন" স্ট্র্যাটেজি ব্যবহার করুন — এতে কমেন্ট বাড়ে যা পোস্টের রিচ বাড়িয়ে দেয় (এনগেজমেন্ট সিগন্যাল), এবং প্রতি কমেন্টে অটো-DM পাঠিয়ে লিড ফলোআপ করতে পারবেন।</div>
+    </section>
+
+    <!-- ===== 5. কম বাজেটে বুস্ট ===== -->
+    <section id="s5">
+      <div class="sec-head"><span class="step-num">০৫</span><h2>কম বাজেটে ফেসবুক বুস্ট/অ্যাড</h2></div>
+      <p class="sec-sub">বড় বাজেট ছাড়াও সঠিক টার্গেটিং করলে গ্যাজেট আইটেমে ভালো রেজাল্ট পাওয়া সম্ভব। বুস্ট বাটনের বদলে Ads Manager ব্যবহার করাই ভালো — বেশি কন্ট্রোল পাওয়া যায়।</p>
+      <div class="grid3">
+        <div class="card"><h3>💰 বাজেট প্ল্যান</h3><p>শুরুতে দিনে ১৫০-৩০০ টাকা দিয়ে টেস্ট করুন, ৩-৪ দিন চালিয়ে যেটার রেজাল্ট ভালো সেটাতে বাজেট বাড়ান। একসাথে অনেক টাকা একটা অ্যাডে না ঢেলে ছোট ছোট টেস্টে ভাগ করুন।</p></div>
+        <div class="card"><h3>🎯 টার্গেটিং</h3><p>এজ ১৮-৪৫, বাংলাদেশের বড় শহর (ঢাকা, চট্টগ্রাম, সিলেট) দিয়ে শুরু করুন। Interest: Mobile accessories, Online shopping, Gadgets। Lookalike audience আপনার আগের কাস্টমার লিস্ট থেকে বানান।</p></div>
+        <div class="card"><h3>🎬 অ্যাড ক্রিয়েটিভ</h3><p>স্ট্যাটিক ছবির চেয়ে ভিডিও/রিল ফরম্যাট অ্যাডে বেশি ভালো পারফর্ম করে। প্রথম ৩ সেকেন্ডে প্রোডাক্টের মেইন বেনিফিট দেখান।</p></div>
+      </div>
+      <table style="margin-top:18px;">
+        <tr><th>ক্যাম্পেইন গোল</th><th>কখন ব্যবহার করবেন</th></tr>
+        <tr><td>Engagement</td><td>নতুন পেজ, ফলোয়ার/কমেন্ট বাড়ানোর জন্য</td></tr>
+        <tr><td>Messages</td><td>সরাসরি ইনবক্সে অর্ডার আনতে (গ্যাজেটে সবচেয়ে কার্যকর)</td></tr>
+        <tr><td>Conversions (Website)</td><td>digontobd.com-এ ডাইরেক্ট চেকআউট বাড়াতে (Pixel সেটআপ থাকতে হবে)</td></tr>
+      </table>
+      <div class="warn-box"><b>মনে রাখবেন:</b> digontobd.com-এ Facebook Pixel/Meta Pixel বসিয়ে নিন প্রথমেই — এটা না থাকলে ভবিষ্যতে রিটার্গেটিং ও Conversion ক্যাম্পেইন চালানো যাবে না, আর CPC অনেক বেশি পড়বে।</div>
+    </section>
+
+    <!-- ===== 6. অর্ডার ম্যানেজমেন্ট ===== -->
+    <section id="s6">
+      <div class="sec-head"><span class="step-num">০৬</span><h2>অর্ডার ম্যানেজমেন্ট ও ফাঁকা অর্ডার ঠেকানো</h2></div>
+      <p class="sec-sub">বাংলাদেশে COD (Cash on Delivery)-তে সবচেয়ে বড় সমস্যা হলো ফেক/ফাঁকা অর্ডার। এটা কমাতে নিচের সিস্টেম ফলো করুন।</p>
+      <div class="timeline">
+        <div class="tstep"><div class="dotcol"><div class="dotball"></div><div class="dotline"></div></div><div class="tcontent"><b>১. অর্ডার রিসিভ</b>ইনবক্স/কমেন্ট/ওয়েবসাইট থেকে অর্ডার এলে সাথে সাথে নাম, ঠিকানা, ফোন নাম্বার, প্রোডাক্ট কনফার্ম করুন।</div></div>
+        <div class="tstep"><div class="dotcol"><div class="dotball"></div><div class="dotline"></div></div><div class="tcontent"><b>২. কনফার্মেশন কল</b>ডেলিভারিতে পাঠানোর আগে ফোন করে ঠিকানা ও প্রোডাক্ট আবার নিশ্চিত করুন — এতে ৩০-৪০% ফাঁকা অর্ডার কমে যায়।</div></div>
+        <div class="tstep"><div class="dotcol"><div class="dotball"></div><div class="dotline"></div></div><div class="tcontent"><b>৩. কুরিয়ার Fraud Checker ব্যবহার</b>Pathao/Steadfast-এর নিজস্ব সিস্টেম বা থার্ড-পার্টি টুল (যেমন Facebook গ্রুপে শেয়ার হওয়া "Courier Fraud Check" পেজ) দিয়ে কাস্টমারের আগের ডেলিভারি সাকসেস রেট চেক করুন।</div></div>
+        <div class="tstep"><div class="dotcol"><div class="dotball"></div></div><div class="tcontent"><b>৪. আংশিক অগ্রিম (Partial Advance)</b>নতুন/দূরের এলাকা বা বেশি দামের প্রোডাক্টে ১০০-২০০ টাকা bKash/Nagad অ্যাডভান্স নেওয়ার পলিসি রাখুন — এতে সিরিয়াস কাস্টমার আলাদা হয়ে যায়।</div></div>
+      </div>
+      <div class="tip-box"><b>টিপ:</b> একটা Google Sheet বা Excel-এ প্রতিদিনের অর্ডার লগ রাখুন (নাম, নাম্বার, প্রোডাক্ট, ডেলিভারি স্ট্যাটাস) — সময়ের সাথে বারবার ফাঁকা অর্ডার দেওয়া নাম্বার চিহ্নিত করে ব্লক করতে পারবেন।</div>
+    </section>
+
+    <!-- ===== 7. পেমেন্ট মেথড ===== -->
+    <section id="s7">
+      <div class="sec-head"><span class="step-num">০৭</span><h2>পেমেন্ট মেথড সেটআপ</h2></div>
+      <p class="sec-sub">বাংলাদেশের কাস্টমার একাধিক পেমেন্ট অপশন দেখলে বেশি ভরসা করে। কমপক্ষে এই মেথডগুলো রাখুন।</p>
+      <div class="pill-row">
+        <span class="pill pink">bKash — Personal/Merchant</span>
+        <span class="pill pink">Nagad — Personal/Merchant</span>
+        <span class="pill">Rocket</span>
+        <span class="pill green">Cash on Delivery (COD)</span>
+        <span class="pill">ব্যাংক ট্রান্সফার</span>
+        <span class="pill">SSLCommerz / আরেক Payment Gateway (ওয়েবসাইটে)</span>
+      </div>
+      <div class="tip-box" style="margin-top:20px;"><b>টিপ:</b> সম্ভব হলে bKash/Nagad Merchant অ্যাকাউন্ট খুলুন (Personal নাম্বারের বদলে) — এতে ক্যাশ-আউট চার্জ কম পড়ে এবং কাস্টমারের কাছে বিজনেস হিসেবে বেশি বিশ্বাসযোগ্য লাগে (নাম্বারের সাথে বিজনেস নেম শো করে)।</div>
+    </section>
+
+    <!-- ===== 8. কুরিয়ার ===== -->
+    <section id="s8">
+      <div class="sec-head"><span class="step-num">০৮</span><h2>কুরিয়ার ও ডেলিভারি পার্টনার নির্বাচন</h2></div>
+      <p class="sec-sub">গ্যাজেট আইটেম ছোট ও হালকা হওয়ায় কুরিয়ার খরচ তুলনামূলক কম পড়ে — কিন্তু ভাঙাচোরা এড়াতে প্যাকেজিং গুরুত্বপূর্ণ।</p>
+      <table>
+        <tr><th>কুরিয়ার</th><th>সুবিধা</th><th>উপযুক্ত</th></tr>
+        <tr><td>Pathao Courier</td><td>ঢাকার ভিতরে দ্রুততম (Same-day সম্ভব), অ্যাপ ট্র্যাকিং ভালো</td><td>ঢাকা-কেন্দ্রিক দ্রুত ডেলিভারি</td></tr>
+        <tr><td>Steadfast</td><td>সারাদেশে ভালো কভারেজ, COD চার্জ তুলনামূলক প্রতিযোগিতামূলক</td><td>সারাদেশে ভলিউম ডেলিভারি</td></tr>
+        <tr><td>RedX</td><td>রিটার্ন ও এক্সচেঞ্জ প্রসেস সহজ, ভালো API ইন্টিগ্রেশন</td><td>ওয়েবসাইট অটোমেশনের সাথে</td></tr>
+        <tr><td>Sundarban / eCourier</td><td>দূরের/প্রত্যন্ত এলাকায় ভালো পৌঁছায়</td><td>জেলা-উপজেলা লেভেল ডেলিভারি</td></tr>
+      </table>
+      <div class="tip-box"><b>টিপ:</b> শুরুতে ২টা কুরিয়ারের সাথে অ্যাকাউন্ট খুলে রাখুন (যেমন Pathao + Steadfast) — একটায় সমস্যা হলে (ডিলে/সার্ভিস বন্ধ) অন্যটা দিয়ে ব্যাকআপ রাখা যায়। বাল্ক বুকিং দিলে রেট নেগোসিয়েশনও করা যায়।</div>
+    </section>
+
+    <!-- ===== 9. কাস্টমার সার্ভিস ===== -->
+    <section id="s9">
+      <div class="sec-head"><span class="step-num">০৯</span><h2>কাস্টমার সার্ভিস ও রিভিউ ম্যানেজমেন্ট</h2></div>
+      <p class="sec-sub">গ্যাজেট বিজনেসে রিভিউ ও রেসপন্স টাইম বিক্রি বাড়ানোর সবচেয়ে সস্তা টুল — এতে টাকা লাগে না, শুধু ডিসিপ্লিন লাগে।</p>
+      <div class="grid2">
+        <div class="card"><h3>⚡ দ্রুত রেসপন্স</h3><p>মেসেজের উত্তর ৫-১০ মিনিটের মধ্যে দেওয়ার চেষ্টা করুন। Facebook পেজে "Very responsive to messages" ব্যাজ পেলে কাস্টমার বেশি ভরসা করে।</p></div>
+        <div class="card"><h3>🌟 রিভিউ চাওয়ার সিস্টেম</h3><p>প্রোডাক্ট ডেলিভারির ২-৩ দিন পর মেসেজ করে জিজ্ঞেস করুন কেমন লাগলো, এবং একটা ছবি/রিভিউ চান — বিনিময়ে পরের অর্ডারে ছোট ডিসকাউন্ট অফার করতে পারেন।</p></div>
+      </div>
+      <div class="warn-box" style="margin-top:18px;"><b>মনে রাখবেন:</b> নেগেটিভ কমেন্ট/রিভিউ ডিলিট না করে পাবলিকলি প্রফেশনালভাবে সমাধান করুন এবং ইনবক্সে ফলোআপ করুন — ডিলিট করলে স্ক্রিনশট নিয়ে অন্য জায়গায় ছড়ানোর ঝুঁকি বেশি থাকে।</div>
+    </section>
+
+    <!-- ===== 10. রিপিট কাস্টমার ===== -->
+    <section id="s10">
+      <div class="sec-head"><span class="step-num">১০</span><h2>রিপিট কাস্টমার ও ব্র্যান্ডিং</h2></div>
+      <p class="sec-sub">নতুন কাস্টমার আনার খরচ পুরনো কাস্টমার ধরে রাখার চেয়ে বেশি — তাই একবার কেনা কাস্টমারকে বারবার ফিরিয়ে আনার সিস্টেম রাখুন।</p>
+      <ul class="checklist">
+        <li><span class="chk">✓</span><div><b>প্যাকেজিং-এ ছোট থ্যাংক-ইউ কার্ড/ডিসকাউন্ট কোড দিন</b> — পরের অর্ডারে ব্যবহারের জন্য একটা কোড দিলে ফিরে আসার সম্ভাবনা বাড়ে।</div></li>
+        <li><span class="chk">✓</span><div><b>পুরনো কাস্টমারদের জন্য আলাদা মেসেঞ্জার লিস্ট রাখুন</b> — নতুন প্রোডাক্ট এলে তাদের আগে জানান।</div></li>
+        <li><span class="chk">✓</span><div><b>digontobd.com-কে ব্র্যান্ড হিসেবে গড়ে তুলুন</b> — শুধু "প্রোডাক্ট বিক্রেতা" না হয়ে একটা নির্দিষ্ট স্টাইল/টোন/লোগো/প্যাকেজিং কনসিস্টেন্টলি ব্যবহার করুন যাতে মানুষ চিনতে পারে।</div></li>
+      </ul>
+    </section>
+
+    <!-- ===== 11. দ্রুত বিক্রির ট্রিকস ===== -->
+    <section id="s11">
+      <div class="sec-head"><span class="step-num">১১</span><h2>দ্রুত বিক্রির টিপস অ্যান্ড ট্রিকস (চিট শীট)</h2></div>
+      <p class="sec-sub">এই পয়েন্টগুলো প্রতি সপ্তাহে অন্তত একবার রিভিউ করুন।</p>
+      <div class="grid2">
+        <div class="card">
+          <h3>🔥 আর্জেন্সি তৈরি করুন</h3>
+          <ul>
+            <li>"স্টক সীমিত — মাত্র ৫টা বাকি" জাতীয় সত্যিকারের স্টক আপডেট দিন</li>
+            <li>সময়ভিত্তিক অফার ("আজকের মধ্যে অর্ডার করলে ফ্রি ডেলিভারি")</li>
+            <li>কম্বো অফার — "২টা নিলে ১টা ফ্রি ডেলিভারি"</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>📈 সোশ্যাল প্রুফ</h3>
+          <ul>
+            <li>প্রতিদিনের অর্ডার সংখ্যা/ডেলিভারি ছবি স্টোরিতে শেয়ার করুন</li>
+            <li>কাস্টমারের আনবক্সিং ভিডিও রিপোস্ট করুন (অনুমতি নিয়ে)</li>
+            <li>"আজ পাঠানো ৩০+ অর্ডার" এই ধরনের আপডেট বিশ্বাস বাড়ায়</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 12. সাধারণ ভুল ===== -->
+    <section id="s12">
+      <div class="sec-head"><span class="step-num">১২</span><h2>যেসব ভুল এড়িয়ে চলবেন</h2></div>
+      <div class="grid2">
+        <div class="card"><h3>❌ অসামঞ্জস্যপূর্ণ পোস্টিং</h3><p>কয়েকদিন একটানা পোস্ট করে হঠাৎ ১ সপ্তাহ বিরতি — এতে অ্যালগরিদম রিচ কমিয়ে দেয় এবং কাস্টমার পেজ "মৃত" ভাবে।</p></div>
+        <div class="card"><h3>❌ প্রাইস লুকিয়ে রাখা</h3><p>"দাম জানতে ইনবক্স করুন" — এতে অধিকাংশ ভিজিটর স্ক্রল করে চলে যায়। দাম সবসময় স্পষ্ট দিন।</p></div>
+        <div class="card"><h3>❌ ভুয়া/বাড়িয়ে বলা প্রোডাক্ট বর্ণনা</h3><p>শর্ট-টার্মে বিক্রি বাড়লেও রিটার্ন/নেগেটিভ রিভিউ বেশি হয় — লং-টার্মে ব্র্যান্ডের ক্ষতি করে।</p></div>
+        <div class="card"><h3>❌ সব বাজেট একসাথে অ্যাডে ঢালা</h3><p>টেস্ট না করে বড় বাজেটে বুস্ট করলে রেজাল্ট খারাপ হলে পুরো টাকা নষ্ট হয়ে যায় — সবসময় ছোট টেস্ট থেকে শুরু করুন।</p></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  এই গাইডটি <span class="brand">digontobd.com</span>-এর ফেসবুক পেজ ভিত্তিক বিক্রি বাড়ানোর জন্য তৈরি — প্রতি মাসে একবার রিভিউ করে আপডেট করুন।
+</footer>
+</body>
+</html>
