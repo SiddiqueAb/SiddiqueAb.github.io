@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigontoBD — SEO ও পারফরম্যান্স অডিট টুল</title>
+<style>
+:root{
+  --ink:#191b22;
+  --paper:#f5f3ee;
+  --panel:#ffffff;
+  --line:#e0dccf;
+  --line-soft:#ece9df;
+  --indigo:#2f3a8f;
+  --indigo-bright:#4a5bc4;
+  --gold:#b8862f;
+  --good:#2f7a4f;
+  --good-bg:#eaf5ee;
+  --warn:#a36a17;
+  --warn-bg:#fbf1de;
+  --bad:#b3402f;
+  --bad-bg:#fbe9e5;
+  --mono: "SF Mono", "JetBrains Mono", Consolas, Menlo, monospace;
+  --sans: "Hind Siliguri", "Noto Sans Bengali", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.55;
+  min-height:100vh;
+}
+.wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:44px 22px 90px;
+}
+header{
+  margin-bottom:32px;
+  border-bottom:2px solid var(--ink);
+  padding-bottom:18px;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--indigo);
+  margin:0 0 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.eyebrow::before{
+  content:"";
+  width:7px;height:7px;
+  background:var(--gold);
+  border-radius:50%;
+  display:inline-block;
+}
+h1{
+  font-size:28px;
+  margin:0 0 4px;
+  letter-spacing:-0.01em;
+  font-weight:800;
+}
+.h1-sub{
+  display:block;
+  font-size:14px;
+  font-weight:600;
+  color:#8b8470;
+  margin-top:2px;
+}
+.sub{
+  color:#5a5648;
+  font-size:14.5px;
+  margin:10px 0 0;
+  max-width:620px;
+}
+.sub b{ color:var(--indigo); }
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:24px 26px;
+  margin-top:20px;
+}
+
+.field{ margin-bottom:18px; }
+.field:last-child{ margin-bottom:0; }
+.field label{
+  display:block;
+  font-size:13.5px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+.field .desc{
+  font-size:12.5px;
+  color:#8b8470;
+  margin:5px 0 0;
+}
+input[type=text], input[type=url]{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  font-family:var(--mono);
+  font-size:13px;
+  background:var(--paper);
+  color:var(--ink);
+}
+textarea{
+  width:100%;
+  min-height:180px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--paper);
+  color:var(--ink);
+  resize:vertical;
+}
+input:focus, textarea:focus, button:focus-visible{
+  outline:2px solid var(--indigo-bright);
+  outline-offset:1px;
+}
+
+.howto{
+  background:#f0effa;
+  border:1px solid #d4d3ec;
+  border-radius:8px;
+  padding:14px 16px;
+  font-size:13px;
+  margin-bottom:18px;
+}
+.howto b{ color:var(--indigo); }
+.howto ol{ margin:8px 0 0; padding-left:20px; }
+.howto li{ margin-bottom:4px; }
+.howto code{
+  background:#fff;
+  border:1px solid #d4d3ec;
+  border-radius:3px;
+  padding:1px 5px;
+  font-family:var(--mono);
+  font-size:11.5px;
+}
+
+.runbtn{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  border-radius:7px;
+  font-size:15.5px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:var(--sans);
+  transition:background .15s;
+}
+.runbtn:hover{ background:var(--indigo); }
+.runbtn:disabled{ background:#c9c4b3; cursor:not-allowed; }
+
+.error-box{
+  display:none;
+  margin-top:14px;
+  background:var(--bad-bg);
+  border:1px solid #e3b8ae;
+  color:var(--bad);
+  padding:12px 14px;
+  border-radius:7px;
+  font-size:13px;
+}
+.error-box.show{ display:block; }
+
+/* ===== Results ===== */
+#resultsArea{ display:none; margin-top:28px; }
+#resultsArea.show{ display:block; }
+
+.score-overview{
+  display:flex;
+  gap:14px;
+  margin-bottom:24px;
+  flex-wrap:wrap;
+}
+.score-card{
+  flex:1;
+  min-width:140px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px;
+  text-align:center;
+}
+.score-card.overall{
+  background:var(--ink);
+  border-color:var(--ink);
+}
+.score-card.overall .score-num, .score-card.overall .score-lbl, .score-card.overall .score-sub{
+  color:var(--paper);
+}
+.score-num{
+  font-family:var(--mono);
+  font-size:34px;
+  font-weight:800;
+  display:block;
+  line-height:1;
+}
+.score-num.good{ color:var(--good); }
+.score-num.warn{ color:var(--warn); }
+.score-num.bad{ color:var(--bad); }
+.score-lbl{
+  font-size:12.5px;
+  font-weight:700;
+  margin-top:6px;
+  display:block;
+}
+.score-sub{
+  font-size:11px;
+  color:#9a9483;
+  margin-top:2px;
+  display:block;
+}
+
+.category-block{
+  margin-bottom:28px;
+}
+.category-head{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:2px solid var(--ink);
+}
+.category-head h2{
+  font-size:18px;
+  margin:0;
+  font-weight:800;
+}
+.category-head .cat-bn{
+  font-size:13px;
+  color:#8b8470;
+  font-weight:600;
+}
+.category-head .cat-score{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:700;
+}
+
+.check{
+  border:1px solid var(--line);
+  border-radius:9px;
+  margin-bottom:10px;
+  overflow:hidden;
+  background:var(--panel);
+}
+.check-head{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:14px 16px;
+  cursor:pointer;
+  user-select:none;
+}
+.check-icon{
+  width:24px;height:24px;
+  border-radius:50%;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:800;
+  margin-top:1px;
+}
+.check.pass .check-icon{ background:var(--good-bg); color:var(--good); }
+.check.warn .check-icon{ background:var(--warn-bg); color:var(--warn); }
+.check.fail .check-icon{ background:var(--bad-bg); color:var(--bad); }
+
+.check-titles{ flex:1; min-width:0; }
+.check-title-en{
+  font-weight:700;
+  font-size:14.5px;
+}
+.check-title-bn{
+  font-size:13px;
+  color:#6b6655;
+  margin-top:1px;
+}
+.check-status{
+  font-family:var(--mono);
+  font-size:10.5px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  padding:3px 8px;
+  border-radius:4px;
+  white-space:nowrap;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.check.pass .check-status{ background:var(--good-bg); color:var(--good); }
+.check.warn .check-status{ background:var(--warn-bg); color:var(--warn); }
+.check.fail .check-status{ background:var(--bad-bg); color:var(--bad); }
+
+.chevron{
+  flex-shrink:0;
+  color:#bdb7a3;
+  margin-top:3px;
+  transition:transform .15s;
+}
+.check.open .chevron{ transform:rotate(90deg); }
+
+.check-body{
+  display:none;
+  padding:0 16px 16px 52px;
+  font-size:13.5px;
+}
+.check.open .check-body{ display:block; }
+
+.check-section{ margin-bottom:12px; }
+.check-section:last-child{ margin-bottom:0; }
+.check-section-lbl{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:#9a9483;
+  margin-bottom:4px;
+}
+.check-section p{ margin:0; color:#3a3830; }
+.check-section.bn p{ color:#3a3830; }
+.check-fix{
+  background:#f0effa;
+  border-left:3px solid var(--indigo);
+  padding:8px 12px;
+  border-radius:0 6px 6px 0;
+}
+.check-found{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:8px 10px;
+  color:#5a5648;
+  white-space:pre-wrap;
+  word-break:break-word;
+  max-height:140px;
+  overflow-y:auto;
+}
+
+.filter-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.filter-btn{
+  padding:6px 14px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid var(--line);
+  background:var(--panel);
+  border-radius:20px;
+  cursor:pointer;
+  color:#6b6655;
+}
+.filter-btn.active{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--paper);
+}
+
+.reset-row{
+  text-align:center;
+  margin-top:24px;
+}
+.reset-row button{
+  background:none;
+  border:none;
+  color:#8b8470;
+  font-size:13px;
+  text-decoration:underline;
+  cursor:pointer;
+  font-family:var(--sans);
+}
+
+footer{
+  margin-top:40px;
+  font-size:12px;
+  color:#9a9483;
+  text-align:center;
+}
+
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+@media (max-width:600px){
+  .score-overview{ flex-direction:column; }
+  .check-body{ padding-left:16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">সম্পূর্ণ অফলাইনে কাজ করে · কোনো আপলোড নেই</p>
+    <h1>DigontoBD <span class="h1-sub">SEO ও পারফরম্যান্স অডিট টুল</span></h1>
+    <p class="sub">আপনার ওয়েবসাইটের HTML সোর্স কোড পেস্ট করুন — SEO, পারফরম্যান্স আর টেকনিক্যাল দিক থেকে ৩০+ পয়েন্ট চেক হবে, প্রতিটির বাংলা ব্যাখ্যা ও ঠিক করার উপায় সহ। <b>সব কিছু আপনার ব্রাউজারেই</b> হবে, কোনো সার্ভারে কিছু পাঠানো হয় না।</p>
+  </header>
+
+  <div class="panel">
+    <div class="howto">
+      <b>HTML কোড কীভাবে নেবেন?</b>
+      <ol>
+        <li>আপনার ওয়েবসাইট ব্রাউজারে খুলুন</li>
+        <li>পেজের যেকোনো জায়গায় right-click করে <code>View Page Source</code> এ ক্লিক করুন (অথবা <code>Ctrl+U</code> চাপুন)</li>
+        <li>পুরো কোড <code>Ctrl+A</code> দিয়ে সিলেক্ট করে <code>Ctrl+C</code> দিয়ে কপি করুন</li>
+        <li>নিচের বক্সে পেস্ট করুন এবং অডিট বাটনে ক্লিক করুন</li>
+      </ol>
+    </div>
+
+    <div class="field">
+      <label for="urlInput">ওয়েবসাইটের URL (ঐচ্ছিক)</label>
+      <input type="url" id="urlInput" placeholder="https://example.com/page" spellcheck="false">
+      <p class="desc">শুধু রিপোর্টে রেফারেন্স হিসেবে দেখানো হবে এবং HTTPS চেক করতে ব্যবহৃত হবে।</p>
+    </div>
+
+    <div class="field">
+      <label for="htmlInput">HTML সোর্স কোড পেস্ট করুন</label>
+      <textarea id="htmlInput" placeholder="&lt;!DOCTYPE html&gt;&#10;&lt;html&gt;&#10;  ...&#10;&lt;/html&gt;" spellcheck="false"></textarea>
+      <p class="desc" id="charCount">০ অক্ষর</p>
+    </div>
+
+    <button class="runbtn" id="runBtn">অডিট শুরু করুন</button>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <div id="resultsArea">
+    <div class="score-overview" id="scoreOverview"></div>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">সব দেখান (All)</button>
+      <button class="filter-btn" data-filter="fail">সমস্যা আছে (Issues)</button>
+      <button class="filter-btn" data-filter="warn">সতর্কতা (Warnings)</button>
+      <button class="filter-btn" data-filter="pass">ঠিক আছে (Passed)</button>
+    </div>
+
+    <div id="categoriesContainer"></div>
+
+    <div class="reset-row"><button id="resetBtn">নতুন অডিট শুরু করুন</button></div>
+  </div>
+
+  <footer>এই টুল আপনার পেস্ট করা HTML সোর্স কোড বিশ্লেষণ করে। এটি real-time নেটওয়ার্ক স্পিড বা সার্ভার রেসপন্স টাইম মাপে না — সেটার জন্য Google PageSpeed Insights ব্যবহার করুন। সব ডেটা শুধু আপনার ব্রাউজারে থাকে, কোথাও পাঠানো হয় না।</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var urlInput = document.getElementById('urlInput');
+  var htmlInput = document.getElementById('htmlInput');
+  var charCount = document.getElementById('charCount');
+  var runBtn = document.getElementById('runBtn');
+  var errorBox = document.getElementById('errorBox');
+  var resultsArea = document.getElementById('resultsArea');
+  var scoreOverview = document.getElementById('scoreOverview');
+  var categoriesContainer = document.getElementById('categoriesContainer');
+  var resetBtn = document.getElementById('resetBtn');
+  var filterBtns = document.querySelectorAll('.filter-btn');
+
+  htmlInput.addEventListener('input', function(){
+    var n = htmlInput.value.length;
+    charCount.textContent = n.toLocaleString('bn-BD') + ' অক্ষর';
+  });
+
+  function esc(s){
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+  function truncate(s, n){
+    if (!s) return s;
+    return s.length > n ? s.slice(0, n) + '\u2026' : s;
+  }
+
+  // ============================================================
+  // CHECK DEFINITIONS
+  // Each check: { id, category, titleEn, titleBn, run(doc, ctx) -> {status, explainEn, explainBn, fixEn, fixBn, found} }
+  // status: 'pass' | 'warn' | 'fail'
+  // ============================================================
+
+  var CHECKS = [];
+
+  function addCheck(def){ CHECKS.push(def); }
+
+  // ---------------- SEO ----------------
+
+  addCheck({
+    id:'title', category:'seo',
+    titleEn:'Title tag', titleBn:'টাইটেল ট্যাগ',
+    run:function(doc){
+      var t = doc.querySelector('title');
+      var text = t ? t.textContent.trim() : '';
+      if (!text){
+        return {
+          status:'fail',
+          explainEn:'There is no <title> tag, or it is empty. The title tag is the clickable headline shown in Google search results and the browser tab.',
+          explainBn:'আপনার পেজে <title> ট্যাগ নেই, বা এটি খালি। টাইটেল ট্যাগ হলো সেই লেখা যা Google সার্চ রিজাল্টে বড় নীল হেডলাইন হিসেবে দেখায় এবং ব্রাউজার ট্যাবেও দেখা যায়। এটি SEO-এর সবচেয়ে গুরুত্বপূর্ণ অংশগুলোর একটি।',
+          fixEn:'Add a unique, descriptive <title> tag inside <head>, between 30–60 characters, with your main keyword near the beginning.',
+          fixBn:'<head> ট্যাগের ভেতরে একটি অনন্য, বর্ণনামূলক <title> যুক্ত করুন। দৈর্ঘ্য রাখুন ৩০–৬০ ক্যারেক্টারের মধ্যে এবং শুরুর দিকে আপনার মূল কীওয়ার্ড রাখুন। উদাহরণ: <title>সেরা চামড়ার ব্যাগ কিনুন — DigontoBD</title>',
+          found:null
+        };
+      }
+      var len = text.length;
+      if (len < 30 || len > 60){
+        return {
+          status:'warn',
+          explainEn:'A title tag exists, but its length (' + len + ' characters) is outside the ideal range. Google typically truncates titles longer than ~60 characters in search results.',
+          explainBn:'টাইটেল ট্যাগ আছে, কিন্তু এর দৈর্ঘ্য (' + len + ' ক্যারেক্টার) আদর্শ রেঞ্জের বাইরে। Google সাধারণত ৬০ ক্যারেক্টারের বেশি লম্বা টাইটেল সার্চ রিজাল্টে কেটে দেয়, আর খুব ছোট টাইটেল কীওয়ার্ডের সুযোগ মিস করে।',
+          fixEn:'Rewrite the title to be between 30 and 60 characters while keeping it natural and descriptive.',
+          fixBn:'টাইটেলটি ৩০ থেকে ৬০ ক্যারেক্টারের মধ্যে রিরাইট করুন, কিন্তু এটি যেন স্বাভাবিক ও বর্ণনামূলক থাকে।',
+          found:text + '  (' + len + ' characters)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A well-sized, descriptive title tag is present.',
+        explainBn:'একটি সঠিক দৈর্ঘ্যের, বর্ণনামূলক টাইটেল ট্যাগ আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:text + '  (' + len + ' characters)'
+      };
+    }
+  });
+
+  addCheck({
+    id:'meta_description', category:'seo',
+    titleEn:'Meta description', titleBn:'মেটা ডেসক্রিপশন',
+    run:function(doc){
+      var m = doc.querySelector('meta[name="description"]');
+      var content = m ? (m.getAttribute('content') || '').trim() : '';
+      if (!content){
+        return {
+          status:'fail',
+          explainEn:'No meta description found. This is the short summary text that appears under your title in Google search results.',
+          explainBn:'মেটা ডেসক্রিপশন পাওয়া যায়নি। এটি সেই ছোট লেখা যা Google সার্চ রিজাল্টে আপনার টাইটেলের নিচে সামারি হিসেবে দেখা যায়। ভালো ডেসক্রিপশন ক্লিক-থ্রু রেট (CTR) বাড়ায়।',
+          fixEn:'Add <meta name="description" content="..."> inside <head>, 70–160 characters, summarizing the page and including a natural call-to-action.',
+          fixBn:'<head>-এর ভেতর <meta name="description" content="..."> যুক্ত করুন। দৈর্ঘ্য ৭০–১৬০ ক্যারেক্টার রাখুন, পেজের সারমর্ম লিখুন এবং স্বাভাবিকভাবে একটি কল-টু-অ্যাকশন যুক্ত করুন।',
+          found:null
+        };
+      }
+      var len = content.length;
+      if (len < 70 || len > 160){
+        return {
+          status:'warn',
+          explainEn:'A meta description exists but its length (' + len + ' characters) is outside the ideal 70–160 range, so Google may rewrite or truncate it.',
+          explainBn:'মেটা ডেসক্রিপশন আছে, কিন্তু দৈর্ঘ্য (' + len + ' ক্যারেক্টার) ৭০–১৬০-এর আদর্শ রেঞ্জের বাইরে। ফলে Google নিজেই এটি পরিবর্তন করে দিতে পারে বা কেটে দিতে পারে।',
+          fixEn:'Rewrite to fall within 70–160 characters.',
+          fixBn:'ডেসক্রিপশনটি ৭০–১৬০ ক্যারেক্টারের মধ্যে রিরাইট করুন।',
+          found:content + '  (' + len + ' characters)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A well-sized meta description is present.',
+        explainBn:'সঠিক দৈর্ঘ্যের মেটা ডেসক্রিপশন আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:content + '  (' + len + ' characters)'
+      };
+    }
+  });
+
+  addCheck({
+    id:'h1', category:'seo',
+    titleEn:'H1 heading', titleBn:'H1 হেডিং',
+    run:function(doc){
+      var h1s = doc.querySelectorAll('h1');
+      if (h1s.length === 0){
+        return {
+          status:'fail',
+          explainEn:'No <h1> tag found. The H1 is the main heading of the page and tells both users and search engines what the page is about.',
+          explainBn:'কোনো <h1> ট্যাগ পাওয়া যায়নি। H1 হলো পেজের মূল হেডিং, যা ইউজার ও সার্চ ইঞ্জিন দুজনকেই বলে দেয় পেজটি আসলে কী নিয়ে।',
+          fixEn:'Add exactly one <h1> near the top of the page content that clearly describes the page topic.',
+          fixBn:'পেজের কনটেন্টের শুরুর দিকে ঠিক একটি <h1> যুক্ত করুন, যেটি স্পষ্টভাবে পেজের বিষয় বর্ণনা করে।',
+          found:null
+        };
+      }
+      if (h1s.length > 1){
+        return {
+          status:'warn',
+          explainEn:'There are ' + h1s.length + ' <h1> tags on this page. Modern SEO generally recommends a single, clear H1 per page.',
+          explainBn:'এই পেজে ' + h1s.length + ' টি <h1> ট্যাগ আছে। আধুনিক SEO নিয়ম অনুযায়ী প্রতি পেজে একটিমাত্র স্পষ্ট H1 রাখা ভালো, যাতে মূল বিষয় নিয়ে কোনো বিভ্রান্তি না থাকে।',
+          fixEn:'Keep one H1 for the main page title; change the others to H2 or lower based on the document outline.',
+          fixBn:'একটি H1 রাখুন মূল টাইটেলের জন্য; বাকিগুলো কনটেন্টের গঠন অনুযায়ী H2 বা তার নিচে পরিবর্তন করুন।',
+          found:Array.from(h1s).map(function(h){ return truncate(h.textContent.trim(), 80); }).join(' | ')
+        };
+      }
+      var text = h1s[0].textContent.trim();
+      if (!text){
+        return {
+          status:'warn',
+          explainEn:'An <h1> tag exists but it is empty.',
+          explainBn:'একটি <h1> ট্যাগ আছে, কিন্তু এতে কোনো লেখা নেই।',
+          fixEn:'Add descriptive text inside the H1 tag.',
+          fixBn:'H1 ট্যাগের ভেতর বর্ণনামূলক লেখা যুক্ত করুন।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Exactly one H1 tag with text is present.',
+        explainBn:'ঠিক একটি H1 ট্যাগ আছে এবং এতে লেখাও আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:text
+      };
+    }
+  });
+
+  addCheck({
+    id:'heading_hierarchy', category:'seo',
+    titleEn:'Heading hierarchy', titleBn:'হেডিং ক্রম (H1→H2→H3)',
+    run:function(doc){
+      var headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4,h5,h6'));
+      if (headings.length === 0){
+        return {
+          status:'warn',
+          explainEn:'No headings (H1–H6) were found at all.',
+          explainBn:'কোনো হেডিং (H1–H6) পাওয়া যায়নি। হেডিং না থাকলে পেজের কনটেন্ট গঠন বোঝা কঠিন হয়।',
+          fixEn:'Structure your content with headings: H1 for the main title, H2 for sections, H3 for sub-sections.',
+          fixBn:'আপনার কনটেন্ট হেডিং দিয়ে সাজান: মূল টাইটেলের জন্য H1, সেকশনের জন্য H2, সাব-সেকশনের জন্য H3।',
+          found:null
+        };
+      }
+      var levels = headings.map(function(h){ return parseInt(h.tagName.substring(1), 10); });
+      var skips = [];
+      for (var i = 1; i < levels.length; i++){
+        if (levels[i] - levels[i-1] > 1){
+          skips.push('H' + levels[i-1] + ' \u2192 H' + levels[i]);
+        }
+      }
+      if (skips.length){
+        return {
+          status:'warn',
+          explainEn:'The heading levels skip a step in ' + skips.length + ' place(s), e.g. ' + skips[0] + '. This breaks the logical outline of the page for screen readers and search engines.',
+          explainBn:'হেডিং লেভেল ' + skips.length + ' জায়গায় ধাপ টপকে গেছে, যেমন ' + skips[0] + '। এটি পেজের লজিকাল গঠন ভেঙে দেয়, যা স্ক্রিন রিডার এবং সার্চ ইঞ্জিনের জন্য সমস্যা করে।',
+          fixEn:'Use heading levels in order without skipping (H1 then H2 then H3), like a nested outline.',
+          fixBn:'হেডিং লেভেল ক্রমানুসারে ব্যবহার করুন, ধাপ টপকাবেন না (H1 এর পর H2, তার পর H3) — যেন এটি একটি নেস্টেড আউটলাইনের মতো হয়।',
+          found:skips.join(', ')
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Heading levels follow a logical order with no skipped steps.',
+        explainBn:'হেডিং লেভেলগুলো ধাপ না টপকে সঠিক ক্রমে আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:headings.length + ' headings: ' + levels.map(function(l){return 'H'+l;}).join(' \u2192 ')
+      };
+    }
+  });
+
+  addCheck({
+    id:'img_alt', category:'seo',
+    titleEn:'Image alt attributes', titleBn:'ইমেজ Alt টেক্সট',
+    run:function(doc){
+      var imgs = Array.from(doc.querySelectorAll('img'));
+      if (imgs.length === 0){
+        return {
+          status:'pass',
+          explainEn:'No <img> tags found on the page, so there is nothing to check here.',
+          explainBn:'পেজে কোনো <img> ট্যাগ নেই, তাই এখানে চেক করার কিছু নেই।',
+          fixEn:'No action needed.',
+          fixBn:'কিছু করার প্রয়োজন নেই।',
+          found:null
+        };
+      }
+      var missing = imgs.filter(function(img){
+        var alt = img.getAttribute('alt');
+        return alt === null || alt.trim() === '';
+      });
+      if (missing.length === 0){
+        return {
+          status:'pass',
+          explainEn:'All ' + imgs.length + ' images have alt text.',
+          explainBn:'সব ' + imgs.length + ' টি ইমেজেই alt টেক্সট আছে। ভালো অবস্থা — এটি accessibility এবং Google Image সার্চ র‍্যাংকিং দুটোর জন্যই ভালো।',
+          fixEn:'No action needed.',
+          fixBn:'কিছু করার প্রয়োজন নেই।',
+          found:imgs.length + ' images, all with alt text'
+        };
+      }
+      var pct = Math.round((missing.length/imgs.length)*100);
+      return {
+        status: missing.length === imgs.length ? 'fail' : 'warn',
+        explainEn:missing.length + ' out of ' + imgs.length + ' images (' + pct + '%) are missing alt text. The alt attribute describes an image for screen-reader users and lets Google understand and rank the image in Image Search.',
+        explainBn:imgs.length + ' টির মধ্যে ' + missing.length + ' টি ইমেজে (' + pct + '%) alt টেক্সট নেই। alt অ্যাট্রিবিউট স্ক্রিন-রিডার ইউজারদের জন্য ছবি বর্ণনা করে এবং Google-কে ছবি বুঝতে ও Image Search-এ র‍্যাংক করতে সাহায্য করে।',
+        fixEn:'Add a short, descriptive alt="..." to every image. For purely decorative images, use alt="" (empty) so screen readers skip them.',
+        fixBn:'প্রতিটি ইমেজে ছোট, বর্ণনামূলক alt="..." যুক্ত করুন। যদি ছবিটি শুধুই ডেকোরেশনের জন্য হয়, তাহলে alt="" (খালি) দিন যাতে স্ক্রিন রিডার এটি স্কিপ করে।',
+        found:missing.slice(0,8).map(function(img){
+          var src = img.getAttribute('src') || '(no src)';
+          return truncate(src, 70);
+        }).join('\n') + (missing.length > 8 ? '\n\u2026 +' + (missing.length-8) + ' more' : '')
+      };
+    }
+  });
+
+  addCheck({
+    id:'canonical', category:'seo',
+    titleEn:'Canonical tag', titleBn:'Canonical ট্যাগ',
+    run:function(doc){
+      var link = doc.querySelector('link[rel="canonical"]');
+      if (!link || !link.getAttribute('href')){
+        return {
+          status:'warn',
+          explainEn:'No canonical tag found. A canonical tag tells search engines which URL is the "official" version when the same content might be reachable through multiple URLs.',
+          explainBn:'কোনো canonical ট্যাগ পাওয়া যায়নি। canonical ট্যাগ সার্চ ইঞ্জিনকে বলে দেয় কোন URL-টি "অফিশিয়াল" ভার্সন, যখন একই কনটেন্ট একাধিক URL দিয়ে অ্যাক্সেস করা সম্ভব (যেমন http vs https, www vs non-www, বা ট্র্যাকিং প্যারামিটার যুক্ত URL)।',
+          fixEn:'Add <link rel="canonical" href="https://yoursite.com/this-page"> inside <head>, pointing to the preferred URL of this exact page.',
+          fixBn:'<head>-এর ভেতর <link rel="canonical" href="https://yoursite.com/this-page"> যুক্ত করুন, যেখানে href-টি এই পেজের পছন্দের (প্রিফার্ড) URL-কে নির্দেশ করবে।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A canonical tag is present.',
+        explainBn:'একটি canonical ট্যাগ আছে। ভালো অবস্থা।',
+        fixEn:'Just verify the URL it points to is correct.',
+        fixBn:'শুধু নিশ্চিত করুন এটি যে URL নির্দেশ করছে তা সঠিক।',
+        found:link.getAttribute('href')
+      };
+    }
+  });
+
+  addCheck({
+    id:'robots_meta', category:'seo',
+    titleEn:'Meta robots / indexability', titleBn:'Meta Robots / ইনডেক্স অনুমতি',
+    run:function(doc){
+      var m = doc.querySelector('meta[name="robots"]');
+      var content = m ? (m.getAttribute('content') || '').toLowerCase() : '';
+      if (content.indexOf('noindex') !== -1){
+        return {
+          status:'fail',
+          explainEn:'This page has a "noindex" directive, which tells Google NOT to show this page in search results at all.',
+          explainBn:'এই পেজে "noindex" নির্দেশনা আছে, যা Google-কে বলে দেয় এই পেজটি সার্চ রিজাল্টে মোটেও না দেখাতে। যদি এটি ইচ্ছাকৃতভাবে না করা হয় (যেমন টেস্ট/স্টেজিং পেজ), তাহলে এটি একটি বড় ভুল হতে পারে।',
+          fixEn:'If this page should appear in Google, remove the noindex directive from the meta robots tag.',
+          fixBn:'যদি এই পেজটি Google-এ দেখাতে চান, তাহলে meta robots ট্যাগ থেকে noindex নির্দেশনা সরিয়ে দিন।',
+          found:content
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'No blocking noindex directive found — this page is allowed to be indexed.',
+        explainBn:'কোনো ব্লকিং noindex নির্দেশনা পাওয়া যায়নি — এই পেজটি ইনডেক্স হওয়ার জন্য অনুমোদিত। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:content || '(no meta robots tag — default is index, follow)'
+      };
+    }
+  });
+
+  addCheck({
+    id:'og_tags', category:'seo',
+    titleEn:'Open Graph tags', titleBn:'Open Graph (সোশ্যাল শেয়ার) ট্যাগ',
+    run:function(doc){
+      var ogTitle = doc.querySelector('meta[property="og:title"]');
+      var ogDesc = doc.querySelector('meta[property="og:description"]');
+      var ogImage = doc.querySelector('meta[property="og:image"]');
+      var missing = [];
+      if (!ogTitle) missing.push('og:title');
+      if (!ogDesc) missing.push('og:description');
+      if (!ogImage) missing.push('og:image');
+      if (missing.length === 0){
+        return {
+          status:'pass',
+          explainEn:'All core Open Graph tags are present, controlling how this page looks when shared on Facebook, LinkedIn, WhatsApp, etc.',
+          explainBn:'মূল Open Graph ট্যাগগুলো সব আছে। এই ট্যাগগুলো নিয়ন্ত্রণ করে Facebook, LinkedIn, WhatsApp-এ শেয়ার করলে পেজটি কেমন দেখাবে (প্রিভিউ কার্ড)। ভালো অবস্থা।',
+          fixEn:'No action needed.',
+          fixBn:'কিছু করার প্রয়োজন নেই।',
+          found:null
+        };
+      }
+      return {
+        status: missing.length === 3 ? 'warn' : 'warn',
+        explainEn:'Missing Open Graph tag(s): ' + missing.join(', ') + '. Without these, social platforms show a blank or auto-guessed preview when this page is shared.',
+        explainBn:missing.join(', ') + ' — এই Open Graph ট্যাগ(গুলো) নেই। এগুলো না থাকলে পেজটি শেয়ার করার সময় সোশ্যাল মিডিয়া প্ল্যাটফর্ম একটি ফাঁকা বা ভুল প্রিভিউ কার্ড দেখাতে পারে।',
+        fixEn:'Add the missing tags in <head>, e.g. <meta property="og:title" content="..."> , <meta property="og:description" content="...">, <meta property="og:image" content="https://yoursite.com/image.jpg">.',
+        fixBn:'<head>-এ অনুপস্থিত ট্যাগগুলো যুক্ত করুন। উদাহরণ: <meta property="og:title" content="..."> , <meta property="og:description" content="...">, <meta property="og:image" content="https://yoursite.com/image.jpg">।',
+        found:'missing: ' + missing.join(', ')
+      };
+    }
+  });
+
+  addCheck({
+    id:'lang_attr', category:'seo',
+    titleEn:'HTML lang attribute', titleBn:'HTML Lang অ্যাট্রিবিউট',
+    run:function(doc){
+      var html = doc.querySelector('html');
+      var lang = html ? html.getAttribute('lang') : null;
+      if (!lang){
+        return {
+          status:'warn',
+          explainEn:'The <html> tag has no lang attribute. This tells browsers and search engines what language the page content is written in.',
+          explainBn:'<html> ট্যাগে কোনো lang অ্যাট্রিবিউট নেই। এটি ব্রাউজার এবং সার্চ ইঞ্জিনকে বলে দেয় পেজের কনটেন্ট কোন ভাষায় লেখা।',
+          fixEn:'Add a lang attribute, e.g. <html lang="bn"> for Bangla or <html lang="en"> for English.',
+          fixBn:'একটি lang অ্যাট্রিবিউট যুক্ত করুন। যেমন বাংলার জন্য <html lang="bn"> অথবা ইংরেজির জন্য <html lang="en">।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A language is declared: "' + lang + '".',
+        explainBn:'একটি ভাষা ঘোষণা করা আছে: "' + lang + '"। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:lang
+      };
+    }
+  });
+
+  addCheck({
+    id:'structured_data', category:'seo',
+    titleEn:'Structured data (JSON-LD)', titleBn:'স্ট্রাকচার্ড ডেটা (JSON-LD)',
+    run:function(doc){
+      var scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+      if (scripts.length === 0){
+        return {
+          status:'warn',
+          explainEn:'No JSON-LD structured data found. Structured data helps Google show rich results (star ratings, prices, FAQs, breadcrumbs) directly in search results.',
+          explainBn:'কোনো JSON-LD স্ট্রাকচার্ড ডেটা পাওয়া যায়নি। স্ট্রাকচার্ড ডেটা Google-কে সার্চ রিজাল্টে rich results দেখাতে সাহায্য করে — যেমন স্টার রেটিং, দাম, FAQ, বা ব্রেডক্রাম্ব। এটি ক্লিক-থ্রু রেট বাড়াতে পারে।',
+          fixEn:'Add relevant schema.org JSON-LD, e.g. Organization, Product, Article, or FAQPage, inside a <script type="application/ld+json"> tag.',
+          fixBn:'প্রাসঙ্গিক schema.org JSON-LD যুক্ত করুন — যেমন Organization, Product, Article, বা FAQPage — একটি <script type="application/ld+json"> ট্যাগের ভেতরে।',
+          found:null
+        };
+      }
+      var validCount = 0, invalidCount = 0, types = [];
+      scripts.forEach(function(s){
+        try {
+          var data = JSON.parse(s.textContent);
+          validCount++;
+          var t = Array.isArray(data) ? data.map(function(d){return d['@type'];}) : [data['@type']];
+          types = types.concat(t.filter(Boolean));
+        } catch(e){ invalidCount++; }
+      });
+      if (invalidCount > 0){
+        return {
+          status:'fail',
+          explainEn:invalidCount + ' structured data block(s) contain invalid JSON and will be ignored by Google.',
+          explainBn:invalidCount + ' টি স্ট্রাকচার্ড ডেটা ব্লকে অবৈধ (invalid) JSON আছে, যা Google সম্পূর্ণ উপেক্ষা করবে।',
+          fixEn:'Validate your JSON-LD syntax using Google\'s Rich Results Test tool and fix any syntax errors.',
+          fixBn:'Google-এর Rich Results Test টুল দিয়ে আপনার JSON-LD সিনট্যাক্স যাচাই করুন এবং সিনট্যাক্স এরর ঠিক করুন।',
+          found:invalidCount + ' invalid block(s)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Valid structured data found: ' + (types.join(', ') || 'unknown type'),
+        explainBn:'বৈধ স্ট্রাকচার্ড ডেটা পাওয়া গেছে: ' + (types.join(', ') || 'অজানা টাইপ') + '। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:types.join(', ')
+      };
+    }
+  });
+
+  addCheck({
+    id:'favicon', category:'seo',
+    titleEn:'Favicon', titleBn:'ফেভিকন',
+    run:function(doc){
+      var icon = doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+      if (!icon){
+        return {
+          status:'warn',
+          explainEn:'No favicon link tag found. The favicon is the small icon shown in browser tabs and bookmark lists, and also appears next to your site in Google search results on mobile.',
+          explainBn:'কোনো favicon লিংক ট্যাগ পাওয়া যায়নি। favicon হলো ছোট আইকন যা ব্রাউজার ট্যাবে এবং বুকমার্ক লিস্টে দেখা যায়, এবং মোবাইলে Google সার্চ রিজাল্টেও আপনার সাইটের পাশে দেখানো হয়।',
+          fixEn:'Add <link rel="icon" type="image/png" href="/favicon.png"> inside <head>.',
+          fixBn:'<head>-এর ভেতর <link rel="icon" type="image/png" href="/favicon.png"> যুক্ত করুন।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A favicon is declared.',
+        explainBn:'একটি favicon ঘোষণা করা আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:icon.getAttribute('href')
+      };
+    }
+  });
+
+  addCheck({
+    id:'link_text', category:'seo',
+    titleEn:'Generic link text', titleBn:'অস্পষ্ট লিংক টেক্সট ("Click here")',
+    run:function(doc){
+      var links = Array.from(doc.querySelectorAll('a'));
+      var genericPhrases = ['click here','here','read more','more','link','this page','click'];
+      var generic = links.filter(function(a){
+        var t = a.textContent.trim().toLowerCase();
+        return genericPhrases.indexOf(t) !== -1;
+      });
+      if (generic.length === 0){
+        return {
+          status:'pass',
+          explainEn:'No generic "click here" style link text found.',
+          explainBn:'কোনো অস্পষ্ট "click here" ধরনের লিংক টেক্সট পাওয়া যায়নি। ভালো অবস্থা।',
+          fixEn:'No action needed.',
+          fixBn:'কিছু করার প্রয়োজন নেই।',
+          found:null
+        };
+      }
+      return {
+        status:'warn',
+        explainEn:genericPhrases.length + ' link(s) use generic text like "click here" or "read more". This tells search engines and screen-reader users nothing about where the link goes.',
+        explainBn:generic.length + ' টি লিংকে "click here" বা "read more"-এর মতো অস্পষ্ট টেক্সট ব্যবহার করা হয়েছে। এটি সার্চ ইঞ্জিন এবং স্ক্রিন-রিডার ইউজারদের কিছুই বলে না লিংকটি কোথায় যায়।',
+        fixEn:'Replace generic link text with descriptive text that explains the destination, e.g. "Read our pricing guide" instead of "click here".',
+        fixBn:'অস্পষ্ট লিংক টেক্সট পরিবর্তন করে বর্ণনামূলক টেক্সট দিন যা বলে দেয় লিংকটি কোথায় যাচ্ছে। যেমন "click here"-এর বদলে "আমাদের প্রাইসিং গাইড পড়ুন" লিখুন।',
+        found:generic.slice(0,6).map(function(a){ return '"' + a.textContent.trim() + '" \u2192 ' + truncate(a.getAttribute('href')||'', 50); }).join('\n')
+      };
+    }
+  });
+
+  // ---------------- PERFORMANCE ----------------
+
+  addCheck({
+    id:'doc_size', category:'perf',
+    titleEn:'HTML document size', titleBn:'HTML ডকুমেন্টের আকার',
+    run:function(doc, ctx){
+      var bytes = new Blob([ctx.rawHtml]).size;
+      var kb = bytes/1024;
+      if (kb > 150){
+        return {
+          status:'warn',
+          explainEn:'The raw HTML document is ' + kb.toFixed(1) + ' KB. Large HTML documents take longer to download and parse, especially on slow mobile connections.',
+          explainBn:'কাঁচা HTML ডকুমেন্টের আকার ' + kb.toFixed(1) + ' KB। বড় HTML ডকুমেন্ট ডাউনলোড এবং পার্স করতে বেশি সময় নেয়, বিশেষ করে স্লো মোবাইল কানেকশনে।',
+          fixEn:'Reduce unnecessary inline styles/scripts, remove unused markup, and consider server-side minification.',
+          fixBn:'অপ্রয়োজনীয় ইনলাইন স্টাইল/স্ক্রিপ্ট কমান, ব্যবহার না হওয়া মার্কআপ সরান, এবং সার্ভার-সাইড মিনিফিকেশন বিবেচনা করুন।',
+          found:kb.toFixed(1) + ' KB'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'The HTML document size (' + kb.toFixed(1) + ' KB) is reasonably small.',
+        explainBn:'HTML ডকুমেন্টের আকার (' + kb.toFixed(1) + ' KB) যথেষ্ট ছোট। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:kb.toFixed(1) + ' KB'
+      };
+    }
+  });
+
+  addCheck({
+    id:'render_blocking_css', category:'perf',
+    titleEn:'Render-blocking CSS in <head>', titleBn:'<head>-এ রেন্ডার-ব্লকিং CSS',
+    run:function(doc){
+      var head = doc.querySelector('head');
+      if (!head) return {status:'warn', explainEn:'No <head> tag found.', explainBn:'<head> ট্যাগ পাওয়া যায়নি।', fixEn:'Add a <head> section.', fixBn:'একটি <head> সেকশন যুক্ত করুন।', found:null};
+      var links = Array.from(head.querySelectorAll('link[rel="stylesheet"]'));
+      var blocking = links.filter(function(l){
+        var media = l.getAttribute('media');
+        return !media || media === 'all' || media === 'screen';
+      });
+      if (blocking.length > 2){
+        return {
+          status:'warn',
+          explainEn:blocking.length + ' stylesheet(s) in <head> will block the browser from rendering the page until they finish downloading.',
+          explainBn:'<head>-এ ' + blocking.length + ' টি স্টাইলশীট আছে, যেগুলো ডাউনলোড সম্পূর্ণ না হওয়া পর্যন্ত ব্রাউজারকে পেজ রেন্ডার করতে দেয় না — এটি render-blocking নামে পরিচিত।',
+          fixEn:'Combine CSS files where possible, inline critical above-the-fold CSS, and load non-critical CSS asynchronously (e.g. with media="print" onload trick or rel="preload").',
+          fixBn:'যেখানে সম্ভব CSS ফাইলগুলো একত্র করুন, প্রথমে দেখা অংশের (above-the-fold) জরুরি CSS ইনলাইন করুন, এবং বাকি CSS asynchronously লোড করুন (যেমন rel="preload" কৌশল ব্যবহার করে)।',
+          found:blocking.length + ' blocking stylesheet(s)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A reasonable number of render-blocking stylesheets (' + blocking.length + ').',
+        explainBn:'রেন্ডার-ব্লকিং স্টাইলশীটের সংখ্যা যুক্তিসঙ্গত (' + blocking.length + ' টি)। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:blocking.length + ' stylesheet(s)'
+      };
+    }
+  });
+
+  addCheck({
+    id:'blocking_js_head', category:'perf',
+    titleEn:'Blocking scripts in <head>', titleBn:'<head>-এ ব্লকিং স্ক্রিপ্ট',
+    run:function(doc){
+      var head = doc.querySelector('head');
+      if (!head) return {status:'warn', explainEn:'No <head> tag found.', explainBn:'<head> ট্যাগ পাওয়া যায়নি।', fixEn:'-', fixBn:'-', found:null};
+      var scripts = Array.from(head.querySelectorAll('script[src]'));
+      var blocking = scripts.filter(function(s){
+        return !s.hasAttribute('async') && !s.hasAttribute('defer');
+      });
+      if (blocking.length > 0){
+        return {
+          status:'warn',
+          explainEn:blocking.length + ' external script(s) in <head> have no async or defer attribute. These will pause page rendering completely while they download and execute.',
+          explainBn:'<head>-এ ' + blocking.length + ' টি এক্সটার্নাল স্ক্রিপ্টে async বা defer অ্যাট্রিবিউট নেই। এই স্ক্রিপ্টগুলো ডাউনলোড ও এক্সিকিউট হওয়ার সময় পুরো পেজ রেন্ডারিং সম্পূর্ণ বন্ধ করে দেয়।',
+          fixEn:'Add the defer attribute (e.g. <script src="..." defer>) so scripts download in the background without blocking rendering, or move scripts to just before </body>.',
+          fixBn:'defer অ্যাট্রিবিউট যুক্ত করুন (যেমন <script src="..." defer>) যাতে স্ক্রিপ্টগুলো ব্যাকগ্রাউন্ডে ডাউনলোড হয় এবং রেন্ডারিং ব্লক না করে। অথবা স্ক্রিপ্টগুলো </body> ট্যাগের ঠিক আগে নিয়ে যান।',
+          found:blocking.map(function(s){ return truncate(s.getAttribute('src'), 60); }).join('\n')
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'No blocking scripts found in <head>.',
+        explainBn:'<head>-এ কোনো ব্লকিং স্ক্রিপ্ট পাওয়া যায়নি। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:scripts.length + ' script(s) in head, all async/defer'
+      };
+    }
+  });
+
+  addCheck({
+    id:'img_dimensions', category:'perf',
+    titleEn:'Image width/height attributes', titleBn:'ইমেজে Width/Height অ্যাট্রিবিউট',
+    run:function(doc){
+      var imgs = Array.from(doc.querySelectorAll('img'));
+      if (imgs.length === 0){
+        return {status:'pass', explainEn:'No images to check.', explainBn:'চেক করার জন্য কোনো ইমেজ নেই।', fixEn:'-', fixBn:'-', found:null};
+      }
+      var missing = imgs.filter(function(img){
+        return !img.hasAttribute('width') || !img.hasAttribute('height');
+      });
+      if (missing.length > 0){
+        var pct = Math.round((missing.length/imgs.length)*100);
+        return {
+          status: pct > 50 ? 'warn' : 'warn',
+          explainEn:missing.length + ' of ' + imgs.length + ' images (' + pct + '%) are missing width/height attributes. The browser doesn\'t know their size until they load, causing the page layout to jump around — this is called Cumulative Layout Shift (CLS), a real Google ranking factor.',
+          explainBn:imgs.length + ' টির মধ্যে ' + missing.length + ' টি ইমেজে (' + pct + '%) width/height অ্যাট্রিবিউট নেই। এতে ব্রাউজার আগে থেকে ইমেজের আকার জানে না, ফলে ইমেজ লোড হওয়ার সময় পেজের লেআউট নড়েচড়ে ওঠে — এটিকে বলে Cumulative Layout Shift (CLS), যা Google-এর একটি বাস্তব র‍্যাংকিং ফ্যাক্টর।',
+          fixEn:'Add width and height attributes matching the image\'s natural dimensions to every <img> tag, e.g. <img src="..." width="800" height="450">.',
+          fixBn:'প্রতিটি <img> ট্যাগে ছবির আসল আকারের সাথে মিলিয়ে width এবং height অ্যাট্রিবিউট যুক্ত করুন। উদাহরণ: <img src="..." width="800" height="450">।',
+          found:missing.slice(0,8).map(function(img){ return truncate(img.getAttribute('src')||'(no src)', 60); }).join('\n') + (missing.length>8?'\n\u2026 +'+(missing.length-8)+' more':'')
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'All images have explicit width/height attributes.',
+        explainBn:'সব ইমেজে width/height অ্যাট্রিবিউট দেওয়া আছে। ভালো অবস্থা — এটি লেআউট শিফট প্রতিরোধ করে।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:imgs.length + ' images, all with dimensions'
+      };
+    }
+  });
+
+  addCheck({
+    id:'lazy_loading', category:'perf',
+    titleEn:'Lazy-loading on images', titleBn:'ইমেজ Lazy-loading',
+    run:function(doc){
+      var imgs = Array.from(doc.querySelectorAll('img'));
+      if (imgs.length <= 3){
+        return {status:'pass', explainEn:'Few images on this page; lazy-loading impact is minimal.', explainBn:'এই পেজে ইমেজ কম, তাই lazy-loading-এর প্রভাব খুবই কম।', fixEn:'-', fixBn:'-', found:imgs.length + ' image(s)'};
+      }
+      var withoutLazy = imgs.slice(2).filter(function(img){
+        return img.getAttribute('loading') !== 'lazy';
+      });
+      if (withoutLazy.length > 2){
+        return {
+          status:'warn',
+          explainEn:withoutLazy.length + ' below-the-fold images are missing loading="lazy". Without this, the browser downloads every image immediately, even ones the visitor never scrolls down to see.',
+          explainBn:withoutLazy.length + ' টি ইমেজে loading="lazy" নেই (যেগুলো স্ক্রলের পরে দেখা যায়)। এটি না থাকলে ব্রাউজার সব ছবি একসাথে ডাউনলোড করে, এমনকি যেগুলো ভিজিটর স্ক্রল করে দেখেও না সেগুলোও।',
+          fixEn:'Add loading="lazy" to images that appear below the initial viewport, e.g. <img src="..." loading="lazy">. Keep the first 1-2 visible images without lazy-loading so they appear instantly.',
+          fixBn:'যে ইমেজগুলো প্রথম স্ক্রিনের নিচে থাকে সেগুলোতে loading="lazy" যুক্ত করুন। উদাহরণ: <img src="..." loading="lazy">। প্রথম ১-২ টি দৃশ্যমান ইমেজে lazy-loading না দেওয়াই ভালো, যাতে সেগুলো তাৎক্ষণিক দেখা যায়।',
+          found:withoutLazy.length + ' image(s) without lazy-loading'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Images are appropriately using lazy-loading.',
+        explainBn:'ইমেজগুলো যথাযথভাবে lazy-loading ব্যবহার করছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:null
+      };
+    }
+  });
+
+  addCheck({
+    id:'inline_bloat', category:'perf',
+    titleEn:'Inline CSS/JS bloat', titleBn:'ইনলাইন CSS/JS-এর আধিক্য',
+    run:function(doc, ctx){
+      var styleEls = Array.from(doc.querySelectorAll('style'));
+      var inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+      var styleChars = styleEls.reduce(function(sum, s){ return sum + s.textContent.length; }, 0);
+      var scriptChars = inlineScripts.reduce(function(sum, s){ return sum + s.textContent.length; }, 0);
+      var totalKb = (styleChars + scriptChars)/1024;
+      if (totalKb > 50){
+        return {
+          status:'warn',
+          explainEn:'Inline <style> and <script> blocks together total ' + totalKb.toFixed(1) + ' KB. Large inline code can\'t be cached by the browser separately and bloats every page load.',
+          explainBn:'ইনলাইন <style> এবং <script> ব্লক মিলে মোট ' + totalKb.toFixed(1) + ' KB। বড় ইনলাইন কোড ব্রাউজার আলাদাভাবে cache করতে পারে না, ফলে প্রতিবার পেজ লোডে এটি আবার ডাউনলোড হয়।',
+          fixEn:'Move large inline CSS/JS into separate external .css/.js files so browsers can cache them across page visits.',
+          fixBn:'বড় ইনলাইন CSS/JS আলাদা external .css/.js ফাইলে নিয়ে যান, যাতে ব্রাউজার একবার ডাউনলোড করে পরের ভিজিটে cache থেকে ব্যবহার করতে পারে।',
+          found:totalKb.toFixed(1) + ' KB inline code'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Inline CSS/JS amount (' + totalKb.toFixed(1) + ' KB) is reasonable.',
+        explainBn:'ইনলাইন CSS/JS-এর পরিমাণ (' + totalKb.toFixed(1) + ' KB) যুক্তিসঙ্গত। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:totalKb.toFixed(1) + ' KB'
+      };
+    }
+  });
+
+  addCheck({
+    id:'total_requests', category:'perf',
+    titleEn:'External resource count', titleBn:'এক্সটার্নাল রিসোর্স সংখ্যা',
+    run:function(doc){
+      var css = doc.querySelectorAll('link[rel="stylesheet"]').length;
+      var js = doc.querySelectorAll('script[src]').length;
+      var imgs = doc.querySelectorAll('img[src]').length;
+      var total = css + js + imgs;
+      if (total > 80){
+        return {
+          status:'warn',
+          explainEn:'This page references roughly ' + total + ' external resources (' + css + ' CSS, ' + js + ' JS, ' + imgs + ' images). Each one is a separate network request, which adds up on slow connections.',
+          explainBn:'এই পেজে আনুমানিক ' + total + ' টি এক্সটার্নাল রিসোর্স আছে (' + css + ' টি CSS, ' + js + ' টি JS, ' + imgs + ' টি ইমেজ)। প্রতিটি আলাদা নেটওয়ার্ক রিকোয়েস্ট, যা স্লো কানেকশনে যোগ হয়ে দেরি বাড়ায়।',
+          fixEn:'Combine small CSS/JS files, remove unused scripts/stylesheets, and consider an image sprite or modern formats to cut down the request count.',
+          fixBn:'ছোট ছোট CSS/JS ফাইল একত্র করুন, ব্যবহার না হওয়া স্ক্রিপ্ট/স্টাইলশীট সরান, এবং রিকোয়েস্ট সংখ্যা কমাতে ইমেজ অপ্টিমাইজেশন বিবেচনা করুন।',
+          found:total + ' total (' + css + ' CSS, ' + js + ' JS, ' + imgs + ' img)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A reasonable number of external resources (' + total + ').',
+        explainBn:'এক্সটার্নাল রিসোর্সের সংখ্যা যুক্তিসঙ্গত (' + total + ' টি)। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:total + ' total (' + css + ' CSS, ' + js + ' JS, ' + imgs + ' img)'
+      };
+    }
+  });
+
+  addCheck({
+    id:'minification', category:'perf',
+    titleEn:'HTML minification signal', titleBn:'HTML মিনিফিকেশন সংকেত',
+    run:function(doc, ctx){
+      var raw = ctx.rawHtml;
+      var whitespace = (raw.match(/[ \t]{2,}/g) || []).length;
+      var lines = raw.split('\n').length;
+      var ratio = lines > 0 ? whitespace/lines : 0;
+      if (lines > 200 && ratio < 0.05){
+        return {
+          status:'pass',
+          explainEn:'The HTML appears to be minified or has very little extra whitespace.',
+          explainBn:'HTML সম্ভবত minified করা আছে, অথবা এতে অতিরিক্ত whitespace খুবই কম। ভালো অবস্থা।',
+          fixEn:'No action needed.',
+          fixBn:'কিছু করার প্রয়োজন নেই।',
+          found:null
+        };
+      }
+      if (lines > 300){
+        return {
+          status:'warn',
+          explainEn:'The HTML has ' + lines + ' lines with noticeable formatting whitespace, suggesting it is not minified for production. Minification strips unnecessary spaces/comments to reduce file size.',
+          explainBn:'HTML-এ ' + lines + ' লাইন আছে এবং অনেক ফরম্যাটিং whitespace দেখা যাচ্ছে, যা বোঝায় এটি প্রোডাকশনের জন্য minify করা হয়নি। Minification ফাইলের আকার কমাতে অপ্রয়োজনীয় স্পেস/কমেন্ট বাদ দেয়।',
+          fixEn:'Use a build tool (e.g. HTMLMinifier, or your framework\'s production build) to minify HTML before deploying to production.',
+          fixBn:'প্রোডাকশনে ডিপ্লয় করার আগে একটি বিল্ড টুল (যেমন HTMLMinifier, বা আপনার ফ্রেমওয়ার্কের প্রোডাকশন বিল্ড) ব্যবহার করে HTML minify করুন।',
+          found:lines + ' lines'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Document size is small enough that minification has limited impact here.',
+        explainBn:'ডকুমেন্টের আকার এতই ছোট যে minification-এর প্রভাব এখানে সীমিত। ঠিক আছে।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:lines + ' lines'
+      };
+    }
+  });
+
+  addCheck({
+    id:'font_display', category:'perf',
+    titleEn:'Web font loading strategy', titleBn:'ওয়েব ফন্ট লোডিং পদ্ধতি',
+    run:function(doc){
+      var fontLinks = Array.from(doc.querySelectorAll('link[href*="fonts.googleapis"], link[href*=".woff"], link[rel="preload"][as="font"]'));
+      var styleText = Array.from(doc.querySelectorAll('style')).map(function(s){return s.textContent;}).join(' ');
+      var hasFontFace = /@font-face/.test(styleText);
+      if (fontLinks.length === 0 && !hasFontFace){
+        return {status:'pass', explainEn:'No custom web fonts detected; this check does not apply.', explainBn:'কোনো কাস্টম ওয়েব ফন্ট পাওয়া যায়নি; এই চেক প্রযোজ্য নয়।', fixEn:'-', fixBn:'-', found:null};
+      }
+      var hasFontDisplay = /font-display\s*:/.test(styleText);
+      if (hasFontFace && !hasFontDisplay){
+        return {
+          status:'warn',
+          explainEn:'Custom @font-face rules were found without a font-display property. Without it, text using that font may stay invisible until the font finishes downloading (sometimes called "flash of invisible text").',
+          explainBn:'@font-face নিয়মে কাস্টম ফন্ট পাওয়া গেছে কিন্তু font-display প্রোপার্টি নেই। এটি না থাকলে, ফন্ট ডাউনলোড সম্পূর্ণ না হওয়া পর্যন্ত লেখা অদৃশ্য থাকতে পারে (এটিকে "flash of invisible text" বলা হয়)।',
+          fixEn:'Add font-display: swap; inside your @font-face rule so text shows immediately with a fallback font, then swaps once the custom font loads.',
+          fixBn:'আপনার @font-face নিয়মে font-display: swap; যুক্ত করুন, যাতে লেখা তাৎক্ষণিক একটি ফলব্যাক ফন্ট দিয়ে দেখা যায়, এবং কাস্টম ফন্ট লোড হওয়ার পর তা বদলে যায়।',
+          found:'@font-face without font-display'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Web fonts are configured with a font-display strategy.',
+        explainBn:'ওয়েব ফন্টে font-display পদ্ধতি কনফিগার করা আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:null
+      };
+    }
+  });
+
+  // ---------------- TECHNICAL ----------------
+
+  addCheck({
+    id:'viewport', category:'tech',
+    titleEn:'Mobile viewport tag', titleBn:'মোবাইল ভিউপোর্ট ট্যাগ',
+    run:function(doc){
+      var v = doc.querySelector('meta[name="viewport"]');
+      if (!v){
+        return {
+          status:'fail',
+          explainEn:'No viewport meta tag found. Without it, mobile browsers render the page at desktop width and zoom out, making text tiny and unreadable on phones. Google also penalizes non-mobile-friendly pages.',
+          explainBn:'কোনো viewport মেটা ট্যাগ পাওয়া যায়নি। এটি না থাকলে মোবাইল ব্রাউজার পেজটি ডেস্কটপ সাইজে রেন্ডার করে জুম-আউট করে দেখায়, ফলে ফোনে লেখা অনেক ছোট ও অপাঠ্য হয়ে যায়। Google মোবাইল-ফ্রেন্ডলি না হলে র‍্যাংকিংয়ে পেনাল্টি দেয়।',
+          fixEn:'Add <meta name="viewport" content="width=device-width, initial-scale=1.0"> inside <head>.',
+          fixBn:'<head>-এর ভেতর <meta name="viewport" content="width=device-width, initial-scale=1.0"> যুক্ত করুন।',
+          found:null
+        };
+      }
+      var content = v.getAttribute('content') || '';
+      if (content.indexOf('width=device-width') === -1){
+        return {
+          status:'warn',
+          explainEn:'A viewport tag exists but does not include width=device-width, which is needed for correct mobile scaling.',
+          explainBn:'viewport ট্যাগ আছে কিন্তু এতে width=device-width নেই, যা সঠিক মোবাইল স্কেলিং-এর জন্য প্রয়োজন।',
+          fixEn:'Update the content to include width=device-width, initial-scale=1.0.',
+          fixBn:'content-টি আপডেট করে width=device-width, initial-scale=1.0 যুক্ত করুন।',
+          found:content
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A correct mobile viewport tag is present.',
+        explainBn:'একটি সঠিক মোবাইল viewport ট্যাগ আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:content
+      };
+    }
+  });
+
+  addCheck({
+    id:'charset', category:'tech',
+    titleEn:'Character encoding (charset)', titleBn:'ক্যারেক্টার এনকোডিং (Charset)',
+    run:function(doc){
+      var m = doc.querySelector('meta[charset]') || doc.querySelector('meta[http-equiv="Content-Type"]');
+      if (!m){
+        return {
+          status:'fail',
+          explainEn:'No charset declaration found. Without this, browsers may guess the wrong text encoding, causing Bangla or other non-English text to display as garbled characters.',
+          explainBn:'কোনো charset ঘোষণা পাওয়া যায়নি। এটি না থাকলে ব্রাউজার ভুল টেক্সট এনকোডিং অনুমান করতে পারে, ফলে বাংলা বা অন্য ভাষার লেখা ভাঙাচোরা অক্ষরে দেখাতে পারে।',
+          fixEn:'Add <meta charset="UTF-8"> as the very first line inside <head>.',
+          fixBn:'<head>-এর সবচেয়ে প্রথম লাইনে <meta charset="UTF-8"> যুক্ত করুন।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A charset declaration is present.',
+        explainBn:'একটি charset ঘোষণা আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:m.getAttribute('charset') || m.getAttribute('content')
+      };
+    }
+  });
+
+  addCheck({
+    id:'doctype', category:'tech',
+    titleEn:'DOCTYPE declaration', titleBn:'DOCTYPE ঘোষণা',
+    run:function(doc, ctx){
+      var hasDoctype = /^\s*<!DOCTYPE/i.test(ctx.rawHtml);
+      if (!hasDoctype){
+        return {
+          status:'warn',
+          explainEn:'No <!DOCTYPE html> declaration found at the top of the document. Without it, browsers may render the page in "quirks mode," which can cause inconsistent CSS behavior across browsers.',
+          explainBn:'ডকুমেন্টের শুরুতে কোনো <!DOCTYPE html> ঘোষণা পাওয়া যায়নি। এটি না থাকলে ব্রাউজার "quirks mode"-এ পেজ রেন্ডার করতে পারে, যা বিভিন্ন ব্রাউজারে অসামঞ্জস্যপূর্ণ CSS আচরণ ঘটাতে পারে।',
+          fixEn:'Add <!DOCTYPE html> as the very first line of the HTML document.',
+          fixBn:'HTML ডকুমেন্টের সবচেয়ে প্রথম লাইনে <!DOCTYPE html> যুক্ত করুন।',
+          found:null
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'A DOCTYPE declaration is present.',
+        explainBn:'একটি DOCTYPE ঘোষণা আছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:null
+      };
+    }
+  });
+
+  addCheck({
+    id:'https', category:'tech',
+    titleEn:'HTTPS usage', titleBn:'HTTPS ব্যবহার',
+    run:function(doc, ctx){
+      var url = ctx.url;
+      if (!url){
+        return {status:'warn', explainEn:'No URL was provided, so HTTPS could not be verified. Please check manually that your site loads under https://.', explainBn:'কোনো URL দেওয়া হয়নি, তাই HTTPS যাচাই করা যায়নি। দয়া করে ম্যানুয়ালি নিশ্চিত করুন আপনার সাইট https:// দিয়ে লোড হয়।', fixEn:'-', fixBn:'-', found:null};
+      }
+      if (url.indexOf('https://') !== 0){
+        return {
+          status:'fail',
+          explainEn:'The provided URL uses HTTP, not HTTPS. Google explicitly uses HTTPS as a ranking signal, and browsers mark HTTP sites as "Not Secure."',
+          explainBn:'প্রদত্ত URL-টি HTTP ব্যবহার করছে, HTTPS নয়। Google স্পষ্টভাবে HTTPS-কে একটি র‍্যাংকিং সিগন্যাল হিসেবে ব্যবহার করে, এবং ব্রাউজার HTTP সাইটকে "Not Secure" বলে চিহ্নিত করে।',
+          fixEn:'Install an SSL certificate (many hosts offer free ones via Let\'s Encrypt) and redirect all HTTP traffic to HTTPS.',
+          fixBn:'একটি SSL সার্টিফিকেট ইনস্টল করুন (অনেক হোস্টিং প্রোভাইডার Let\'s Encrypt-এর মাধ্যমে ফ্রি দেয়) এবং সব HTTP ট্রাফিক HTTPS-এ রিডাইরেক্ট করুন।',
+          found:url
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'The site uses HTTPS.',
+        explainBn:'সাইটটি HTTPS ব্যবহার করছে। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:url
+      };
+    }
+  });
+
+  addCheck({
+    id:'mixed_content', category:'tech',
+    titleEn:'Mixed content (insecure resources)', titleBn:'মিক্সড কনটেন্ট (অসুরক্ষিত রিসোর্স)',
+    run:function(doc, ctx){
+      if (ctx.url && ctx.url.indexOf('https://') !== 0){
+        return {status:'pass', explainEn:'Site is not on HTTPS yet; mixed content does not apply until HTTPS is enabled.', explainBn:'সাইট এখনো HTTPS-এ নেই; HTTPS চালু না হওয়া পর্যন্ত মিক্সড কনটেন্ট প্রযোজ্য নয়।', fixEn:'-', fixBn:'-', found:null};
+      }
+      var resources = Array.from(doc.querySelectorAll('img[src], script[src], link[href], iframe[src]'));
+      var insecure = resources.filter(function(el){
+        var url = el.getAttribute('src') || el.getAttribute('href') || '';
+        return url.indexOf('http://') === 0;
+      });
+      if (insecure.length > 0){
+        return {
+          status:'fail',
+          explainEn:insecure.length + ' resource(s) are loaded over insecure HTTP on what should be an HTTPS page. Browsers may block these resources or show security warnings.',
+          explainBn:'HTTPS পেজে ' + insecure.length + ' টি রিসোর্স অসুরক্ষিত HTTP দিয়ে লোড হচ্ছে। ব্রাউজার এই রিসোর্সগুলো ব্লক করে দিতে পারে বা সিকিউরিটি ওয়ার্নিং দেখাতে পারে।',
+          fixEn:'Change all http:// resource URLs to https:// (or protocol-relative // URLs).',
+          fixBn:'সব http:// রিসোর্স URL https://-তে পরিবর্তন করুন।',
+          found:insecure.slice(0,6).map(function(el){ return truncate(el.getAttribute('src')||el.getAttribute('href'), 60); }).join('\n')
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'No insecure HTTP resources found on this HTTPS page.',
+        explainBn:'এই HTTPS পেজে কোনো অসুরক্ষিত HTTP রিসোর্স পাওয়া যায়নি। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:null
+      };
+    }
+  });
+
+  addCheck({
+    id:'deprecated_tags', category:'tech',
+    titleEn:'Deprecated HTML tags', titleBn:'পুরনো (Deprecated) HTML ট্যাগ',
+    run:function(doc){
+      var deprecated = ['font','center','marquee','big','strike','tt','frame','frameset'];
+      var found = [];
+      deprecated.forEach(function(tag){
+        var els = doc.querySelectorAll(tag);
+        if (els.length) found.push(tag + ' (' + els.length + ')');
+      });
+      if (found.length){
+        return {
+          status:'warn',
+          explainEn:'Deprecated HTML tags found: ' + found.join(', ') + '. These are obsolete and not supported consistently by modern browsers; they should be replaced with CSS.',
+          explainBn:'পুরনো HTML ট্যাগ পাওয়া গেছে: ' + found.join(', ') + '। এই ট্যাগগুলো অচল (obsolete) এবং আধুনিক ব্রাউজারে সামঞ্জস্যপূর্ণভাবে সাপোর্ট করে না; এগুলো CSS দিয়ে প্রতিস্থাপন করা উচিত।',
+          fixEn:'Replace e.g. <center> with CSS text-align:center, <font> with CSS color/font-size, and <marquee> with CSS animations.',
+          fixBn:'উদাহরণ: <center>-এর বদলে CSS text-align:center, <font>-এর বদলে CSS color/font-size, এবং <marquee>-এর বদলে CSS animation ব্যবহার করুন।',
+          found:found.join(', ')
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'No deprecated HTML tags found.',
+        explainBn:'কোনো পুরনো HTML ট্যাগ পাওয়া যায়নি। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:null
+      };
+    }
+  });
+
+  addCheck({
+    id:'inline_event_handlers', category:'tech',
+    titleEn:'Inline JavaScript event handlers', titleBn:'ইনলাইন জাভাস্ক্রিপ্ট ইভেন্ট হ্যান্ডলার',
+    run:function(doc){
+      var all = Array.from(doc.querySelectorAll('*'));
+      var eventAttrs = ['onclick','onload','onmouseover','onerror','onsubmit'];
+      var count = 0;
+      all.forEach(function(el){
+        eventAttrs.forEach(function(attr){
+          if (el.hasAttribute(attr)) count++;
+        });
+      });
+      if (count > 10){
+        return {
+          status:'warn',
+          explainEn:count + ' inline event handler attributes (onclick, onload, etc.) were found. These mix structure and behavior, make code harder to maintain, and can conflict with Content-Security-Policy settings.',
+          explainBn:count + ' টি ইনলাইন ইভেন্ট হ্যান্ডলার অ্যাট্রিবিউট (onclick, onload, ইত্যাদি) পাওয়া গেছে। এগুলো HTML গঠন এবং আচরণ (behavior) মিশিয়ে দেয়, কোড মেইনটেইন করা কঠিন করে, এবং Content-Security-Policy সেটিংসের সাথে সংঘাত করতে পারে।',
+          fixEn:'Move event handling into external JavaScript files using addEventListener instead of inline attributes.',
+          fixBn:'ইনলাইন অ্যাট্রিবিউটের বদলে addEventListener ব্যবহার করে ইভেন্ট হ্যান্ডলিং একটি আলাদা external JavaScript ফাইলে নিয়ে যান।',
+          found:count + ' inline handler(s)'
+        };
+      }
+      return {
+        status:'pass',
+        explainEn:'Few or no inline event handlers found.',
+        explainBn:'খুব কম বা কোনো ইনলাইন ইভেন্ট হ্যান্ডলার পাওয়া যায়নি। ভালো অবস্থা।',
+        fixEn:'No action needed.',
+        fixBn:'কিছু করার প্রয়োজন নেই।',
+        found:count + ' inline handler(s)'
+      };
+    }
+  });
+
+  // ============================================================
+  // RUNNER
+  // ============================================================
+
+  var CATEGORY_META = {
+    seo:  { en:'SEO', bn:'এসইও (সার্চ ইঞ্জিন অপ্টিমাইজেশন)' },
+    perf: { en:'Performance', bn:'পারফরম্যান্স' },
+    tech: { en:'Technical', bn:'টেকনিক্যাল' }
+  };
+
+  function scoreColor(pct){
+    if (pct >= 80) return 'good';
+    if (pct >= 50) return 'warn';
+    return 'bad';
+  }
+
+  function runAudit(){
+    var rawHtml = htmlInput.value;
+    var url = urlInput.value.trim();
+
+    errorBox.classList.remove('show');
+
+    if (!rawHtml || rawHtml.trim().length < 20){
+      errorBox.textContent = 'অনুগ্রহ করে কমপক্ষে কিছু HTML কোড পেস্ট করুন। (Please paste some HTML source code first.)';
+      errorBox.classList.add('show');
+      return;
+    }
+
+    var parser = new DOMParser();
+    var doc;
+    try {
+      doc = parser.parseFromString(rawHtml, 'text/html');
+    } catch(e){
+      errorBox.textContent = 'HTML পার্স করতে সমস্যা হয়েছে। কোডটি ঠিক আছে কিনা দেখুন। (Could not parse this HTML.)';
+      errorBox.classList.add('show');
+      return;
+    }
+
+    var ctx = { rawHtml: rawHtml, url: url };
+
+    var results = CHECKS.map(function(def){
+      var r;
+      try {
+        r = def.run(doc, ctx);
+      } catch(e){
+        r = { status:'warn', explainEn:'This check could not be completed due to unusual page structure.', explainBn:'অপ্রত্যাশিত পেজ গঠনের কারণে এই চেকটি সম্পূর্ণ করা যায়নি।', fixEn:'-', fixBn:'-', found:null };
+      }
+      return Object.assign({}, def, r);
+    });
+
+    renderResults(results);
+  }
+
+  function renderResults(results){
+    var byCategory = { seo:[], perf:[], tech:[] };
+    results.forEach(function(r){ byCategory[r.category].push(r); });
+
+    function pct(list){
+      if (!list.length) return 100;
+      var score = list.reduce(function(sum, r){
+        return sum + (r.status === 'pass' ? 1 : r.status === 'warn' ? 0.5 : 0);
+      }, 0);
+      return Math.round((score/list.length)*100);
+    }
+
+    var seoPct = pct(byCategory.seo);
+    var perfPct = pct(byCategory.perf);
+    var techPct = pct(byCategory.tech);
+    var overallPct = Math.round((seoPct + perfPct + techPct)/3);
+
+    scoreOverview.innerHTML =
+      '<div class="score-card overall">' +
+        '<span class="score-num">' + overallPct + '</span>' +
+        '<span class="score-lbl">সার্বিক স্কোর</span>' +
+        '<span class="score-sub">Overall Score</span>' +
+      '</div>' +
+      ['seo','perf','tech'].map(function(cat){
+        var p = cat==='seo'?seoPct:cat==='perf'?perfPct:techPct;
+        return '<div class="score-card">' +
+          '<span class="score-num ' + scoreColor(p) + '">' + p + '</span>' +
+          '<span class="score-lbl">' + CATEGORY_META[cat].en + '</span>' +
+          '<span class="score-sub">' + CATEGORY_META[cat].bn + '</span>' +
+        '</div>';
+      }).join('');
+
+    categoriesContainer.innerHTML = ['seo','perf','tech'].map(function(cat){
+      var list = byCategory[cat];
+      var p = cat==='seo'?seoPct:cat==='perf'?perfPct:techPct;
+      var checksHtml = list.map(function(r, idx){
+        var icon = r.status === 'pass' ? '\u2713' : r.status === 'warn' ? '!' : '\u2715';
+        var statusLabel = r.status === 'pass' ? 'PASS' : r.status === 'warn' ? 'WARNING' : 'ISSUE';
+        return (
+          '<div class="check ' + r.status + '" data-status="' + r.status + '">' +
+            '<div class="check-head" onclick="this.parentElement.classList.toggle(\'open\')">' +
+              '<span class="check-icon">' + icon + '</span>' +
+              '<div class="check-titles">' +
+                '<div class="check-title-en">' + esc(r.titleEn) + '</div>' +
+                '<div class="check-title-bn">' + esc(r.titleBn) + '</div>' +
+              '</div>' +
+              '<span class="check-status">' + statusLabel + '</span>' +
+              '<svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' +
+            '</div>' +
+            '<div class="check-body">' +
+              '<div class="check-section">' +
+                '<div class="check-section-lbl">কী পাওয়া গেছে (Explanation)</div>' +
+                '<p>' + esc(r.explainEn) + '</p>' +
+              '</div>' +
+              '<div class="check-section bn">' +
+                '<div class="check-section-lbl">বাংলায় ব্যাখ্যা</div>' +
+                '<p>' + esc(r.explainBn) + '</p>' +
+              '</div>' +
+              (r.found ? '<div class="check-section">' +
+                '<div class="check-section-lbl">পাওয়া গেছে (Found)</div>' +
+                '<div class="check-found">' + esc(r.found) + '</div>' +
+              '</div>' : '') +
+              (r.status !== 'pass' ? '<div class="check-section">' +
+                '<div class="check-section-lbl">কীভাবে ঠিক করবেন (How to fix)</div>' +
+                '<div class="check-fix"><p>' + esc(r.fixEn) + '</p><p style="margin-top:6px">' + esc(r.fixBn) + '</p></div>' +
+              '</div>' : '') +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      return (
+        '<div class="category-block" data-category="' + cat + '">' +
+          '<div class="category-head">' +
+            '<h2>' + CATEGORY_META[cat].en + '</h2>' +
+            '<span class="cat-bn">' + CATEGORY_META[cat].bn + '</span>' +
+            '<span class="cat-score ' + scoreColor(p) + '">' + p + '/100</span>' +
+          '</div>' +
+          checksHtml +
+        '</div>'
+      );
+    }).join('');
+
+    resultsArea.classList.add('show');
+    applyFilter('all');
+    resultsArea.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function applyFilter(filter){
+    var checks = document.querySelectorAll('.check');
+    checks.forEach(function(c){
+      if (filter === 'all' || c.getAttribute('data-status') === filter){
+        c.style.display = '';
+      } else {
+        c.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.category-block').forEach(function(block){
+      var visible = Array.from(block.querySelectorAll('.check')).some(function(c){ return c.style.display !== 'none'; });
+      block.style.display = visible ? '' : 'none';
+    });
+  }
+
+  filterBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      filterBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilter(btn.getAttribute('data-filter'));
+    });
+  });
+
+  runBtn.addEventListener('click', runAudit);
+
+  resetBtn.addEventListener('click', function(){
+    htmlInput.value = '';
+    urlInput.value = '';
+    charCount.textContent = '\u09e6 \u0985\u0995\u09cd\u09b7\u09b0';
+    resultsArea.classList.remove('show');
+    errorBox.classList.remove('show');
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+
+})();
+
+</script>
+</body>
+</html>
