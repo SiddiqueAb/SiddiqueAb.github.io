@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MD Abubakar Siddique – Full Stack Developer (Laravel, Vue.js, DevOps) – Remote CV</title>
+<meta name="description" content="Full Stack Developer with 7 years of experience in PHP, Laravel, Vue.js, MySQL, Docker and VPS deployment. Digital Bangladesh Award 2023. Available for remote work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16202e; --muted:#5a6676; --line:#dde3ea; --bg:#eef1f5; --paper:#fff;
+  --accent:#0b5c8a; --accent-soft:#e6f1f8; --ok:#1d7a4f;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{max-width:900px;margin:24px auto;background:var(--paper);box-shadow:0 1px 3px rgba(20,30,50,.12);border-radius:6px;overflow:hidden}
+.pad{padding:36px 44px}
+
+/* header */
+header{padding:40px 44px 28px;border-bottom:4px solid var(--accent)}
+.top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+h1{font:600 40px/1.1 var(--serif);margin:0;letter-spacing:-.01em}
+.role{margin:8px 0 0;font-size:17px;font-weight:500;color:var(--accent)}
+.avail{display:inline-flex;gap:8px;align-items:center;background:#e8f5ee;color:var(--ok);font-weight:600;font-size:13px;padding:6px 12px;border-radius:99px;margin-top:14px}
+.avail i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.contact{list-style:none;margin:0;padding:0;font-size:14px;display:grid;gap:4px;min-width:250px}
+.contact b{display:inline-block;width:70px;color:var(--muted);font-weight:500}
+.btn{margin-top:14px;display:inline-block;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 13px var(--sans);padding:8px 14px;border-radius:4px;cursor:pointer}
+.btn:hover{background:#094a6f}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.stat{padding:18px 20px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat strong{display:block;font:600 24px/1.1 var(--serif);color:var(--accent)}
+.stat span{font-size:13px;color:var(--muted)}
+
+h2{font:600 21px/1.2 var(--serif);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+section{margin-bottom:30px}
+section:last-child{margin-bottom:0}
+p{margin:0 0 10px}
+ul{margin:6px 0 0;padding-left:20px}
+li{margin-bottom:4px}
+
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 28px}
+.sk h3{margin:0 0 6px;font-size:14px;font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{background:var(--accent-soft);color:#0a4a70;font-size:13px;padding:2px 10px;border-radius:4px}
+.sk.hl .tags span{background:var(--accent);color:#fff}
+
+/* experience */
+.job{margin-bottom:20px;break-inside:avoid}
+.job-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.job h3{margin:0;font-size:16px;font-weight:600}
+.job .co{color:var(--accent);font-weight:500}
+.date{font-size:13px;color:var(--muted);white-space:nowrap}
+.note{font-size:13px;color:var(--muted);margin:2px 0 0}
+
+/* projects */
+.projects{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.proj{border:1px solid var(--line);border-left:3px solid var(--accent);padding:12px 14px;border-radius:4px;break-inside:avoid}
+.proj h3{margin:0 0 4px;font-size:15px;font-weight:600}
+.proj p{font-size:13.5px;margin:0 0 6px;color:#2c3745}
+.proj .stack{font-size:12.5px;color:var(--muted)}
+.more{font-size:13.5px;margin-top:14px;color:#2c3745}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.item{margin-bottom:12px}
+.item b{font-weight:600}
+.item small{display:block;color:var(--muted);font-size:13px}
+
+footer{background:var(--ink);color:#e8edf3;padding:22px 44px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
+footer a{color:#9fd3f0}
+
+@media(max-width:700px){
+  .pad,header,footer{padding-left:20px;padding-right:20px}
+  h1{font-size:32px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:0}
+  .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .skills,.projects,.two{grid-template-columns:1fr}
+  .page{margin:0;border-radius:0}
+}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff;font-size:12px}
+  .page{box-shadow:none;margin:0;max-width:none;border-radius:0}
+  .noprint{display:none!important}
+  .pad{padding:18px 4px}
+  header{padding:0 4px 14px}
+  footer{background:none;color:var(--ink);padding:10px 4px;border-top:1px solid var(--line)}
+  footer a{color:var(--accent)}
+  a{color:inherit}
+  .tags span,.sk.hl .tags span{border:1px solid var(--line);background:none;color:var(--ink)}
+  section{margin-bottom:18px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<header>
+  <div class="top">
+    <div>
+      <h1>MD Abubakar Siddique</h1>
+      <p class="role">Full Stack Developer · Laravel, Vue.js &amp; DevOps</p>
+      <span class="avail"><i></i> Available for remote full-time &amp; contract roles</span><br>
+      <button class="btn noprint" onclick="window.print()">Download as PDF</button>
+    </div>
+    <ul class="contact">
+      <li><b>Email</b><a href="mailto:absiddiquehc@gmail.com">absiddiquehc@gmail.com</a></li>
+      <li><b>Phone</b><a href="tel:+8801780805503">+880 1780-805503</a></li>
+      <li><b>Location</b>Dhaka, Bangladesh (UTC+6)</li>
+      <li><b>LinkedIn</b><a href="https://linkedin.com/in/ab-siddique">linkedin.com/in/ab-siddique</a></li>
+      <li><b>GitHub</b><a href="https://github.com/SiddiqueAb">github.com/SiddiqueAb</a></li>
+      <li><b>Portfolio</b><a href="https://siddiqueab.github.io">siddiqueab.github.io</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><strong>7 years</strong><span>Professional web development (2019–present)</span></div>
+  <div class="stat"><strong>20+</strong><span>Production systems shipped</span></div>
+  <div class="stat"><strong>40%</strong><span>Query performance gain from DB optimization</span></div>
+  <div class="stat"><strong>2023</strong><span>Digital Bangladesh Award winner</span></div>
+</div>
+
+<div class="pad">
+
+<section>
+  <h2>Summary</h2>
+  <p>Full Stack Developer who builds, deploys and maintains production web applications end to end. I work mainly with PHP, Laravel and Vue.js, and I also handle the infrastructure side: Docker containers, VPS setup, and CI/CD pipelines. My Heartcop hospital management system runs at United Hospital, Ibrahim Cardiac and Evercare Hospital and won the Digital Bangladesh Award in 2023.</p>
+  <p>I have delivered healthcare, education, e-commerce, SaaS and fleet-management products, and I have worked with international clients on Upwork. I am comfortable with remote work: written communication in English, clear task updates, and independent delivery from requirement to release.</p>
+</section>
+
+<section>
+  <h2>Technical Skills</h2>
+  <div class="skills">
+    <div class="sk hl"><h3>Server &amp; DevOps</h3><div class="tags"><span>Docker</span><span>VPS setup &amp; management</span><span>Cloud deployment</span><span>CI/CD (Bitbucket Pipelines)</span><span>Git</span><span>Automated testing &amp; releases</span></div></div>
+    <div class="sk hl"><h3>Backend</h3><div class="tags"><span>PHP</span><span>Laravel</span><span>CodeIgniter</span><span>Node.js</span><span>REST API design</span><span>Inertia.js</span></div></div>
+    <div class="sk"><h3>Frontend</h3><div class="tags"><span>Vue.js</span><span>JavaScript</span><span>HTML5 / CSS3</span><span>Bootstrap</span><span>jQuery</span></div></div>
+    <div class="sk"><h3>Databases</h3><div class="tags"><span>MySQL</span><span>PostgreSQL</span><span>Schema design</span><span>Query optimization</span></div></div>
+    <div class="sk"><h3>Integrations</h3><div class="tags"><span>Stripe</span><span>PayPal</span><span>Payment gateways</span><span>Third-party APIs</span><span>WebRTC</span><span>Socket.io</span></div></div>
+    <div class="sk"><h3>CMS &amp; Tools</h3><div class="tags"><span>WordPress &amp; plugin development</span><span>Perfex CRM modules</span><span>Postman</span><span>VS Code</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Professional Experience</h2>
+
+  <div class="job">
+    <div class="job-h"><h3>Programmer · <span class="co">Bdstall.com Limited</span></h3><span class="date">Sep 2025 – Present</span></div>
+    <ul>
+      <li>Build new features for a large multi-vendor e-commerce platform.</li>
+      <li>Maintain and optimize the existing codebase to improve speed and stability.</li>
+      <li>Work with cross-functional teams to ship scalable solutions.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>WordPress Plugin Developer · <span class="co">Ordershield</span></h3><span class="date">2024 – 2025</span></div>
+    <ul>
+      <li>Developed custom WordPress plugins for e-commerce, including order protection and security features.</li>
+      <li>Integrated third-party APIs and payment gateways, and maintained plugins with regular updates.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>Web Development Trainer · <span class="co">Herpower Project</span></h3><span class="date">Jun 2024 – Dec 2024</span></div>
+    <ul>
+      <li>Trained 50+ students in HTML, CSS, JavaScript, PHP and WordPress.</li>
+      <li>Mentored students on freelancing platforms and client management.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>Web Application Developer · <span class="co">Wake Up ICT</span></h3><span class="date">Apr 2019 – May 2024</span></div>
+    <ul>
+      <li>Designed and built web applications with PHP, Laravel and CodeIgniter, plus REST APIs for web and mobile clients.</li>
+      <li>Set up and managed VPS servers and Docker containers for application deployment.</li>
+      <li>Built CI/CD pipelines with Bitbucket Pipelines for automated testing and releases.</li>
+      <li>Built SPA-style Laravel applications using Inertia.js.</li>
+      <li>Optimized database queries, achieving a 40% performance improvement.</li>
+      <li>Developed Heartcop, a healthcare management system used by multiple hospitals (Digital Bangladesh Award 2023).</li>
+      <li>Gathered requirements from clients, managed timelines and delivered custom solutions.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>Full Stack Developer (Freelance) · <span class="co">Upwork</span></h3><span class="date">2023 – 2024</span></div>
+    <ul>
+      <li>Delivered custom web applications for international clients.</li>
+      <li>Integrated Stripe, PayPal and other third-party APIs; provided ongoing maintenance and enhancements.</li>
+      <li>Kept 100% client satisfaction with on-time delivery.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>Software Developer · <span class="co">Edusystem Company</span></h3><span class="date">2022 – 2024</span></div>
+    <ul>
+      <li>Built education management software, including student information and learning management systems.</li>
+      <li>Designed and optimized databases; customized features with educational institutions.</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-h"><h3>Software Developer · <span class="co">Applica System</span></h3><span class="date">2020 – 2022</span></div>
+    <ul>
+      <li>Developed enterprise web applications with PHP and Laravel.</li>
+      <li>Designed RESTful APIs for mobile apps; reviewed code and tuned database queries.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Selected Projects</h2>
+  <div class="projects">
+    <div class="proj"><h3><a href="https://heartcop.net">Heartcop – Hospital Management</a></h3><p>Hospital platform used by United Hospital, Ibrahim Cardiac and Evercare Hospital. Winner of the Digital Bangladesh Award 2023.</p><div class="stack">PHP · Laravel · MySQL</div></div>
+    <div class="proj"><h3><a href="https://bdstall.com">BDStall – E-commerce</a></h3><p>Multi-vendor marketplace with inventory and order management.</p><div class="stack">PHP · MySQL</div></div>
+    <div class="proj"><h3><a href="https://communicator-lwgp.onrender.com/">Communicator – Chat, Voice &amp; Video</a></h3><p>Real-time peer-to-peer messaging, voice and video calls in the browser. Users connect by sharing a unique ID.</p><div class="stack">Node.js · Vue.js · WebRTC · Socket.io</div></div>
+    <div class="proj"><h3><a href="https://pos-saas.com">POS &amp; E-commerce SaaS</a></h3><p>Multi-tenant SaaS with point of sale and accounting. A related model is <a href="https://possolution.com.bd/">POSsolution</a>.</p><div class="stack">Multi-tenant architecture</div></div>
+    <div class="proj"><h3><a href="https://cumillaboard.gov.bd">Cumilla Board – Education Management</a></h3><p>Board administration and student management system for a government education board.</p><div class="stack">PHP · MySQL</div></div>
+    <div class="proj"><h3><a href="https://vms.uplinkbd.com/">Vehicle Management System</a></h3><p>Truck fleet management and tracking.</p><div class="stack">PHP · MySQL</div></div>
+    <div class="proj"><h3><a href="https://www.bmart.com.bd/">Bmart</a></h3><p>E-commerce platform with integrated accounting and POS.</p><div class="stack">E-commerce · POS</div></div>
+    <div class="proj"><h3><a href="https://ordershield.net/">Ordershield</a></h3><p>Order protection and secure checkout automation for online stores.</p><div class="stack">WordPress · Plugin development</div></div>
+  </div>
+  <p class="more"><b>More work:</b> <a href="https://northking.com.bd">Northking</a> (photography event booking and invoicing), Perfex CRM custom modules (inventory, MLM SMS, API integrations), <a href="https://bd.education">BD.Education</a>, <a href="https://tenderandnotice.com/">Tender &amp; Notices</a> (African tender management), <a href="https://shurjoshokti.online/">Shurjoshokti</a>, <a href="https://bus-finder.netlify.app/">Bus Finder</a> (Dhaka bus routes and fares), Qourtob (Morocco freelancing marketplace), Praktonet (web scraping for school datasets), and backend work on Edutask, Edulearn, Ascender and iGreener.</p>
+</section>
+
+<div class="two">
+  <section>
+    <h2>Education</h2>
+    <div class="item"><b>M.Sc. in Chemistry</b><small>Government Rajendra College · 2021 – 2022</small></div>
+    <div class="item"><b>B.Sc. Honours in Chemistry</b><small>Rajbari Government College · 2015 – 2019</small></div>
+    <h2 style="margin-top:22px">Award</h2>
+    <div class="item"><b>Digital Bangladesh Award (2023)</b><small>Government of Bangladesh, for the Heartcop healthcare management system that digitized operations across leading hospitals.</small></div>
+  </section>
+  <section>
+    <h2>Training &amp; Certifications</h2>
+    <div class="item"><b>Level 3 Certification in Web Design and Development with Freelancing</b><small>2026</small></div>
+    <div class="item"><b>Advanced Web Development Training</b><small>Wake Up ICT Academy · 2-year program (PHP, Laravel, CodeIgniter, MySQL, JavaScript)</small></div>
+    <div class="item"><b>Full Stack Web Development Bootcamp</b><small>Learning and Earning Project · 52 days</small></div>
+    <div class="item"><b>Digital Marketing &amp; Web Design</b><small>E-learning &amp; Earning · 3 months</small></div>
+  </section>
+</div>
+
+<div class="two">
+  <section>
+    <h2>Languages</h2>
+    <div class="item"><b>Bengali</b> – Native</div>
+    <div class="item"><b>English</b> – Professional working proficiency (B2)</div>
+    <div class="item"><b>Hindi</b> – Conversational</div>
+  </section>
+  <section>
+    <h2>Working Remotely</h2>
+    <ul>
+      <li>Based in UTC+6; flexible to overlap with European and other time zones.</li>
+      <li>Experienced in Agile/Scrum, code review, and written technical documentation.</li>
+      <li>Open to relocation for international roles; valid passport.</li>
+      <li>References available on request.</li>
+    </ul>
+  </section>
+</div>
+
+</div>
+
+<footer>
+  <span>Open to remote opportunities.</span>
+  <span><a href="mailto:absiddiquehc@gmail.com">absiddiquehc@gmail.com</a> · <a href="https://linkedin.com/in/ab-siddique">LinkedIn</a> · <a href="https://github.com/SiddiqueAb">GitHub</a></span>
+</footer>
+
+</main>
+</body>
+</html>
